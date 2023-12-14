@@ -50,12 +50,27 @@ namespace EmpireAtWar.Services.NavigationService
 
         public void UpdateSelectable(ISelectable selectable)
         {
+            if (this.selectable == null)
+            {
+                this.selectable = selectable;
+                selectable.SetActive(true);
+                return;
+            }
+            if (this.selectable == selectable)
+            {
+                this.selectable.SetActive(false);
+                this.selectable = null;
+            }
+            else
+            {
+             
+            }
+            return;
             if (this.selectable != null)
             {
                 this.selectable.SetActive(false);
             }
-            this.selectable = selectable;
-            selectable.SetActive(true);
+     
         }
 
         protected override void OnInit(IGameObserver gameObserver)

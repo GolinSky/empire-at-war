@@ -13,9 +13,13 @@ namespace EmpireAtWar
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-   
-                ShipFactory.Create();
+                SpawnShip();
             }
+        }
+
+        public void SpawnShip()
+        {
+            ShipFactory.Create();
         }
     }
 }

@@ -38,6 +38,7 @@ namespace EmpireAtWar.Views.Ship
         
         private void HyperSpaceJump(Vector3 point)
         {
+            point += new Vector3(30, 0, 30);
             Vector3 lookDirection = point - transform.position;
             
             if (moveSequence != null && moveSequence.IsActive())
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Views.Ship
         
         private void UpdateTargetPosition(Vector3 position)
         {
+            position.y = transform.position.y;
             Vector3 lookDirection = position - transform.position;
             
             if (moveSequence != null && moveSequence.IsActive())

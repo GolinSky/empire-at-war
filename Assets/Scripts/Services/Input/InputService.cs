@@ -17,7 +17,8 @@ namespace EmpireAtWar.Services.Input
     
     public class InputService:Service, IInputService, ITickable
     {
-        public Vector2 MouseCoordinates => UnityEngine.Input.mousePosition;
+        private Touch touch;
+        public Vector2 MouseCoordinates => touch.position;
         public event Action<Vector2> OnInput;
         public event Action OnSelect;
       //  [Inject] private ShipView.ShipFactory ShipFactory;
@@ -33,19 +34,26 @@ namespace EmpireAtWar.Services.Input
 
         public void Tick()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Mouse1))
+
+            if (UnityEngine.Input.touchCount > 0)
             {
-                OnInput?.Invoke(MouseCoordinates);
-            }
-            else if(UnityEngine.Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                OnSelect?.Invoke();
+                touch = UnityEngine.Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    OnSelect?.Invoke();
+                }
+                
+                if (touch.phase == TouchPhase.Ended)
+                {
+                    OnInput?.Invoke(MouseCoordinates);
+                }
             }
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            if (UnityEngine.Input.touchCount > 1)
             {
-               // ShipFactory.Create();
             }
+
         }
     }
 }
