@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Views.Factions
 {
-    public class FactionUiView:View<FactionModel>
+    public class FactionUiView:View<IFactionModelObserver>
     {
         [SerializeField] private Canvas controlCanvas;
         

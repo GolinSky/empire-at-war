@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ShipViewReference>k__BackingField:
     keyValue:
-    - key: 3
+    - key: 0
       value:
         m_AssetGUID: 7744e602809a95a4a96fbb9870d3df19
         m_SubObjectName: 

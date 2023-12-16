@@ -1,24 +1,23 @@
-using System;
 using DG.Tweening;
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace EmpireAtWar.Views.Ship
 {
-    public class ShipView:View<IShipModelObserver, IShipCommand>, ITickable
+    public class ShipView : View<IShipModelObserver, IShipCommand>, ITickable
     {
         [SerializeField] private Canvas selectedCanvas;
         [SerializeField] private Canvas hoveredCanvas;
-        [SerializeField] private RotateMode rotationMode = RotateMode.Fast; 
+        [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
         [SerializeField] private Ease hyperSpaceEase;
-        
+
         private Sequence moveSequence;
+
         protected override void OnInitialize()
         {
             transform.position = Model.StartPosition;
@@ -26,7 +25,6 @@ namespace EmpireAtWar.Views.Ship
             Model.OnTargetPositionChanged += UpdateTargetPosition;
             Model.OnSelected += OnSelected;
             Model.OnHyperSpaceJump += HyperSpaceJump;
-            
         }
 
         protected override void OnDispose()
@@ -35,12 +33,12 @@ namespace EmpireAtWar.Views.Ship
             Model.OnSelected -= OnSelected;
             Model.OnHyperSpaceJump -= HyperSpaceJump;
         }
-        
+
         private void HyperSpaceJump(Vector3 point)
         {
             point += new Vector3(30, 0, 30);
             Vector3 lookDirection = point - transform.position;
-            
+
             if (moveSequence != null && moveSequence.IsActive())
             {
                 moveSequence.Kill();
@@ -51,25 +49,25 @@ namespace EmpireAtWar.Views.Ship
 
             moveSequence.Append(
                 transform.DORotate(
-                        Quaternion.LookRotation(lookDirection).eulerAngles, 
-                        1f, 
+                        Quaternion.LookRotation(lookDirection).eulerAngles,
+                        1f,
                         rotationMode)
                     .SetEase(lookAtEase));
 
             moveSequence.Append(transform.DOMove(point, duration)
                 .SetEase(hyperSpaceEase));
         }
-        
+
         private void OnSelected(bool isActive)
         {
             selectedCanvas.enabled = isActive;
         }
-        
+
         private void UpdateTargetPosition(Vector3 position)
         {
             position.y = transform.position.y;
             Vector3 lookDirection = position - transform.position;
-            
+
             if (moveSequence != null && moveSequence.IsActive())
             {
                 moveSequence.Kill();
@@ -81,10 +79,10 @@ namespace EmpireAtWar.Views.Ship
 
             moveSequence.Append(
                 transform.DORotate(
-                        Quaternion.LookRotation(lookDirection).eulerAngles, 
-                        1f, 
+                        Quaternion.LookRotation(lookDirection).eulerAngles,
+                        1f,
                         rotationMode)
-                .SetEase(lookAtEase));
+                    .SetEase(lookAtEase));
 
             moveSequence.Append(transform.DOMove(position, duration)
                 .SetEase(moveEase));
@@ -102,15 +100,14 @@ namespace EmpireAtWar.Views.Ship
 
         public void Tick()
         {
-            
         }
 
-        private void OnMouseDown()//move to view component
+        private void OnMouseDown() //move to view component
         {
             Command?.SelectionCommand.OnSelected();
         }
-        
-        public class ShipFactory:PlaceholderFactory<ShipView>
+
+        public class ShipFactory : PlaceholderFactory<ShipView>
         {
         }
     }

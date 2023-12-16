@@ -15,15 +15,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
 
         private bool doMovement = true;
 
-        void Update()
-        {
-
-            if (!doMovement)
-                return;
-
-           
-       
-        }
+  
         protected override void OnInitialize()
         {
             
