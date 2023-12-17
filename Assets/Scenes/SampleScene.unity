@@ -2269,6 +2269,7 @@ GameObject:
   - component: {fileID: 382779901789630982}
   - component: {fileID: 2498124516107257549}
   - component: {fileID: 2498124516107257550}
+  - component: {fileID: 2498124516107257551}
   m_Layer: 0
   m_Name: SpaceStation
   m_TagString: Untagged
@@ -2311,6 +2312,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionType: 2
+--- !u!65 &2498124516107257551
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2183986587396461523}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1802482, y: 0.18024823, z: 0.17767286}
+  m_Center: {x: 0.000000003251418, y: -0.0000000116497425, z: -0.015900485}
 --- !u!1001 &6838934146339767980
 PrefabInstance:
   m_ObjectHideFlags: 0
