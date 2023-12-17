@@ -41,7 +41,7 @@ namespace EmpireAtWar.Services.Input
 
                 if (touch.phase == TouchPhase.Moved)
                 {
-                    OnSelect?.Invoke();
+                  //  OnSelect?.Invoke();
                 }
                 
                 if (touch.phase == TouchPhase.Ended)
@@ -49,11 +49,6 @@ namespace EmpireAtWar.Services.Input
                     OnInput?.Invoke(MouseCoordinates);
                 }
             }
-
-            if (UnityEngine.Input.touchCount > 1)
-            {
-            }
-
         }
     }
 }

@@ -1,3 +1,4 @@
+using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.SkirmishCamera;
@@ -33,6 +34,7 @@ public class SingleEntityInstaller : MonoInstaller
             .BindEntityNoCommand<NavigationController, NavigationUiView, NavigationModel>(
                 navigationModel,
                 navigationUiView);
+        
         Container
             .BindEntityNoCommand<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(
                 cameraModel,
@@ -44,7 +46,7 @@ public class SingleEntityInstaller : MonoInstaller
             terrainView);
         
         Container
-            .BindEntityNoCommand<SpaceStationController, SpaceStationView, SpaceStationModel>(
+            .BindEntity<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
             spaceStationModel,
             spaceStationView);
     }

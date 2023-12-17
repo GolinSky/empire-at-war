@@ -6,7 +6,7 @@ namespace EmpireAtWar.Commands
 {
     public interface ISelectionCommand : ICommand
     {
-        void OnSelected();
+        void OnSelected(SelectionType selectionType);
     }
 
     public class SelectionCommand : Command, ISelectionCommand
@@ -20,9 +20,9 @@ namespace EmpireAtWar.Commands
             this.selectable = selectable;
         }
 
-        public void OnSelected()
+        public void OnSelected(SelectionType selectionType)
         {
-            navigationService.UpdateSelectable(selectable);
+            navigationService.UpdateSelectable(selectable, selectionType);
         }
     }
 }

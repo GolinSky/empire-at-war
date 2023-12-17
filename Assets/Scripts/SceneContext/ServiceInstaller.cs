@@ -8,10 +8,12 @@ public class ServiceInstaller : MonoInstaller
     {
         Container
             .BindInterfacesAndSelfTo<NavigationService>()
-            .AsSingle();
+            .AsSingle()
+            .NonLazy();
             
         Container
             .BindInterfacesAndSelfTo<InputService>()
-            .AsSingle();
+            .AsSingle()
+            .NonLazy();
     }
 }

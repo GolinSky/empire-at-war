@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Services.Input;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Game;
@@ -6,15 +7,28 @@ using Zenject;
 
 namespace EmpireAtWar.Services.NavigationService
 {
+    public enum SelectionType
+    {
+        None = 0,
+        Terrain = 1,
+        Base = 2,
+        Ship = 3,
+    }
+
     public interface INavigationService : IService
     {
-        void UpdateSelectable(ISelectable selectable);
+        event Action<SelectionType> OnTypeChanged;
+        SelectionType SelectionType { get; }
+        void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType);
     }
 
     public class NavigationService : Service, INavigationService, IInitializable, ILateDisposable
     {
+        public event Action<SelectionType> OnTypeChanged;
+
         private ISelectable selectable;
         private readonly IInputService inputService;
+        public SelectionType SelectionType { get; private set; }
 
         public NavigationService(IInputService inputService)
         {
@@ -24,20 +38,13 @@ namespace EmpireAtWar.Services.NavigationService
         public void Initialize()
         {
             inputService.OnInput += HandleInput;
-            inputService.OnSelect += ResetSelectable;
         }
 
         public void LateDispose()
         {
             inputService.OnInput -= HandleInput;
-            inputService.OnSelect -= ResetSelectable;
         }
 
-        private void ResetSelectable()
-        {
-           // selectable?.SetActive(false);
-          //  selectable = null;
-        }
         private void HandleInput(Vector2 screenPosition)
         {
             if (selectable == null) return;
@@ -48,29 +55,26 @@ namespace EmpireAtWar.Services.NavigationService
             }
         }
 
-        public void UpdateSelectable(ISelectable selectable)
+        public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
-            if (this.selectable == null)
+            if (SelectionType != selectionType )
             {
-                this.selectable = selectable;
-                selectable.SetActive(true);
+                SelectionType = selectionType;
+                OnTypeChanged?.Invoke(SelectionType);
+            }
+            
+            if (selectable == null)
+            {
+                selectable = selectableObject;
+                selectableObject.SetActive(true);
                 return;
             }
-            if (this.selectable == selectable)
+
+            if (selectable == selectableObject)
             {
-                this.selectable.SetActive(false);
-                this.selectable = null;
+                selectable.SetActive(false);
+                selectable = null;
             }
-            else
-            {
-             
-            }
-            return;
-            if (this.selectable != null)
-            {
-                this.selectable.SetActive(false);
-            }
-     
         }
 
         protected override void OnInit(IGameObserver gameObserver)

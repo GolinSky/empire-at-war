@@ -4,6 +4,7 @@ using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
 using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
+using Zenject;
 
 namespace LightWeightFramework.Controller
 {
@@ -17,6 +18,7 @@ namespace LightWeightFramework.Controller
     
 
         IModelObserver IController.Model => Model;
+        [Inject]
         protected IGameObserver GameObserver { get; private set; }
 
         protected Controller(TModel model)

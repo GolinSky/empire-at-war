@@ -1,4 +1,6 @@
 using EmpireAtWar.Commands;
+using EmpireAtWar.Services.NavigationService;
+using UnityEngine;
 using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
 
@@ -6,17 +8,12 @@ namespace EmpireAtWar.ViewComponents.Selection
 {
     public class SelectionViewComponent:ViewComponent
     {
+        [SerializeField] private SelectionType selectionType;
         
         private ISelectionCommand selectionCommand;
-        protected override void OnInit()
-        {
-            
-        }
-
-        protected override void OnRelease()
-        {
-            
-        }
+        
+        protected override void OnInit() {}
+        protected override void OnRelease() {}
 
         protected override void OnCommandSet(ICommand command)
         {
@@ -26,7 +23,7 @@ namespace EmpireAtWar.ViewComponents.Selection
 
         private void OnMouseDown()
         {
-            selectionCommand?.OnSelected();
+            selectionCommand?.OnSelected(selectionType);
         }
     }
 }

@@ -1442,6 +1442,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectionType: 1
 --- !u!1 &1251721787
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,6 +2268,7 @@ GameObject:
   - component: {fileID: 2498124516107257548}
   - component: {fileID: 382779901789630982}
   - component: {fileID: 2498124516107257549}
+  - component: {fileID: 2498124516107257550}
   m_Layer: 0
   m_Name: SpaceStation
   m_TagString: Untagged
@@ -2294,7 +2296,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617baef4c9215ff46811c5b18a2d67ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewComponents: []
+  viewComponents:
+  - {fileID: 2498124516107257550}
+--- !u!114 &2498124516107257550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2183986587396461523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionType: 2
 --- !u!1001 &6838934146339767980
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,12 +5,12 @@ using WorkShop.LightWeightFramework.Game;
 
 namespace EmpireAtWar.Commands.SpaceStation
 {
-    public interface IShipCommand:ICommand
+    public interface ISpaceStationCommand:ICommand
     {
         
     }
     
-    public class SpaceStationCommand:Command<SpaceStationController>
+    public class SpaceStationCommand:Command<SpaceStationController>, ISpaceStationCommand
     {
         public SpaceStationCommand(SpaceStationController controller,INavigationService navigationService, IGameObserver gameObserver) : base(controller, gameObserver)
         {

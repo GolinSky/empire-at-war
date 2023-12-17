@@ -35,10 +35,10 @@ namespace WorkShop.LightWeightFramework.ViewComponents
         where TModel: IModelObserver
     {
         protected TModel Model { get; private set; }
+        
         protected override void OnInit()
         {
             Model = ModelObserver.GetModelObserver<TModel>();
         }
     }
-    
 }
