@@ -15,8 +15,6 @@ namespace EmpireAtWar.Controllers.Ship
         
         public bool CanMove => true;
         
-
-
         public ShipController(ShipModel model, IInputService inputService) : base(model)
         {
             plane = new Plane(Vector3.up, 0);

@@ -859,9 +859,11 @@ MonoBehaviour:
   navigationModel: {fileID: 11400000, guid: 16266e15595c6d84d968677ac76df50a, type: 2}
   cameraModel: {fileID: 11400000, guid: 4b4a85081e612ac49ab54d40c3a3d025, type: 2}
   terrainModel: {fileID: 11400000, guid: 6227c36cf093ee14d846e82b50de15f1, type: 2}
+  spaceStationModel: {fileID: 0}
   navigationUiView: {fileID: 266665877}
   terrainView: {fileID: 1158411688}
   cameraView: {fileID: 330585548}
+  spaceStationView: {fileID: 2498124516107257549}
 --- !u!224 &609612849 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1460586841284908476, guid: d6ad7d4d3fdd06749bdf9a6e650793fa,
@@ -1319,6 +1321,7 @@ GameObject:
   - component: {fileID: 1158411685}
   - component: {fileID: 1158411684}
   - component: {fileID: 1158411688}
+  - component: {fileID: 1158411689}
   m_Layer: 0
   m_Name: PlaneView
   m_TagString: Untagged
@@ -1425,7 +1428,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d3a5bcfda078a4096467bcf21bb0de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewComponents: []
+  viewComponents:
+  - {fileID: 1158411689}
+--- !u!114 &1158411689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158411683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1251721787
 GameObject:
   m_ObjectHideFlags: 0

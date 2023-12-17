@@ -1,5 +1,7 @@
 using LightWeightFramework.Model;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
+
 namespace WorkShop.LightWeightFramework.ViewComponents
 {
     public abstract class ViewComponent:MonoBehaviour
@@ -19,6 +21,12 @@ namespace WorkShop.LightWeightFramework.ViewComponents
             OnRelease();
         }
 
+        public void SetCommand(ICommand command)
+        {
+            OnCommandSet(command);
+        }
+
+        protected virtual void OnCommandSet(ICommand command){}
         protected abstract void OnInit();
         protected abstract void OnRelease();
     }

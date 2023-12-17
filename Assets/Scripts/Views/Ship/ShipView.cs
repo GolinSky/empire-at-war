@@ -101,12 +101,7 @@ namespace EmpireAtWar.Views.Ship
         public void Tick()
         {
         }
-
-        private void OnMouseDown() //move to view component
-        {
-            Command?.SelectionCommand.OnSelected();
-        }
-
+        
         public class ShipFactory : PlaceholderFactory<ShipView>
         {
         }

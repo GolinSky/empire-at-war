@@ -16,10 +16,5 @@ namespace EmpireAtWar.Views.Terrain
         {
             
         }
-
-        private void OnMouseDown()
-        {
-            Command?.SelectionCommand.OnSelected();
-        }
     }
 }
