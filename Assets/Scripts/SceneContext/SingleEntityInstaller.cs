@@ -1,15 +1,19 @@
+using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Controllers.Navigation;
+using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Controllers.SkirmishCamera;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Controllers.Terrain;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Navigation;
+using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Views.NavigationUiView;
+using EmpireAtWar.Views.ShipUi;
 using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
@@ -22,11 +26,13 @@ public class SingleEntityInstaller : MonoInstaller
     [SerializeField] private SkirmishCameraModel cameraModel;
     [SerializeField] private TerrainModel terrainModel;
     [SerializeField] private SpaceStationModel spaceStationModel;
+    [SerializeField] private ShipUiModel shipUiModel;
     
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
     [SerializeField] private SkirmishCameraView cameraView;
     [SerializeField] private SpaceStationView spaceStationView;
+    [SerializeField] private ShipUiView shipUiView;
     
     public override void InstallBindings()
     {
@@ -49,5 +55,10 @@ public class SingleEntityInstaller : MonoInstaller
             .BindEntity<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
             spaceStationModel,
             spaceStationView);
+        
+        Container
+            .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(
+                shipUiModel,
+                shipUiView);
     }
 }

@@ -1,5 +1,6 @@
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Ship;
 using Zenject;
 
 public class ServiceInstaller : MonoInstaller
@@ -13,6 +14,11 @@ public class ServiceInstaller : MonoInstaller
             
         Container
             .BindInterfacesAndSelfTo<InputService>()
+            .AsSingle()
+            .NonLazy();
+
+        Container
+            .BindInterfacesAndSelfTo<ShipService>()
             .AsSingle()
             .NonLazy();
     }

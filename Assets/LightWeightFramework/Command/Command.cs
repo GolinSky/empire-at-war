@@ -8,7 +8,7 @@ namespace WorkShop.LightWeightFramework.Command
     {
         private List<ICommand> commands = new List<ICommand>();
 
-        protected Command(IController controller)
+        protected Command(IController entity)
         {
         }
 
@@ -37,12 +37,12 @@ namespace WorkShop.LightWeightFramework.Command
     public abstract class Command<TController>:Command
         where TController:IController
     {
-        protected TController Controller { get; }
+        protected TController Entity { get; }
         protected IGameObserver GameObserver { get; }
 
-        protected Command(TController controller, IGameObserver gameObserver):base(controller)
+        protected Command(TController entity, IGameObserver gameObserver):base(entity)
         {
-            Controller = controller;
+            Entity = entity;
             GameObserver = gameObserver;
         }
     }

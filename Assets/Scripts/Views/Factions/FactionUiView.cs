@@ -22,8 +22,7 @@ namespace EmpireAtWar.Views.Factions
         
         private void HandleSelectionChanged(SelectionType selectionType)
         {
-            controlCanvas.enabled = selectionType == SelectionType.Base;
-
+            controlCanvas.enabled = selectionType != SelectionType.Terrain;
         }
     }
 }

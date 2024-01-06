@@ -7,27 +7,23 @@ using Zenject;
 
 namespace EmpireAtWar.Services.NavigationService
 {
-    public enum SelectionType
-    {
-        None = 0,
-        Terrain = 1,
-        Base = 2,
-        Ship = 3,
-    }
-
     public interface INavigationService : IService
     {
         event Action<SelectionType> OnTypeChanged;
         SelectionType SelectionType { get; }
+        
+        ISelectable Selectable { get; }
         void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType);
+        void RemoveSelectable();
     }
 
     public class NavigationService : Service, INavigationService, IInitializable, ILateDisposable
     {
         public event Action<SelectionType> OnTypeChanged;
 
-        private ISelectable selectable;
         private readonly IInputService inputService;
+        
+        public ISelectable Selectable { get; private set; }
         public SelectionType SelectionType { get; private set; }
 
         public NavigationService(IInputService inputService)
@@ -47,33 +43,38 @@ namespace EmpireAtWar.Services.NavigationService
 
         private void HandleInput(Vector2 screenPosition)
         {
-            if (selectable == null) return;
+            if (Selectable == null) return;
 
-            if (selectable.CanMove)
+            if (Selectable.CanMove)
             {
-                selectable.MoveToPosition(screenPosition);
+                Selectable.MoveToPosition(screenPosition);
             }
         }
 
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
+            if(Selectable != null) return;
+            
+            if(selectionType == SelectionType.Terrain) return;
+            
+            Selectable = selectableObject;
+            selectableObject.SetActive(true);
+            
             if (SelectionType != selectionType )
             {
                 SelectionType = selectionType;
                 OnTypeChanged?.Invoke(SelectionType);
             }
-            
-            if (selectable == null)
-            {
-                selectable = selectableObject;
-                selectableObject.SetActive(true);
-                return;
-            }
+        }
 
-            if (selectable == selectableObject)
+        public void RemoveSelectable()
+        {
+            if (Selectable != null)
             {
-                selectable.SetActive(false);
-                selectable = null;
+                Selectable.SetActive(false);
+                Selectable = null;
+                SelectionType = SelectionType.None;
+                OnTypeChanged?.Invoke(SelectionType);
             }
         }
 

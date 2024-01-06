@@ -37,7 +37,7 @@ namespace EmpireAtWar.SceneContext
                 .WhenInjectedIntoInstance(shipView);
                     
             subContainer
-                .BindInterfacesAndSelfTo<ShipController>()
+                .BindInterfacesAndSelfTo<ShipEntity>()
                 .AsTransient()
                 .WithArguments(model)
                 .WhenInjectedInto<ShipCommand>();
@@ -57,7 +57,7 @@ namespace EmpireAtWar.SceneContext
             subContainer.Inject(model);
             // subContainer.FlushBindings();
             subContainer.Unbind<ShipCommand>();
-            subContainer.Unbind<ShipController>();
+            subContainer.Unbind<ShipEntity>();
             
             return shipView;
         }

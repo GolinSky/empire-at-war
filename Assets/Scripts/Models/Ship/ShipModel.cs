@@ -9,12 +9,12 @@ namespace EmpireAtWar.Models.Ship
         event Action<Vector3> OnTargetPositionChanged;
         event Action<bool> OnSelected;
         event Action<Vector3> OnHyperSpaceJump;
+        Sprite ShipIcon { get; }
         Vector3 Position { get; }
         Vector3 StartPosition { get; }
+        Vector3 HyperSpacePosition { get; }
         float Speed { get; }
         float HyperSpaceSpeed { get; }
-        Vector3 HyperSpacePosition { get; }
-        
     }
     
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -23,6 +23,8 @@ namespace EmpireAtWar.Models.Ship
         public event Action<Vector3> OnTargetPositionChanged;
         public event Action<Vector3> OnHyperSpaceJump;
         public event Action<bool> OnSelected;
+
+        [field:SerializeField]  public Sprite ShipIcon { get; private set; }
 
         [field:SerializeField] public Vector3 StartPosition { get; private set; }
         [field:SerializeField] public float Speed { get; private set; }

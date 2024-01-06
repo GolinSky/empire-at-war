@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Ship;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
@@ -8,15 +9,23 @@ using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Controllers.Ship
 {
-    public class ShipController:Controller<ShipModel>, IInitializable, ISelectable
+    public interface IShipEntity
     {
+        IShipModelObserver ModelObserver { get; }
+    }
+    public class ShipEntity:Controller<ShipModel>, IInitializable, ILateDisposable, ISelectable, IShipEntity
+    {
+        private readonly IShipService shipService;
         private Plane plane;
         private float customHeightDelta;//temp solution
-        
+
+        public IShipModelObserver ModelObserver => Model;
+
         public bool CanMove => true;
         
-        public ShipController(ShipModel model, IInputService inputService) : base(model)
+        public ShipEntity(ShipModel model, IInputService inputService, IShipService shipService) : base(model)
         {
+            this.shipService = shipService;
             plane = new Plane(Vector3.up, 0);
             customHeightDelta = Random.Range(-10, 10);
             Model.HyperSpacePosition = GetWorldCoordinate(inputService.MouseCoordinates);
@@ -24,7 +33,12 @@ namespace EmpireAtWar.Controllers.Ship
 
         public void Initialize()
         {
-            
+            shipService.Add(this);
+        }
+        
+        public void LateDispose()
+        {
+            shipService.Remove(this);
         }
 
         public void MoveToPosition(Vector2 screenPosition)

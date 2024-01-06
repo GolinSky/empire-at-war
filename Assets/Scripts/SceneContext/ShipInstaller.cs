@@ -19,7 +19,7 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
-            BindEntity<ShipController, ShipView, ShipModel, ShipCommand>();
+            BindEntity<ShipEntity, ShipView, ShipModel, ShipCommand>();
 
             void BindEntity<TController, TView, TModel, TCommand>()
                 where TController : Controller<TModel>
