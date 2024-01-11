@@ -1,4 +1,4 @@
-using System;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.Ship;
 using UnityEngine;
 using Zenject;
@@ -7,19 +7,22 @@ namespace EmpireAtWar
 {
     public class NewBehaviourScript : MonoBehaviour
     {
-        [Inject]
         private ShipView.ShipFactory ShipFactory;
-        private void Update()
+        
+        [Inject]
+        public void Construct(ShipView.ShipFactory customShipFactory)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SpawnShip();
-            }
+            ShipFactory = customShipFactory;
         }
-
-        public void SpawnShip()
+        
+        public void SpawnVenatorShip()
         {
-            ShipFactory.Create();
+            ShipFactory.Create(RepublicShipType.Venator);
+        }
+        
+        public void SpawnArquitensShip()
+        {
+            ShipFactory.Create(RepublicShipType.Arquitens);
         }
     }
 }

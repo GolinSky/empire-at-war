@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
 using UnityEngine;
 

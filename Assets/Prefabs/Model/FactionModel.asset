@@ -20,3 +20,5 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
+  <ShipUnit>k__BackingField: {fileID: 8771476772782200598, guid: d6ad7d4d3fdd06749bdf9a6e650793fa,
+    type: 3}

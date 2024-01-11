@@ -1,5 +1,6 @@
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Controllers.Ship;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;
@@ -14,12 +15,18 @@ namespace EmpireAtWar.SceneContext
 {
     public class ShipInstaller:Installer
     {
-        [Inject]
-        private IRepository Repository { get; }
+        private readonly IRepository repository;
+        private readonly RepublicShipType republicShipType;
+
+        public ShipInstaller(IRepository repository, RepublicShipType republicShipType)
+        {
+            this.repository = repository;
+            this.republicShipType = republicShipType;
+        }
         
         public override void InstallBindings()
         {
-            BindEntity<ShipEntity, ShipView, ShipModel, ShipCommand>();
+            BindEntity<ShipController, ShipView, ShipModel, ShipCommand>();
 
             void BindEntity<TController, TView, TModel, TCommand>()
                 where TController : Controller<TModel>
@@ -27,23 +34,27 @@ namespace EmpireAtWar.SceneContext
                 where TModel : Model
                 where TCommand : Command
             {
+                Container.BindInstance(republicShipType)
+                    .AsSingle();
+                   
                 Container.BindInterfacesAndSelfTo<TCommand>()
                     .AsSingle();
 
                 Container
                     .BindInterfacesAndSelfTo<TModel>()
-                    .FromInstance(Object.Instantiate(Repository.Load<ShipModel>("ShipModel")))
+                    .FromInstance(Object.Instantiate(repository.Load<TModel>($"{republicShipType}{(typeof(TModel).Name)}")))
                     .AsSingle();
 
                 Container
                     .BindInterfacesAndSelfTo<TController>()
                     .AsSingle();
-                
+
                 Container
                     .BindInterfacesAndSelfTo<TView>()
-                    .FromComponentInNewPrefab(Repository.Load<GameObject>("ShipView"))
+                    .FromComponentInNewPrefab(repository.Load<GameObject>($"{republicShipType}{(typeof(TView).Name)}"))
                     .AsSingle();
             }
         }
+        
     }
 }

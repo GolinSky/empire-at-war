@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb50a327af597349b048b7adb2ba905, type: 3}
   m_Name: ShipModel
   m_EditorClassIdentifier: 
+  <ShipIcon>k__BackingField: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa,
+    type: 3}
   <StartPosition>k__BackingField: {x: 0, y: 0, z: 0}
   <Speed>k__BackingField: 10.56
   <HyperSpaceSpeed>k__BackingField: 2

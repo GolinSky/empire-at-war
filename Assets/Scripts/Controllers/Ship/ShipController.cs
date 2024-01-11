@@ -13,7 +13,7 @@ namespace EmpireAtWar.Controllers.Ship
     {
         IShipModelObserver ModelObserver { get; }
     }
-    public class ShipEntity:Controller<ShipModel>, IInitializable, ILateDisposable, ISelectable, IShipEntity
+    public class ShipController:Controller<ShipModel>, IInitializable, ILateDisposable, ISelectable, IShipEntity
     {
         private readonly IShipService shipService;
         private Plane plane;
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Controllers.Ship
 
         public bool CanMove => true;
         
-        public ShipEntity(ShipModel model, IInputService inputService, IShipService shipService) : base(model)
+        public ShipController(ShipModel model, IInputService inputService, IShipService shipService) : base(model)
         {
             this.shipService = shipService;
             plane = new Plane(Vector3.up, 0);

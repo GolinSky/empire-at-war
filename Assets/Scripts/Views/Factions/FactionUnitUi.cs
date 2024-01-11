@@ -1,21 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace EmpireAtWar
+namespace EmpireAtWar.Views.Factions
 {
     public class FactionUnitUi : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        [SerializeField] private TextMeshProUGUI unitNameText;
+        [SerializeField] private TextMeshProUGUI unitPriceText;
+        [SerializeField] private Image unitIconImage;
 
-        // Update is called once per frame
-        void Update()
+
+        public void SetData(Sprite icon, string unitName, string price)
         {
-        
+            unitIconImage.sprite = icon;
+            unitNameText.text = unitName;
+            unitPriceText.text = price;
         }
     }
 }
