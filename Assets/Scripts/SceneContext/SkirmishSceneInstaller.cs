@@ -1,3 +1,4 @@
+using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -15,22 +16,16 @@ namespace EmpireAtWar.SceneContext
 
         public override void InstallBindings()
         {
-            //  Container.Bind<ICustomShipFactory>().To<CustomShipFactory>().AsSingle();
-    
-            
             Container
                 .BindFactory<RepublicShipType, ShipView, ShipView.ShipFactory>()
-                
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<ShipInstaller>()
                 .NonLazy();
-
-
+            
             Container
-                .BindEntityNoCommand<FactionController, FactionUiView, FactionModel>(
+                .BindEntity<FactionController, FactionUiView, FactionModel, FactionCommand>(
                     Instantiate(factionModel),
                     factionUiView);
         }
-        
     }
 }

@@ -99,6 +99,7 @@ MonoBehaviour:
   unitNameText: {fileID: 1504153883890589335}
   unitPriceText: {fileID: 2925843535256204605}
   unitIconImage: {fileID: 4859507491399935640}
+  purchaseButton: {fileID: 651671216248046380}
 --- !u!1 &461959193894815860
 GameObject:
   m_ObjectHideFlags: 0

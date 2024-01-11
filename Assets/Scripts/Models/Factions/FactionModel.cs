@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
@@ -12,6 +14,7 @@ namespace EmpireAtWar.Models.Factions
 
         FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
+        Dictionary<RepublicShipType, FactionData> FactionData { get; }
     }
 
     [CreateAssetMenu(fileName = "FactionModel", menuName = "Model/FactionModel")]
@@ -19,8 +22,12 @@ namespace EmpireAtWar.Models.Factions
     {
         public event Action<SelectionType> OnSelectionTypeChanged;
         
-        [field: SerializeField] public FactionUnitUi ShipUnit { get; private set; }
 
+        [SerializeField] private DictionaryWrapper<RepublicShipType, FactionData> factionDataWrapper;
+        
+        [field: SerializeField] public FactionUnitUi ShipUnit { get; private set; }
+        public Dictionary<RepublicShipType, FactionData> FactionData => factionDataWrapper.Dictionary;
+        
         private SelectionType selectionType;
         
         public SelectionType SelectionType
