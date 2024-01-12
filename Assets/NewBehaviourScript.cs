@@ -7,22 +7,22 @@ namespace EmpireAtWar
 {
     public class NewBehaviourScript : MonoBehaviour
     {
-        private ShipView.ShipFactory ShipFactory;
+        private ShipFacadeFactory shipFacadeFactory;
         
         [Inject]
-        public void Construct(ShipView.ShipFactory customShipFactory)
+        public void Construct(ShipFacadeFactory customShipFacadeFactory)
         {
-            ShipFactory = customShipFactory;
+            shipFacadeFactory = customShipFacadeFactory;
         }
         
         public void SpawnVenatorShip()
         {
-            ShipFactory.Create(RepublicShipType.Venator);
+            shipFacadeFactory.Create(RepublicShipType.Venator);
         }
         
         public void SpawnArquitensShip()
         {
-            ShipFactory.Create(RepublicShipType.Arquitens);
+            shipFacadeFactory.Create(RepublicShipType.Arquitens);
         }
     }
 }

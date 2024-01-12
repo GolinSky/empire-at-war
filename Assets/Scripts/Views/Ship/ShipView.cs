@@ -1,7 +1,6 @@
 using System;
 using DG.Tweening;
 using EmpireAtWar.Commands.Ship;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
@@ -104,8 +103,6 @@ namespace EmpireAtWar.Views.Ship
         {
         }
         
-        public class ShipFactory : PlaceholderFactory<RepublicShipType,ShipView>
-        {
-        }
+     
     }
 }

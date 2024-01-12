@@ -17,12 +17,12 @@ namespace EmpireAtWar.Commands.Faction
     public class FactionCommand:Command<FactionController>, IFactionCommand
     {
         private readonly INavigationService navigationService;
-        private readonly ShipView.ShipFactory shipFactory;
+        private readonly ShipFacadeFactory shipFacadeFactory;
 
-        public FactionCommand(FactionController entity, IGameObserver gameObserver, INavigationService navigationService, ShipView.ShipFactory shipFactory) : base(entity, gameObserver)
+        public FactionCommand(FactionController entity, IGameObserver gameObserver, INavigationService navigationService, ShipFacadeFactory shipFacadeFactory) : base(entity, gameObserver)
         {
             this.navigationService = navigationService;
-            this.shipFactory = shipFactory;
+            this.shipFacadeFactory = shipFacadeFactory;
         }
 
         public void CloseSelection()
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Commands.Faction
 
         public void BuildShip(RepublicShipType republicShipType)
         {
-            shipFactory.Create(republicShipType);
+            shipFacadeFactory.Create(republicShipType);
         }
     }
 }
