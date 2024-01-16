@@ -12,6 +12,7 @@ namespace EmpireAtWar.Views.NavigationUiView
         [SerializeField] private Canvas canvas;
 
         private Sequence fadeSequence;
+        
         protected override void OnInitialize()
         {
             Model.OnTapPositionChanged += UpdateTapPosition;

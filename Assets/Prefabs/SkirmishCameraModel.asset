@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfa8458ab5e571488a5c15ef5a85795, type: 3}
   m_Name: SkirmishCameraModel
   m_EditorClassIdentifier: 
+  <MapSize>k__BackingField: {x: 100, y: 200, z: 100}

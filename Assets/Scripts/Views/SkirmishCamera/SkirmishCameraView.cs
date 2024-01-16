@@ -1,34 +1,59 @@
-using System;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Views.SkirmishCamera
 {
-    public class SkirmishCameraView:View<ISkirmishCameraModelObserver>
+    public class SkirmishCameraView : View<ISkirmishCameraModelObserver>, ITickable
     {
-        public float panSpeed = 20f; // How fast the camera pans
-        public float panBorderThickness = 10f; // How close to the screen edge the mouse needs to be to start panning
-        public float scrollSpeed = 20f; // How fast the camera zooms
-        public float minY = 10f; // Minimum camera height
-        public float maxY = 80f; // Maximum camera height
+        [SerializeField] private Camera mainCamera;
 
-        private bool doMovement = true;
+        private Transform cameraTransform;
+        private Vector3 worldStartPoint;
+        private Vector3 cameraPosition;
 
-  
         protected override void OnInitialize()
         {
-            
+            cameraTransform = mainCamera.transform;
         }
-
-        protected override void OnDispose()
+        protected override void OnDispose() {}
+       
+        public void Tick()
         {
-            
+            if (Input.touchCount == 1)
+            {
+                Touch currentTouch = Input.GetTouch(0);
+
+                if (currentTouch.phase == TouchPhase.Began)
+                {
+                    worldStartPoint = GetWorldPoint(currentTouch.position);
+                }
+
+                if (currentTouch.phase == TouchPhase.Moved)
+                {
+                    Vector3 worldDelta = GetWorldPoint(currentTouch.position) - worldStartPoint;
+                    cameraTransform.Translate(
+                        -worldDelta.x,
+                        0,
+                        -worldDelta.z,
+                        Space.World
+                    );
+                    cameraPosition = cameraTransform.position;
+
+                    cameraPosition.x = Mathf.Clamp(cameraPosition.x, -Model.MapSize.x / 2.0f, Model.MapSize.x / 2.0f);
+                    cameraPosition.y = Mathf.Clamp(cameraPosition.y, -Model.MapSize.y / 2.0f, Model.MapSize.y / 2.0f);
+                    cameraPosition.z = Mathf.Clamp(cameraPosition.z, -Model.MapSize.z / 2.0f, Model.MapSize.z / 2.0f);
+
+                    cameraTransform.position = cameraPosition;
+                }
+            }
         }
-
-        private void OnApplicationFocus(bool hasFocus)
+        
+        private Vector3 GetWorldPoint(Vector2 screenPoint)
         {
-            doMovement = hasFocus;
+            Physics.Raycast(mainCamera.ScreenPointToRay(screenPoint), out RaycastHit hit);
+            return hit.point;
         }
     }
 }

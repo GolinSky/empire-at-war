@@ -21,7 +21,6 @@ namespace EmpireAtWar.Services.Input
         public Vector2 MouseCoordinates => touch.position;
         public event Action<Vector2> OnInput;
         public event Action OnSelect;
-      //  [Inject] private ShipView.ShipFactory ShipFactory;
 
         protected override void OnInit(IGameObserver gameObserver)
         {
@@ -34,7 +33,6 @@ namespace EmpireAtWar.Services.Input
 
         public void Tick()
         {
-
             if (UnityEngine.Input.touchCount > 0)
             {
                 touch = UnityEngine.Input.GetTouch(0);
