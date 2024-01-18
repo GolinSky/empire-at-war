@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
@@ -30,6 +31,11 @@ namespace EmpireAtWar.Services.Input
                 
                 if (touch.phase == TouchPhase.Began)
                 {
+                    int id = touch.fingerId;
+                    if (EventSystem.current.IsPointerOverGameObject(id) || EventSystem.current.IsPointerOverGameObject())
+                    {
+                        return;
+                    }
                     OnInput?.Invoke(MouseCoordinates);
                 }
             }
