@@ -26,13 +26,8 @@ namespace EmpireAtWar.Views.NavigationUiView
         
         private void UpdateTapPosition(Vector2 tapPosition)
         {
-            RectTransformUtility
-                .ScreenPointToLocalPointInRectangle(
-                    canvas.transform as RectTransform,
-                    tapPosition,
-                    canvas.worldCamera,
-                    out var position);
-            tapImage.transform.position = canvas.transform.TransformPoint(position);
+            tapImage.GetComponent<RectTransform>().position = tapPosition;
+
             if (fadeSequence != null && fadeSequence.IsActive())
             {
                 fadeSequence.Kill();

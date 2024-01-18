@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Views.Ship;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
@@ -7,14 +6,6 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Input
 {
-    public interface IInputService:IService
-    {
-        Vector2 MouseCoordinates { get; }
-        event Action<Vector2> OnInput;
-
-        event Action OnSelect;
-    }
-    
     public class InputService:Service, IInputService, ITickable
     {
         private Touch touch;
@@ -36,13 +27,8 @@ namespace EmpireAtWar.Services.Input
             if (UnityEngine.Input.touchCount > 0)
             {
                 touch = UnityEngine.Input.GetTouch(0);
-
-                if (touch.phase == TouchPhase.Moved)
-                {
-                  //  OnSelect?.Invoke();
-                }
                 
-                if (touch.phase == TouchPhase.Ended)
+                if (touch.phase == TouchPhase.Began)
                 {
                     OnInput?.Invoke(MouseCoordinates);
                 }

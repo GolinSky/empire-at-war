@@ -26,7 +26,9 @@ namespace EmpireAtWar.Controllers.Ship
         public ShipController(ShipModel model, IInputService inputService, IShipService shipService) : base(model)
         {
             this.shipService = shipService;
-            plane = new Plane(Vector3.up, 0);
+            var m_DistanceFromCamera = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - 50, Camera.main.transform.position.z );
+
+            plane = new Plane(Vector3.up, m_DistanceFromCamera);
             customHeightDelta = Random.Range(-10, 10);
             Model.HyperSpacePosition = GetWorldCoordinate(inputService.MouseCoordinates);
         }
@@ -59,13 +61,11 @@ namespace EmpireAtWar.Controllers.Ship
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
-            Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-            if (plane.Raycast(ray, out var distance))
-            {
-                return ray.GetPoint(distance);
-            }
-
-            return default;
+            Vector3 screenPosition3d = screenPosition;
+            screenPosition3d.z = Camera.main.transform.position.y;
+            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(screenPosition3d);
+            worldPoint.y = ModelObserver.Position.y;
+            return worldPoint;
         }
     }
 }

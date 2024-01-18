@@ -23,6 +23,7 @@ namespace EmpireAtWar.ViewComponents.Selection
 
         private void OnMouseDown()
         {
+            Debug.Log($"OnMouseDown: {selectionType}");
             selectionCommand?.OnSelected(selectionType);
         }
     }

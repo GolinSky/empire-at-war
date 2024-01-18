@@ -18,7 +18,6 @@ namespace EmpireAtWar.Controllers.Navigation
         public void Initialize()
         {
             inputService.OnInput += HandleInput;
-            
         }
 
         public void LateDispose()

@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.NavigationService
             Selectable = selectableObject;
             selectableObject.SetActive(true);
             
-            if (SelectionType != selectionType )
+            if (SelectionType != selectionType)
             {
                 SelectionType = selectionType;
                 OnTypeChanged?.Invoke(SelectionType);
