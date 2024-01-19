@@ -8,7 +8,6 @@ public class ProjectContextInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        //game
         Container.BindInterfacesAndSelfTo<MyCustomGameContext>()
             .AsSingle();
         
@@ -20,7 +19,5 @@ public class ProjectContextInstaller : MonoInstaller
         
         Container.BindInterfacesAndSelfTo<Game>()
             .AsCached();
-        //game
-        ///////////////////////////////////////////////////////////////
     }
 }

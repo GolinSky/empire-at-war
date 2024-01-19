@@ -3,7 +3,7 @@ using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Ship;
 using Zenject;
 
-public class ServiceInstaller : MonoInstaller
+public class SkirmishServiceInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
