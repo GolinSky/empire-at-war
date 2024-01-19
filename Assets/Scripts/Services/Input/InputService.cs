@@ -28,8 +28,7 @@ namespace EmpireAtWar.Services.Input
             if (UnityEngine.Input.touchCount > 0)
             {
                 touch = UnityEngine.Input.GetTouch(0);
-                
-                if (touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Began && touch.tapCount == 2)
                 {
                     int id = touch.fingerId;
                     if (EventSystem.current.IsPointerOverGameObject(id) || EventSystem.current.IsPointerOverGameObject())
