@@ -852,8 +852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7991148040e5534ebb851749785e2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  factionUiView: {fileID: 1019329521}
-  factionModel: {fileID: 11400000, guid: 010d166b46b84614e81cdae3086ff99f, type: 2}
 --- !u!114 &437181616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,11 +930,13 @@ MonoBehaviour:
   terrainModel: {fileID: 11400000, guid: 6227c36cf093ee14d846e82b50de15f1, type: 2}
   spaceStationModel: {fileID: 11400000, guid: b73aaa91e66d8ce48ae38c8806b1992b, type: 2}
   shipUiModel: {fileID: 11400000, guid: 5d122ff846ebd9c42b0d93d92110997b, type: 2}
+  factionModel: {fileID: 11400000, guid: 010d166b46b84614e81cdae3086ff99f, type: 2}
   navigationUiView: {fileID: 266665877}
   terrainView: {fileID: 1158411688}
   cameraView: {fileID: 330585548}
   spaceStationView: {fileID: 2498124516107257549}
   shipUiView: {fileID: 1019329522}
+  factionUiView: {fileID: 1019329521}
 --- !u!1 &503318996
 GameObject:
   m_ObjectHideFlags: 0
@@ -3418,7 +3418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_BlockingObjects: 3
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
