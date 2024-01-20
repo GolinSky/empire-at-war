@@ -43,12 +43,12 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
 
             container
+                .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+            
+            container
                 .BindInterfacesTo<TView>()
                 .FromInstance(view)
-                .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TController>()
                 .AsSingle();
         }
     }
