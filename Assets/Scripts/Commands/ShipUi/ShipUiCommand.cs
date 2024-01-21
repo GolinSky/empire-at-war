@@ -1,6 +1,5 @@
 ﻿using EmpireAtWar.Controllers.ShipUi;
 using WorkShop.LightWeightFramework.Command;
-using WorkShop.LightWeightFramework.Game;
 
 namespace EmpireAtWar.Commands.ShipUi
 {
@@ -11,13 +10,13 @@ namespace EmpireAtWar.Commands.ShipUi
 
     public class ShipUiCommand : Command<ShipUiController>, IShipUiCommand
     {
-        public ShipUiCommand(ShipUiController controller, IGameObserver gameObserver) : base(controller, gameObserver)
+        public ShipUiCommand(ShipUiController controller) : base(controller)
         {
         }
 
         public void CloseSelection()
         {
-            Entity.CloseSelection();
+            Controller.CloseSelection();
         }
     }
 }

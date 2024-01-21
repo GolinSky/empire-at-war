@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Controllers.Ship;
 using EmpireAtWar.Services.NavigationService;
-using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
 
 namespace EmpireAtWar.Services.Ship
@@ -17,13 +16,6 @@ namespace EmpireAtWar.Services.Ship
     public class ShipService : Service, IShipService
     {
         private List<IShipEntity> shipEntities = new List<IShipEntity>(); 
-        protected override void OnInit(IGameObserver gameObserver)
-        {
-        }
-
-        protected override void Release()
-        {
-        }
 
         //fast fall
         public void Add(IShipEntity entity)

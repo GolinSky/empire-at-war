@@ -5,7 +5,5 @@ namespace LightWeightFramework.Controller
 {
     public interface IController :IEntity
     {
-        IModelObserver Model { get; }
-        ICommand ConstructCommand();
-    }
+        IModelObserver Model { get; } }
 }

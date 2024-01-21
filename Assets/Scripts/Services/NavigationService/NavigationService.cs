@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Services.Input;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
 
@@ -76,14 +75,6 @@ namespace EmpireAtWar.Services.NavigationService
                 SelectionType = SelectionType.None;
                 OnTypeChanged?.Invoke(SelectionType);
             }
-        }
-
-        protected override void OnInit(IGameObserver gameObserver)
-        {
-        }
-
-        protected override void Release()
-        {
         }
     }
 }

@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
-using WorkShop.LightWeightFramework.Game;
-using WorkShop.LightWeightFramework.Service;
-using Zenject;
+
 
 namespace LightWeightFramework.Controller
 {
@@ -18,28 +15,11 @@ namespace LightWeightFramework.Controller
     
 
         IModelObserver IController.Model => Model;
-        [Inject]
-        protected IGameObserver GameObserver { get; private set; }
+     
 
         protected Controller(TModel model)
         {
             Model = model;
-        }
-
-        public void Init(IGameObserver gameObserver)
-        {
-            GameObserver = gameObserver;
-            OnBeforeComponentsInitialed();
-            foreach (var component in components)
-            {
-                component.Init(gameObserver);
-            }
-            OnInit();
-        }
-
-        public void Release()
-        {
-            OnRelease();
         }
         
 
@@ -72,22 +52,5 @@ namespace LightWeightFramework.Controller
 
             return default;
         }
-
-        protected TService GetService<TService>() where TService:IService
-        {
-            return GameObserver.ServiceHub.Get<TService>();
-        }
-        public virtual ICommand ConstructCommand()
-        {
-            throw new System.NotImplementedException();
-        }
-        
-        protected virtual void OnInit(){}
-
-        protected virtual void OnBeforeComponentsInitialed()
-        {
-   
-        }
-        protected virtual void OnRelease(){}
     }
 }

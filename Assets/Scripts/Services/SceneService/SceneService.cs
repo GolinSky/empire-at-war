@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
 
 namespace EmpireAtWar.Services.SceneService
@@ -45,14 +44,6 @@ namespace EmpireAtWar.Services.SceneService
             if(asyncOperation == null) return;
             
             asyncOperation.allowSceneActivation = true;
-        }
-
-        protected override void OnInit(IGameObserver gameObserver)
-        {
-        }
-
-        protected override void Release()
-        {
         }
 
         public void LoadScene(SceneType sceneType)

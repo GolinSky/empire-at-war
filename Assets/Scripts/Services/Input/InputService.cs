@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using WorkShop.LightWeightFramework.Game;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
 
@@ -12,16 +11,7 @@ namespace EmpireAtWar.Services.Input
         private Touch touch;
         public Vector2 MouseCoordinates => touch.position;
         public event Action<Vector2> OnInput;
-        public event Action OnSelect;
-
-        protected override void OnInit(IGameObserver gameObserver)
-        {
-        }
-
-        protected override void Release()
-        {
-            
-        }
+        
 
         public void Tick()
         {

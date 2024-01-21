@@ -8,7 +8,5 @@ namespace EmpireAtWar.Services.Input
     {
         Vector2 MouseCoordinates { get; }
         event Action<Vector2> OnInput;
-
-        event Action OnSelect;
     }
 }

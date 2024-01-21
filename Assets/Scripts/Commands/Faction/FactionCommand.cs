@@ -3,7 +3,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Ship;
 using WorkShop.LightWeightFramework.Command;
-using WorkShop.LightWeightFramework.Game;
 
 namespace EmpireAtWar.Commands.Faction
 {
@@ -19,7 +18,7 @@ namespace EmpireAtWar.Commands.Faction
         private readonly INavigationService navigationService;
         private readonly ShipFacadeFactory shipFacadeFactory;
 
-        public FactionCommand(FactionController entity, IGameObserver gameObserver, INavigationService navigationService, ShipFacadeFactory shipFacadeFactory) : base(entity, gameObserver)
+        public FactionCommand(FactionController controller, INavigationService navigationService, ShipFacadeFactory shipFacadeFactory) : base(controller)
         {
             this.navigationService = navigationService;
             this.shipFacadeFactory = shipFacadeFactory;

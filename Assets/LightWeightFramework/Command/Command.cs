@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using LightWeightFramework.Controller;
-using WorkShop.LightWeightFramework.Game;
 
 namespace WorkShop.LightWeightFramework.Command
 {
@@ -8,7 +7,7 @@ namespace WorkShop.LightWeightFramework.Command
     {
         private List<ICommand> commands = new List<ICommand>();
 
-        protected Command(IController entity)
+        protected Command(IController controller)
         {
         }
 
@@ -37,13 +36,11 @@ namespace WorkShop.LightWeightFramework.Command
     public abstract class Command<TController>:Command
         where TController:IController
     {
-        protected TController Entity { get; }
-        protected IGameObserver GameObserver { get; }
+        protected TController Controller { get; }
 
-        protected Command(TController entity, IGameObserver gameObserver):base(entity)
+        protected Command(TController controller):base(controller)
         {
-            Entity = entity;
-            GameObserver = gameObserver;
+            Controller = controller;
         }
     }
 }
