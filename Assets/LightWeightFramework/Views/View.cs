@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
 
 namespace WorkShop.LightWeightFramework
@@ -42,8 +40,5 @@ namespace WorkShop.LightWeightFramework
 
         protected virtual void OnInitViewComponent(ViewComponent viewComponent){}
         protected virtual void OnReleaseViewComponent(ViewComponent viewComponent){}
-        
     }
-
-
 }

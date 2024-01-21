@@ -1,4 +1,3 @@
-
 namespace LightWeightFramework.Controller
 {
     public interface IEntity
