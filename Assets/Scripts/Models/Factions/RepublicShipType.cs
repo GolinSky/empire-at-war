@@ -6,4 +6,9 @@ namespace EmpireAtWar.Models.Factions
         Aclamator = 1,
         Arquitens = 2,
     }
+
+    public enum SeparatistShipType
+    {
+        
+    }
 }
