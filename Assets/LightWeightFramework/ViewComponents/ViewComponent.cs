@@ -12,7 +12,7 @@ namespace WorkShop.LightWeightFramework.ViewComponents
         public void Init(View view)
         {
             View = view;
-            ModelObserver = view.ModelObserver;
+            ModelObserver = view.Model;
             OnInit();
         }
         

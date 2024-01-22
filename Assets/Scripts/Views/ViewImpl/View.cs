@@ -10,7 +10,13 @@ namespace EmpireAtWar.Views.ViewImpl
         where TModel:IModelObserver
     {
         [Inject]
-        protected TModel Model { get; private set; }
+        protected new TModel Model { get; private set; }
+        
+        public virtual void Initialize()
+        {
+            Init(Model);
+            OnInitialize();
+        }
         
         public void LateDispose()
         {
@@ -20,10 +26,6 @@ namespace EmpireAtWar.Views.ViewImpl
 
         protected abstract void OnInitialize();
         protected abstract void OnDispose();
-        public virtual void Initialize()
-        {
-            OnInitialize();
-        }
     }
 
     public abstract class View<TModel, TCommand>:View<TModel>

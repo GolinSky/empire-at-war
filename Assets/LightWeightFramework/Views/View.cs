@@ -7,11 +7,11 @@ namespace WorkShop.LightWeightFramework
     public abstract class View : MonoBehaviour, IView
     {
         [SerializeField] protected ViewComponent[] viewComponents;
-        public IModelObserver ModelObserver { get; private set; }
+        public IModelObserver Model { get; private set; }
 
         public virtual void Init(IModelObserver model)
         {
-            ModelObserver = model;
+            Model = model;
             for (var i = 0; i < viewComponents.Length; i++)
             {
                 InitViewComponent(viewComponents[i]);
