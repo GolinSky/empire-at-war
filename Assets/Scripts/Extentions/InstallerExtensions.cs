@@ -1,7 +1,10 @@
+using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
+using UnityEngine;
 using WorkShop.LightWeightFramework;
 using WorkShop.LightWeightFramework.Command;
+using WorkShop.LightWeightFramework.Repository;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
@@ -49,6 +52,34 @@ namespace EmpireAtWar.Extentions
             container
                 .BindInterfacesTo<TView>()
                 .FromInstance(view)
+                .AsSingle();
+        }
+        
+        
+        public static void BindShipEntity<TController, TView, TModel, TCommand>(this DiContainer container, IRepository repository, ShipType shipType)
+            where TController : Controller<TModel>
+            where TView : IView
+            where TModel : Model
+            where TCommand : Command
+        {
+            container.BindInstance(shipType)
+                .AsSingle();
+                   
+            container.BindInterfacesAndSelfTo<TCommand>()
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromInstance(Object.Instantiate(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}")))
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TView>()
+                .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))
                 .AsSingle();
         }
     }

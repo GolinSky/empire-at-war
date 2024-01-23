@@ -11,7 +11,7 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindFactory<ShipType, ShipView, ShipFacadeFactory>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<ShipInstaller>()
+                .ByNewGameObjectInstaller<PlayerShipInstaller>()
                 .NonLazy();
         }
     }
