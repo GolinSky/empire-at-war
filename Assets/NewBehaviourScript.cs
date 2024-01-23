@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.Factions;
+    using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.Ship;
 using UnityEngine;
 using Zenject;
@@ -17,12 +17,12 @@ namespace EmpireAtWar
         
         public void SpawnVenatorShip()
         {
-            shipFacadeFactory.Create(RepublicShipType.Venator);
+            shipFacadeFactory.Create(ShipType.Venator);
         }
         
         public void SpawnArquitensShip()
         {
-            shipFacadeFactory.Create(RepublicShipType.Arquitens);
+            shipFacadeFactory.Create(ShipType.Arquitens);
         }
     }
 }

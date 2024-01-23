@@ -22,6 +22,7 @@ using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 public class SkirmishSingleEntityInstaller : MonoInstaller
@@ -30,9 +31,8 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private SkirmishCameraModel cameraModel;
     [SerializeField] private TerrainModel terrainModel;
     [SerializeField] private SpaceStationModel spaceStationModel;
-    [SerializeField] private ShipUiModel shipUiModel;
-    [SerializeField] private FactionModel factionModel;
-
+    [SerializeField] private ShipUiModel shipUiModel; 
+    [SerializeField] private PlayerFactionModel playerFactionModel;
     
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
@@ -70,8 +70,8 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
                 shipUiView);
         
         Container
-            .BindEntity<FactionController, FactionUiView, FactionModel, FactionCommand>(
-                Instantiate(factionModel),
+            .BindEntity<FactionController, FactionUiView, PlayerFactionModel, FactionCommand>(
+                Instantiate(playerFactionModel),
                 factionUiView);
     }
 }

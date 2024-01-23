@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.Factions
 {
-    public class FactionUiView : View<IFactionModelObserver, IFactionCommand>
+    public class FactionUiView : View<IPlayerFactionModelObserver, IFactionCommand>
     {
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
@@ -16,7 +16,7 @@ namespace EmpireAtWar.Views.Factions
         {
             HandleSelectionChanged(Model.SelectionType);
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
-            foreach (var data in Model.FactionData)
+            foreach (var data in Model.GetFactionData(FactionType.Republic))//hardcode
             {
                 FactionUnitUi unitUi = Instantiate(Model.ShipUnit, controlCanvas.transform);
                 unitUi.SetData(data.Value, data.Key, HandleClick);
@@ -35,9 +35,9 @@ namespace EmpireAtWar.Views.Factions
             Command.CloseSelection();
         }
 
-        private void HandleClick(RepublicShipType republicShipType)
+        private void HandleClick(ShipType shipType)
         {
-            Command.BuildShip(republicShipType);
+            Command.BuildShip(shipType);
         }
         
         private void HandleSelectionChanged(SelectionType selectionType)

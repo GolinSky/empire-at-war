@@ -16,12 +16,12 @@ namespace EmpireAtWar.SceneContext
     public class ShipInstaller:Installer
     {
         private readonly IRepository repository;
-        private readonly RepublicShipType republicShipType;
+        private readonly ShipType shipType;
 
-        public ShipInstaller(IRepository repository, RepublicShipType republicShipType)
+        public ShipInstaller(IRepository repository, ShipType shipType)
         {
             this.repository = repository;
-            this.republicShipType = republicShipType;
+            this.shipType = shipType;
         }
         
         public override void InstallBindings()
@@ -34,7 +34,7 @@ namespace EmpireAtWar.SceneContext
                 where TModel : Model
                 where TCommand : Command
             {
-                Container.BindInstance(republicShipType)
+                Container.BindInstance(shipType)
                     .AsSingle();
                    
                 Container.BindInterfacesAndSelfTo<TCommand>()
@@ -42,7 +42,7 @@ namespace EmpireAtWar.SceneContext
 
                 Container
                     .BindInterfacesAndSelfTo<TModel>()
-                    .FromInstance(Object.Instantiate(repository.Load<TModel>($"{republicShipType}{(typeof(TModel).Name)}")))
+                    .FromInstance(Object.Instantiate(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}")))
                     .AsSingle();
 
                 Container
@@ -51,7 +51,7 @@ namespace EmpireAtWar.SceneContext
 
                 Container
                     .BindInterfacesAndSelfTo<TView>()
-                    .FromComponentInNewPrefab(repository.Load<GameObject>($"{republicShipType}{(typeof(TView).Name)}"))
+                    .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))
                     .AsSingle();
             }
         }

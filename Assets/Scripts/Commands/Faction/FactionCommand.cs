@@ -10,7 +10,7 @@ namespace EmpireAtWar.Commands.Faction
     {
         void CloseSelection();
 
-        void BuildShip(RepublicShipType republicShipType);
+        void BuildShip(ShipType shipType);
     }
     
     public class FactionCommand:Command<FactionController>, IFactionCommand
@@ -29,9 +29,9 @@ namespace EmpireAtWar.Commands.Faction
             navigationService.RemoveSelectable();
         }
 
-        public void BuildShip(RepublicShipType republicShipType)
+        public void BuildShip(ShipType shipType)
         {
-            shipFacadeFactory.Create(republicShipType);
+            shipFacadeFactory.Create(shipType);
         }
     }
 }

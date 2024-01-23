@@ -13,15 +13,15 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
         
-        private Action<RepublicShipType> clickCallback;
+        private Action<ShipType> clickCallback;
 
         public FactionData FactionData { get; private set; }
-        public RepublicShipType RepublicShipType { get; private set; }
+        public ShipType ShipType { get; private set; }
 
 
-        public void SetData(FactionData factionData, RepublicShipType republicShipType, Action<RepublicShipType> clickCallback)
+        public void SetData(FactionData factionData, ShipType shipType, Action<ShipType> clickCallback)
         {
-            RepublicShipType = republicShipType;
+            ShipType = shipType;
             FactionData = factionData;
             this.clickCallback = clickCallback;
             unitIconImage.sprite = factionData.Icon;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick()
         {
-            clickCallback?.Invoke(RepublicShipType);
+            clickCallback?.Invoke(ShipType);
         }
     }
 }

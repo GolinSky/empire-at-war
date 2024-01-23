@@ -3,5 +3,5 @@ using Zenject;
 
 namespace EmpireAtWar.Views.Ship
 {
-    public class ShipFacadeFactory : PlaceholderFactory<RepublicShipType,ShipView> {}
+    public class ShipFacadeFactory : PlaceholderFactory<ShipType,ShipView> {}
 }

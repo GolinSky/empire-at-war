@@ -12,33 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34619046d56166c4c9d282f3a2d69474, type: 3}
   m_Name: FactionModel
   m_EditorClassIdentifier: 
-  <ShipViewReference>k__BackingField:
-    keyValue:
-    - key: 0
-      value:
-        m_AssetGUID: 7744e602809a95a4a96fbb9870d3df19
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_EditorAssetChanged: 0
-  factionDataWrapper:
-    keyValue:
-    - key: 0
-      value:
-        <Name>k__BackingField: 
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 3500
-        <BuildTime>k__BackingField: 60
-        <Icon>k__BackingField: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa,
-          type: 3}
-    - key: 2
-      value:
-        <Name>k__BackingField: 
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 1200
-        <BuildTime>k__BackingField: 30
-        <Icon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
-          type: 3}
+  factionsModel: {fileID: 11400000, guid: 3de703d0a2c0ac5428de8b8f64093d18, type: 2}
   <ShipUnit>k__BackingField: {fileID: 8771476772782200598, guid: d6ad7d4d3fdd06749bdf9a6e650793fa,
     type: 3}

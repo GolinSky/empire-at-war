@@ -5,11 +5,11 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public class FactionController : Controller<FactionModel>, IInitializable, ILateDisposable
+    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable
     {
         private readonly INavigationService navigationService;
 
-        public FactionController(FactionModel model, INavigationService navigationService) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService) : base(model)
         {
             this.navigationService = navigationService;
         }
