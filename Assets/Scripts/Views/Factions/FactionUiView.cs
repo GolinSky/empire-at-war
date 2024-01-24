@@ -1,9 +1,11 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views.Factions
 {
@@ -11,12 +13,13 @@ namespace EmpireAtWar.Views.Factions
     {
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
-        
+        [Inject] private SkirmishGameData SkirmishGameData { get; }
+
         protected override void OnInitialize()
         {
             HandleSelectionChanged(Model.SelectionType);
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
-            foreach (var data in Model.GetFactionData(FactionType.Republic))//hardcode
+            foreach (var data in Model.GetFactionData(SkirmishGameData.PlayerFactionType))//hardcode
             {
                 FactionUnitUi unitUi = Instantiate(Model.ShipUnit, controlCanvas.transform);
                 unitUi.SetData(data.Value, data.Key, HandleClick);

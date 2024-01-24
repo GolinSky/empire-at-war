@@ -22,7 +22,6 @@ using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 public class SkirmishSingleEntityInstaller : MonoInstaller

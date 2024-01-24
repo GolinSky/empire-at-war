@@ -931,6 +931,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupType: 0
   startGameButton: {fileID: 8616130414433798983}
+  playerFactionDropdown: {fileID: 3107124290759105077}
 --- !u!1 &4637232992346713670
 GameObject:
   m_ObjectHideFlags: 0
