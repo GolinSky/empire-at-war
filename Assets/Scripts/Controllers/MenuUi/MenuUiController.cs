@@ -1,6 +1,6 @@
 using EmpireAtWar.Commands;
 using EmpireAtWar.Models.MenuUi;
-using EmpireAtWar.Services.SceneService;
+using EmpireAtWar.Services.Popup;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Command;
@@ -9,16 +9,16 @@ namespace EmpireAtWar
 {
     public class MenuUiController : Controller<MenuUiModel>, IMenuUiCommand
     {
-        private readonly ISceneService sceneService;
+        private readonly IPopupService popupService;
 
-        public MenuUiController(MenuUiModel model, ISceneService sceneService) : base(model)
+        public MenuUiController(MenuUiModel model, IPopupService popupService) : base(model)
         {
-            this.sceneService = sceneService;
+            this.popupService = popupService;
         }
 
         public void StartDemo()
         {
-            sceneService.LoadScene(SceneType.Skirmish);
+            popupService.OpenPopup(PopupType.SkirmishGameSetUp);
         }
 
         public void OpenOptions()
