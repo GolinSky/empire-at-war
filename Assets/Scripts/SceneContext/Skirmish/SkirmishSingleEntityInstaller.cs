@@ -32,7 +32,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private TerrainModel terrainModel;
     [SerializeField] private SpaceStationModel spaceStationModel;
     [SerializeField] private ShipUiModel shipUiModel; 
-    [SerializeField] private PlayerFactionModel playerFactionModel;
+    [SerializeField] private PlayerFactionModel userfactionModel;
     
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
@@ -71,7 +71,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         
         Container
             .BindEntity<FactionController, FactionUiView, PlayerFactionModel, FactionCommand>(
-                Instantiate(playerFactionModel),
+                Instantiate(userfactionModel),
                 factionUiView);
     }
 }

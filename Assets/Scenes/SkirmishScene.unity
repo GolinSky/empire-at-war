@@ -930,7 +930,7 @@ MonoBehaviour:
   terrainModel: {fileID: 11400000, guid: 6227c36cf093ee14d846e82b50de15f1, type: 2}
   spaceStationModel: {fileID: 11400000, guid: b73aaa91e66d8ce48ae38c8806b1992b, type: 2}
   shipUiModel: {fileID: 11400000, guid: 5d122ff846ebd9c42b0d93d92110997b, type: 2}
-  playerFactionModel: {fileID: 11400000, guid: 010d166b46b84614e81cdae3086ff99f, type: 2}
+  userfactionModel: {fileID: 11400000, guid: 010d166b46b84614e81cdae3086ff99f, type: 2}
   navigationUiView: {fileID: 266665877}
   terrainView: {fileID: 1158411688}
   cameraView: {fileID: 330585548}
