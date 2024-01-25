@@ -9,6 +9,8 @@ namespace EmpireAtWar.Models.Factions
         
         //separatist
         Providence = 100,
+        Recusant = 101,
+        Munificent = 102,
         
     }
 }
