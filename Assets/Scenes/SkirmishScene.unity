@@ -1058,6 +1058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 002a53bd05d06f142aaa521a4f6d86a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 330585545}
 --- !u!114 &437181619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,12 +1077,14 @@ MonoBehaviour:
   spaceStationModel: {fileID: 11400000, guid: b73aaa91e66d8ce48ae38c8806b1992b, type: 2}
   shipUiModel: {fileID: 11400000, guid: 5d122ff846ebd9c42b0d93d92110997b, type: 2}
   userfactionModel: {fileID: 11400000, guid: 010d166b46b84614e81cdae3086ff99f, type: 2}
+  gameModel: {fileID: 11400000, guid: c7c667c14d310a4499d62638ddd5c2f8, type: 2}
   navigationUiView: {fileID: 266665877}
   terrainView: {fileID: 1158411688}
   cameraView: {fileID: 330585548}
   spaceStationView: {fileID: 2498124516107257549}
   shipUiView: {fileID: 1019329522}
   factionUiView: {fileID: 1019329521}
+  gameView: {fileID: 685719258}
 --- !u!1 &496928722
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1390,7 @@ GameObject:
   - component: {fileID: 615299223}
   - component: {fileID: 615299222}
   m_Layer: 5
-  m_Name: DisableSelection (1)
+  m_Name: DisableSelection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1525,6 +1528,7 @@ GameObject:
   - component: {fileID: 685719255}
   - component: {fileID: 685719257}
   - component: {fileID: 685719256}
+  - component: {fileID: 685719258}
   m_Layer: 5
   m_Name: LeftPanel
   m_TagString: Untagged
@@ -1567,7 +1571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1588,6 +1592,33 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685719254}
   m_CullTransparentMesh: 1
+--- !u!114 &685719258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 685719254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf7d3cfb90b4fe8b5cf8c1902344943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewComponents: []
+  timeButton: {fileID: 1152891850}
+  speedUpButton: {fileID: 1793647637}
+  timeSprites:
+    keyValue:
+    - key: 0
+      value: {fileID: 21300000, guid: 609f492ca4e11ff4980cffddc1b95552, type: 3}
+    - key: 2
+      value: {fileID: 21300000, guid: 5d961c548ce3c024a8f25f2dc08a09eb, type: 3}
+  speedUpSprites:
+    keyValue:
+    - key: 1
+      value: {fileID: 21300000, guid: 2ec90ab10526cde42b88512d390c7524, type: 3}
+    - key: 0
+      value: {fileID: 21300000, guid: 0ca193714b09e344294d98e71e209c90, type: 3}
 --- !u!1 &687279305
 GameObject:
   m_ObjectHideFlags: 0
@@ -2153,7 +2184,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2c47d1966ab40c34aa1ad1775313ddb8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 609f492ca4e11ff4980cffddc1b95552, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2961,7 +2992,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ac362bf761c3b3c4ab562496569c66b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ca193714b09e344294d98e71e209c90, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

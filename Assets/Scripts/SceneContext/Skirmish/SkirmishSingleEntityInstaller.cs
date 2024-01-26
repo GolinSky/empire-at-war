@@ -10,12 +10,14 @@ using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Controllers.Terrain;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Views.Factions;
+using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.NavigationUiView;
 using EmpireAtWar.Views.ShipUi;
 using EmpireAtWar.Views.SkirmishCamera;
@@ -23,6 +25,7 @@ using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
 using UnityEngine;
 using Zenject;
+using GameController = EmpireAtWar.Controllers.Game.GameController;
 
 public class SkirmishSingleEntityInstaller : MonoInstaller
 {
@@ -32,6 +35,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private SpaceStationModel spaceStationModel;
     [SerializeField] private ShipUiModel shipUiModel; 
     [SerializeField] private PlayerFactionModel userfactionModel;
+    [SerializeField] private GameModel gameModel;
     
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
@@ -39,7 +43,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private SpaceStationView spaceStationView;
     [SerializeField] private ShipUiView shipUiView;
     [SerializeField] private FactionUiView factionUiView;
-
+    [SerializeField] private GameView gameView;
     
     public override void InstallBindings()
     {
@@ -72,5 +76,10 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindEntity<FactionController, FactionUiView, PlayerFactionModel, FactionCommand>(
                 Instantiate(userfactionModel),
                 factionUiView);
+        
+        Container
+            .BindEntityNoCommand<GameController, GameView, GameModel>(
+                Instantiate(gameModel),
+                gameView);
     }
 }
