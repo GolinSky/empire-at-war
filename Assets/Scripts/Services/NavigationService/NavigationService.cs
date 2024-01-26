@@ -40,8 +40,9 @@ namespace EmpireAtWar.Services.NavigationService
             inputService.OnInput -= HandleInput;
         }
 
-        private void HandleInput(Vector2 screenPosition)
+        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
+            if(inputType != InputType.ShipInput) return;
             if (Selectable == null) return;
 
             if (Selectable.CanMove)

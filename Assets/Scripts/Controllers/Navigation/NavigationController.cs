@@ -24,9 +24,11 @@ namespace EmpireAtWar.Controllers.Navigation
             inputService.OnInput -= HandleInput;
         }
         
-        private void HandleInput(Vector2 mousePosition)
+        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
-            Model.TapPosition = mousePosition;
+            if(inputType != InputType.ShipInput) return;
+            
+            Model.TapPosition = screenPosition;
         }
     }
 }

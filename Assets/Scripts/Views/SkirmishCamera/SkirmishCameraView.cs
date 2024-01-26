@@ -1,12 +1,10 @@
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using Zenject;
 
 namespace EmpireAtWar.Views.SkirmishCamera
 {
-    public class SkirmishCameraView : View<ISkirmishCameraModelObserver>, ITickable
+    public class SkirmishCameraView : View<ISkirmishCameraModelObserver>
     {
         [SerializeField] private Camera mainCamera;
 
@@ -17,49 +15,24 @@ namespace EmpireAtWar.Views.SkirmishCamera
         protected override void OnInitialize()
         {
             cameraTransform = mainCamera.transform;
+            Model.OnTranslateDirectionChanged += Translate;
+            Model.OnPositionChanged += SetPosition;
         }
-        protected override void OnDispose() {}
-       
-        public void Tick()
+
+        protected override void OnDispose()
         {
-            if (Input.touchCount == 1)
-            {
-                
-                Touch currentTouch = Input.GetTouch(0);
-
-                if (EventSystem.current.IsPointerOverGameObject(currentTouch.fingerId) || EventSystem.current.IsPointerOverGameObject())
-                {
-                    return;
-                }
-                if (currentTouch.phase == TouchPhase.Began)
-                {
-                    worldStartPoint = GetWorldPoint(currentTouch.position);
-                }
-
-                if (currentTouch.phase == TouchPhase.Moved)
-                {
-                    Vector3 worldDelta = GetWorldPoint(currentTouch.position) - worldStartPoint;
-                    cameraTransform.Translate(
-                        -worldDelta.x,
-                        0,
-                        -worldDelta.z,
-                        Space.World
-                    );
-                    cameraPosition = cameraTransform.position;
-
-                    cameraPosition.x = Mathf.Clamp(cameraPosition.x, -Model.MapSize.x / 2.0f, Model.MapSize.x / 2.0f);
-                    cameraPosition.y = Mathf.Clamp(cameraPosition.y, -Model.MapSize.y / 2.0f, Model.MapSize.y / 2.0f);
-                    cameraPosition.z = Mathf.Clamp(cameraPosition.z, -Model.MapSize.z / 2.0f, Model.MapSize.z / 2.0f);
-
-                    cameraTransform.position = cameraPosition;
-                }
-            }
+            Model.OnTranslateDirectionChanged -= Translate;
+            Model.OnPositionChanged -= SetPosition;
         }
         
-        private Vector3 GetWorldPoint(Vector2 screenPoint)
+        private void SetPosition(Vector3 position)
         {
-            Physics.Raycast(mainCamera.ScreenPointToRay(screenPoint), out RaycastHit hit);
-            return hit.point;
+            cameraTransform.position = position;
+        }
+
+        private void Translate(Vector3 direction)
+        {
+            cameraTransform.Translate(direction, Space.World);
         }
     }
 }

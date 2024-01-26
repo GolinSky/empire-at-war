@@ -6,28 +6,55 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Input
 {
-    public class InputService:Service, IInputService, ITickable
+    public class InputService: Service, IInputService, ITickable
     {
         private Touch touch;
         public Vector2 MouseCoordinates => touch.position;
-        public event Action<Vector2> OnInput;
+        public event Action<InputType,TouchPhase, Vector2> OnInput;
         
-
         public void Tick()
         {
-            if (UnityEngine.Input.touchCount > 0)
+            if (UnityEngine.Input.touchCount == 1)
             {
                 touch = UnityEngine.Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began && touch.tapCount == 2)
+                if (IsBlocked(touch.fingerId))
                 {
-                    int id = touch.fingerId;
-                    if (EventSystem.current.IsPointerOverGameObject(id) || EventSystem.current.IsPointerOverGameObject())
+                    return;
+                }
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
                     {
-                        return;
+                        if (touch.tapCount == 1)
+                        {
+                            InvokeEvent(InputType.CameraInput);
+                        }
+                        if (touch.tapCount == 2)
+                        {
+                            InvokeEvent(InputType.ShipInput);
+                        }
+                        break;
                     }
-                    OnInput?.Invoke(MouseCoordinates);
+                    case TouchPhase.Moved:
+                        InvokeEvent(InputType.CameraInput);
+                        break;
+                    case TouchPhase.Stationary:
+                        break;
+                    case TouchPhase.Ended:
+                        break;
+                    case TouchPhase.Canceled:
+                        break;
                 }
             }
+
+            void InvokeEvent(InputType inputType)
+            {
+                OnInput?.Invoke(inputType,touch.phase, MouseCoordinates);
+            }
         }
+        
+        private bool IsBlocked(int id) => EventSystem.current.IsPointerOverGameObject(id) ||
+                                          EventSystem.current.IsPointerOverGameObject();
     }
 }
