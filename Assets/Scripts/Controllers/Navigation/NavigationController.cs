@@ -1,6 +1,5 @@
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Services.Input;
-using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;

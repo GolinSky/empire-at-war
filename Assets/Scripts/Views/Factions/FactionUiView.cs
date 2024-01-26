@@ -13,6 +13,7 @@ namespace EmpireAtWar.Views.Factions
     {
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
+        [SerializeField] private Transform shipUnitParent;
         [Inject] private SkirmishGameData SkirmishGameData { get; }
 
         protected override void OnInitialize()
@@ -21,7 +22,7 @@ namespace EmpireAtWar.Views.Factions
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
             foreach (var data in Model.GetFactionData(SkirmishGameData.PlayerFactionType))//hardcode
             {
-                FactionUnitUi unitUi = Instantiate(Model.ShipUnit, controlCanvas.transform);
+                FactionUnitUi unitUi = Instantiate(Model.ShipUnit, shipUnitParent);
                 unitUi.SetData(data.Value, data.Key, HandleClick);
             }
             exitButton.onClick.AddListener(ExitUi);

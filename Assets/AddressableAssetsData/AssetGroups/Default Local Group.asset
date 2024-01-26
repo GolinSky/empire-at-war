@@ -73,7 +73,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 805152c4e5b48d44ea985871b332e269
-    m_Address: Assets/Prefabs/VIew/AcclamatorShipView.prefab
+    m_Address: AcclamatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ba22e215b4787a44ae118a021f83b79
+    m_Address: AcclamatorShipModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

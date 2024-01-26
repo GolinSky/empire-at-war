@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace EmpireAtWar.Views.SkirmishCamera
@@ -23,8 +24,13 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             if (Input.touchCount == 1)
             {
+                
                 Touch currentTouch = Input.GetTouch(0);
 
+                if (EventSystem.current.IsPointerOverGameObject(currentTouch.fingerId) || EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
                 if (currentTouch.phase == TouchPhase.Began)
                 {
                     worldStartPoint = GetWorldPoint(currentTouch.position);
