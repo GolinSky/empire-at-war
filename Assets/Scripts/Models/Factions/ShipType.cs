@@ -4,7 +4,7 @@ namespace EmpireAtWar.Models.Factions
     {
         //republic
         Venator = 0,
-        Aclamator = 1,
+        Acclamator = 1,
         Arquitens = 2,
         
         //separatist

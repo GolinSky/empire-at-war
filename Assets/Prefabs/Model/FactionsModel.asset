@@ -44,6 +44,12 @@ MonoBehaviour:
         m_SubObjectName: 
         m_SubObjectType: 
         m_EditorAssetChanged: 0
+    - key: 1
+      value:
+        m_AssetGUID: 805152c4e5b48d44ea985871b332e269
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_EditorAssetChanged: 0
   factionDataWrapper:
     keyValue:
     - key: 0
@@ -66,6 +72,15 @@ MonoBehaviour:
             <Price>k__BackingField: 1200
             <BuildTime>k__BackingField: 30
             <Icon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
+              type: 3}
+        - key: 1
+          value:
+            <Name>k__BackingField: Acclamator
+            <MaxCount>k__BackingField: 20
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 45
+            <Icon>k__BackingField: {fileID: 21300000, guid: 1e6a8aaab47e9d94098f91860c12f443,
               type: 3}
     - key: 1
       value:
