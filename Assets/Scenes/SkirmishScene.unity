@@ -14,12 +14,12 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.002
   m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogEnd: 400
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -27,7 +27,7 @@ RenderSettings:
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0, g: 0.7059306, b: 0.754717, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: b13109bc4674dd24ebc04b7c12437ad6, type: 2}
-  m_HaloStrength: 0.5
+  m_HaloStrength: 1
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: a85637a91854919438d5131f9c6592fc,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1123,7 +1124,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.060000002}
   m_AnchorMax: {x: 0.9203535, y: 1}
-  m_AnchoredPosition: {x: 12.969727, y: -12.000473}
+  m_AnchoredPosition: {x: 12.969727, y: -12.000488}
   m_SizeDelta: {x: 26.300049, y: 24.660004}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &496928724
@@ -1554,7 +1555,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.18275934, y: 0.92200005}
   m_AnchorMax: {x: 0.25644413, y: 1}
-  m_AnchoredPosition: {x: -3.5444336, y: 1.0064697}
+  m_AnchoredPosition: {x: -3.5444336, y: 1.0065918}
   m_SizeDelta: {x: -3.8787842, y: -1.2549019}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &685719256
@@ -1577,7 +1578,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: a2d6a7e9df0789d4eaf8dbbac47eb1f6, type: 3}
+  m_Texture: {fileID: 2800000, guid: 5ed7b78422faa044695989e1108c5d63, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1607,6 +1608,8 @@ MonoBehaviour:
   viewComponents: []
   timeButton: {fileID: 1152891850}
   speedUpButton: {fileID: 1793647637}
+  timeImage: {fileID: 1152891851}
+  speedUpImage: {fileID: 1793647638}
   timeSprites:
     keyValue:
     - key: 0
@@ -2370,7 +2373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.005126953, y: 0.00048828125}
+  m_AnchoredPosition: {x: -0.0048828125, y: 0.00048828125}
   m_SizeDelta: {x: -0.01, y: -0.0010986}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1287495722
