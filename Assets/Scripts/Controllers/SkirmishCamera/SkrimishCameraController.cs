@@ -1,13 +1,15 @@
+using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using LightWeightFramework.Controller;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.SkirmishCamera
 {
-    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable
+    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
         private readonly ICameraService cameraService;
         private readonly IInputService inputService;
@@ -58,13 +60,34 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                     cameraPosition = cameraService.CameraPosition;
 
                     cameraPosition.x = Mathf.Clamp(cameraPosition.x, -Model.MapSize.x / 2.0f, Model.MapSize.x / 2.0f);
-                    cameraPosition.y = Mathf.Clamp(cameraPosition.y, -Model.MapSize.y / 2.0f, Model.MapSize.y / 2.0f);
+                    cameraPosition.y = Mathf.Clamp(cameraPosition.y, 0, Model.MapSize.y );
                     cameraPosition.z = Mathf.Clamp(cameraPosition.z, -Model.MapSize.z / 2.0f, Model.MapSize.z / 2.0f);
 
                     Model.CameraPosition = cameraPosition;
                     break;
                 }
             }
+        }
+
+        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
+        {
+            command = default;
+            return false;
+        }
+
+        public void ZoomIn()
+        {
+            cameraPosition = cameraService.CameraPosition;
+            cameraPosition.y = Mathf.Clamp(cameraPosition.y - 50, 0, Model.MapSize.y );
+            Model.CameraPosition = cameraPosition;
+
+        }
+
+        public void ZoomOut()
+        {
+            cameraPosition = cameraService.CameraPosition;
+            cameraPosition.y = Mathf.Clamp(cameraPosition.y + 50, 0, Model.MapSize.y );
+            Model.CameraPosition = cameraPosition;
         }
     }
 }

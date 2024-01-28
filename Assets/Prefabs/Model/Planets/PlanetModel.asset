@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2d149d2b2264db3943798e463343fdd, type: 3}
   m_Name: PlanetModel
   m_EditorClassIdentifier: 
-  <PlanetOrbitSpeed>k__BackingField: 20
-  <CloudOrbitSpeed>k__BackingField: 40
+  <PlanetOrbitSpeed>k__BackingField: 1
+  <CloudOrbitSpeed>k__BackingField: 2
