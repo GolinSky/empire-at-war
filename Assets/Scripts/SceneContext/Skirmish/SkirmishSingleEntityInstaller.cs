@@ -4,6 +4,7 @@ using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Navigation;
+using EmpireAtWar.Controllers.Planet;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Controllers.SkirmishCamera;
 using EmpireAtWar.Controllers.SpaceStation;
@@ -12,6 +13,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Navigation;
+using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SpaceStation;
@@ -19,6 +21,7 @@ using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.NavigationUiView;
+using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.ShipUi;
 using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.SpaceStation;
@@ -36,6 +39,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private ShipUiModel shipUiModel; 
     [SerializeField] private PlayerFactionModel userfactionModel;
     [SerializeField] private GameModel gameModel;
+    [SerializeField] private PlanetModel planetModel;
     
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
@@ -44,6 +48,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private ShipUiView shipUiView;
     [SerializeField] private FactionUiView factionUiView;
     [SerializeField] private GameView gameView;
+    [SerializeField] private PlanetView planetView;
     
     public override void InstallBindings()
     {
@@ -81,5 +86,11 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindEntityNoCommand<GameController, GameView, GameModel>(
                 Instantiate(gameModel),
                 gameView);
+        
+        Container
+            .BindEntityNoCommand<PlanetController, PlanetView, PlanetModel>(
+                Instantiate(planetModel),
+                planetView
+                );
     }
 }
