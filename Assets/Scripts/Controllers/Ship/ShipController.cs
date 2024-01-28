@@ -30,7 +30,8 @@ namespace EmpireAtWar.Controllers.Ship
 
             plane = new Plane(Vector3.up, m_DistanceFromCamera);
             customHeightDelta = Random.Range(-10, 10);
-            Model.HyperSpacePosition = GetWorldCoordinate(inputService.MouseCoordinates);
+            // Model.HyperSpacePosition = GetWorldCoordinate(inputService.MouseCoordinates);
+            Model.HyperSpacePosition = Vector3.zero;
         }
 
         public void Initialize()
