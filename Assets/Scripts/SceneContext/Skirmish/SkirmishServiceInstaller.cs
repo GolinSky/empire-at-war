@@ -1,4 +1,5 @@
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Ship;
@@ -31,6 +32,11 @@ public class SkirmishServiceInstaller : MonoInstaller
         Container
             .BindInterfacesAndSelfTo<CameraService>()
             .AsSingle()
+            .NonLazy();
+
+        Container
+            .BindInterfacesAndSelfTo<EnemyService>()
+            .AsCached()
             .NonLazy();
     }
 }

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Models.Ship
         Vector3 HyperSpacePosition { get; }
         float Speed { get; }
         float HyperSpaceSpeed { get; }
+        
     }
     
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Models.Ship
         [field:SerializeField] public Vector3 StartPosition { get; private set; }
         [field:SerializeField] public float Speed { get; private set; }
         [field:SerializeField]  public float HyperSpaceSpeed { get; private set; }
+        [field:SerializeField]  public float Height { get; private set; }
 
         public Vector3 HyperSpacePosition
         {

@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Ship;
+using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Ship;
@@ -16,22 +17,20 @@ namespace EmpireAtWar.Controllers.Ship
     public class ShipController:Controller<ShipModel>, IInitializable, ILateDisposable, ISelectable, IShipEntity
     {
         private readonly IShipService shipService;
-        private Plane plane;
-        private float customHeightDelta;//temp solution
+        private readonly ICameraService cameraService;
 
         public IShipModelObserver ModelObserver => Model;
 
         public bool CanMove => true;
         
-        public ShipController(ShipModel model, IInputService inputService, IShipService shipService) : base(model)
+        public ShipController(ShipModel model, IShipService shipService, ICameraService cameraService) : base(model)
         {
             this.shipService = shipService;
-            var m_DistanceFromCamera = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y - 50, Camera.main.transform.position.z );
+            this.cameraService = cameraService;
 
-            plane = new Plane(Vector3.up, m_DistanceFromCamera);
-            customHeightDelta = Random.Range(-10, 10);
-            // Model.HyperSpacePosition = GetWorldCoordinate(inputService.MouseCoordinates);
-            Model.HyperSpacePosition = Vector3.zero;
+            Vector3 tempPosition = Vector3.zero;
+            tempPosition.y = Model.Height;
+            Model.HyperSpacePosition = tempPosition;
         }
 
         public void Initialize()
@@ -51,7 +50,6 @@ namespace EmpireAtWar.Controllers.Ship
 
         private void MoveToPosition(Vector3 worldPosition)
         {
-            worldPosition.y += customHeightDelta;
             Model.Position = worldPosition;
         }
 
@@ -62,11 +60,9 @@ namespace EmpireAtWar.Controllers.Ship
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
-            Vector3 screenPosition3d = screenPosition;
-            screenPosition3d.z = Camera.main.transform.position.y;
-            Vector3 worldPoint = Camera.main.ScreenToWorldPoint(screenPosition3d);
-            worldPoint.y = ModelObserver.Position.y;
-            return worldPoint;
+            Vector3 point = cameraService.GetWorldPoint(screenPosition);
+            point.y = Model.Height;
+            return point;
         }
     }
 }

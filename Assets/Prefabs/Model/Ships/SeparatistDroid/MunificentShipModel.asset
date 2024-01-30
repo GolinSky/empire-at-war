@@ -17,3 +17,4 @@ MonoBehaviour:
   <StartPosition>k__BackingField: {x: -1000, y: 0, z: 1000}
   <Speed>k__BackingField: 5
   <HyperSpaceSpeed>k__BackingField: 2
+  <Height>k__BackingField: 10

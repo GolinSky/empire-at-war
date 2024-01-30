@@ -8,10 +8,10 @@ namespace EmpireAtWar.Commands.Ship
     public interface IShipCommand:ICommand
     {
     }
-    public class ShipCommand: Command<ShipController>, IShipCommand, IInitializable
+    public class PlayerShipCommand: Command<ShipController>, IShipCommand, IInitializable
     {
 
-        public ShipCommand(ShipController controller, INavigationService navigationService) : base(controller)
+        public PlayerShipCommand(ShipController controller, INavigationService navigationService) : base(controller)
         {
             AddCommand(
                 new SelectionCommand(controller, navigationService, controller)

@@ -22,7 +22,7 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
-            Container.BindShipEntity<ShipController, ShipView, ShipModel, ShipCommand>(repository, shipType);
+            Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
         }
     }
 }

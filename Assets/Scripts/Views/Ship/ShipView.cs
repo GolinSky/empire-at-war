@@ -1,17 +1,14 @@
-using System;
 using DG.Tweening;
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Views.Ship
 {
-    public class ShipView : View<IShipModelObserver, IShipCommand>, ITickable
+    public class ShipView : View<IShipModelObserver, IShipCommand>
     {
         [SerializeField] private Canvas selectedCanvas;
-        [SerializeField] private Canvas hoveredCanvas;
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
@@ -88,21 +85,5 @@ namespace EmpireAtWar.Views.Ship
             moveSequence.Append(transform.DOMove(position, duration)
                 .SetEase(moveEase));
         }
-
-        private void OnMouseEnter()
-        {
-            hoveredCanvas.enabled = true;
-        }
-
-        private void OnMouseExit()
-        {
-            hoveredCanvas.enabled = false;
-        }
-
-        public void Tick()
-        {
-        }
-        
-     
     }
 }
