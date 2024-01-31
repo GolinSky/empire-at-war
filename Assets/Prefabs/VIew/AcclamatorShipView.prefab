@@ -188,7 +188,8 @@ GameObject:
   - component: {fileID: 6639587243538167660}
   - component: {fileID: 5045708600378239732}
   - component: {fileID: 7285192517838441959}
-  - component: {fileID: 8889470715990331665}
+  - component: {fileID: -8513449140265045378}
+  - component: {fileID: 721780590174383251}
   m_Layer: 0
   m_Name: AcclamatorShipView
   m_TagString: Untagged
@@ -226,12 +227,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 8889470715990331665}
+  - {fileID: 721780590174383251}
+  - {fileID: -8513449140265045378}
   selectedCanvas: {fileID: 5010539976143032332}
-  rotationMode: 0
-  lookAtEase: 5
-  moveEase: 35
-  hyperSpaceEase: 32
 --- !u!65 &7285192517838441959
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -253,7 +251,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.55, y: 1.1, z: 5.45}
   m_Center: {x: 0, y: 0.36, z: 0}
---- !u!114 &8889470715990331665
+--- !u!114 &-8513449140265045378
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -262,10 +260,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8044965249881922621}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
+  m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationMode: 0
+  lookAtEase: 5
+  moveEase: 35
+  hyperSpaceEase: 32
+--- !u!114 &721780590174383251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8044965249881922621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b7b1537144c798044fb2129c0b7ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectionType: 3
+  selectedCanvas: {fileID: 5010539976143032332}
 --- !u!1001 &4944128711273314760
 PrefabInstance:
   m_ObjectHideFlags: 0

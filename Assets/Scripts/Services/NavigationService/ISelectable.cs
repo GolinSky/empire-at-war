@@ -4,9 +4,13 @@ namespace EmpireAtWar.Services.NavigationService
 {
     public interface ISelectable
     {
+        IMovable Movable { get; }
+        void SetActive(bool isActive);
+    }
+
+    public interface IMovable
+    {
         bool CanMove { get; }
         void MoveToPosition(Vector2 screenPosition);
-        void SetActive(bool isActive);
-        
     }
 }

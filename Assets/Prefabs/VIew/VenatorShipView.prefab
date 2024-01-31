@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 773376535087680568}
   - component: {fileID: 6788804975210850448}
   - component: {fileID: 5952501562155706629}
-  - component: {fileID: 7453468445435189609}
   - component: {fileID: 1105104885611283623}
+  - component: {fileID: 3669284567344977784}
+  - component: {fileID: 5275728022472264954}
   m_Layer: 0
   m_Name: VenatorShipView
   m_TagString: Untagged
@@ -51,12 +52,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 7453468445435189609}
-  selectedCanvas: {fileID: 965972597380759595}
-  rotationMode: 0
-  lookAtEase: 5
-  moveEase: 35
-  hyperSpaceEase: 32
+  - {fileID: 5275728022472264954}
+  - {fileID: 3669284567344977784}
 --- !u!65 &5952501562155706629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -78,19 +75,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.55, y: 2.38, z: 10.45}
   m_Center: {x: 0, y: 0.36, z: -0.99}
---- !u!114 &7453468445435189609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3806449680888156439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionType: 3
 --- !u!114 &1105104885611283623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +96,36 @@ MonoBehaviour:
   - {fileID: 7926861875048699292}
   - {fileID: 6967112351810086698}
   - {fileID: 6555510305684308583}
+--- !u!114 &3669284567344977784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationMode: 0
+  lookAtEase: 5
+  moveEase: 35
+  hyperSpaceEase: 32
+--- !u!114 &5275728022472264954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b7b1537144c798044fb2129c0b7ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionType: 3
+  selectedCanvas: {fileID: 965972597380759595}
 --- !u!1 &4718282758433700144
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,8 @@ namespace EmpireAtWar.Controllers.Terrain
             
         }
 
+        public IMovable Movable { get; }
+
         public void SetActive(bool isActive)
         {
         }

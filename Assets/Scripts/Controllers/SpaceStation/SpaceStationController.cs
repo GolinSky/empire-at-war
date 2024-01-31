@@ -18,6 +18,8 @@ namespace EmpireAtWar.Controllers.SpaceStation
             
         }
 
+        public IMovable Movable { get; }
+
         public void SetActive(bool isActive)
         {
             //Model.IsSelected = isActive;

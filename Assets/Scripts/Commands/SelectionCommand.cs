@@ -4,11 +4,6 @@ using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands
 {
-    public interface ISelectionCommand : ICommand
-    {
-        void OnSelected(SelectionType selectionType);
-    }
-
     public class SelectionCommand : Command, ISelectionCommand
     {
         private readonly ISelectable selectable;

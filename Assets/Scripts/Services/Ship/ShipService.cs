@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.Ship
         {
             foreach (var shipController in shipEntities)
             {
-                if (selectable == shipController)
+                if (selectable == shipController.Selectable)
                 {
                     return shipController;
                 }

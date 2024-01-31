@@ -5,6 +5,15 @@ namespace LightWeightFramework.Model
 {
     public abstract class Model:ScriptableObject, IModel
     {
+        [SerializeField] protected List<Model> models;
+   
+        protected virtual void Awake()
+        {
+            foreach (var innerModel in models)
+            {
+                AddModel(innerModel);
+            }
+        }
         private List<IModel> CurrentModels { get; } = new List<IModel>();
         
         public TModelObserver GetModelObserver<TModelObserver>() where TModelObserver : IModelObserver
@@ -32,11 +41,17 @@ namespace LightWeightFramework.Model
             return default;
         }
 
-        protected TModel AddInnerModel<TModel>(TModel model) where TModel : Object, IModel
+        protected Model AddModel(Model model)
         {
             var instancedModel = Instantiate(model);
             CurrentModels.Add(instancedModel);
             return instancedModel;
         }
+        
+        protected void AddInnerModel<TModel>(TModel model) where TModel : InnerModel
+        {
+            CurrentModels.Add(model);
+        }
+ 
     }
 }

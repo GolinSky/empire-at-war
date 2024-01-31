@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Services.NavigationService;
 using WorkShop.LightWeightFramework.Command;
@@ -11,10 +12,10 @@ namespace EmpireAtWar.Commands.SpaceStation
     
     public class SpaceStationCommand:Command<SpaceStationController>, ISpaceStationCommand
     {
-        public SpaceStationCommand(SpaceStationController controller,INavigationService navigationService) : base(controller)
+        public SpaceStationCommand(SpaceStationController controller, SelectionFacade selectionFacade) : base(controller)
         {
             AddCommand(
-                    new SelectionCommand(controller, navigationService, controller)
+                selectionFacade.Create(controller.GetModel(), controller.Movable)
                 );
         }
     }

@@ -2,6 +2,7 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.Planet;
@@ -18,6 +19,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Terrain;
+using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.NavigationUiView;
@@ -26,7 +28,9 @@ using EmpireAtWar.Views.ShipUi;
 using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
+using LightWeightFramework.Model;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
 using Zenject;
 using GameController = EmpireAtWar.Controllers.Game.GameController;
 
@@ -52,6 +56,9 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
+        Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
+            .AsSingle();
+        
         Container
             .BindEntityNoCommand<NavigationController, NavigationUiView, NavigationModel>(
                 navigationModel,
@@ -64,12 +71,12 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             
         Container
             .BindEntity<TerrainController, TerrainView, TerrainModel, TerrainCommand>(
-            terrainModel,
+                Instantiate(terrainModel),
             terrainView);
         
         Container
             .BindEntity<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
-            spaceStationModel,
+                Instantiate(spaceStationModel),
             spaceStationView);
         
         Container

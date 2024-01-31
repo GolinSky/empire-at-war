@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
@@ -71,12 +72,21 @@ namespace EmpireAtWar.Extentions
             container
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromInstance(Object.Instantiate(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}")))
-                .AsSingle();
-
+                .AsSingle()
+                .NonLazy();
+            
+            container.BindInterfacesAndSelfTo<MoveComponent>()
+                .AsSingle()
+                .NonLazy();
+            
+            container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .AsSingle()
+                .NonLazy();
+            
             container
                 .BindInterfacesAndSelfTo<TController>()
                 .AsSingle();
-
+            
             container
                 .BindInterfacesAndSelfTo<TView>()
                 .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))

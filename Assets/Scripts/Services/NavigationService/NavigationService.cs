@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.NavigationService
         public event Action<SelectionType> OnTypeChanged;
 
         private readonly IInputService inputService;
+        private IMovable movable;
         
         public ISelectable Selectable { get; private set; }
         public SelectionType SelectionType { get; private set; }
@@ -43,11 +44,11 @@ namespace EmpireAtWar.Services.NavigationService
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
             if(inputType != InputType.ShipInput) return;
-            if (Selectable == null) return;
+            if (movable == null) return;
 
-            if (Selectable.CanMove)
+            if (movable.CanMove)
             {
-                Selectable.MoveToPosition(screenPosition);
+                movable.MoveToPosition(screenPosition);
             }
         }
 
@@ -58,6 +59,7 @@ namespace EmpireAtWar.Services.NavigationService
             if(selectionType == SelectionType.Terrain) return;
             
             Selectable = selectableObject;
+            movable = selectableObject.Movable;
             selectableObject.SetActive(true);
             
             if (SelectionType != selectionType)
@@ -73,6 +75,7 @@ namespace EmpireAtWar.Services.NavigationService
             {
                 Selectable.SetActive(false);
                 Selectable = null;
+                movable = null;
                 SelectionType = SelectionType.None;
                 OnTypeChanged?.Invoke(SelectionType);
             }

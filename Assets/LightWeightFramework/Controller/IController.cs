@@ -4,6 +4,6 @@ namespace LightWeightFramework.Controller
 {
     public interface IController :IEntity
     {
-        IModelObserver Model { get; }
+        IModel GetModel();
     }
 }

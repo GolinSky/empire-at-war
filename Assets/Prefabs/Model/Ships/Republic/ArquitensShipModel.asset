@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb50a327af597349b048b7adb2ba905, type: 3}
   m_Name: ArquitensShipModel
   m_EditorClassIdentifier: 
+  moveModel:
+    <StartPosition>k__BackingField: {x: -1000, y: 0, z: 1000}
+    <Speed>k__BackingField: 6
+    <HyperSpaceSpeed>k__BackingField: 2
+    <Height>k__BackingField: 10
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
     type: 3}
-  <StartPosition>k__BackingField: {x: -1000, y: 0, z: 1000}
-  <Speed>k__BackingField: 6
-  <HyperSpaceSpeed>k__BackingField: 2
-  <Height>k__BackingField: 10
+  models:
+  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}

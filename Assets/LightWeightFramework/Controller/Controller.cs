@@ -5,25 +5,14 @@ using WorkShop.LightWeightFramework.Components;
 
 namespace LightWeightFramework.Controller
 {
-    public abstract class Controller<TModel>:IController
-        where TModel : IModel
+    public abstract class Controller:IController
     {
         private List<IComponent> components = new List<IComponent>();
 
         public virtual string Id => GetType().Name;
-        protected TModel Model { get;  }
-    
-
-        IModelObserver IController.Model => Model;
-     
-
-        protected Controller(TModel model)
-        {
-            Model = model;
-        }
+        public abstract IModel GetModel();
         
-
-        protected IComponent AddComponent(IComponent component)
+        public IComponent AddComponent(IComponent component)
         {
             components.Add(component);
             return component;
@@ -51,6 +40,22 @@ namespace LightWeightFramework.Controller
             }
 
             return default;
+        }
+
+    }
+    public abstract class Controller<TModel>:Controller, IController
+        where TModel : IModel
+    {
+        protected TModel Model { get;  }
+
+        protected Controller(TModel model)
+        {
+            Model = model;
+        }
+
+        public override IModel GetModel()
+        {
+            return Model;
         }
     }
 }

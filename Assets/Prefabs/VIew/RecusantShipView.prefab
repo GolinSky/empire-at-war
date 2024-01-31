@@ -86,7 +86,8 @@ GameObject:
   - component: {fileID: 1505242406192482303}
   - component: {fileID: 2936721805814101518}
   - component: {fileID: 5644227798206742413}
-  - component: {fileID: 989429323565252101}
+  - component: {fileID: 1835154460902422747}
+  - component: {fileID: 5562210321709151128}
   m_Layer: 0
   m_Name: RecusantShipView
   m_TagString: Untagged
@@ -124,12 +125,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 989429323565252101}
+  - {fileID: 5562210321709151128}
+  - {fileID: 1835154460902422747}
   selectedCanvas: {fileID: 6096311370082009194}
-  rotationMode: 0
-  lookAtEase: 5
-  moveEase: 35
-  hyperSpaceEase: 32
 --- !u!65 &5644227798206742413
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -151,7 +149,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.5412393, y: 1.5279365, z: 12.618888}
   m_Center: {x: 0.014990568, y: 0.19733346, z: 0.55920553}
---- !u!114 &989429323565252101
+--- !u!114 &1835154460902422747
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -160,10 +158,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 2677565496712050770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
+  m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationMode: 0
+  lookAtEase: 5
+  moveEase: 35
+  hyperSpaceEase: 32
+--- !u!114 &5562210321709151128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677565496712050770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b7b1537144c798044fb2129c0b7ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectionType: 3
+  selectedCanvas: {fileID: 6096311370082009194}
 --- !u!1 &3302426089229582887
 GameObject:
   m_ObjectHideFlags: 0

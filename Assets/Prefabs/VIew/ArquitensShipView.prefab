@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 723940626326228561}
   - component: {fileID: 1647977390535539314}
   - component: {fileID: 4990550169039385743}
-  - component: {fileID: 7759794766257741396}
+  - component: {fileID: 5420406288134755385}
+  - component: {fileID: 7253867186579442715}
   m_Layer: 0
   m_Name: ArquitensShipView
   m_TagString: Untagged
@@ -49,12 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 7759794766257741396}
+  - {fileID: 7253867186579442715}
+  - {fileID: 5420406288134755385}
   selectedCanvas: {fileID: 6129123938865453764}
-  rotationMode: 0
-  lookAtEase: 5
-  moveEase: 35
-  hyperSpaceEase: 32
 --- !u!65 &4990550169039385743
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -76,7 +74,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.3843594, y: 1.2231791, z: 5.3131456}
   m_Center: {x: -0.010147572, y: -0.13723016, z: 0.2536888}
---- !u!114 &7759794766257741396
+--- !u!114 &5420406288134755385
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -85,10 +83,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1211217585912450137}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
+  m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationMode: 0
+  lookAtEase: 5
+  moveEase: 35
+  hyperSpaceEase: 32
+--- !u!114 &7253867186579442715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211217585912450137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b7b1537144c798044fb2129c0b7ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectionType: 3
+  selectedCanvas: {fileID: 6129123938865453764}
 --- !u!1 &5099929985296088278
 GameObject:
   m_ObjectHideFlags: 0
