@@ -5,24 +5,12 @@ using UnityEngine;
 
 namespace EmpireAtWar.Controllers.SpaceStation
 {
-    public class SpaceStationController:Controller<SpaceStationModel>, ISelectable
+    public class SpaceStationController:Controller<SpaceStationModel>
     {
-        public bool CanMove => false;
 
         public SpaceStationController(SpaceStationModel model) : base(model)
         {
         }
-
-        public void MoveToPosition(Vector2 screenPosition)
-        {
-            
-        }
-
-        public IMovable Movable { get; }
-
-        public void SetActive(bool isActive)
-        {
-            //Model.IsSelected = isActive;
-        }
+        
     }
 }

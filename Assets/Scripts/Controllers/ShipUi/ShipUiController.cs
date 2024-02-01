@@ -1,5 +1,4 @@
-﻿using EmpireAtWar.Controllers.Ship;
-using EmpireAtWar.Models.Ship;
+﻿using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Ship;
@@ -33,9 +32,12 @@ namespace EmpireAtWar.Controllers.ShipUi
         {
             if (selectionType == SelectionType.Ship)
             {
-                IShipEntity shipEntity = shipService.GetShipEntity(navigationService.Selectable);
-                IShipModelObserver modelObserver = shipEntity.ModelObserver;
-                Model.ShipIcon = modelObserver.ShipIcon;
+                //temp solution
+                IShipModelObserver shipModelObserver = navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
+                if (shipModelObserver != null)
+                {
+                    Model.ShipIcon = shipModelObserver.ShipIcon;
+                }
             }
             Model.UpdateSelection(selectionType);
         }

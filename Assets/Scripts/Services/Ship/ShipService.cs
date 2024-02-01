@@ -10,7 +10,7 @@ namespace EmpireAtWar.Services.Ship
         void Add(IShipEntity entity);
         void Remove(IShipEntity entity);
 
-        IShipEntity GetShipEntity(ISelectable selectable);
+       // IShipEntity GetShipEntity(ISelectable selectable);
     }
 
     public class ShipService : Service, IShipService
@@ -29,17 +29,17 @@ namespace EmpireAtWar.Services.Ship
             shipEntities.Remove(entity);
         }
 
-        public IShipEntity GetShipEntity(ISelectable selectable)
-        {
-            foreach (var shipController in shipEntities)
-            {
-                if (selectable == shipController.Selectable)
-                {
-                    return shipController;
-                }
-            }
-
-            return null;
-        }
+        // public IShipEntity GetShipEntity(ISelectable selectable)
+        // {
+        //     // foreach (var shipController in shipEntities)
+        //     // {
+        //     //     if (selectable == shipController.Selectable)
+        //     //     {
+        //     //         return shipController;
+        //     //     }
+        //     // }
+        //
+        //     return null;
+        // }
     }
 }

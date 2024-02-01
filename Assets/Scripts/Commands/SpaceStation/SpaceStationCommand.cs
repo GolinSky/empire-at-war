@@ -1,6 +1,5 @@
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.SpaceStation;
-using EmpireAtWar.Services.NavigationService;
 using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.SpaceStation
@@ -15,7 +14,7 @@ namespace EmpireAtWar.Commands.SpaceStation
         public SpaceStationCommand(SpaceStationController controller, SelectionFacade selectionFacade) : base(controller)
         {
             AddCommand(
-                selectionFacade.Create(controller.GetModel(), controller.Movable)
+                selectionFacade.Create(controller.GetModel(), null)
                 );
         }
     }

@@ -1,4 +1,5 @@
 using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Ship;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -22,6 +23,9 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<MoveComponent>()
+                .AsSingle()
+                .NonLazy();
             Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
         }
     }

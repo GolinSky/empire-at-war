@@ -65,6 +65,7 @@ namespace EmpireAtWar.Extentions
         {
             container.BindInstance(shipType)
                 .AsSingle();
+            
                    
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
@@ -75,13 +76,6 @@ namespace EmpireAtWar.Extentions
                 .AsSingle()
                 .NonLazy();
             
-            container.BindInterfacesAndSelfTo<MoveComponent>()
-                .AsSingle()
-                .NonLazy();
-            
-            container.BindInterfacesAndSelfTo<SelectionComponent>()
-                .AsSingle()
-                .NonLazy();
             
             container
                 .BindInterfacesAndSelfTo<TController>()

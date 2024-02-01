@@ -1,6 +1,5 @@
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Terrain;
-using EmpireAtWar.Services.NavigationService;
 using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Terrain
@@ -14,12 +13,9 @@ namespace EmpireAtWar.Commands.Terrain
 
         public TerrainCommand(TerrainController controller, SelectionFacade selectionFacade) : base(controller)
         {
-            // AddCommand(
-            //     new SelectionCommand(controller, navigationService, controller)
-            // );
             
             AddCommand(
-                selectionFacade.Create(controller.GetModel(), controller.Movable)
+                selectionFacade.Create(controller.GetModel(), null)
             );
             
         }

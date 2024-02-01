@@ -3,7 +3,6 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using WorkShop.LightWeightFramework.Command;
-using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
@@ -11,11 +10,13 @@ namespace EmpireAtWar.Components.Ship.Selection
     {
         private readonly INavigationService navigationService;
         public IMovable Movable { get; }
+        public IModelObserver ModelObserver { get; }
 
         public SelectionComponent(IModel model, INavigationService navigationService, IMovable movable) : base(model)
         {
             this.navigationService = navigationService;
             Movable = movable;
+            ModelObserver = model;
         }
         
 
@@ -33,21 +34,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void SetActive(bool isActive)
         {
             Model.IsSelected = isActive;
-        }
-    }
-
-    public class SelectionFacade : PlaceholderFactory<IModel,IMovable, SelectionComponent>
-    {
-        private readonly INavigationService navigationService;
-
-        public SelectionFacade(INavigationService navigationService)
-        {
-            this.navigationService = navigationService;
-        }
-        
-        public override SelectionComponent Create(IModel model, IMovable movable)
-        {
-            return new SelectionComponent(model,navigationService, movable);
         }
     }
 }
