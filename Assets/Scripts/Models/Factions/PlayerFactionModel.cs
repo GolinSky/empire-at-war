@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Zenject;
 
 namespace EmpireAtWar.Models.Factions
 {
@@ -17,8 +13,7 @@ namespace EmpireAtWar.Models.Factions
 
         FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
-
-        Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType);
+        Dictionary<ShipType, FactionData> FactionData { get; }
     }
 
     [CreateAssetMenu(fileName = "FactionModel", menuName = "Model/FactionModel")]
@@ -41,6 +36,8 @@ namespace EmpireAtWar.Models.Factions
                 OnSelectionTypeChanged?.Invoke(selectionType);
             }
         }
+
+        public Dictionary<ShipType, FactionData> FactionData { get; set; }
 
         public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType) => factionsModel.GetFactionData(factionType);
     }

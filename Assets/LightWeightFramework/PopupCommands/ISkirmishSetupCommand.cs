@@ -24,7 +24,6 @@ namespace EmpireAtWar.LightWeightFramework.PopupCommands
         
         public void StartGame(FactionType factionType)
         {
-            Debug.Log($"factionType:{factionType}");
             skirmishGameData.PlayerFactionType = factionType;
             sceneService.LoadScene(SceneType.Skirmish);
         }

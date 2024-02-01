@@ -7,7 +7,5 @@ namespace EmpireAtWar.Models.Skirmish
     {
         public FactionType PlayerFactionType { get; set; }
         public FactionType EnemyFactionType { get; }
-
-   
     }
 }

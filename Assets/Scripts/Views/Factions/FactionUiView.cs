@@ -14,13 +14,12 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
         [SerializeField] private Transform shipUnitParent;
-        [Inject] private SkirmishGameData SkirmishGameData { get; }
 
         protected override void OnInitialize()
         {
             HandleSelectionChanged(Model.SelectionType);
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
-            foreach (var data in Model.GetFactionData(SkirmishGameData.PlayerFactionType))//hardcode
+            foreach (var data in Model.FactionData)
             {
                 FactionUnitUi unitUi = Instantiate(Model.ShipUnit, shipUnitParent);
                 unitUi.SetData(data.Value, data.Key, HandleClick);

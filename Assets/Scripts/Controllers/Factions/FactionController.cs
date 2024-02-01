@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
 using Zenject;
@@ -9,9 +10,10 @@ namespace EmpireAtWar.Controllers.Factions
     {
         private readonly INavigationService navigationService;
 
-        public FactionController(PlayerFactionModel model, INavigationService navigationService) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService, SkirmishGameData skirmishGameData) : base(model)
         {
             this.navigationService = navigationService;
+            model.FactionData = model.GetFactionData(skirmishGameData.PlayerFactionType);
         }
         
         public void Initialize()
