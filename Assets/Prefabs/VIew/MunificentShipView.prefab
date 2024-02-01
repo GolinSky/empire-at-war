@@ -152,9 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 0}
+  - {fileID: 3900534144493600790}
   - {fileID: 4111640471473534973}
-  selectedCanvas: {fileID: 5451164173879869013}
 --- !u!65 &2999904143128528648
 BoxCollider:
   m_ObjectHideFlags: 0
