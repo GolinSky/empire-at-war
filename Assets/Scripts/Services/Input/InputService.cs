@@ -26,18 +26,21 @@ namespace EmpireAtWar.Services.Input
                 {
                     case TouchPhase.Began:
                     {
-                        if (touch.tapCount == 1)
-                        {
-                            InvokeEvent(InputType.CameraInput);
-                        }
                         if (touch.tapCount == 2)
                         {
                             InvokeEvent(InputType.ShipInput);
                         }
+                        if (touch.tapCount == 1)
+                        {
+                            InvokeEvent(InputType.CameraInput);
+                        }
                         break;
                     }
                     case TouchPhase.Moved:
-                        InvokeEvent(InputType.CameraInput);
+                        if (touch.tapCount == 1)
+                        {
+                            InvokeEvent(InputType.CameraInput);
+                        }
                         break;
                     case TouchPhase.Stationary:
                         break;
@@ -56,5 +59,6 @@ namespace EmpireAtWar.Services.Input
         
         private bool IsBlocked(int id) => EventSystem.current.IsPointerOverGameObject(id) ||
                                           EventSystem.current.IsPointerOverGameObject();
+
     }
 }

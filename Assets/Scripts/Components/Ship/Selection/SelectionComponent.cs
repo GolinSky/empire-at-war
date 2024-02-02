@@ -9,7 +9,7 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class SelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable
     {
         private readonly INavigationService navigationService;
-        public IMovable Movable { get; }
+        public IMovable Movable {  get; }
         public IModelObserver ModelObserver { get; }
 
         public SelectionComponent(IModel model, INavigationService navigationService, IMovable movable) : base(model)

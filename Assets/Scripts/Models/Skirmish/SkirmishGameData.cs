@@ -6,6 +6,6 @@ namespace EmpireAtWar.Models.Skirmish
     public class SkirmishGameData
     {
         public FactionType PlayerFactionType { get; set; }
-        public FactionType EnemyFactionType { get; }
+        public FactionType EnemyFactionType { get; set; }
     }
 }

@@ -1,11 +1,9 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Factions
 {

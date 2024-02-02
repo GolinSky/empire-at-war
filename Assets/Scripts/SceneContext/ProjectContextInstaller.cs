@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.SceneService;
+using EmpireAtWar.Services.Settings;
 using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
@@ -15,5 +16,9 @@ public class ProjectContextInstaller : MonoInstaller
 
         Container.BindInstance(new SkirmishGameData())
             .AsSingle();
+
+        Container.BindInterfacesAndSelfTo<SettingsService>()
+            .AsSingle()
+            .NonLazy();
     }
 }

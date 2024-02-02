@@ -8,7 +8,7 @@ namespace EmpireAtWar.LightWeightFramework.PopupCommands
 {
     public interface ISkirmishSetupCommand:ICommand
     {
-        void StartGame(FactionType factionType);
+        void StartGame(FactionType playerFactionType, FactionType enemyFactionType);
     }
 
     public class SkirmishSetUpCommand : ISkirmishSetupCommand
@@ -22,9 +22,10 @@ namespace EmpireAtWar.LightWeightFramework.PopupCommands
             this.skirmishGameData = skirmishGameData;
         }
         
-        public void StartGame(FactionType factionType)
+        public void StartGame(FactionType playerFactionType, FactionType enemyFactionType)
         {
-            skirmishGameData.PlayerFactionType = factionType;
+            skirmishGameData.PlayerFactionType = playerFactionType;
+            skirmishGameData.EnemyFactionType = enemyFactionType;
             sceneService.LoadScene(SceneType.Skirmish);
         }
 

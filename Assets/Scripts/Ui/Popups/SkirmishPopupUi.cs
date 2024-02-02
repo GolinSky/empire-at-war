@@ -12,19 +12,26 @@ namespace EmpireAtWar.Ui.Popups
     {
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
+        [SerializeField] private TMP_Dropdown enemyFactionDropdown;
         [Inject] private ISkirmishSetupCommand SkirmishSetupCommand { get; }
 
 
         public override void Initialize()
         {
             startGameButton.onClick.AddListener(OnStartGame);
-            playerFactionDropdown.options.Clear();
+            SetData(playerFactionDropdown);
+            SetData(enemyFactionDropdown);
+        }
+
+        private void SetData(TMP_Dropdown dropdown)
+        {
+            dropdown.options.Clear();
             foreach (var factionType in Enum.GetNames(typeof(FactionType)))
             {
-                playerFactionDropdown.options.Add(new TMP_Dropdown.OptionData(factionType));
+                dropdown.options.Add(new TMP_Dropdown.OptionData(factionType));
             }
         }
-        
+
         public override void LateDispose()
         {
             startGameButton.onClick.RemoveListener(OnStartGame);
@@ -32,8 +39,13 @@ namespace EmpireAtWar.Ui.Popups
 
         private void OnStartGame()
         {
-            Debug.Log("OnStartGame");
-            SkirmishSetupCommand.StartGame(Enum.Parse<FactionType>(playerFactionDropdown.captionText.text));
+            SkirmishSetupCommand
+                .StartGame(
+                    GetEnum(playerFactionDropdown.captionText.text),
+                    GetEnum(enemyFactionDropdown.captionText.text));
         }
+
+        private FactionType GetEnum(string text) => Enum.Parse<FactionType>(text);
+
     }
 }
