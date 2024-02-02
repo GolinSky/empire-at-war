@@ -12,6 +12,30 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
+        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, TModel model, GameObject view)
+            where TController : Controller<TModel>
+            where TView : Component, IView
+            where TModel : Model
+            where TCommand : Command
+        {
+            container.BindInterfacesAndSelfTo<TCommand>()
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromInstance(model)
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TView>()
+                .FromComponentInNewPrefab(view)
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+        }
+        
         public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TModel model, TView view)
             where TController : Controller<TModel>
             where TView : IView
@@ -19,21 +43,21 @@ namespace EmpireAtWar.Extentions
             where TCommand : Command
         {
             container.BindInterfacesAndSelfTo<TCommand>()
-                .AsTransient();
+                .AsSingle();
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromInstance(model)
-                .AsTransient();
+                .AsSingle();
 
             container
                 .BindInterfacesTo<TView>()
                 .FromInstance(view)
-                .AsTransient();
+                .AsSingle();
 
             container
                 .BindInterfacesAndSelfTo<TController>()
-                .AsTransient();
+                .AsSingle();
         }
         
         public static void BindEntityNoCommand<TController, TView, TModel>(this DiContainer container, TModel model, TView view)

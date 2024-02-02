@@ -16,6 +16,7 @@ using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.ShipUi;
+using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Terrain;
@@ -30,11 +31,13 @@ using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
 using LightWeightFramework.Model;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Repository;
 using Zenject;
 using GameController = EmpireAtWar.Controllers.Game.GameController;
 
 public class SkirmishSingleEntityInstaller : MonoInstaller
 {
+  
     [SerializeField] private NavigationModel navigationModel;
     [SerializeField] private SkirmishCameraModel cameraModel;
     [SerializeField] private TerrainModel terrainModel;
@@ -47,11 +50,16 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private NavigationUiView navigationUiView;
     [SerializeField] private TerrainView terrainView;
     [SerializeField] private SkirmishCameraView cameraView;
-    [SerializeField] private SpaceStationView spaceStationView;
     [SerializeField] private ShipUiView shipUiView;
     [SerializeField] private FactionUiView factionUiView;
     [SerializeField] private GameView gameView;
     [SerializeField] private PlanetView planetView;
+    
+    [Inject]
+    public IRepository Repository { get; }
+    [Inject]
+    public SkirmishGameData SkirmishGameData { get; }
+  
     
     public override void InstallBindings()
     {
@@ -74,9 +82,9 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             terrainView);
         
         Container
-            .BindEntity<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
+            .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
                 Instantiate(spaceStationModel),
-            spaceStationView);
+            Instantiate(Repository.Load<GameObject>($"{SkirmishGameData.PlayerFactionType}{nameof(SpaceStationView)}")));
         
         Container
             .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(
