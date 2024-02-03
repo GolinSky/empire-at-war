@@ -12,27 +12,29 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, TModel model, GameObject view)
+        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, IRepository repository, FactionType factionType )
             where TController : Controller<TModel>
             where TView : Component, IView
             where TModel : Model
             where TCommand : Command
         {
+
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(model)
-                .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(view)
-                .AsSingle();
+                .FromInstance(Object.Instantiate(repository.Load<TModel>($"{typeof(TModel).Name}")))
+                .AsSingle()
+                .NonLazy();
 
             container
                 .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+            
+            container
+                .BindInterfacesAndSelfTo<TView>()
+                .FromComponentInNewPrefab(repository.Load<GameObject>($"{factionType}{typeof(TView).Name}"))
                 .AsSingle();
         }
         

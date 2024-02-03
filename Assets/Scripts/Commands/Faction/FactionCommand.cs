@@ -31,7 +31,7 @@ namespace EmpireAtWar.Commands.Faction
 
         public void BuildShip(ShipType shipType)
         {
-            shipFacadeFactory.Create(shipType);
+            shipFacadeFactory.Create(PlayerType.Player, shipType);
         }
     }
 }

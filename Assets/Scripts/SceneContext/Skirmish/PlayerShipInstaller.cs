@@ -14,19 +14,38 @@ namespace EmpireAtWar.SceneContext
     {
         private readonly IRepository repository;
         private readonly ShipType shipType;
+        private readonly PlayerType playerType;
 
-        public PlayerShipInstaller(IRepository repository, ShipType shipType)
+        public PlayerShipInstaller(IRepository repository, ShipType shipType, PlayerType playerType)
         {
             this.repository = repository;
             this.shipType = shipType;
+            this.playerType = playerType;
         }
         
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<MoveComponent>()
-                .AsSingle()
-                .NonLazy();
-            Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
+            switch (playerType)
+            {
+                case PlayerType.Player:
+                {
+                    Container.BindInterfacesAndSelfTo<MoveComponent>()
+                        .AsSingle()
+                        .NonLazy();
+                    Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
+                    break;
+                }
+                case PlayerType.Opponent:
+                {
+                    Container.BindInterfacesAndSelfTo<MoveComponent>()
+                        .AsSingle()
+                        .NonLazy();
+                    Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(repository, shipType);
+                    break;
+                }
+            }
+            
+           
         }
     }
 }

@@ -3,9 +3,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.SpaceStation
 {
-    [CreateAssetMenu(fileName = "SpaceStationModel", menuName = "Model/SpaceStationModel")]
-    public class SpaceStationModel:Model
+    public interface ISpaceStationModelObserver:IModelObserver
     {
-        
+        Vector3 StartPosition { get; }
+    }
+    [CreateAssetMenu(fileName = "SpaceStationModel", menuName = "Model/SpaceStationModel")]
+    public class SpaceStationModel:Model, ISpaceStationModelObserver
+    {
+        public Vector3 StartPosition { get; set; }
     }
 }

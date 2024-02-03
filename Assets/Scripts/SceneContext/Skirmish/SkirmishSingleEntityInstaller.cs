@@ -41,7 +41,6 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private NavigationModel navigationModel;
     [SerializeField] private SkirmishCameraModel cameraModel;
     [SerializeField] private TerrainModel terrainModel;
-    [SerializeField] private SpaceStationModel spaceStationModel;
     [SerializeField] private ShipUiModel shipUiModel; 
     [SerializeField] private PlayerFactionModel userfactionModel;
     [SerializeField] private GameModel gameModel;
@@ -55,10 +54,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private GameView gameView;
     [SerializeField] private PlanetView planetView;
     
-    [Inject]
-    public IRepository Repository { get; }
-    [Inject]
-    public SkirmishGameData SkirmishGameData { get; }
+   
   
     
     public override void InstallBindings()
@@ -80,11 +76,6 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindEntity<TerrainController, TerrainView, TerrainModel, TerrainCommand>(
                 Instantiate(terrainModel),
             terrainView);
-        
-        Container
-            .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel, SpaceStationCommand>(
-                Instantiate(spaceStationModel),
-            Instantiate(Repository.Load<GameObject>($"{SkirmishGameData.PlayerFactionType}{nameof(SpaceStationView)}")));
         
         Container
             .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(
