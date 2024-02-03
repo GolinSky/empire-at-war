@@ -2,6 +2,7 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Navigation;
@@ -60,6 +61,9 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
+            .AsSingle();
+        
+        Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
         
         Container

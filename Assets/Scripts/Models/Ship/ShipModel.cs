@@ -1,4 +1,6 @@
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
+using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
 
@@ -14,12 +16,18 @@ namespace EmpireAtWar.Models.Ship
     {
         [Header("Move Model")]
         [SerializeField] private MoveModel moveModel;
+        
+        [Header("Health Model")]
+        [SerializeField] private HealthModel healthModel;
+
+        [Header("Weapon Model")] 
+        [SerializeField] private WeaponModel weaponModel;
         [field: SerializeField] public Sprite ShipIcon { get; private set; }
         
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModel(moveModel);
+            AddInnerModels(moveModel, healthModel, weaponModel);
         }
     }
 }

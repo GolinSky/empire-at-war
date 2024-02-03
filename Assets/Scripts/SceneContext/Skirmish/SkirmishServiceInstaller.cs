@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Game;
@@ -50,5 +51,10 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindInterfacesAndSelfTo<SkirmishGameService>()
             .AsSingle()
             .NonLazy();
+        Container
+            .BindInterfacesAndSelfTo<BattleService>()
+            .AsSingle()
+            .NonLazy();
+        
     }
 }

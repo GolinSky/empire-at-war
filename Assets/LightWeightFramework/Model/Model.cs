@@ -52,6 +52,14 @@ namespace LightWeightFramework.Model
         {
             CurrentModels.Add(model);
         }
+        
+        protected void AddInnerModels(params InnerModel[] model) 
+        {
+            foreach (InnerModel innerModel in model)
+            {
+                CurrentModels.Add(innerModel);
+            }
+        }
  
     }
 }

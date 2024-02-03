@@ -1,4 +1,6 @@
-﻿using EmpireAtWar.Controllers.Ship;
+﻿using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Controllers.Ship;
 using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Ship
@@ -6,8 +8,9 @@ namespace EmpireAtWar.Commands.Ship
     
     public class EnemyShipCommand : Command<ShipController> , IShipCommand
     {
-        public EnemyShipCommand(ShipController controller) : base(controller)
+        public EnemyShipCommand(ShipController controller, EnemySelectionFacade enemySelectionFacade, IHealthComponent healthComponent) : base(controller)
         {
+            AddCommand(enemySelectionFacade.Create(controller.GetModel(), healthComponent));
         }
     }
 }

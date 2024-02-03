@@ -1,5 +1,7 @@
 using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.Ship;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -25,21 +27,27 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<MoveComponent>()
+                .AsSingle()
+                .NonLazy();
+            
+            Container.BindInterfacesAndSelfTo<HealthComponent>()
+                .AsSingle()
+                .NonLazy();
+
+            Container.BindInterfacesAndSelfTo<WeaponComponent>()
+                .AsSingle()
+                .NonLazy();
+            
             switch (playerType)
             {
                 case PlayerType.Player:
                 {
-                    Container.BindInterfacesAndSelfTo<MoveComponent>()
-                        .AsSingle()
-                        .NonLazy();
                     Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                    Container.BindInterfacesAndSelfTo<MoveComponent>()
-                        .AsSingle()
-                        .NonLazy();
                     Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(repository, shipType);
                     break;
                 }

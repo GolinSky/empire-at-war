@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb50a327af597349b048b7adb2ba905, type: 3}
   m_Name: MunificentShipModel
   m_EditorClassIdentifier: 
+  models:
+  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
     <StartPosition>k__BackingField: {x: -1000, y: 0, z: 1000}
     <Speed>k__BackingField: 5
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 10
+  healthModel:
+    <Armor>k__BackingField: 15000
+    <Shields>k__BackingField: 25000
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 16fe756bf7147cb4bba0f9f818d06a81,
     type: 3}
-  models:
-  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}

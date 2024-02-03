@@ -1,0 +1,12 @@
+﻿namespace EmpireAtWar.Models.Weapon
+{
+    public enum WeaponType
+    {
+        TurboLaser = 1,
+        HeavyTurboLaser = 2,
+        DualHeavyTurboLaser = 3,
+        MediumTurboLaser = 4,
+        DualMediumTurboLaser = 5,
+        PhotonTorpedo = 6,
+    }
+}

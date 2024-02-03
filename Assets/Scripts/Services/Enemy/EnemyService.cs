@@ -28,6 +28,8 @@ namespace EmpireAtWar.Services.Enemy
         public void Initialize()
         {
             spaceStationViewFacade.Create(PlayerType.Opponent, factionType,  skirmishGameData.GetStationPosition(PlayerType.Opponent));
+
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence);
         }
     }
 }

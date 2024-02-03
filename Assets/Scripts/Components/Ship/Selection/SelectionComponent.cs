@@ -18,7 +18,6 @@ namespace EmpireAtWar.Components.Ship.Selection
             Movable = movable;
             ModelObserver = model;
         }
-        
 
         public void OnSelected(SelectionType selectionType)
         {

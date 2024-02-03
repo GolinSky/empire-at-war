@@ -12,5 +12,7 @@ namespace EmpireAtWar.Components
         {
             Model = model.GetModel<TModel>();
         }
+        
+        
     }
 }

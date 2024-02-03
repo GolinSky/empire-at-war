@@ -15,7 +15,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         
         public override SelectionComponent Create(IModel model, IMovable movable)
         {
-            return new SelectionComponent(model,navigationService, movable);
+            return new SelectionComponent(model, navigationService, movable);
         }
     }
 }
