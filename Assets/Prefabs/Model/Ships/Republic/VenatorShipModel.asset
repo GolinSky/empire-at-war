@@ -22,5 +22,11 @@ MonoBehaviour:
   healthModel:
     <Armor>k__BackingField: 60000
     <Shields>k__BackingField: 30000
+  weaponModel:
+    weaponCount:
+      keyValue:
+      - key: 3
+        value: 2
+    <ProjectileSpeed>k__BackingField: 15
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa,
     type: 3}

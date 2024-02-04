@@ -17,6 +17,7 @@ namespace EmpireAtWar.Components.Ship.Selection
             Vector3 tempPosition = Vector3.zero;
             tempPosition.y = Model.Height;
             Model.HyperSpacePosition = tempPosition;
+            Model.Position = tempPosition;
         }
         
         public void MoveToPosition(Vector2 screenPosition)

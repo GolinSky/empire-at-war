@@ -1,6 +1,5 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Commands.ShipUi;
-using EmpireAtWar.Commands.SpaceStation;
 using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
@@ -9,7 +8,6 @@ using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.Planet;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Controllers.SkirmishCamera;
-using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Controllers.Terrain;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -17,10 +15,9 @@ using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.ShipUi;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Terrain;
+using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
@@ -28,7 +25,6 @@ using EmpireAtWar.Views.NavigationUiView;
 using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.ShipUi;
 using EmpireAtWar.Views.SkirmishCamera;
-using EmpireAtWar.Views.SpaceStation;
 using EmpireAtWar.Views.Terrain;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -55,7 +51,8 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private GameView gameView;
     [SerializeField] private PlanetView planetView;
     
-   
+   [Inject]
+   private IRepository Repository { get; }
   
     
     public override void InstallBindings()
@@ -64,6 +61,11 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .AsSingle();
         
         Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
+            .AsSingle();
+
+        Container
+            .BindInterfacesAndSelfTo<ProjectileModel>()
+            .FromScriptableObject(Repository.Load<ProjectileModel>(nameof(ProjectileModel)))
             .AsSingle();
         
         Container
@@ -99,7 +101,6 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container
             .BindEntityNoCommand<PlanetController, PlanetView, PlanetModel>(
                 Instantiate(planetModel),
-                planetView
-                );
+                planetView);
     }
 }

@@ -28,7 +28,6 @@ namespace EmpireAtWar
                // system.transform.rotation =  Quaternion.LookRotation (system.transform.position -targetTest.Position , Vector3.forward);
                 
                 // Determine which direction to rotate towards
-                Vector3 targetDirection = targetTest.Position - system.transform.position;
 
                 system.transform.LookAt(targetTest.transform);
                 

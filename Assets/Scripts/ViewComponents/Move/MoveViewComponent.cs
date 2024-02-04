@@ -32,7 +32,6 @@ namespace EmpireAtWar.ViewComponents.Move
         
         private void HyperSpaceJump(Vector3 point)
         {
-            point += new Vector3(30, 0, 30);
             Vector3 lookDirection = point - transform.position;
 
             if (moveSequence != null && moveSequence.IsActive())
