@@ -10,5 +10,10 @@ namespace EmpireAtWar.Repository
         {
             return Addressables.LoadAssetAsync<TSource>(key).WaitForCompletion();
         }
+
+        public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
+        {
+            return Addressables.LoadAssetAsync<GameObject>(key).WaitForCompletion().GetComponent<TComponent>();
+        }
     }
 }

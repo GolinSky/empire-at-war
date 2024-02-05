@@ -1,7 +1,10 @@
+using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Repository;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
+using WorkShop.LightWeightFramework.Repository;
 using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
@@ -18,6 +21,10 @@ public class ProjectContextInstaller : MonoInstaller
             .AsSingle();
 
         Container.BindInterfacesAndSelfTo<SettingsService>()
+            .AsSingle()
+            .NonLazy();
+
+        Container.BindInterfacesAndSelfTo<AudioService>()
             .AsSingle()
             .NonLazy();
     }
