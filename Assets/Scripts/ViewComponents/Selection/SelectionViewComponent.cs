@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Commands;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
@@ -20,8 +21,8 @@ namespace EmpireAtWar.ViewComponents.Selection
             base.OnCommandSet(command);
             command.TryGetCommand(out selectionCommand);
         }
-
-        private void OnMouseDown()
+        
+        private void OnMouseUp()
         {
             selectionCommand?.OnSelected(selectionType);
         }

@@ -6,23 +6,22 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Input
 {
-    public class InputService: Service, IInputService, ITickable
+    public class InputService : Service, IInputService, ITickable
     {
         private Touch touch;
-        public Vector2 MouseCoordinates => touch.position;
-        public event Action<InputType,TouchPhase, Vector2> OnInput;
-        
+        public event Action<InputType, TouchPhase, Vector2> OnInput;
+
+        public TouchPhase LastTouchPhase { get; private set; }
+
         public void Tick()
         {
             if (UnityEngine.Input.touchCount == 1)
             {
                 touch = UnityEngine.Input.GetTouch(0);
-                if (IsBlocked(touch.fingerId))
-                {
-                    return;
-                }
+                if (IsBlocked(touch.fingerId)) return;
 
-                switch (touch.phase)
+                LastTouchPhase = touch.phase;
+                switch (LastTouchPhase)
                 {
                     case TouchPhase.Began:
                     {
@@ -53,12 +52,11 @@ namespace EmpireAtWar.Services.Input
 
             void InvokeEvent(InputType inputType)
             {
-                OnInput?.Invoke(inputType,touch.phase, MouseCoordinates);
+                OnInput?.Invoke(inputType, LastTouchPhase, touch.position);
             }
         }
-        
+
         private bool IsBlocked(int id) => EventSystem.current.IsPointerOverGameObject(id) ||
                                           EventSystem.current.IsPointerOverGameObject();
-
     }
 }

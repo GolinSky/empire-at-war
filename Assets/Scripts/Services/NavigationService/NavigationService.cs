@@ -54,10 +54,10 @@ namespace EmpireAtWar.Services.NavigationService
 
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
+            if(inputService.LastTouchPhase == TouchPhase.Moved) return;
             if(Selectable != null) return;
             
             if(selectionType == SelectionType.Terrain) return;
-            
             Selectable = selectableObject;
             movable = selectableObject.Movable;
             selectableObject.SetActive(true);
