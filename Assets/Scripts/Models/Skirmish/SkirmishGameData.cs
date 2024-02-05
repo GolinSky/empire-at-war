@@ -25,9 +25,9 @@ namespace EmpireAtWar.Models.Skirmish
             switch (playerType)
             {
                 case PlayerType.Player:
-                    return new Vector3(-30, 0, 20);
+                    return new Vector3(-30, -15, 20);
                 case PlayerType.Opponent:
-                    return new Vector3(330, 0, -180);
+                    return new Vector3(330, -15, -180);
             }
 
             return Vector3.zero;

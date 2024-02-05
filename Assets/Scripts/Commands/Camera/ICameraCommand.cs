@@ -6,5 +6,7 @@ namespace EmpireAtWar.Commands.Camera
     {
         void ZoomIn();
         void ZoomOut();
+        void MaxZoomIn();
+        void MaxZoomOut();
     }
 }
