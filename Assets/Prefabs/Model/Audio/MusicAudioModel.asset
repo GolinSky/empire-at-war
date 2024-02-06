@@ -39,14 +39,12 @@ MonoBehaviour:
           - {fileID: 8300000, guid: 606030c1aa97d4945a014b6e57d17dc8, type: 3}
           - {fileID: 8300000, guid: 7a3a017bcd1fbbf43a44dc0d702d7839, type: 3}
           - {fileID: 8300000, guid: c89a85943dbb5e640bf2cc33229dbece, type: 3}
-          - {fileID: 8300000, guid: 3fec6ac81a883c94eb1ac0f0308ba0d3, type: 3}
+          - {fileID: 8300000, guid: f27734493b83cb144ac056b989040c23, type: 3}
         - key: 1
           value:
           - {fileID: 8300000, guid: f79f89a18dd86b04ba8ad29fd6d36a88, type: 3}
           - {fileID: 8300000, guid: 701dd341527169d4b9629bfab025b131, type: 3}
-          - {fileID: 8300000, guid: 56fd624340315f24d8f760092ee53dee, type: 3}
           - {fileID: 8300000, guid: 6bc5d8a1a928e7f46bf828e5647f047f, type: 3}
-          - {fileID: 8300000, guid: e3af321d5616a794093f6361dca67ef1, type: 3}
           - {fileID: 8300000, guid: c89a85943dbb5e640bf2cc33229dbece, type: 3}
           - {fileID: 8300000, guid: 6487dcff0c9b5ad44ab4d1a125e5a6d1, type: 3}
           - {fileID: 8300000, guid: 606030c1aa97d4945a014b6e57d17dc8, type: 3}
