@@ -9,5 +9,10 @@ namespace WorkShop.LightWeightFramework.Repository
         {
             return Resources.Load<TSource>(key);
         }
+
+        public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
+        {
+            return Resources.Load<TComponent>(key);
+        }
     }
 }
