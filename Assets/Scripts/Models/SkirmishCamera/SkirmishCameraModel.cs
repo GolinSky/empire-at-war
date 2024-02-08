@@ -1,6 +1,8 @@
 using System;
+using EmpireAtWar.Models.Skirmish;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.SkirmishCamera
 {
@@ -12,7 +14,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
         
     }
     [CreateAssetMenu(fileName = "SkirmishCameraModel", menuName = "Model/SkirmishCameraModel")]
-    public class SkirmishCameraModel:Model, ISkirmishCameraModelObserver
+    public class SkirmishCameraModel:Model, ISkirmishCameraModelObserver, IInitializable
     {
         public event Action<Vector3> OnTranslateDirectionChanged;
         public event Action<Vector3> OnPositionChanged;
@@ -26,6 +28,12 @@ namespace EmpireAtWar.Models.SkirmishCamera
         {
             set => OnPositionChanged?.Invoke(value);
         }
-        
+
+        [Inject]
+        public SkirmishGameData SkirmishGameData { get; }
+        public void Initialize()
+        {
+            
+        }
     }
 }

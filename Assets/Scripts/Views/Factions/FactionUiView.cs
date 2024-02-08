@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
@@ -12,9 +14,11 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
         [SerializeField] private Transform shipUnitParent;
-
+        [SerializeField] private BuildPipelineView pipelineView;
+        
         protected override void OnInitialize()
         {
+            pipelineView.Init();
             HandleSelectionChanged(Model.SelectionType);
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
             foreach (var data in Model.FactionData)
@@ -38,7 +42,16 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick(ShipType shipType)
         {
-            Command.BuildShip(shipType);
+            //Command.BuildShip(shipType);
+            FactionData factionData = Model.FactionData[shipType];
+            float buildTime = pipelineView.AddPipeline(shipType.ToString(),factionData.Icon, factionData.BuildTime);
+            StartCoroutine(InvokeAfterDelay(() => Command.BuildShip(shipType), buildTime));
+        }
+
+        private IEnumerator InvokeAfterDelay(Action action, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            action.Invoke();
         }
         
         private void HandleSelectionChanged(SelectionType selectionType)

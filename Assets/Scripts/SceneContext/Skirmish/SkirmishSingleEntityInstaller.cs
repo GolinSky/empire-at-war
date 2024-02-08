@@ -80,7 +80,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             
         Container
             .BindEntity<TerrainController, TerrainView, TerrainModel, TerrainCommand>(
-                Instantiate(terrainModel),
+                terrainModel,
             terrainView);
         
         Container
@@ -89,8 +89,8 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
                 shipUiView);
         
         Container
-            .BindEntity<FactionController, FactionUiView, PlayerFactionModel, FactionCommand>(
-                Instantiate(userfactionModel),
+            .BindEntityNoCommand<FactionController, FactionUiView, PlayerFactionModel>(
+                userfactionModel,
                 factionUiView);
         
         Container

@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.Ship
 {
@@ -29,5 +30,6 @@ namespace EmpireAtWar.Models.Ship
             base.Awake();
             AddInnerModels(moveModel, healthModel, weaponModel);
         }
+
     }
 }

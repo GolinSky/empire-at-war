@@ -30,11 +30,9 @@ MonoBehaviour:
         - key: 0
           value:
           - {fileID: 8300000, guid: aa072f98d2312464c902c72974d5d165, type: 3}
-          - {fileID: 8300000, guid: a03a681208fed754889be674eaf46a80, type: 3}
           - {fileID: 8300000, guid: 6af828434fb54954cb24b29105f81487, type: 3}
           - {fileID: 8300000, guid: b1d265bb17a870945ba8c68ed7917fb7, type: 3}
           - {fileID: 8300000, guid: ee44bdb75f737d24891b7266a088aed8, type: 3}
-          - {fileID: 8300000, guid: a30cbc2b3df2e6e41a772a08d4d3994e, type: 3}
           - {fileID: 8300000, guid: 6487dcff0c9b5ad44ab4d1a125e5a6d1, type: 3}
           - {fileID: 8300000, guid: 606030c1aa97d4945a014b6e57d17dc8, type: 3}
           - {fileID: 8300000, guid: 7a3a017bcd1fbbf43a44dc0d702d7839, type: 3}

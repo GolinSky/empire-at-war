@@ -1,5 +1,7 @@
+using EmpireAtWar.Models.Skirmish;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.Terrain
 {
@@ -8,8 +10,14 @@ namespace EmpireAtWar.Models.Terrain
         
     }
     [CreateAssetMenu(fileName = "TerrainModel", menuName = "Model/TerrainModel")]
-    public class TerrainModel:Model, ITerrainModelObserver
+    public class TerrainModel:Model, ITerrainModelObserver, IInitializable
     {
         
+        [Inject]
+        public SkirmishGameData SkirmishGameData { get; }
+        public void Initialize()
+        {
+            
+        }
     }
 }

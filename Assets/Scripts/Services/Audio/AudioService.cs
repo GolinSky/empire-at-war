@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.SceneService;
+using ModestTree;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Repository;
 using WorkShop.LightWeightFramework.Service;
@@ -16,14 +18,16 @@ namespace EmpireAtWar.Services.Audio
     {
         
     }
-    public class AudioService: Service, IInitializable, ILateDisposable
+    public class AudioService: Service, IInitializable, ILateDisposable, ITickable
     {
         private readonly ISceneService sceneService;
         private readonly MusicAudioModel musicAudioModel;
         private readonly AudioSource audioSource;
         private readonly FactionType factionType;
         private readonly Random random;
-
+        private List<AudioClip> clips;
+        private float duration;
+        private bool isMusicPlaying;
         public AudioService(ISceneService sceneService, IRepository repository, SkirmishGameData skirmishGameData)
         {
             this.sceneService = sceneService;
@@ -54,11 +58,30 @@ namespace EmpireAtWar.Services.Audio
 
         private void PlayMusic(SceneType sceneType)
         {
-            List<AudioClip> clips = musicAudioModel.GetMusicList(sceneType, factionType);
+            clips = musicAudioModel.GetMusicList(sceneType, factionType);
+            PlayMusicInternal();
+        }
+
+        private void PlayMusicInternal()
+        {
+            if(clips == null || clips.Count == 0) return;
             int randomIndex = random.Next(clips.Count);
-            audioSource.clip = clips.ElementAt(randomIndex);
-            audioSource.loop = true;//temp solution
+            AudioClip audioClip = clips.ElementAt(randomIndex);
+            audioSource.clip = audioClip;
             audioSource.Play();
+            duration = audioClip.length + Time.time;
+            isMusicPlaying = true;
+        }
+
+        public void Tick()
+        {
+            if(!isMusicPlaying) return;
+
+            if (Time.time > duration)
+            {
+                isMusicPlaying = false;
+                PlayMusicInternal();
+            }
         }
     }
 }

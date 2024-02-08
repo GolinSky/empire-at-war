@@ -24,7 +24,7 @@ namespace EmpireAtWar.Extentions
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(Object.Instantiate(repository.Load<TModel>($"{typeof(TModel).Name}")))
+                .FromNewScriptableObject(repository.Load<TModel>($"{typeof(TModel).Name}"))
                 .AsSingle()
                 .NonLazy();
 
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Extentions
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(model)
+                .FromNewScriptableObject(model)
                 .AsSingle();
 
             container
@@ -69,7 +69,7 @@ namespace EmpireAtWar.Extentions
         {
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(model)
+                .FromNewScriptableObject(model)
                 .AsSingle();
 
             container
@@ -98,7 +98,7 @@ namespace EmpireAtWar.Extentions
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(Object.Instantiate(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}")))
+                .FromNewScriptableObject(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}"))
                 .AsSingle()
                 .NonLazy();
             
