@@ -8,5 +8,9 @@ namespace EmpireAtWar.Services.Input
     {
         event Action<InputType,TouchPhase, Vector2> OnInput;
         TouchPhase LastTouchPhase { get;}
+        
+        Vector2 TouchPosition { get; }
+
+        event Action<Vector2>  OnEndDrag;
     }
 }

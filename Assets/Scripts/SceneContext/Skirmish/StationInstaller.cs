@@ -31,9 +31,11 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindInstance(startPosition)
                 .AsSingle();
+            
             Container
                 .BindInstance(playerType)
                 .AsSingle();
+            
             switch (playerType)
             {
                 case PlayerType.Player:

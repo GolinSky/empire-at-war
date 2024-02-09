@@ -3,7 +3,6 @@ using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Models.Ship
 {

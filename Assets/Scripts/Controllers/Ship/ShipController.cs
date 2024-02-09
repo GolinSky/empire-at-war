@@ -2,6 +2,7 @@ using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Ship;
 using LightWeightFramework.Controller;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Ship

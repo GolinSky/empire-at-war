@@ -11,13 +11,12 @@ namespace EmpireAtWar.Components.Ship.Selection
         private readonly ICameraService cameraService;
         public bool CanMove => true;
 
-        public MoveComponent(IModel model, ICameraService cameraService) : base(model)
+        public MoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
         {
             this.cameraService = cameraService;
-            Vector3 tempPosition = Vector3.zero;
-            tempPosition.y = Model.Height;
-            Model.HyperSpacePosition = tempPosition;
-            Model.Position = tempPosition;
+            startPosition.y = Model.Height;
+            Model.HyperSpacePosition = startPosition;
+            Model.Position = startPosition;
         }
         
         public void MoveToPosition(Vector2 screenPosition)

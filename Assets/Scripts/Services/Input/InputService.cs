@@ -12,14 +12,25 @@ namespace EmpireAtWar.Services.Input
         public event Action<InputType, TouchPhase, Vector2> OnInput;
 
         public TouchPhase LastTouchPhase { get; private set; }
+        public Vector2 TouchPosition => touch.position;
+        public event Action<Vector2> OnEndDrag;
 
         public void Tick()
         {
-            if(block) return;
             if (UnityEngine.Input.touchCount == 1)
             {
-                
                 touch = UnityEngine.Input.GetTouch(0);
+
+                if (block)
+                {
+                    LastTouchPhase = touch.phase;
+
+                    if (LastTouchPhase != TouchPhase.Moved && LastTouchPhase != TouchPhase.Stationary)
+                    {
+                        OnEndDrag?.Invoke(TouchPosition);
+                    }
+                    return;
+                }
                 
                 if (IsBlocked(touch.fingerId)) return;
 

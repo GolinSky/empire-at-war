@@ -7,23 +7,30 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.Ship;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext
 {
-    public class PlayerShipInstaller:Installer
+    public class ShipInstaller:Installer
     {
         private readonly ShipType shipType;
         private readonly PlayerType playerType;
+        private readonly Vector3 startPosition;
 
-        public PlayerShipInstaller(ShipType shipType, PlayerType playerType)
+        public ShipInstaller(ShipType shipType, PlayerType playerType, Vector3 startPosition)
         {
             this.shipType = shipType;
             this.playerType = playerType;
+            this.startPosition = startPosition;
         }
         
         public override void InstallBindings()
         {
+            Container
+                .BindInstance(startPosition)
+                .AsSingle();
+            
             Container.BindInterfacesAndSelfTo<MoveComponent>()
                 .AsSingle()
                 .NonLazy();
@@ -49,8 +56,6 @@ namespace EmpireAtWar.SceneContext
                     break;
                 }
             }
-            
-           
         }
     }
 }

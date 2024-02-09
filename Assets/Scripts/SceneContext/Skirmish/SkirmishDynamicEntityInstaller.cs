@@ -12,9 +12,9 @@ namespace EmpireAtWar.SceneContext
         public override void InstallBindings()
         {
             Container
-                .BindFactory<PlayerType, ShipType, ShipView, ShipFacadeFactory>()
+                .BindFactory<PlayerType, ShipType, Vector3, ShipView, ShipFacadeFactory>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<PlayerShipInstaller>()
+                .ByNewGameObjectInstaller<ShipInstaller>()
                 .NonLazy();
 
             Container

@@ -101,5 +101,15 @@ namespace EmpireAtWar.Extentions
                 .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))
                 .AsSingle();
         }
+
+
+        public static DiContainer BindService<TService>(this DiContainer container)
+        {
+            container
+                .BindInterfacesAndSelfTo<TService>()
+                .AsSingle()
+                .NonLazy();
+            return container;
+        }
     }
 }

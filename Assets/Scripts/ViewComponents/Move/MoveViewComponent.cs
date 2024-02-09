@@ -21,7 +21,7 @@ namespace EmpireAtWar.ViewComponents.Move
             model = ModelObserver.GetModelObserver<IMoveModelObserver>();
             transform.position = model.StartPosition ;
             Offset += 5;
-            HyperSpaceJump(model.HyperSpacePosition + new Vector3(Offset, 0, Offset));
+            HyperSpaceJump(model.HyperSpacePosition);//+ new Vector3(Offset, 0, Offset));
             model.OnTargetPositionChanged += UpdateTargetPosition;
             model.OnHyperSpaceJump += HyperSpaceJump;
         }

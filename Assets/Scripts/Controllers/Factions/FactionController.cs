@@ -1,7 +1,7 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.Ship;
+using EmpireAtWar.Services.Reinforcement;
 using LightWeightFramework.Controller;
 using WorkShop.LightWeightFramework.Command;
 using Zenject;
@@ -11,12 +11,12 @@ namespace EmpireAtWar.Controllers.Factions
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand
     {
         private readonly INavigationService navigationService;
-        private readonly ShipFacadeFactory shipFacadeFactory;
+        private readonly IReinforcementService reinforcementService;
 
-        public FactionController(PlayerFactionModel model, INavigationService navigationService,  ShipFacadeFactory shipFacadeFactory) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService, IReinforcementService reinforcementService) : base(model)
         {
             this.navigationService = navigationService;
-            this.shipFacadeFactory = shipFacadeFactory;
+            this.reinforcementService = reinforcementService;
         }
         
         public void Initialize()
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void BuildShip(ShipType shipType)
         {
-            shipFacadeFactory.Create(PlayerType.Player, shipType);
+            reinforcementService.AddReinforcement(shipType);
         }
 
         public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand

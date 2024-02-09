@@ -1,9 +1,10 @@
-﻿using WorkShop.LightWeightFramework.Command;
+﻿using EmpireAtWar.Models.Factions;
+using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Reinforcement
 {
     public interface IReinforcementCommand:ICommand
     {
-        
+        void TrySpawnShip(ShipType shipType);
     }
 }

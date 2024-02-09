@@ -2,6 +2,7 @@
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
+using UnityEngine;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
 
@@ -29,7 +30,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             spaceStationViewFacade.Create(PlayerType.Opponent, factionType,  skirmishGameData.GetStationPosition(PlayerType.Opponent));
 
-            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence);
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, Vector3.zero);
         }
     }
 }
