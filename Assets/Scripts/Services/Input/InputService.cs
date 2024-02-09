@@ -15,9 +15,12 @@ namespace EmpireAtWar.Services.Input
 
         public void Tick()
         {
+            if(block) return;
             if (UnityEngine.Input.touchCount == 1)
             {
+                
                 touch = UnityEngine.Input.GetTouch(0);
+                
                 if (IsBlocked(touch.fingerId)) return;
 
                 LastTouchPhase = touch.phase;
@@ -58,5 +61,12 @@ namespace EmpireAtWar.Services.Input
 
         private bool IsBlocked(int id) => EventSystem.current.IsPointerOverGameObject(id) ||
                                           EventSystem.current.IsPointerOverGameObject();
+
+        public void Block(bool b)
+        {
+            block = b;
+        }
+
+        private bool block;
     }
 }

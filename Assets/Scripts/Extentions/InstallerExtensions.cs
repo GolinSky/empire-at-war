@@ -38,18 +38,17 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
         }
         
-        public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TModel model, TView view)
+        public static void BindEntity2<TController, TView, TModel>(this DiContainer container, TView view)
             where TController : Controller<TModel>
             where TView : IView
             where TModel : Model
-            where TCommand : Command
         {
-            container.BindInterfacesAndSelfTo<TCommand>()
-                .AsSingle();
+            IRepository repository = container.Resolve<IRepository>();
+    
 
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(model)
+                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
                 .AsSingle();
 
             container
@@ -62,14 +61,42 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
         }
         
-        public static void BindEntityNoCommand<TController, TView, TModel>(this DiContainer container, TModel model, TView view)
+        public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TView view)
+            where TController : Controller<TModel>
+            where TView : IView
+            where TModel : Model
+            where TCommand : Command
+        {
+            IRepository repository = container.Resolve<IRepository>();
+
+            container.BindInterfacesAndSelfTo<TCommand>()
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
+                .AsSingle();
+
+            container
+                .BindInterfacesTo<TView>()
+                .FromInstance(view)
+                .AsSingle();
+
+            container
+                .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+        }
+        
+        public static void BindEntityNoCommand<TController, TView, TModel>(this DiContainer container,  TView view)
             where TController : Controller<TModel>
             where TView : IView
             where TModel : Model
         {
+            IRepository repository = container.Resolve<IRepository>();
+            
             container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(model)
+                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
                 .AsSingle();
 
             container

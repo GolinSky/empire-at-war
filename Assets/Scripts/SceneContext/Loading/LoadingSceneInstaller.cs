@@ -10,14 +10,11 @@ namespace EmpireAtWar.SceneContext.Loading
     public class LoadingSceneInstaller : MonoInstaller
     {
         [SerializeField] private LoadingView loadingView;
-        [SerializeField] private LoadingModel loadingModel;
         
         public override void InstallBindings()
         {
             Container.BindEntityNoCommand<LoadingController, LoadingView, LoadingModel>(
-                loadingModel,
-                loadingView
-                );
+                loadingView);
         }
     }
 }
