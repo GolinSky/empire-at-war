@@ -11,7 +11,7 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container,FactionType factionType )
+        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, FactionType factionType)
             where TController : Controller<TModel>
             where TView : Component, IView
             where TModel : Model
@@ -72,7 +72,6 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
         }
         
-        
         public static void BindShipEntity<TController, TView, TModel, TCommand>(this DiContainer container, ShipType shipType)
             where TController : Controller<TModel>
             where TView : IView
@@ -84,7 +83,6 @@ namespace EmpireAtWar.Extentions
             container.BindInstance(shipType)
                 .AsSingle();
             
-                   
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
 
@@ -93,7 +91,6 @@ namespace EmpireAtWar.Extentions
                 .FromNewScriptableObject(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}"))
                 .AsSingle()
                 .NonLazy();
-            
             
             container
                 .BindInterfacesAndSelfTo<TController>()
