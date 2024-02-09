@@ -64,11 +64,11 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .AsSingle();
         
         Container
-            .BindEntityNoCommand<NavigationController, NavigationUiView, NavigationModel>(
+            .BindEntity<NavigationController, NavigationUiView, NavigationModel>(
                 navigationUiView);
         
         Container
-            .BindEntityNoCommand<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(
+            .BindEntity<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(
                 cameraView);
             
         Container
@@ -80,19 +80,19 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
                 shipUiView);
         
         Container
-            .BindEntityNoCommand<FactionController, FactionUiView, PlayerFactionModel>(
+            .BindEntity<FactionController, FactionUiView, PlayerFactionModel>(
                 factionUiView);
         
         Container
-            .BindEntityNoCommand<GameController, GameView, GameModel>(
+            .BindEntity<GameController, GameView, GameModel>(
                 gameView);
         
         Container
-            .BindEntityNoCommand<PlanetController, PlanetView, PlanetModel>(
+            .BindEntity<PlanetController, PlanetView, PlanetModel>(
                 planetView);
         
         Container
-            .BindEntity2<ReinforcementController, ReinforcementView, ReinforcementModel>(
+            .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(
                 reinforcementView);
     }
 }

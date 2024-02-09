@@ -13,7 +13,7 @@ namespace EmpireAtWar.SceneContext.Loading
         
         public override void InstallBindings()
         {
-            Container.BindEntityNoCommand<LoadingController, LoadingView, LoadingModel>(
+            Container.BindEntity<LoadingController, LoadingView, LoadingModel>(
                 loadingView);
         }
     }

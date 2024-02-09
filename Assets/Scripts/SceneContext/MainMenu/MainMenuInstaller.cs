@@ -12,7 +12,7 @@ public class MainMenuInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
-        Container.BindEntityNoCommand<MenuUiController, MenuUiView, MenuUiModel>(
+        Container.BindEntity<MenuUiController, MenuUiView, MenuUiModel>(
             menuUiView);
     }
 }

@@ -7,20 +7,17 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.Ship;
-using WorkShop.LightWeightFramework.Repository;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext
 {
     public class PlayerShipInstaller:Installer
     {
-        private readonly IRepository repository;
         private readonly ShipType shipType;
         private readonly PlayerType playerType;
 
-        public PlayerShipInstaller(IRepository repository, ShipType shipType, PlayerType playerType)
+        public PlayerShipInstaller(ShipType shipType, PlayerType playerType)
         {
-            this.repository = repository;
             this.shipType = shipType;
             this.playerType = playerType;
         }
@@ -43,12 +40,12 @@ namespace EmpireAtWar.SceneContext
             {
                 case PlayerType.Player:
                 {
-                    Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(repository, shipType);
+                    Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(shipType);
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                    Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(repository, shipType);
+                    Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(shipType);
                     break;
                 }
             }

@@ -13,16 +13,14 @@ namespace EmpireAtWar.SceneContext
 {
     public class StationInstaller : Installer
     {
-        private readonly IRepository repository;
         private readonly FactionType factionType;
         private readonly PlayerType playerType;
         private readonly Vector3 startPosition;
         private readonly ISkirmishGameService skirmishGameService;
 
 
-        public StationInstaller(IRepository repository, FactionType factionType, PlayerType playerType, Vector3 startPosition)
+        public StationInstaller(FactionType factionType, PlayerType playerType, Vector3 startPosition)
         {
-            this.repository = repository;
             this.factionType = factionType;
             this.playerType = playerType;
             this.startPosition = startPosition;
@@ -43,7 +41,6 @@ namespace EmpireAtWar.SceneContext
                     Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
                             SpaceStationCommand>(
-                            repository,
                             factionType);
                     break;
                 }
@@ -52,7 +49,6 @@ namespace EmpireAtWar.SceneContext
                     Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
                             EnemySpaceStationCommand>(
-                            repository,
                             factionType);
                     break;
                 }

@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
@@ -12,12 +11,13 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, IRepository repository, FactionType factionType )
+        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container,FactionType factionType )
             where TController : Controller<TModel>
             where TView : Component, IView
             where TModel : Model
             where TCommand : Command
         {
+            IRepository repository = container.Resolve<IRepository>();
 
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
@@ -38,56 +38,19 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
         }
         
-        public static void BindEntity2<TController, TView, TModel>(this DiContainer container, TView view)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
-        {
-            IRepository repository = container.Resolve<IRepository>();
-    
-
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
-                .AsSingle();
-
-            container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsSingle();
-        }
-        
         public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TView view)
             where TController : Controller<TModel>
             where TView : IView
             where TModel : Model
             where TCommand : Command
         {
-            IRepository repository = container.Resolve<IRepository>();
-
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
 
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
-                .AsSingle();
-
-            container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsSingle();
+            container.BindEntity<TController, TView, TModel>(view);
         }
         
-        public static void BindEntityNoCommand<TController, TView, TModel>(this DiContainer container,  TView view)
+        public static void BindEntity<TController, TView, TModel>(this DiContainer container,  TView view)
             where TController : Controller<TModel>
             where TView : IView
             where TModel : Model
@@ -110,12 +73,14 @@ namespace EmpireAtWar.Extentions
         }
         
         
-        public static void BindShipEntity<TController, TView, TModel, TCommand>(this DiContainer container, IRepository repository, ShipType shipType)
+        public static void BindShipEntity<TController, TView, TModel, TCommand>(this DiContainer container, ShipType shipType)
             where TController : Controller<TModel>
             where TView : IView
             where TModel : Model
             where TCommand : Command
         {
+            IRepository repository = container.Resolve<IRepository>();
+
             container.BindInstance(shipType)
                 .AsSingle();
             
