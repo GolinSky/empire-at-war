@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Health;
+﻿using DG.Tweening;
+using EmpireAtWar.Models.Health;
 using UnityEngine;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
@@ -7,6 +8,8 @@ namespace EmpireAtWar.ViewComponents.Health65
 {
     public class HealthViewComponent : ViewComponent
     {
+        private const float TweenDuration = 1f;
+        
         [SerializeField] private Canvas healthCanvas;
         [SerializeField] private Image shieldsFillImage;
         [SerializeField] private Image armorFillImage;
@@ -14,6 +17,8 @@ namespace EmpireAtWar.ViewComponents.Health65
         private IHealthModelObserver healthModelObserver;
         private float baseShieldsValue;
         private float baseArmorValue;
+
+        private Sequence sequence;
 
         protected override void OnInit()
         {
@@ -30,8 +35,14 @@ namespace EmpireAtWar.ViewComponents.Health65
 
         private void UpdateData()
         {
-            shieldsFillImage.fillAmount = healthModelObserver.Shields / baseShieldsValue;
-            armorFillImage.fillAmount = healthModelObserver.Armor / baseArmorValue;
+            if (sequence != null && sequence.IsActive())
+            {
+                sequence.Kill();
+            }
+            
+            sequence = DOTween.Sequence();
+            sequence.Append(shieldsFillImage.DOFillAmount(healthModelObserver.Shields / baseShieldsValue, TweenDuration));
+            sequence.Append(armorFillImage.DOFillAmount(healthModelObserver.Armor / baseArmorValue, TweenDuration));
         }
 
         public void Update()
