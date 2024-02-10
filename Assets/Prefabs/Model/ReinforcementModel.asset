@@ -16,5 +16,20 @@ MonoBehaviour:
   <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
     type: 3}
   spawnShipWrapper:
-    keyValue: []
+    keyValue:
+    - key: 0
+      value: {fileID: 6168834610840409693, guid: 22aad1d1d6cecd043901814978cdaac2,
+        type: 3}
+    - key: 1
+      value: {fileID: 3045890703771428440, guid: 81f78a6bd8ddb7943b29a5b1706d8b63,
+        type: 3}
+    - key: 2
+      value: {fileID: 885205936333499474, guid: 602616906d6d9844aa9086252a1423f4,
+        type: 3}
+    - key: 100
+      value: {fileID: 7376654796748103530, guid: 80484c47f0fde8944b6852594a403c69,
+        type: 3}
+    - key: 101
+      value: {fileID: 6420686071980322647, guid: 2c860664286ce464e830a24e1585937e,
+        type: 3}
   factionsModel: {fileID: 11400000, guid: 3de703d0a2c0ac5428de8b8f64093d18, type: 2}

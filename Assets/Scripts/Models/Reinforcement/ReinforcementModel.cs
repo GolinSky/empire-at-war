@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Models.Reinforcement
         Vector3 SpawnShipPosition { get; }
         
         bool IsTrySpawning { get; }
+        Transform GetSpawnPrefab(ShipType shipType);
     }
     
     [CreateAssetMenu(fileName = "ReinforcementModel", menuName = "Model/ReinforcementModel")]
@@ -38,6 +40,16 @@ namespace EmpireAtWar.Models.Reinforcement
         private SkirmishGameData SkirmishGameData { get; }
         
         public Dictionary<ShipType, Transform> SpawnShips => spawnShipWrapper.Dictionary;
+
+        public Transform GetSpawnPrefab(ShipType shipType)
+        {
+            if (SpawnShips.TryGetValue(shipType, out Transform spawnTransform))
+            {
+                return spawnTransform;
+            }
+
+            return SpawnShips.Values.FirstOrDefault();
+        }
 
         public void InvokeSpawnShipEvent(bool success)
         {

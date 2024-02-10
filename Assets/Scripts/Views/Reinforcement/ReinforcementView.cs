@@ -14,10 +14,10 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private Button switchButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private Canvas panelCanvas;
-        [SerializeField] private GameObject shipTest;
         
         private ReinforcementDraggable currentDraggable;
-
+        private Transform spawnReinforcement;
+        
         protected override void OnInitialize()
         {
             switchButton.onClick.AddListener(ActivateCanvas);
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             if (success)
             {
-                shipTest.SetActive(false);
+                Destroy(spawnReinforcement.gameObject);
                 currentDraggable.Destroy();
             }
         }
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Views.Reinforcement
 
             currentDraggable = draggable;
             Command.TrySpawnShip(shipType);
-            shipTest.SetActive(true);
+            spawnReinforcement = Instantiate(Model.GetSpawnPrefab(shipType));
         }
         
         private void ActivateCanvas()
@@ -74,7 +74,7 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             if(!Model.IsTrySpawning) return;
 
-            shipTest.transform.position = Model.SpawnShipPosition;
+            spawnReinforcement.position = Model.SpawnShipPosition;
         }
     }
 }

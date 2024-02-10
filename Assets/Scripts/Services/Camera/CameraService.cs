@@ -22,10 +22,9 @@ namespace EmpireAtWar.Services.Camera
         }
         
         public Vector3 GetWorldPoint(Vector2 screenPoint)
-        {
+        {  
             Physics.Raycast(camera.ScreenPointToRay(screenPoint), out RaycastHit hit);
             return hit.point;
         }
-
     }
 }

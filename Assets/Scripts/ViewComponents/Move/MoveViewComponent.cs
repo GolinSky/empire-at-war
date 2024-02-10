@@ -7,7 +7,6 @@ namespace EmpireAtWar.ViewComponents.Move
 {
     public class MoveViewComponent:ViewComponent
     {
-        private static float Offset;
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
@@ -19,8 +18,7 @@ namespace EmpireAtWar.ViewComponents.Move
         protected override void OnInit()
         {
             model = ModelObserver.GetModelObserver<IMoveModelObserver>();
-            transform.position = model.StartPosition ;
-            Offset += 5;
+            transform.position = model.HyperSpacePosition - Vector3.right * 1000f;
             HyperSpaceJump(model.HyperSpacePosition);//+ new Vector3(Offset, 0, Offset));
             model.OnTargetPositionChanged += UpdateTargetPosition;
             model.OnHyperSpaceJump += HyperSpaceJump;
