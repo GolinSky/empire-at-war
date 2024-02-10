@@ -26,11 +26,18 @@ namespace EmpireAtWar.ViewComponents.Health65
             baseShieldsValue = healthModelObserver.Shields;
             baseArmorValue = healthModelObserver.Armor;
             healthModelObserver.OnValueChanged += UpdateData;
+            healthModelObserver.OnDestroy += Destroy;
         }
-
+        
         protected override void OnRelease()
         {
             healthModelObserver.OnValueChanged -= UpdateData;
+            healthModelObserver.OnDestroy -= Destroy;
+        }
+        
+        private void Destroy()
+        {
+            View.Release();
         }
 
         private void UpdateData()

@@ -16,6 +16,8 @@ namespace EmpireAtWar.Services.Battle
 
         public void AddTarget(IHealthComponent healthComponent)
         {
+            if(healthComponent.Destroyed) return;
+            
             OnTargetAdded?.Invoke(healthComponent);
         }
     }

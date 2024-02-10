@@ -13,14 +13,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
 
         private IWeaponModelObserver weaponModelObserver;
+        private IProjectileModel projectileModel;
+        
         protected override void OnInit()
         {
             weaponModelObserver = ModelObserver.GetModelObserver<IWeaponModelObserver>();
+            projectileModel = weaponModelObserver.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
-                foreach (var turretView in keyValuePair.Value)
+                foreach (TurretView turretView in keyValuePair.Value)
                 {
-                    turretView.SetData(weaponModelObserver.ProjectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileSpeed);
+                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileSpeed);
                 }
             }
             weaponModelObserver.OnAttack += Attack;
@@ -33,7 +36,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void Attack(Vector3 targetPosition)
         {
-            foreach (var turretDictionaryValue in TurretDictionary.Values)
+            foreach (List<TurretView> turretDictionaryValue in TurretDictionary.Values)
             {
                 foreach (var turretView in turretDictionaryValue)
                 {

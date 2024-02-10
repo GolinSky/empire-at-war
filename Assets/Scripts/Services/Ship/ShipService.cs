@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Controllers.Ship;
-using EmpireAtWar.Services.NavigationService;
 using WorkShop.LightWeightFramework.Service;
 
 namespace EmpireAtWar.Services.Ship
@@ -17,13 +16,11 @@ namespace EmpireAtWar.Services.Ship
     {
         private List<IShipEntity> shipEntities = new List<IShipEntity>(); 
 
-        //fast fall
         public void Add(IShipEntity entity)
         {
             shipEntities.Add(entity);
         }
 
-        //fast fall
         public void Remove(IShipEntity entity)
         {
             shipEntities.Remove(entity);

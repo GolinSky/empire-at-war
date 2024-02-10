@@ -11,10 +11,16 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         void ApplyDamage(float damage);
         Vector3 Position { get; }
+        
+        bool Destroyed { get; }
     }
-    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, IHealthComponent
+    
+    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent 
     {
         private readonly IMoveModelObserver moveModelObserver;
+        
+        public Vector3 Position => moveModelObserver.Position;
+        public bool Destroyed => Model.IsDestroyed;
 
         public HealthComponent(IModel model) : base(model)
         {
@@ -23,13 +29,22 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void Initialize()
         {
+            Model.OnDestroy += Destroy;
+        }
+
+        public void LateDispose()
+        {
+            Model.OnDestroy -= Destroy;
+        }
+        
+        private void Destroy()
+        {
+            
         }
 
         public void ApplyDamage(float damage)
         {
             Model.ApplyDamage(damage);
         }
-
-        public Vector3 Position => moveModelObserver.Position;
     }
 }

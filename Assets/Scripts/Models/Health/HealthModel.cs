@@ -6,6 +6,7 @@ namespace EmpireAtWar.Models.Health
 {
     public interface IHealthModelObserver:IModelObserver
     {
+        event Action OnDestroy;
         event Action OnValueChanged;
 
         float Armor { get; }
@@ -16,8 +17,10 @@ namespace EmpireAtWar.Models.Health
     public class HealthModel:InnerModel, IHealthModelObserver
     {
         public event Action OnValueChanged;
+        public event Action OnDestroy;
         [field:SerializeField] public float Armor { get; private set; }
         [field:SerializeField] public float Shields { get; private set; }
+        public bool IsDestroyed { get; private set; }
 
 
         public void ApplyDamage(float damage)
@@ -34,8 +37,14 @@ namespace EmpireAtWar.Models.Health
                     Shields = 0;
                 }
                 Armor -= damage;
+                if (Armor <= 0)
+                {
+                    IsDestroyed = true;
+                    OnDestroy?.Invoke();
+                }
             }
             OnValueChanged?.Invoke();
+            
         }
         //hull value - armor only safe hull by coefficient - same as shields safe armor+hull by cofficient
     }

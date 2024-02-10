@@ -29,6 +29,7 @@ namespace WorkShop.LightWeightFramework.ViewComponents
         protected virtual void OnCommandSet(ICommand command){}
         protected abstract void OnInit();
         protected abstract void OnRelease();
+        
     }
 
     public abstract class ViewComponent<TModel>:ViewComponent
