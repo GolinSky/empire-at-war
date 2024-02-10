@@ -32,4 +32,7 @@ MonoBehaviour:
     - key: 101
       value: {fileID: 6420686071980322647, guid: 2c860664286ce464e830a24e1585937e,
         type: 3}
+    - key: 102
+      value: {fileID: 5703078537108270140, guid: 07fbb46098b845b4f847f4511e25b732,
+        type: 3}
   factionsModel: {fileID: 11400000, guid: 3de703d0a2c0ac5428de8b8f64093d18, type: 2}
