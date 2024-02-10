@@ -90,6 +90,14 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}"))
                 .AsSingle()
+                .OnInstantiated((context, o) =>
+                {
+                    Model model = (Model)o;
+                    foreach (IModel currentModel in model.CurrentModels)
+                    {
+                        context.Container.Inject(currentModel);
+                    }
+                })
                 .NonLazy();
             
             container

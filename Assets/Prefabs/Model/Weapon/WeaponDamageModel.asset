@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b8f81a7c39426f823ed35bee5d1194, type: 3}
+  m_Name: WeaponDamageModel
+  m_EditorClassIdentifier: 
+  models: []
+  damageDictionary:
+    keyValue:
+    - key: 1
+      value:
+        <Damage>k__BackingField: 200
+        <Distance>k__BackingField: 30
+    - key: 2
+      value:
+        <Damage>k__BackingField: 300
+        <Distance>k__BackingField: 40
+    - key: 3
+      value:
+        <Damage>k__BackingField: 400
+        <Distance>k__BackingField: 40
+    - key: 4
+      value:
+        <Damage>k__BackingField: 100
+        <Distance>k__BackingField: 25
+    - key: 5
+      value:
+        <Damage>k__BackingField: 150
+        <Distance>k__BackingField: 25
+    - key: 6
+      value:
+        <Damage>k__BackingField: 500
+        <Distance>k__BackingField: 25

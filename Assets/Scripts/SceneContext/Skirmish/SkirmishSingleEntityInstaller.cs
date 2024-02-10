@@ -59,6 +59,18 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .AsSingle();
 
         Container
+            .Bind<FactionsModel>()
+            .FromNewScriptableObject(Repository.Load<FactionsModel>(nameof(FactionsModel)))
+            .AsSingle();
+        
+        Container
+            .Bind<WeaponDamageModel>()
+            .FromNewScriptableObject(Repository.Load<WeaponDamageModel>(nameof(WeaponDamageModel)))
+            .AsSingle();
+        
+        
+
+        Container
             .BindInterfacesAndSelfTo<ProjectileModel>()
             .FromScriptableObject(Repository.Load<ProjectileModel>(nameof(ProjectileModel)))
             .AsSingle();

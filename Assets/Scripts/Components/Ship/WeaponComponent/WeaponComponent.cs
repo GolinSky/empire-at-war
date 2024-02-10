@@ -38,9 +38,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             if (selectionModelObserver.IsSelected)
             {
-                Model.TargetPosition = healthComponent.Position;
                 float distance = Vector3.Distance(moveModelObserver.Position, healthComponent.Position);
+                if (distance > Model.MaxAttackDistance)
+                {
+                    return;
+                }
                 float baseTime = distance / Model.ProjectileSpeed;
+                Model.TargetPosition = healthComponent.Position;
 
                 Sequence sequence = DOTween.Sequence();
                 sequence.AppendInterval(baseTime);

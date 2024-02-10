@@ -14,7 +14,7 @@ namespace LightWeightFramework.Model
                 AddModel(innerModel);
             }
         }
-        private List<IModel> CurrentModels { get; } = new List<IModel>();
+        public List<IModel> CurrentModels { get; } = new List<IModel>();
         
         public TModelObserver GetModelObserver<TModelObserver>() where TModelObserver : IModelObserver
         {

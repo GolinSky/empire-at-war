@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.Weapon
 {
@@ -10,10 +11,12 @@ namespace EmpireAtWar.Models.Weapon
     {
         event Action<Vector3> OnAttack;
 
-        Dictionary<WeaponType, int> WeaponCount { get; }
+        Dictionary<WeaponType, int> WeaponDictionary { get; }
         IProjectileModel ProjectileModel { get; }
         
         float ProjectileSpeed { get;}
+        
+        float MaxAttackDistance { get; }
     }
 
     [Serializable]
@@ -24,10 +27,33 @@ namespace EmpireAtWar.Models.Weapon
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
         
         [field:SerializeField] public float ProjectileSpeed { get; private set; }
-        
-        public Dictionary<WeaponType, int> WeaponCount => weaponCount.Dictionary;
+
+        public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
         
         public IProjectileModel ProjectileModel { get; set; }
+        
+        [Inject]
+        private WeaponDamageModel WeaponDamageModel { get; }
+
+        public float MaxAttackDistance
+        {
+            get
+            {
+                float maxDistance = 0;
+
+                foreach (WeaponType weaponType in WeaponDictionary.Keys)
+                {
+                    float distance = WeaponDamageModel.DamageDictionary[weaponType].Distance;
+                    if (distance > maxDistance)
+                    {
+                        maxDistance = distance;
+                    }
+                }
+
+                return maxDistance;
+            }
+        }
+
 
         public Vector3 TargetPosition
         {
@@ -37,9 +63,12 @@ namespace EmpireAtWar.Models.Weapon
 
         public float GetTotalDamage()
         {
-            return 3000; //hardcode
+            float damage = 0;
+            foreach (var keyValuePair in WeaponDictionary)
+            {
+                damage += WeaponDamageModel.DamageDictionary[keyValuePair.Key].Damage * keyValuePair.Value;
+            }
+            return damage; 
         }
     }
-
-
 }
