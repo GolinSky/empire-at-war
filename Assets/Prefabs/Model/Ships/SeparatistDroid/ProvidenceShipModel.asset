@@ -15,12 +15,31 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
-    <StartPosition>k__BackingField: {x: -1000, y: 0, z: -1000}
     <Speed>k__BackingField: 3
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
     <Armor>k__BackingField: 50000
     <Shields>k__BackingField: 35000
+  weaponModel:
+    weaponCount:
+      keyValue:
+      - key: 2
+        value: 2
+    <ProjectileSpeed>k__BackingField: 0
+  radarModel:
+    <Range>k__BackingField: 40
+    <Delay>k__BackingField: 5
+    <Distance>k__BackingField: 40
+    layerMaskWrapper:
+      keyValue:
+      - key: 1
+        value:
+          serializedVersion: 2
+          m_Bits: 64
+      - key: 2
+        value:
+          serializedVersion: 2
+          m_Bits: 128
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 3483e2ea8c3953b49be48aab2fc422ad,
     type: 3}

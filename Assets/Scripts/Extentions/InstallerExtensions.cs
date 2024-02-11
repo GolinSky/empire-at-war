@@ -11,6 +11,7 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
+        //todo: rename
         public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, FactionType factionType)
             where TController : Controller<TModel>
             where TView : Component, IView
@@ -40,7 +41,8 @@ namespace EmpireAtWar.Extentions
             where TModel : Model
             where TCommand : Command
         {
-            container.BindInterfacesAndSelfTo<TCommand>()
+            container
+                .BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
 
             container.BindEntity<TController, TView, TModel>(view);

@@ -15402,6 +15402,7 @@ GameObject:
   - component: {fileID: 5952501562155706629}
   - component: {fileID: 3669284567344977784}
   - component: {fileID: 5275728022472264954}
+  - component: {fileID: -4097660584529175339}
   m_Layer: 0
   m_Name: VenatorShipView
   m_TagString: Untagged
@@ -15453,7 +15454,11 @@ MonoBehaviour:
   - {fileID: 5275728022472264954}
   - {fileID: 3669284567344977784}
   - {fileID: 7102592058695959028}
-  - {fileID: 1710973070478048274}
+  - {fileID: -7262126652776327686, guid: 6d020e23c659ac141ab82d2f25751fa2, type: 3}
+  m_MaxDistance: 40
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &5952501562155706629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15505,6 +15510,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionType: 3
   selectedCanvas: {fileID: 965972597380759595}
+--- !u!114 &-4097660584529175339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aea22f94f5443f58d01435620375231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3817778047908344298
 GameObject:
   m_ObjectHideFlags: 0
@@ -41306,6 +41323,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 773376535087680568}
     m_Modifications:
+    - target: {fileID: 1673160442976249156, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2039469701158245208, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: m_Pivot.x
@@ -41406,10 +41428,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2195221843313632912, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: m_Name
       value: HealthCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665474811874896340, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7346841586871110867, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7732677610661034225, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8497909226750636461, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41497,6 +41549,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectileL4
       objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41582,6 +41639,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DualProjectileR3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41669,6 +41731,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectileR1
       objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41755,6 +41822,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectileR2
       objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41836,6 +41908,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7022767670663663970, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -5667559549593763752, guid: a8119784ae6ec8f4b8c85373be9f09c0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -41853,7 +41930,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a8119784ae6ec8f4b8c85373be9f09c0,
         type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+        type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1938522785412709430, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3171819224497815729, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+        type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4640773466284801551, guid: a8119784ae6ec8f4b8c85373be9f09c0,
@@ -41965,6 +42057,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectileL2
       objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42051,6 +42148,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectileL3
       objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42136,6 +42238,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DualProjectileL1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -42252,6 +42359,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DualProjectileR4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671880916283441755, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

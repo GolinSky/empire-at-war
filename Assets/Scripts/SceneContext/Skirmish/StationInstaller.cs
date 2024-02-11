@@ -6,7 +6,6 @@ using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Services.Game;
 using EmpireAtWar.Views.SpaceStation;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Repository;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext

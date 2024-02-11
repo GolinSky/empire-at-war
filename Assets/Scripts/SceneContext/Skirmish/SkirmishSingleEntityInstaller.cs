@@ -15,6 +15,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
+using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -61,6 +62,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container.BindModel<FactionsModel>();
         Container.BindModel<WeaponDamageModel>();
         Container.BindModel<ProjectileModel>();
+        Container.BindModel<LayerModel>();
         
         
         Container

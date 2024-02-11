@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 7285192517838441959}
   - component: {fileID: -8513449140265045378}
   - component: {fileID: 721780590174383251}
+  - component: {fileID: 2073463334109504355}
   m_Layer: 0
   m_Name: AcclamatorShipView
   m_TagString: Untagged
@@ -231,6 +232,11 @@ MonoBehaviour:
   - {fileID: 721780590174383251}
   - {fileID: -8513449140265045378}
   - {fileID: 8942997256475608759}
+  - {fileID: -7262126652776327686, guid: 6d020e23c659ac141ab82d2f25751fa2, type: 3}
+  m_MaxDistance: 40
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &7285192517838441959
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -282,6 +288,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionType: 3
   selectedCanvas: {fileID: 5010539976143032332}
+--- !u!114 &2073463334109504355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8044965249881922621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aea22f94f5443f58d01435620375231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2095566349711078242
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -290,6 +308,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6639587243538167660}
     m_Modifications:
+    - target: {fileID: 1673160442976249156, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2039469701158245208, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: m_Pivot.x
@@ -390,10 +413,40 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2195221843313632912, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: m_Name
       value: HealthCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665474811874896340, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7346841586871110867, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7732677610661034225, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8497909226750636461, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -486,10 +539,25 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -935756971221510612, guid: 676452b8c7363624cb31c588f1eee23c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 676452b8c7363624cb31c588f1eee23c,
         type: 3}
       propertyPath: m_Name
       value: Acclamator
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 676452b8c7363624cb31c588f1eee23c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7563722017127951184, guid: 676452b8c7363624cb31c588f1eee23c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
