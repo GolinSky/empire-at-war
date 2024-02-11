@@ -3,10 +3,15 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Components;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class MoveComponent : BaseComponent<MoveModel>, IMovable
+    public interface IMoveComponent:IComponent
+    {
+        
+    }
+    public class MoveComponent : BaseComponent<MoveModel>, IMovable, IMoveComponent
     {
         private readonly ICameraService cameraService;
         public bool CanMove => true;
