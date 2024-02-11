@@ -57,23 +57,11 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         
         Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
-
-        Container
-            .Bind<FactionsModel>()
-            .FromNewScriptableObject(Repository.Load<FactionsModel>(nameof(FactionsModel)))
-            .AsSingle();
         
-        Container
-            .Bind<WeaponDamageModel>()
-            .FromNewScriptableObject(Repository.Load<WeaponDamageModel>(nameof(WeaponDamageModel)))
-            .AsSingle();
+        Container.BindModel<FactionsModel>();
+        Container.BindModel<WeaponDamageModel>();
+        Container.BindModel<ProjectileModel>();
         
-        
-
-        Container
-            .BindInterfacesAndSelfTo<ProjectileModel>()
-            .FromScriptableObject(Repository.Load<ProjectileModel>(nameof(ProjectileModel)))
-            .AsSingle();
         
         Container
             .BindEntity<NavigationController, NavigationUiView, NavigationModel>(

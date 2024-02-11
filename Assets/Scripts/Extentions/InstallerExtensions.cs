@@ -21,12 +21,8 @@ namespace EmpireAtWar.Extentions
 
             container.BindInterfacesAndSelfTo<TCommand>()
                 .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>($"{typeof(TModel).Name}"))
-                .AsSingle()
-                .NonLazy();
+            
+            container.BindModel<TModel>();
 
             container
                 .BindInterfacesAndSelfTo<TController>()
@@ -55,12 +51,7 @@ namespace EmpireAtWar.Extentions
             where TView : IView
             where TModel : Model
         {
-            IRepository repository = container.Resolve<IRepository>();
-            
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
-                .AsSingle();
+            container.BindModel<TModel>();
 
             container
                 .BindInterfacesAndSelfTo<TController>()
@@ -118,6 +109,16 @@ namespace EmpireAtWar.Extentions
                 .AsSingle()
                 .NonLazy();
             return container;
+        }
+
+        public static void BindModel<TModel>(this DiContainer container) where TModel: ScriptableObject, IModel
+        {
+            IRepository repository = container.Resolve<IRepository>();
+
+            container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
+                .AsSingle();
         }
     }
 }
