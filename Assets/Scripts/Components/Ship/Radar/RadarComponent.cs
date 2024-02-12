@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Models.Movement;
+﻿using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -38,11 +37,11 @@ namespace EmpireAtWar.Components.Ship.Radar
 
                 if (raycastHits.Length != 0)
                 {
-                    string names = "RaycastHits: ";
-                    foreach (var raycastHit in raycastHits)
-                    {
-                        names += $"{raycastHit.collider.name},  ";
-                    }
+                    // string names = "RaycastHits: ";
+                    // foreach (var raycastHit in raycastHits)
+                    // {
+                    //     names += $"{raycastHit.collider.name},  ";
+                    // }
                     Model.AddHit(raycastHits);
                 }
                 timer.StartTimer();
