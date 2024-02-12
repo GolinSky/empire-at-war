@@ -15,7 +15,8 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
-    <Speed>k__BackingField: 6
+    <Speed>k__BackingField: 3
+    <RotationDuration>k__BackingField: 6
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 10
   healthModel:
@@ -32,6 +33,6 @@ MonoBehaviour:
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
-    <Distance>k__BackingField: 40
+    <Distance>k__BackingField: 200
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
     type: 3}

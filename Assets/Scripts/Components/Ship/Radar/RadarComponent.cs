@@ -16,14 +16,13 @@ namespace EmpireAtWar.Components.Ship.Radar
         private bool isDetected;
         private RaycastHit raycastHit;
 
-        private Vector3 CenterCast => moveModelObserver.Position - offset;
+        private Vector3 CenterCast => moveModelObserver.CurrentPosition - offset;
         public RadarComponent(IModel model) : base(model)
         {
-            offset = Vector3.up * 50;
+            offset = Vector3.up * 100;
             timer = TimerFactory.ConstructTimer(Model.Delay);
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
         }
-
 
         public void FixedTick()
         {
@@ -31,16 +30,17 @@ namespace EmpireAtWar.Components.Ship.Radar
             {
                 isDetected = Physics.BoxCast(
                     CenterCast,
-                    Vector3.one*40,
+                    Vector3.one*80,
                     Vector3.up,
                     out raycastHit,
                     Quaternion.identity,
-                    Model.Distance,
+                    Model.Distance + offset.y,
                     Model.EnemyLayerMask);
 
                 if (isDetected)
                 {
                     Debug.Log($"raycastHit: {raycastHit.collider.name}");
+                    Model.AddHit(raycastHit);
                 }
                 timer.StartTimer();
             }

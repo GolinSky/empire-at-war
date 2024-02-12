@@ -1,3 +1,4 @@
+using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Ship;
 using EmpireAtWar.Services.NavigationService;
@@ -10,9 +11,10 @@ namespace EmpireAtWar.Commands.Ship
     }
     public class PlayerShipCommand: Command<ShipController>, IShipCommand
     {
-        public PlayerShipCommand(ShipController controller,  SelectionFacade selectionFacade, IMovable movable) : base(controller)
+        public PlayerShipCommand(ShipController controller,  SelectionFacade selectionFacade, IMovable movable, IMoveCommand moveCommand) : base(controller)
         {
             AddCommand(selectionFacade.Create(controller.GetModel(), movable));
+            AddCommand(moveCommand);
         }
         
     }

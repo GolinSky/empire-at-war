@@ -1,4 +1,5 @@
 using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
@@ -35,22 +36,14 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindInstance(playerType)
                 .AsSingle();
-            
-            Container.BindInterfacesAndSelfTo<MoveComponent>()
-                .AsSingle()
-                .NonLazy();
-            
-            Container.BindInterfacesAndSelfTo<HealthComponent>()
-                .AsSingle()
-                .NonLazy();
 
-            Container.BindInterfacesAndSelfTo<WeaponComponent>()
-                .AsSingle()
-                .NonLazy();
+            Container
+                .BindSingle<MoveComponent>()
+                .BindSingle<HealthComponent>()
+                .BindSingle<WeaponComponent>()
+                .BindSingle<RadarComponent>()
+                .BindSingle<AiComponent>();
             
-            Container.BindInterfacesAndSelfTo<RadarComponent>()
-                .AsSingle()
-                .NonLazy();
             
             switch (playerType)
             {

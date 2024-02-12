@@ -122,5 +122,13 @@ namespace EmpireAtWar.Extentions
                 .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
                 .AsSingle();
         }
+
+        public static DiContainer BindSingle<TEntity>(this DiContainer container)
+        {
+            container.BindInterfacesAndSelfTo<TEntity>()
+                .AsSingle()
+                .NonLazy();
+            return container;
+        }
     }
 }

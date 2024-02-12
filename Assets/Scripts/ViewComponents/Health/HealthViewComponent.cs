@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using EmpireAtWar.Models.Health;
+using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.ViewComponents.Health65
         private float baseArmorValue;
 
         private Sequence sequence;
+
+        public IModelObserver Model => ModelObserver;
 
         protected override void OnInit()
         {

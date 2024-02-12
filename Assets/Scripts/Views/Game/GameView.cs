@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Commands.Game;
+﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.ViewImpl;

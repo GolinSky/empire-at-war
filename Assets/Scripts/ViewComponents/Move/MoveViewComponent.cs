@@ -1,6 +1,8 @@
 ﻿using DG.Tweening;
+using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
 
 namespace EmpireAtWar.ViewComponents.Move
@@ -14,12 +16,13 @@ namespace EmpireAtWar.ViewComponents.Move
 
         private Sequence moveSequence;
         private IMoveModelObserver model;
+        private IMoveCommand moveCommand;
         
         protected override void OnInit()
         {
             model = ModelObserver.GetModelObserver<IMoveModelObserver>();
             transform.position = model.HyperSpacePosition - Vector3.right * 1000f;
-            HyperSpaceJump(model.HyperSpacePosition);//+ new Vector3(Offset, 0, Offset));
+            HyperSpaceJump(model.HyperSpacePosition);
             model.OnTargetPositionChanged += UpdateTargetPosition;
             model.OnHyperSpaceJump += HyperSpaceJump;
         }
@@ -29,7 +32,14 @@ namespace EmpireAtWar.ViewComponents.Move
             model.OnTargetPositionChanged -= UpdateTargetPosition;
             model.OnHyperSpaceJump -= HyperSpaceJump;
         }
-        
+
+        protected override void OnCommandSet(ICommand command)
+        {
+            base.OnCommandSet(command);
+            command.TryGetCommand(out moveCommand);
+            moveCommand.Assign(transform);
+        }
+
         private void HyperSpaceJump(Vector3 point)
         {
             Vector3 lookDirection = point - transform.position;
@@ -70,7 +80,7 @@ namespace EmpireAtWar.ViewComponents.Move
             moveSequence.Append(
                 transform.DORotate(
                         Quaternion.LookRotation(lookDirection).eulerAngles,
-                        1f,
+                        model.RotationDuration,
                         rotationMode)
                     .SetEase(lookAtEase));
 

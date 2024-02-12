@@ -1,9 +1,13 @@
-﻿using EmpireAtWar.Models.Movement;
+﻿using System;
+using EmpireAtWar.Commands.Move;
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
+using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
@@ -11,9 +15,10 @@ namespace EmpireAtWar.Components.Ship.Selection
     {
         
     }
-    public class MoveComponent : BaseComponent<MoveModel>, IMovable, IMoveComponent
+    public class MoveComponent : BaseComponent<MoveModel>, IMovable, IMoveComponent, IMoveCommand, ITickable
     {
         private readonly ICameraService cameraService;
+        private Transform transform;
         public bool CanMove => true;
 
         public MoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
@@ -34,6 +39,24 @@ namespace EmpireAtWar.Components.Ship.Selection
             Vector3 point = cameraService.GetWorldPoint(screenPosition);
             point.y = Model.Height;
             return point;
+        }
+
+        public void Assign(Transform transform)
+        {
+            this.transform = transform;
+        }
+        
+        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
+        {
+            throw new Exception();
+        }
+
+        public void Tick()
+        {
+            if (transform != null)
+            {
+                Model.CurrentPosition = transform.position;
+            }
         }
     }
 }

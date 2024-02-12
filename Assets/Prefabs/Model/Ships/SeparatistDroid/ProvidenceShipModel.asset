@@ -15,7 +15,8 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
-    <Speed>k__BackingField: 3
+    <Speed>k__BackingField: 1
+    <RotationDuration>k__BackingField: 15
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
@@ -25,11 +26,11 @@ MonoBehaviour:
     weaponCount:
       keyValue:
       - key: 2
-        value: 2
-    <ProjectileSpeed>k__BackingField: 0
+        value: 6
+    <ProjectileSpeed>k__BackingField: 15
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
-    <Distance>k__BackingField: 40
+    <Distance>k__BackingField: 200
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 3483e2ea8c3953b49be48aab2fc422ad,
     type: 3}
