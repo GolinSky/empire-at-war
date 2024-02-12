@@ -16,7 +16,7 @@ namespace EmpireAtWar.Services.Enemy
 
     public class EnemyService : Service, IInitializable, IEnemyService
     {
-        private static readonly Vector3 Offset = new Vector3(-40, 0, 40);
+        private static readonly Vector3 Offset = new Vector3(250, 0, 250);
         
         private readonly FactionType factionType;
         private readonly SkirmishGameData skirmishGameData;
@@ -45,16 +45,19 @@ namespace EmpireAtWar.Services.Enemy
             stationPosition = skirmishGameData.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, factionType,  stationPosition);
             Sequence sequence = DOTween.Sequence();
-            Vector3 position = stationPosition + Offset;
+            Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             foreach (var keyValuePair in factionData)
             {
-                sequence.AppendInterval(keyValuePair.Value.BuildTime);
+                sequence.AppendInterval(keyValuePair.Value.BuildTime/10f);
                 sequence.AppendCallback(() =>
                 {
                     shipFacadeFactory.Create(PlayerType.Opponent, keyValuePair.Key, position);
-                    position += Offset;
+                    position = new Vector3(Random.Range(-Offset.x, Offset.x), 0,Random.Range(-Offset.z, Offset.z) ) ;
                 });
             }
+
+            sequence.SetLoops(10, LoopType.Restart);
+
         }
     }
 }
