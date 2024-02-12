@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Movement;
+﻿using System.Collections.Generic;
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -13,8 +14,7 @@ namespace EmpireAtWar.Components.Ship.Radar
         private readonly ITimer timer;
         private readonly IMoveModelObserver moveModelObserver;
 
-        private bool isDetected;
-        private RaycastHit raycastHit;
+        private RaycastHit[] raycastHits;
 
         private Vector3 CenterCast => moveModelObserver.CurrentPosition - offset;
         public RadarComponent(IModel model) : base(model)
@@ -28,19 +28,22 @@ namespace EmpireAtWar.Components.Ship.Radar
         {
             if (timer.IsComplete)
             {
-                isDetected = Physics.BoxCast(
+                raycastHits = Physics.BoxCastAll(
                     CenterCast,
                     Vector3.one*80,
                     Vector3.up,
-                    out raycastHit,
                     Quaternion.identity,
                     Model.Distance + offset.y,
                     Model.EnemyLayerMask);
 
-                if (isDetected)
+                if (raycastHits.Length != 0)
                 {
-                    Debug.Log($"raycastHit: {raycastHit.collider.name}");
-                    Model.AddHit(raycastHit);
+                    string names = "RaycastHits: ";
+                    foreach (var raycastHit in raycastHits)
+                    {
+                        names += $"{raycastHit.collider.name},  ";
+                    }
+                    Model.AddHit(raycastHits);
                 }
                 timer.StartTimer();
             }

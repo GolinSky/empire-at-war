@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.Battle;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utils.TimerService;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
 
@@ -14,21 +15,28 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public interface IWeaponComponent:IComponent
     {
-        void AddTarget(IHealthComponent healthComponent, Transform transform);
+        void AddTarget(IHealthComponent[] healthComponent);
     }
-    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent
+    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable
     {
+        private const float Delay = 1f;
         private readonly IBattleService battleService;
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IMoveModelObserver moveModelObserver;
+        private readonly ITimer attackTimer;
+        private Sequence sequence;
+        private float endTimeTween;
+        private int index = -1;
+        
 
-        private Dictionary<IHealthComponent, Transform> targets = new Dictionary<IHealthComponent, Transform>();
+        private List<IHealthComponent> healthComponents = new List<IHealthComponent>();
         public WeaponComponent(IModel model, IBattleService battleService, ProjectileModel projectileModel) : base(model)
         {
             this.battleService = battleService;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
             Model.ProjectileModel = projectileModel;
+            attackTimer = TimerFactory.ConstructTimer(3f);
         }
 
         public void Initialize()
@@ -45,47 +53,83 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             if (selectionModelObserver.IsSelected)
             {
-                float distance = Vector3.Distance(moveModelObserver.CurrentPosition, healthComponent.Position);
-                if (distance > Model.MaxAttackDistance)
+                if (!healthComponents.Contains(healthComponent))
                 {
-                    return;
+                    healthComponents.Add(healthComponent);
                 }
-                Model.TargetPosition = healthComponent.Position;
-
-                float baseTime = distance / Model.ProjectileSpeed;
-
-                Sequence sequence = DOTween.Sequence();
-                sequence.AppendInterval(baseTime);
-                sequence.AppendCallback(() =>
-                {
-                    healthComponent.ApplyDamage(Model.GetTotalDamage());
-                });
             }
         }
 
-        public void AddTarget(IHealthComponent healthComponent, Transform transform)
+        public void AddTarget(IHealthComponent[] healthComponent)
         {
-            if (!targets.ContainsKey(healthComponent))
+            foreach (IHealthComponent component in healthComponent)
             {
-                targets.Add(healthComponent, transform);
+                if (!healthComponents.Contains(component))
+                {
+                    healthComponents.Add(component);
+                }
             }
-            
-            
-            float distance = Vector3.Distance(moveModelObserver.CurrentPosition, transform.position);
-            if (distance > Model.MaxAttackDistance)
+        }
+
+        private void Attack(IHealthComponent healthComponent)
+        {
+            if (healthComponent == null || healthComponent.Destroyed)
             {
+                healthComponents.Remove(healthComponent);
                 return;
             }
-            Model.TargetPosition = transform.position;
+            float distance = Vector3.Distance(moveModelObserver.CurrentPosition, healthComponent.Position);
+            if (distance > Model.MaxAttackDistance)
+            {
+                attackTimer.ForceFinish();
+                return;
+            }
+            Model.TargetPosition = healthComponent.Position;
 
             float baseTime = distance / Model.ProjectileSpeed;
 
-            Sequence sequence = DOTween.Sequence();
+            // if (attackTimer.TimeLeft < baseTime)
+            // {
+            //     attackTimer.AppendTime((baseTime - attackTimer.TimeLeft)+Delay);
+            // }
+            sequence = DOTween.Sequence();
             sequence.AppendInterval(baseTime);
             sequence.AppendCallback(() =>
             {
                 healthComponent.ApplyDamage(Model.GetTotalDamage());
             });
+        }
+
+        public void Tick()
+        {
+            if(healthComponents.Count == 0) return;
+
+            if (attackTimer.IsComplete)
+            {
+                if (sequence != null && sequence.IsActive())
+                {
+                    float difference = endTimeTween - Time.time;
+                    difference += Delay;
+                    attackTimer.AppendTime(difference);
+                    return;
+                }
+                Attack(GetNext());
+                attackTimer.StartTimer();
+            }
+        }
+
+
+
+        private IHealthComponent GetNext()
+        {
+            index++;
+
+            if (index >= healthComponents.Count)
+            {
+                index = 0;
+            }
+
+            return healthComponents[index];
         }
     }
 }

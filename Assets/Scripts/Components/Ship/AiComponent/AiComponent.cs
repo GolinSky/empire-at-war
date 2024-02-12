@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Components.Ship.Health;
+﻿using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
@@ -41,11 +42,16 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             radarModelObserver.OnHitDetected -= HandleEnemy;
         }
 
-        private void HandleEnemy(RaycastHit raycastHit)
+        private void HandleEnemy(RaycastHit[] raycastHit)
         {
-            HealthViewComponent healthViewComponent = raycastHit.collider.GetComponentInChildren<HealthViewComponent>();
-            IHealthComponent healthComponent = componentHub.GetComponent(healthViewComponent.Model);
-            weaponComponent.AddTarget(healthComponent, raycastHit.transform);
+            List<IHealthComponent> healthComponents = new List<IHealthComponent>();
+            foreach (RaycastHit hit in raycastHit)
+            {
+                HealthViewComponent healthViewComponent = hit.collider.GetComponentInChildren<HealthViewComponent>();
+                healthComponents.Add(componentHub.GetComponent(healthViewComponent.Model));
+            }
+           
+            weaponComponent.AddTarget(healthComponents.ToArray());
         }
     }
 }

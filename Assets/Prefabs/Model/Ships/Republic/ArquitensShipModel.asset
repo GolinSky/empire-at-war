@@ -29,7 +29,7 @@ MonoBehaviour:
         value: 4
       - key: 7
         value: 4
-    <ProjectileSpeed>k__BackingField: 15
+    <ProjectileSpeed>k__BackingField: 25
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
