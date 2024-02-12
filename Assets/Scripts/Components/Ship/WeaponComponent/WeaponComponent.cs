@@ -43,8 +43,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 {
                     return;
                 }
-                float baseTime = distance / Model.ProjectileSpeed;
                 Model.TargetPosition = healthComponent.Position;
+
+                float baseTime = distance / Model.ProjectileSpeed;
 
                 Sequence sequence = DOTween.Sequence();
                 sequence.AppendInterval(baseTime);

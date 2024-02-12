@@ -8,5 +8,7 @@
         MediumTurboLaser = 4,
         DualMediumTurboLaser = 5,
         PhotonTorpedo = 6,
+        DualLaser = 7,
+        Laser = 8,
     }
 }

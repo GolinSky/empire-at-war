@@ -6,6 +6,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     public class TurretView:MonoBehaviour
     {
         [SerializeField] private ParticleSystem vfx;
+        
+        private Vector3 targetPosition = Vector3.zero;
 
         public void SetData(ProjectileData projectileData, float speed)
         {
@@ -18,14 +20,19 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startSizeZMultiplier = projectileData.Size.z;
             mainModule.startSpeed = speed;
         }
-
-        public void Attack(Vector3 position)
+ 
+        public void Attack(Vector3 targetPosition)
         {
-            float distance = Vector3.Distance(position, transform.position);
+            float distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
             mainModule.startLifetime = distance / mainModule.startSpeedMultiplier;
-            vfx.transform.LookAt(position);
+            this.targetPosition = targetPosition;
             vfx.Play();
+        }
+
+        private void Update()
+        {
+            vfx.transform.LookAt(targetPosition);
         }
     }
 }

@@ -24,22 +24,14 @@ MonoBehaviour:
   weaponModel:
     weaponCount:
       keyValue:
-      - key: 2
+      - key: 8
+        value: 2
+      - key: 4
         value: 4
     <ProjectileSpeed>k__BackingField: 15
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 40
-    layerMaskWrapper:
-      keyValue:
-      - key: 1
-        value:
-          serializedVersion: 2
-          m_Bits: 64
-      - key: 2
-        value:
-          serializedVersion: 2
-          m_Bits: 128
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 1e6a8aaab47e9d94098f91860c12f443,
     type: 3}

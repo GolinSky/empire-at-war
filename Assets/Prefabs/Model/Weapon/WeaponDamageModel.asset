@@ -39,3 +39,11 @@ MonoBehaviour:
       value:
         <Damage>k__BackingField: 500
         <Distance>k__BackingField: 25
+    - key: 7
+      value:
+        <Damage>k__BackingField: 100
+        <Distance>k__BackingField: 25
+    - key: 8
+      value:
+        <Damage>k__BackingField: 50
+        <Distance>k__BackingField: 25

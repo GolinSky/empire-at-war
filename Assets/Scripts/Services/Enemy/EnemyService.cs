@@ -16,7 +16,7 @@ namespace EmpireAtWar.Services.Enemy
 
     public class EnemyService : Service, IInitializable, IEnemyService
     {
-        private static readonly Vector3 Offset = new Vector3(-30, 0, 30);
+        private static readonly Vector3 Offset = new Vector3(-40, 0, 40);
         
         private readonly FactionType factionType;
         private readonly SkirmishGameData skirmishGameData;
