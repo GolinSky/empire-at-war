@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.Game
 {
+    //todo: refactor
     public class GameView : View<IGameModelObserver, IGameCommand>
     {
         [SerializeField] private Button timeButton;
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Views.Game
             switch (Model.GameTimeMode )
             {
                 case GameTimeMode.Common:
+                case GameTimeMode.Pause:
                     Command.ChangeTime(GameTimeMode.SpeedUp);
                     break;
                 case GameTimeMode.SpeedUp:
@@ -53,6 +55,11 @@ namespace EmpireAtWar.Views.Game
                     break;
                 case GameTimeMode.Pause:
                     Command.ChangeTime(GameTimeMode.Common);
+                    break;
+                
+                case GameTimeMode.SpeedUp:
+                    Command.ChangeTime(GameTimeMode.Pause);
+                    speedUpImage.sprite = speedUpSprites.Dictionary[GameTimeMode.Common];
                     break;
             }
             timeImage.sprite = timeSprites.Dictionary[Model.GameTimeMode];
