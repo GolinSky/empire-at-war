@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
+using EmpireAtWar.ScriptUtils.Dotween;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
@@ -44,10 +45,7 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             Vector3 lookDirection = point - transform.position;
 
-            if (moveSequence != null && moveSequence.IsActive())
-            {
-                moveSequence.Kill();
-            }
+            moveSequence.KillIfExist();
 
             float duration = model.HyperSpaceSpeed;
             moveSequence = DOTween.Sequence();
@@ -68,10 +66,7 @@ namespace EmpireAtWar.ViewComponents.Move
             position.y = transform.position.y;
             Vector3 lookDirection = position - transform.position;
 
-            if (moveSequence != null && moveSequence.IsActive())
-            {
-                moveSequence.Kill();
-            }
+            moveSequence.KillIfExist();
 
             var distance = Vector3.Distance(transform.position, position);
             float duration = distance / model.Speed;

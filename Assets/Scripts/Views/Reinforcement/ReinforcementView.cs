@@ -2,6 +2,7 @@
 using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.ScriptUtils.Dotween;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,9 +47,8 @@ namespace EmpireAtWar.Views.Reinforcement
             ReinforcementDraggable draggable = Instantiate(Model.ReinforcementButton, spawnTransform);
             draggable.Init(SpawnShip, shipType, sprite);
             
-            if (fadeSequence != null && fadeSequence.IsActive())
+            if (fadeSequence.KillIfExist())
             {
-                fadeSequence.Kill();
                 fadeSequence.Append(signalImage.DOColor(originColor, 0.1f));
             }
             fadeSequence = DOTween.Sequence();
