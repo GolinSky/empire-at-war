@@ -19,7 +19,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     }
     public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable
     {
-        private const float Delay = 1f;
+        private const float Delay = 0.1f;
         private readonly IBattleService battleService;
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IMoveModelObserver moveModelObserver;
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
             Model.ProjectileModel = projectileModel;
-            attackTimer = TimerFactory.ConstructTimer(3f);
+            attackTimer = TimerFactory.ConstructTimer(2f);
         }
 
         public void Initialize()
@@ -85,15 +85,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 return;
             }
             Model.TargetPosition = healthComponent.Position;
-
-            float baseTime = distance / Model.ProjectileSpeed;
-
-            // if (attackTimer.TimeLeft < baseTime)
-            // {
-            //     attackTimer.AppendTime((baseTime - attackTimer.TimeLeft)+Delay);
-            // }
+           
             sequence = DOTween.Sequence();
-            sequence.AppendInterval(baseTime);
+            sequence.AppendInterval(Model.ProjectileDuration+Delay);
             sequence.AppendCallback(() =>
             {
                 healthComponent.ApplyDamage(Model.GetTotalDamage());

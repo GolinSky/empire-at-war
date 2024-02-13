@@ -15449,10 +15449,6 @@ MonoBehaviour:
   - {fileID: 7102592058695959028}
   - {fileID: -7262126652776327686, guid: 6d020e23c659ac141ab82d2f25751fa2, type: 3}
   - {fileID: 1710973070478048274}
-  m_MaxDistance: 40
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!65 &5952501562155706629
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -36,6 +36,7 @@ namespace EmpireAtWar.Models.Reinforcement
         
         public bool IsTrySpawning { get; set; }
         public Vector3 SpawnShipPosition { get; set; }
+        
         [Inject]
         private SkirmishGameData SkirmishGameData { get; }
         

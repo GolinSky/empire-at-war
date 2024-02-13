@@ -1,5 +1,4 @@
-﻿using System;
-using EmpireAtWar.Models.Factions;
+﻿using EmpireAtWar.Models.Factions;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Skirmish
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Models.Skirmish
         public FactionType EnemyFactionType { get; set; }
         
         
-        //test kostil
+        //test refactor
 
        
 

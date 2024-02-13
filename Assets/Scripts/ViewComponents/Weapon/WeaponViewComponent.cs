@@ -23,7 +23,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 foreach (TurretView turretView in keyValuePair.Value)
                 {
-                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileSpeed);
+                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileDuration);
                 }
             }
             weaponModelObserver.OnAttack += Attack;
