@@ -63,12 +63,14 @@ namespace EmpireAtWar.Views.Reinforcement
                 Destroy(spawnReinforcement.gameObject);
                 currentDraggable.Destroy();
             }
+            ActivateCanvas();
         }
         
         private void SpawnShip(ShipType shipType, ReinforcementDraggable draggable)
         {
             if(Model.IsTrySpawning) return;
 
+            DisableCanvas();
             currentDraggable = draggable;
             Command.TrySpawnShip(shipType);
             spawnReinforcement = Instantiate(Model.GetSpawnPrefab(shipType));
