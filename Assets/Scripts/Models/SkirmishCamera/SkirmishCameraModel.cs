@@ -12,6 +12,8 @@ namespace EmpireAtWar.Models.SkirmishCamera
         event Action<Vector3> OnPositionChanged;
         Vector3 MapSize { get; }
         
+        float MoveSpeed { get; }
+        
     }
     [CreateAssetMenu(fileName = "SkirmishCameraModel", menuName = "Model/SkirmishCameraModel")]
     public class SkirmishCameraModel:Model, ISkirmishCameraModelObserver, IInitializable
@@ -19,6 +21,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
         public event Action<Vector3> OnTranslateDirectionChanged;
         public event Action<Vector3> OnPositionChanged;
         [field:SerializeField] public Vector3 MapSize { get; private set; }
+        [field:SerializeField] public float MoveSpeed { get; private set; }
 
         public Vector3 TranslateDirection
         {

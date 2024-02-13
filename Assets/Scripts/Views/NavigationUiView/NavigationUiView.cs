@@ -1,5 +1,6 @@
 using DG.Tweening;
 using EmpireAtWar.Models.Navigation;
+using EmpireAtWar.ScriptUtils.Dotween;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,9 +29,8 @@ namespace EmpireAtWar.Views.NavigationUiView
         {
             tapImage.GetComponent<RectTransform>().position = tapPosition;
 
-            if (fadeSequence != null && fadeSequence.IsActive())
+            if (fadeSequence.KillIfExist())
             {
-                fadeSequence.Kill();
                 tapImage.DOFade(0, 0);
             }
             fadeSequence = DOTween.Sequence();

@@ -1,5 +1,7 @@
+using DG.Tweening;
 using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.ScriptUtils.Dotween;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +16,9 @@ namespace EmpireAtWar.Views.SkirmishCamera
         [SerializeField] private Button zoomOut;
         [SerializeField] private Button maxZoomIn;
         [SerializeField] private Button minZoomOut;
-       
+        [SerializeField] private Ease moveEase;
+
+        private Sequence moveSequence;
         private Transform cameraTransform;
         private Vector3 worldStartPoint;
         private Vector3 cameraPosition;
@@ -42,7 +46,11 @@ namespace EmpireAtWar.Views.SkirmishCamera
         
         private void SetPosition(Vector3 position)
         {
-            cameraTransform.position = position;
+            moveSequence.KillIfExist();
+            moveSequence = DOTween.Sequence();
+            moveSequence.Append(cameraTransform
+                .DOMove(position, Model.MoveSpeed)
+                .SetEase(moveEase));
         }
 
         private void Translate(Vector3 direction)

@@ -2884,7 +2884,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.082183175, y: 0.14841273}
   m_AnchorMax: {x: 0.44660538, y: 0.8932813}
-  m_AnchoredPosition: {x: 0.013534546, y: 0.023704529}
+  m_AnchoredPosition: {x: 0.013549805, y: 0.023712158}
   m_SizeDelta: {x: -2.0269928, y: -2.0299988}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &611957808681216127
@@ -5342,6 +5342,7 @@ MonoBehaviour:
   zoomOut: {fileID: 5174079920569461587}
   maxZoomIn: {fileID: 6166904087434167075}
   minZoomOut: {fileID: 6412337062904547832}
+  moveEase: 18
 --- !u!114 &4775344582375106414
 MonoBehaviour:
   m_ObjectHideFlags: 0
