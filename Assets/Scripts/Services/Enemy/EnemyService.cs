@@ -48,16 +48,15 @@ namespace EmpireAtWar.Services.Enemy
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             foreach (var keyValuePair in factionData)
             {
-                sequence.AppendInterval(keyValuePair.Value.BuildTime/10f);
+                sequence.AppendInterval(keyValuePair.Value.BuildTime);
                 sequence.AppendCallback(() =>
                 {
                     shipFacadeFactory.Create(PlayerType.Opponent, keyValuePair.Key, position);
-                    position = new Vector3(Random.Range(-Offset.x, Offset.x), 0,Random.Range(-Offset.z, Offset.z) ) ;
+                    position = new Vector3(Random.Range(-Offset.x, Offset.x), 0,Random.Range(-Offset.z, Offset.z));
                 });
             }
 
             sequence.SetLoops(10, LoopType.Restart);
-
         }
     }
 }

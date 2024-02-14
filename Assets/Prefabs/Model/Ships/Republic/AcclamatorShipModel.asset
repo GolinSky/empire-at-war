@@ -25,7 +25,7 @@ MonoBehaviour:
   weaponModel:
     weaponCount:
       keyValue:
-      - key: 8
+      - key: 1
         value: 2
       - key: 4
         value: 4
@@ -34,5 +34,5 @@ MonoBehaviour:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
-  <ShipIcon>k__BackingField: {fileID: 21300000, guid: 1e6a8aaab47e9d94098f91860c12f443,
+  <ShipIcon>k__BackingField: {fileID: 21300000, guid: 2ce1aa3deeeb0a541bb85a35a38c9390,
     type: 3}

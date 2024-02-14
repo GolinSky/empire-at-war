@@ -29,10 +29,10 @@ MonoBehaviour:
         value: 1
       - key: 5
         value: 2
-    <ProjectileDuration>k__BackingField: 1.5
+    <ProjectileDuration>k__BackingField: 1
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
-  <ShipIcon>k__BackingField: {fileID: 21300000, guid: 40584c037f34f2849bce528ed07f43cc,
+  <ShipIcon>k__BackingField: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f,
     type: 3}
