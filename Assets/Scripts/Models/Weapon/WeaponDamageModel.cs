@@ -18,7 +18,15 @@ namespace EmpireAtWar.Models.Weapon
     [Serializable]
     public class DamageModel
     {
-        [field:SerializeField] public float Damage { get; private set; }
+        [SerializeField] private float damage;
         [field:SerializeField] public float Distance { get; private set; }
+        [field:SerializeField] public AnimationCurve DistanceCurve { get; private set; }
+
+        public float GetDamage(float distance)
+        {
+            float coefficient = distance / Distance;
+            return DistanceCurve.Evaluate(coefficient)*damage;
+        }
+        
     }
 }

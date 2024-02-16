@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using UnityEngine;
+using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
 
 namespace EmpireAtWar.ViewComponents.Weapon
@@ -35,17 +37,20 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             weaponModelObserver.OnAttack -= Attack;
         }
-        
-        private void Attack(Vector3 targetPosition, List<WeaponType> filter)
+
+
+   
+
+        private void Attack(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
         {
             if (attackCoroutine != null)
             {
-                return;
+                StopCoroutine(attackCoroutine);
             }
-            attackCoroutine = StartCoroutine(AttackSequence(targetPosition, filter));
+            attackCoroutine = StartCoroutine(AttackSequence(targetPosition, filter, attackAction));
         }
 
-        private IEnumerator AttackSequence(Vector3 targetPosition, List<WeaponType> filter)
+        private IEnumerator AttackSequence(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
         {
             foreach (var turretDictionaryValue in TurretDictionary)
             {
@@ -56,6 +61,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     if(turretView.IsBusy || !turretView.CanAttack(targetPosition)) continue;
                     
                     turretView.Attack(targetPosition);
+                    attackAction.Invoke(turretDictionaryValue.Key, turretView.Distance);
                     yield return new WaitForSeconds(1f);
                 }
             }

@@ -9,7 +9,7 @@ namespace EmpireAtWar.Models.Weapon
 {
     public interface IWeaponModelObserver : IModelObserver
     {
-        event Action<Vector3, List<WeaponType>> OnAttack;
+        event Action<Vector3, List<WeaponType>, Action<WeaponType, float>> OnAttack;
         Dictionary<WeaponType, int> WeaponDictionary { get; }
         IProjectileModel ProjectileModel { get; }
         
@@ -21,7 +21,7 @@ namespace EmpireAtWar.Models.Weapon
     [Serializable]
     public class WeaponModel : InnerModel, IWeaponModelObserver
     {
-        public event Action<Vector3, List<WeaponType>> OnAttack;
+        public event Action<Vector3, List<WeaponType>, Action<WeaponType, float>> OnAttack;
 
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
         
@@ -29,7 +29,8 @@ namespace EmpireAtWar.Models.Weapon
 
         public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
         
-        public IProjectileModel ProjectileModel { get; set; }
+        [Inject]
+        public IProjectileModel ProjectileModel { get;  }
         
         [Inject]
         private WeaponDamageModel WeaponDamageModel { get; }
@@ -68,14 +69,14 @@ namespace EmpireAtWar.Models.Weapon
             return filter;
         }
         
-        public void UpdateAttackData(Vector3 targetPosition, List<WeaponType> filter)
+        public void UpdateAttackData(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
         {
-            OnAttack?.Invoke(targetPosition, filter);
+            OnAttack?.Invoke(targetPosition, filter, attackAction);
         }
 
-        public float GetDamage(WeaponType weaponType)
+        public float GetDamage(WeaponType weaponType, float distance)
         {
-            return WeaponDictionary[weaponType];
+            return WeaponDamageModel.DamageDictionary[weaponType].GetDamage(distance);
         }
     }
 }

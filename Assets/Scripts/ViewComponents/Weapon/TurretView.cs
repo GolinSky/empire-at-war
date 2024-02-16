@@ -12,6 +12,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Vector3 targetPosition = Vector3.zero;
 
         public bool IsBusy => vfx.isPlaying;
+        public float Distance { get; private set; }
 
         public bool CanAttack(Vector3 position)
         {
@@ -36,18 +37,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startSizeYMultiplier = projectileData.Size.y;
             mainModule.startSizeZMultiplier = projectileData.Size.z;
             mainModule.startLifetime = duration;
-            mainModule.startDelay = duration;
+         //   mainModule.startDelay = duration;
             mainModule.duration = duration + 0.1f;
         }
 
         public void Attack(Vector3 targetPosition)
         {
-           
-
             block = false;
-            float distance = Vector3.Distance(targetPosition, transform.position);
+            Distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
-            mainModule.startSpeed = distance / mainModule.startLifetime.constant;
+            mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
             this.targetPosition = targetPosition;
             vfx.Play();
         }

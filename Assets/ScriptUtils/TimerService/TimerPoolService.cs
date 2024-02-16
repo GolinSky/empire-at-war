@@ -16,9 +16,9 @@ namespace Utils.TimerService
 
         public void Update()
         {
-            foreach (CustomCoroutine customCoroutine in customCoroutines)
+            for (var i = 0; i < customCoroutines.Count; i++)
             {
-                customCoroutine.Update();
+                customCoroutines[i].Update();
             }
         }
 

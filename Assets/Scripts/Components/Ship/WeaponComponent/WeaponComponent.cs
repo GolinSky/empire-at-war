@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
@@ -9,6 +8,7 @@ using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utils.TimerService;
+using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
 
@@ -18,9 +18,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         void AddTarget(IHealthComponent[] healthComponent);
 
-        void ApplyDamage(IHealthComponent healthComponent, WeaponType weaponType);
     }
-    
+
+ 
     public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable
     {
         private readonly IBattleService battleService;
@@ -36,15 +36,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public WeaponComponent(
             IModel model,
             IBattleService battleService,
-            ProjectileModel projectileModel,
             ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.battleService = battleService;
             this.timerPoolWrapperService = timerPoolWrapperService;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
-            Model.ProjectileModel = projectileModel;
-            attackTimer = TimerFactory.ConstructTimer(3f);
+            attackTimer = TimerFactory.ConstructTimer(1f);
         }
 
         public void Initialize()
@@ -81,16 +79,16 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             }
         }
 
-        public void ApplyDamage(IHealthComponent healthComponent, WeaponType weaponType)
+        public void ApplyDamage(IHealthComponent healthComponent, WeaponType weaponType, float distance)
         {
             timerPoolWrapperService.Invoke(
-                ()=> ApplyDamageInternal(healthComponent, weaponType),
+                ()=> ApplyDamageInternal(healthComponent, weaponType, distance),
                 Model.ProjectileDuration);
         }
 
-        private void ApplyDamageInternal(IHealthComponent healthComponent, WeaponType weaponType)
+        private void ApplyDamageInternal(IHealthComponent healthComponent, WeaponType weaponType, float distance)
         {
-            healthComponent.ApplyDamage(Model.GetDamage(weaponType), weaponType);
+            healthComponent.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType);
         }
 
         private void Attack(IHealthComponent healthComponent)
@@ -100,15 +98,18 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 healthComponents.Remove(healthComponent);
                 return;
             }
-            
-            float distance = Vector3.Distance(moveModelObserver.CurrentPosition, healthComponent.Position);
+
+            float distance = GetDistance(healthComponent.Position);
             if (distance > Model.MaxAttackDistance)
             {
                 attackTimer.ForceFinish();
                 return;
             }
 
-            Model.UpdateAttackData(healthComponent.Position, Model.Filter(distance));
+            Model.UpdateAttackData(healthComponent.Position, Model.Filter(distance), ((weaponType, distance) =>
+            {
+                ApplyDamage(healthComponent, weaponType, distance);
+            }));
         }
 
         public void Tick()
@@ -124,5 +125,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 attackTimer.StartTimer();
             }
         }
+
+        private float GetDistance(Vector3 targetPosition) =>
+            Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
+        
     }
 }
