@@ -9,6 +9,7 @@ using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Ship;
+using EmpireAtWar.Services.TimerPoolWrapperService;
 using UnityEngine;
 using Zenject;
 
@@ -29,6 +30,7 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindService<SkirmishGameService>()
             .BindService<BattleService>()
             .BindService<ReinforcementService>()
-            .BindService<ComponentHub>();
+            .BindService<ComponentHub>()
+            .BindService<TimerPoolWrapperService>();
     }
 }

@@ -78,7 +78,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         public void ZoomIn()
         {
             cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = Mathf.Clamp(cameraPosition.y - 50, 20, Model.MapSize.y );
+            cameraPosition.y = Mathf.Clamp(cameraPosition.y - 100, 20, Model.MapSize.y );
             Model.CameraPosition = cameraPosition;
 
         }
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         public void ZoomOut()
         {
             cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = Mathf.Clamp(cameraPosition.y + 50, 20, Model.MapSize.y );
+            cameraPosition.y = Mathf.Clamp(cameraPosition.y + 100, 20, Model.MapSize.y );
             Model.CameraPosition = cameraPosition;
         }
 

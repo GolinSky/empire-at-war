@@ -44,6 +44,10 @@ namespace EmpireAtWar.Services.Enemy
         {
             stationPosition = skirmishGameData.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, factionType,  stationPosition);
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset*0.1f));
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset*0.15f));
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset*0.2f));
+            return;
             Sequence sequence = DOTween.Sequence();
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             foreach (var keyValuePair in factionData)

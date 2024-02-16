@@ -25,9 +25,9 @@ MonoBehaviour:
   weaponModel:
     weaponCount:
       keyValue:
-      - key: 1
+      - key: 3
         value: 4
-    <ProjectileDuration>k__BackingField: 1
+    <ProjectileDuration>k__BackingField: 3
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5

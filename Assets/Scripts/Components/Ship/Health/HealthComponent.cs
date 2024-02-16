@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
+using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.ComponentHub;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace EmpireAtWar.Components.Ship.Health
 {
     public interface IHealthComponent:IComponent
     {
-        void ApplyDamage(float damage);
+        void ApplyDamage(float damage, WeaponType weaponType);
         Vector3 Position { get; }
         
         bool Destroyed { get; }
@@ -52,7 +53,7 @@ namespace EmpireAtWar.Components.Ship.Health
             componentHub.Remove(this);
         }
 
-        public void ApplyDamage(float damage)
+        public void ApplyDamage(float damage, WeaponType weaponType)
         {
             Model.ApplyDamage(damage);
         }

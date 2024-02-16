@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private IWeaponModelObserver weaponModelObserver;
         private IProjectileModel projectileModel;
+        private Coroutine attackCoroutine;
         
         protected override void OnInit()
         {
@@ -34,15 +36,31 @@ namespace EmpireAtWar.ViewComponents.Weapon
             weaponModelObserver.OnAttack -= Attack;
         }
         
-        private void Attack(Vector3 targetPosition)
+        private void Attack(Vector3 targetPosition, List<WeaponType> filter)
         {
-            foreach (List<TurretView> turretDictionaryValue in TurretDictionary.Values)
+            if (attackCoroutine != null)
             {
-                foreach (var turretView in turretDictionaryValue)
+                return;
+            }
+            attackCoroutine = StartCoroutine(AttackSequence(targetPosition, filter));
+        }
+
+        private IEnumerator AttackSequence(Vector3 targetPosition, List<WeaponType> filter)
+        {
+            foreach (var turretDictionaryValue in TurretDictionary)
+            {
+                if(!filter.Contains(turretDictionaryValue.Key)) continue;
+                
+                foreach (TurretView turretView in turretDictionaryValue.Value)
                 {
+                    if(turretView.IsBusy || !turretView.CanAttack(targetPosition)) continue;
+                    
                     turretView.Attack(targetPosition);
+                    yield return new WaitForSeconds(1f);
                 }
             }
+
+            attackCoroutine = null;
         }
     }
 }

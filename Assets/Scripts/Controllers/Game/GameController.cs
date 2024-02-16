@@ -20,7 +20,7 @@ namespace EmpireAtWar.Controllers.Game
                     Time.timeScale = 1.0f;
                     break;
                 case GameTimeMode.SpeedUp:
-                    Time.timeScale = 2.0f;
+                    Time.timeScale = 4.0f;
                     break;
                 case GameTimeMode.Pause:
                     Time.timeScale = 0f;
