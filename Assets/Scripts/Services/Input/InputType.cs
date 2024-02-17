@@ -4,5 +4,6 @@
     {
         ShipInput = 0,
         CameraInput = 1,
+        ShipSelection = 2,
     }
 }

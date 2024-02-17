@@ -74,14 +74,7 @@ namespace EmpireAtWar.Services.Input
                         //move to ship selection entity
                         if (lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
                         {
-                            RaycastHit raycastHit = CameraService.ScreenPointToRay(touch.position);
-                            
-                            SelectionViewComponent selectionComponent = raycastHit.collider.GetComponent<SelectionViewComponent>();
-
-                            if (selectionComponent != null)
-                            {
-                                selectionComponent.OnSelected();
-                            }
+                            InvokeEvent(InputType.ShipSelection);
                         }
                         break;
                     }
