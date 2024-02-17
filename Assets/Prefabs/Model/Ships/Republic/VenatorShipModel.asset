@@ -20,13 +20,20 @@ MonoBehaviour:
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
+    dexterity: 0
     <Armor>k__BackingField: 60000
     <Shields>k__BackingField: 30000
   weaponModel:
     weaponCount:
       keyValue:
+      - key: 9
+        value: 8
+      - key: 11
+        value: 2
       - key: 3
-        value: 4
+        value: 2
+      - key: 2
+        value: 2
     <ProjectileDuration>k__BackingField: 3
   radarModel:
     <Range>k__BackingField: 40

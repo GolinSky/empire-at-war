@@ -40,7 +40,7 @@ namespace EmpireAtWar.Models.Health
         {
             DamageData damageData = DamageCalculationModel.GetDamage(weaponType, this, isMoving, damage);
             
-            Debug.Log($"ApplyDamage: {damage} -> [ShieldDamage: {damageData.ShieldDamage}], [ArmorDamage: {damageData.ArmorDamage}];");
+            //Debug.Log($"ApplyDamage: {damage} -> [ShieldDamage: {damageData.ShieldDamage}], [ArmorDamage: {damageData.ArmorDamage}];");
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
             if (Armor <= 0)
