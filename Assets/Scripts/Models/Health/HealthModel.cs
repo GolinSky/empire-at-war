@@ -1,6 +1,8 @@
 ﻿using System;
+using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.Health
 {
@@ -11,41 +13,42 @@ namespace EmpireAtWar.Models.Health
 
         float Armor { get; }
         float Shields { get; }
-
     }
+
     [Serializable]
-    public class HealthModel:InnerModel, IHealthModelObserver
+    public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
     {
         public event Action OnValueChanged;
         public event Action OnDestroy;
+        
+        [SerializeField] 
+        [Range(0f, 1f)]
+        private float dexterity;
+
         [field:SerializeField] public float Armor { get; private set; }
         [field:SerializeField] public float Shields { get; private set; }
+        
+        [Inject]
+        private DamageCalculationModel DamageCalculationModel { get; }
         public bool IsDestroyed { get; private set; }
+        
 
+        public bool HasShields => Shields > 0;
+        public float Dexterity => dexterity;
 
-        public void ApplyDamage(float damage)
+        public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving)
         {
-            if (Shields >  damage)
+            DamageData damageData = DamageCalculationModel.GetDamage(weaponType, this, isMoving, damage);
+            
+            Debug.Log($"ApplyDamage: {damage} -> [ShieldDamage: {damageData.ShieldDamage}], [ArmorDamage: {damageData.ArmorDamage}];");
+            Shields -= damageData.ShieldDamage;
+            Armor -= damageData.ArmorDamage;
+            if (Armor <= 0)
             {
-                Shields -= damage;
-            }
-            else
-            {
-                if (Shields > 0)
-                {
-                    damage -= Shields;
-                    Shields = 0;
-                }
-                Armor -= damage;
-                if (Armor <= 0)
-                {
-                    IsDestroyed = true;
-                    OnDestroy?.Invoke();
-                }
+                IsDestroyed = true;
+                OnDestroy?.Invoke();
             }
             OnValueChanged?.Invoke();
-            
         }
-        //hull value - armor only safe hull by coefficient - same as shields safe armor+hull by cofficient
     }
 }

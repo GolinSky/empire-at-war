@@ -113,7 +113,7 @@ namespace EmpireAtWar.Extentions
             return container;
         }
 
-        public static void BindModel<TModel>(this DiContainer container) where TModel: ScriptableObject, IModel
+        public static DiContainer BindModel<TModel>(this DiContainer container) where TModel: ScriptableObject, IModel
         {
             IRepository repository = container.Resolve<IRepository>();
 
@@ -121,6 +121,8 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
                 .AsSingle();
+
+            return container;
         }
 
         public static DiContainer BindSingle<TEntity>(this DiContainer container)

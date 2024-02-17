@@ -17,7 +17,7 @@ MonoBehaviour:
     keyValue:
     - key: 1
       value:
-        damage: 50
+        damage: 500
         <Distance>k__BackingField: 125
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -45,7 +45,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 2
       value:
-        damage: 75
+        damage: 750
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -73,7 +73,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 3
       value:
-        damage: 100
+        damage: 1000
         <Distance>k__BackingField: 200
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -101,7 +101,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 4
       value:
-        damage: 50
+        damage: 500
         <Distance>k__BackingField: 135
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -129,7 +129,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 5
       value:
-        damage: 75
+        damage: 750
         <Distance>k__BackingField: 135
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -157,7 +157,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 6
       value:
-        damage: 100
+        damage: 1000
         <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -185,7 +185,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 7
       value:
-        damage: 50
+        damage: 500
         <Distance>k__BackingField: 100
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -213,7 +213,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 8
       value:
-        damage: 25
+        damage: 250
         <Distance>k__BackingField: 100
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -241,8 +241,64 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 9
       value:
-        damage: 100
+        damage: 1000
         <Distance>k__BackingField: 250
+        <DistanceCurve>k__BackingField:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: -0.5
+            outSlope: -0.5
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 0.5
+            inSlope: -0.5
+            outSlope: -0.5
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+    - key: 10
+      value:
+        damage: 500
+        <Distance>k__BackingField: 200
+        <DistanceCurve>k__BackingField:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: -0.5
+            outSlope: -0.5
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0.33333334
+          - serializedVersion: 3
+            time: 1
+            value: 0.5
+            inSlope: -0.5
+            outSlope: -0.5
+            tangentMode: 34
+            weightedMode: 0
+            inWeight: 0.33333334
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+    - key: 11
+      value:
+        damage: 1000
+        <Distance>k__BackingField: 200
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:

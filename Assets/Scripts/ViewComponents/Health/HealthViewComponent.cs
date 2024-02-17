@@ -9,7 +9,7 @@ namespace EmpireAtWar.ViewComponents.Health65
 {
     public class HealthViewComponent : ViewComponent
     {
-        private const float TweenDuration = 1f;
+        private const float TweenDuration = 0.1f;
         
         [SerializeField] private Canvas healthCanvas;
         [SerializeField] private Image shieldsFillImage;
@@ -19,6 +19,7 @@ namespace EmpireAtWar.ViewComponents.Health65
         private float baseShieldsValue;
         private float baseArmorValue;
 
+        
         private Sequence sequence;
 
         public IModelObserver Model => ModelObserver;

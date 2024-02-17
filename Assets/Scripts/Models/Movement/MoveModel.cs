@@ -14,6 +14,8 @@ namespace EmpireAtWar.Models.Movement
         float Speed { get; }
         float RotationDuration { get; }
         float HyperSpaceSpeed { get; }
+        
+        bool IsMoving { get; }
     }
     
     [Serializable]
@@ -31,6 +33,7 @@ namespace EmpireAtWar.Models.Movement
         private Vector3 hyperSpacePosition;
 
         public Vector3 CurrentPosition { get; set; }
+        public bool IsMoving => CurrentPosition != Position;
 
         public Vector3 HyperSpacePosition
         {

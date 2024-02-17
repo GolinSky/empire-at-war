@@ -11,5 +11,7 @@
         DualLaser = 7,
         Laser = 8,
         DualHeavyTurboLaserDBY827 = 9,
+        IonCannon = 10,
+        HeavyIonCannon = 11,
     }
 }

@@ -56,6 +56,7 @@ namespace EmpireAtWar.Components.Ship.Selection
             if (transform != null)
             {
                 Model.CurrentPosition = transform.position;
+                
             }
         }
     }

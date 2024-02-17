@@ -25,6 +25,8 @@ namespace EmpireAtWar.Models.Weapon
         public float GetDamage(float distance)
         {
             float coefficient = distance / Distance;
+            
+            //Debug.Log($"{damage} ==> {DistanceCurve.Evaluate(coefficient)*damage}; --- distance: {distance}");
             return DistanceCurve.Evaluate(coefficient)*damage;
         }
         

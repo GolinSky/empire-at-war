@@ -13,6 +13,7 @@ using EmpireAtWar.Controllers.Terrain;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.Radar;
@@ -58,11 +59,12 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         
         Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
-        
-        Container.BindModel<FactionsModel>();
-        Container.BindModel<WeaponDamageModel>();
-        Container.BindModel<ProjectileModel>();
-        Container.BindModel<LayerModel>();
+
+        Container.BindModel<FactionsModel>()
+            .BindModel<WeaponDamageModel>()
+            .BindModel<ProjectileModel>()
+            .BindModel<LayerModel>()
+            .BindModel<DamageCalculationModel>();
         
         
         Container
