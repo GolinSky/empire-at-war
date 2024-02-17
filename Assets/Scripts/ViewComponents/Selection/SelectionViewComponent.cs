@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Commands;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
@@ -23,6 +22,10 @@ namespace EmpireAtWar.ViewComponents.Selection
         }
         
         private void OnMouseUp()
+        {
+        }
+
+        public void OnSelected()
         {
             selectionCommand?.OnSelected(selectionType);
         }

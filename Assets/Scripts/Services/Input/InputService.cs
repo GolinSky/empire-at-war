@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.ViewComponents.Selection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WorkShop.LightWeightFramework.Service;
@@ -8,13 +10,19 @@ namespace EmpireAtWar.Services.Input
 {
     public class InputService : Service, IInputService, ITickable
     {
-        private Touch touch;
+        public event Action<Vector2> OnEndDrag;
         public event Action<InputType, TouchPhase, Vector2> OnInput;
 
-        public TouchPhase LastTouchPhase { get; private set; }
-        public Vector2 TouchPosition => touch.position;
-        public event Action<Vector2> OnEndDrag;
 
+        private Touch touch;
+        private bool block;
+        private TouchPhase lastTouchPhase;
+        public TouchPhase CurrentTouchPhase { get; private set; }
+        public Vector2 TouchPosition => touch.position;
+
+
+        [Inject]
+        private ICameraService CameraService { get; }
         public void Tick()
         {
             if (UnityEngine.Input.touchCount == 1)
@@ -23,19 +31,22 @@ namespace EmpireAtWar.Services.Input
 
                 if (block)
                 {
-                    LastTouchPhase = touch.phase;
+                    CurrentTouchPhase = touch.phase;
 
-                    if (LastTouchPhase != TouchPhase.Moved && LastTouchPhase != TouchPhase.Stationary)
+                    if (CurrentTouchPhase != TouchPhase.Moved && CurrentTouchPhase != TouchPhase.Stationary)
                     {
                         OnEndDrag?.Invoke(TouchPosition);
                     }
                     return;
                 }
-                
-                if (IsBlocked(touch.fingerId)) return;
 
-                LastTouchPhase = touch.phase;
-                switch (LastTouchPhase)
+                if (IsBlocked(touch.fingerId))
+                {
+                    return;
+                }
+                CurrentTouchPhase = touch.phase;
+
+                switch (CurrentTouchPhase)
                 {
                     case TouchPhase.Began:
                     {
@@ -46,6 +57,7 @@ namespace EmpireAtWar.Services.Input
                         if (touch.tapCount == 1)
                         {
                             InvokeEvent(InputType.CameraInput);
+                           
                         }
                         break;
                     }
@@ -58,15 +70,32 @@ namespace EmpireAtWar.Services.Input
                     case TouchPhase.Stationary:
                         break;
                     case TouchPhase.Ended:
+                    {
+                        //move to ship selection entity
+                        if (lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
+                        {
+                            RaycastHit raycastHit = CameraService.ScreenPointToRay(touch.position);
+                            
+                            SelectionViewComponent selectionComponent = raycastHit.collider.GetComponent<SelectionViewComponent>();
+
+                            if (selectionComponent != null)
+                            {
+                                selectionComponent.OnSelected();
+                            }
+                        }
                         break;
+                    }
                     case TouchPhase.Canceled:
+                    {
                         break;
+                    }
                 }
+                lastTouchPhase = CurrentTouchPhase;
             }
 
             void InvokeEvent(InputType inputType)
             {
-                OnInput?.Invoke(inputType, LastTouchPhase, touch.position);
+                OnInput?.Invoke(inputType, CurrentTouchPhase, touch.position);
             }
         }
 
@@ -78,6 +107,5 @@ namespace EmpireAtWar.Services.Input
             block = b;
         }
 
-        private bool block;
     }
 }

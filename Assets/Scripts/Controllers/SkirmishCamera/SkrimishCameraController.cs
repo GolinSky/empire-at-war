@@ -45,6 +45,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 case TouchPhase.Began:
                 {
                     worldStartPoint = cameraService.GetWorldPoint(screenPosition);
+                    worldStartPoint.y = 0;
                     break;
                 }
                 case TouchPhase.Moved:

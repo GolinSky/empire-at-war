@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.Camera
     public interface ICameraService : IService
     {
         Vector3 GetWorldPoint(Vector2 screenPoint);
+        RaycastHit ScreenPointToRay(Vector2 screenPoint);
         Vector3 CameraPosition { get; }
     }
 
@@ -25,6 +26,12 @@ namespace EmpireAtWar.Services.Camera
         {  
             Physics.Raycast(camera.ScreenPointToRay(screenPoint), out RaycastHit hit);
             return hit.point;
+        }
+        
+        public RaycastHit ScreenPointToRay(Vector2 screenPoint)
+        {  
+            Physics.Raycast(camera.ScreenPointToRay(screenPoint), out RaycastHit hit);
+            return hit;
         }
     }
 }
