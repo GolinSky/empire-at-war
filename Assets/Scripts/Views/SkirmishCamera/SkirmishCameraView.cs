@@ -12,6 +12,8 @@ namespace EmpireAtWar.Views.SkirmishCamera
     {
         [SerializeField] private Camera mainCamera;
 
+        [SerializeField] private Canvas cameraCanvas;
+        [SerializeField] private Button switcherButton;
         [SerializeField] private Button zoomIn;
         [SerializeField] private Button zoomOut;
         [SerializeField] private Button maxZoomIn;
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
             zoomOut.onClick.AddListener(Command.ZoomOut);
             maxZoomIn.onClick.AddListener(Command.MaxZoomIn);
             minZoomOut.onClick.AddListener(Command.MaxZoomOut);
+            switcherButton.onClick.AddListener(UpdateCanvasState);
         }
 
         protected override void OnDispose()
@@ -42,6 +45,12 @@ namespace EmpireAtWar.Views.SkirmishCamera
             zoomOut.onClick.RemoveListener(Command.ZoomOut);
             maxZoomIn.onClick.RemoveListener(Command.MaxZoomIn);
             minZoomOut.onClick.RemoveListener(Command.MaxZoomOut);
+            switcherButton.onClick.RemoveListener(UpdateCanvasState);
+        }
+        
+        private void UpdateCanvasState()
+        {
+            cameraCanvas.enabled = !cameraCanvas.enabled;
         }
         
         private void SetPosition(Vector3 position)

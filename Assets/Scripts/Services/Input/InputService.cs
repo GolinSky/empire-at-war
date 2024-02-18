@@ -21,8 +21,6 @@ namespace EmpireAtWar.Services.Input
         public Vector2 TouchPosition => touch.position;
 
 
-        [Inject]
-        private ICameraService CameraService { get; }
         public void Tick()
         {
             if (UnityEngine.Input.touchCount == 1)
@@ -40,10 +38,14 @@ namespace EmpireAtWar.Services.Input
                     return;
                 }
 
-                if (IsBlocked(touch.fingerId))
+                for (var i = 0; i < UnityEngine.Input.touches.Length; i++)
                 {
-                    return;
+                    if (IsBlocked(UnityEngine.Input.touches[i].fingerId))
+                    {
+                        return;
+                    }
                 }
+             
                 CurrentTouchPhase = touch.phase;
 
                 switch (CurrentTouchPhase)
@@ -71,10 +73,9 @@ namespace EmpireAtWar.Services.Input
                         break;
                     case TouchPhase.Ended:
                     {
-                        //move to ship selection entity
-                        if (lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
+                        if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
                         {
-                            InvokeEvent(InputType.ShipSelection);
+                            InvokeEvent(InputType.Selection);
                         }
                         break;
                     }

@@ -1,9 +1,10 @@
-using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Controllers.Map;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.Planet;
 using EmpireAtWar.Controllers.Reinforcement;
@@ -14,6 +15,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.Radar;
@@ -25,6 +27,7 @@ using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
+using EmpireAtWar.Views.Map;
 using EmpireAtWar.Views.NavigationUiView;
 using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.Reinforcement;
@@ -33,9 +36,7 @@ using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.Terrain;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Repository;
 using Zenject;
-using GameController = EmpireAtWar.Controllers.Game.GameController;
 
 public class SkirmishSingleEntityInstaller : MonoInstaller
 {
@@ -47,10 +48,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private GameView gameView;
     [SerializeField] private PlanetView planetView;
     [SerializeField] private ReinforcementView reinforcementView;
-    
-   [Inject]
-   private IRepository Repository { get; }
-  
+    [SerializeField] private MapView mapView;
     
     public override void InstallBindings()
     {
@@ -60,12 +58,16 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
 
-        Container.BindModel<FactionsModel>()
+        Container
+            .BindModel<FactionsModel>()
             .BindModel<WeaponDamageModel>()
             .BindModel<ProjectileModel>()
             .BindModel<LayerModel>()
             .BindModel<DamageCalculationModel>();
         
+        Container
+            .BindEntity<MapController, MapView, MapModel>(
+            mapView);
         
         Container
             .BindEntity<NavigationController, NavigationUiView, NavigationModel>(
@@ -88,7 +90,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
                 factionUiView);
         
         Container
-            .BindEntity<GameController, GameView, GameModel>(
+            .BindEntity<SkirmishGameController, GameView, SkirmishGameModel>(
                 gameView);
         
         Container

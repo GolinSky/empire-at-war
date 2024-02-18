@@ -6,9 +6,9 @@ using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class GameController:Controller<GameModel>, IGameCommand
+    public class SkirmishGameController:Controller<SkirmishGameModel>, IGameCommand
     {
-        public GameController(GameModel model) : base(model)
+        public SkirmishGameController(SkirmishGameModel model) : base(model)
         {
         }
 

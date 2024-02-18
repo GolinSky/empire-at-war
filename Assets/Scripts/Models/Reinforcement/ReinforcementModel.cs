@@ -34,8 +34,9 @@ namespace EmpireAtWar.Models.Reinforcement
         [SerializeField] private DictionaryWrapper<ShipType, Transform> spawnShipWrapper;
         [SerializeField] private FactionsModel factionsModel;
         
-        public bool IsTrySpawning { get; set; }
         public Vector3 SpawnShipPosition { get; set; }
+        public bool IsTrySpawning { get; set; }
+
         
         [Inject]
         private SkirmishGameData SkirmishGameData { get; }

@@ -119,10 +119,6 @@ MonoBehaviour:
   - {fileID: 6831986141989874987}
   - {fileID: -7262126652776327686}
   - {fileID: 6024547979690883665}
-  m_MaxDistance: 40
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!65 &496781154488967109
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -778,7 +774,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300032, guid: 0fd21678280ad9c47aa2d32baf438c5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8a732e57806777846a90ceb6def85c3a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

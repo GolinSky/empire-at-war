@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.Game
 {
-    public interface IGameModelObserver:IModelObserver
+    public interface ISkirmishGameModelObserver:IModelObserver
     {
         GameTimeMode GameTimeMode { get; }
     }
     
-    [CreateAssetMenu(fileName = "GameModel", menuName = "Model/GameModel")]
-    public class GameModel:Model, IGameModelObserver
+    [CreateAssetMenu(fileName = "SkirmishGameModel", menuName = "Model/SkirmishGameModel")]
+    public class SkirmishGameModel: Model, ISkirmishGameModelObserver
     {
         public GameTimeMode GameTimeMode { get; set; }
     }

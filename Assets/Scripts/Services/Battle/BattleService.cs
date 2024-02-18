@@ -47,6 +47,8 @@ namespace EmpireAtWar.Services.Battle
         
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
+            if(inputType != InputType.Selection) return;
+            
             RaycastHit raycastHit = cameraService.ScreenPointToRay(touchPosition);
 
             SelectionViewComponent selectionComponent = raycastHit.collider.GetComponent<SelectionViewComponent>();

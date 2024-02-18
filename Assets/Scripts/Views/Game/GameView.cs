@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Views.Game
 {
     //todo: refactor
-    public class GameView : View<IGameModelObserver, IGameCommand>
+    public class GameView : View<ISkirmishGameModelObserver, IGameCommand>
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
