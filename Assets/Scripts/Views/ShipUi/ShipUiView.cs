@@ -5,13 +5,15 @@ using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace EmpireAtWar.Views.ShipUi
+namespace EmpireAtWar.Views
 {
     public class ShipUiView: View<IShipUiModelObserver, IShipUiCommand>
     {
         [SerializeField] private Canvas canvas;
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
+        [SerializeField] private Transform rootTransform;
+        
         protected override void OnInitialize()
         {
             Model.OnSelectionChanged += HandleChangedSelection;
@@ -34,7 +36,10 @@ namespace EmpireAtWar.Views.ShipUi
             canvas.enabled = selectionType == SelectionType.Ship;
             if (selectionType == SelectionType.Ship)
             {
-                shipIconImage.sprite = Model.ShipIcon;
+                ShipInfoUi shipInfoUi = Model.ShipInfoUi;
+                shipInfoUi.SetParent(rootTransform);
+                
+                //shipIconImage.sprite = Model.ShipIcon;
             }
         }
     }

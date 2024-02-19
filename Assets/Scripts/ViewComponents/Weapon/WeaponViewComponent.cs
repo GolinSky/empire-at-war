@@ -62,7 +62,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     
                     turretView.Attack(targetPosition);
                     attackAction.Invoke(turretDictionaryValue.Key, turretView.Distance);
-                    yield return new WaitForSeconds(1f);
+                    yield return new WaitForSeconds(0.5f);
                 }
             }
 

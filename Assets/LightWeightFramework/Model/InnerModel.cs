@@ -14,5 +14,16 @@ namespace LightWeightFramework.Model
         {
             return default;
         }
+
+        public void Init()
+        {
+            OnInit();
+        }
+
+        protected virtual void OnInit()
+        {
+            
+        }
     }
+    
 }

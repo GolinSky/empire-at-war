@@ -1,17 +1,18 @@
 ﻿using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class TurretView:MonoBehaviour
+    public class TurretView: MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem vfx;
         [SerializeField] private FloatRange yAxisRange;
-        [SerializeField] private bool block;
+        
         private Vector3 targetPosition = Vector3.zero;
-
-        public bool IsBusy => vfx.isPlaying;
+        private bool destroyed;
+        public bool IsBusy => vfx.isPlaying && !destroyed;
         public float Distance { get; private set; }
 
         public bool CanAttack(Vector3 position)
@@ -20,7 +21,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
             float wrappedAngle = GetCorrectAngle(transform.localRotation.eulerAngles.y);
             if (!yAxisRange.IsInRange(wrappedAngle))
             {
-                block = true;
                 return false;
             }
 
@@ -37,13 +37,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startSizeYMultiplier = projectileData.Size.y;
             mainModule.startSizeZMultiplier = projectileData.Size.z;
             mainModule.startLifetime = duration;
-         //   mainModule.startDelay = duration;
+            mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
         }
 
         public void Attack(Vector3 targetPosition)
         {
-            block = false;
             Distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
             mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
@@ -66,6 +65,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private void Update()
         {
             vfx.transform.LookAt(targetPosition);
+        }
+
+        public void UpdateState(float value)
+        {
+            if (value < 0)
+            {
+                destroyed = true;
+            }
         }
     }
 }

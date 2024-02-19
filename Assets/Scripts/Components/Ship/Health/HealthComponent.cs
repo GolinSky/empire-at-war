@@ -9,25 +9,25 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Health
 {
-    public interface IHealthComponent:IComponent
+    public interface IHealthComponent : IComponent
     {
-        void ApplyDamage(float damage, WeaponType weaponType);
-        Vector3 Position { get; }
-        
-        bool Destroyed { get; }
+        void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
         bool Equal(IModelObserver modelObserver);
-    }
-    
-    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent 
-    {
-        private readonly IComponentHub componentHub;
-        private readonly IMoveModelObserver moveModelObserver;
+        Vector3 Position { get; }
 
+      //  Vector3 GetPosition(ShipUnitType shipUnitType);
+        bool Destroyed { get; }
+    }
+
+    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent
+    {
+        private readonly IMoveModelObserver moveModelObserver;
+        private readonly IComponentHub componentHub;
         private readonly IModel rootModel;
-        
+
         public Vector3 Position => moveModelObserver.CurrentPosition;
         public bool Destroyed => Model.IsDestroyed;
-        
+
 
         public HealthComponent(IModel model, IComponentHub componentHub) : base(model)
         {
@@ -47,16 +47,18 @@ namespace EmpireAtWar.Components.Ship.Health
             Model.OnDestroy -= Destroy;
             componentHub.Remove(this);
         }
-        
+
         private void Destroy()
         {
             componentHub.Remove(this);
         }
 
-        public void ApplyDamage(float damage, WeaponType weaponType)
+        public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
         {
-            Model.ApplyDamage(damage, weaponType, moveModelObserver.IsMoving);
+            Model.ApplyDamage(damage, weaponType, moveModelObserver.IsMoving, shipUnitId);
         }
+
+   
 
         public bool Equal(IModelObserver modelObserver)
         {

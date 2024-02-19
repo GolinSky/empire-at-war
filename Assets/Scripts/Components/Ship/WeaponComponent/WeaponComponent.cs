@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Models.Weapon;
@@ -8,7 +9,6 @@ using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utils.TimerService;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
 
@@ -16,111 +16,129 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public interface IWeaponComponent:IComponent
     {
-        void AddTarget(IHealthComponent[] healthComponent);
-
+        void AddTarget(AttackData[] healthComponent);
     }
-
  
     public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable
     {
         private readonly IBattleService battleService;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
+        private readonly PlayerType playerType;
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IMoveModelObserver moveModelObserver;
         private readonly ITimer attackTimer;
         private float endTimeTween;
         private int index = -1;
 
-        private List<IHealthComponent> healthComponents = new List<IHealthComponent>();
+        private List<AttackData> attackDataList = new List<AttackData>();
         
         public WeaponComponent(
             IModel model,
             IBattleService battleService,
-            ITimerPoolWrapperService timerPoolWrapperService) : base(model)
+            ITimerPoolWrapperService timerPoolWrapperService,
+            PlayerType playerType) : base(model)
         {
             this.battleService = battleService;
             this.timerPoolWrapperService = timerPoolWrapperService;
+            this.playerType = playerType;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
-            attackTimer = TimerFactory.ConstructTimer(1f);
+            attackTimer = TimerFactory.ConstructTimer(3f);
         }
 
         public void Initialize()
         {
-            battleService.OnTargetAdded += OnTargetAdded;
+      //      battleService.OnTargetAdded += OnTargetAdded;
         }
 
         public void LateDispose()
         {
-            battleService.OnTargetAdded -= OnTargetAdded;
+         //   battleService.OnTargetAdded -= OnTargetAdded;
         }
 
-        private void OnTargetAdded(IHealthComponent healthComponent)
-        {
-            if (selectionModelObserver.IsSelected)
-            { 
-                AddTargetInternal(healthComponent);
-            }
-        }
+        // private void OnTargetAdded(IHealthComponent healthComponent)
+        // {
+        //     if (selectionModelObserver.IsSelected)
+        //     { 
+        //         AddTargetInternal(healthComponent);
+        //     }
+        // }
 
-        public void AddTarget(IHealthComponent[] healthComponent)
+        public void AddTarget(AttackData[] attackDataArray)
         {
-            foreach (IHealthComponent component in healthComponent)
+            foreach (AttackData component in attackDataArray)
             {
                 AddTargetInternal(component);
             }
         }
 
-        private void AddTargetInternal(IHealthComponent healthComponent)
+        private void AddTargetInternal(AttackData attackData)
         {
-            if (!healthComponents.Contains(healthComponent))
+            foreach (AttackData data in attackDataList)
             {
-                healthComponents.Add(healthComponent);
+                if (attackData == data)
+                {
+                    data.UpdateData(attackData);
+                    return;
+                }
             }
+            
+            attackDataList.Add(attackData);
         }
 
-        public void ApplyDamage(IHealthComponent healthComponent, WeaponType weaponType, float distance)
+        public void ApplyDamage(AttackData attackData, WeaponType weaponType, float distance)
         {
             timerPoolWrapperService.Invoke(
-                ()=> ApplyDamageInternal(healthComponent, weaponType, distance),
+                ()=> ApplyDamageInternal(attackData, weaponType, distance),
                 Model.ProjectileDuration);
         }
 
-        private void ApplyDamageInternal(IHealthComponent healthComponent, WeaponType weaponType, float distance)
+        private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, float distance)
         {
-            healthComponent.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType);
+            attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType);
         }
 
-        private void Attack(IHealthComponent healthComponent)
+        private void Attack(AttackData attackData)
         {
-            if (healthComponent == null || healthComponent.Destroyed)
+            if (attackData.IsDestroyed)
             {
-                healthComponents.Remove(healthComponent);
+                attackDataList.Remove(attackData);
                 return;
             }
-
-            float distance = GetDistance(healthComponent.Position);
+            if (playerType == PlayerType.Opponent)
+            {
+                
+            }
+            float distance = GetDistance(attackData.Position);
             if (distance > Model.MaxAttackDistance)
             {
                 attackTimer.ForceFinish();
                 return;
             }
-
-            Model.UpdateAttackData(healthComponent.Position, Model.Filter(distance), ((weaponType, distance) =>
+            
+            Model.UpdateAttackData(attackData.Position, Model.Filter(distance), ((weaponType, distance) =>
             {
-                ApplyDamage(healthComponent, weaponType, distance);
+                ApplyDamage(attackData, weaponType, distance);
             }));
         }
 
         public void Tick()
         {
-            if(healthComponents.Count == 0) return;
+            if(attackDataList.Count == 0) return;
 
+            if (playerType == PlayerType.Opponent)
+            {
+                
+            }
             if (attackTimer.IsComplete)
             {
-                foreach (IHealthComponent healthComponent in healthComponents)
+                for (var i = 0; i < attackDataList.Count; i++)
                 {
-                    Attack(healthComponent);
+                    Attack(attackDataList[i]);
+                }
+                if (playerType == PlayerType.Opponent)
+                {
+                
                 }
                 attackTimer.StartTimer();
             }

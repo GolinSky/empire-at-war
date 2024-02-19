@@ -7,17 +7,20 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Player
 {
-    public interface IPlayerService:IService
+    public interface IPlayerService : IService
     {
-        
     }
-    public class PlayerService: Service, IInitializable
+
+    public class PlayerService : Service, IInitializable, IPlayerService
     {
         private readonly SkirmishGameData skirmishGameData;
         private readonly SpaceStationViewFacade spaceStationViewFacade;
         private readonly MapModel mapModel;
 
-        public PlayerService(SkirmishGameData skirmishGameData, SpaceStationViewFacade spaceStationViewFacade, MapModel mapModel)
+        public PlayerService(
+            SkirmishGameData skirmishGameData, 
+            SpaceStationViewFacade spaceStationViewFacade,
+            MapModel mapModel)
         {
             this.skirmishGameData = skirmishGameData;
             this.spaceStationViewFacade = spaceStationViewFacade;
@@ -26,7 +29,10 @@ namespace EmpireAtWar.Services.Player
 
         public void Initialize()
         {
-            spaceStationViewFacade.Create(PlayerType.Player, skirmishGameData.PlayerFactionType, mapModel.GetStationPosition(PlayerType.Player));
+            spaceStationViewFacade.Create(
+                PlayerType.Player,
+                skirmishGameData.PlayerFactionType,
+                mapModel.GetStationPosition(PlayerType.Player));
         }
     }
 }

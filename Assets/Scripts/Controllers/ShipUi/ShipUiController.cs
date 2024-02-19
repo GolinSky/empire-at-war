@@ -36,7 +36,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                 IShipModelObserver shipModelObserver = navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
                 if (shipModelObserver != null)
                 {
-                    Model.ShipIcon = shipModelObserver.ShipIcon;
+                    Model.ShipInfoUi = shipModelObserver.ShipInfoUi;
                 }
             }
             Model.UpdateSelection(selectionType);

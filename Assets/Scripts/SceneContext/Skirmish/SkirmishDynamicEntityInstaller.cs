@@ -8,7 +8,6 @@ namespace EmpireAtWar.SceneContext
 {
     public class SkirmishDynamicEntityInstaller : MonoInstaller
     {
-        
         public override void InstallBindings()
         {
             Container

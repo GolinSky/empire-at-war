@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Movement;
+﻿using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace EmpireAtWar.Components.Ship.Radar
 {
     public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable
     {
+        private readonly PlayerType playerType;
         private readonly Vector3 offset;
         private readonly ITimer timer;
         private readonly IMoveModelObserver moveModelObserver;
@@ -16,8 +18,9 @@ namespace EmpireAtWar.Components.Ship.Radar
         private RaycastHit[] raycastHits;
 
         private Vector3 CenterCast => moveModelObserver.CurrentPosition - offset;
-        public RadarComponent(IModel model) : base(model)
+        public RadarComponent(IModel model, PlayerType playerType) : base(model)
         {
+            this.playerType = playerType;
             offset = Vector3.up * 100;
             timer = TimerFactory.ConstructTimer(Model.Delay);
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
@@ -35,6 +38,10 @@ namespace EmpireAtWar.Components.Ship.Radar
                     Model.Distance + offset.y,
                     Model.EnemyLayerMask);
 
+                if (playerType == PlayerType.Opponent)
+                {
+                    
+                }
                 if (raycastHits.Length != 0)
                 {
                     // string names = "RaycastHits: ";

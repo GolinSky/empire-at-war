@@ -10,6 +10,7 @@ namespace EmpireAtWar.Models.Ship
     public interface IShipModelObserver : IModelObserver
     {
         Sprite ShipIcon { get; }
+        ShipInfoUi ShipInfoUi { get; }
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -27,6 +28,22 @@ namespace EmpireAtWar.Models.Ship
         [Header("Radar Model")] 
         [SerializeField] private RadarModel radarModel;
         [field: SerializeField] public Sprite ShipIcon { get; private set; }
+
+        [SerializeField] private ShipInfoUi shipUiPrefab;
+        private ShipInfoUi shipInfoUi;
+
+        public ShipInfoUi ShipInfoUi
+        {
+            get
+            {
+                if (shipInfoUi == null)
+                {
+                    shipInfoUi = Instantiate(shipUiPrefab);
+                    shipInfoUi.Init(healthModel.ShipUnitModels);
+                }
+                return shipInfoUi;
+            }
+        }
         
         protected override void Awake()
         {

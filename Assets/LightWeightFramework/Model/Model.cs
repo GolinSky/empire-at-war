@@ -9,7 +9,7 @@ namespace LightWeightFramework.Model
    
         protected virtual void Awake()
         {
-            foreach (var innerModel in models)
+            foreach (Model innerModel in models)
             {
                 AddModel(innerModel);
             }
@@ -41,22 +41,18 @@ namespace LightWeightFramework.Model
             return default;
         }
 
-        protected Model AddModel(Model model)
+        private Model AddModel(Model model)
         {
             var instancedModel = Instantiate(model);
             CurrentModels.Add(instancedModel);
             return instancedModel;
         }
         
-        protected void AddInnerModel<TModel>(TModel model) where TModel : InnerModel
-        {
-            CurrentModels.Add(model);
-        }
-        
         protected void AddInnerModels(params InnerModel[] model) 
         {
             foreach (InnerModel innerModel in model)
             {
+                innerModel.Init();
                 CurrentModels.Add(innerModel);
             }
         }

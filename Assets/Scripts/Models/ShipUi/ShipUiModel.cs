@@ -10,13 +10,16 @@ namespace EmpireAtWar.Models.ShipUi
         event Action<SelectionType> OnSelectionChanged;
 
         Sprite ShipIcon { get; }
+        ShipInfoUi ShipInfoUi { get; }
     }
+    
     [CreateAssetMenu(fileName = "ShipUiModel", menuName = "Model/ShipUiModel")]
     public class ShipUiModel : Model, IShipUiModelObserver
     {
         public event Action<SelectionType> OnSelectionChanged;
         
         public Sprite ShipIcon { get; set; }
+        public ShipInfoUi ShipInfoUi { get; set; }
 
         public void UpdateSelection(SelectionType selectionType) => OnSelectionChanged?.Invoke(selectionType);
 

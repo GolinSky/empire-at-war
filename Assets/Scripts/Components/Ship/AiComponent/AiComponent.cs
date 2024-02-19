@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Services.ComponentHub;
+using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Health65;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -44,14 +45,21 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
         private void HandleEnemy(RaycastHit[] raycastHit)
         {
-            List<IHealthComponent> healthComponents = new List<IHealthComponent>();
+            List<AttackData> healthComponents = new List<AttackData>();
             foreach (RaycastHit hit in raycastHit)
             {
                 HealthViewComponent healthViewComponent = hit.collider.GetComponentInChildren<HealthViewComponent>();
-                healthComponents.Add(componentHub.GetComponent(healthViewComponent.Model));
+                IShipUnitView unitView = healthViewComponent.GetShipUnit(ShipUnitType.Any);
+                if (unitView != null)
+                {
+                    healthComponents.Add(new AttackData(unitView, componentHub.GetComponent(healthViewComponent.Model)));
+                }
             }
-           
-            weaponComponent.AddTarget(healthComponents.ToArray());
+
+            if (healthComponents.Count != 0)
+            {
+                weaponComponent.AddTarget(healthComponents.ToArray());
+            }
         }
     }
 }

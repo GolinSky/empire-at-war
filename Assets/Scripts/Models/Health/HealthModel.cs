@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -11,14 +12,17 @@ namespace EmpireAtWar.Models.Health
         event Action OnDestroy;
         event Action OnValueChanged;
 
+        ShipUnitModel[] ShipUnitModels { get; }
         float Armor { get; }
         float Shields { get; }
+        
     }
 
     [Serializable]
     public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
     {
         public event Action OnValueChanged;
+        public event Action OnInitialized;
         public event Action OnDestroy;
         
         [SerializeField] 
@@ -28,27 +32,58 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public float Armor { get; private set; }
         [field:SerializeField] public float Shields { get; private set; }
         
+        [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
+        
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }
         public bool IsDestroyed { get; private set; }
-        
-
         public bool HasShields => Shields > 0;
         public float Dexterity => dexterity;
 
-        public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving)
+        protected override void OnInit()
+        {
+            float health = Armor / ShipUnitModels.Length;
+            foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
+            {
+                shipUnitModel.SetHealth(health);
+            }
+        }
+        
+        public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
         {
             DamageData damageData = DamageCalculationModel.GetDamage(weaponType, this, isMoving, damage);
             
-            //Debug.Log($"ApplyDamage: {damage} -> [ShieldDamage: {damageData.ShieldDamage}], [ArmorDamage: {damageData.ArmorDamage}];");
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
+            ShipUnitModel shipUnitModel = ShipUnitModels[shipUnitId];
+            if (damageData.ArmorDamage > shipUnitModel.Health)
+            {
+                float damageLeft = damageData.ArmorDamage - shipUnitModel.Health;
+                shipUnitModel.ApplyDamage(shipUnitModel.Health);
+                ApplyDamageOnAllUnit(damageLeft);
+            }
+            else
+            {
+                shipUnitModel.ApplyDamage(damageData.ArmorDamage);
+            }
+                
             if (Armor <= 0)
             {
                 IsDestroyed = true;
                 OnDestroy?.Invoke();
             }
+            
             OnValueChanged?.Invoke();
+        }
+
+        public void ApplyDamageOnAllUnit(float damage)
+        {
+            ShipUnitModel[] unitModels = ShipUnitModels.Where(x => x.Health > 0).ToArray();
+            float damagePerUnit = damage / unitModels.Length;
+            foreach (ShipUnitModel shipUnitModel in unitModels)
+            {
+                shipUnitModel.ApplyDamage(damagePerUnit);
+            }
         }
     }
 }

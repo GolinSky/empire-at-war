@@ -23,6 +23,35 @@ MonoBehaviour:
     dexterity: 0
     <Armor>k__BackingField: 60000
     <Shields>k__BackingField: 30000
+    <ShipUnitModels>k__BackingField:
+    - <Id>k__BackingField: 0
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 1
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 2
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 3
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 4
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 5
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 6
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 7
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 8
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 9
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 10
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 11
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 12
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 13
+      <ShipUnitType>k__BackingField: 0
   weaponModel:
     weaponCount:
       keyValue:
@@ -34,10 +63,12 @@ MonoBehaviour:
         value: 2
       - key: 2
         value: 2
-    <ProjectileDuration>k__BackingField: 3
+    <ProjectileDuration>k__BackingField: 1
   radarModel:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 6f17df29a9779b14abfb3843cc051902,
+    type: 3}
+  shipUiPrefab: {fileID: 2980371240824619358, guid: ff2d91043061b39448cec0162be9136f,
     type: 3}
