@@ -1,5 +1,4 @@
-﻿using System;
-using EmpireAtWar.Models.Health;
+﻿using EmpireAtWar.Models.Health;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,10 +7,12 @@ namespace EmpireAtWar
     [RequireComponent(typeof(Image))]
     public class ShipUnitUi: MonoBehaviour
     {
+        private const float MinTolerance = 0.01f;
         [SerializeField] private Image image;
-        private IShipUnitModel shipUnitModel;
-
+        
         [field:SerializeField] public int Id { get; private set; }
+
+        private IShipUnitModel shipUnitModel;
 
         private void OnValidate()
         {
@@ -35,14 +36,16 @@ namespace EmpireAtWar
         private void UpdateData()
         {
             float healthPercentage = shipUnitModel.HealthPercentage;
-            // hardcode
-            image.color = healthPercentage > 0.9f
-                ? Color.green
-                : healthPercentage > 0.5f
-                    ? Color.yellow
-                    : healthPercentage > 0f
-                        ? Color.red
-                        : Color.black;
+            if (healthPercentage <= MinTolerance)
+            {
+                image.color = Color.black;
+                return;
+            }
+            
+            Color color = image.color;
+            color.g = 255 * healthPercentage;
+            color.r = 255 * (1 - healthPercentage);
+            image.color = color;
         }
     }
 }

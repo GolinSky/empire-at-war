@@ -23,7 +23,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         private readonly IBattleService battleService;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly PlayerType playerType;
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IMoveModelObserver moveModelObserver;
         private readonly ITimer attackTimer;
@@ -35,12 +34,10 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public WeaponComponent(
             IModel model,
             IBattleService battleService,
-            ITimerPoolWrapperService timerPoolWrapperService,
-            PlayerType playerType) : base(model)
+            ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.battleService = battleService;
             this.timerPoolWrapperService = timerPoolWrapperService;
-            this.playerType = playerType;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
@@ -105,10 +102,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 attackDataList.Remove(attackData);
                 return;
             }
-            if (playerType == PlayerType.Opponent)
-            {
-                
-            }
             float distance = GetDistance(attackData.Position);
             if (distance > Model.MaxAttackDistance)
             {
@@ -126,20 +119,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             if(attackDataList.Count == 0) return;
 
-            if (playerType == PlayerType.Opponent)
-            {
-                
-            }
             if (attackTimer.IsComplete)
             {
                 for (var i = 0; i < attackDataList.Count; i++)
                 {
                     Attack(attackDataList[i]);
                 }
-                if (playerType == PlayerType.Opponent)
-                {
-                
-                }
+            
                 attackTimer.StartTimer();
             }
         }

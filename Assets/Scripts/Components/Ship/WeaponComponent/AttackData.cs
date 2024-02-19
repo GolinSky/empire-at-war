@@ -10,7 +10,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private IHealthComponent HealthComponent { get; }
         private IShipUnitView ShipUnitView { get;  set; }
 
-        public bool IsDestroyed => HealthComponent == null ||  HealthComponent.Destroyed;
+        public bool IsDestroyed => HealthComponent == null ||  HealthComponent.Destroyed || ShipUnitView.IsDestroyed;
         public Vector3 Position => ShipUnitView.Position;
         
         public AttackData(IShipUnitView shipUnitView, IHealthComponent healthComponent)
