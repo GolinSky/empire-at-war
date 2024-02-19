@@ -1,6 +1,7 @@
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
+using Unity.Mathematics;
 
 namespace EmpireAtWar.Views.Ship
 {
@@ -18,8 +19,8 @@ namespace EmpireAtWar.Views.Ship
         public override void Release()
         {
             base.Release();
-            
-            //Destroy(gameObject,2f);
+
+            Instantiate(Model.DeathExplosionVfx, transform.position, quaternion.identity);
         }
     }
 }

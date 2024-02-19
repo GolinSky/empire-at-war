@@ -11,6 +11,7 @@ namespace EmpireAtWar.Models.Ship
     {
         Sprite ShipIcon { get; }
         ShipInfoUi ShipInfoUi { get; }
+        ParticleSystem DeathExplosionVfx { get; }
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Models.Ship
         [SerializeField] private ShipInfoUi shipUiPrefab;
         private ShipInfoUi shipInfoUi;
 
+        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
+
         public ShipInfoUi ShipInfoUi
         {
             get
@@ -44,6 +47,7 @@ namespace EmpireAtWar.Models.Ship
                 return shipInfoUi;
             }
         }
+
         
         protected override void Awake()
         {

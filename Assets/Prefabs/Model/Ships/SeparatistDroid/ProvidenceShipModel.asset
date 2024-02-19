@@ -44,8 +44,10 @@ MonoBehaviour:
     <ProjectileDuration>k__BackingField: 1
   radarModel:
     <Range>k__BackingField: 40
-    <Delay>k__BackingField: 15
+    <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
   <ShipIcon>k__BackingField: {fileID: 21300000, guid: 3483e2ea8c3953b49be48aab2fc422ad,
     type: 3}
   shipUiPrefab: {fileID: 0}
+  <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
+    type: 3}

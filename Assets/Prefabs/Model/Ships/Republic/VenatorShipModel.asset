@@ -72,3 +72,5 @@ MonoBehaviour:
     type: 3}
   shipUiPrefab: {fileID: 2980371240824619358, guid: ff2d91043061b39448cec0162be9136f,
     type: 3}
+  <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
+    type: 3}
