@@ -47,6 +47,7 @@ namespace EmpireAtWar.ViewComponents.Health65
         {
             healthModelObserver.OnValueChanged -= UpdateData;
             healthModelObserver.OnDestroy -= Destroy;
+            healthCanvas.enabled = false;
         }
         
         private void Destroy()

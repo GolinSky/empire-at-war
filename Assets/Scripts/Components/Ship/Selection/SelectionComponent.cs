@@ -24,6 +24,11 @@ namespace EmpireAtWar.Components.Ship.Selection
             navigationService.UpdateSelectable(this, selectionType);
         }
 
+        public void OnSkipSelection(SelectionType selectionType)
+        {
+            navigationService.RemoveSelectable(this);
+        }
+
         public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
         {
             command = default;

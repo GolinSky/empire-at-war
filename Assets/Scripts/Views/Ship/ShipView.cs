@@ -18,7 +18,8 @@ namespace EmpireAtWar.Views.Ship
         public override void Release()
         {
             base.Release();
-            Destroy(gameObject,2f);
+            
+            //Destroy(gameObject,2f);
         }
     }
 }

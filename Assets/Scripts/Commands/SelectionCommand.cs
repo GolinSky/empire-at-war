@@ -19,5 +19,11 @@ namespace EmpireAtWar.Commands
         {
             navigationService.UpdateSelectable(selectable, selectionType);
         }
+
+        public void OnSkipSelection(SelectionType selectionType)
+        {
+            navigationService.UpdateSelectable(selectable, selectionType);
+
+        }
     }
 }

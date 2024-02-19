@@ -30,5 +30,10 @@ namespace EmpireAtWar.Components.Ship.Selection
         {
             battleService.AddTarget(healthComponent);
         }
+
+        public void OnSkipSelection(SelectionType selectionType)
+        {
+            
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace EmpireAtWar.ViewComponents.Selection
         {
             base.OnRelease();
             modelObserver.OnSelected -= OnSelected;
+            OnSelected(false);
         }
 
         private void OnSelected(bool isActive)

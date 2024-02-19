@@ -13,6 +13,8 @@ namespace EmpireAtWar.Services.NavigationService
         
         ISelectable Selectable { get; }
         void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType);
+
+        void RemoveSelectable(ISelectable selectable);
         void RemoveSelectable();
     }
 
@@ -66,6 +68,15 @@ namespace EmpireAtWar.Services.NavigationService
             {
                 SelectionType = selectionType;
                 OnTypeChanged?.Invoke(SelectionType);
+            }
+        }
+
+        public void RemoveSelectable(ISelectable selectable)
+        {
+            if (Selectable == selectable)
+            {
+                Selectable = null;
+                OnTypeChanged?.Invoke(SelectionType.None);
             }
         }
 

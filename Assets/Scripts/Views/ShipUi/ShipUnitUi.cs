@@ -22,6 +22,7 @@ namespace EmpireAtWar
         public void Init(IShipUnitModel shipUnitModel)
         {
             this.shipUnitModel = shipUnitModel;
+            UpdateData();
             shipUnitModel.OnShipUnitChanged += UpdateData;
         }
 

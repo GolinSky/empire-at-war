@@ -10,6 +10,8 @@ namespace EmpireAtWar.ViewComponents.Move
 {
     public class MoveViewComponent:ViewComponent
     {
+        private const float FallDownDuration = 260f;
+        
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
@@ -32,14 +34,32 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             model.OnTargetPositionChanged -= UpdateTargetPosition;
             model.OnHyperSpaceJump -= HyperSpaceJump;
+
+            FallDown();
         }
 
+      
         protected override void OnCommandSet(ICommand command)
         {
             base.OnCommandSet(command);
             command.TryGetCommand(out moveCommand);
             moveCommand.Assign(transform);
         }
+        
+        private void FallDown()
+        {
+            Vector3 point = transform.position - Vector3.up * 40f;
+            
+            Vector3 randomRotation = new Vector3(Random.Range(-90, 90), transform.localRotation.eulerAngles.y + Random.Range(-10, 10), Random.Range(0, 360));
+            
+            moveSequence.KillIfExist();
+            moveSequence = DOTween.Sequence();
+            moveSequence.Append(transform.DOMove(point, FallDownDuration));
+            moveSequence.Join(transform.DOLocalRotate(
+                randomRotation,
+                FallDownDuration));
+        }
+
 
         private void HyperSpaceJump(Vector3 point)
         {

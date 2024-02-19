@@ -13,7 +13,13 @@ namespace EmpireAtWar.ViewComponents.Selection
         private ISelectionCommand selectionCommand;
         
         protected override void OnInit() {}
-        protected override void OnRelease() {}
+
+        protected override void OnRelease()
+        {
+            selectionCommand?.OnSkipSelection(selectionType);
+
+            selectionCommand = null;
+        }
 
         protected override void OnCommandSet(ICommand command)
         {
