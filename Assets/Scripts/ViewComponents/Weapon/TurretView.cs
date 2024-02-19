@@ -1,15 +1,17 @@
-﻿using EmpireAtWar.Models.Weapon;
+﻿using System;
+using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class TurretView: MonoBehaviour, IObserver<float>
+    public class TurretView: MonoBehaviour, Views.ShipUi.IObserver<float>
     {
         [SerializeField] private ParticleSystem vfx;
         [SerializeField] private FloatRange yAxisRange;
-        
+
+        private INotifier<float> notifier;
         private Vector3 targetPosition = Vector3.zero;
         private bool destroyed;
         public bool IsBusy => vfx.isPlaying && !destroyed;
@@ -39,6 +41,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
             mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
+            notifier = GetComponent<INotifier<float>>();
+            notifier.AddObserver(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (notifier != null)
+            {
+                notifier.RemoveObserver(this);
+            }
         }
 
         public void Attack(Vector3 targetPosition)

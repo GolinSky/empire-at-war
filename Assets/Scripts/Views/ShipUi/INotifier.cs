@@ -2,8 +2,8 @@
 {
     public interface INotifier<TValue>
     {
-        void Add(IObserver<TValue> observer);
-        void Remove(IObserver<TValue> observer);
+        void AddObserver(IObserver<TValue> observer);
+        void RemoveObserver(IObserver<TValue> observer);
         
     }
 

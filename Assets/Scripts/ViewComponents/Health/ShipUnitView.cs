@@ -42,12 +42,12 @@ namespace EmpireAtWar.ViewComponents.Health
             }
         }
 
-        void INotifier<float>.Add(IObserver<float> observer)
+        void INotifier<float>.AddObserver(IObserver<float> observer)
         {
             observers.Add(observer);
         }
 
-        void INotifier<float>.Remove(IObserver<float> observer)
+        void INotifier<float>.RemoveObserver(IObserver<float> observer)
         {
             observers.Remove(observer);
         }
