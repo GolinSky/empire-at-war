@@ -17,7 +17,7 @@ namespace EmpireAtWar.Controllers.Loading
 
         public void Tick()
         {
-            if (blockUpdate) return;
+            //if (blockUpdate) return;
 
             if (sceneService.IsSceneLoaded)
             {
