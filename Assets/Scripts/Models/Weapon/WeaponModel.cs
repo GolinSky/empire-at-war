@@ -16,6 +16,8 @@ namespace EmpireAtWar.Models.Weapon
         float ProjectileDuration { get;}
         
         float MaxAttackDistance { get; }
+        
+        float DelayBetweenAttack { get; set; }
     }
 
     [Serializable]
@@ -26,6 +28,8 @@ namespace EmpireAtWar.Models.Weapon
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
         
         [field:SerializeField] public float ProjectileDuration { get; private set; }
+
+        [field:SerializeField] public float DelayBetweenAttack { get; set; }
 
         public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
         
@@ -51,6 +55,17 @@ namespace EmpireAtWar.Models.Weapon
                 }
 
                 return maxDistance;
+            }
+        }
+
+        public int WeaponCount { get; private set; }
+
+        protected override void OnInit()
+        {
+            base.OnInit();
+            foreach (KeyValuePair<WeaponType,int> keyValuePair in WeaponDictionary)
+            {
+                WeaponCount += keyValuePair.Value;
             }
         }
 

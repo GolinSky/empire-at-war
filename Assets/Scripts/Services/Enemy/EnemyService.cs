@@ -50,9 +50,10 @@ namespace EmpireAtWar.Services.Enemy
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*1f));
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*2f));
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*3f));
-            // return;
+            
             Sequence sequence = DOTween.Sequence();
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
+            
             foreach (var keyValuePair in factionData)
             {
                 sequence.AppendInterval(keyValuePair.Value.BuildTime);

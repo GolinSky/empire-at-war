@@ -37,10 +37,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             weaponModelObserver.OnAttack -= Attack;
         }
-
-
-   
-
+        
         private void Attack(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
         {
             if (attackCoroutine != null)
@@ -58,11 +55,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 
                 foreach (TurretView turretView in turretDictionaryValue.Value)
                 {
-                    if(turretView.IsBusy || !turretView.CanAttack(targetPosition)) continue;
+                    if (turretView.IsBusy || !turretView.CanAttack(targetPosition))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        turretView.Attack(targetPosition);
+                        attackAction.Invoke(turretDictionaryValue.Key, turretView.Distance);
+                        yield return new WaitForSeconds(weaponModelObserver.DelayBetweenAttack);
+                    }
                     
-                    turretView.Attack(targetPosition);
-                    attackAction.Invoke(turretDictionaryValue.Key, turretView.Distance);
-                    yield return new WaitForSeconds(0.5f);
+                   
                 }
             }
 

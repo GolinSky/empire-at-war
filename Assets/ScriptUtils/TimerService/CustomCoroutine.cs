@@ -18,7 +18,15 @@ namespace Utils.TimerService
         public void Init(Action action, float delay)
         {
             this.action = action;
-            timer = TimerFactory.ConstructTimer(delay);
+            if (timer == null)
+            {
+                timer = TimerFactory.ConstructTimer(delay);
+            }
+            else
+            {
+                timer.ChangeDelay(delay);
+            }
+            timer.StartTimer();
             isFinished = false;
         }
 

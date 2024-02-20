@@ -1,8 +1,10 @@
 ﻿using System;
 using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
 using UnityEngine;
+using Utils.TimerService;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -12,9 +14,21 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private FloatRange yAxisRange;
 
         private INotifier<float> notifier;
+        private ITimer attackTimer;
         private Vector3 targetPosition = Vector3.zero;
         private bool destroyed;
-        public bool IsBusy => vfx.isPlaying && !destroyed;
+
+        private ShipView ShipView;
+
+
+        private void Start()
+        {
+            ShipView = GetComponentInParent<ShipView>();
+        }
+
+        public bool IsBusy => !attackTimer.IsComplete && !destroyed;
+
+
         public float Distance { get; private set; }
 
         public bool CanAttack(Vector3 position)
@@ -23,6 +37,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             float wrappedAngle = GetCorrectAngle(transform.localRotation.eulerAngles.y);
             if (!yAxisRange.IsInRange(wrappedAngle))
             {
+                // Debug.Log($"{ShipView.name}, {name}: yAxisRange: {yAxisRange.Min}-> {yAxisRange.Max}, != {wrappedAngle}");
                 return false;
             }
 
@@ -41,6 +56,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
             mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
+            attackTimer = TimerFactory.ConstructTimer(mainModule.duration);
             notifier = GetComponent<INotifier<float>>();
             notifier.AddObserver(this);
         }
@@ -59,6 +75,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             var mainModule = vfx.main;
             mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
             this.targetPosition = targetPosition;
+            attackTimer.StartTimer();
             vfx.Play();
         }
 

@@ -21181,17 +21181,17 @@ PrefabInstance:
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 180
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -5
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -21687,7 +21687,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21872,7 +21872,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22057,7 +22057,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22242,7 +22242,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22576,7 +22576,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22731,12 +22731,12 @@ PrefabInstance:
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -180
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -22906,7 +22906,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23056,17 +23056,17 @@ PrefabInstance:
     - target: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -180
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23196,17 +23196,17 @@ PrefabInstance:
     - target: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 180
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -5
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23376,7 +23376,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23531,7 +23531,7 @@ PrefabInstance:
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 180
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -23541,7 +23541,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -23721,7 +23721,7 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23876,17 +23876,17 @@ PrefabInstance:
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 5
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -180
+      value: -200
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}

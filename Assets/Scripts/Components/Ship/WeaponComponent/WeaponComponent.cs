@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private readonly IMoveModelObserver moveModelObserver;
         private readonly ITimer attackTimer;
         private float endTimeTween;
-        private int index = -1;
+        private float attackDelay;
 
         private List<AttackData> attackDataList = new List<AttackData>();
         
@@ -38,7 +38,8 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             this.timerPoolWrapperService = timerPoolWrapperService;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
-            attackTimer = TimerFactory.ConstructTimer(2f);
+            attackDelay = Model.WeaponCount * Model.DelayBetweenAttack + 1f;
+            attackTimer = TimerFactory.ConstructTimer(10f);
         }
 
         public void Initialize()
@@ -103,7 +104,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             float distance = GetDistance(attackData.Position);
             if (distance > Model.MaxAttackDistance)
             {
-                attackTimer.ForceFinish();
+              //  attackTimer.ForceFinish();
                 return;
             }
             
@@ -119,11 +120,29 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
             if (attackTimer.IsComplete)
             {
+                float delay = 0;
                 for (var i = 0; i < attackDataList.Count; i++)
                 {
-                    Attack(attackDataList[i]);
+                    var i1 = i;
+                    if (i == 0)
+                    {
+                        Attack(attackDataList[i]);
+                    }
+                    else
+                    {
+                        timerPoolWrapperService.Invoke(()=>
+                        {
+                            if (i1 >= attackDataList.Count - 1)
+                            {
+                                return;
+                            }
+                            Attack(attackDataList[i1]);
+                        }, delay);
+                    }
+                    delay += attackDelay;
                 }
-            
+                Debug.Log($"attackDelay:{delay}");
+                attackTimer.ChangeDelay(delay);
                 attackTimer.StartTimer();
             }
         }
