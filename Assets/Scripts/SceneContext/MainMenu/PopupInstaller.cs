@@ -21,10 +21,6 @@ namespace EmpireAtWar
                 .BindInterfacesTo<PopupService>()
                 .AsSingle();
         
-            Container
-                .BindInterfacesTo<SkirmishSetUpCommand>()
-                .AsSingle();
-        
             Container.BindFactory<PopupType, PopupUi, PopupUiFacade>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<PopupDynamicInstaller>();

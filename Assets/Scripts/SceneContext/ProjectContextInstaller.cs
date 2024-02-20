@@ -1,5 +1,7 @@
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Skirmish;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Game;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.SceneService;
@@ -18,15 +20,21 @@ public class ProjectContextInstaller : MonoInstaller
             .BindService<TimerPoolWrapperService>();
         
         Container
+            .BindModel<GameModel>();
+        Container
+            .BindService<GameController>();
+        
+     
+        
+        Container
             .BindService<SceneService>();
-
-        Container.BindInstance(new SkirmishGameData()) // fix this 
-            .AsSingle();
-
+        
         Container
             .BindService<SettingsService>();
         
         Container
             .BindService<AudioService>();
     }
+    
+   
 }

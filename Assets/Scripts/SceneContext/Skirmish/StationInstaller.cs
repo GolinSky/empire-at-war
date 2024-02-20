@@ -3,7 +3,6 @@ using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SpaceStation;
-using EmpireAtWar.Services.Game;
 using EmpireAtWar.Views.SpaceStation;
 using UnityEngine;
 using Zenject;
@@ -15,7 +14,6 @@ namespace EmpireAtWar.SceneContext
         private readonly FactionType factionType;
         private readonly PlayerType playerType;
         private readonly Vector3 startPosition;
-        private readonly ISkirmishGameService skirmishGameService;
 
 
         public StationInstaller(FactionType factionType, PlayerType playerType, Vector3 startPosition)

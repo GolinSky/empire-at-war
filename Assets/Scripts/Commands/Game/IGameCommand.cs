@@ -1,9 +1,9 @@
-﻿using WorkShop.LightWeightFramework.Command;
+﻿using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Commands.Game
 {
-    public interface IGameCommand: ICommand
+    public interface IGameCommand
     {
-        void ChangeTime(GameTimeMode mode); 
+        void StartGame(FactionType playerFactionType, FactionType enemyFactionType);
     }
 }

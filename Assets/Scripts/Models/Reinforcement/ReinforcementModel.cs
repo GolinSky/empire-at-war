@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -34,12 +33,11 @@ namespace EmpireAtWar.Models.Reinforcement
         [SerializeField] private DictionaryWrapper<ShipType, Transform> spawnShipWrapper;
         [SerializeField] private FactionsModel factionsModel;
         
+        [Inject(Id = PlayerType.Player)] 
+        public FactionType FactionType { get; }
         public Vector3 SpawnShipPosition { get; set; }
         public bool IsTrySpawning { get; set; }
-
         
-        [Inject]
-        private SkirmishGameData SkirmishGameData { get; }
         
         public Dictionary<ShipType, Transform> SpawnShips => spawnShipWrapper.Dictionary;
 
@@ -60,7 +58,7 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public void AddReinforcement(ShipType shipType)
         {
-            OnReinforcementAdded?.Invoke(shipType, factionsModel.GetFactionData(SkirmishGameData.PlayerFactionType)[shipType].Icon);
+            OnReinforcementAdded?.Invoke(shipType, factionsModel.GetFactionData(FactionType)[shipType].Icon);
         }
     }
 }

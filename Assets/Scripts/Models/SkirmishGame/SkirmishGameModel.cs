@@ -2,7 +2,7 @@
 using LightWeightFramework.Model;
 using UnityEngine;
 
-namespace EmpireAtWar.Models.Game
+namespace EmpireAtWar.Models.SkirmishGame
 {
     public interface ISkirmishGameModelObserver:IModelObserver
     {

@@ -22,6 +22,7 @@ using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.NavigationService;
@@ -50,6 +51,10 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private ReinforcementView reinforcementView;
     [SerializeField] private MapView mapView;
     
+    
+    [Inject]
+    private IGameModelObserver GameModelObserver { get; }
+    
     public override void InstallBindings()
     {
         Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
@@ -58,6 +63,9 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
 
+        Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
+        Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
+        
         Container
             .BindModel<FactionsModel>()
             .BindModel<WeaponDamageModel>()
@@ -100,5 +108,15 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container
             .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(
                 reinforcementView);
+    }
+
+    private FactionType GetPlayerFactionType()
+    {
+        return Container.Resolve<IGameModelObserver>().PlayerFactionType;
+    }
+    
+    private FactionType GetEnemyFactionType()
+    {
+        return Container.Resolve<IGameModelObserver>().EnemyFactionType;
     }
 }

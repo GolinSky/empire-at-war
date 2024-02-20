@@ -1,4 +1,3 @@
-using EmpireAtWar.Models.Skirmish;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -13,8 +12,6 @@ namespace EmpireAtWar.Models.Terrain
     public class TerrainModel:Model, ITerrainModelObserver, IInitializable
     {
         
-        [Inject]
-        public SkirmishGameData SkirmishGameData { get; }
         public void Initialize()
         {
             

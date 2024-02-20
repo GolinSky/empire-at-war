@@ -2,7 +2,6 @@
 using DG.Tweening;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
 using UnityEngine;
@@ -20,31 +19,34 @@ namespace EmpireAtWar.Services.Enemy
         private static readonly Vector3 Offset = new Vector3(250, 0, 250);
         private static readonly Vector3 Offset1 = new Vector3(-20, 0, 10);
         
-        private readonly FactionType factionType;
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly SpaceStationViewFacade spaceStationViewFacade;
+        private readonly FactionsModel factionsModel;
         private readonly MapModel mapModel;
-        private readonly Dictionary<ShipType, FactionData> factionData;
+        private Dictionary<ShipType, FactionData> factionData;
         private Vector3 stationPosition;
+        
+        [Inject(Id = PlayerType.Opponent)]
+        private FactionType FactionType { get; }
 
         public EnemyService(
             ShipFacadeFactory shipFacadeFactory,
-            SkirmishGameData skirmishGameData,
             SpaceStationViewFacade spaceStationViewFacade,
             FactionsModel factionsModel,
             MapModel mapModel)
         {
-            factionType = skirmishGameData.EnemyFactionType;
             this.shipFacadeFactory = shipFacadeFactory;
             this.spaceStationViewFacade = spaceStationViewFacade;
+            this.factionsModel = factionsModel;
             this.mapModel = mapModel;
-            factionData = factionsModel.GetFactionData(skirmishGameData.EnemyFactionType);
 
         }
         public void Initialize()
         {
+            factionData = factionsModel.GetFactionData(FactionType);
+
             stationPosition = mapModel.GetStationPosition(PlayerType.Opponent);
-            spaceStationViewFacade.Create(PlayerType.Opponent, factionType,  stationPosition);
+            spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  stationPosition);
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*1f));
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*2f));
             // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*3f));

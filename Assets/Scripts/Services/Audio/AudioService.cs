@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Skirmish;
+using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;
-using ModestTree;
 using UnityEngine;
 using Utils.TimerService;
 using WorkShop.LightWeightFramework.Repository;
@@ -22,19 +20,21 @@ namespace EmpireAtWar.Services.Audio
     public class AudioService: Service, IInitializable, ILateDisposable, ITickable
     {
         private readonly ISceneService sceneService;
+        private readonly IGameModelObserver gameModelObserver;
         private readonly MusicAudioModel musicAudioModel;
         private readonly AudioSource audioSource;
-        private readonly FactionType factionType;
         private readonly Random random;
         private readonly ITimer timer;
         private List<AudioClip> clips;
         private bool isMusicPlaying;
-        public AudioService(ISceneService sceneService, IRepository repository, SkirmishGameData skirmishGameData)
+        
+       
+        public AudioService(ISceneService sceneService, IRepository repository, IGameModelObserver gameModelObserver)
         {
             this.sceneService = sceneService;
+            this.gameModelObserver = gameModelObserver;
             timer = TimerFactory.ConstructTimer();
             musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
-            factionType = skirmishGameData.PlayerFactionType;
             audioSource = Object.Instantiate(repository.LoadComponent<AudioSource>("MusicSource"));
             Object.DontDestroyOnLoad(audioSource);
             random = new Random();
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Audio
 
         private void PlayMusic(SceneType sceneType)
         {
-            clips = musicAudioModel.GetMusicList(sceneType, factionType);
+            clips = musicAudioModel.GetMusicList(sceneType, gameModelObserver.PlayerFactionType);
             PlayMusicInternal();
         }
 

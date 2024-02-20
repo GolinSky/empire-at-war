@@ -1,5 +1,5 @@
 ﻿using System;
-using EmpireAtWar.LightWeightFramework.PopupCommands;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Models.Factions;
 using TMPro;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
         [SerializeField] private TMP_Dropdown enemyFactionDropdown;
-        [Inject] private ISkirmishSetupCommand SkirmishSetupCommand { get; }
+        [Inject] private IGameCommand GameCommand { get; }
 
 
         public override void Initialize()
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Ui.Popups
 
         private void OnStartGame()
         {
-            SkirmishSetupCommand
+            GameCommand
                 .StartGame(
                     GetEnum(playerFactionDropdown.captionText.text),
                     GetEnum(enemyFactionDropdown.captionText.text));

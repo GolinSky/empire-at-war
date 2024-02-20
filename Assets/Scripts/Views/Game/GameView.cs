@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Models.Game;
+using EmpireAtWar.Commands.SkirmishGame;
+using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Views.Game
 {
     //todo: refactor
-    public class GameView : View<ISkirmishGameModelObserver, IGameCommand>
+    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;

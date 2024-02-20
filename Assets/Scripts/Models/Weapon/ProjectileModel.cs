@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using EmpireAtWar.Models.Skirmish;
+﻿using System.Collections.Generic;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -18,9 +16,6 @@ namespace EmpireAtWar.Models.Weapon
     {
         [SerializeField] private DictionaryWrapper<WeaponType, ProjectileData> projectileData;
 
-        [Inject] public SkirmishGameData SkirmishGameData;
         public Dictionary<WeaponType, ProjectileData> ProjectileData => projectileData.Dictionary;
-
-      
     }
 }

@@ -1,12 +1,13 @@
 ﻿using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Models.Game;
+using EmpireAtWar.Commands.SkirmishGame;
+using EmpireAtWar.Models.SkirmishGame;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishGameController:Controller<SkirmishGameModel>, IGameCommand
+    public class SkirmishGameController:Controller<SkirmishGameModel>, ISkirmishGameCommand
     {
         public SkirmishGameController(SkirmishGameModel model) : base(model)
         {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
@@ -24,12 +23,11 @@ namespace EmpireAtWar.Models.Factions
         public event Action<SelectionType> OnSelectionTypeChanged;
         
         [SerializeField] private FactionsModel factionsModel;
-        private SelectionType selectionType;
-
         [field: SerializeField] public FactionUnitUi ShipUnit { get; private set; }
 
-        [Inject]
-        public SkirmishGameData SkirmishGameData { get; }
+        private SelectionType selectionType;
+
+        
         public SelectionType SelectionType
         {
             get => selectionType;
@@ -40,7 +38,10 @@ namespace EmpireAtWar.Models.Factions
             }
         }
 
-        public Dictionary<ShipType, FactionData> FactionData => GetFactionData(SkirmishGameData.PlayerFactionType);
+        [Inject(Id = PlayerType.Player)] 
+        public FactionType FactionType { get; }
+        
+        public Dictionary<ShipType, FactionData> FactionData => GetFactionData(FactionType);
 
         public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType) => factionsModel.GetFactionData(factionType);
       

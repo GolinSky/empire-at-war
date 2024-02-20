@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Models.Skirmish;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -31,9 +30,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
         {
             set => OnPositionChanged?.Invoke(value);
         }
-
-        [Inject]
-        public SkirmishGameData SkirmishGameData { get; }
+        
         public void Initialize()
         {
             
