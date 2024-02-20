@@ -92,10 +92,12 @@ namespace EmpireAtWar.ViewComponents.Move
             float duration = distance / model.Speed;
             moveSequence = DOTween.Sequence();
 
+            Vector3 targetRotation = Quaternion.LookRotation(lookDirection).eulerAngles;
+            float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / model.RotationSpeed, model.MinRotationDuration);
             moveSequence.Append(
                 transform.DORotate(
-                        Quaternion.LookRotation(lookDirection).eulerAngles,
-                        model.RotationDuration,
+                        targetRotation,
+                        rotationDuration,
                         rotationMode)
                     .SetEase(lookAtEase));
 

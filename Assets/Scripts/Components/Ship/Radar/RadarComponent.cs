@@ -32,7 +32,7 @@ namespace EmpireAtWar.Components.Ship.Radar
             {
                 raycastHits = Physics.BoxCastAll(
                     CenterCast,
-                    Vector3.one*80,
+                    Vector3.one * Model.Range,
                     Vector3.up,
                     Quaternion.identity,
                     Model.Distance + offset.y,

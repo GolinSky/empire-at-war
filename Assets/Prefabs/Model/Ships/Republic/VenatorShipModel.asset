@@ -16,7 +16,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
     <Speed>k__BackingField: 1
-    <RotationDuration>k__BackingField: 15
+    <RotationSpeed>k__BackingField: 2
+    <MinRotationDuration>k__BackingField: 15
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
@@ -64,9 +65,9 @@ MonoBehaviour:
       - key: 2
         value: 2
     <ProjectileDuration>k__BackingField: 1
-    <DelayBetweenAttack>k__BackingField: 0.5
+    <DelayBetweenAttack>k__BackingField: 0.1
   radarModel:
-    <Range>k__BackingField: 40
+    <Range>k__BackingField: 60
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
