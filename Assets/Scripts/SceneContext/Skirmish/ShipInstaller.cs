@@ -36,6 +36,7 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindInstance(playerType)
                 .AsSingle();
+            
 
             Container
                 .BindSingle<MoveComponent>()

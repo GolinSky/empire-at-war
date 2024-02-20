@@ -1,8 +1,11 @@
-﻿using EmpireAtWar.Models.Ship;
+﻿using System.Collections.Generic;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.Ship;
 using LightWeightFramework.Controller;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
@@ -10,12 +13,12 @@ namespace EmpireAtWar.Controllers.ShipUi
     public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable
     {
         private readonly INavigationService navigationService;
-        private readonly IShipService shipService;
 
-        public ShipUiController(ShipUiModel model, INavigationService navigationService, IShipService shipService) : base(model)
+        private Dictionary<ShipType, ShipInfoUi> shipUiDictionary = new Dictionary<ShipType, ShipInfoUi>();
+        
+        public ShipUiController(ShipUiModel model, INavigationService navigationService) : base(model)
         {
             this.navigationService = navigationService;
-            this.shipService = shipService;
         }
 
         public void Initialize()
@@ -32,11 +35,20 @@ namespace EmpireAtWar.Controllers.ShipUi
         {
             if (selectionType == SelectionType.Ship)
             {
-                //temp solution
                 IShipModelObserver shipModelObserver = navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
                 if (shipModelObserver != null)
                 {
-                    Model.ShipInfoUi = shipModelObserver.ShipInfoUi;
+                    ShipInfoUi shipInfoUi = null;
+                    if (!shipUiDictionary.TryGetValue(shipModelObserver.ShipType, out shipInfoUi))
+                    {
+                        shipInfoUi =
+                            Object.Instantiate(Model.GetShipInfoUi(shipModelObserver.ShipType));
+                        shipUiDictionary.Add(shipModelObserver.ShipType, shipInfoUi);
+                    }
+                    
+                    Model.ShipInfoUi = shipModelObserver.FillWithData(shipInfoUi);
+
+                    Debug.Log(shipModelObserver.ShipType);
                 }
             }
             Model.UpdateSelection(selectionType);

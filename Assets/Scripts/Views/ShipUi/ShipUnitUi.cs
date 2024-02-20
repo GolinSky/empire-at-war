@@ -21,12 +21,22 @@ namespace EmpireAtWar
 
         public void Init(IShipUnitModel shipUnitModel)
         {
+            if (this.shipUnitModel != null)
+            {
+                RemoveListeners();
+            }
             this.shipUnitModel = shipUnitModel;
             UpdateData();
+            Activate(true);
             shipUnitModel.OnShipUnitChanged += UpdateData;
         }
 
         private void OnDestroy()
+        {
+            RemoveListeners();
+        }
+
+        private void RemoveListeners()
         {
             if (shipUnitModel != null)
             {
@@ -47,6 +57,16 @@ namespace EmpireAtWar
             color.g = 255 * healthPercentage;
             color.r = 255 * (1 - healthPercentage);
             image.color = color;
+        }
+
+        public void Disable()
+        {
+            Activate(false);
+        }
+
+        private void Activate(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
     }
 }

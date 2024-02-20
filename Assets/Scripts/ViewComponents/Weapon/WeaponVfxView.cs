@@ -1,14 +1,14 @@
-using System;
 using EmpireAtWar.Views.ShipUi;
 using UnityEngine;
 
 namespace EmpireAtWar
 {
-    public class WeaponVfxView : MonoBehaviour, Views.ShipUi.IObserver<float>
+    public class WeaponVfxView : MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem explosionVfx;
 
         private INotifier<float> notifier;
+        
         private void Start()
         {
             notifier = GetComponent<INotifier<float>>();

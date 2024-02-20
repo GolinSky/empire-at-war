@@ -1,4 +1,6 @@
 ﻿using System;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -17,11 +19,17 @@ namespace EmpireAtWar.Models.ShipUi
     public class ShipUiModel : Model, IShipUiModelObserver
     {
         public event Action<SelectionType> OnSelectionChanged;
+
+        [SerializeField] private DictionaryWrapper<ShipType, ShipInfoUi> shipUiWrapper;
         
         public Sprite ShipIcon { get; set; }
         public ShipInfoUi ShipInfoUi { get; set; }
 
         public void UpdateSelection(SelectionType selectionType) => OnSelectionChanged?.Invoke(selectionType);
 
+        public ShipInfoUi GetShipInfoUi(ShipType shipType)
+        {
+            return shipUiWrapper.Dictionary[shipType];
+        }
     }
 }

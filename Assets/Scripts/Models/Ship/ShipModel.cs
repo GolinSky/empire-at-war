@@ -1,17 +1,21 @@
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Models.Ship
 {
     public interface IShipModelObserver : IModelObserver
     {
-        Sprite ShipIcon { get; }
-        ShipInfoUi ShipInfoUi { get; }
         ParticleSystem DeathExplosionVfx { get; }
+        ShipType ShipType { get; }
+
+        ShipInfoUi FillWithData(ShipInfoUi shipInfoUi);
+
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -28,26 +32,20 @@ namespace EmpireAtWar.Models.Ship
         
         [Header("Radar Model")] 
         [SerializeField] private RadarModel radarModel;
-        [field: SerializeField] public Sprite ShipIcon { get; private set; }
 
-        [SerializeField] private ShipInfoUi shipUiPrefab;
-        private ShipInfoUi shipInfoUi;
+        public string Id => name;
+        
+        [Inject]
+        public ShipType ShipType { get; }
 
-        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
-
-        public ShipInfoUi ShipInfoUi
+        public ShipInfoUi FillWithData(ShipInfoUi shipInfoUi)
         {
-            get
-            {
-                if (shipInfoUi == null)
-                {
-                    shipInfoUi = Instantiate(shipUiPrefab);
-                    shipInfoUi.Init(healthModel.ShipUnitModels);
-                }
-                return shipInfoUi;
-            }
+            shipInfoUi.Init(healthModel.ShipUnitModels);
+            return shipInfoUi;
         }
 
+        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
+        
         
         protected override void Awake()
         {

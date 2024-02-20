@@ -12,3 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91943dfca0144ef4a46b73d69bdb32ae, type: 3}
   m_Name: ShipUiModel
   m_EditorClassIdentifier: 
+  models: []
+  shipUiWrapper:
+    keyValue:
+    - key: 0
+      value: {fileID: 2980371240824619358, guid: ff2d91043061b39448cec0162be9136f,
+        type: 3}

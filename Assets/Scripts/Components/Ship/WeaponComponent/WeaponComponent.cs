@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Models.Weapon;
@@ -40,7 +38,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             this.timerPoolWrapperService = timerPoolWrapperService;
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
-            attackTimer = TimerFactory.ConstructTimer(3f);
+            attackTimer = TimerFactory.ConstructTimer(2f);
         }
 
         public void Initialize()
