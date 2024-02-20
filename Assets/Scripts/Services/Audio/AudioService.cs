@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Services.SceneService;
 using ModestTree;
 using UnityEngine;
+using Utils.TimerService;
 using WorkShop.LightWeightFramework.Repository;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
@@ -25,12 +26,13 @@ namespace EmpireAtWar.Services.Audio
         private readonly AudioSource audioSource;
         private readonly FactionType factionType;
         private readonly Random random;
+        private readonly ITimer timer;
         private List<AudioClip> clips;
-        private float duration;
         private bool isMusicPlaying;
         public AudioService(ISceneService sceneService, IRepository repository, SkirmishGameData skirmishGameData)
         {
             this.sceneService = sceneService;
+            timer = TimerFactory.ConstructTimer();
             musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
             factionType = skirmishGameData.PlayerFactionType;
             audioSource = Object.Instantiate(repository.LoadComponent<AudioSource>("MusicSource"));
@@ -40,7 +42,7 @@ namespace EmpireAtWar.Services.Audio
         
         public void Initialize()
         {
-            OnSceneLoad(sceneService.LoadingScene);
+            OnSceneLoad(sceneService.TargetScene);
             sceneService.OnSceneActivation += OnSceneLoad;
         }
         
@@ -69,7 +71,8 @@ namespace EmpireAtWar.Services.Audio
             AudioClip audioClip = clips.ElementAt(randomIndex);
             audioSource.clip = audioClip;
             audioSource.Play();
-            duration = audioClip.length + Time.time;
+            timer.ChangeDelay(audioClip.length);
+            timer.StartTimer();
             isMusicPlaying = true;
         }
 
@@ -77,10 +80,11 @@ namespace EmpireAtWar.Services.Audio
         {
             if(!isMusicPlaying) return;
 
-            if (Time.time > duration)
+            if (timer.IsComplete)
             {
                 isMusicPlaying = false;
                 PlayMusicInternal();
+                timer.StartTimer();
             }
         }
     }

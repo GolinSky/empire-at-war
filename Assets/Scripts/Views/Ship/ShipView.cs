@@ -1,7 +1,7 @@
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
-using Unity.Mathematics;
+using UnityEngine;
 
 namespace EmpireAtWar.Views.Ship
 {
@@ -20,7 +20,7 @@ namespace EmpireAtWar.Views.Ship
         {
             base.Release();
 
-            Instantiate(Model.DeathExplosionVfx, transform.position, quaternion.identity);
+            Instantiate(Model.DeathExplosionVfx, transform.position, Quaternion.identity);
         }
     }
 }

@@ -47,8 +47,6 @@ namespace EmpireAtWar.Controllers.ShipUi
                     }
                     
                     Model.ShipInfoUi = shipModelObserver.FillWithData(shipInfoUi);
-
-                    Debug.Log(shipModelObserver.ShipType);
                 }
             }
             Model.UpdateSelection(selectionType);

@@ -1,10 +1,10 @@
-using EmpireAtWar.Models.Audio;
+using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Skirmish;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
-using WorkShop.LightWeightFramework.Repository;
+using EmpireAtWar.Services.TimerPoolWrapperService;
 using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
@@ -13,19 +13,20 @@ public class ProjectContextInstaller : MonoInstaller
     {
         Container.BindInterfacesAndSelfTo<AddressableRepository>()
             .AsSingle();
+        
+        Container
+            .BindService<TimerPoolWrapperService>();
+        
+        Container
+            .BindService<SceneService>();
 
-        Container.BindInterfacesAndSelfTo<SceneService>()
+        Container.BindInstance(new SkirmishGameData()) // fix this 
             .AsSingle();
 
-        Container.BindInstance(new SkirmishGameData())
-            .AsSingle();
-
-        Container.BindInterfacesAndSelfTo<SettingsService>()
-            .AsSingle()
-            .NonLazy();
-
-        Container.BindInterfacesAndSelfTo<AudioService>()
-            .AsSingle()
-            .NonLazy();
+        Container
+            .BindService<SettingsService>();
+        
+        Container
+            .BindService<AudioService>();
     }
 }

@@ -5,6 +5,7 @@ namespace Utils.TimerService
         bool IsComplete { get; }
         float TimeLeft { get; }
         void StartTimer();
+        void ChangeDelay(float newDelay);
         void AppendTime(float appendDelay);
         void ForceFinish();
     }

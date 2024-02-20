@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.Settings
     {
         public void Initialize()
         {
+            Application.backgroundLoadingPriority = ThreadPriority.High;
 #if UNITY_EDITOR
             Application.targetFrameRate = -1;
 #else
