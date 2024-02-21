@@ -50,7 +50,7 @@ namespace EmpireAtWar.Services.SceneService
             {
                 if (asyncOperation == null)
                 {
-                    return true;
+                    return false;
                 }
                 return asyncOperation.progress > MinSceneProgress;
             }

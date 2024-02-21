@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
+using Utils.TimerService;
 using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
 
@@ -15,13 +18,19 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
 
+        private List<IShipUnitView> targets;
         private IWeaponModelObserver weaponModelObserver;
         private IProjectileModel projectileModel;
-        private Coroutine attackCoroutine;
+        private ITimer attackTimer;
+        private IWeaponCommand weaponCommand;
         
+
         protected override void OnInit()
         {
+            attackTimer = TimerFactory.ConstructTimer(0.1f);
             weaponModelObserver = ModelObserver.GetModelObserver<IWeaponModelObserver>();
+            targets = weaponModelObserver.Targets;
+
             projectileModel = weaponModelObserver.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
@@ -30,47 +39,54 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileDuration);
                 }
             }
-            weaponModelObserver.OnAttack += Attack;
         }
         
         protected override void OnRelease()
         {
-            weaponModelObserver.OnAttack -= Attack;
-        }
-        
-        private void Attack(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
-        {
-            if (attackCoroutine != null)
-            {
-                StopCoroutine(attackCoroutine);
-            }
-            attackCoroutine = StartCoroutine(AttackSequence(targetPosition, filter, attackAction));
         }
 
-        private IEnumerator AttackSequence(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
+        protected override void OnCommandSet(ICommand command)
         {
-            foreach (var turretDictionaryValue in TurretDictionary)
+            base.OnCommandSet(command);
+            command.TryGetCommand(out weaponCommand);
+        }
+
+
+        // todo : inject all viewcomponent - delete template methods and refactor viewcomponents
+        private void Update()
+        {
+            if (targets != null && targets.Count > 0)
             {
-                if(!filter.Contains(turretDictionaryValue.Key)) continue;
-                
-                foreach (TurretView turretView in turretDictionaryValue.Value)
+                if (attackTimer.IsComplete)
                 {
-                    if (turretView.IsBusy || !turretView.CanAttack(targetPosition))
+                    attackTimer.StartTimer();
+
+                    for (var i = 0; i < targets.Count; i++)
                     {
-                        continue;
+                        if (!targets[i].IsDestroyed)
+                        {
+                            foreach (var turretDictionaryValue in TurretDictionary)
+                            {
+                                foreach (TurretView turretView in turretDictionaryValue.Value)
+                                {
+                                    if (turretView.IsBusy || !turretView.CanAttack(targets[i].Position))
+                                    {
+                                        continue;
+                                    }
+
+                                    //todo: put real distance in command param
+                                    turretView.Attack(targets[i].Position);
+                                    weaponCommand.ApplyDamage(
+                                        targets[i], 
+                                        turretDictionaryValue.Key);
+                                }
+                            }
+                            //List<WeaponType> filter = weaponModelObserver.Filter()
+                        }
                     }
-                    else
-                    {
-                        turretView.Attack(targetPosition);
-                        attackAction.Invoke(turretDictionaryValue.Key, turretView.Distance);
-                        yield return new WaitForSeconds(weaponModelObserver.DelayBetweenAttack);
-                    }
-                    
-                   
                 }
             }
-
-            attackCoroutine = null;
         }
+        
     }
 }

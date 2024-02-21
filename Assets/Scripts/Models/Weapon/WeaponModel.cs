@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
+using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -9,7 +10,6 @@ namespace EmpireAtWar.Models.Weapon
 {
     public interface IWeaponModelObserver : IModelObserver
     {
-        event Action<Vector3, List<WeaponType>, Action<WeaponType, float>> OnAttack;
         Dictionary<WeaponType, int> WeaponDictionary { get; }
         IProjectileModel ProjectileModel { get; }
         
@@ -18,12 +18,13 @@ namespace EmpireAtWar.Models.Weapon
         float MaxAttackDistance { get; }
         
         float DelayBetweenAttack { get; set; }
+        List<IShipUnitView> Targets { get; }
+        List<WeaponType> Filter(float distance);
     }
 
     [Serializable]
     public class WeaponModel : InnerModel, IWeaponModelObserver
     {
-        public event Action<Vector3, List<WeaponType>, Action<WeaponType, float>> OnAttack;
 
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
         
@@ -63,6 +64,7 @@ namespace EmpireAtWar.Models.Weapon
         protected override void OnInit()
         {
             base.OnInit();
+            Targets = new List<IShipUnitView>();
             foreach (KeyValuePair<WeaponType,int> keyValuePair in WeaponDictionary)
             {
                 WeaponCount += keyValuePair.Value;
@@ -84,10 +86,8 @@ namespace EmpireAtWar.Models.Weapon
             return filter;
         }
         
-        public void UpdateAttackData(Vector3 targetPosition, List<WeaponType> filter, Action<WeaponType, float> attackAction)
-        {
-            OnAttack?.Invoke(targetPosition, filter, attackAction);
-        }
+        public List<IShipUnitView> Targets { get; set; }
+        
 
         public float GetDamage(WeaponType weaponType, float distance)
         {

@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Input;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.TimerPoolWrapperService;
+using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utils.TimerService;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
+using ICommand = WorkShop.LightWeightFramework.Command.ICommand;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
@@ -16,8 +19,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         void AddTarget(AttackData[] healthComponent);
     }
- 
-    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable
+
+
+    public interface IWeaponCommand:ICommand
+    {
+        void ApplyDamage(IShipUnitView unitView, WeaponType weaponType);
+    }
+    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable, IWeaponCommand
     {
         private readonly IBattleService battleService;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
@@ -74,14 +82,28 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             {
                 if (attackData == data)
                 {
+                    Model.Targets.Remove(data.ShipUnitView);
                     data.UpdateData(attackData);
+                    Model.Targets.Add(data.ShipUnitView);
                     return;
                 }
             }
-            
+            Model.Targets.Add(attackData.ShipUnitView);
             attackDataList.Add(attackData);
         }
 
+        public void ApplyDamage(IShipUnitView unitView, WeaponType weaponType)
+        {
+            for (var i = 0; i < attackDataList.Count; i++)
+            {
+                if (attackDataList[i].ShipUnitView == unitView)
+                {
+                    ApplyDamage(attackDataList[i], weaponType, GetDistance(unitView.Position));
+                    break;
+                }
+            }
+        }
+        
         public void ApplyDamage(AttackData attackData, WeaponType weaponType, float distance)
         {
             timerPoolWrapperService.Invoke(
@@ -98,57 +120,43 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             if (attackData.IsDestroyed)
             {
-                attackDataList.Remove(attackData);
+                RemoveAttackData(attackData);
                 return;
             }
             float distance = GetDistance(attackData.Position);
             if (distance > Model.MaxAttackDistance)
             {
               //  attackTimer.ForceFinish();
-                return;
+                RemoveAttackData(attackData);
             }
-            
-            Model.UpdateAttackData(attackData.Position, Model.Filter(distance), ((weaponType, distance) =>
-            {
-                ApplyDamage(attackData, weaponType, distance);
-            }));
         }
 
         public void Tick()
         {
             if(attackDataList.Count == 0) return;
 
-            if (attackTimer.IsComplete)
+            for (var i = 0; i < attackDataList.Count; i++)
             {
-                float delay = 0;
-                for (var i = 0; i < attackDataList.Count; i++)
-                {
-                    var i1 = i;
-                    if (i == 0)
-                    {
-                        Attack(attackDataList[i]);
-                    }
-                    else
-                    {
-                        timerPoolWrapperService.Invoke(()=>
-                        {
-                            if (i1 >= attackDataList.Count - 1)
-                            {
-                                return;
-                            }
-                            Attack(attackDataList[i1]);
-                        }, delay);
-                    }
-                    delay += attackDelay;
-                }
-                Debug.Log($"attackDelay:{delay}");
-                attackTimer.ChangeDelay(delay);
-                attackTimer.StartTimer();
+                Attack(attackDataList[i]);
             }
+           
         }
 
         private float GetDistance(Vector3 targetPosition) =>
             Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
-        
+
+
+        private void RemoveAttackData(AttackData attackData)
+        {
+            attackDataList.Remove(attackData);
+            Model.Targets.Remove(attackData.ShipUnitView);
+        }
+
+        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
+        {
+            throw new System.NotImplementedException();
+        }
+
+     
     }
 }

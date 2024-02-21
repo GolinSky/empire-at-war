@@ -56,7 +56,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
             mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
-            attackTimer = TimerFactory.ConstructTimer(mainModule.duration);
+            attackTimer = TimerFactory.ConstructTimer(mainModule.duration*2f);
             notifier = GetComponent<INotifier<float>>();
             notifier.AddObserver(this);
         }

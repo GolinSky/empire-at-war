@@ -49,7 +49,7 @@ namespace EmpireAtWar
             float healthPercentage = shipUnitModel.HealthPercentage;
             if (healthPercentage <= MinTolerance)
             {
-                image.color = Color.black;
+                image.color = Color.red;
                 return;
             }
             
