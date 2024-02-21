@@ -82,13 +82,10 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             {
                 if (attackData == data)
                 {
-                    Model.Targets.Remove(data.ShipUnitView);
-                    data.UpdateData(attackData);
-                    Model.Targets.Add(data.ShipUnitView);
                     return;
                 }
             }
-            Model.Targets.Add(attackData.ShipUnitView);
+            Model.Targets.AddRange(attackData.Units);
             attackDataList.Add(attackData);
         }
 
@@ -96,24 +93,24 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             for (var i = 0; i < attackDataList.Count; i++)
             {
-                if (attackDataList[i].ShipUnitView == unitView)
+                if (attackDataList[i].Contains(unitView))
                 {
-                    ApplyDamage(attackDataList[i], weaponType, GetDistance(unitView.Position));
+                    ApplyDamage(attackDataList[i], weaponType, unitView.Id, GetDistance(unitView.Position));
                     break;
                 }
             }
         }
         
-        public void ApplyDamage(AttackData attackData, WeaponType weaponType, float distance)
+        public void ApplyDamage(AttackData attackData, WeaponType weaponType, int id, float distance)
         {
             timerPoolWrapperService.Invoke(
-                ()=> ApplyDamageInternal(attackData, weaponType, distance),
+                ()=> ApplyDamageInternal(attackData, weaponType, id, distance),
                 Model.ProjectileDuration);
         }
 
-        private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, float distance)
+        private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
         {
-            attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType);
+            attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType, id);
         }
 
         private void Attack(AttackData attackData)
@@ -123,12 +120,12 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 RemoveAttackData(attackData);
                 return;
             }
-            float distance = GetDistance(attackData.Position);
-            if (distance > Model.MaxAttackDistance)
-            {
-              //  attackTimer.ForceFinish();
-                RemoveAttackData(attackData);
-            }
+            // float distance = GetDistance(attackData.Position);
+            // if (distance > Model.MaxAttackDistance)
+            // {
+            //   //  attackTimer.ForceFinish();
+            //     RemoveAttackData(attackData);
+            // }
         }
 
         public void Tick()
@@ -149,7 +146,10 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private void RemoveAttackData(AttackData attackData)
         {
             attackDataList.Remove(attackData);
-            Model.Targets.Remove(attackData.ShipUnitView);
+            foreach (IShipUnitView unitView in attackData.Units)
+            {
+                Model.Targets.Remove(unitView);
+            }
         }
     }
 }

@@ -48,11 +48,10 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             List<AttackData> healthComponents = new List<AttackData>();
             foreach (RaycastHit hit in raycastHit)
             {
-                HealthViewComponent healthViewComponent = hit.collider.GetComponentInChildren<HealthViewComponent>();
-                IShipUnitView unitView = healthViewComponent.GetShipUnit(ShipUnitType.Any);
-                if (unitView != null)
+                IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
+                if (unitsProvider != null && unitsProvider.HasUnits)
                 {
-                    healthComponents.Add(new AttackData(unitView, componentHub.GetComponent(healthViewComponent.Model)));
+                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver)));
                 }
             }
 

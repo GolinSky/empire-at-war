@@ -1,35 +1,38 @@
-﻿using EmpireAtWar.Components.Ship.Health;
+﻿using System.Collections.Generic;
+using System.Linq;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
-using UnityEngine;
+using EmpireAtWar.ViewComponents.Health65;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public class AttackData
     {
+        private readonly IShipUnitsProvider shipUnitsProvider;
         private IHealthComponent HealthComponent { get; }
-        public IShipUnitView ShipUnitView { get; private set; }
 
-        public bool IsDestroyed => HealthComponent == null ||  HealthComponent.Destroyed || ShipUnitView.IsDestroyed;
-        public Vector3 Position => ShipUnitView.Position;
-        
-        public AttackData(IShipUnitView shipUnitView, IHealthComponent healthComponent)
+        public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
+        public List<IShipUnitView> Units { get; }
+    
+
+        public AttackData(IShipUnitsProvider shipUnitsProvider, IHealthComponent healthComponent)
         {
-            ShipUnitView = shipUnitView;
+            this.shipUnitsProvider = shipUnitsProvider;
+            Units = shipUnitsProvider.GetShipUnits(ShipUnitType.Any).ToList();
             HealthComponent = healthComponent;
         }
 
-        public void ApplyDamage(float damage, WeaponType weaponType)
+        public bool Contains(IShipUnitView shipUnitView)
         {
-            HealthComponent.ApplyDamage(damage, weaponType, ShipUnitView.Id);
+            return Units.Contains(shipUnitView);
         }
 
-        public void UpdateData(AttackData data)
+        public void ApplyDamage(float damage, WeaponType weaponType, int id)
         {
-            ShipUnitView = data.ShipUnitView;
-          //  Debug.Log($"UpdateData: {old} -> {ShipUnitView.Id.ToString()}");
+            HealthComponent.ApplyDamage(damage, weaponType, id);
         }
-
+        
         public static bool operator ==(AttackData a, AttackData b)
         {
             if (a?.HealthComponent == null || b?.HealthComponent == null) return false;

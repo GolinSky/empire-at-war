@@ -8,11 +8,17 @@ using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
-using Random = System.Random;
 
 namespace EmpireAtWar.ViewComponents.Health65
 {
-    public class HealthViewComponent : ViewComponent
+    public interface IShipUnitsProvider
+    {
+        bool HasUnits { get; }
+        IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
+        IModelObserver ModelObserver { get; }
+    }
+    
+    public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IShipUnitsProvider
     {
         private static readonly Vector3 DefaultRotation = new Vector3(0, 180, 0);
         private const float TweenDuration = 0.1f;
@@ -23,29 +29,26 @@ namespace EmpireAtWar.ViewComponents.Health65
 
         [SerializeField] private List<ShipUnitView> shipUnitViewArray;
         
-        private IHealthModelObserver healthModelObserver;
         private Sequence sequence;
-        private Random random;
         private float baseShieldsValue;
         private float baseArmorValue;
+        
+        public bool HasUnits => shipUnitViewArray.Any(x => !x.IsDestroyed);
 
-        public IModelObserver Model => ModelObserver;
 
         protected override void OnInit()
         {
-            healthModelObserver = ModelObserver.GetModelObserver<IHealthModelObserver>();
-            baseShieldsValue = healthModelObserver.Shields;
-            baseArmorValue = healthModelObserver.Armor;
-            random = new Random();
-            healthModelObserver.OnValueChanged += UpdateData;
-            healthModelObserver.OnDestroy += Destroy;
+            baseShieldsValue = Model.Shields;
+            baseArmorValue = Model.Armor;
+            Model.OnValueChanged += UpdateData;
+            Model.OnDestroy += Destroy;
             UpdateShipUnit();
         }
 
         protected override void OnRelease()
         {
-            healthModelObserver.OnValueChanged -= UpdateData;
-            healthModelObserver.OnDestroy -= Destroy;
+            Model.OnValueChanged -= UpdateData;
+            Model.OnDestroy -= Destroy;
             healthCanvas.enabled = false;
         }
         
@@ -56,7 +59,7 @@ namespace EmpireAtWar.ViewComponents.Health65
 
         private void UpdateShipUnit()
         {
-            ShipUnitModel[] shipUnitModels = healthModelObserver.ShipUnitModels.OrderBy(x=>x.Id).ToArray();
+            ShipUnitModel[] shipUnitModels = Model.ShipUnitModels.OrderBy(x=>x.Id).ToArray();
             ShipUnitView[] shipUnitViews = shipUnitViewArray.OrderBy(x => x.Id).ToArray();
             for (var i = 0; i < shipUnitModels.Length; i++)
             {
@@ -72,12 +75,14 @@ namespace EmpireAtWar.ViewComponents.Health65
             }
             
             sequence = DOTween.Sequence();
-            sequence.Append(shieldsFillImage.DOFillAmount(healthModelObserver.Shields / baseShieldsValue, TweenDuration));
-            sequence.Append(armorFillImage.DOFillAmount(healthModelObserver.Armor / baseArmorValue, TweenDuration));
+            sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TweenDuration));
+            sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TweenDuration));
         }
 
-        public IShipUnitView GetShipUnit(ShipUnitType shipUnitType)
+
+        public IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType)
         {
+            
             shipUnitViewArray = shipUnitViewArray.Where(x => !x.IsDestroyed).ToList();
 
             if (shipUnitViewArray.Count == 0)
@@ -86,21 +91,14 @@ namespace EmpireAtWar.ViewComponents.Health65
             }
             if (shipUnitType == ShipUnitType.Any)
             {
-                return shipUnitViewArray[random.Next(shipUnitViewArray.Count)];
+                return shipUnitViewArray.ToArray();
             }
             else
             {
-                foreach (ShipUnitView unitView in shipUnitViewArray)
-                {
-                    if (unitView.ShipUnitType == shipUnitType)
-                    {
-                        return unitView;
-                    }
-                }
-                return shipUnitViewArray[random.Next(shipUnitViewArray.Count)];
+                return shipUnitViewArray.Where(x => x.ShipUnitType == shipUnitType).ToArray();
             }
         }
-
+        
         public void Update()
         {
             healthCanvas.transform.rotation = Quaternion.Euler(DefaultRotation);

@@ -73,9 +73,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
                                     WeaponCommand.ApplyDamage(
                                         targets[i], 
                                         turretDictionaryValue.Key);
+                                    break;
                                 }
                             }
-                            //List<WeaponType> filter = weaponModelObserver.Filter()
                         }
                     }
                 }
