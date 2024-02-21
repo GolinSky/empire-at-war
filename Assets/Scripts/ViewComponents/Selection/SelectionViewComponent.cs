@@ -1,8 +1,8 @@
 using EmpireAtWar.Commands;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
+using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Selection
 {
@@ -10,6 +10,7 @@ namespace EmpireAtWar.ViewComponents.Selection
     {
         [SerializeField] private SelectionType selectionType;
         
+        [Inject]
         private ISelectionCommand selectionCommand;
         
         protected override void OnInit() {}
@@ -17,18 +18,7 @@ namespace EmpireAtWar.ViewComponents.Selection
         protected override void OnRelease()
         {
             selectionCommand?.OnSkipSelection(selectionType);
-
             selectionCommand = null;
-        }
-
-        protected override void OnCommandSet(ICommand command)
-        {
-            base.OnCommandSet(command);
-            command.TryGetCommand(out selectionCommand);
-        }
-        
-        private void OnMouseUp()
-        {
         }
 
         public void OnSelected()

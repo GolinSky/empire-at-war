@@ -1,5 +1,4 @@
 using EmpireAtWar.Commands.ShipUi;
-using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
@@ -86,7 +85,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
                 cameraView);
             
         Container
-            .BindEntity<TerrainController, TerrainView, TerrainModel, TerrainCommand>(
+            .BindEntity<TerrainController, TerrainView, TerrainModel>(
             terrainView);
         
         Container

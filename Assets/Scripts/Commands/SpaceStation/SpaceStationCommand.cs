@@ -13,9 +13,7 @@ namespace EmpireAtWar.Commands.SpaceStation
     {
         public SpaceStationCommand(SpaceStationController controller, SelectionFacade selectionFacade) : base(controller)
         {
-            AddCommand(
-                selectionFacade.Create(controller.GetModel(), null)
-                );
+        
         }
     }
 }

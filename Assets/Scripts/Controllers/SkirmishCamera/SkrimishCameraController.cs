@@ -70,12 +70,6 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             }
         }
 
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            command = default;
-            return false;
-        }
-
         public void ZoomIn()
         {
             cameraPosition = cameraService.CameraPosition;

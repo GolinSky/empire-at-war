@@ -1,6 +1,5 @@
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 
 namespace WorkShop.LightWeightFramework.ViewComponents
 {
@@ -11,34 +10,33 @@ namespace WorkShop.LightWeightFramework.ViewComponents
         
         public void Init(View view)
         {
-            View = view;
-            ModelObserver = view.Model;
+            Initialize(view);
             OnInit();
         }
-        
+
+        protected virtual void Initialize(View view)
+        {
+            View = view;
+            ModelObserver = view.Model;
+        }
+
         public void Release()
         {
             OnRelease();
         }
-
-        public void SetCommand(ICommand command)
-        {
-            OnCommandSet(command);
-        }
-
-        protected virtual void OnCommandSet(ICommand command){}
-        protected abstract void OnInit();
-        protected abstract void OnRelease();
         
+        protected virtual void OnInit(){}
+        protected virtual void OnRelease(){}
     }
 
     public abstract class ViewComponent<TModel>:ViewComponent
         where TModel: IModelObserver
     {
         protected TModel Model { get; private set; }
-        
-        protected override void OnInit()
+
+        protected sealed override void Initialize(View view)
         {
+            base.Initialize(view);
             Model = ModelObserver.GetModelObserver<TModel>();
         }
     }

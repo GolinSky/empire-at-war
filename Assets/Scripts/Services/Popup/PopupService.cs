@@ -53,11 +53,5 @@ namespace EmpireAtWar.Services.Popup
                 Debug.LogError($"No popup with id {popupType} found for closing");
             }
         }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            command = default;
-            return false;
-        }
     }
 }

@@ -13,9 +13,6 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
         bool Equal(IModelObserver modelObserver);
-        Vector3 Position { get; }
-
-      //  Vector3 GetPosition(ShipUnitType shipUnitType);
         bool Destroyed { get; }
     }
 
@@ -25,7 +22,6 @@ namespace EmpireAtWar.Components.Ship.Health
         private readonly IComponentHub componentHub;
         private readonly IModel rootModel;
 
-        public Vector3 Position => moveModelObserver.CurrentPosition;
         public bool Destroyed => Model.IsDestroyed;
 
 
@@ -57,8 +53,6 @@ namespace EmpireAtWar.Components.Ship.Health
         {
             Model.ApplyDamage(damage, weaponType, moveModelObserver.IsMoving, shipUnitId);
         }
-
-   
 
         public bool Equal(IModelObserver modelObserver)
         {

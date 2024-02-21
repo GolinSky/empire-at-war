@@ -976,8 +976,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
       propertyPath: m_ColorTemperature
-      value: 20000
+      value: 5843
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
@@ -3050,7 +3070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents:
-  - {fileID: 4712434404110703646}
+  - {fileID: 0}
 --- !u!223 &30985829984786407
 Canvas:
   m_ObjectHideFlags: 0
@@ -5668,19 +5688,6 @@ RectTransform:
   m_AnchoredPosition: {x: -2, y: 0.42010498}
   m_SizeDelta: {x: -1.0638008, y: -0.1812}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4712434404110703646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7368970628828927815}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d3c2f56df674877b68e441c12df2103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectionType: 1
 --- !u!114 &4728788731979168195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7242,7 +7249,6 @@ GameObject:
   - component: {fileID: 184023159498614757}
   - component: {fileID: 3646301637995637946}
   - component: {fileID: 18942633719788592}
-  - component: {fileID: 4712434404110703646}
   m_Layer: 0
   m_Name: PlaneView
   m_TagString: Untagged

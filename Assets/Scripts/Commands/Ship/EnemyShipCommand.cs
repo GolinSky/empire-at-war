@@ -1,8 +1,4 @@
-﻿using EmpireAtWar.Commands.Move;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Controllers.Ship;
+﻿using EmpireAtWar.Controllers.Ship;
 using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Ship
@@ -10,15 +6,9 @@ namespace EmpireAtWar.Commands.Ship
     public class EnemyShipCommand : Command<ShipController> , IShipCommand
     {
         public EnemyShipCommand(
-            ShipController controller,
-            EnemySelectionFacade enemySelectionFacade,
-            IHealthComponent healthComponent,
-            IWeaponCommand weaponCommand,
-            IMoveCommand moveCommand) : base(controller)
+            ShipController controller) : base(controller)
         {
-            AddCommand(enemySelectionFacade.Create(controller.GetModel(), healthComponent));
-            AddCommand(moveCommand);
-            AddCommand(weaponCommand);
+
         }
     }
 }

@@ -12,7 +12,7 @@ namespace EmpireAtWar.Views.ViewImpl
         [Inject]
         protected new TModel Model { get; private set; }
         
-        public virtual void Initialize()
+        public void Initialize()
         {
             Init(Model);
             OnInitialize();
@@ -34,14 +34,5 @@ namespace EmpireAtWar.Views.ViewImpl
     {
         [Inject]
         protected TCommand Command { get; }
-
-        public sealed override void Initialize()
-        {
-            base.Initialize();
-            foreach (ViewComponent viewComponent in viewComponents)
-            {
-                viewComponent.SetCommand(Command);
-            }
-        }
     }
 }

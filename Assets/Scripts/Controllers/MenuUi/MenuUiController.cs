@@ -3,7 +3,6 @@ using EmpireAtWar.Models.MenuUi;
 using EmpireAtWar.Services.Popup;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar
 {
@@ -28,12 +27,6 @@ namespace EmpireAtWar
         public void ExitApplication()
         {
             Application.Quit();
-        }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            command = default;
-            return false;
         }
     }
 }

@@ -33,7 +33,6 @@ namespace EmpireAtWar.ViewComponents.Health65
 
         protected override void OnInit()
         {
-            
             healthModelObserver = ModelObserver.GetModelObserver<IHealthModelObserver>();
             baseShieldsValue = healthModelObserver.Shields;
             baseArmorValue = healthModelObserver.Armor;

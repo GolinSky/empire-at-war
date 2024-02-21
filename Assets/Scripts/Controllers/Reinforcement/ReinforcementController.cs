@@ -79,12 +79,5 @@ namespace EmpireAtWar.Controllers.Reinforcement
             position.y = 0;
             Model.SpawnShipPosition = position;
         }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            throw new System.NotImplementedException();
-        }
-
-    
     }
 }

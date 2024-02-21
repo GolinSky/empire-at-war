@@ -8,5 +8,6 @@ namespace EmpireAtWar.Controllers.Terrain
         public TerrainController(TerrainModel model) : base(model)
         {
         }
+
     }
 }

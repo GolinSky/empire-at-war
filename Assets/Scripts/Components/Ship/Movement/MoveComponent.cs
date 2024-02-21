@@ -45,18 +45,12 @@ namespace EmpireAtWar.Components.Ship.Selection
         {
             this.transform = transform;
         }
-        
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            throw new Exception();
-        }
 
         public void Tick()
         {
             if (transform != null)
             {
                 Model.CurrentPosition = transform.position;
-                
             }
         }
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 using WorkShop.LightWeightFramework;
 using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Repository;
+using WorkShop.LightWeightFramework.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
@@ -53,7 +54,26 @@ namespace EmpireAtWar.Extentions
             where TView : IView
             where TModel : Model
         {
-            container.BindModel<TModel>();
+            container
+                .BindModel<TModel>();
+
+            container
+                .BindInterfacesAndSelfTo<TController>()
+                .AsSingle();
+            
+            container
+                .BindInterfacesTo<TView>()
+                .FromInstance(view)
+                .AsSingle();
+        }
+        
+        public static void BindEntitySubContainerResolve<TController, TView, TModel>(this DiContainer container,  TView view)
+            where TController : Controller<TModel>
+            where TView : IView
+            where TModel : Model
+        {
+            container
+                .BindModel<TModel>();
 
             container
                 .BindInterfacesAndSelfTo<TController>()
@@ -89,6 +109,7 @@ namespace EmpireAtWar.Extentions
                     foreach (IModel currentModel in model.CurrentModels)
                     {
                         context.Container.Inject(currentModel);
+                      //  context.Container.BindInterfacesTo(currentModel.GetType()).AsSingle();
                     }
                 })
                 .NonLazy();
@@ -97,10 +118,25 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TController>()
                 .AsSingle();
             
+            
             container
                 .BindInterfacesAndSelfTo<TView>()
                 .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))
-                .AsSingle();
+                .AsSingle()
+                .OnInstantiated((context, o) =>
+                {
+                    TView view = (TView)o;
+                    foreach (ViewComponent component in view.ViewComponents)
+                    {
+                        context.Container.Inject(component);
+                        context.Container.BindInterfacesTo(component.GetType()).FromComponentOn(component.gameObject).AsSingle();
+                    }
+                } );
+
+            // TView view = container.InstantiatePrefabForComponent<TView>(
+            //     repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"));
+            // container.BindInterfacesAndSelfTo<TView>().AsSingle();
+            
         }
 
 
@@ -120,6 +156,7 @@ namespace EmpireAtWar.Extentions
             container
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
+                
                 .AsSingle();
 
             return container;

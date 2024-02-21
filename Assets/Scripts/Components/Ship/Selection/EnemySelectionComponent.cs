@@ -4,7 +4,6 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework.Command;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
@@ -19,12 +18,7 @@ namespace EmpireAtWar.Components.Ship.Selection
             this.battleService = battleService;
             this.healthComponent = healthComponent;
         }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            command = default;
-            return false;
-        }
+        
 
         public void OnSelected(SelectionType selectionType)
         {

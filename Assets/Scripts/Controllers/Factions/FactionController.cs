@@ -43,10 +43,5 @@ namespace EmpireAtWar.Controllers.Factions
         {
             reinforcementService.AddReinforcement(shipType);
         }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

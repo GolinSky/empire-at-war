@@ -30,11 +30,5 @@ namespace EmpireAtWar.Controllers.Game
 
             Model.GameTimeMode = mode;
         }
-        
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            command = default;
-            return false;
-        }
     }
 }

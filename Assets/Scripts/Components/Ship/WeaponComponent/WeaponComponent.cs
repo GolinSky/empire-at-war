@@ -151,12 +151,5 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             attackDataList.Remove(attackData);
             Model.Targets.Remove(attackData.ShipUnitView);
         }
-
-        public bool TryGetCommand<TCommand>(out TCommand command) where TCommand : ICommand
-        {
-            throw new System.NotImplementedException();
-        }
-
-     
     }
 }

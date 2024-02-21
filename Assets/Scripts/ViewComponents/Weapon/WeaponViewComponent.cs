@@ -1,60 +1,54 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utils.TimerService;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
+using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class WeaponViewComponent : ViewComponent
+    public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>, ITickable
     {
         [SerializeField] private DictionaryWrapper<WeaponType, List<TurretView>> turretDictionary;
 
         private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
 
         private List<IShipUnitView> targets;
-        private IWeaponModelObserver weaponModelObserver;
         private IProjectileModel projectileModel;
         private ITimer attackTimer;
-        private IWeaponCommand weaponCommand;
+        private bool isDead;
         
-
+        [Inject]
+        private IWeaponCommand WeaponCommand { get; }
+        
         protected override void OnInit()
         {
             attackTimer = TimerFactory.ConstructTimer(0.1f);
-            weaponModelObserver = ModelObserver.GetModelObserver<IWeaponModelObserver>();
-            targets = weaponModelObserver.Targets;
+            targets = Model.Targets;
 
-            projectileModel = weaponModelObserver.ProjectileModel;
+            projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
                 foreach (TurretView turretView in keyValuePair.Value)
                 {
-                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], weaponModelObserver.ProjectileDuration);
+                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], Model.ProjectileDuration);
                 }
             }
         }
-        
+
         protected override void OnRelease()
         {
+            base.OnRelease();
+            isDead = true;
         }
 
-        protected override void OnCommandSet(ICommand command)
+        public void Tick()
         {
-            base.OnCommandSet(command);
-            command.TryGetCommand(out weaponCommand);
-        }
-
-
-        // todo : inject all viewcomponent - delete template methods and refactor viewcomponents
-        private void Update()
-        {
+            if(isDead) return;
+            
             if (targets != null && targets.Count > 0)
             {
                 if (attackTimer.IsComplete)
@@ -76,7 +70,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
                                     //todo: put real distance in command param
                                     turretView.Attack(targets[i].Position);
-                                    weaponCommand.ApplyDamage(
+                                    WeaponCommand.ApplyDamage(
                                         targets[i], 
                                         turretDictionaryValue.Key);
                                 }
@@ -87,6 +81,5 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 }
             }
         }
-        
     }
 }

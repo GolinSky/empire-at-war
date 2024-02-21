@@ -9,6 +9,9 @@ namespace WorkShop.LightWeightFramework
         [SerializeField] protected ViewComponent[] viewComponents;
         public IModelObserver Model { get; private set; }
 
+        public Transform Transform => transform;
+        public ViewComponent[] ViewComponents => viewComponents;
+
         public virtual void Init(IModelObserver model)
         {
             Model = model;

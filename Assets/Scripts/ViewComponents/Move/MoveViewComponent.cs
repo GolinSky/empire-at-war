@@ -5,10 +5,11 @@ using EmpireAtWar.ScriptUtils.Dotween;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.ViewComponents;
+using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Move
 {
-    public class MoveViewComponent:ViewComponent
+    public class MoveViewComponent:ViewComponent<IMoveModelObserver>
     {
         private const float FallDownDuration = 260f;
         
@@ -18,32 +19,23 @@ namespace EmpireAtWar.ViewComponents.Move
         [SerializeField] private Ease hyperSpaceEase;
 
         private Sequence moveSequence;
-        private IMoveModelObserver model;
-        private IMoveCommand moveCommand;
+        [Inject]
+        private IMoveCommand MoveCommand { get; }
         
         protected override void OnInit()
         {
-            model = ModelObserver.GetModelObserver<IMoveModelObserver>();
-            transform.position = model.HyperSpacePosition - Vector3.right * 1000f;
-            HyperSpaceJump(model.HyperSpacePosition);
-            model.OnTargetPositionChanged += UpdateTargetPosition;
-            model.OnHyperSpaceJump += HyperSpaceJump;
+            transform.position = Model.HyperSpacePosition - Vector3.right * 1000f;
+            HyperSpaceJump(Model.HyperSpacePosition);
+            Model.OnTargetPositionChanged += UpdateTargetPosition;
+            Model.OnHyperSpaceJump += HyperSpaceJump;
+            MoveCommand.Assign(transform);
         }
 
         protected override void OnRelease()
         {
-            model.OnTargetPositionChanged -= UpdateTargetPosition;
-            model.OnHyperSpaceJump -= HyperSpaceJump;
-
+            Model.OnTargetPositionChanged -= UpdateTargetPosition;
+            Model.OnHyperSpaceJump -= HyperSpaceJump;
             FallDown();
-        }
-
-      
-        protected override void OnCommandSet(ICommand command)
-        {
-            base.OnCommandSet(command);
-            command.TryGetCommand(out moveCommand);
-            moveCommand.Assign(transform);
         }
         
         private void FallDown()
@@ -67,7 +59,7 @@ namespace EmpireAtWar.ViewComponents.Move
 
             moveSequence.KillIfExist();
 
-            float duration = model.HyperSpaceSpeed;
+            float duration = Model.HyperSpaceSpeed;
             moveSequence = DOTween.Sequence();
 
             moveSequence.Append(
@@ -89,11 +81,11 @@ namespace EmpireAtWar.ViewComponents.Move
             moveSequence.KillIfExist();
 
             var distance = Vector3.Distance(transform.position, position);
-            float duration = distance / model.Speed;
+            float duration = distance / Model.Speed;
             moveSequence = DOTween.Sequence();
 
             Vector3 targetRotation = Quaternion.LookRotation(lookDirection).eulerAngles;
-            float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / model.RotationSpeed, model.MinRotationDuration);
+            float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
             moveSequence.Append(
                 transform.DORotate(
                         targetRotation,

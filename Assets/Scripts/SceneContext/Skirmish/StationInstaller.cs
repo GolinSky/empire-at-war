@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Commands.SpaceStation;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -38,6 +39,10 @@ namespace EmpireAtWar.SceneContext
                 case PlayerType.Player:
                 {
                     Container
+                        .BindInterfacesAndSelfTo<SelectionComponent>()
+                        .AsSingle();
+                    
+                    Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
                             SpaceStationCommand>(
                             factionType);
@@ -49,6 +54,11 @@ namespace EmpireAtWar.SceneContext
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
                             EnemySpaceStationCommand>(
                             factionType);
+                    
+                    Container
+                        .BindInterfacesAndSelfTo<SelectionComponent>()
+                        .AsSingle();
+                    
                     break;
                 }
             }
