@@ -3,13 +3,12 @@ using System.Linq;
 using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
 
-namespace EmpireAtWar.ViewComponents.Health65
+namespace EmpireAtWar.ViewComponents.Health
 {
     public interface IShipUnitsProvider
     {

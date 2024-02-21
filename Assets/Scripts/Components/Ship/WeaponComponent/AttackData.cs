@@ -3,7 +3,6 @@ using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
-using EmpireAtWar.ViewComponents.Health65;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
