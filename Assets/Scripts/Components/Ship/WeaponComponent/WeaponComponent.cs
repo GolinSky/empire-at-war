@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
@@ -113,7 +114,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType, id);
         }
 
-        private void Attack(AttackData attackData)
+        private void CheckAttackData(AttackData attackData)
         {
             if (attackData.IsDestroyed)
             {
@@ -121,6 +122,16 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 return;
             }
 
+            bool hasTargets = attackData.Units.Any(x => !x.IsDestroyed);
+
+            if (!hasTargets)
+            {
+                Model.RemoveShipUnits(attackData.Units);
+                if (attackData.TryUpdateNewUnits())
+                {
+                    Model.AddShipUnits(attackData.Units);
+                }
+            }
             // float distance = GetDistance(attackData.Position);
             // if (distance > Model.MaxAttackDistance)
             // {
@@ -156,7 +167,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 attackTimer.StartTimer();
                 for (var i = 0; i < attackDataList.Count; i++)
                 {
-                    Attack(attackDataList[i]);
+                    CheckAttackData(attackDataList[i]);
                 }
             }
         }

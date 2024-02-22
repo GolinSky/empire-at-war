@@ -12,13 +12,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private IHealthComponent HealthComponent { get; }
 
         public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
-        public List<IShipUnitView> Units { get; }
+        public List<IShipUnitView> Units { get; private set; }
     
 
-        public AttackData(IShipUnitsProvider shipUnitsProvider, IHealthComponent healthComponent)
+        public AttackData(IShipUnitsProvider shipUnitsProvider, IHealthComponent healthComponent, ShipUnitType shipUnitType)
         {
             this.shipUnitsProvider = shipUnitsProvider;
-            Units = shipUnitsProvider.GetShipUnits(ShipUnitType.ShieldGenerator).ToList();
+            Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
             HealthComponent = healthComponent;
         }
 
@@ -30,6 +30,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public void ApplyDamage(float damage, WeaponType weaponType, int id)
         {
             HealthComponent.ApplyDamage(damage, weaponType, id);
+        }
+
+        public bool TryUpdateNewUnits(ShipUnitType shipUnitType = ShipUnitType.Any)
+        {
+            Units.Clear();
+            Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
+            return Units is { Count: > 0 };
         }
         
         public static bool operator ==(AttackData a, AttackData b)

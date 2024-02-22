@@ -21,7 +21,7 @@ MonoBehaviour:
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
-    dexterity: 0
+    dexterity: 0.1
     <Armor>k__BackingField: 60000
     <Shields>k__BackingField: 30000
     <ShieldRegenerateValue>k__BackingField: 5000

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 {
     public class AiComponent : Component, IInitializable, ILateDisposable
     {
+        private const ShipUnitType DefaultTargetType = ShipUnitType.Any;
         private readonly IMoveComponent moveComponent;
         private readonly IWeaponComponent weaponComponent;
         private readonly IComponentHub componentHub;
@@ -49,7 +51,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
                 IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
                 if (unitsProvider != null && unitsProvider.HasUnits)
                 {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver)));
+                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), DefaultTargetType));
                 }
             }
 

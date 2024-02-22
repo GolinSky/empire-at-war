@@ -21,7 +21,7 @@ MonoBehaviour:
     <HyperSpaceSpeed>k__BackingField: 2
     <Height>k__BackingField: 0
   healthModel:
-    dexterity: 0
+    dexterity: 0.1
     <Armor>k__BackingField: 50000
     <Shields>k__BackingField: 35000
     <ShieldRegenerateValue>k__BackingField: 5000
@@ -39,11 +39,35 @@ MonoBehaviour:
       <ShipUnitType>k__BackingField: 0
     - <Id>k__BackingField: 5
       <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 6
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 7
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 8
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 9
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 10
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 11
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 12
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 13
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 14
+      <ShipUnitType>k__BackingField: 2
   weaponModel:
     weaponCount:
       keyValue:
       - key: 3
         value: 6
+      - key: 5
+        value: 4
+      - key: 11
+        value: 2
+      - key: 2
+        value: 2
     <ProjectileDuration>k__BackingField: 1
     <DelayBetweenAttack>k__BackingField: 0.1
   radarModel:
