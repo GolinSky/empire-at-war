@@ -18,11 +18,11 @@ MonoBehaviour:
     - key: 3
       value:
         <Color>k__BackingField: {r: 0.9811321, g: 0, b: 0.18968536, a: 1}
-        <Size>k__BackingField: {x: 0.8, y: 1, z: 1}
+        <Size>k__BackingField: {x: 0.3, y: 1, z: 1}
     - key: 7
       value:
         <Color>k__BackingField: {r: 1, g: 0.07692309, b: 0, a: 1}
-        <Size>k__BackingField: {x: 0.7, y: 0.4, z: 1}
+        <Size>k__BackingField: {x: 0.3, y: 0.4, z: 1}
     - key: 5
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0.054250717, a: 1}
@@ -30,15 +30,15 @@ MonoBehaviour:
     - key: 8
       value:
         <Color>k__BackingField: {r: 1, g: 0.11585366, b: 0, a: 1}
-        <Size>k__BackingField: {x: 0.7, y: 0.4, z: 1}
+        <Size>k__BackingField: {x: 0.2, y: 0.4, z: 1}
     - key: 4
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0.11678028, a: 1}
-        <Size>k__BackingField: {x: 0.8, y: 0.4, z: 1}
+        <Size>k__BackingField: {x: 0.4, y: 0.4, z: 1}
     - key: 1
       value:
         <Color>k__BackingField: {r: 1, g: 0.036082476, b: 0, a: 1}
-        <Size>k__BackingField: {x: 0.7, y: 0.4, z: 1}
+        <Size>k__BackingField: {x: 0.5, y: 0.4, z: 1}
     - key: 2
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
@@ -50,8 +50,8 @@ MonoBehaviour:
     - key: 11
       value:
         <Color>k__BackingField: {r: 0.5518868, g: 1, b: 1, a: 1}
-        <Size>k__BackingField: {x: 1, y: 0.8, z: 1}
+        <Size>k__BackingField: {x: 0.4, y: 0.8, z: 1}
     - key: 10
       value:
         <Color>k__BackingField: {r: 0.39716092, g: 0.8718848, b: 0.990566, a: 1}
-        <Size>k__BackingField: {x: 1, y: 0.5, z: 1}
+        <Size>k__BackingField: {x: 0.2, y: 0.5, z: 1}

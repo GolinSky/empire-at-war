@@ -5,7 +5,6 @@ using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
-using Random = System.Random;
 
 namespace EmpireAtWar.Models.Weapon
 {
@@ -16,12 +15,8 @@ namespace EmpireAtWar.Models.Weapon
         
         float ProjectileDuration { get;}
         
-        float MaxAttackDistance { get; }
-        
-        float DelayBetweenAttack { get; set; }
         List<IShipUnitView> Targets { get; }
-        event Action<List<IShipUnitView>> OnTargetsUpdate;
-        List<WeaponType> Filter(float distance);
+        float GetAttackDistance(WeaponType weaponType);
     }
 
     [Serializable]
@@ -29,25 +24,22 @@ namespace EmpireAtWar.Models.Weapon
     {
 
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
-        
-        [field:SerializeField] public float ProjectileDuration { get; private set; }
 
-        [field:SerializeField] public float DelayBetweenAttack { get; set; }
+        [field: SerializeField] public float ProjectileDuration { get; private set; }
 
-        private Random random = new Random();
-        
-        public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
-        
-        [Inject]
-        public IProjectileModel ProjectileModel { get;  }
-        
-        [Inject]
-        private WeaponDamageModel WeaponDamageModel { get; }
-
-        List<IShipUnitView> IWeaponModelObserver.Targets => shipUnitViews;
-        public event Action<List<IShipUnitView>> OnTargetsUpdate;
+        [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
         private List<IShipUnitView> shipUnitViews = new List<IShipUnitView>();
+
+
+        public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
+
+        [Inject] public IProjectileModel ProjectileModel { get; }
+
+        [Inject] private WeaponDamageModel WeaponDamageModel { get; }
+
+        List<IShipUnitView> IWeaponModelObserver.Targets => shipUnitViews;
+
         public float MaxAttackDistance
         {
             get
@@ -72,7 +64,7 @@ namespace EmpireAtWar.Models.Weapon
         protected override void OnInit()
         {
             base.OnInit();
-            foreach (KeyValuePair<WeaponType,int> keyValuePair in WeaponDictionary)
+            foreach (KeyValuePair<WeaponType, int> keyValuePair in WeaponDictionary)
             {
                 WeaponCount += keyValuePair.Value;
             }
@@ -92,9 +84,14 @@ namespace EmpireAtWar.Models.Weapon
 
             return filter;
         }
-        
 
-        public void AddShipUnits(IEnumerable<IShipUnitView> units)
+        public float GetAttackDistance(WeaponType weaponType)
+        {
+            return WeaponDamageModel.DamageDictionary[weaponType].Distance;
+        }
+
+
+    public void AddShipUnits(IEnumerable<IShipUnitView> units)
         {
             shipUnitViews.AddRange(units);
         }

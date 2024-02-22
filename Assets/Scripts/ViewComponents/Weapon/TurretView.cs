@@ -1,10 +1,6 @@
-﻿using System;
-using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.Views.Ship;
+﻿using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils.TimerService;
 
@@ -18,19 +14,20 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private INotifier<float> notifier;
         private ITimer attackTimer;
         private Vector3 targetPosition = Vector3.zero;
-        private bool destroyed;
-
-        public bool CanAttackVar;
-
-        public bool IsBusy => !attackTimer.IsComplete || destroyed;
 
 
-        public float Distance { get; private set; }
-
+        private float Distance { get; set; }
+        private float MaxAttackDistance { get; set; }
+        
+        public bool IsBusy => vfx.isPlaying || !attackTimer.IsComplete;
+        public bool Destroyed { get; private set; }
 
 
         public bool CanAttack(Vector3 position)
         {
+            float distance = Vector3.Distance(targetPosition, transform.position);
+            if (distance > MaxAttackDistance) return false;
+            
             Vector3 direction = position - transform.position;
 
             Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -39,19 +36,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
             
             if (!yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y)))
             {
-                CanAttackVar = false;
                 // Debug.Log($"{ShipView.name}, {name}: yAxisRange: {yAxisRange.Min}-> {yAxisRange.Max}, != {wrappedAngle}");
                 return false;
             }
 
-            CanAttackVar = true;
             return true;
         }
-        
-      
 
-        public void SetData(ProjectileData projectileData, float duration)
+
+        public void SetData(ProjectileData projectileData, float duration, float attackDistance)
         {
+            MaxAttackDistance = attackDistance;
             var mainModule = vfx.main;
             
             mainModule.startColor = projectileData.Color;
@@ -62,7 +57,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
             mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
-            attackTimer = TimerFactory.ConstructTimer(mainModule.duration+(mainModule.duration/2f));
+            attackTimer = TimerFactory.ConstructTimer(mainModule.duration + Random.Range(1f, 3f));
+            
             notifier = GetComponent<INotifier<float>>();
             notifier.AddObserver(this);
         }
@@ -107,7 +103,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (value < 0)
             {
-                destroyed = true;
+                Destroyed = true;
             }
         }
     }

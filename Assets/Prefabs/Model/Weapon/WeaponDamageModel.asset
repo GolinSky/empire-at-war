@@ -18,7 +18,7 @@ MonoBehaviour:
     - key: 1
       value:
         damage: 500
-        <Distance>k__BackingField: 125
+        <Distance>k__BackingField: 350
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -46,7 +46,7 @@ MonoBehaviour:
     - key: 2
       value:
         damage: 750
-        <Distance>k__BackingField: 150
+        <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -74,7 +74,7 @@ MonoBehaviour:
     - key: 3
       value:
         damage: 1000
-        <Distance>k__BackingField: 200
+        <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -102,7 +102,7 @@ MonoBehaviour:
     - key: 4
       value:
         damage: 500
-        <Distance>k__BackingField: 135
+        <Distance>k__BackingField: 350
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -130,7 +130,7 @@ MonoBehaviour:
     - key: 5
       value:
         damage: 750
-        <Distance>k__BackingField: 135
+        <Distance>k__BackingField: 350
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -186,7 +186,7 @@ MonoBehaviour:
     - key: 7
       value:
         damage: 500
-        <Distance>k__BackingField: 100
+        <Distance>k__BackingField: 400
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -214,7 +214,7 @@ MonoBehaviour:
     - key: 8
       value:
         damage: 250
-        <Distance>k__BackingField: 100
+        <Distance>k__BackingField: 400
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -242,7 +242,7 @@ MonoBehaviour:
     - key: 9
       value:
         damage: 1000
-        <Distance>k__BackingField: 250
+        <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -270,7 +270,7 @@ MonoBehaviour:
     - key: 10
       value:
         damage: 500
-        <Distance>k__BackingField: 200
+        <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:
@@ -298,7 +298,7 @@ MonoBehaviour:
     - key: 11
       value:
         damage: 1000
-        <Distance>k__BackingField: 200
+        <Distance>k__BackingField: 300
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
           m_Curve:

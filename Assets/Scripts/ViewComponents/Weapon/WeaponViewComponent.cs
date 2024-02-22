@@ -36,9 +36,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
             projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
+                float attackDistance = Model.GetAttackDistance(keyValuePair.Key);
                 foreach (TurretView turretView in keyValuePair.Value)
                 {
-                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], Model.ProjectileDuration);
+                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], Model.ProjectileDuration, attackDistance);
                 }
             }
         }
@@ -58,6 +59,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 listToShuffle[k] = listToShuffle[i];
                 listToShuffle[i] = value;
             }
+
+            listToShuffle.Reverse();
             return listToShuffle;
         }
 
@@ -72,6 +75,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     attackTimer.StartTimer();
                     shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
 
+              
+                    
                     foreach (IShipUnitView unitView in shipUnitViews)
                     {
                         if(unitView.IsDestroyed) continue;
@@ -80,7 +85,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         {
                             foreach (TurretView turretView in keyValue.Value)
                             {
-                                if (turretView.IsBusy || !turretView.CanAttack(unitView.Position))
+                                if (turretView.IsBusy || !turretView.CanAttack(unitView.Position) || turretView.Destroyed)
                                 {
                                     continue;
                                 }
