@@ -22,7 +22,6 @@ namespace EmpireAtWar.Models.Health
     public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
     {
         public event Action OnValueChanged;
-        public event Action OnInitialized;
         public event Action OnDestroy;
         
         [SerializeField] 
@@ -32,6 +31,8 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public float Armor { get; private set; }
         [field:SerializeField] public float Shields { get; private set; }
         
+        [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
+        [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
         
         [Inject]

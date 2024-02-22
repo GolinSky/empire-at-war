@@ -6,13 +6,18 @@ namespace EmpireAtWar.ScriptUtils.Dotween
     {
         public static bool KillIfExist(this Sequence sequence)
         {
-            if (sequence != null && sequence.IsActive())
+            if (sequence != null && sequence.IsPlaying())
             {
                 sequence.Kill();
                 return true;
             }
 
             return false;
+        }
+
+        public static bool IsPlaying(this Sequence sequence)
+        {
+            return sequence != null && sequence.IsActive();
         }
     }
 }
