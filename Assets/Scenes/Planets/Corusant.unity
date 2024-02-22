@@ -3069,8 +3069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74d3a5bcfda078a4096467bcf21bb0de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewComponents:
-  - {fileID: 0}
+  viewComponents: []
 --- !u!223 &30985829984786407
 Canvas:
   m_ObjectHideFlags: 0

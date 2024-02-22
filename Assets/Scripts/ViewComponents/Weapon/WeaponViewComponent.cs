@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
@@ -7,6 +8,7 @@ using UnityEngine;
 using Utils.TimerService;
 using WorkShop.LightWeightFramework.ViewComponents;
 using Zenject;
+using Random = System.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -19,6 +21,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private List<IShipUnitView> targets;
         private IProjectileModel projectileModel;
         private ITimer attackTimer;
+        private List<IShipUnitView> shipUnitViews;
+        private Random random = new Random();
         private bool isDead;
         
         [Inject]
@@ -44,6 +48,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
             base.OnRelease();
             isDead = true;
         }
+        
+        public List<IShipUnitView> GenerateRandomLoop(List<IShipUnitView> listToShuffle)
+        {
+            for (int i = listToShuffle.Count - 1; i > 0; i--)
+            {
+                var k = random.Next(i + 1);
+                var value = listToShuffle[k];
+                listToShuffle[k] = listToShuffle[i];
+                listToShuffle[i] = value;
+            }
+            return listToShuffle;
+        }
 
         public void Tick()
         {
@@ -54,27 +70,24 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 if (attackTimer.IsComplete)
                 {
                     attackTimer.StartTimer();
+                    shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
 
-                    for (var i = 0; i < targets.Count; i++)
+                    foreach (IShipUnitView unitView in shipUnitViews)
                     {
-                        if (!targets[i].IsDestroyed)
+                        if(unitView.IsDestroyed) continue;
+                        
+                        foreach (KeyValue<WeaponType,List<TurretView>> keyValue in turretDictionary.KeyValueList)
                         {
-                            foreach (var turretDictionaryValue in TurretDictionary)
+                            foreach (TurretView turretView in keyValue.Value)
                             {
-                                foreach (TurretView turretView in turretDictionaryValue.Value)
+                                if (turretView.IsBusy || !turretView.CanAttack(unitView.Position))
                                 {
-                                    if (turretView.IsBusy || !turretView.CanAttack(targets[i].Position))
-                                    {
-                                        continue;
-                                    }
-
-                                    //todo: put real distance in command param
-                                    turretView.Attack(targets[i].Position);
-                                    WeaponCommand.ApplyDamage(
-                                        targets[i], 
-                                        turretDictionaryValue.Key);
-                                    break;
+                                    continue;
                                 }
+                                
+                                turretView.Attack(unitView.Position);
+                                WeaponCommand.ApplyDamage(unitView, keyValue.Key);//todo: put real distance in command param
+                                break;
                             }
                         }
                     }

@@ -12,5 +12,7 @@ namespace EmpireAtWar.ScriptUtils.EditorSerialization
         private Dictionary<TKey, TValue> dictionary;
 
         public Dictionary<TKey, TValue> Dictionary => dictionary ??= UnityDictionaryFactory.Build(keyValue);
+
+        public List<KeyValue<TKey, TValue>> KeyValueList => keyValue;
     }
 }

@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         void ApplyDamage(IShipUnitView unitView, WeaponType weaponType);
     }
-    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable, IWeaponCommand
+    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable, IWeaponCommand, ILateTickable
     {
         private readonly IBattleService battleService;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
             attackDelay = Model.WeaponCount * Model.DelayBetweenAttack + 1f;
-            attackTimer = TimerFactory.ConstructTimer(10f);
+            attackTimer = TimerFactory.ConstructTimer(3f);
         }
 
         public void Initialize()
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                     return;
                 }
             }
-            Model.Targets.AddRange(attackData.Units);
+            Model.AddShipUnits(attackData.Units);
             attackDataList.Add(attackData);
         }
 
@@ -120,6 +120,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 RemoveAttackData(attackData);
                 return;
             }
+
             // float distance = GetDistance(attackData.Position);
             // if (distance > Model.MaxAttackDistance)
             // {
@@ -130,12 +131,8 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public void Tick()
         {
-            if(attackDataList.Count == 0) return;
-
-            for (var i = 0; i < attackDataList.Count; i++)
-            {
-                Attack(attackDataList[i]);
-            }
+           
+         
            
         }
 
@@ -146,9 +143,21 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private void RemoveAttackData(AttackData attackData)
         {
             attackDataList.Remove(attackData);
-            foreach (IShipUnitView unitView in attackData.Units)
+         
+            Model.RemoveShipUnits(attackData.Units);
+        }
+
+        public void LateTick()
+        {
+            if(attackDataList.Count == 0) return;
+
+            if (attackTimer.IsComplete)
             {
-                Model.Targets.Remove(unitView);
+                attackTimer.StartTimer();
+                for (var i = 0; i < attackDataList.Count; i++)
+                {
+                    Attack(attackDataList[i]);
+                }
             }
         }
     }

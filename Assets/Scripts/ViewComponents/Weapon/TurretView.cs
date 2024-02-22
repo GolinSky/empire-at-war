@@ -3,6 +3,8 @@ using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils.TimerService;
 
@@ -18,31 +20,35 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Vector3 targetPosition = Vector3.zero;
         private bool destroyed;
 
-        private ShipView ShipView;
+        public bool CanAttackVar;
 
-
-        private void Start()
-        {
-            ShipView = GetComponentInParent<ShipView>();
-        }
-
-        public bool IsBusy => !attackTimer.IsComplete && !destroyed;
+        public bool IsBusy => !attackTimer.IsComplete || destroyed;
 
 
         public float Distance { get; private set; }
 
+
+
         public bool CanAttack(Vector3 position)
         {
-            vfx.transform.LookAt(position);
-            float wrappedAngle = GetCorrectAngle(transform.localRotation.eulerAngles.y);
-            if (!yAxisRange.IsInRange(wrappedAngle))
+            Vector3 direction = position - transform.position;
+
+            Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+            transform.rotation = lookRotation;
+            
+            if (!yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y)))
             {
+                CanAttackVar = false;
                 // Debug.Log($"{ShipView.name}, {name}: yAxisRange: {yAxisRange.Min}-> {yAxisRange.Max}, != {wrappedAngle}");
                 return false;
             }
 
+            CanAttackVar = true;
             return true;
         }
+        
+      
 
         public void SetData(ProjectileData projectileData, float duration)
         {
@@ -56,7 +62,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
             mainModule.loop = false;
             mainModule.duration = duration + 0.1f;
-            attackTimer = TimerFactory.ConstructTimer(mainModule.duration*2f);
+            attackTimer = TimerFactory.ConstructTimer(mainModule.duration+(mainModule.duration/2f));
             notifier = GetComponent<INotifier<float>>();
             notifier.AddObserver(this);
         }
@@ -71,11 +77,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void Attack(Vector3 targetPosition)
         {
+            attackTimer.StartTimer();
+
             Distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
             mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
             this.targetPosition = targetPosition;
-            attackTimer.StartTimer();
             vfx.Play();
         }
 
@@ -93,7 +100,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void Update()
         {
-            vfx.transform.LookAt(targetPosition);
+            transform.LookAt(targetPosition);
         }
 
         public void UpdateState(float value)
