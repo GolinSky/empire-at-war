@@ -8,12 +8,13 @@ namespace EmpireAtWar
         [SerializeField] private ParticleSystem explosionVfx;
 
         private INotifier<float> notifier;
-        
         private void Start()
         {
             notifier = GetComponent<INotifier<float>>();
             notifier.AddObserver(this);
+            
             explosionVfx.transform.SetParent(transform.parent);// todo: refactor
+      
         }
 
         private void OnDestroy()

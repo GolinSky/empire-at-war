@@ -10123,6 +10123,7 @@ Transform:
   - {fileID: 2293394179498125177}
   - {fileID: 2645375339977704594}
   - {fileID: 8281168744728016104}
+  - {fileID: 5744379302176795738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6788804975210850448
@@ -15146,6 +15147,52 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5330281516269666010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5744379302176795738}
+  - component: {fileID: 6852928509335582908}
+  m_Layer: 0
+  m_Name: ShieldGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5744379302176795738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5330281516269666010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.502, y: 2.92, z: -4.176}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 773376535087680568}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6852928509335582908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5330281516269666010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShipUnitType>k__BackingField: 2
+  <Id>k__BackingField: 14
 --- !u!1 &5496146784751829218
 GameObject:
   m_ObjectHideFlags: 0
@@ -20447,13 +20494,54 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
       propertyPath: InitialModule.startSizeY.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -20728,7 +20816,7 @@ PrefabInstance:
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: shipUnitViewArray.Array.size
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
@@ -20800,6 +20888,11 @@ PrefabInstance:
       propertyPath: shipUnitViewArray.Array.data[13]
       value: 
       objectReference: {fileID: 7253847644498543513}
+    - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: shipUnitViewArray.Array.data[14]
+      value: 
+      objectReference: {fileID: 6852928509335582908}
     - target: {fileID: 7346841586871110867, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: m_Layer
@@ -20963,8 +21056,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -20975,6 +21104,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21148,8 +21282,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21160,6 +21330,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21333,8 +21508,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21345,6 +21556,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21518,8 +21734,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21530,6 +21782,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21852,8 +22109,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21864,6 +22157,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -21998,6 +22296,47 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -22187,8 +22526,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22199,6 +22574,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22333,6 +22713,47 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -22478,6 +22899,47 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
@@ -22667,8 +23129,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22684,6 +23182,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -22818,6 +23321,47 @@ PrefabInstance:
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
@@ -23017,8 +23561,44 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23029,6 +23609,11 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
@@ -23172,13 +23757,54 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
+      propertyPath: LightsModule.light
+      value: 
+      objectReference: {fileID: 5609016351493764746, guid: 88152589cf3add6439cccf8982699e94,
+        type: 3}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.range
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.ratio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.intensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.maxLights
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
+      propertyPath: LightsModule.rangeCurve.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
       propertyPath: InitialModule.startSizeY.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: LightsModule.randomDistribution
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}

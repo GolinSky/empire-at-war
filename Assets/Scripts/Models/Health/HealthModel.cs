@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -41,6 +42,8 @@ namespace EmpireAtWar.Models.Health
         public bool HasShields => Shields > 0;
         public float Dexterity => dexterity;
 
+        public bool IsLostShieldGenerator { get; private set; }
+        
         protected override void OnInit()
         {
             float health = Armor / ShipUnitModels.Length;
@@ -60,12 +63,12 @@ namespace EmpireAtWar.Models.Health
             if (damageData.ArmorDamage > shipUnitModel.Health)
             {
                 float damageLeft = damageData.ArmorDamage - shipUnitModel.Health;
-                shipUnitModel.ApplyDamage(shipUnitModel.Health);
+                ApplyDamageOnShipUnit(shipUnitModel, shipUnitModel.Health);
                 ApplyDamageOnAllUnit(damageLeft);
             }
             else
             {
-                shipUnitModel.ApplyDamage(damageData.ArmorDamage);
+                ApplyDamageOnShipUnit(shipUnitModel, damageData.ArmorDamage);
             }
                 
             if (Armor <= 0)
@@ -83,8 +86,25 @@ namespace EmpireAtWar.Models.Health
             float damagePerUnit = damage / unitModels.Length;
             foreach (ShipUnitModel shipUnitModel in unitModels)
             {
-                shipUnitModel.ApplyDamage(damagePerUnit);
+                ApplyDamageOnShipUnit(shipUnitModel, damagePerUnit);
             }
+        }
+
+        private void ApplyDamageOnShipUnit(ShipUnitModel shipUnitModel, float damage)
+        {
+            shipUnitModel.ApplyDamage(damage);
+            if (shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator && shipUnitModel.Health <= 0f)
+            {
+                IsLostShieldGenerator = true;
+                Shields = 0;
+                OnValueChanged?.Invoke();
+            }
+        }
+
+        public void RegenerateShields(float value)
+        {
+            Shields += value;
+            OnValueChanged?.Invoke();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public AttackData(IShipUnitsProvider shipUnitsProvider, IHealthComponent healthComponent)
         {
             this.shipUnitsProvider = shipUnitsProvider;
-            Units = shipUnitsProvider.GetShipUnits(ShipUnitType.Any).ToList();
+            Units = shipUnitsProvider.GetShipUnits(ShipUnitType.ShieldGenerator).ToList();
             HealthComponent = healthComponent;
         }
 

@@ -1,8 +1,11 @@
-﻿using EmpireAtWar.Models.Weapon;
+﻿using System;
+using System.Collections;
+using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views.ShipUi;
 using ScriptUtils.Math;
 using UnityEngine;
 using Utils.TimerService;
+using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -14,6 +17,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private INotifier<float> notifier;
         private ITimer attackTimer;
         private Vector3 targetPosition = Vector3.zero;
+        //private Light light;
 
 
         private float Distance { get; set; }
@@ -22,6 +26,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public bool IsBusy => vfx.isPlaying || !attackTimer.IsComplete;
         public bool Destroyed { get; private set; }
 
+
+        private void Start()
+        {
+            // light = gameObject.AddComponent<Light>();
+            // light.range = 10;
+            // light.color = Color.red;
+            // light.enabled = false;
+        }
 
         public bool CanAttack(Vector3 position)
         {
@@ -73,13 +85,23 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void Attack(Vector3 targetPosition)
         {
+            StartCoroutine(Test());
             attackTimer.StartTimer();
-
             Distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
             mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
             this.targetPosition = targetPosition;
             vfx.Play();
+        }
+
+        private IEnumerator Test()
+        {
+            yield return new WaitForSeconds(0.1f);
+//            light.enabled = true;
+            yield return new WaitForSeconds(0.1f);
+
+            // light.enabled = false;
+
         }
 
         private float GetCorrectAngle(float y)

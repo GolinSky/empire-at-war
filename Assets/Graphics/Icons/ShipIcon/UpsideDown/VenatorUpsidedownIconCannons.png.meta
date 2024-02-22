@@ -429,6 +429,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: ShieldGenerator
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 122
+        width: 62
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9403f59a23d13f4e9ae09387fc81040
+      internalID: -1521674156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -452,6 +473,7 @@ TextureImporter:
       DoubleTurboR: -2131719824
       IonL: -1598860720
       IonR: -1780699541
+      ShieldGenerator: -1521674156
       TurboL: -321567622
       TurboR: 1478708763
   mipmapLimitGroupName: 

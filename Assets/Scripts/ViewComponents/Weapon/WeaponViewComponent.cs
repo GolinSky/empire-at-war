@@ -74,8 +74,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 {
                     attackTimer.StartTimer();
                     shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
-
-              
                     
                     foreach (IShipUnitView unitView in shipUnitViews)
                     {

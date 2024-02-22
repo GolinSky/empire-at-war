@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.ComponentHub;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utils.TimerService;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
 
@@ -16,12 +17,13 @@ namespace EmpireAtWar.Components.Ship.Health
         bool Destroyed { get; }
     }
 
-    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent
+    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
     {
         private readonly IMoveModelObserver moveModelObserver;
         private readonly IComponentHub componentHub;
         private readonly IModel rootModel;
-
+        private readonly ITimer refreshShieldsTimer;
+        private float originShieldValue;
         public bool Destroyed => Model.IsDestroyed;
 
 
@@ -30,6 +32,8 @@ namespace EmpireAtWar.Components.Ship.Health
             this.componentHub = componentHub;
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
             rootModel = model;
+            originShieldValue = Model.Shields;
+            refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
         }
 
         public void Initialize()
@@ -57,6 +61,18 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool Equal(IModelObserver modelObserver)
         {
             return rootModel == modelObserver;
+        }
+
+        public void Tick()
+        {
+            if (!Model.IsLostShieldGenerator && Model.Shields < originShieldValue)
+            {
+                if (refreshShieldsTimer.IsComplete)
+                {
+                    refreshShieldsTimer.StartTimer();
+                    Model.RegenerateShields(Model.ShieldRegenerateValue);
+                }
+            }
         }
     }
 }

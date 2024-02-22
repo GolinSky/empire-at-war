@@ -35,6 +35,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private Sequence shieldSequence;
         private float baseShieldsValue;
         private float baseArmorValue;
+        private float lastShieldsValue;
 
         private Material shieldMaterial;
         
@@ -45,6 +46,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             baseShieldsValue = Model.Shields;
             baseArmorValue = Model.Armor;
+            lastShieldsValue = baseShieldsValue;
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += Destroy;
             if (shieldGameObject != null)
@@ -78,28 +80,17 @@ namespace EmpireAtWar.ViewComponents.Health
         
         private void UpdateData()
         {
-            if (Model.Shields > 0)
+            if (shieldGameObject != null)
             {
-                if (!shieldSequence.IsPlaying() && shieldMaterial != null)
-                {
-                    shieldSequence.Append(shieldMaterial.DOFade(0.1f, 1f));
-                    shieldSequence.Append(shieldMaterial.DOFade(0, 0.1f));
-                }
+                shieldGameObject.SetActive(Model.Shields>0f);
             }
-            else
-            {
-                if (shieldGameObject != null)
-                {
-                    shieldGameObject.SetActive(false);
-                }
-            }
-            
+
+            lastShieldsValue = Model.Shields;
             sequence.KillIfExist();
             sequence = DOTween.Sequence();
             sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TweenDuration));
             sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TweenDuration));
         }
-
 
         public IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType)
         {
@@ -115,7 +106,14 @@ namespace EmpireAtWar.ViewComponents.Health
             }
             else
             {
-                return shipUnitViewArray.Where(x => x.ShipUnitType == shipUnitType).ToArray();
+                if (shipUnitViewArray.Any(x => x.ShipUnitType == shipUnitType))
+                {
+                    return shipUnitViewArray.Where(x => x.ShipUnitType == shipUnitType).ToArray();
+                }
+                else
+                {
+                    return shipUnitViewArray.ToArray();
+                }
             }
         }
         
