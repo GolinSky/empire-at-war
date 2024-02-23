@@ -22,6 +22,9 @@ namespace EmpireAtWar.Models.Health
     [Serializable]
     public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
     {
+        private const float MainSystemCoefficient = 0.1f;
+        private const float WeaponSystemCoefficient = 0.8f;
+        private const int MainSystemAmount = 2; 
         public event Action OnValueChanged;
         public event Action OnDestroy;
         
@@ -46,10 +49,19 @@ namespace EmpireAtWar.Models.Health
         
         protected override void OnInit()
         {
-            float health = Armor / ShipUnitModels.Length;
+            float health = (Armor*WeaponSystemCoefficient) / (ShipUnitModels.Length - MainSystemAmount);
+
             foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
             {
-                shipUnitModel.SetHealth(health);
+                if (shipUnitModel.ShipUnitType == ShipUnitType.Engines ||
+                    shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator)
+                {
+                    shipUnitModel.SetHealth(Armor*MainSystemCoefficient);
+                }
+                else
+                {
+                    shipUnitModel.SetHealth(health);
+                }
             }
         }
         
