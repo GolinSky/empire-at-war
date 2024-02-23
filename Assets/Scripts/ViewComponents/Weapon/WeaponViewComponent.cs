@@ -30,7 +30,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         protected override void OnInit()
         {
-            attackTimer = TimerFactory.ConstructTimer(0.1f);
+            attackTimer = TimerFactory.ConstructTimer(1f);
             targets = Model.Targets;
 
             projectileModel = Model.ProjectileModel;

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7835449841130210889}
   - component: {fileID: 8800288226285214465}
   - component: {fileID: 1446201877261544308}
+  - component: {fileID: 8835564698875356562}
   m_Layer: 0
   m_Name: Shields
   m_TagString: Untagged
@@ -83,6 +84,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8835564698875356562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19464877803155952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1b0635126764df796ba6194d27372a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &543775337522794051
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2289,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      propertyPath: shieldView
+      value: 
+      objectReference: {fileID: 8835564698875356562}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
       propertyPath: shipTransform

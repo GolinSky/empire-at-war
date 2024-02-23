@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         void ApplyDamage(IShipUnitView unitView, WeaponType weaponType);
     }
-    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, ITickable, IWeaponCommand, ILateTickable
+    public class WeaponComponent : BaseComponent<WeaponModel>, IInitializable, ILateDisposable, IWeaponComponent, IWeaponCommand, ILateTickable
     {
         private readonly IBattleService battleService;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
@@ -138,13 +138,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             //   //  attackTimer.ForceFinish();
             //     RemoveAttackData(attackData);
             // }
-        }
-
-        public void Tick()
-        {
-           
-         
-           
         }
 
         private float GetDistance(Vector3 targetPosition) =>

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
@@ -6,6 +8,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.ScriptUtils.Dotween;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
 using Zenject;
@@ -18,26 +21,25 @@ namespace EmpireAtWar.ViewComponents.Health
         IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
         IModelObserver ModelObserver { get; }
     }
-    
+
     public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IShipUnitsProvider, ITickable
     {
-        private static readonly Vector3 DefaultRotation = new Vector3(0, 180, 0);
+        private static readonly Vector3 DefaultRotation = new(0, 180, 0);
         private const float TweenDuration = 0.1f;
         
         [SerializeField] private Canvas healthCanvas;
         [SerializeField] private Image shieldsFillImage;
         [SerializeField] private Image armorFillImage;
-        [SerializeField] private GameObject shieldGameObject;
+        [SerializeField] private ShieldView shieldView;
         
         [SerializeField] private List<ShipUnitView> shipUnitViewArray;
         
+        private Coroutine shieldsAnimatedCoroutine;
         private Sequence sequence;
         private Sequence shieldSequence;
         private float baseShieldsValue;
         private float baseArmorValue;
-        private float lastShieldsValue;
-
-        private Material shieldMaterial;
+        
         
         public bool HasUnits => shipUnitViewArray.Any(x => !x.IsDestroyed);
 
@@ -46,16 +48,23 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             baseShieldsValue = Model.Shields;
             baseArmorValue = Model.Armor;
-            lastShieldsValue = baseShieldsValue;
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += Destroy;
-            if (shieldGameObject != null)
-            {
-                shieldMaterial = shieldGameObject.GetComponent<MeshRenderer>().material;
-            }
+            
             UpdateShipUnit();
         }
 
+        private void Start()
+        {
+            if (shieldView != null)
+            {
+                if (shieldView != null)
+                {
+                    shieldsAnimatedCoroutine = StartCoroutine(AnimateShields()); 
+                }
+            }
+        }
+        
         protected override void OnRelease()
         {
             Model.OnValueChanged -= UpdateData;
@@ -66,6 +75,31 @@ namespace EmpireAtWar.ViewComponents.Health
         private void Destroy()
         {
             View.Release();
+            if (shieldsAnimatedCoroutine != null)
+            {
+                StopCoroutine(shieldsAnimatedCoroutine);
+            }
+        }
+        
+        private IEnumerator AnimateShields()
+        {
+            while (!Model.IsDestroyed)
+            {
+                if (Model.IsLostShieldGenerator)
+                {
+                    break;
+                }
+                
+                if (shieldView.IsVisibleToCamera)
+                {
+                    if (Model.Shields > 0)
+                    {
+                        shieldView.AnimateTextureOffset();
+                    }
+                }
+
+                yield return new WaitForEndOfFrame();
+            }
         }
 
         private void UpdateShipUnit()
@@ -80,12 +114,11 @@ namespace EmpireAtWar.ViewComponents.Health
         
         private void UpdateData()
         {
-            if (shieldGameObject != null)
+            if (shieldView != null)
             {
-                shieldGameObject.SetActive(Model.Shields>0f);
+                shieldView.SetActive(Model.Shields>0f);
             }
 
-            lastShieldsValue = Model.Shields;
             sequence.KillIfExist();
             sequence = DOTween.Sequence();
             sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TweenDuration));
@@ -121,5 +154,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             healthCanvas.transform.rotation = Quaternion.Euler(DefaultRotation);
         }
+
+      
     }
 }

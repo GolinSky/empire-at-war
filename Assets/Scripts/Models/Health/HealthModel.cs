@@ -16,7 +16,9 @@ namespace EmpireAtWar.Models.Health
         ShipUnitModel[] ShipUnitModels { get; }
         float Armor { get; }
         float Shields { get; }
-        
+        bool IsDestroyed { get; }
+        bool IsLostShieldGenerator { get; }
+
     }
 
     [Serializable]
