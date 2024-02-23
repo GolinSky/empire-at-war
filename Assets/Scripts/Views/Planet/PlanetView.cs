@@ -22,8 +22,8 @@ namespace EmpireAtWar.Views.Planet
 
         public void Tick()
         {
-            planetTransform.eulerAngles = Model.PlanetRotation;
-            cloudTransform.eulerAngles = Model.CloudRotation;
+            planetTransform.eulerAngles += Model.PlanetRotation;
+            cloudTransform.eulerAngles += Model.CloudRotation;
         }
     }
 }

@@ -16,11 +16,8 @@ namespace EmpireAtWar.Controllers.Planet
 
         public void Tick()
         {
-            cloudRotation.z += Model.CloudOrbitSpeed * Time.deltaTime;
-            Model.CloudRotation = cloudRotation;
-
-            planetRotation.z += Model.PlanetOrbitSpeed * Time.deltaTime;
-            Model.PlanetRotation = planetRotation;
+            Model.CloudRotation = Vector3.forward *  Model.CloudOrbitSpeed * Time.deltaTime;;
+            Model.PlanetRotation = Vector3.forward * Model.PlanetOrbitSpeed * Time.deltaTime;
         }
     }
 }
