@@ -438,7 +438,7 @@ TextureImporter:
         width: 62
         height: 40
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -446,6 +446,27 @@ TextureImporter:
       bones: []
       spriteID: b9403f59a23d13f4e9ae09387fc81040
       internalID: -1521674156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Engines
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 69
+        width: 88
+        height: 147
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ee340efc508e1d4ab3abbff57773c0a
+      internalID: 1470263621
       vertices: []
       indices: 
       edges: []
@@ -471,6 +492,7 @@ TextureImporter:
       DBY827R4: -1724292624
       DoubleTurboL: -971062302
       DoubleTurboR: -2131719824
+      Engines: 1470263621
       IonL: -1598860720
       IonR: -1780699541
       ShieldGenerator: -1521674156
