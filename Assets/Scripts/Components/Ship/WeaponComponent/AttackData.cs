@@ -35,8 +35,15 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public bool TryUpdateNewUnits(ShipUnitType shipUnitType = ShipUnitType.Any)
         {
             Units.Clear();
-            Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
-            return Units is { Count: > 0 };
+            if (shipUnitsProvider.HasUnits)
+            {
+                Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
+                return Units is { Count: > 0 };
+            }
+            else
+            {
+                return false;
+            }
         }
         
         public static bool operator ==(AttackData a, AttackData b)
