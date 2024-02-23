@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Services.Input
+﻿namespace EmpireAtWar.Services.InputService
 {
     public enum InputType
     {

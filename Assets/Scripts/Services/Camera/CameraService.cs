@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Camera
         Vector3 GetWorldPoint(Vector2 screenPoint);
         RaycastHit ScreenPointToRay(Vector2 screenPoint);
         Vector3 CameraPosition { get; }
+        float FieldOfView { get; }
     }
 
     public class CameraService : Service, ICameraService
@@ -15,8 +16,9 @@ namespace EmpireAtWar.Services.Camera
         private readonly UnityEngine.Camera camera;
 
         public Vector3 CameraPosition => camera.transform.position;
+        public float FieldOfView => camera.fieldOfView;
 
-        
+
         public CameraService(UnityEngine.Camera camera)
         {
             this.camera = camera;

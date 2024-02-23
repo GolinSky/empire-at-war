@@ -1421,39 +1421,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 464421237}
     m_Modifications:
-    - target: {fileID: 2806316903174903388, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3627575423024104460, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3627575423024104460, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4082562394569656993, guid: 036dc1095929d7d4fa18c87931bf9cfd,
         type: 3}
       propertyPath: m_Name
       value: SkirmishGameSetUpPopupUi
       objectReference: {fileID: 0}
-    - target: {fileID: 4151998330986733468, guid: 036dc1095929d7d4fa18c87931bf9cfd,
+    - target: {fileID: 4082562394569656993, guid: 036dc1095929d7d4fa18c87931bf9cfd,
         type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4151998330986733468, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4151998330986733468, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_SizeDelta.x
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6215877517377226150, guid: 036dc1095929d7d4fa18c87931bf9cfd,
@@ -1556,20 +1531,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6997961805087282308, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 56.9736
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521621417343831535, guid: 036dc1095929d7d4fa18c87931bf9cfd,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 56.974
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521621417343831535, guid: 036dc1095929d7d4fa18c87931bf9cfd,
+    - target: {fileID: 7261150550682423895, guid: 036dc1095929d7d4fa18c87931bf9cfd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00005531311
+      value: -0.000045776367
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -16,8 +16,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private INotifier<float> notifier;
         private ITimer attackTimer;
-        private Vector3 targetPosition = Vector3.zero;
-        //private Light light;
+        private Vector3 lookPosition = Vector3.zero;
 
 
         private float Distance { get; set; }
@@ -25,22 +24,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         public bool IsBusy => vfx.isPlaying || !attackTimer.IsComplete;
         public bool Destroyed { get; private set; }
+        
 
-
-        private void Start()
-        {
-            // light = gameObject.AddComponent<Light>();
-            // light.range = 10;
-            // light.color = Color.red;
-            // light.enabled = false;
-        }
-
-        public bool CanAttack(Vector3 position)
+        public bool CanAttack(Vector3 targetPosition)
         {
             float distance = Vector3.Distance(targetPosition, transform.position);
             if (distance > MaxAttackDistance) return false;
             
-            Vector3 direction = position - transform.position;
+            Vector3 direction = targetPosition - transform.position;
 
             Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
 
@@ -85,23 +76,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void Attack(Vector3 targetPosition)
         {
-            StartCoroutine(Test());
             attackTimer.StartTimer();
             Distance = Vector3.Distance(targetPosition, transform.position);
             var mainModule = vfx.main;
             mainModule.startSpeed = Distance / mainModule.startLifetime.constant;
-            this.targetPosition = targetPosition;
+            lookPosition = targetPosition;
             vfx.Play();
-        }
-
-        private IEnumerator Test()
-        {
-            yield return new WaitForSeconds(0.1f);
-//            light.enabled = true;
-            yield return new WaitForSeconds(0.1f);
-
-            // light.enabled = false;
-
         }
 
         private float GetCorrectAngle(float y)
@@ -118,7 +98,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void Update()
         {
-            transform.LookAt(targetPosition);
+            transform.LookAt(lookPosition);
         }
 
         public void UpdateState(float value)

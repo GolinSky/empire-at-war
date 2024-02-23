@@ -1,21 +1,20 @@
 using System;
-using EmpireAtWar.Services.Camera;
-using EmpireAtWar.ViewComponents.Selection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;
 
-namespace EmpireAtWar.Services.Input
+namespace EmpireAtWar.Services.InputService
 {
     public class InputService : Service, IInputService, ITickable
     {
         public event Action<Vector2> OnEndDrag;
         public event Action<InputType, TouchPhase, Vector2> OnInput;
+        public event Action<InputType, Touch, Touch> OnDoubleInput;
 
 
         private Touch touch;
-        private bool block;
+        private bool isBlocked;
         private TouchPhase lastTouchPhase;
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => touch.position;
@@ -23,11 +22,11 @@ namespace EmpireAtWar.Services.Input
 
         public void Tick()
         {
-            if (UnityEngine.Input.touchCount == 1)
+            if (Input.touchCount == 1)
             {
-                touch = UnityEngine.Input.GetTouch(0);
+                touch = Input.GetTouch(0);
 
-                if (block)
+                if (isBlocked)
                 {
                     CurrentTouchPhase = touch.phase;
 
@@ -38,12 +37,9 @@ namespace EmpireAtWar.Services.Input
                     return;
                 }
 
-                for (var i = 0; i < UnityEngine.Input.touches.Length; i++)
+                for (var i = 0; i < Input.touches.Length; i++)
                 {
-                    if (IsBlocked(UnityEngine.Input.touches[i].fingerId))
-                    {
-                        return;
-                    }
+                    if (IsBlocked(Input.touches[i].fingerId))  return;
                 }
              
                 CurrentTouchPhase = touch.phase;
@@ -54,19 +50,18 @@ namespace EmpireAtWar.Services.Input
                     {
                         if (touch.tapCount == 2)
                         {
-                            InvokeEvent(InputType.ShipInput);
+                            InvokeInputEvent(InputType.ShipInput);
                         }
                         if (touch.tapCount == 1)
                         {
-                            InvokeEvent(InputType.CameraInput);
-                           
+                            InvokeInputEvent(InputType.CameraInput);
                         }
                         break;
                     }
                     case TouchPhase.Moved:
-                        if (touch.tapCount == 1)
+                        if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Stationary)
                         {
-                            InvokeEvent(InputType.CameraInput);
+                            InvokeInputEvent(InputType.CameraInput);
                         }
                         break;
                     case TouchPhase.Stationary:
@@ -75,7 +70,7 @@ namespace EmpireAtWar.Services.Input
                     {
                         if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
                         {
-                            InvokeEvent(InputType.Selection);
+                            InvokeInputEvent(InputType.Selection);
                         }
                         break;
                     }
@@ -86,8 +81,15 @@ namespace EmpireAtWar.Services.Input
                 }
                 lastTouchPhase = CurrentTouchPhase;
             }
+            else
+            {
+                if (Input.touchCount == 2)
+                { 
+                    OnDoubleInput?.Invoke(InputType.CameraInput, Input.GetTouch(0), Input.GetTouch(1));
+                }
+            }
 
-            void InvokeEvent(InputType inputType)
+            void InvokeInputEvent(InputType inputType)
             {
                 OnInput?.Invoke(inputType, CurrentTouchPhase, touch.position);
             }
@@ -96,10 +98,9 @@ namespace EmpireAtWar.Services.Input
         private bool IsBlocked(int id) => EventSystem.current.IsPointerOverGameObject(id) ||
                                           EventSystem.current.IsPointerOverGameObject();
 
-        public void Block(bool b)
+        public void Block(bool isBlocked)
         {
-            block = b;
+            this.isBlocked = isBlocked;
         }
-
     }
 }

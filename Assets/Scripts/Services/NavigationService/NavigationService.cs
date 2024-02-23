@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Service;
 using Zenject;

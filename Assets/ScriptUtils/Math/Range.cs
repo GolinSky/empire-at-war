@@ -10,6 +10,7 @@ namespace ScriptUtils.Math
 
 
 	    public abstract bool IsInRange(TValue value);
+	    public abstract TValue Clamp(TValue value);
     }
 
     [Serializable]
@@ -24,6 +25,11 @@ namespace ScriptUtils.Math
 
 		    return true;
 	    }
+
+	    public override int Clamp(int value)
+	    {
+		    return Mathf.Clamp(value, Min, Max);
+	    }
     }
     
     [Serializable]
@@ -37,6 +43,11 @@ namespace ScriptUtils.Math
 		    }
 
 		    return true;
+	    }
+
+	    public override float Clamp(float value)
+	    {
+		    return Mathf.Clamp(value, Min, Max);
 	    }
     }
 }

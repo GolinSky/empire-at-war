@@ -3,7 +3,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.Services.Enemy;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;

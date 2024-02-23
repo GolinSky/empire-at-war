@@ -21,6 +21,7 @@ namespace EmpireAtWar.Components.Ship.Radar
         {
             offset = Vector3.up * 100;
             timer = TimerFactory.ConstructTimer(Model.Delay);
+            timer.StartTimer();
             moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
         }
 

@@ -1,6 +1,6 @@
 using System;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;

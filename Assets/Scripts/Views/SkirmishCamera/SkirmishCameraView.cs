@@ -24,12 +24,15 @@ namespace EmpireAtWar.Views.SkirmishCamera
         private Transform cameraTransform;
         private Vector3 worldStartPoint;
         private Vector3 cameraPosition;
-
+        
+        
         protected override void OnInitialize()
         {
             cameraTransform = mainCamera.transform;
+            switcherButton.gameObject.SetActive(Application.isEditor);// debug
             Model.OnTranslateDirectionChanged += Translate;
             Model.OnPositionChanged += SetPosition;
+            Model.OnFovChanged += UpdateFieldOfView;
             zoomIn.onClick.AddListener(Command.ZoomIn);
             zoomOut.onClick.AddListener(Command.ZoomOut);
             maxZoomIn.onClick.AddListener(Command.MaxZoomIn);
@@ -41,11 +44,17 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             Model.OnTranslateDirectionChanged -= Translate;
             Model.OnPositionChanged -= SetPosition;
+            Model.OnFovChanged -= UpdateFieldOfView;
             zoomIn.onClick.RemoveListener(Command.ZoomIn);
             zoomOut.onClick.RemoveListener(Command.ZoomOut);
             maxZoomIn.onClick.RemoveListener(Command.MaxZoomIn);
             minZoomOut.onClick.RemoveListener(Command.MaxZoomOut);
             switcherButton.onClick.RemoveListener(UpdateCanvasState);
+        }
+        
+        private void UpdateFieldOfView(float fieldOfView)
+        {
+            mainCamera.fieldOfView = fieldOfView;
         }
         
         private void UpdateCanvasState()

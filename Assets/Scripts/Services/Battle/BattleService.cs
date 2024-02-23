@@ -1,7 +1,7 @@
 ﻿using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.ViewComponents.Selection;
 using UnityEngine;
 using WorkShop.LightWeightFramework.Service;

@@ -2,7 +2,7 @@
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;

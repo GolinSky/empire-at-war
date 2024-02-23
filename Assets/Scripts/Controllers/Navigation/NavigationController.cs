@@ -1,5 +1,5 @@
 using EmpireAtWar.Models.Navigation;
-using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.InputService;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
