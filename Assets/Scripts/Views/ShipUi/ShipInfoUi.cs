@@ -19,13 +19,5 @@ namespace EmpireAtWar
         {
             transform.SetParent(rootTransform, false);
         }
-
-        public void Disable()
-        {
-            foreach (ShipUnitUi shipUnitUi in shipUnitArray)
-            {
-                shipUnitUi.Disable();
-            }
-        }
     }
 }

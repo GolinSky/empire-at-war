@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Health;
+﻿using DG.Tweening;
+using EmpireAtWar.Models.Health;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,14 +50,16 @@ namespace EmpireAtWar
             float healthPercentage = shipUnitModel.HealthPercentage;
             if (healthPercentage <= MinTolerance)
             {
-                image.color = Color.red;
+                image.color = Color.gray;
                 return;
             }
-            
-            Color color = image.color;
-            color.g = 255 * healthPercentage;
-            color.r = 255 * (1 - healthPercentage);
-            image.color = color;
+
+            image.color = Color.Lerp(Color.red, Color.green, healthPercentage);
+            //
+            // Color color = image.color;
+            // color.g = 255 * healthPercentage;
+            // color.r = 255 * (1 - healthPercentage);
+            // image.color = color;
         }
 
         public void Disable()
