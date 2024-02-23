@@ -103,7 +103,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void UpdateState(float value)
         {
-            if (value < 0)
+            if (value <= 0f)
             {
                 Destroyed = true;
             }
