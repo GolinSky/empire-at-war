@@ -16,7 +16,8 @@ namespace EmpireAtWar.Controllers.Planet
 
         public void Tick()
         {
-            Model.CloudRotation = Vector3.forward *  Model.CloudOrbitSpeed * Time.deltaTime;;
+            //todo: try to use ref for struct as in ecs
+            Model.CloudRotation = Vector3.forward *  Model.CloudOrbitSpeed * Time.deltaTime;
             Model.PlanetRotation = Vector3.forward * Model.PlanetOrbitSpeed * Time.deltaTime;
         }
     }
