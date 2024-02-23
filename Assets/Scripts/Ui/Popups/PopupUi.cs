@@ -26,7 +26,7 @@ namespace EmpireAtWar.Ui.Popups
 
         public void SetParent(Transform parent)
         {
-            transform.SetParent(parent);
+            transform.SetParent(parent, false);
             transform.localScale = Vector3.one;
         }
 
