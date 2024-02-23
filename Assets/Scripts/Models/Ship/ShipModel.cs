@@ -33,25 +33,33 @@ namespace EmpireAtWar.Models.Ship
         [Header("Radar Model")] 
         [SerializeField] private RadarModel radarModel;
 
-        public string Id => name;
+        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
+        
+        [field:SerializeField] public float MinMoveCoefficient { get; private set; }
+
         
         [Inject]
         public ShipType ShipType { get; }
 
-        public ShipInfoUi FillWithData(ShipInfoUi shipInfoUi)
-        {
-            shipInfoUi.Init(healthModel.ShipUnitModels);
-            return shipInfoUi;
-        }
+        public MoveModel MoveModel => moveModel;
 
-        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
-        
-        
+        public HealthModel HealthModel => healthModel;
+
+        public WeaponModel WeaponModel => weaponModel;
+
+        public RadarModel RadarModel => radarModel;
+
+
         protected override void Awake()
         {
             base.Awake();
             AddInnerModels(moveModel, healthModel, weaponModel, radarModel);
         }
 
+        public ShipInfoUi FillWithData(ShipInfoUi shipInfoUi)
+        {
+            shipInfoUi.Init(healthModel.ShipUnitModels);
+            return shipInfoUi;
+        }
     }
 }

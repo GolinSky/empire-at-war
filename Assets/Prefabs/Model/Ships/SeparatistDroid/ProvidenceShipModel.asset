@@ -15,10 +15,12 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   moveModel:
-    <Speed>k__BackingField: 1
-    <RotationSpeed>k__BackingField: 0
-    <MinRotationDuration>k__BackingField: 0
+    speed: 1
+    <FallDownDirection>k__BackingField: {x: 0, y: -40, z: 0}
+    <RotationSpeed>k__BackingField: 2
+    <MinRotationDuration>k__BackingField: 15
     <HyperSpaceSpeed>k__BackingField: 2
+    <FallDownDuration>k__BackingField: 200
     <Height>k__BackingField: 0
   healthModel:
     dexterity: 0.1
@@ -78,3 +80,4 @@ MonoBehaviour:
     <Distance>k__BackingField: 200
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
+  <MinMoveCoefficient>k__BackingField: 0.5
