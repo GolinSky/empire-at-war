@@ -47,9 +47,13 @@ namespace EmpireAtWar.Services.Enemy
 
             stationPosition = mapModel.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  stationPosition);
-            // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*1f));
-            // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*2f));
-            // shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*3f));
+             shipFacadeFactory.Create(PlayerType.Player, ShipType.Venator, mapModel.GetStationPosition(PlayerType.Player));
+
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*1f));
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*2f));
+            shipFacadeFactory.Create(PlayerType.Opponent, ShipType.Providence, stationPosition+ (Offset1*3f));
+            
+            return;
             Sequence sequence = DOTween.Sequence();
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             

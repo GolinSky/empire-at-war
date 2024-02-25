@@ -32,6 +32,8 @@ namespace EmpireAtWar.Services.Player
                 PlayerType.Player,
                 FactionType,
                 mapModel.GetStationPosition(PlayerType.Player));
+            
+
         }
     }
 }
