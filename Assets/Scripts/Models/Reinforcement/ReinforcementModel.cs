@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.ScriptUtils.EditorSerialization;
+using EmpireAtWar.Views.Reinforcement;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -14,13 +15,11 @@ namespace EmpireAtWar.Models.Reinforcement
         event Action<bool> OnSpawnShip;
         event Action<ShipType, Sprite> OnReinforcementAdded;
         
-        Dictionary<ShipType, Transform> SpawnShips { get; }
-        
+        ShipSpawnView GetSpawnPrefab(ShipType shipType);
+
         ReinforcementDraggable ReinforcementButton { get; }
-        Vector3 SpawnShipPosition { get; }
         
         bool IsTrySpawning { get; }
-        Transform GetSpawnPrefab(ShipType shipType);
     }
     
     [CreateAssetMenu(fileName = "ReinforcementModel", menuName = "Model/ReinforcementModel")]
@@ -30,20 +29,19 @@ namespace EmpireAtWar.Models.Reinforcement
         public event Action<ShipType, Sprite> OnReinforcementAdded;
         [field: SerializeField] public ReinforcementDraggable ReinforcementButton { get; private set; }
 
-        [SerializeField] private DictionaryWrapper<ShipType, Transform> spawnShipWrapper;
+        [SerializeField] private DictionaryWrapper<ShipType, ShipSpawnView> spawnShipWrapper;
         [SerializeField] private FactionsModel factionsModel;
         
         [Inject(Id = PlayerType.Player)] 
         public FactionType FactionType { get; }
-        public Vector3 SpawnShipPosition { get; set; }
         public bool IsTrySpawning { get; set; }
         
         
-        public Dictionary<ShipType, Transform> SpawnShips => spawnShipWrapper.Dictionary;
+        public Dictionary<ShipType, ShipSpawnView> SpawnShips => spawnShipWrapper.Dictionary;
 
-        public Transform GetSpawnPrefab(ShipType shipType)
+        public ShipSpawnView GetSpawnPrefab(ShipType shipType)
         {
-            if (SpawnShips.TryGetValue(shipType, out Transform spawnTransform))
+            if (SpawnShips.TryGetValue(shipType, out ShipSpawnView spawnTransform))
             {
                 return spawnTransform;
             }

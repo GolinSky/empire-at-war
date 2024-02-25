@@ -6,11 +6,10 @@ using EmpireAtWar.ScriptUtils.Dotween;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Reinforcement
 {
-    public class ReinforcementView:View<IReinforcementModelObserver, IReinforcementCommand>, ITickable
+    public class ReinforcementView:View<IReinforcementModelObserver, IReinforcementCommand>
     {
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private Button switchButton;
@@ -19,7 +18,6 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private Image signalImage;
         
         private ReinforcementDraggable currentDraggable;
-        private Transform spawnReinforcement;
         private Sequence fadeSequence;
         private Color originColor;
 
@@ -60,9 +58,9 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             if (success)
             {
-                Destroy(spawnReinforcement.gameObject);
                 currentDraggable.Destroy();
             }
+
             ActivateCanvas();
         }
         
@@ -73,7 +71,6 @@ namespace EmpireAtWar.Views.Reinforcement
             DisableCanvas();
             currentDraggable = draggable;
             Command.TrySpawnShip(shipType);
-            spawnReinforcement = Instantiate(Model.GetSpawnPrefab(shipType));
         }
         
         private void ActivateCanvas()
@@ -84,13 +81,6 @@ namespace EmpireAtWar.Views.Reinforcement
         private void DisableCanvas()
         {
             panelCanvas.enabled = false;
-        }
-
-        public void Tick()
-        {
-            if(!Model.IsTrySpawning) return;
-
-            spawnReinforcement.position = Model.SpawnShipPosition;
         }
     }
 }

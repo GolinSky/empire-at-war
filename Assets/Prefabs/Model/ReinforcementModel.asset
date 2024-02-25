@@ -18,21 +18,21 @@ MonoBehaviour:
   spawnShipWrapper:
     keyValue:
     - key: 0
-      value: {fileID: 6168834610840409693, guid: 22aad1d1d6cecd043901814978cdaac2,
+      value: {fileID: 5422768365347329368, guid: 22aad1d1d6cecd043901814978cdaac2,
         type: 3}
     - key: 1
-      value: {fileID: 3045890703771428440, guid: 81f78a6bd8ddb7943b29a5b1706d8b63,
+      value: {fileID: 2658831815141062857, guid: 81f78a6bd8ddb7943b29a5b1706d8b63,
         type: 3}
     - key: 2
-      value: {fileID: 885205936333499474, guid: 602616906d6d9844aa9086252a1423f4,
+      value: {fileID: 4060278176297156384, guid: 602616906d6d9844aa9086252a1423f4,
         type: 3}
     - key: 100
-      value: {fileID: 7376654796748103530, guid: 80484c47f0fde8944b6852594a403c69,
+      value: {fileID: 7224548515634706539, guid: 80484c47f0fde8944b6852594a403c69,
         type: 3}
     - key: 101
-      value: {fileID: 6420686071980322647, guid: 2c860664286ce464e830a24e1585937e,
+      value: {fileID: 5155813271684836544, guid: 2c860664286ce464e830a24e1585937e,
         type: 3}
     - key: 102
-      value: {fileID: 5703078537108270140, guid: 07fbb46098b845b4f847f4511e25b732,
+      value: {fileID: -7875661336892348539, guid: 07fbb46098b845b4f847f4511e25b732,
         type: 3}
   factionsModel: {fileID: 11400000, guid: 3de703d0a2c0ac5428de8b8f64093d18, type: 2}

@@ -4,10 +4,10 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 using Zenject;
 
 
@@ -21,6 +21,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly IReinforcementService reinforcementService;
 
+        private ShipSpawnView spawnReinforcement;
         private ShipType currentShipType;
         
         public ReinforcementController(
@@ -59,8 +60,13 @@ namespace EmpireAtWar.Controllers.Reinforcement
 
             Model.IsTrySpawning = false;
             Vector3 spawnPosition = cameraService.GetWorldPoint(screenPosition);
-            shipFacadeFactory.Create(PlayerType.Player, currentShipType, spawnPosition);
-            Model.InvokeSpawnShipEvent(true);
+            bool canSpawn = spawnReinforcement.CanSpawn;
+            Model.InvokeSpawnShipEvent(canSpawn);
+            if (canSpawn)
+            {
+                shipFacadeFactory.Create(PlayerType.Player, currentShipType, spawnPosition);
+            }
+            spawnReinforcement.Destroy();
             inputService.Block(false);
         }
 
@@ -69,6 +75,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
             currentShipType = shipType;
             inputService.Block(true);
             Model.IsTrySpawning = true;
+            spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
         }
 
         public void Tick()
@@ -77,7 +84,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
 
             Vector3 position = cameraService.GetWorldPoint(inputService.TouchPosition);
             position.y = 0;
-            Model.SpawnShipPosition = position;
+            spawnReinforcement.UpdatePosition(position);
         }
     }
 }
