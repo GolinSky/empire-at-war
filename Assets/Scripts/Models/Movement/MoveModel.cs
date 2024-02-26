@@ -1,5 +1,6 @@
 ﻿using System;
 using LightWeightFramework.Model;
+using ScriptUtils.Math;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Movement
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Models.Movement
 
         public Vector3 CurrentPosition { get; set; }
         public float Speed => speed * speedCoefficient;
-        public bool IsMoving => CurrentPosition != Position;
+        public bool IsMoving => !CurrentPosition.IsEqual(Position);
 
         public Vector3 HyperSpacePosition
         {
