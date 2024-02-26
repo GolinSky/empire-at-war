@@ -32,14 +32,23 @@ namespace EmpireAtWar.ViewComponents.Move
             HyperSpaceJump(Model.HyperSpacePosition);
             Model.OnTargetPositionChanged += UpdateTargetPosition;
             Model.OnHyperSpaceJump += HyperSpaceJump;
-            MoveCommand.Assign(transform);
+            Model.OnStop += StopAllMovement;
+            MoveCommand.Assign(transform);// inject transform
         }
+
+    
 
         protected override void OnRelease()
         {
             Model.OnTargetPositionChanged -= UpdateTargetPosition;
             Model.OnHyperSpaceJump -= HyperSpaceJump;
+            Model.OnStop -= StopAllMovement;
             FallDown();
+        }
+        
+        private void StopAllMovement()
+        {
+            moveSequence.KillIfExist();
         }
 
         private void FallDown()

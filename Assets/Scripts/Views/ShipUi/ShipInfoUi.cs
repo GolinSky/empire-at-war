@@ -7,6 +7,12 @@ namespace EmpireAtWar
     {
         [SerializeField] private ShipUnitUi[] shipUnitArray;
 
+
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
+        }
         public void Init(IShipUnitModel[] shipUnitModels)
         {
             for (var i = 0; i < shipUnitModels.Length; i++)

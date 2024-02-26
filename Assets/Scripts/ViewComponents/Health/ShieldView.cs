@@ -7,14 +7,18 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         private static readonly Vector2 MaterialOffset = Vector3.up*0.1f;
 
-        private Material shieldMaterial;
-        private MeshRenderer meshRenderer;
+        private Material[] shieldMaterials;
+        private MeshRenderer[] meshRenderers;
         public bool IsVisibleToCamera { get; private set; }
 
         private void Start()
         {
-            meshRenderer = GetComponent<MeshRenderer>();
-            shieldMaterial = meshRenderer.material;
+            meshRenderers = GetComponentsInChildren<MeshRenderer>();
+            shieldMaterials = new Material[meshRenderers.Length];
+            for (var i = 0; i < meshRenderers.Length; i++)
+            {
+                shieldMaterials[i] = meshRenderers[i].material;
+            }
         }
 
         public void SetActive(bool isActive)
@@ -34,7 +38,11 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void AnimateTextureOffset()
         {
-            shieldMaterial.mainTextureOffset += MaterialOffset * Time.deltaTime;
+            Vector2 offset = MaterialOffset * Time.deltaTime;
+            foreach (Material material in shieldMaterials)
+            {
+                material.mainTextureOffset += offset;
+            }
         }
     }
 }

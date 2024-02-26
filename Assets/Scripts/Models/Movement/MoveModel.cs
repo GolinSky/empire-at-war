@@ -6,6 +6,7 @@ namespace EmpireAtWar.Models.Movement
 {
     public interface IMoveModelObserver:IModelObserver
     {
+        event Action OnStop;
         event Action<Vector3> OnTargetPositionChanged;
         event Action<Vector3> OnHyperSpaceJump;
         Vector3 Position { get; }
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Models.Movement
     [Serializable]
     public class MoveModel:InnerModel, IMoveModelObserver
     {
+        public event Action OnStop;
         public event Action<Vector3> OnTargetPositionChanged;
         public event Action<Vector3> OnHyperSpaceJump;
 
@@ -67,7 +69,7 @@ namespace EmpireAtWar.Models.Movement
         public void ApplyMoveCoefficient(float coefficient)
         {
             speedCoefficient = coefficient;
-            OnTargetPositionChanged?.Invoke(position);
+            OnStop?.Invoke();
         }
     }
 }

@@ -45,8 +45,15 @@ namespace EmpireAtWar.Controllers.ShipUi
                             Object.Instantiate(Model.GetShipInfoUi(shipModelObserver.ShipType));
                         shipUiDictionary.Add(shipModelObserver.ShipType, shipInfoUi);
                     }
-                    
+
+                    ShipInfoUi previousUi = Model.ShipInfoUi;
+                    if (previousUi != null)
+                    {
+                        previousUi.SetActive(false);
+                    }
+                    //todo: disable prev ui
                     Model.ShipInfoUi = shipModelObserver.FillWithData(shipInfoUi);
+                    Model.ShipInfoUi.SetActive(true);
                 }
             }
             Model.UpdateSelection(selectionType);
