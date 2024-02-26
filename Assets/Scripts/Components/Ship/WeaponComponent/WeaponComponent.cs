@@ -111,6 +111,11 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
         {
+            if (attackData.IsDestroyed)
+            {
+                RemoveAttackData(attackData);
+                return;
+            }
             attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType, id);
         }
 
