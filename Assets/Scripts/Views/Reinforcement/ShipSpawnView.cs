@@ -5,6 +5,8 @@ namespace EmpireAtWar.Views.Reinforcement
 {
     public class ShipSpawnView : MonoBehaviour
     {
+        [SerializeField] private float height;
+        
         private List<Collider> triggeredCollider = new List<Collider>();
         private MeshRenderer[] meshRendererList;
         private List<Material> meshMaterials = new List<Material>();
@@ -30,6 +32,7 @@ namespace EmpireAtWar.Views.Reinforcement
 
         public void UpdatePosition(Vector3 position)
         {
+            position.y = height;
             transform.position = position;
         }
 
