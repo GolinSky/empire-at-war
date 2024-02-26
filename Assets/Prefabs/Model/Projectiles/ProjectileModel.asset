@@ -21,7 +21,7 @@ MonoBehaviour:
         <Size>k__BackingField: {x: 0.3, y: 1, z: 1}
     - key: 7
       value:
-        <Color>k__BackingField: {r: 1, g: 0.07692309, b: 0, a: 1}
+        <Color>k__BackingField: {r: 1, g: 0.67976373, b: 0, a: 1}
         <Size>k__BackingField: {x: 0.3, y: 0.4, z: 1}
     - key: 5
       value:
@@ -29,7 +29,7 @@ MonoBehaviour:
         <Size>k__BackingField: {x: 0.8, y: 0.4, z: 1}
     - key: 8
       value:
-        <Color>k__BackingField: {r: 1, g: 0.11585366, b: 0, a: 1}
+        <Color>k__BackingField: {r: 1, g: 0.3115187, b: 0, a: 1}
         <Size>k__BackingField: {x: 0.4, y: 0.4, z: 1}
     - key: 4
       value:

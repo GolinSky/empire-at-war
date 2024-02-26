@@ -6,7 +6,11 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public class ShipUnitView : MonoBehaviour, IShipUnitView, INotifier<float>
+    public interface IShipUnitProvider
+    {
+        void SetId(int id);
+    }
+    public class ShipUnitView : MonoBehaviour, IShipUnitView, INotifier<float>, IShipUnitProvider
     {
         [field: SerializeField] public ShipUnitType ShipUnitType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
@@ -50,6 +54,11 @@ namespace EmpireAtWar.ViewComponents.Health
         void INotifier<float>.RemoveObserver(IObserver<float> observer)
         {
             observers.Remove(observer);
+        }
+
+        void IShipUnitProvider.SetId(int id)
+        {
+            Id = id;
         }
     }
 }
