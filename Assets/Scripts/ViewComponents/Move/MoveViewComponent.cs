@@ -12,7 +12,6 @@ namespace EmpireAtWar.ViewComponents.Move
 {
     public class MoveViewComponent : ViewComponent<IMoveModelObserver>
     {
-        [SerializeField] private Transform meshTransform;
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
@@ -125,8 +124,7 @@ namespace EmpireAtWar.ViewComponents.Move
                     .SetOptions(AxisConstraint.None, AxisConstraint.X | AxisConstraint.Z)
                     .SetEase(moveEase));
 
-            moveSequence.Append(
-                meshTransform.DOLocalRotate(Vector3.zero, 1f, RotateMode.Fast));
+          
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
             // Vector3 targetRotation = Quaternion.LookRotation(waypoints[0] - CurrentPosition).eulerAngles;
             // float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
