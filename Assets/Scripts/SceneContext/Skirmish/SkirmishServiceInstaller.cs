@@ -1,5 +1,6 @@
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.BattleService;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.Services.Enemy;
@@ -27,6 +28,7 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindService<PlayerService>()
             .BindService<SelectionService>()
             .BindService<ReinforcementService>()
-            .BindService<ComponentHub>();
+            .BindService<ComponentHub>()
+            .BindService<BattleService>();
     }
 }

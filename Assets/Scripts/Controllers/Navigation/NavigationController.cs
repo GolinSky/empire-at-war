@@ -1,7 +1,11 @@
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Navigation;
+using EmpireAtWar.Services.BattleService;
+using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
+using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
 
@@ -11,21 +15,36 @@ namespace EmpireAtWar.Controllers.Navigation
     {
         private readonly IInputService inputService;
         private readonly INavigationService navigationService;
+        private readonly IBattleService battleService;
+        private readonly ICameraService cameraService;
 
-        public NavigationController(NavigationModel model, IInputService inputService, INavigationService navigationService) : base(model)
+        public NavigationController(NavigationModel model, IInputService inputService, INavigationService navigationService, IBattleService battleService, ICameraService cameraService) : base(model)
         {
             this.inputService = inputService;
             this.navigationService = navigationService;
+            this.battleService = battleService;// temp here
+            this.cameraService = cameraService;
         }
 
         public void Initialize()
         {
             inputService.OnInput += HandleInput;
+            battleService.OnTargetAdded += HandleAttackInput;
         }
 
         public void LateDispose()
         {
             inputService.OnInput -= HandleInput;
+            battleService.OnTargetAdded -= HandleAttackInput;
+        }
+        
+        private void HandleAttackInput(IModel model)
+        {
+            IMoveModelObserver moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            if (moveModelObserver != null)
+            {
+                Model.AttackPosition = cameraService.WorldToScreenPoint(moveModelObserver.CurrentPosition);
+            }
         }
         
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)

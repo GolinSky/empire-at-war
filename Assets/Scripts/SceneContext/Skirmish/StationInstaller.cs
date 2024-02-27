@@ -16,7 +16,6 @@ namespace EmpireAtWar.SceneContext
         private readonly PlayerType playerType;
         private readonly Vector3 startPosition;
 
-
         public StationInstaller(FactionType factionType, PlayerType playerType, Vector3 startPosition)
         {
             this.factionType = factionType;
@@ -44,16 +43,14 @@ namespace EmpireAtWar.SceneContext
                     
                     Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
-                            SpaceStationCommand>(
-                            factionType);
+                            SpaceStationCommand>(factionType);
                     break;
                 }
                 case PlayerType.Opponent:
                 {
                     Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
-                            EnemySpaceStationCommand>(
-                            factionType);
+                            EnemySpaceStationCommand>(factionType);
                     
                     Container
                         .BindInterfacesAndSelfTo<EnemySelectionComponent>()
