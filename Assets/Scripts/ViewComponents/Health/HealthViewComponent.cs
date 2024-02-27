@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ScriptUtils.Dotween;
 using LightWeightFramework.Model;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.ViewComponents.Health
         bool HasUnits { get; }
         IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
         IModelObserver ModelObserver { get; }
+        PlayerType PlayerType { get; }
     }
 
     public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IShipUnitsProvider, ITickable
@@ -40,7 +42,9 @@ namespace EmpireAtWar.ViewComponents.Health
         private float baseShieldsValue;
         private float baseArmorValue;
         
-        
+        [Inject]
+        public PlayerType PlayerType { get; }
+
         public bool HasUnits => shipUnitViewArray.Any(x => !x.IsDestroyed);
 
 
@@ -149,7 +153,8 @@ namespace EmpireAtWar.ViewComponents.Health
                 }
             }
         }
-        
+
+
         public void Tick()
         {
             healthCanvas.transform.rotation = Quaternion.Euler(DefaultRotation);

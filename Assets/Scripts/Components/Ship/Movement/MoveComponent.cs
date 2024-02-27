@@ -1,11 +1,9 @@
-﻿using System;
-using EmpireAtWar.Commands.Move;
+﻿using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
 using WorkShop.LightWeightFramework.Components;
 using Zenject;
 
@@ -13,7 +11,9 @@ namespace EmpireAtWar.Components.Ship.Selection
 {
     public interface IMoveComponent:IComponent
     {
-        
+        float MoveAround();
+        Vector3 CalculateLookDirection(Vector3 targetPosition);
+        void MoveToPosition(Vector3 targetPosition);
     }
     public class MoveComponent : BaseComponent<MoveModel>, IMovable, IMoveComponent, IMoveCommand, ITickable
     {
@@ -52,6 +52,25 @@ namespace EmpireAtWar.Components.Ship.Selection
             {
                 Model.CurrentPosition = transform.position;
             }
+        }
+
+        public float MoveAround()
+        {
+            Vector3 backPosition = Model.CurrentPosition - transform.forward * Random.Range(30, 50f) + transform.right * Random.Range(-30, 30);
+            Model.Position = backPosition;
+            return Vector3.Distance(backPosition, Model.CurrentPosition) / Model.Speed;
+        }
+
+        public Vector3 CalculateLookDirection(Vector3 targetPosition)
+        {
+            targetPosition.y = Model.Height;
+            return targetPosition - Model.CurrentPosition;
+        }
+
+        public void MoveToPosition(Vector3 targetPosition)
+        {
+            targetPosition.y = Model.Height;
+            Model.Position = targetPosition;
         }
     }
 }

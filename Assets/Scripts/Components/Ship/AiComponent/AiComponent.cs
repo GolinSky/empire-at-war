@@ -2,14 +2,18 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utils.TimerService;
 using Zenject;
 using Component = WorkShop.LightWeightFramework.Components.Component;
 
@@ -23,7 +27,10 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         private readonly IComponentHub componentHub;
         private readonly IBattleService battleService;
         private readonly ISelectionModelObserver selectionModelObserver;
-
+        private readonly IMoveModelObserver moveModelObserver;
+        private readonly IWeaponModelObserver weaponModelObserver;
+        private readonly ITimer moveAroundTimer;
+        
         private IHealthModelObserver healthModelObserver;
         private IRadarModelObserver radarModelObserver;
 
@@ -38,18 +45,32 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
             radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
+            moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            weaponModelObserver = model.GetModelObserver<IWeaponModelObserver>();
+            moveAroundTimer = TimerFactory.ConstructTimer(10f);
         }
 
         public void Initialize()
         {
             radarModelObserver.OnHitDetected += HandleEnemy;
             battleService.OnHitSelected += HandleHit;
+            healthModelObserver.OnValueChanged += HandleHealth;
         }
 
         public void LateDispose()
         {
             radarModelObserver.OnHitDetected -= HandleEnemy;
             battleService.OnHitSelected -= HandleHit;
+            healthModelObserver.OnValueChanged -= HandleHealth;
+        }
+        
+        private void HandleHealth()
+        {
+            if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
+            {
+                moveAroundTimer.ChangeDelay(moveComponent.MoveAround()); 
+                moveAroundTimer.StartTimer();
+            }
         }
         
         private void HandleHit(RaycastHit raycastHit)
@@ -57,9 +78,20 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             if(!selectionModelObserver.IsSelected) return;
             
             IShipUnitsProvider unitsProvider = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
-            if (unitsProvider != null && unitsProvider.HasUnits)
+            if (unitsProvider is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-               weaponComponent.AddTarget(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver),
+                Vector3 targetPosition = raycastHit.transform.position;
+                float distance = Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
+                if (!weaponComponent.HasEnoughRange(distance))
+                {
+                    Vector3 lookDirection = moveComponent.CalculateLookDirection(targetPosition);
+                    float attackDistance = distance - (weaponModelObserver.MaxAttackDistance/2f);
+                    Vector3 attackPosition = moveModelObserver.CurrentPosition +
+                                             lookDirection.normalized*attackDistance;
+                    moveComponent.MoveToPosition(attackPosition);
+                }
+                weaponComponent.AddTarget(new AttackData(unitsProvider,
+                    componentHub.GetComponent(unitsProvider.ModelObserver),
                     DefaultTargetType), AttackType.MainTarget);
             }
         }

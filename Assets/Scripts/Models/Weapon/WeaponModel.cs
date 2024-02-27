@@ -14,7 +14,7 @@ namespace EmpireAtWar.Models.Weapon
         IProjectileModel ProjectileModel { get; }
         
         float ProjectileDuration { get;}
-        
+        float MaxAttackDistance { get; }
         List<IShipUnitView> Targets { get; }
         List<IShipUnitView> MainUnitsTarget { get; }
         float GetAttackDistance(WeaponType weaponType);

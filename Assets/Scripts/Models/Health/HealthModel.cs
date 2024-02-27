@@ -16,6 +16,7 @@ namespace EmpireAtWar.Models.Health
         ShipUnitModel[] ShipUnitModels { get; }
         float Armor { get; }
         float Shields { get; }
+        float ShieldPercentage { get; }
         bool IsDestroyed { get; }
         bool IsLostShieldGenerator { get; }
 
@@ -40,17 +41,20 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
-        
+
+        protected float shieldsBaseValue;
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
         public float Dexterity => dexterity;
+        public float ShieldPercentage => Shields/ shieldsBaseValue;
 
         public bool IsLostShieldGenerator { get; private set; }
         
         protected override void OnInit()
         {
+            shieldsBaseValue = Shields;
             float health = (Armor*WeaponSystemCoefficient) / (ShipUnitModels.Length - MainSystemAmount);
 
             foreach (ShipUnitModel shipUnitModel in ShipUnitModels)

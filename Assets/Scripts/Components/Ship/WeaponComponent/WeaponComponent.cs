@@ -18,6 +18,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         void AddTargets(AttackData[] healthComponent);
         void AddTarget(AttackData healthComponent, AttackType attackType);
+        bool HasEnoughRange(float distance);
     }
 
     public enum AttackType
@@ -80,6 +81,11 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                     break;
                 }
             }
+        }
+
+        public bool HasEnoughRange(float distance)
+        {
+            return Model.MaxAttackDistance > distance;
         }
 
         public void ApplyDamage(IShipUnitView unitView, WeaponType weaponType)
