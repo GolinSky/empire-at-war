@@ -29,13 +29,16 @@ namespace EmpireAtWar.Views.NavigationUiView
         {
             tapImage.GetComponent<RectTransform>().position = tapPosition;
 
-            if (fadeSequence.KillIfExist())
-            {
-                tapImage.DOFade(0, 0);
-            }
+            fadeSequence.KillIfExist();
             fadeSequence = DOTween.Sequence();
-            fadeSequence.Append(tapImage.DOFade(1, 2f));
-            fadeSequence.Append(tapImage.DOFade(0, 3f));
+            
+            fadeSequence.Append(tapImage.DOFade(1, 0f));
+            fadeSequence.Append(tapImage.rectTransform.DOScale(0.3f, 0f));
+            
+            fadeSequence.Append(tapImage.rectTransform.DOScale(1, 1f));
+            fadeSequence.Join(tapImage.DOFade(0f, 2f));
+      
+            
         }
     }
 }
