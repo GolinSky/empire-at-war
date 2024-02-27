@@ -59,7 +59,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
             .AsSingle();
         
-        Container.BindFactory<IModel, IHealthComponent, EnemySelectionComponent, EnemySelectionFacade>()
+        Container.BindFactory<IModel, EnemySelectionComponent, EnemySelectionFacade>()
             .AsSingle();
 
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);

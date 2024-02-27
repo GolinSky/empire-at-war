@@ -9,31 +9,21 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public interface IBattleService : IService
+    public interface ISelectionService : IService
     {
-        event Action<IHealthComponent> OnTargetAdded;
         event Action<RaycastHit> OnHitSelected;
-        void AddTarget(IHealthComponent healthComponent);
     }
 
-    public class BattleService : Service, IBattleService, IInitializable, ILateDisposable
+    public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable
     {
         private readonly IInputService inputService;
         private readonly ICameraService cameraService;
-        public event Action<IHealthComponent> OnTargetAdded;
         public event Action<RaycastHit> OnHitSelected;
 
-        public BattleService(IInputService inputService, ICameraService cameraService)
+        public SelectionService(IInputService inputService, ICameraService cameraService)
         {
             this.inputService = inputService;
             this.cameraService = cameraService;
-        }
-        
-        public void AddTarget(IHealthComponent healthComponent)
-        {
-            if(healthComponent.Destroyed) return;
-            
-            OnTargetAdded?.Invoke(healthComponent);
         }
         
         public void Initialize()

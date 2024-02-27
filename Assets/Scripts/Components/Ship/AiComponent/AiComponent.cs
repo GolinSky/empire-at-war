@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         private readonly IMoveComponent moveComponent;
         private readonly IWeaponComponent weaponComponent;
         private readonly IComponentHub componentHub;
-        private readonly IBattleService battleService;
+        private readonly ISelectionService selectionService;
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IMoveModelObserver moveModelObserver;
         private readonly IWeaponModelObserver weaponModelObserver;
@@ -33,15 +33,16 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         
         private IHealthModelObserver healthModelObserver;
         private IRadarModelObserver radarModelObserver;
+        private IShipUnitsProvider mainTarget;
 
 
         //todo: radar component
-        public AiComponent(IModel model, IMoveComponent moveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, IBattleService battleService)
+        public AiComponent(IModel model, IMoveComponent moveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService)
         {
             this.moveComponent = moveComponent;
             this.weaponComponent = weaponComponent;
             this.componentHub = componentHub;
-            this.battleService = battleService;
+            this.selectionService = selectionService;
             healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
             radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
@@ -53,19 +54,21 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         public void Initialize()
         {
             radarModelObserver.OnHitDetected += HandleEnemy;
-            battleService.OnHitSelected += HandleHit;
+            selectionService.OnHitSelected += HandleSelected;
             healthModelObserver.OnValueChanged += HandleHealth;
         }
 
         public void LateDispose()
         {
             radarModelObserver.OnHitDetected -= HandleEnemy;
-            battleService.OnHitSelected -= HandleHit;
+            selectionService.OnHitSelected -= HandleSelected;
             healthModelObserver.OnValueChanged -= HandleHealth;
         }
         
         private void HandleHealth()
         {
+            if(mainTarget != null) return;
+            
             if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
             {
                 moveAroundTimer.ChangeDelay(moveComponent.MoveAround()); 
@@ -73,12 +76,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             }
         }
         
-        private void HandleHit(RaycastHit raycastHit)
+        private void HandleSelected(RaycastHit raycastHit)
         {
             if(!selectionModelObserver.IsSelected) return;
             
-            IShipUnitsProvider unitsProvider = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
-            if (unitsProvider is { PlayerType: PlayerType.Opponent, HasUnits: true })
+            mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
+            if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
                 Vector3 targetPosition = raycastHit.transform.position;
                 float distance = Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
@@ -90,8 +93,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
                                              lookDirection.normalized*attackDistance;
                     moveComponent.MoveToPosition(attackPosition);
                 }
-                weaponComponent.AddTarget(new AttackData(unitsProvider,
-                    componentHub.GetComponent(unitsProvider.ModelObserver),
+                else
+                {
+                    moveComponent.LookAtTarget(targetPosition);
+                }
+                weaponComponent.AddTarget(new AttackData(mainTarget,
+                    componentHub.GetComponent(mainTarget.ModelObserver),
                     DefaultTargetType), AttackType.MainTarget);
             }
         }

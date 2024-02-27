@@ -1,22 +1,18 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Services.Battle;
-using LightWeightFramework.Model;
+﻿using LightWeightFramework.Model;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class EnemySelectionFacade:PlaceholderFactory<IModel, IHealthComponent, EnemySelectionComponent>
+    public class EnemySelectionFacade:PlaceholderFactory<IModel, EnemySelectionComponent>
     {
-        private readonly IBattleService battleService;
 
-        public EnemySelectionFacade(IBattleService battleService)
+        public EnemySelectionFacade()
         {
-            this.battleService = battleService;
         }
 
-        public override EnemySelectionComponent Create(IModel model, IHealthComponent healthComponent)
+        public override EnemySelectionComponent Create(IModel model)
         {
-            return new EnemySelectionComponent(model, battleService, healthComponent);
+            return new EnemySelectionComponent(model);
         }
     }
 }

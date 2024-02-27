@@ -10,6 +10,7 @@ namespace EmpireAtWar.Models.Movement
         event Action OnStop;
         event Action<Vector3> OnTargetPositionChanged;
         event Action<Vector3> OnHyperSpaceJump;
+        event Action<Vector3> OnLookAt;
         Vector3 Position { get; }
         Vector3 CurrentPosition { get; }
         Vector3 HyperSpacePosition { get; }
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Models.Movement
         public event Action OnStop;
         public event Action<Vector3> OnTargetPositionChanged;
         public event Action<Vector3> OnHyperSpaceJump;
+        public event Action<Vector3> OnLookAt;
 
         [SerializeField] public float speed;
         
@@ -67,6 +69,10 @@ namespace EmpireAtWar.Models.Movement
             }
         }
 
+        public Vector3 LookAtTarget
+        {
+            set => OnLookAt?.Invoke(value);
+        }
         public void ApplyMoveCoefficient(float coefficient)
         {
             speedCoefficient = coefficient;

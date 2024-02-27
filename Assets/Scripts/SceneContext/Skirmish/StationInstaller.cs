@@ -56,7 +56,7 @@ namespace EmpireAtWar.SceneContext
                             factionType);
                     
                     Container
-                        .BindInterfacesAndSelfTo<SelectionComponent>()
+                        .BindInterfacesAndSelfTo<EnemySelectionComponent>()
                         .AsSingle();
                     
                     break;

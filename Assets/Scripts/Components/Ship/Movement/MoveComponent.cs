@@ -14,6 +14,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         float MoveAround();
         Vector3 CalculateLookDirection(Vector3 targetPosition);
         void MoveToPosition(Vector3 targetPosition);
+        void LookAtTarget(Vector3 targetPosition);
     }
     public class MoveComponent : BaseComponent<MoveModel>, IMovable, IMoveComponent, IMoveCommand, ITickable
     {
@@ -71,6 +72,11 @@ namespace EmpireAtWar.Components.Ship.Selection
         {
             targetPosition.y = Model.Height;
             Model.Position = targetPosition;
+        }
+
+        public void LookAtTarget(Vector3 targetPosition)
+        {
+            Model.LookAtTarget = targetPosition;
         }
     }
 }

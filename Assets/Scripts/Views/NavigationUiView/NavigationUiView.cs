@@ -37,8 +37,6 @@ namespace EmpireAtWar.Views.NavigationUiView
             
             fadeSequence.Append(tapImage.rectTransform.DOScale(1, 1f));
             fadeSequence.Join(tapImage.DOFade(0f, 2f));
-      
-            
         }
     }
 }

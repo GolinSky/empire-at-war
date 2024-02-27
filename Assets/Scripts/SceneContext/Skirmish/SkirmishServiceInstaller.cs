@@ -25,7 +25,7 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindService<CameraService>()
             .BindService<EnemyService>()
             .BindService<PlayerService>()
-            .BindService<BattleService>()
+            .BindService<SelectionService>()
             .BindService<ReinforcementService>()
             .BindService<ComponentHub>();
     }

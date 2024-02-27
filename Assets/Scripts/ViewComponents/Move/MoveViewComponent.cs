@@ -28,22 +28,39 @@ namespace EmpireAtWar.ViewComponents.Move
 
         protected override void OnInit()
         {
-            transform.position = Model.HyperSpacePosition - Vector3.right * 1000f;
+            transform.position = Model.HyperSpacePosition - Vector3.right * 1000f; // move magic numbet to model
             HyperSpaceJump(Model.HyperSpacePosition);
+            MoveCommand.Assign(transform);// inject transform
+
             Model.OnTargetPositionChanged += UpdateTargetPosition;
             Model.OnHyperSpaceJump += HyperSpaceJump;
             Model.OnStop += StopAllMovement;
-            MoveCommand.Assign(transform);// inject transform
+            Model.OnLookAt += LookAt;
         }
-
-    
 
         protected override void OnRelease()
         {
             Model.OnTargetPositionChanged -= UpdateTargetPosition;
             Model.OnHyperSpaceJump -= HyperSpaceJump;
             Model.OnStop -= StopAllMovement;
+            Model.OnLookAt -= LookAt;
             FallDown();
+        }
+        
+        private void LookAt(Vector3 targetPosition)
+        {
+            moveSequence.KillIfExist();
+            moveSequence = DOTween.Sequence();
+
+            Vector3 targetRotation = Quaternion.LookRotation(targetPosition - CurrentPosition).eulerAngles;
+            float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
+            
+            moveSequence.Append(
+                transform.DORotate(
+                        targetRotation,
+                        rotationDuration,
+                        rotationMode)
+                    .SetEase(lookAtEase));
         }
         
         private void StopAllMovement()
@@ -126,15 +143,7 @@ namespace EmpireAtWar.ViewComponents.Move
 
           
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
-            // Vector3 targetRotation = Quaternion.LookRotation(waypoints[0] - CurrentPosition).eulerAngles;
-            // float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
-            //
-            // moveSequence.Append(
-            //     transform.DORotate(
-            //             targetRotation,
-            //             rotationDuration,
-            //             rotationMode)
-            //         .SetEase(lookAtEase));
+    
         }
 
 
