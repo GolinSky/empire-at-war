@@ -68,9 +68,32 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if(isDead) return;
             
-            if (targets != null && targets.Count > 0)
+            if (attackTimer.IsComplete)
             {
-                if (attackTimer.IsComplete)
+                if (Model.MainUnitsTarget != null )
+                {
+                    attackTimer.StartTimer();
+
+                    foreach (KeyValue<WeaponType, List<TurretView>> keyValue in turretDictionary.KeyValueList)
+                    {
+                        foreach (TurretView turretView in keyValue.Value)
+                        {
+                            foreach (IShipUnitView shipUnitView in Model.MainUnitsTarget)
+                            {
+                                if(shipUnitView.IsDestroyed) continue;
+                                if (turretView.Destroyed || turretView.IsBusy ||
+                                    !turretView.CanAttack(shipUnitView.Position))
+                                {
+                                    continue;
+                                }
+                                
+                                turretView.Attack(shipUnitView.Position);
+                                WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key);
+                            }
+                        }
+                    }
+                }
+                if (targets != null && targets.Count > 0)
                 {
                     attackTimer.StartTimer();
                     shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
@@ -83,19 +106,21 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         {
                             foreach (TurretView turretView in keyValue.Value)
                             {
-                                if (turretView.IsBusy || !turretView.CanAttack(unitView.Position) || turretView.Destroyed)
+                                if (turretView.Destroyed || turretView.IsBusy || !turretView.CanAttack(unitView.Position))
                                 {
                                     continue;
                                 }
                                 
                                 turretView.Attack(unitView.Position);
-                                WeaponCommand.ApplyDamage(unitView, keyValue.Key);//todo: put real distance in command param
+                                WeaponCommand.ApplyDamage(unitView, keyValue.Key);
                                 break;
                             }
                         }
                     }
                 }
+               
             }
+         
         }
     }
 }

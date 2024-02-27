@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.Battle
     public interface IBattleService : IService
     {
         event Action<IHealthComponent> OnTargetAdded;
+        event Action<RaycastHit> OnHitSelected;
         void AddTarget(IHealthComponent healthComponent);
     }
 
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IInputService inputService;
         private readonly ICameraService cameraService;
         public event Action<IHealthComponent> OnTargetAdded;
+        public event Action<RaycastHit> OnHitSelected;
 
         public BattleService(IInputService inputService, ICameraService cameraService)
         {
@@ -33,8 +35,7 @@ namespace EmpireAtWar.Services.Battle
             
             OnTargetAdded?.Invoke(healthComponent);
         }
-
-
+        
         public void Initialize()
         {
             inputService.OnInput += HandleInput;
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Services.Battle
 
             if (selectionComponent != null)
             {
+                OnHitSelected?.Invoke(raycastHit);
                 selectionComponent.OnSelected();
             }
         }

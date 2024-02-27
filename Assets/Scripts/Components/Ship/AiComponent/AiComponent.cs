@@ -4,6 +4,8 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
@@ -19,28 +21,47 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         private readonly IMoveComponent moveComponent;
         private readonly IWeaponComponent weaponComponent;
         private readonly IComponentHub componentHub;
+        private readonly IBattleService battleService;
+        private readonly ISelectionModelObserver selectionModelObserver;
 
         private IHealthModelObserver healthModelObserver;
         private IRadarModelObserver radarModelObserver;
 
+
         //todo: radar component
-        public AiComponent(IModel model, IMoveComponent moveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub)
+        public AiComponent(IModel model, IMoveComponent moveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, IBattleService battleService)
         {
             this.moveComponent = moveComponent;
             this.weaponComponent = weaponComponent;
             this.componentHub = componentHub;
+            this.battleService = battleService;
             healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
             radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
+            selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
         }
 
         public void Initialize()
         {
             radarModelObserver.OnHitDetected += HandleEnemy;
+            battleService.OnHitSelected += HandleHit;
         }
 
         public void LateDispose()
         {
             radarModelObserver.OnHitDetected -= HandleEnemy;
+            battleService.OnHitSelected -= HandleHit;
+        }
+        
+        private void HandleHit(RaycastHit raycastHit)
+        {
+            if(!selectionModelObserver.IsSelected) return;
+            
+            IShipUnitsProvider unitsProvider = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
+            if (unitsProvider != null && unitsProvider.HasUnits)
+            {
+               weaponComponent.AddTarget(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver),
+                    DefaultTargetType), AttackType.MainTarget);
+            }
         }
 
         private void HandleEnemy(RaycastHit[] raycastHit)
@@ -57,7 +78,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
             if (healthComponents.Count != 0)
             {
-                weaponComponent.AddTarget(healthComponents.ToArray());
+                weaponComponent.AddTargets(healthComponents.ToArray());
             }
         }
     }
