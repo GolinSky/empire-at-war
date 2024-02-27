@@ -57,14 +57,19 @@ namespace EmpireAtWar.Services.NavigationService
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
             if(inputService.CurrentTouchPhase == TouchPhase.Moved) return;
-            if(Selectable != null) return;
-            
             if(selectionType == SelectionType.Terrain) return;
+
+            if (Selectable != null)
+            {
+                RemoveSelectable(Selectable);
+                //return;
+            }
+            
             Selectable = selectableObject;
             movable = selectableObject.Movable;
             selectableObject.SetActive(true);
             
-            if (SelectionType != selectionType)
+          //  if (SelectionType != selectionType)
             {
                 SelectionType = selectionType;
                 OnTypeChanged?.Invoke(SelectionType);
@@ -75,6 +80,7 @@ namespace EmpireAtWar.Services.NavigationService
         {
             if (Selectable == selectable)
             {
+                Selectable?.SetActive(false);
                 Selectable = null;
                 OnTypeChanged?.Invoke(SelectionType.None);
             }
