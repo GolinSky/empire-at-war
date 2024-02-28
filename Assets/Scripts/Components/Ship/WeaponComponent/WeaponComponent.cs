@@ -94,13 +94,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             {
                 if (attackDataList[i].Contains(unitView))
                 {
-                    int index = i;
+                    AttackData attackData = attackDataList[i];
                     timerPoolWrapperService.Invoke(
                         ()=>
                         {   
-                            if(index > attackDataList.Count - 1) return;
+                            if(!attackDataList.Contains(attackData)) return;
                             
-                            ApplyDamageInternal(attackDataList[index], weaponType, unitView.Id,
+                            ApplyDamageInternal(attackData, weaponType, unitView.Id,
                                 GetDistance(unitView.Position));
                         },
                         Model.ProjectileDuration);
