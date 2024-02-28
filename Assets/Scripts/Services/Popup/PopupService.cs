@@ -2,8 +2,8 @@
 using EmpireAtWar.Commands.PopupCommands;
 using EmpireAtWar.Ui.Popups;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Command;
+using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.Popup
 {

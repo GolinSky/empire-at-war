@@ -4,7 +4,7 @@ using EmpireAtWar.Models.Movement;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 using Random = UnityEngine.Random;
 

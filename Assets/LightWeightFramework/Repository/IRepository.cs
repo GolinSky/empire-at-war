@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace WorkShop.LightWeightFramework.Repository
+namespace LightWeightFramework.Components.Repository
 {
     public interface IRepository
     {

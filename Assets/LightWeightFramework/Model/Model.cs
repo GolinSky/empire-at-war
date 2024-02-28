@@ -18,7 +18,7 @@ namespace LightWeightFramework.Model
         
         public TModelObserver GetModelObserver<TModelObserver>() where TModelObserver : IModelObserver
         {
-            if (this is TModelObserver modelObserver) return modelObserver;//fix this - create inner model
+            if (this is TModelObserver modelObserver) return modelObserver;
             
             return GetModelInternal<TModelObserver>();
         }

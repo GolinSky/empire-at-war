@@ -1,7 +1,7 @@
 using LightWeightFramework.Model;
 using UnityEngine;
 
-namespace WorkShop.LightWeightFramework.ViewComponents
+namespace LightWeightFramework.Components.ViewComponents
 {
     public abstract class ViewComponent:MonoBehaviour
     {

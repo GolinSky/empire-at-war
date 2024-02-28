@@ -1,8 +1,8 @@
+using LightWeightFramework.Components.ViewComponents;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.ViewComponents;
 
-namespace WorkShop.LightWeightFramework
+namespace LightWeightFramework.Components
 {
     public abstract class View : MonoBehaviour, IView
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 using Zenject;
 
 namespace EmpireAtWar.Services.SceneService

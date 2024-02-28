@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Views.SpaceStation;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 using Zenject;
 
 namespace EmpireAtWar.Services.Player

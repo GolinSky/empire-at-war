@@ -1,6 +1,6 @@
 ﻿using System;
-using Utils.TimerService;
-using WorkShop.LightWeightFramework.Service;
+using Utilities.ScriptUtils.Time;
+using LightWeightFramework.Components.Service;
 using Zenject;
 
 namespace EmpireAtWar.Services.TimerPoolWrapperService

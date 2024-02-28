@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 using Zenject;
 
 namespace EmpireAtWar.Services.Settings

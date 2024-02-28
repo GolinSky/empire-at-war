@@ -4,7 +4,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Components;
+using LightWeightFramework.Components.Components;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection

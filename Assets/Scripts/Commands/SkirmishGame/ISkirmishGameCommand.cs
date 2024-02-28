@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Commands.Game;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.SkirmishGame
 {

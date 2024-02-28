@@ -1,9 +1,8 @@
-﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Movement;
+﻿using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Utils.TimerService;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Radar

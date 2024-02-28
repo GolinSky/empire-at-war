@@ -1,7 +1,7 @@
 using EmpireAtWar.Commands;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Selection

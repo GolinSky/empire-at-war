@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Controllers.SpaceStation;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.SpaceStation
 {

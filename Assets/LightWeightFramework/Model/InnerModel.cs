@@ -20,10 +20,6 @@ namespace LightWeightFramework.Model
             OnInit();
         }
 
-        protected virtual void OnInit()
-        {
-            
-        }
+        protected virtual void OnInit() {}
     }
-    
 }

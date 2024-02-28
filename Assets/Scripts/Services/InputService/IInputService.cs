@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.InputService
 {

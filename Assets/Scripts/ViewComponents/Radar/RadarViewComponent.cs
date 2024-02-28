@@ -1,6 +1,6 @@
 ﻿using EmpireAtWar.Models.Radar;
 using Utilities.ScriptUtils.Layer;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components.ViewComponents;
 
 namespace EmpireAtWar.ViewComponents.Radar
 {

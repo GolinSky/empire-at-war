@@ -2,7 +2,7 @@
 using EmpireAtWar.Views.ShipUi;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
-using Utils.TimerService;
+using Utilities.ScriptUtils.Time;
 using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Controllers.Ship;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.Ship
 {

@@ -3,7 +3,7 @@ using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Controllers.Game
 {

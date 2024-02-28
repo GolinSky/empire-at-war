@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Reinforcement;
 using LightWeightFramework.Controller;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions

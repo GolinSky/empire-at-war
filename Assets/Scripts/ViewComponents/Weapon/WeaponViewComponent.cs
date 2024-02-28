@@ -5,8 +5,8 @@ using EmpireAtWar.Models.Weapon;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Utils.TimerService;
-using WorkShop.LightWeightFramework.ViewComponents;
+using Utilities.ScriptUtils.Time;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 using Random = System.Random;
 

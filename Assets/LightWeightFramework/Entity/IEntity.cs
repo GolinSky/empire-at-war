@@ -1,4 +1,4 @@
-namespace LightWeightFramework.Controller
+namespace LightWeightFramework
 {
     public interface IEntity
     {

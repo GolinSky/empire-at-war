@@ -1,6 +1,6 @@
 ﻿using System;
 using EmpireAtWar.Models.Factions;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.Reinforcement
 {

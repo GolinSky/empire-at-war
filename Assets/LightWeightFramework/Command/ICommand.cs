@@ -1,4 +1,4 @@
-namespace WorkShop.LightWeightFramework.Command
+namespace LightWeightFramework.Command
 {
     public interface ICommand
     {

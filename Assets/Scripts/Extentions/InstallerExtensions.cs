@@ -2,10 +2,10 @@ using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
 using UnityEngine;
-using WorkShop.LightWeightFramework;
-using WorkShop.LightWeightFramework.Command;
-using WorkShop.LightWeightFramework.Repository;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components;
+using LightWeightFramework.Command;
+using LightWeightFramework.Components.Repository;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Extentions

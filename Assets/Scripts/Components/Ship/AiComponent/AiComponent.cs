@@ -13,9 +13,9 @@ using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Utils.TimerService;
+using Utilities.ScriptUtils.Time;
 using Zenject;
-using Component = WorkShop.LightWeightFramework.Components.Component;
+using Component = LightWeightFramework.Components.Components.Component;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
@@ -69,6 +69,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         {
             if(mainTarget != null) return;
             
+            //add condition - if under attack
             if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
             {
                 moveAroundTimer.ChangeDelay(moveComponent.MoveAround()); 

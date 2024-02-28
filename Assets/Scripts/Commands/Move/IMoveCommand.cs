@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Move
 {

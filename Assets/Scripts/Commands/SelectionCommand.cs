@@ -1,6 +1,6 @@
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands
 {

@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Services.Popup;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.PopupCommands
 {

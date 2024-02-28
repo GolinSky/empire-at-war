@@ -1,6 +1,4 @@
-using LightWeightFramework.Controller;
-
-namespace WorkShop.LightWeightFramework.Components
+namespace LightWeightFramework.Components.Components
 {
     public abstract class Component : IComponent
     {

@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Services.Popup;
 using EmpireAtWar.Ui.Popups;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Repository;
+using LightWeightFramework.Components.Repository;
 using Zenject;
 
 namespace EmpireAtWar

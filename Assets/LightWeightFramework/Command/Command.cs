@@ -1,6 +1,6 @@
 using LightWeightFramework.Controller;
 
-namespace WorkShop.LightWeightFramework.Command
+namespace LightWeightFramework.Command
 {
     public abstract class Command : ICommand
     {

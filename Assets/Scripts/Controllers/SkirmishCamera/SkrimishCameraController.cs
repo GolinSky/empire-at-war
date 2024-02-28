@@ -4,7 +4,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using Utils.TimerService;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.SkirmishCamera

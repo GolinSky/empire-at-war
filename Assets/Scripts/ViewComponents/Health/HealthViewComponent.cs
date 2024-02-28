@@ -8,7 +8,7 @@ using EmpireAtWar.Models.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components.ViewComponents;
 using Utilities.ScriptUtils.Dotween;
 
 using Zenject;

@@ -1,7 +1,7 @@
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework;
-using WorkShop.LightWeightFramework.Command;
-using WorkShop.LightWeightFramework.ViewComponents;
+using LightWeightFramework.Components;
+using LightWeightFramework.Command;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Views.ViewImpl

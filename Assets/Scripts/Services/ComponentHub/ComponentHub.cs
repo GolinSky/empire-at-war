@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.ComponentHub
 {

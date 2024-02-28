@@ -5,9 +5,9 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
-using Utils.TimerService;
-using WorkShop.LightWeightFramework.Repository;
-using WorkShop.LightWeightFramework.Service;
+using Utilities.ScriptUtils.Time;
+using LightWeightFramework.Components.Repository;
+using LightWeightFramework.Components.Service;
 using Zenject;
 using Random = System.Random;
 

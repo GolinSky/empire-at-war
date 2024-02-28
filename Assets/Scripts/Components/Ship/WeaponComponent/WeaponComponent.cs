@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
@@ -7,10 +6,10 @@ using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Utils.TimerService;
-using WorkShop.LightWeightFramework.Components;
+using Utilities.ScriptUtils.Time;
+using LightWeightFramework.Components.Components;
 using Zenject;
-using ICommand = WorkShop.LightWeightFramework.Command.ICommand;
+using ICommand = LightWeightFramework.Command.ICommand;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {

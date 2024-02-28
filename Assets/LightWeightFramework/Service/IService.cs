@@ -1,6 +1,4 @@
-using LightWeightFramework.Controller;
-
-namespace WorkShop.LightWeightFramework.Service
+namespace LightWeightFramework.Components.Service
 {
     public interface IService : IEntity
     {

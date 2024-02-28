@@ -1,5 +1,5 @@
 ﻿using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework.Components;
+using LightWeightFramework.Components.Components;
 
 namespace EmpireAtWar.Components
 {
