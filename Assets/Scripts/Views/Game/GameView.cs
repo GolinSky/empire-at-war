@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,6 +1,6 @@
 ﻿using System;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;

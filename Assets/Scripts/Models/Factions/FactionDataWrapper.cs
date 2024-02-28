@@ -1,5 +1,5 @@
 ﻿using System;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Models.Factions
 {

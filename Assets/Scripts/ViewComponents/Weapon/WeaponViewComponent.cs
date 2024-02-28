@@ -2,7 +2,7 @@
 using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utils.TimerService;

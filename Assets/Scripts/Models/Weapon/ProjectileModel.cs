@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Models.Weapon
 {

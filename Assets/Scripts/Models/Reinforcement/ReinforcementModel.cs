@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
+using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.Reinforcement;
 using LightWeightFramework.Model;
 using UnityEngine;

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Services.SceneService;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Models.Audio
 {

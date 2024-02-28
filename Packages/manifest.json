@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.script-utils.dotween": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
+    "com.script-utils.editor-serialization": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization",
     "com.script-utils.math": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "1.21.19",
