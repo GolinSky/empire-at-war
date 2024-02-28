@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenuScene.unity
     guid: 03b45194646177d4fb19a45021f0fc46
   - enabled: 1
-    path: Assets/Scenes/Planets/Corusant.unity
+    path: Assets/Scenes/Planets/Corusant/Corusant.unity
     guid: 34b18fe45641ce14aa229a661decc4e4
   - enabled: 1
     path: Assets/Scenes/Loading.unity
