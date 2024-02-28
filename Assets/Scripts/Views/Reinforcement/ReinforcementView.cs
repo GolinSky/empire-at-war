@@ -17,7 +17,7 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private Canvas panelCanvas;
         [SerializeField] private Image signalImage;
         
-        private ReinforcementDraggable currentDraggable;
+        private SpawnShipUi currenSpawnShipUi;
         private Sequence fadeSequence;
         private Color originColor;
 
@@ -42,8 +42,8 @@ namespace EmpireAtWar.Views.Reinforcement
         
         private void AddUi(ShipType shipType, Sprite sprite)
         {
-            ReinforcementDraggable draggable = Instantiate(Model.ReinforcementButton, spawnTransform);
-            draggable.Init(SpawnShip, shipType, sprite);
+            SpawnShipUi spawnShipUi = Instantiate(Model.ReinforcementButton, spawnTransform);
+            spawnShipUi.Init(SpawnShip, shipType, sprite);
             
             if (fadeSequence.KillIfExist())
             {
@@ -58,18 +58,18 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             if (success)
             {
-                currentDraggable.Destroy();
+                currenSpawnShipUi.Destroy();
             }
 
             ActivateCanvas();
         }
         
-        private void SpawnShip(ShipType shipType, ReinforcementDraggable draggable)
+        private void SpawnShip(ShipType shipType, SpawnShipUi draggable)
         {
             if(Model.IsTrySpawning) return;
 
             DisableCanvas();
-            currentDraggable = draggable;
+            currenSpawnShipUi = draggable;
             Command.TrySpawnShip(shipType);
         }
         

@@ -17,7 +17,7 @@ namespace EmpireAtWar.Models.Reinforcement
         
         ShipSpawnView GetSpawnPrefab(ShipType shipType);
 
-        ReinforcementDraggable ReinforcementButton { get; }
+        SpawnShipUi ReinforcementButton { get; }
         
         bool IsTrySpawning { get; }
     }
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         public event Action<bool> OnSpawnShip;
         public event Action<ShipType, Sprite> OnReinforcementAdded;
-        [field: SerializeField] public ReinforcementDraggable ReinforcementButton { get; private set; }
+        [field: SerializeField] public SpawnShipUi ReinforcementButton { get; private set; }
 
         [SerializeField] private DictionaryWrapper<ShipType, ShipSpawnView> spawnShipWrapper;
         [SerializeField] private FactionsModel factionsModel;

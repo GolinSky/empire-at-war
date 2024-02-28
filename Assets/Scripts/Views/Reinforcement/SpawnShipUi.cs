@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar
 {
-    public class ReinforcementDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler
+    public class SpawnShipUi : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
         [SerializeField] private Image iconImage;
         
         private ShipType shipType;
-        private Action<ShipType, ReinforcementDraggable> dragAction;
-        public void Init(Action<ShipType, ReinforcementDraggable> dragAction, ShipType shipType, Sprite icon)
+        private Action<ShipType, SpawnShipUi> dragAction;
+        public void Init(Action<ShipType, SpawnShipUi> dragAction, ShipType shipType, Sprite icon)
         {
             this.dragAction = dragAction;
             iconImage.sprite = icon;
