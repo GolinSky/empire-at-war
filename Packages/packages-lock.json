@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.light-weight-framework": {
+      "version": "https://github.com/GolinSky/LightWeightFramework.git?path=/Assets/LightWeightFramework",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "eec545fd9b57375d6d7475f356c0223758689610"
+    },
     "com.script-utils.dotween": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
       "depth": 0,

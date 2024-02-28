@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.light-weight-framework": "https://github.com/GolinSky/LightWeightFramework.git?path=/Assets/LightWeightFramework",
     "com.script-utils.dotween": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
     "com.script-utils.editor-serialization": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization",
     "com.script-utils.layer": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer",
