@@ -2,7 +2,7 @@
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.ScriptUtils.Dotween;
-using ScriptUtils.Math;
+using Utilities.ScriptUtils.Math;
 using UnityEngine;
 using WorkShop.LightWeightFramework.ViewComponents;
 using Zenject;

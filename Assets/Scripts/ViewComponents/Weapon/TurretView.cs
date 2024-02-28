@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using EmpireAtWar.Models.Weapon;
+﻿using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views.ShipUi;
-using ScriptUtils.Math;
+using Utilities.ScriptUtils.Math;
 using UnityEngine;
 using Utils.TimerService;
 using Random = UnityEngine.Random;

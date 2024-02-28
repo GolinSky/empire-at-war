@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.script-utils.math": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c6e35b6adade245010c0e2709f8f05dc697079de"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

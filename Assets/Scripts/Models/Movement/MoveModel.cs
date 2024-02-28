@@ -1,6 +1,6 @@
 ﻿using System;
 using LightWeightFramework.Model;
-using ScriptUtils.Math;
+using Utilities.ScriptUtils.Math;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Movement
