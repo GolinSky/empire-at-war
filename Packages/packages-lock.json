@@ -14,6 +14,13 @@
       "dependencies": {},
       "hash": "386e2d982ca7b37a27b48fd133169360c8a83271"
     },
+    "com.script-utils.layer": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d40aedeb3476a7eea9abd89d381645cf37a1f9a5"
+    },
     "com.script-utils.math": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
       "depth": 0,

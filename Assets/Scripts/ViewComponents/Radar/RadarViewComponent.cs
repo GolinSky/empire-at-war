@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Models.Radar;
-using EmpireAtWar.ScriptUtils.Layer;
+using Utilities.ScriptUtils.Layer;
 using WorkShop.LightWeightFramework.ViewComponents;
 
 namespace EmpireAtWar.ViewComponents.Radar

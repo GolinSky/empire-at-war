@@ -18,10 +18,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
 
+        private List<IShipUnitView> shipUnitViews;
         private List<IShipUnitView> targets;
         private IProjectileModel projectileModel;
         private ITimer attackTimer;
-        private List<IShipUnitView> shipUnitViews;
         private Random random = new Random();
         private bool isDead;
         
@@ -118,9 +118,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         }
                     }
                 }
-               
             }
-         
         }
     }
 }
