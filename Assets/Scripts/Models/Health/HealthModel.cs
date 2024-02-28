@@ -77,6 +77,7 @@ namespace EmpireAtWar.Models.Health
             
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
+                //todo : why here out of bounds 
             ShipUnitModel shipUnitModel = ShipUnitModels[shipUnitId];
             if (damageData.ArmorDamage > shipUnitModel.Health)
             {
