@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.ScriptUtils.Dotween;
+using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
 using WorkShop.LightWeightFramework.ViewComponents;

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.script-utils.dotween": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7a93f802d01050cefcf30d558675244434035e97"
+    },
     "com.script-utils.math": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
       "depth": 0,

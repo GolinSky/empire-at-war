@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.ScriptUtils.Dotween;
 using LightWeightFramework.Model;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using WorkShop.LightWeightFramework.ViewComponents;
+using Utilities.ScriptUtils.Dotween;
+
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health

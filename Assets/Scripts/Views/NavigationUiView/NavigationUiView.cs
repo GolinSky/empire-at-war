@@ -1,9 +1,9 @@
 using DG.Tweening;
 using EmpireAtWar.Models.Navigation;
-using EmpireAtWar.ScriptUtils.Dotween;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.Views.NavigationUiView
 {
