@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.LightWeightFramework.PopupCommands;
+﻿using EmpireAtWar.Commands.PopupCommands;
 using EmpireAtWar.Services.Popup;
 using UnityEngine;
 using Zenject;
