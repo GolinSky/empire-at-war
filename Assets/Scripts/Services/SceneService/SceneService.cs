@@ -67,6 +67,7 @@ namespace EmpireAtWar.Services.SceneService
             
           //  OnSceneActivation?.Invoke(LoadingScene);
             asyncOperation.allowSceneActivation = true;
+            asyncOperation = null;
         }
 
 

@@ -1,9 +1,9 @@
 using EmpireAtWar.Commands.ShipUi;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Map;
+using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.Planet;
 using EmpireAtWar.Controllers.Reinforcement;
@@ -15,6 +15,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
+using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.Radar;
@@ -29,6 +30,7 @@ using EmpireAtWar.Views;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.Map;
+using EmpireAtWar.Views.Menu;
 using EmpireAtWar.Views.NavigationUiView;
 using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.Reinforcement;
@@ -49,7 +51,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private PlanetView planetView;
     [SerializeField] private ReinforcementView reinforcementView;
     [SerializeField] private MapView mapView;
-    
+    [SerializeField] private MenuView menuView;
     
     [Inject]
     private IGameModelObserver GameModelObserver { get; }
@@ -73,49 +75,43 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindModel<DamageCalculationModel>();
         
         Container
-            .BindEntity<MapController, MapView, MapModel>(
-            mapView);
+            .BindEntity<MenuController, MenuView, MenuModel>(menuView);
         
         Container
-            .BindEntity<NavigationController, NavigationUiView, NavigationModel>(
-                navigationUiView);
+            .BindEntity<MapController, MapView, MapModel>(mapView);
         
         Container
-            .BindEntity<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(
-                cameraView);
+            .BindEntity<NavigationController, NavigationUiView, NavigationModel>(navigationUiView);
+        
+        Container
+            .BindEntity<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(cameraView);
             
         Container
-            .BindEntity<TerrainController, TerrainView, TerrainModel>(
-            terrainView);
+            .BindEntity<TerrainController, TerrainView, TerrainModel>(terrainView);
         
         Container
-            .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(
-                shipUiView);
+            .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(shipUiView);
         
         Container
-            .BindEntity<FactionController, FactionUiView, PlayerFactionModel>(
-                factionUiView);
+            .BindEntity<FactionController, FactionUiView, PlayerFactionModel>(factionUiView);
         
         Container
-            .BindEntity<SkirmishGameController, GameView, SkirmishGameModel>(
-                gameView);
+            .BindEntity<SkirmishGameController, GameView, SkirmishGameModel>(gameView);
         
         Container
-            .BindEntity<PlanetController, PlanetView, PlanetModel>(
-                planetView);
+            .BindEntity<PlanetController, PlanetView, PlanetModel>(planetView);
         
         Container
-            .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(
-                reinforcementView);
+            .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(reinforcementView);
     }
 
     private FactionType GetPlayerFactionType()
     {
-        return Container.Resolve<IGameModelObserver>().PlayerFactionType;
+        return GameModelObserver.PlayerFactionType;
     }
     
     private FactionType GetEnemyFactionType()
     {
-        return Container.Resolve<IGameModelObserver>().EnemyFactionType;
+        return GameModelObserver.EnemyFactionType;
     }
 }

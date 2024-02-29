@@ -1,16 +1,33 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
+using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Views.ShipUi;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using LightWeightFramework.Command;
+using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishGameController:Controller<SkirmishGameModel>, ISkirmishGameCommand
+    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
-        public SkirmishGameController(SkirmishGameModel model) : base(model)
+        private readonly IUserStateNotifier userStateNotifier;
+        private readonly IGameCommand gameCommand;
+
+        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
         {
+            this.userStateNotifier = userStateNotifier;
+            this.gameCommand = gameCommand;
+        }
+        
+        public void Initialize()
+        {
+            userStateNotifier.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            userStateNotifier.RemoveObserver(this);
         }
 
         public void ChangeTime(GameTimeMode mode)
@@ -29,6 +46,17 @@ namespace EmpireAtWar.Controllers.Game
             }
 
             Model.GameTimeMode = mode;
+        }
+
+        public void UpdateState(UserNotifierState notifierState)
+        {
+            if (notifierState == UserNotifierState.ExitGame)
+            {
+                ChangeTime(GameTimeMode.Common);
+                gameCommand.ExitGame();
+                return;
+            }
+            ChangeTime(notifierState == UserNotifierState.InMenu ? GameTimeMode.Pause : GameTimeMode.Common);
         }
     }
 }

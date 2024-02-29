@@ -8,7 +8,6 @@ namespace EmpireAtWar.Controllers.Loading
     public class LoadingController : Controller<LoadingModel>, ITickable
     {
         private readonly ISceneService sceneService;
-        private bool blockUpdate;
 
         public LoadingController(LoadingModel model, ISceneService sceneService) : base(model)
         {
@@ -17,12 +16,10 @@ namespace EmpireAtWar.Controllers.Loading
 
         public void Tick()
         {
-            if (blockUpdate) return;
 
             if (sceneService.IsSceneLoaded)
             {
                 sceneService.ActivateScene();
-                blockUpdate = true;
             }
         }
     }
