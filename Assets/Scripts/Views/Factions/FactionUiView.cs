@@ -42,8 +42,8 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick(ShipType shipType)
         {
-            //Command.BuildShip(shipType);
             FactionData factionData = Model.FactionData[shipType];
+            
             float buildTime = pipelineView.AddPipeline(shipType.ToString(),factionData.Icon, factionData.BuildTime);
             StartCoroutine(InvokeAfterDelay(() => Command.BuildShip(shipType), buildTime));
         }

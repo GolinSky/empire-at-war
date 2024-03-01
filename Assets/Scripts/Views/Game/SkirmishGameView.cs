@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Views.Game
 {
     //todo: refactor
-    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>
+    public class SkirmishGameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
@@ -41,7 +41,6 @@ namespace EmpireAtWar.Views.Game
         private void UpdateMoneyText(float money)
         {
             moneyText.text = money.ToString(CultureInfo.InvariantCulture);
-
         }
         
         private void UpdateSprites(GameTimeMode gameTimeMode)
@@ -49,6 +48,5 @@ namespace EmpireAtWar.Views.Game
             timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
             speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
         }
-
     }
 }

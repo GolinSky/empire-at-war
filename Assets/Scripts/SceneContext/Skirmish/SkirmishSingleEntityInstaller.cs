@@ -1,5 +1,4 @@
 using EmpireAtWar.Commands.ShipUi;
-using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Map;
@@ -25,7 +24,6 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
@@ -36,7 +34,6 @@ using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.Terrain;
-using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
 
@@ -47,7 +44,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private SkirmishCameraView cameraView;
     [SerializeField] private ShipUiView shipUiView;
     [SerializeField] private FactionUiView factionUiView;
-    [SerializeField] private GameView gameView;
+    [SerializeField] private SkirmishGameView gameView;
     [SerializeField] private PlanetView planetView;
     [SerializeField] private ReinforcementView reinforcementView;
     [SerializeField] private MapView mapView;
@@ -58,12 +55,6 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
-        Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
-            .AsSingle();
-        
-        Container.BindFactory<IModel, EnemySelectionComponent, EnemySelectionFacade>()
-            .AsSingle();
-
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
@@ -96,7 +87,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindEntity<FactionController, FactionUiView, PlayerFactionModel>(factionUiView);
         
         Container
-            .BindEntity<SkirmishGameController, GameView, SkirmishGameModel>(gameView);
+            .BindEntity<SkirmishGameController, SkirmishGameView, SkirmishGameModel>(gameView);
         
         Container
             .BindEntity<PlanetController, PlanetView, PlanetModel>(planetView);
