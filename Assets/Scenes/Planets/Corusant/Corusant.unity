@@ -4272,11 +4272,15 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: 1a28ce64457baba4d984e0fc4c6c7101, type: 3}
     - key: 2
       value: {fileID: 21300000, guid: e039a9696f7e9e046a884e69d784bcc9, type: 3}
+    - key: 1
+      value: {fileID: 21300000, guid: 1a28ce64457baba4d984e0fc4c6c7101, type: 3}
   speedUpSprites:
     keyValue:
     - key: 1
       value: {fileID: 21300000, guid: 87b283b89b9abda41a3e87fa8097b1f0, type: 3}
     - key: 0
+      value: {fileID: 21300000, guid: 28894ecd212bb4747b457aba06a96224, type: 3}
+    - key: 2
       value: {fileID: 21300000, guid: 28894ecd212bb4747b457aba06a96224, type: 3}
 --- !u!23 &556099085464727485
 MeshRenderer:
@@ -6218,12 +6222,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewComponents: []
   mainCamera: {fileID: 8501415028430152077}
-  cameraCanvas: {fileID: 0}
-  switcherButton: {fileID: 0}
-  zoomIn: {fileID: 0}
-  zoomOut: {fileID: 0}
-  maxZoomIn: {fileID: 0}
-  minZoomOut: {fileID: 0}
   moveEase: 18
 --- !u!114 &4775344582375106414
 MonoBehaviour:
