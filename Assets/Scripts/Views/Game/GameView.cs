@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Commands.Game;
+﻿using System.Globalization;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -6,12 +7,11 @@ using EmpireAtWar.Views.ViewImpl;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Game
 {
     //todo: refactor
-    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>, ITickable
+    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
@@ -28,6 +28,7 @@ namespace EmpireAtWar.Views.Game
             timeButton.onClick.AddListener(Command.Play);
             speedUpButton.onClick.AddListener(Command.SpeedUp);
             Model.OnGameTimeModeChange += UpdateSprites;
+            Model.OnMoneyChanged += UpdateMoneyText;
         }
 
         protected override void OnDispose()
@@ -37,15 +38,17 @@ namespace EmpireAtWar.Views.Game
             Model.OnGameTimeModeChange -= UpdateSprites;
         }
         
+        private void UpdateMoneyText(float money)
+        {
+            moneyText.text = money.ToString(CultureInfo.InvariantCulture);
+
+        }
+        
         private void UpdateSprites(GameTimeMode gameTimeMode)
         {
             timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
             speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
         }
 
-        public void Tick()
-        {
-            moneyText.text = Model.Money.ToString();
-        }
     }
 }

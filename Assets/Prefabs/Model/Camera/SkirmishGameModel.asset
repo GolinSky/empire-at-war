@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91eb53918bab4d419e8ed33a12925d77, type: 3}
   m_Name: SkirmishGameModel
   m_EditorClassIdentifier: 
+  models: []
+  <IncomeDelay>k__BackingField: 1
+  <StartMoneyAmount>k__BackingField: 6000

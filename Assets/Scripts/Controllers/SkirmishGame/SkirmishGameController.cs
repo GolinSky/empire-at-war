@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Timers;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.SkirmishGame;
 using LightWeightFramework.Controller;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
@@ -17,6 +19,7 @@ namespace EmpireAtWar.Controllers.Game
         private const float PauseTimeScale = 0f;
         private readonly IUserStateNotifier userStateNotifier;
         private readonly IGameCommand gameCommand;
+        private readonly ITimer incomeTimer;
         private GameTimeMode gameTimeMode;
         
         public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
@@ -25,6 +28,8 @@ namespace EmpireAtWar.Controllers.Game
             this.gameCommand = gameCommand;
             gameTimeMode = GameTimeMode.Common;
             ChangeTime(gameTimeMode);
+            incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
+            Model.Money = Model.StartMoneyAmount;
         }
         
         public void Initialize()
@@ -103,7 +108,11 @@ namespace EmpireAtWar.Controllers.Game
 
         public void Tick()
         {
-            Model.Money += DefaultIncome;
+            if (incomeTimer.IsComplete)
+            {
+                incomeTimer.StartTimer();
+                Model.Money += DefaultIncome;
+            }
         }
     }
 }
