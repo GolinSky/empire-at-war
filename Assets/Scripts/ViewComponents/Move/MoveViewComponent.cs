@@ -51,7 +51,7 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             moveSequence.KillIfExist();
             moveSequence = DOTween.Sequence();
-
+            targetPosition.y = CurrentPosition.y;
             Vector3 targetRotation = Quaternion.LookRotation(targetPosition - CurrentPosition).eulerAngles;
             float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
             
@@ -70,7 +70,7 @@ namespace EmpireAtWar.ViewComponents.Move
 
         private void FallDown()
         {
-            Vector3 point = transform.position - Model.FallDownDirection;
+            Vector3 point = CurrentPosition - Model.FallDownDirection;
 
             Vector3 randomRotation = new Vector3(Random.Range(-90, 90),
                 transform.localRotation.eulerAngles.y + Random.Range(-10, 10), Random.Range(0, 360));
@@ -86,7 +86,7 @@ namespace EmpireAtWar.ViewComponents.Move
 
         private void HyperSpaceJump(Vector3 point)
         {
-            Vector3 lookDirection = point - transform.position;
+            Vector3 lookDirection = point - CurrentPosition;
 
             moveSequence.KillIfExist();
 
@@ -106,7 +106,7 @@ namespace EmpireAtWar.ViewComponents.Move
 
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
-            targetPosition.y = transform.position.y;
+            targetPosition.y = CurrentPosition.y;
 
             moveSequence.KillIfExist();
 
@@ -138,21 +138,18 @@ namespace EmpireAtWar.ViewComponents.Move
                         PathMode.Full3D,
                         10)
                     .SetLookAt(0.01f)
-                    .SetOptions(AxisConstraint.None, AxisConstraint.X | AxisConstraint.Z)
+                    .SetOptions(AxisConstraint.Y, AxisConstraint.X | AxisConstraint.Z)
                     .SetEase(moveEase));
 
           
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
-    
         }
-
-
-
+        
 
         private float IsRightFromTarget(Vector3 targetPosition)
         {
             Vector3 positionRelative = transform.InverseTransformPoint(targetPosition);
-            return positionRelative.x > 0? 1 : -1;
+            return positionRelative.x > 0 ? 1 : -1;
         }
         private float IsBehindTarget(Vector3 targetPosition)
         {
