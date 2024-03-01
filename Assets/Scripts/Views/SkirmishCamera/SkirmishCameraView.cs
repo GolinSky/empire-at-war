@@ -12,12 +12,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
     {
         [SerializeField] private Camera mainCamera;
 
-        [SerializeField] private Canvas cameraCanvas;
-        [SerializeField] private Button switcherButton;
-        [SerializeField] private Button zoomIn;
-        [SerializeField] private Button zoomOut;
-        [SerializeField] private Button maxZoomIn;
-        [SerializeField] private Button minZoomOut;
+
         [SerializeField] private Ease moveEase;
 
         private Sequence moveSequence;
@@ -29,15 +24,9 @@ namespace EmpireAtWar.Views.SkirmishCamera
         protected override void OnInitialize()
         {
             cameraTransform = mainCamera.transform;
-            switcherButton.gameObject.SetActive(Application.isEditor);// debug
             Model.OnTranslateDirectionChanged += Translate;
             Model.OnPositionChanged += SetPosition;
             Model.OnFovChanged += UpdateFieldOfView;
-            zoomIn.onClick.AddListener(Command.ZoomIn);
-            zoomOut.onClick.AddListener(Command.ZoomOut);
-            maxZoomIn.onClick.AddListener(Command.MaxZoomIn);
-            minZoomOut.onClick.AddListener(Command.MaxZoomOut);
-            switcherButton.onClick.AddListener(UpdateCanvasState);
         }
 
         protected override void OnDispose()
@@ -45,21 +34,11 @@ namespace EmpireAtWar.Views.SkirmishCamera
             Model.OnTranslateDirectionChanged -= Translate;
             Model.OnPositionChanged -= SetPosition;
             Model.OnFovChanged -= UpdateFieldOfView;
-            zoomIn.onClick.RemoveListener(Command.ZoomIn);
-            zoomOut.onClick.RemoveListener(Command.ZoomOut);
-            maxZoomIn.onClick.RemoveListener(Command.MaxZoomIn);
-            minZoomOut.onClick.RemoveListener(Command.MaxZoomOut);
-            switcherButton.onClick.RemoveListener(UpdateCanvasState);
         }
         
         private void UpdateFieldOfView(float fieldOfView)
         {
             mainCamera.fieldOfView = fieldOfView;
-        }
-        
-        private void UpdateCanvasState()
-        {
-            cameraCanvas.enabled = !cameraCanvas.enabled;
         }
         
         private void SetPosition(Vector3 position)

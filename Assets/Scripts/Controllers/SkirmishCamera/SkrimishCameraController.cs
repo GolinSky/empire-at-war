@@ -107,34 +107,5 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 moved = false;
             }
         }
-
-        public void ZoomIn()
-        {
-            cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = Mathf.Clamp(cameraPosition.y - 100, 20, Model.MapSize.y );
-            Model.CameraPosition = cameraPosition;
-
-        }
-
-        public void ZoomOut()
-        {
-            cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = Mathf.Clamp(cameraPosition.y + 100, 20, Model.MapSize.y );
-            Model.CameraPosition = cameraPosition;
-        }
-
-        public void MaxZoomIn()
-        {
-            cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = 20;
-            Model.CameraPosition = cameraPosition;
-        }
-
-        public void MaxZoomOut()
-        {
-            cameraPosition = cameraService.CameraPosition;
-            cameraPosition.y = Model.MapSize.y;
-            Model.CameraPosition = cameraPosition;
-        }
     }
 }
