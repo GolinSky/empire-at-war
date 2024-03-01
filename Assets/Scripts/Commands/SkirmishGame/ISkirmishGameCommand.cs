@@ -5,6 +5,7 @@ namespace EmpireAtWar.Commands.SkirmishGame
 {
     public interface ISkirmishGameCommand: ICommand
     {
-        void ChangeTime(GameTimeMode mode); 
+        void Play();
+        void SpeedUp();
     }
 }

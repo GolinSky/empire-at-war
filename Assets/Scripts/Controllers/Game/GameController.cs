@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;

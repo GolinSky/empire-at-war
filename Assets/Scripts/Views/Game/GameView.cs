@@ -19,50 +19,25 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
         
+        
         protected override void OnInitialize()
         {
-            timeButton.onClick.AddListener(HandleTimeChange);
-            speedUpButton.onClick.AddListener(HandleSpeedUp);
+            timeButton.onClick.AddListener(Command.Play);
+            speedUpButton.onClick.AddListener(Command.SpeedUp);
+            Model.OnGameTimeModeChange += UpdateSprites;
         }
 
         protected override void OnDispose()
         {
-            timeButton.onClick.RemoveListener(HandleTimeChange);
-            speedUpButton.onClick.RemoveListener(HandleSpeedUp);
+            timeButton.onClick.RemoveListener(Command.Play);
+            speedUpButton.onClick.RemoveListener(Command.SpeedUp);
+            Model.OnGameTimeModeChange -= UpdateSprites;
         }
         
-        private void HandleSpeedUp()
+        private void UpdateSprites(GameTimeMode gameTimeMode)
         {
-            switch (Model.GameTimeMode )
-            {
-                case GameTimeMode.Common:
-                case GameTimeMode.Pause:
-                    Command.ChangeTime(GameTimeMode.SpeedUp);
-                    break;
-                case GameTimeMode.SpeedUp:
-                    Command.ChangeTime(GameTimeMode.Common);
-                    break;
-            }
-            speedUpImage.sprite = speedUpSprites.Dictionary[Model.GameTimeMode];
-        }
-
-        private void HandleTimeChange()
-        {
-            switch (Model.GameTimeMode )
-            {
-                case GameTimeMode.Common:
-                    Command.ChangeTime(GameTimeMode.Pause);
-                    break;
-                case GameTimeMode.Pause:
-                    Command.ChangeTime(GameTimeMode.Common);
-                    break;
-                
-                case GameTimeMode.SpeedUp:
-                    Command.ChangeTime(GameTimeMode.Pause);
-                    speedUpImage.sprite = speedUpSprites.Dictionary[GameTimeMode.Common];
-                    break;
-            }
-            timeImage.sprite = timeSprites.Dictionary[Model.GameTimeMode];
+            timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
+            speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
         }
     }
 }

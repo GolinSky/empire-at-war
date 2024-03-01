@@ -1,23 +1,29 @@
-﻿using EmpireAtWar.Commands.Game;
+﻿using System;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Views.ShipUi;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
+    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, Views.ShipUi.IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
+        private const float SpeedUpTimeScale = 4f;
+        private const float DefaultTimeScale = 1f;
+        private const float PauseTimeScale = 0f;
         private readonly IUserStateNotifier userStateNotifier;
         private readonly IGameCommand gameCommand;
-
+        private GameTimeMode gameTimeMode;
+        
         public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
+            gameTimeMode = GameTimeMode.Common;
+            ChangeTime(gameTimeMode);
         }
         
         public void Initialize()
@@ -30,18 +36,53 @@ namespace EmpireAtWar.Controllers.Game
             userStateNotifier.RemoveObserver(this);
         }
 
-        public void ChangeTime(GameTimeMode mode)
+        public void Play()
+        {
+            switch (gameTimeMode)
+            {
+                case GameTimeMode.Common:
+                    gameTimeMode = GameTimeMode.Pause;
+                    break;
+                case GameTimeMode.SpeedUp:
+                    gameTimeMode = GameTimeMode.Pause;
+                    break;
+                case GameTimeMode.Pause:
+                    gameTimeMode = GameTimeMode.Common;
+                    break;
+            }
+
+            ChangeTime(gameTimeMode);
+        }
+
+        public void SpeedUp()
+        {
+            switch (gameTimeMode)
+            {
+                case GameTimeMode.Common:
+                    gameTimeMode = GameTimeMode.SpeedUp;
+                    break;
+                case GameTimeMode.SpeedUp:
+                    gameTimeMode = GameTimeMode.Common;
+                    break;
+                case GameTimeMode.Pause:
+                    gameTimeMode = GameTimeMode.SpeedUp;
+                    break;
+            }
+            ChangeTime(gameTimeMode);
+        }
+        
+        private void ChangeTime(GameTimeMode mode)
         {
             switch (mode)
             {
                 case GameTimeMode.Common:
-                    Time.timeScale = 1.0f;
+                    Time.timeScale = DefaultTimeScale;
                     break;
                 case GameTimeMode.SpeedUp:
-                    Time.timeScale = 4.0f;
+                    Time.timeScale = SpeedUpTimeScale;
                     break;
                 case GameTimeMode.Pause:
-                    Time.timeScale = 0f;
+                    Time.timeScale = PauseTimeScale;
                     break;
             }
 
