@@ -36,6 +36,7 @@ namespace EmpireAtWar.Views.Game
             timeButton.onClick.RemoveListener(Command.Play);
             speedUpButton.onClick.RemoveListener(Command.SpeedUp);
             Model.OnGameTimeModeChange -= UpdateSprites;
+            Model.OnMoneyChanged -= UpdateMoneyText;
         }
         
         private void UpdateMoneyText(float money)

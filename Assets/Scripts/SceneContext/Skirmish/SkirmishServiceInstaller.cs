@@ -3,6 +3,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.BattleService;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ComponentHub;
+using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
@@ -29,6 +30,7 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindService<SelectionService>()
             .BindService<ReinforcementService>()
             .BindService<ComponentHub>()
-            .BindService<BattleService>();
+            .BindService<BattleService>()
+            .BindService<EconomyService>();
     }
 }

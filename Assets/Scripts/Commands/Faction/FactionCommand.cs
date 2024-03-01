@@ -7,5 +7,6 @@ namespace EmpireAtWar.Commands.Faction
     {
         void CloseSelection();
         void BuildShip(ShipType shipType);
+        bool TryPurchaseShip(ShipType shipType);
     }
 }

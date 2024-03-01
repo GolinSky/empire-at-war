@@ -1,9 +1,8 @@
-﻿using System;
-using System.Timers;
-using EmpireAtWar.Commands.Game;
+﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Services.Economy;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -19,13 +18,16 @@ namespace EmpireAtWar.Controllers.Game
         private const float PauseTimeScale = 0f;
         private readonly IUserStateNotifier userStateNotifier;
         private readonly IGameCommand gameCommand;
+        private readonly IEconomyService economyService;
         private readonly ITimer incomeTimer;
         private GameTimeMode gameTimeMode;
         
-        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
+        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand, IEconomyService economyService) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
+            this.economyService = economyService;
+            economyService.Assign(TryBuyUnit);
             gameTimeMode = GameTimeMode.Common;
             ChangeTime(gameTimeMode);
             incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
@@ -104,6 +106,17 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
             ChangeTime(notifierState == UserNotifierState.InMenu ? GameTimeMode.Pause : GameTimeMode.Common);
+        }
+
+        private bool TryBuyUnit(float price)
+        {
+            if (Model.Money > price)
+            {
+                Model.Money -= price;
+                return true;
+            }
+
+            return false;
         }
 
         public void Tick()

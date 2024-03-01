@@ -1,9 +1,9 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Reinforcement;
 using LightWeightFramework.Controller;
-using LightWeightFramework.Command;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
@@ -12,11 +12,13 @@ namespace EmpireAtWar.Controllers.Factions
     {
         private readonly INavigationService navigationService;
         private readonly IReinforcementService reinforcementService;
+        private readonly IEconomyService economyService;
 
-        public FactionController(PlayerFactionModel model, INavigationService navigationService, IReinforcementService reinforcementService) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService, IReinforcementService reinforcementService, IEconomyService economyService) : base(model)
         {
             this.navigationService = navigationService;
             this.reinforcementService = reinforcementService;
+            this.economyService = economyService;
         }
         
         public void Initialize()
@@ -42,6 +44,11 @@ namespace EmpireAtWar.Controllers.Factions
         public void BuildShip(ShipType shipType)
         {
             reinforcementService.AddReinforcement(shipType);
+        }
+
+        public bool TryPurchaseShip(ShipType shipType)
+        {
+            return economyService.TryBuyUnit(Model.FactionData[shipType].Price);
         }
     }
 }

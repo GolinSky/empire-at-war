@@ -42,10 +42,12 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick(ShipType shipType)
         {
-            FactionData factionData = Model.FactionData[shipType];
-            
-            float buildTime = pipelineView.AddPipeline(shipType.ToString(),factionData.Icon, factionData.BuildTime);
-            StartCoroutine(InvokeAfterDelay(() => Command.BuildShip(shipType), buildTime));
+            if (Command.TryPurchaseShip(shipType)) // todo: refactor
+            {
+                FactionData factionData = Model.FactionData[shipType];
+                float buildTime = pipelineView.AddPipeline(shipType.ToString(),factionData.Icon, factionData.BuildTime);
+                StartCoroutine(InvokeAfterDelay(() => Command.BuildShip(shipType), buildTime));
+            }
         }
 
         private IEnumerator InvokeAfterDelay(Action action, float delay)
