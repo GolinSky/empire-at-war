@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Views.ShipUi;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Health

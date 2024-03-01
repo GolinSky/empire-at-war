@@ -3,18 +3,21 @@ using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.ViewImpl;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views.Game
 {
     //todo: refactor
-    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>
+    public class GameView : View<ISkirmishGameModelObserver, ISkirmishGameCommand>, ITickable
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
+        [SerializeField] private TextMeshProUGUI moneyText;
         
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
@@ -38,6 +41,11 @@ namespace EmpireAtWar.Views.Game
         {
             timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
             speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
+        }
+
+        public void Tick()
+        {
+            moneyText.text = Model.Money.ToString();
         }
     }
 }

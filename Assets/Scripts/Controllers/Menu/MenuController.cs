@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Commands.Menu;
 using EmpireAtWar.Models.Menu;
-using EmpireAtWar.Views.ShipUi;
 using LightWeightFramework.Controller;
 using UnityEngine;
 

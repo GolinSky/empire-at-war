@@ -83,7 +83,6 @@ namespace EmpireAtWar.ViewComponents.Move
                 Model.FallDownDuration));
         }
 
-
         private void HyperSpaceJump(Vector3 point)
         {
             Vector3 lookDirection = point - CurrentPosition;
@@ -144,7 +143,6 @@ namespace EmpireAtWar.ViewComponents.Move
           
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
         }
-        
 
         private float IsRightFromTarget(Vector3 targetPosition)
         {
@@ -156,6 +154,5 @@ namespace EmpireAtWar.ViewComponents.Move
             Vector3 positionRelative = transform.InverseTransformPoint(targetPosition);
             return positionRelative.z  > 0 ? 0.2f : 1f;
         }
-
     }
 }

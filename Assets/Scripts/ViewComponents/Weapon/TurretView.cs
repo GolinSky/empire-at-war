@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.Views.ShipUi;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -7,7 +6,7 @@ using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class TurretView: MonoBehaviour, Views.ShipUi.IObserver<float>
+    public class TurretView: MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem vfx;
         [SerializeField] private FloatRange yAxisRange;

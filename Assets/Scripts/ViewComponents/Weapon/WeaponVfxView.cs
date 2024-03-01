@@ -1,4 +1,3 @@
-using EmpireAtWar.Views.ShipUi;
 using UnityEngine;
 
 namespace EmpireAtWar
@@ -14,7 +13,6 @@ namespace EmpireAtWar
             notifier.AddObserver(this);
             
             explosionVfx.transform.SetParent(transform.parent);// todo: refactor
-      
         }
 
         private void OnDestroy()

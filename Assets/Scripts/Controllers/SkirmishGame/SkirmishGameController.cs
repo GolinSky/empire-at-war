@@ -9,8 +9,9 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, Views.ShipUi.IObserver<UserNotifierState>, IInitializable, ILateDisposable
+    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable, ITickable
     {
+        private const float DefaultIncome = 1f;
         private const float SpeedUpTimeScale = 4f;
         private const float DefaultTimeScale = 1f;
         private const float PauseTimeScale = 0f;
@@ -98,6 +99,11 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
             ChangeTime(notifierState == UserNotifierState.InMenu ? GameTimeMode.Pause : GameTimeMode.Common);
+        }
+
+        public void Tick()
+        {
+            Model.Money += DefaultIncome;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace EmpireAtWar.Models.SkirmishGame
     {
         event Action<GameTimeMode> OnGameTimeModeChange;
         GameTimeMode GameTimeMode { get; }
+        float Money { get; }
     }
     
     [CreateAssetMenu(fileName = "SkirmishGameModel", menuName = "Model/SkirmishGameModel")]
@@ -26,5 +27,7 @@ namespace EmpireAtWar.Models.SkirmishGame
                 OnGameTimeModeChange?.Invoke(gameTimeMode);
             }
         }
+
+        public float Money { get; set; }
     }
 }
