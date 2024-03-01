@@ -9,7 +9,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.SkirmishCamera
 {
-    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand
+    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand, ITickable
     {
         private const float DelayAfterZoom = 0.1f;
         
@@ -19,6 +19,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         private Vector3 worldStartPoint;
         private Vector3 translateDirection;
         private Vector3 cameraPosition;
+        private bool moved;
 
         public SkirmishCameraController(
             SkirmishCameraModel model,
@@ -61,7 +62,6 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             inputDelay.StartTimer();
         }
 
-        private bool moved;
         private void HandleInput(InputType inputType, TouchPhase phase, Vector2 screenPosition)
         {
             if (!inputDelay.IsComplete)
@@ -106,6 +106,19 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             {
                 moved = false;
             }
+        }
+
+        public void Tick()
+        {
+#if UNITY_EDITOR
+            if (Input.mouseScrollDelta != Vector2.zero)
+            {
+                float fieldOfView = cameraService.FieldOfView;
+
+                fieldOfView -= Input.mouseScrollDelta.y * Model.ZoomSpeed * 40f* Time.deltaTime;
+                Model.FieldOfView = Model.ZoomRange.Clamp(fieldOfView);
+            }   
+#endif
         }
     }
 }
