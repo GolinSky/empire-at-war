@@ -1,8 +1,9 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Services.Economy;
+using EmpireAtWar.Patterns.ChainOfResponsibility;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -10,7 +11,11 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable, ITickable
+    public interface IPurchaseChain:IChainHandler<ShipType>
+    {
+        
+    }
+    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable, ITickable, IPurchaseChain
     {
         private const float DefaultIncome = 1f;
         private const float SpeedUpTimeScale = 4f;
@@ -18,16 +23,17 @@ namespace EmpireAtWar.Controllers.Game
         private const float PauseTimeScale = 0f;
         private readonly IUserStateNotifier userStateNotifier;
         private readonly IGameCommand gameCommand;
-        private readonly IEconomyService economyService;
+        private readonly FactionsModel factionsModel;
         private readonly ITimer incomeTimer;
         private GameTimeMode gameTimeMode;
-        
-        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand, IEconomyService economyService) : base(model)
+
+        [Inject(Id = PlayerType.Player)] 
+        private FactionType PlayerFactionType { get; }
+        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand, FactionsModel factionsModel) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
-            this.economyService = economyService;
-            economyService.Assign(TryBuyUnit);
+            this.factionsModel = factionsModel;
             gameTimeMode = GameTimeMode.Common;
             ChangeTime(gameTimeMode);
             incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
@@ -125,6 +131,26 @@ namespace EmpireAtWar.Controllers.Game
             {
                 incomeTimer.StartTimer();
                 Model.Money += DefaultIncome;
+            }
+        }
+
+        private IChainHandler<ShipType> nextChain;
+
+        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        {
+            nextChain = chainHandler;
+            return nextChain;
+        }
+
+        public void Handle(ShipType shipType)
+        {
+            FactionData factionData = factionsModel.GetFactionData(PlayerFactionType)[shipType];
+            if (TryBuyUnit(factionData.Price))
+            {
+                if (nextChain != null)
+                {
+                    nextChain.Handle(shipType);
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ namespace EmpireAtWar.Views.Factions
 
         public FactionData FactionData { get; private set; }
         public ShipType ShipType { get; private set; }
+        public int Level { get; private set; }
 
 
         public void SetData(FactionData factionData, ShipType shipType, Action<ShipType> clickCallback)
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Views.Factions
             unitNameText.text = factionData.Name;
             unitPriceText.text = factionData.Price.ToString();
             purchaseButton.onClick.AddListener(HandleClick);
+            Level = factionData.AvailableLevel;
         }
 
         private void OnDestroy()
@@ -39,6 +41,11 @@ namespace EmpireAtWar.Views.Factions
         private void HandleClick()
         {
             clickCallback?.Invoke(ShipType);
+        }
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
     }
 }

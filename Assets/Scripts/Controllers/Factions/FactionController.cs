@@ -1,24 +1,26 @@
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.Economy;
+using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.Reinforcement;
 using LightWeightFramework.Controller;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand
+    public interface IBuildShipChain : IChainHandler<ShipType>
+    {
+        
+    }
+    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand, IBuildShipChain
     {
         private readonly INavigationService navigationService;
-        private readonly IReinforcementService reinforcementService;
-        private readonly IEconomyService economyService;
+        private readonly IPurchaseFlow purchaseFlow;
 
-        public FactionController(PlayerFactionModel model, INavigationService navigationService, IReinforcementService reinforcementService, IEconomyService economyService) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService, IPurchaseFlow purchaseFlow) : base(model)
         {
             this.navigationService = navigationService;
-            this.reinforcementService = reinforcementService;
-            this.economyService = economyService;
+            this.purchaseFlow = purchaseFlow;
+            purchaseFlow.Add(this);
         }
         
         public void Initialize()
@@ -43,12 +45,27 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void BuildShip(ShipType shipType)
         {
-            reinforcementService.AddReinforcement(shipType);
+            if (next != null)
+            {
+                next.Handle(shipType);
+            }
         }
 
-        public bool TryPurchaseShip(ShipType shipType)
+        private IChainHandler<ShipType> next;
+        public void TryPurchaseShip(ShipType shipType)
         {
-            return economyService.TryBuyUnit(Model.FactionData[shipType].Price);
+            purchaseFlow.Handle(shipType);
+        }
+
+        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        {
+            next = chainHandler;
+            return next;
+        }
+
+        public void Handle(ShipType shipType)
+        {
+            Model.ShipTypeToBuild = shipType;
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;
@@ -13,13 +13,16 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Reinforcement
 {
+    public interface IReinforcementChain:IChainHandler<ShipType>
+    {
+        
+    }
     public class ReinforcementController : Controller<ReinforcementModel>, IReinforcementCommand, ITickable,
-        IInitializable, ILateDisposable
+        IInitializable, ILateDisposable, IReinforcementChain
     {
         private readonly InputService inputService;
         private readonly ICameraService cameraService;
         private readonly ShipFacadeFactory shipFacadeFactory;
-        private readonly IReinforcementService reinforcementService;
 
         private ShipSpawnView spawnReinforcement;
         private ShipType currentShipType;
@@ -28,25 +31,21 @@ namespace EmpireAtWar.Controllers.Reinforcement
             ReinforcementModel model,
             InputService inputService,
             ICameraService cameraService,
-            ShipFacadeFactory shipFacadeFactory,
-            IReinforcementService reinforcementService) : base(model)
+            ShipFacadeFactory shipFacadeFactory) : base(model)
         {
             this.inputService = inputService;
             this.cameraService = cameraService;
             this.shipFacadeFactory = shipFacadeFactory;
-            this.reinforcementService = reinforcementService;
         }
 
         public void Initialize()
         {
             inputService.OnEndDrag += Interrupt;
-            reinforcementService.OnReinforcementAdded += AddReinforcement;
         }
         
         public void LateDispose()
         {
             inputService.OnEndDrag -= Interrupt;
-            reinforcementService.OnReinforcementAdded -= AddReinforcement;
         }
 
         private void AddReinforcement(ShipType shipType)
@@ -85,6 +84,22 @@ namespace EmpireAtWar.Controllers.Reinforcement
             Vector3 position = cameraService.GetWorldPoint(inputService.TouchPosition);
             position.y = 0;
             spawnReinforcement.UpdatePosition(position);
+        }
+
+        private IChainHandler<ShipType> nextChain;
+        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        {
+            nextChain = chainHandler;
+            return nextChain;
+        }
+
+        public void Handle(ShipType request)
+        {
+            AddReinforcement(request);
+            if (nextChain != null)
+            {
+                nextChain.Handle(request);
+            }
         }
     }
 }
