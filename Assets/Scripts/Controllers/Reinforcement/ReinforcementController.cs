@@ -24,9 +24,10 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ICameraService cameraService;
         private readonly ShipFacadeFactory shipFacadeFactory;
 
+        private IChainHandler<ShipType> nextChain;
         private ShipSpawnView spawnReinforcement;
         private ShipType currentShipType;
-        
+
         public ReinforcementController(
             ReinforcementModel model,
             InputService inputService,
@@ -86,7 +87,6 @@ namespace EmpireAtWar.Controllers.Reinforcement
             spawnReinforcement.UpdatePosition(position);
         }
 
-        private IChainHandler<ShipType> nextChain;
         public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
         {
             nextChain = chainHandler;

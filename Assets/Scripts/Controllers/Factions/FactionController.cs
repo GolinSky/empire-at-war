@@ -14,13 +14,14 @@ namespace EmpireAtWar.Controllers.Factions
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand, IBuildShipChain
     {
         private readonly INavigationService navigationService;
-        private readonly IPurchaseFlow purchaseFlow;
+        private readonly IPurchaseMediator purchaseMediator;
+        private IChainHandler<ShipType> nextChain;
 
-        public FactionController(PlayerFactionModel model, INavigationService navigationService, IPurchaseFlow purchaseFlow) : base(model)
+        public FactionController(PlayerFactionModel model, INavigationService navigationService, IPurchaseMediator purchaseMediator) : base(model)
         {
             this.navigationService = navigationService;
-            this.purchaseFlow = purchaseFlow;
-            purchaseFlow.Add(this);
+            this.purchaseMediator = purchaseMediator;
+            purchaseMediator.Add(this);
         }
         
         public void Initialize()
@@ -45,22 +46,21 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void BuildShip(ShipType shipType)
         {
-            if (next != null)
+            if (nextChain != null)
             {
-                next.Handle(shipType);
+                nextChain.Handle(shipType);
             }
         }
 
-        private IChainHandler<ShipType> next;
         public void TryPurchaseShip(ShipType shipType)
         {
-            purchaseFlow.Handle(shipType);
+            purchaseMediator.Handle(shipType);
         }
 
         public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
         {
-            next = chainHandler;
-            return next;
+            nextChain = chainHandler;
+            return nextChain;
         }
 
         public void Handle(ShipType shipType)

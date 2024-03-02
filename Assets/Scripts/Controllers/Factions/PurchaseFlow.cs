@@ -5,20 +5,18 @@ using EmpireAtWar.Patterns.ChainOfResponsibility;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IPurchaseFlow : IChainHandler<ShipType>
+    public interface IPurchaseMediator : IChainHandler<ShipType>
     {
         void Add(IBuildShipChain buildShipChain);
-        // void Add(IPurchaseChain buildShipChain);
-        // void Add(IReinforcementChain buildShipChain);
     }
 
-    public class PurchaseFlow : IPurchaseFlow
+    public class PurchaseMediator : IPurchaseMediator
     {
         private readonly IPurchaseChain purchaseChain;
         private readonly IReinforcementChain reinforcementChain;
         private IChainHandler<ShipType> next;
 
-        public PurchaseFlow(IPurchaseChain purchaseChain, IReinforcementChain reinforcementChain)
+        public PurchaseMediator(IPurchaseChain purchaseChain, IReinforcementChain reinforcementChain)
         {
             this.purchaseChain = purchaseChain;
             this.reinforcementChain = reinforcementChain;

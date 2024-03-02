@@ -25,10 +25,12 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IGameCommand gameCommand;
         private readonly FactionsModel factionsModel;
         private readonly ITimer incomeTimer;
+        private IChainHandler<ShipType> nextChain;
         private GameTimeMode gameTimeMode;
 
         [Inject(Id = PlayerType.Player)] 
         private FactionType PlayerFactionType { get; }
+        
         public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand, FactionsModel factionsModel) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
@@ -133,9 +135,7 @@ namespace EmpireAtWar.Controllers.Game
                 Model.Money += DefaultIncome;
             }
         }
-
-        private IChainHandler<ShipType> nextChain;
-
+        
         public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
         {
             nextChain = chainHandler;

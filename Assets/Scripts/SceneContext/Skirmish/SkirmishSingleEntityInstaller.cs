@@ -95,7 +95,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
         Container
             .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(reinforcementView);
         
-        Container.BindService<PurchaseFlow>();
+        Container.BindService<PurchaseMediator>();
     }
 
     private FactionType GetPlayerFactionType()
