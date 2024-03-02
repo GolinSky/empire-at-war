@@ -5,9 +5,14 @@ using UnityEngine;
 
 namespace EmpireAtWar.Views.Factions
 {
-    [Serializable]
-    public class BuildPipelineView
+    public interface IBuildPipeline
     {
+        void OnFinishPipeline(string id, bool isSuccess, int countLeft);
+    }
+    [Serializable]
+    public class BuildPipelineView: IBuildPipeline
+    {
+        public event Action<bool, string> OnFinishSequence; 
         [SerializeField] private Canvas canvas;
 
         [SerializeField] private List<PipelineView> pipelineViews;
@@ -18,6 +23,7 @@ namespace EmpireAtWar.Views.Factions
         {
             foreach (PipelineView pipelineView in pipelineViews)
             {
+                pipelineView.Init(this);
                 pipelineView.Activate(false);
             }
         }
@@ -46,13 +52,23 @@ namespace EmpireAtWar.Views.Factions
             {
                 view.SetIcon(icon);
                 view.Activate(true);
-                view.Fill(fillTime, ()=>OnComplete(id));
+                view.Fill(fillTime, id);
             }
         }
 
-        private void OnComplete(string id)
+        private void OnComplete(string id, bool isSuccess)
         {
+            OnFinishSequence?.Invoke(isSuccess, id);
             workingPipelines.Remove(id);
+        }
+
+        public void OnFinishPipeline(string id, bool isSuccess, int countLeft)
+        {
+            OnFinishSequence?.Invoke(isSuccess, id);
+            if (countLeft == 1)
+            {
+                workingPipelines.Remove(id);
+            }
         }
     }
 }

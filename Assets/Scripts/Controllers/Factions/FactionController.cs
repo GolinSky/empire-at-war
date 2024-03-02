@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
@@ -55,6 +56,14 @@ namespace EmpireAtWar.Controllers.Factions
         public void TryPurchaseShip(ShipType shipType)
         {
             purchaseMediator.Handle(shipType);
+        }
+
+        public void RevertBuilding(string id)
+        {
+            if (Enum.TryParse(id, out ShipType result))
+            {
+                purchaseMediator.RevertFlow(result);
+            }
         }
 
         public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)

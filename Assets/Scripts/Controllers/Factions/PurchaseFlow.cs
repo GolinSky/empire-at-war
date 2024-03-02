@@ -8,6 +8,7 @@ namespace EmpireAtWar.Controllers.Factions
     public interface IPurchaseMediator : IChainHandler<ShipType>
     {
         void Add(IBuildShipChain buildShipChain);
+        void RevertFlow(ShipType result);
     }
 
     public class PurchaseMediator : IPurchaseMediator
@@ -25,6 +26,11 @@ namespace EmpireAtWar.Controllers.Factions
         public void Add(IBuildShipChain buildShipChain)
         {
             ConstructChains(buildShipChain);
+        }
+
+        public void RevertFlow(ShipType result)
+        {
+            purchaseChain.Revert(result);
         }
 
         private void ConstructChains(IBuildShipChain buildShipChain)

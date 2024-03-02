@@ -8,5 +8,6 @@ namespace EmpireAtWar.Commands.Faction
         void CloseSelection();
         void BuildShip(ShipType shipType);
         void TryPurchaseShip(ShipType shipType);
+        void RevertBuilding(string id);
     }
 }

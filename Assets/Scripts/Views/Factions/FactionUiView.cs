@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
@@ -38,8 +37,8 @@ namespace EmpireAtWar.Views.Factions
             Model.OnLevelUpgraded += UpdateUnits;
             Model.OnShipBuild += BuildShip;
             exitButton.onClick.AddListener(ExitUi);
+            pipelineView.OnFinishSequence += HandleEndOfBuilding;
         }
-
 
         protected override void OnDispose()
         {
@@ -47,8 +46,24 @@ namespace EmpireAtWar.Views.Factions
             Model.OnLevelUpgraded -= UpdateUnits;
             Model.OnShipBuild -= BuildShip;
             exitButton.onClick.RemoveListener(ExitUi);
+            pipelineView.OnFinishSequence -= HandleEndOfBuilding;
         }
-
+        
+        private void HandleEndOfBuilding(bool isSuccess, string id)
+        {
+            if (!isSuccess)
+            {
+                Command.RevertBuilding(id);
+            }
+            else
+            {
+                if (Enum.TryParse(id, out ShipType shipType))
+                {
+                    Command.BuildShip(shipType);
+                }
+            }
+        }
+        
         private void UpdateUnits(int level)
         {
             foreach (FactionUnitUi factionUnitUi in factionUnitsUi)
@@ -65,19 +80,12 @@ namespace EmpireAtWar.Views.Factions
         private void BuildShip(ShipType shipType)
         {
             FactionData factionData = Model.FactionData[shipType];
-            float buildTime = pipelineView.AddPipeline(shipType.ToString(), factionData.Icon, factionData.BuildTime);
-            StartCoroutine(InvokeAfterDelay(() => Command.BuildShip(shipType), buildTime));
+            pipelineView.AddPipeline(shipType.ToString(), factionData.Icon, factionData.BuildTime);
         }
 
         private void HandleClick(ShipType shipType)
         {
             Command.TryPurchaseShip(shipType);
-        }
-
-        private IEnumerator InvokeAfterDelay(Action action, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            action.Invoke();
         }
 
         private void HandleSelectionChanged(SelectionType selectionType)

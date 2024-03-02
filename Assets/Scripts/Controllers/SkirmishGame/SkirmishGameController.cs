@@ -13,7 +13,7 @@ namespace EmpireAtWar.Controllers.Game
 {
     public interface IPurchaseChain:IChainHandler<ShipType>
     {
-        
+        void Revert(ShipType result);
     }
     public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable, ITickable, IPurchaseChain
     {
@@ -152,6 +152,13 @@ namespace EmpireAtWar.Controllers.Game
                     nextChain.Handle(shipType);
                 }
             }
+        }
+
+        public void Revert(ShipType shipType)
+        {
+            FactionData factionData = factionsModel.GetFactionData(PlayerFactionType)[shipType];
+            Model.Money += factionData.Price;
+
         }
     }
 }
