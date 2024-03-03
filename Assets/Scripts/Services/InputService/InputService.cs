@@ -52,10 +52,6 @@ namespace EmpireAtWar.Services.InputService
                         {
                             InvokeInputEvent(InputType.ShipInput);
                         }
-                        if (touch.tapCount == 1)
-                        {
-                            InvokeInputEvent(InputType.CameraInput);
-                        }
                         break;
                     }
                     case TouchPhase.Moved:

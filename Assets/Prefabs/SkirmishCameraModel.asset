@@ -15,7 +15,8 @@ MonoBehaviour:
   models: []
   <MapSize>k__BackingField: {x: 500, y: 400, z: 500}
   <ZoomRange>k__BackingField:
-    <Min>k__BackingField: 10
-    <Max>k__BackingField: 100
+    <Min>k__BackingField: 50
+    <Max>k__BackingField: 500
   <MoveSpeed>k__BackingField: 1
-  <ZoomSpeed>k__BackingField: 2
+  <PanSpeed>k__BackingField: 11
+  <ZoomSpeed>k__BackingField: 22

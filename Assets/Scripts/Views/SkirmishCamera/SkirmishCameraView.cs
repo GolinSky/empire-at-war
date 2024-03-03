@@ -3,7 +3,6 @@ using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using UnityEngine.UI;
 using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.Views.SkirmishCamera
@@ -11,8 +10,6 @@ namespace EmpireAtWar.Views.SkirmishCamera
     public class SkirmishCameraView : View<ISkirmishCameraModelObserver, ICameraCommand>
     {
         [SerializeField] private Camera mainCamera;
-
-
         [SerializeField] private Ease moveEase;
 
         private Sequence moveSequence;
@@ -52,7 +49,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
 
         private void Translate(Vector3 direction)
         {
-            cameraTransform.Translate(direction, Space.World);
+            SetPosition(transform.position + direction);
         }
     }
 }
