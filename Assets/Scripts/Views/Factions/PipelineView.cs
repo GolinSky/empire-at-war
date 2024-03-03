@@ -38,6 +38,7 @@ namespace EmpireAtWar.Views.Factions
         private void SkipSequence()
         {
             fillImageSequence.KillIfExist();
+            DOTween.KillAll();
             Complete(false);
         }
 
