@@ -14,12 +14,11 @@ namespace EmpireAtWar.Services.InputService
 
 
         private Touch touch;
-        private bool isBlocked;
         private TouchPhase lastTouchPhase;
+        private bool isBlocked;
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => touch.position;
-
-
+        
         public void Tick()
         {
             if (Input.touchCount == 1)
