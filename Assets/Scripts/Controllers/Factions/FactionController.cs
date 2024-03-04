@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
@@ -8,7 +7,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IBuildShipChain : IChainHandler<ShipType>
+    public interface IBuildShipChain : IChainHandler<UnitRequest>
     {
         
     }
@@ -16,7 +15,7 @@ namespace EmpireAtWar.Controllers.Factions
     {
         private readonly INavigationService navigationService;
         private readonly IPurchaseMediator purchaseMediator;
-        private IChainHandler<ShipType> nextChain;
+        private IChainHandler<UnitRequest> nextChain;
 
         public FactionController(PlayerFactionModel model, INavigationService navigationService, IPurchaseMediator purchaseMediator) : base(model)
         {
@@ -45,7 +44,7 @@ namespace EmpireAtWar.Controllers.Factions
             navigationService.RemoveSelectable();
         }
 
-        public void BuildShip(ShipType shipType)
+        public void BuildShip(UnitRequest shipType)
         {
             if (nextChain != null)
             {
@@ -53,28 +52,25 @@ namespace EmpireAtWar.Controllers.Factions
             }
         }
 
-        public void TryPurchaseShip(ShipType shipType)
+        public void TryPurchaseShip(UnitRequest shipType)
         {
             purchaseMediator.Handle(shipType);
         }
 
-        public void RevertBuilding(string id)
+        public void RevertBuilding(UnitRequest unitRequest)
         {
-            if (Enum.TryParse(id, out ShipType result))
-            {
-                purchaseMediator.RevertFlow(result);
-            }
+            purchaseMediator.RevertFlow(unitRequest);
         }
 
-        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
             nextChain = chainHandler;
             return nextChain;
         }
 
-        public void Handle(ShipType shipType)
+        public void Handle(UnitRequest unitRequest)
         {
-            Model.ShipTypeToBuild = shipType;
+            Model.ShipTypeToBuild = unitRequest;
         }
     }
 }

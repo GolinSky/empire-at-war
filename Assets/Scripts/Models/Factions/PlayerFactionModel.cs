@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
@@ -10,21 +11,21 @@ namespace EmpireAtWar.Models.Factions
 {
     public interface IPlayerFactionModelObserver : IModelObserver
     {
-        event Action<ShipType> OnShipBuild;
-
+        event Action<UnitRequest> OnUnitBuild;
         event Action<int> OnLevelUpgraded;
         event Action<SelectionType> OnSelectionTypeChanged;
 
         FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
         Dictionary<ShipType, FactionData> FactionData { get; }
+        FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
     }
 
     [CreateAssetMenu(fileName = "FactionModel", menuName = "Model/FactionModel")]
     public class PlayerFactionModel : Model, IPlayerFactionModelObserver
     {
-        public event Action<ShipType> OnShipBuild;
+        public event Action<UnitRequest> OnUnitBuild;
         public event Action<int> OnLevelUpgraded;
         public event Action<SelectionType> OnSelectionTypeChanged;
         
@@ -47,9 +48,9 @@ namespace EmpireAtWar.Models.Factions
         [Inject(Id = PlayerType.Player)] 
         public FactionType FactionType { get; }
         
-        public ShipType ShipTypeToBuild
+        public UnitRequest ShipTypeToBuild
         {
-            set => OnShipBuild?.Invoke(value);
+            set => OnUnitBuild?.Invoke(value);
         }
         
         public Dictionary<ShipType, FactionData> FactionData => GetFactionData(FactionType);
@@ -66,5 +67,9 @@ namespace EmpireAtWar.Models.Factions
             }
         }
 
+        public FactionData GetCurrentLevelFactionData()
+        {
+            return factionsModel.GetLevelFactionData(CurrentLevel);
+        }
     }
 }

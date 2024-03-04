@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.Factions;
+﻿using EmpireAtWar.Controllers.Factions;
 using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Faction
@@ -6,8 +6,8 @@ namespace EmpireAtWar.Commands.Faction
     public interface IFactionCommand:ICommand
     {
         void CloseSelection();
-        void BuildShip(ShipType shipType);
-        void TryPurchaseShip(ShipType shipType);
-        void RevertBuilding(string id);
+        void BuildShip(UnitRequest shipType);
+        void TryPurchaseShip(UnitRequest shipType);
+        void RevertBuilding(UnitRequest id);
     }
 }

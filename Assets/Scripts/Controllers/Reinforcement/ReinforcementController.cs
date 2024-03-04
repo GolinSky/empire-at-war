@@ -1,4 +1,6 @@
-﻿using EmpireAtWar.Commands.Reinforcement;
+﻿using System;
+using EmpireAtWar.Commands.Reinforcement;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
@@ -9,11 +11,12 @@ using EmpireAtWar.Views.Ship;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
+using Object = UnityEngine.Object;
 
 
 namespace EmpireAtWar.Controllers.Reinforcement
 {
-    public interface IReinforcementChain:IChainHandler<ShipType>
+    public interface IReinforcementChain:IChainHandler<UnitRequest>
     {
         
     }
@@ -24,7 +27,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ICameraService cameraService;
         private readonly ShipFacadeFactory shipFacadeFactory;
 
-        private IChainHandler<ShipType> nextChain;
+        private IChainHandler<UnitRequest> nextChain;
         private ShipSpawnView spawnReinforcement;
         private ShipType currentShipType;
 
@@ -49,9 +52,9 @@ namespace EmpireAtWar.Controllers.Reinforcement
             inputService.OnEndDrag -= Interrupt;
         }
 
-        private void AddReinforcement(ShipType shipType)
+        private void AddReinforcement(ShipUnitRequest shipUnitRequest)
         {
-            Model.AddReinforcement(shipType);
+            Model.AddReinforcement(shipUnitRequest);
         }
 
         private void Interrupt(Vector2 screenPosition)
@@ -87,15 +90,23 @@ namespace EmpireAtWar.Controllers.Reinforcement
             spawnReinforcement.UpdatePosition(position);
         }
 
-        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
             nextChain = chainHandler;
             return nextChain;
         }
 
-        public void Handle(ShipType request)
+        public void Handle(UnitRequest request)
         {
-            AddReinforcement(request);
+            switch (request)
+            {
+                case ShipUnitRequest shipUnitRequest:
+                    AddReinforcement(shipUnitRequest);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(request));
+            }
+          
             if (nextChain != null)
             {
                 nextChain.Handle(request);

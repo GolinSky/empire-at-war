@@ -13,11 +13,21 @@ namespace EmpireAtWar.Models.Factions
         public DictionaryWrapper<ShipType, AssetReferenceGameObject> ShipViewReference { get; private set; }
         
         [SerializeField] private DictionaryWrapper<FactionType, FactionDataWrapper> factionDataWrapper;
-
+        [SerializeField] private FactionData[] levelFactionsData;
+        [field: SerializeField] public int MaxLevel { get; private set; }
+        
         private Dictionary<FactionType, FactionDataWrapper> FactionData => factionDataWrapper.Dictionary;
         public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType)
         {
             return FactionData[factionType].Dictionary;
         }
+
+        public FactionData GetLevelFactionData(int level)
+        {
+            if (level > MaxLevel) return null;
+            
+            return levelFactionsData[level];
+        }
+        
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.Reinforcement;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Models.Reinforcement
 {
@@ -30,10 +30,8 @@ namespace EmpireAtWar.Models.Reinforcement
         [field: SerializeField] public SpawnShipUi ReinforcementButton { get; private set; }
 
         [SerializeField] private DictionaryWrapper<ShipType, ShipSpawnView> spawnShipWrapper;
-        [SerializeField] private FactionsModel factionsModel;
         
-        [Inject(Id = PlayerType.Player)] 
-        public FactionType FactionType { get; }
+  
         public bool IsTrySpawning { get; set; }
         
         
@@ -54,9 +52,9 @@ namespace EmpireAtWar.Models.Reinforcement
             OnSpawnShip?.Invoke(success);
         }
 
-        public void AddReinforcement(ShipType shipType)
+        public void AddReinforcement(ShipUnitRequest shipUnitRequest)
         {
-            OnReinforcementAdded?.Invoke(shipType, factionsModel.GetFactionData(FactionType)[shipType].Icon);
+            OnReinforcementAdded?.Invoke(shipUnitRequest.ShipType, shipUnitRequest.FactionData.Icon);
         }
     }
 }

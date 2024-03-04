@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
@@ -11,9 +12,9 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public interface IPurchaseChain:IChainHandler<ShipType>
+    public interface IPurchaseChain:IChainHandler<UnitRequest>
     {
-        void Revert(ShipType result);
+        void Revert(UnitRequest result);
     }
     public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable, ITickable, IPurchaseChain
     {
@@ -25,17 +26,13 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IGameCommand gameCommand;
         private readonly FactionsModel factionsModel;
         private readonly ITimer incomeTimer;
-        private IChainHandler<ShipType> nextChain;
+        private IChainHandler<UnitRequest> nextChain;
         private GameTimeMode gameTimeMode;
-
-        [Inject(Id = PlayerType.Player)] 
-        private FactionType PlayerFactionType { get; }
         
-        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand, FactionsModel factionsModel) : base(model)
+        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
-            this.factionsModel = factionsModel;
             gameTimeMode = GameTimeMode.Common;
             ChangeTime(gameTimeMode);
             incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
@@ -136,29 +133,26 @@ namespace EmpireAtWar.Controllers.Game
             }
         }
         
-        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
             nextChain = chainHandler;
             return nextChain;
         }
 
-        public void Handle(ShipType shipType)
+        public void Handle(UnitRequest unitRequest)
         {
-            FactionData factionData = factionsModel.GetFactionData(PlayerFactionType)[shipType];
-            if (TryBuyUnit(factionData.Price))
+            if (TryBuyUnit(unitRequest.FactionData.Price))
             {
                 if (nextChain != null)
                 {
-                    nextChain.Handle(shipType);
+                    nextChain.Handle(unitRequest);
                 }
             }
         }
 
-        public void Revert(ShipType shipType)
+        public void Revert(UnitRequest unitRequest)
         {
-            FactionData factionData = factionsModel.GetFactionData(PlayerFactionType)[shipType];
-            Model.Money += factionData.Price;
-
+            Model.Money += unitRequest.FactionData.Price;
         }
     }
 }

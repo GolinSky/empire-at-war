@@ -5,17 +5,17 @@ using EmpireAtWar.Patterns.ChainOfResponsibility;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IPurchaseMediator : IChainHandler<ShipType>
+    public interface IPurchaseMediator : IChainHandler<UnitRequest>
     {
         void Add(IBuildShipChain buildShipChain);
-        void RevertFlow(ShipType result);
+        void RevertFlow(UnitRequest result);
     }
 
     public class PurchaseMediator : IPurchaseMediator
     {
         private readonly IPurchaseChain purchaseChain;
         private readonly IReinforcementChain reinforcementChain;
-        private IChainHandler<ShipType> next;
+        private IChainHandler<UnitRequest> next;
 
         public PurchaseMediator(IPurchaseChain purchaseChain, IReinforcementChain reinforcementChain)
         {
@@ -28,7 +28,7 @@ namespace EmpireAtWar.Controllers.Factions
             ConstructChains(buildShipChain);
         }
 
-        public void RevertFlow(ShipType result)
+        public void RevertFlow(UnitRequest result)
         {
             purchaseChain.Revert(result);
         }
@@ -40,13 +40,13 @@ namespace EmpireAtWar.Controllers.Factions
                 .SetNext(reinforcementChain);
         }
 
-        public IChainHandler<ShipType> SetNext(IChainHandler<ShipType> chainHandler)
+        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
             next = chainHandler;
             return next;
         }
 
-        public void Handle(ShipType request)
+        public void Handle(UnitRequest request)
         {
             if (next != null)
             {
