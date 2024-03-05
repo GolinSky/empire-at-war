@@ -28,7 +28,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ShipFacadeFactory shipFacadeFactory;
 
         private IChainHandler<UnitRequest> nextChain;
-        private ShipSpawnView spawnReinforcement;
+        private UnitSpawnView spawnReinforcement;
         private ShipType currentShipType;
 
         public ReinforcementController(

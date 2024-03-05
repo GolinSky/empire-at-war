@@ -71,6 +71,7 @@ namespace EmpireAtWar.Controllers.Factions
         public void Handle(UnitRequest unitRequest)
         {
             Model.ShipTypeToBuild = unitRequest;
+       
         }
     }
 }

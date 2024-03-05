@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Views.Reinforcement
 {
-    public class ShipSpawnView : MonoBehaviour
+    public class UnitSpawnView : MonoBehaviour
     {
         [SerializeField] private float height;
         
