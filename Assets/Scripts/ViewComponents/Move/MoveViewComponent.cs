@@ -17,8 +17,10 @@ namespace EmpireAtWar.ViewComponents.Move
         [SerializeField] private Ease moveEase;
         [SerializeField] private Ease hyperSpaceEase;
         [SerializeField] private LineRenderer lineRenderer;
+        [SerializeField] private Transform bodyTransform;
         
         private Sequence moveSequence;
+        private Sequence bodyRotationSequence;
         private Vector3[] waypoints;
         private float duration;
 
@@ -138,10 +140,25 @@ namespace EmpireAtWar.ViewComponents.Move
                         10)
                     .SetLookAt(0.01f)
                     .SetOptions(AxisConstraint.Y, AxisConstraint.X | AxisConstraint.Z)
+                    .OnWaypointChange(HandleWaypoints)
                     .SetEase(moveEase));
 
-          
+            bodyRotationSequence.KillIfExist();
+            moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, 1f).SetEase(lookAtEase));
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
+        }
+
+
+        private void HandleWaypoints(int index)
+        {
+            if(bodyTransform == null) return;
+            
+            bodyRotationSequence.KillIfExist();
+            bodyRotationSequence = DOTween.Sequence();
+            Vector3 waypoint = waypoints[index];
+            float modifier = -IsRightFromTarget(waypoint);
+            Vector3 targetRotation = Vector3.forward * 40f * modifier;
+            bodyRotationSequence.Append(bodyTransform.DOLocalRotate(targetRotation, duration / (float)waypoints.Length).SetEase(lookAtEase));
         }
 
         private float IsRightFromTarget(Vector3 targetPosition)
