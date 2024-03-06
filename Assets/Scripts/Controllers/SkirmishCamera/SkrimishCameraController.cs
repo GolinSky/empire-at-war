@@ -8,10 +8,8 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.SkirmishCamera
 {
-    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand, ITickable
+    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
-        private const float DelayAfterZoom = 0.1f;
-        
         private readonly ICameraService cameraService;
         private readonly IInputService inputService;
         private Vector3 translateDirection;
@@ -72,17 +70,6 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             }
         }
 
-        public void Tick()
-        {
-#if UNITY_EDITOR
-            if (Input.mouseScrollDelta != Vector2.zero)
-            {
-                float fieldOfView = cameraService.FieldOfView;
 
-                fieldOfView -= Input.mouseScrollDelta.y * Model.ZoomSpeed * 40f* Time.deltaTime;
-                Model.FieldOfView = Model.ZoomRange.Clamp(fieldOfView);
-            }   
-#endif
-        }
     }
 }

@@ -12,15 +12,15 @@ namespace EmpireAtWar.Services.InputService
         public event Action<InputType, TouchPhase, Vector2> OnInput;
         public event Action<InputType, Touch, Touch> OnDoubleInput;
 
-
         private Touch touch;
         private TouchPhase lastTouchPhase;
         private bool isBlocked;
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => touch.position;
         
+
         public void Tick()
-        {
+        {           
             if (Input.touchCount == 1)
             {
                 touch = Input.GetTouch(0);
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.InputService
                 {
                     case TouchPhase.Began:
                     {
-                        if (touch.tapCount == 2)
+                        if (touch.tapCount > 1)
                         {
                             InvokeInputEvent(InputType.ShipInput);
                         }
