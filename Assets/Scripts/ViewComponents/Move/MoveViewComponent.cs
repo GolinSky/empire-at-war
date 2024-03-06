@@ -1,4 +1,6 @@
 ﻿using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
 using Utilities.ScriptUtils.Dotween;
@@ -12,6 +14,8 @@ namespace EmpireAtWar.ViewComponents.Move
 {
     public class MoveViewComponent : ViewComponent<IMoveModelObserver>
     {
+        private const float BodyRotationDefaultDuration = 1f;
+        
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
         [SerializeField] private Ease moveEase;
@@ -56,6 +60,7 @@ namespace EmpireAtWar.ViewComponents.Move
             targetPosition.y = CurrentPosition.y;
             Vector3 targetRotation = Quaternion.LookRotation(targetPosition - CurrentPosition).eulerAngles;
             float rotationDuration = Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed, Model.MinRotationDuration);
+            bodyRotationSequence.KillIfExist();
             
             moveSequence.Append(
                 transform.DORotate(
@@ -63,6 +68,8 @@ namespace EmpireAtWar.ViewComponents.Move
                         rotationDuration,
                         rotationMode)
                     .SetEase(lookAtEase));
+            moveSequence.Join(GetRotationSequence(targetPosition, rotationDuration));
+            moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BodyRotationDefaultDuration).SetEase(lookAtEase));
         }
         
         private void StopAllMovement()
@@ -91,7 +98,6 @@ namespace EmpireAtWar.ViewComponents.Move
 
             moveSequence.KillIfExist();
 
-            float duration = Model.HyperSpaceSpeed;
             moveSequence = DOTween.Sequence();
 
             moveSequence.Append(
@@ -101,7 +107,7 @@ namespace EmpireAtWar.ViewComponents.Move
                         rotationMode)
                     .SetEase(lookAtEase));
 
-            moveSequence.Append(transform.DOMove(point, duration)
+            moveSequence.Append(transform.DOMove(point, Model.HyperSpaceSpeed)
                 .SetEase(hyperSpaceEase));
         }
 
@@ -144,7 +150,7 @@ namespace EmpireAtWar.ViewComponents.Move
                     .SetEase(moveEase));
 
             bodyRotationSequence.KillIfExist();
-            moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, 1f).SetEase(lookAtEase));
+            moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BodyRotationDefaultDuration).SetEase(lookAtEase));
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
         }
 
@@ -155,10 +161,14 @@ namespace EmpireAtWar.ViewComponents.Move
             
             bodyRotationSequence.KillIfExist();
             bodyRotationSequence = DOTween.Sequence();
-            Vector3 waypoint = waypoints[index];
-            float modifier = -IsRightFromTarget(waypoint);
+            bodyRotationSequence.Append(GetRotationSequence(waypoints[index], duration / waypoints.Length));
+        }
+
+        private TweenerCore<Quaternion, Vector3, QuaternionOptions> GetRotationSequence(Vector3 targetPosition, float duration)
+        {
+            float modifier = -IsRightFromTarget(targetPosition);
             Vector3 targetRotation = Vector3.forward * 40f * modifier;
-            bodyRotationSequence.Append(bodyTransform.DOLocalRotate(targetRotation, duration / (float)waypoints.Length).SetEase(lookAtEase));
+            return bodyTransform.DOLocalRotate(targetRotation, duration).SetEase(lookAtEase);
         }
 
         private float IsRightFromTarget(Vector3 targetPosition)
