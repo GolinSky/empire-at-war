@@ -64,6 +64,8 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindModel<ProjectileModel>()
             .BindModel<LayerModel>()
             .BindModel<DamageCalculationModel>();
+
+        Container.BindService<UnitRequestFactory>();
         
         Container
             .BindEntity<MenuController, MenuView, MenuModel>(menuView);

@@ -37,12 +37,17 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick()
         {
-            factionView.BuyUnit(unitRequest);
+            factionView.BuyUnit(unitRequest, FactionData);
         }
 
         public void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
+        }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
         }
     }
 }

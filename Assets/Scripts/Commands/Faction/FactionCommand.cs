@@ -6,8 +6,8 @@ namespace EmpireAtWar.Commands.Faction
     public interface IFactionCommand:ICommand
     {
         void CloseSelection();
-        void BuildShip(UnitRequest shipType);
-        void TryPurchaseShip(UnitRequest shipType);
+        void BuildUnit(UnitRequest shipType);
+        void TryPurchaseUnit(UnitRequest shipType);
         void RevertBuilding(UnitRequest id);
     }
 }

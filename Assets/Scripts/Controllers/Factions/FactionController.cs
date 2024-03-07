@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
@@ -44,15 +45,21 @@ namespace EmpireAtWar.Controllers.Factions
             navigationService.RemoveSelectable();
         }
 
-        public void BuildShip(UnitRequest shipType)
+        public void BuildUnit(UnitRequest unitRequest)
         {
+            switch (unitRequest)
+            {
+                case LevelUnitRequest levelUnitRequest:
+                    Model.CurrentLevel++;
+                    break;
+            }
             if (nextChain != null)
             {
-                nextChain.Handle(shipType);
+                nextChain.Handle(unitRequest);
             }
         }
 
-        public void TryPurchaseShip(UnitRequest shipType)
+        public void TryPurchaseUnit(UnitRequest shipType)
         {
             purchaseMediator.Handle(shipType);
         }
@@ -71,7 +78,6 @@ namespace EmpireAtWar.Controllers.Factions
         public void Handle(UnitRequest unitRequest)
         {
             Model.ShipTypeToBuild = unitRequest;
-       
         }
     }
 }

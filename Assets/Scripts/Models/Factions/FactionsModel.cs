@@ -26,7 +26,7 @@ namespace EmpireAtWar.Models.Factions
         {
             if (level > MaxLevel) return null;
             
-            return levelFactionsData[level];
+            return levelFactionsData[level-1];
         }
         
     }

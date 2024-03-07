@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
@@ -7,12 +8,13 @@ using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views.Factions
 {
     public interface IFactionView
     {
-        void BuyUnit(UnitRequest shipUnitRequest);
+        void BuyUnit(UnitRequest shipUnitRequest, FactionData factionData);
     }
     public class FactionUiView : View<IPlayerFactionModelObserver, IFactionCommand>, IFactionView
     {
@@ -23,7 +25,12 @@ namespace EmpireAtWar.Views.Factions
 
         private List<FactionUnitUi> factionUnitsUi = new List<FactionUnitUi>();
         private Dictionary<string, UnitRequest> unitRequests = new Dictionary<string, UnitRequest>();
- 
+
+        private FactionUnitUi levelFactionUnitUi;
+        private UnitRequest currentLevelUnitRequest;
+        
+        [Inject]
+        private IUnitRequestFactory UnitRequestFactory { get; }
         protected override void OnInitialize()
         {
             pipelineView.Init();
@@ -31,7 +38,7 @@ namespace EmpireAtWar.Views.Factions
             foreach (var data in Model.FactionData)
             {
                 FactionUnitUi unitUi = Instantiate(Model.ShipUnit, shipUnitParent);
-                unitUi.SetData(data.Value,this, ConstructShipUnit(data.Value, data.Key));
+                unitUi.SetData(data.Value,this, ConstructUnitRequest(data.Key, data.Value));
                 factionUnitsUi.Add(unitUi);
                 if (data.Value.AvailableLevel > Model.CurrentLevel)
                 {
@@ -39,10 +46,7 @@ namespace EmpireAtWar.Views.Factions
                 }
             }
 
-            // FactionData levelData = Model.GetCurrentLevelFactionData();
-            //
-            // FactionUnitUi factionUnitUi = Instantiate(Model.ShipUnit, shipUnitParent);
-            // factionUnitUi.SetData(levelData, HandleLevel);
+            currentLevelUnitRequest = ConstructLevelUnitRequest();
             
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
             Model.OnLevelUpgraded += UpdateUnits;
@@ -51,18 +55,27 @@ namespace EmpireAtWar.Views.Factions
             pipelineView.OnFinishSequence += HandleEndOfBuilding;
         }
 
-        private UnitRequest ConstructShipUnit(FactionData factionData, ShipType shipType)
+        private UnitRequest ConstructUnitRequest(ShipType shipType, FactionData factionData)
         {
-            UnitRequest unitRequest = new ShipUnitRequest(factionData, shipType);
+            UnitRequest unitRequest = UnitRequestFactory.ConstructUnitRequest(factionData, shipType);
             unitRequests.Add(unitRequest.Id, unitRequest);
             return unitRequest;
         }
-
-        private void HandleLevel()
+        
+        private UnitRequest ConstructLevelUnitRequest()
         {
-            
-        }
+            FactionData levelData = Model.GetCurrentLevelFactionData();
+            if (levelData != null)
+            {
+                levelFactionUnitUi = Instantiate(Model.ShipUnit, shipUnitParent);
+                LevelUnitRequest levelUnitRequest = UnitRequestFactory.ConstructUnitRequest(levelData, Model.CurrentLevel);
+                levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
+                unitRequests.Add(levelUnitRequest.Id, levelUnitRequest);
+                return levelUnitRequest;
+            }
 
+            return null;
+        }
         protected override void OnDispose()
         {
             Model.OnSelectionTypeChanged -= HandleSelectionChanged;
@@ -75,22 +88,32 @@ namespace EmpireAtWar.Views.Factions
         private void HandleEndOfBuilding(bool isSuccess, string id)
         {
             UnitRequest unitRequest = unitRequests[id];
+
             if (!isSuccess)
             {
                 Command.RevertBuilding(unitRequest);
             }
             else
             {
-                Command.BuildShip(unitRequest);
+                Command.BuildUnit(unitRequest);
             }
+            buildingUnits.Remove(unitRequest);
         }
         
         private void UpdateUnits(int level)
         {
             foreach (FactionUnitUi factionUnitUi in factionUnitsUi)
             {
-                factionUnitUi.SetActive(level <= factionUnitUi.Level);
+                factionUnitUi.SetActive(factionUnitUi.Level <= level);
             }
+
+            levelFactionUnitUi.Destroy();
+            if (currentLevelUnitRequest != null)
+            {
+                unitRequests.Remove(currentLevelUnitRequest.Id);
+            }
+            currentLevelUnitRequest = ConstructLevelUnitRequest();
+        
         }
 
         private void ExitUi()
@@ -98,8 +121,10 @@ namespace EmpireAtWar.Views.Factions
             Command.CloseSelection();
         }
 
+        private List<UnitRequest> buildingUnits = new List<UnitRequest>();
         private void BuildShip(UnitRequest unitRequest)
         {
+            buildingUnits.Add(unitRequest);
             pipelineView.AddPipeline(unitRequest.Id, unitRequest.FactionData.Icon, unitRequest.FactionData.BuildTime);
         }
 
@@ -108,9 +133,13 @@ namespace EmpireAtWar.Views.Factions
             controlCanvas.enabled = selectionType == SelectionType.Base;
         }
 
-        public void BuyUnit(UnitRequest shipUnitRequest)
+        public void BuyUnit(UnitRequest shipUnitRequest, FactionData factionData)
         {
-            Command.TryPurchaseShip(shipUnitRequest);
+            int amount = buildingUnits.Count(x => x.Id.Equals(shipUnitRequest.Id));
+            if (factionData.MaxCount > amount)
+            {
+                Command.TryPurchaseUnit(shipUnitRequest);
+            }
         }
     }
 }

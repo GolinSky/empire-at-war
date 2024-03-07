@@ -23,6 +23,18 @@ namespace EmpireAtWar.Controllers.Factions
         {
             ShipType = shipType;
         }
+    }
+
+    public class LevelUnitRequest : UnitRequest
+    {
+        public int Level { get; }
+        public override string Id { get; }
+
+        public LevelUnitRequest(FactionData factionData, int level) : base(factionData)
+        {
+            Level = level;
+            Id = level.ToString();
+        }
 
     }
 }
