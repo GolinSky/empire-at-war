@@ -34,7 +34,6 @@ namespace EmpireAtWar.Views.Factions
             if (workingPipelines.TryGetValue(id, out PipelineView pipelineView))
             {
                 pipelineView.AddCount();
-                AddPipelineInternal(pipelineView);
                 return pipelineView.TimeLeft;
             }
             else
@@ -43,12 +42,12 @@ namespace EmpireAtWar.Views.Factions
                     .Where(x => !x.IsBusy)
                     .FirstOrDefault();
                 
-                AddPipelineInternal(freePipeline);
+                SetUpPipeline(freePipeline);
                 workingPipelines.Add(id, freePipeline);
                 return fillTime;
             }
 
-            void AddPipelineInternal(PipelineView view)
+            void SetUpPipeline(PipelineView view)
             {
                 view.SetIcon(icon);
                 view.Activate(true);
