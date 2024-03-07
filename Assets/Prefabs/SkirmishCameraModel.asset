@@ -17,6 +17,6 @@ MonoBehaviour:
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 50
     <Max>k__BackingField: 500
-  <MoveSpeed>k__BackingField: 1
-  <PanSpeed>k__BackingField: 11
-  <ZoomSpeed>k__BackingField: 22
+  <MoveSpeed>k__BackingField: 0
+  <PanSpeed>k__BackingField: 3
+  <ZoomSpeed>k__BackingField: 15
