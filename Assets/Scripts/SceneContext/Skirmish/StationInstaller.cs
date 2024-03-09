@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Commands.SpaceStation;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
@@ -32,18 +33,20 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindInstance(playerType)
                 .AsSingle();
+
+            // Container
+            //     .BindSingle<HealthComponent>();
             
             switch (playerType)
             {
                 case PlayerType.Player:
                 {
                     Container
-                        .BindInterfacesAndSelfTo<SelectionComponent>()
-                        .AsSingle();
-                    
-                    Container
                         .BindEntityFromPrefab<SpaceStationController, SpaceStationView, SpaceStationModel,
                             SpaceStationCommand>(factionType);
+                    Container
+                        .BindInterfacesAndSelfTo<SelectionComponent>()
+                        .AsSingle();
                     break;
                 }
                 case PlayerType.Opponent:

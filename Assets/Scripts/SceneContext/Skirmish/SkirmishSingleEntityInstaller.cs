@@ -1,4 +1,5 @@
 using EmpireAtWar.Commands.ShipUi;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Map;
@@ -10,6 +11,7 @@ using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Controllers.SkirmishCamera;
 using EmpireAtWar.Controllers.Terrain;
 using EmpireAtWar.Extentions;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
@@ -25,6 +27,7 @@ using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Views;
+using EmpireAtWar.Views.Economy;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.Map;
@@ -49,6 +52,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private ReinforcementView reinforcementView;
     [SerializeField] private MapView mapView;
     [SerializeField] private MenuView menuView;
+    [SerializeField] private EconomyView economyView;
     
     [Inject]
     private IGameModelObserver GameModelObserver { get; }
@@ -66,6 +70,9 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindModel<DamageCalculationModel>();
 
         Container.BindService<UnitRequestFactory>();
+        
+        Container
+            .BindEntity<EconomyController, EconomyView, EconomyModel>(economyView);
         
         Container
             .BindEntity<MenuController, MenuView, MenuModel>(menuView);

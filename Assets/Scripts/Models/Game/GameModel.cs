@@ -18,6 +18,6 @@ namespace EmpireAtWar.Models.Game
         public GameMode GameMode { get; set; }
         public PlanetType PlanetType { get; set; }
         public FactionType PlayerFactionType { get; set; }
-        public FactionType EnemyFactionType { get; set; }
+        public FactionType EnemyFactionType { get; set; } = FactionType.Separatist;
     }
 }
