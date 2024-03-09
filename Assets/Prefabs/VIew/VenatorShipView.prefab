@@ -10171,13 +10171,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  localRollRotation: 1
-  meshTransform: {fileID: 6288173655347290105}
   rotationMode: 0
   lookAtEase: 5
   moveEase: 35
   hyperSpaceEase: 32
   lineRenderer: {fileID: 576903172496899927}
+  bodyTransform: {fileID: 6288173655347290105}
 --- !u!114 &5275728022472264954
 MonoBehaviour:
   m_ObjectHideFlags: 0
