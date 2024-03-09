@@ -1,21 +1,15 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
-using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using LightWeightFramework.Controller;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public interface IPurchaseChain:IChainHandler<UnitRequest>
-    {
-        void Revert(UnitRequest result);
-    }
+
     public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
         private const float SpeedUpTimeScale = 4f;
