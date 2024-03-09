@@ -20,6 +20,7 @@ namespace EmpireAtWar.Models.Movement
         float HyperSpaceSpeed { get; }
         float MinRotationDuration { get;  }
         float FallDownDuration { get; }
+        float BodyRotationMaxAngle { get; }
 
         bool IsMoving { get; }
     }
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Models.Movement
         [field: SerializeField] public float HyperSpaceSpeed { get; private set; }
         [field: SerializeField] public float FallDownDuration { get; private set; }
         [field: SerializeField] public float Height { get; private set; }
+        [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
 
         private Vector3 position;
         private Vector3 hyperSpacePosition;

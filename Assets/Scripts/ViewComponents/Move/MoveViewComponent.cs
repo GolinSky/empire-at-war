@@ -96,17 +96,9 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             Vector3 lookDirection = point - CurrentPosition;
 
+            transform.rotation = Quaternion.LookRotation(lookDirection);
             moveSequence.KillIfExist();
-
             moveSequence = DOTween.Sequence();
-
-            moveSequence.Append(
-                transform.DORotate(
-                        Quaternion.LookRotation(lookDirection).eulerAngles,
-                        1f,
-                        rotationMode)
-                    .SetEase(lookAtEase));
-
             moveSequence.Append(transform.DOMove(point, Model.HyperSpaceSpeed)
                 .SetEase(hyperSpaceEase));
         }
@@ -154,7 +146,6 @@ namespace EmpireAtWar.ViewComponents.Move
             moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
         }
 
-
         private void HandleWaypoints(int index)
         {
             if(bodyTransform == null) return;
@@ -167,7 +158,7 @@ namespace EmpireAtWar.ViewComponents.Move
         private TweenerCore<Quaternion, Vector3, QuaternionOptions> GetRotationSequence(Vector3 targetPosition, float duration)
         {
             float modifier = -IsRightFromTarget(targetPosition);
-            Vector3 targetRotation = Vector3.forward * 40f * modifier;
+            Vector3 targetRotation = Vector3.forward * Model.BodyRotationMaxAngle * modifier;
             return bodyTransform.DOLocalRotate(targetRotation, duration).SetEase(lookAtEase);
         }
 
