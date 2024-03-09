@@ -1,6 +1,5 @@
-﻿using EmpireAtWar.Controllers.Game;
+﻿using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Reinforcement;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 
 namespace EmpireAtWar.Controllers.Factions
