@@ -19,8 +19,10 @@ namespace EmpireAtWar.Views.Ship
         public override void Release()
         {
             base.Release();
-
-            Instantiate(Model.DeathExplosionVfx, transform.position, Quaternion.identity);
+            if (gameObject.activeInHierarchy)
+            {
+                Instantiate(Model.DeathExplosionVfx, transform.position, Quaternion.identity);
+            }
         }
     }
 }
