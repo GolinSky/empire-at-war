@@ -22,6 +22,7 @@ MonoBehaviour:
     <HyperSpaceSpeed>k__BackingField: 2
     <FallDownDuration>k__BackingField: 200
     <Height>k__BackingField: 0
+    <BodyRotationMaxAngle>k__BackingField: 10
   healthModel:
     dexterity: 0.1
     <Armor>k__BackingField: 110000
