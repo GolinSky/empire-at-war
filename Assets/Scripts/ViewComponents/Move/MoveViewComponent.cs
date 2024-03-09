@@ -106,7 +106,8 @@ namespace EmpireAtWar.ViewComponents.Move
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
             targetPosition.y = CurrentPosition.y;
-
+         
+            
             moveSequence.KillIfExist();
 
             var distance = Vector3.Distance(CurrentPosition, targetPosition);

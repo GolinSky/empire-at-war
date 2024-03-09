@@ -62,7 +62,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
             if (!Model.IsTrySpawning) return;
 
             Model.IsTrySpawning = false;
-            Vector3 spawnPosition = cameraService.GetWorldPoint(screenPosition);
+            Vector3 spawnPosition = cameraService.GetWorldPoint(screenPosition, spawnReinforcement.Position);
             bool canSpawn = spawnReinforcement.CanSpawn;
             Model.InvokeSpawnShipEvent(canSpawn);
             if (canSpawn)
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         {
             if (!Model.IsTrySpawning) return;
 
-            Vector3 position = cameraService.GetWorldPoint(inputService.TouchPosition);
+            Vector3 position = cameraService.GetWorldPoint(inputService.TouchPosition, spawnReinforcement.Position);
             position.y = 0;
             spawnReinforcement.UpdatePosition(position);
         }

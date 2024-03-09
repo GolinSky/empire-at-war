@@ -5,7 +5,7 @@ namespace EmpireAtWar.Services.Camera
 {
     public interface ICameraService : IService
     {
-        Vector3 GetWorldPoint(Vector2 screenPoint);
+        Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
         RaycastHit ScreenPointToRay(Vector2 screenPoint);
         Vector3 CameraPosition { get; }
         Vector3 CameraForward { get; }
@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Camera
     public class CameraService : Service, ICameraService
     {
         private readonly UnityEngine.Camera camera;
+        private Plane plane = new Plane();
 
         public Vector3 CameraPosition => camera.transform.position;
         public Vector3 CameraForward => camera.transform.forward;
@@ -35,16 +36,25 @@ namespace EmpireAtWar.Services.Camera
         {
             this.camera = camera;
         }
-        
-        public Vector3 GetWorldPoint(Vector2 screenPoint)
-        {  
-            Physics.Raycast(camera.ScreenPointToRay(screenPoint), out RaycastHit hit);
-            return hit.point;
+
+        public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
+        {           
+            Ray ray = camera.ScreenPointToRay(screenPoint);
+            plane.SetNormalAndPosition(Vector3.up, Vector3.up*position.y);
+            
+            if (plane.Raycast(ray, out float distance))
+            {
+                return ray.GetPoint(distance);
+            }
+            return ScreenPointToRay(screenPoint).point;
         }
         
         public RaycastHit ScreenPointToRay(Vector2 screenPoint)
         {  
-            Physics.Raycast(camera.ScreenPointToRay(screenPoint), out RaycastHit hit);
+            Ray ray = camera.ScreenPointToRay(screenPoint);
+
+            Physics.Raycast(ray, out RaycastHit hit);
+            
             return hit;
         }
     }

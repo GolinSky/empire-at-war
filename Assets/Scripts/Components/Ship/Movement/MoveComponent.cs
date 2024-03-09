@@ -32,13 +32,15 @@ namespace EmpireAtWar.Components.Ship.Selection
         
         public void MoveToPosition(Vector2 screenPosition)
         {
+            GetWorldCoordinate(screenPosition); 
             Model.Position = GetWorldCoordinate(screenPosition);
         }
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
-            Vector3 point = cameraService.GetWorldPoint(screenPosition);
+            Vector3 point = cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
             point.y = Model.Height;
+
             return point;
         }
 

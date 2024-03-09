@@ -14,6 +14,7 @@ namespace EmpireAtWar.Views.Reinforcement
         private Color blockedColor = Color.red;
 
         public bool CanSpawn => triggeredCollider.Count == 0;
+        public Vector3 Position => transform.position;
 
         private void Start()
         {
