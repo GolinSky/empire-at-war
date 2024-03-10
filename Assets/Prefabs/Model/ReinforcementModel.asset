@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: ReinforcementModel
   m_EditorClassIdentifier: 
   models: []
-  <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
-    type: 3}
   spawnShipWrapper:
     keyValue:
     - key: 0
@@ -35,4 +33,6 @@ MonoBehaviour:
     - key: 102
       value: {fileID: -7875661336892348539, guid: 07fbb46098b845b4f847f4511e25b732,
         type: 3}
-  factionsModel: {fileID: 11400000, guid: 3de703d0a2c0ac5428de8b8f64093d18, type: 2}
+  <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
+    type: 3}
+  <MaxUnitCapacity>k__BackingField: 20

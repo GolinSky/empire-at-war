@@ -11,6 +11,8 @@ namespace EmpireAtWar.Models.Factions
         [field:SerializeField] public int AvailableLevel { get; private set; }
         [field:SerializeField] public int Price { get; private set; }
         [field:SerializeField] public int BuildTime { get; private set; }
+        [field:SerializeField] public int UnitCapacity { get; private set; }
         [field:SerializeField] public Sprite Icon { get; private set; }
+        
     }
 }

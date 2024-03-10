@@ -87,7 +87,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 72894616053550305}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -578,7 +578,7 @@ MonoBehaviour:
   m_Content: {fileID: 812305163281907676}
   m_Horizontal: 1
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 0
   m_DecelerationRate: 0.135
@@ -1343,6 +1343,7 @@ MonoBehaviour:
   closeButton: {fileID: 6149023881478231343}
   panelCanvas: {fileID: 1803139786742170447}
   signalImage: {fileID: 3373922469774454749}
+  unitCapacityText: {fileID: 7008870773025925324}
 --- !u!114 &2582927013417079221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1537,7 +1538,7 @@ PrefabInstance:
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
@@ -1547,17 +1548,17 @@ PrefabInstance:
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
@@ -1597,12 +1598,12 @@ PrefabInstance:
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -95
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4193888256412516988, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
@@ -1627,7 +1628,7 @@ PrefabInstance:
     - target: {fileID: 6427103703715446618, guid: 53891f2c9384e0343bde531bf54ebdcc,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

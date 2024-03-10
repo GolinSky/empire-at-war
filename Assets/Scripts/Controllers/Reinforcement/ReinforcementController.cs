@@ -64,21 +64,31 @@ namespace EmpireAtWar.Controllers.Reinforcement
             Model.IsTrySpawning = false;
             Vector3 spawnPosition = cameraService.GetWorldPoint(screenPosition, spawnReinforcement.Position);
             bool canSpawn = spawnReinforcement.CanSpawn;
-            Model.InvokeSpawnShipEvent(canSpawn);
             if (canSpawn)
             {
-                shipFacadeFactory.Create(PlayerType.Player, currentShipType, spawnPosition);
+               ShipView ship = shipFacadeFactory.Create(PlayerType.Player, currentShipType, spawnPosition);
+               ship.OnRelease += HandleShipDestroying;
             }
             spawnReinforcement.Destroy();
             inputService.Block(false);
+            Model.AddUnitCapacity(currentShipType); 
+            Model.InvokeSpawnShipEvent(canSpawn);
+        }
+
+        private void HandleShipDestroying(ShipType shipType)
+        {
+            Model.RemoveUnitCapacity(shipType);
         }
 
         public void TrySpawnShip(ShipType shipType)
         {
-            currentShipType = shipType;
-            inputService.Block(true);
-            Model.IsTrySpawning = true;
-            spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
+            if (Model.CanSpawnUnit(shipType))
+            {
+                currentShipType = shipType;
+                inputService.Block(true);
+                Model.IsTrySpawning = true;
+                spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
+            }
         }
 
         public void Tick()
