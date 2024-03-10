@@ -353,6 +353,7 @@ MonoBehaviour:
   moveEase: 35
   hyperSpaceEase: 32
   lineRenderer: {fileID: 6177930098472041687}
+  bodyTransform: {fileID: 6544910686223586199}
 --- !u!114 &3900534144493600790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -954,6 +955,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DualProjectile
       objectReference: {fileID: 0}
+    - target: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+        type: 3}
+      propertyPath: yAxisRange.<Max>k__BackingField
+      value: 360
+      objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d08e869a202dee742b31818cc8c5b23b,
         type: 3}
       propertyPath: looping
@@ -1167,6 +1173,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Projectile
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: yAxisRange.<Max>k__BackingField
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: yAxisRange.<Min>k__BackingField
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
@@ -1701,6 +1717,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Projectile (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: yAxisRange.<Max>k__BackingField
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+        type: 3}
+      propertyPath: yAxisRange.<Min>k__BackingField
+      value: -180
+      objectReference: {fileID: 0}
     - target: {fileID: 7187503342576515073, guid: d90ad13c075512a478c24f41fbf7c0b6,
         type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -1820,6 +1846,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 19816518, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19818024, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19848452, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11497296, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
     - {fileID: 11477632, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
@@ -1893,6 +1931,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 478668, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19816518, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19818024, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19848452, guid: f015702b92b604b44aa41566f0fe3305, type: 3}
+      propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
