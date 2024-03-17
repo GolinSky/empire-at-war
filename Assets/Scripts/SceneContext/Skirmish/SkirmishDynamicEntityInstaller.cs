@@ -1,4 +1,6 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.MiningFacility;
+using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
 using UnityEngine;
@@ -21,6 +23,14 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<StationInstaller>()
                 .NonLazy();
+
+            Container
+                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacadeFactory>()
+                .FromSubContainerResolve()
+                .ByNewGameObjectInstaller<MiningFacilityInstaller>()
+                .NonLazy();
+            
+            //PlayerType,MiningFacilityType,Vector3,MiningFacilityView
         }
     }
 }

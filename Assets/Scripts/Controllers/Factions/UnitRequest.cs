@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Controllers.Factions
 {
@@ -34,6 +35,17 @@ namespace EmpireAtWar.Controllers.Factions
         {
             Level = level;
             Id = level.ToString();
+        }
+    }
+
+    public class MiningFacilityUnitRequest : UnitRequest
+    {
+        public MiningFacilityType MiningFacilityType { get; }
+        public override string Id => MiningFacilityType.ToString();
+
+        public MiningFacilityUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType) : base(factionData)
+        {
+            MiningFacilityType = miningFacilityType;
         }
 
     }

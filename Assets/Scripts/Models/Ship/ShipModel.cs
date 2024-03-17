@@ -15,7 +15,6 @@ namespace EmpireAtWar.Models.Ship
         ShipType ShipType { get; }
 
         ShipInfoUi FillWithData(ShipInfoUi shipInfoUi);
-
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]

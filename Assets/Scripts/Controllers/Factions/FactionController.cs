@@ -74,9 +74,9 @@ namespace EmpireAtWar.Controllers.Factions
             }
         }
 
-        public void TryPurchaseUnit(UnitRequest shipType)
+        public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            purchaseMediator.Handle(shipType);
+            purchaseMediator.Handle(unitRequest);
         }
 
         public void RevertBuilding(UnitRequest unitRequest)
@@ -92,7 +92,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void Handle(UnitRequest unitRequest)
         {
-            Model.ShipTypeToBuild = unitRequest;
+            Model.UnitToBuild = unitRequest;
         }
 
     }

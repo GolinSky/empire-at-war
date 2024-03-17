@@ -54,7 +54,8 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
         {
-            Model.ApplyDamage(damage, weaponType, moveModelObserver.IsMoving, shipUnitId);
+            bool isMoving = moveModelObserver is { IsMoving: true };
+            Model.ApplyDamage(damage, weaponType, isMoving, shipUnitId);
         }
 
         public bool Equal(IModelObserver modelObserver)

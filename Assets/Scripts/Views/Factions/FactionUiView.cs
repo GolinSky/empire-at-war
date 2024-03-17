@@ -4,6 +4,7 @@ using System.Linq;
 using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
@@ -23,12 +24,13 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Transform shipUnitParent;
         [SerializeField] private BuildPipelineView pipelineView;
 
-        private List<FactionUnitUi> factionUnitsUi = new List<FactionUnitUi>();
         private Dictionary<string, UnitRequest> unitRequests = new Dictionary<string, UnitRequest>();
+        private List<UnitRequest> buildingUnits = new List<UnitRequest>();
+        private List<FactionUnitUi> factionUnitsUi = new List<FactionUnitUi>();
 
         private FactionUnitUi levelFactionUnitUi;
         private UnitRequest currentLevelUnitRequest;
-        
+
         [Inject]
         private IUnitRequestFactory UnitRequestFactory { get; }
         protected override void OnInitialize()
@@ -48,9 +50,20 @@ namespace EmpireAtWar.Views.Factions
 
             currentLevelUnitRequest = ConstructLevelUnitRequest();
             
+            foreach (var pair in Model.MiningFactions)
+            {
+                FactionUnitUi unitUi = Instantiate(Model.ShipUnit, shipUnitParent);
+                unitUi.SetData(pair.Value,this, ConstructUnitRequest(pair.Key, pair.Value));
+                factionUnitsUi.Add(unitUi);
+                if (pair.Value.AvailableLevel > Model.CurrentLevel)
+                {
+                    unitUi.SetActive(false);
+                }
+            }
+            
             Model.OnSelectionTypeChanged += HandleSelectionChanged;
             Model.OnLevelUpgraded += UpdateUnits;
-            Model.OnUnitBuild += BuildShip;
+            Model.OnUnitBuild += BuildUnit;
             exitButton.onClick.AddListener(ExitUi);
             pipelineView.OnFinishSequence += HandleEndOfBuilding;
         }
@@ -58,6 +71,13 @@ namespace EmpireAtWar.Views.Factions
         private UnitRequest ConstructUnitRequest(ShipType shipType, FactionData factionData)
         {
             UnitRequest unitRequest = UnitRequestFactory.ConstructUnitRequest(factionData, shipType);
+            unitRequests.Add(unitRequest.Id, unitRequest);
+            return unitRequest;
+        }
+        
+        private UnitRequest ConstructUnitRequest(MiningFacilityType facilityType, FactionData factionData)
+        {
+            UnitRequest unitRequest = UnitRequestFactory.ConstructUnitRequest(factionData, facilityType);
             unitRequests.Add(unitRequest.Id, unitRequest);
             return unitRequest;
         }
@@ -80,7 +100,7 @@ namespace EmpireAtWar.Views.Factions
         {
             Model.OnSelectionTypeChanged -= HandleSelectionChanged;
             Model.OnLevelUpgraded -= UpdateUnits;
-            Model.OnUnitBuild -= BuildShip;
+            Model.OnUnitBuild -= BuildUnit;
             exitButton.onClick.RemoveListener(ExitUi);
             pipelineView.OnFinishSequence -= HandleEndOfBuilding;
         }
@@ -121,8 +141,7 @@ namespace EmpireAtWar.Views.Factions
             Command.CloseSelection();
         }
 
-        private List<UnitRequest> buildingUnits = new List<UnitRequest>();
-        private void BuildShip(UnitRequest unitRequest)
+        private void BuildUnit(UnitRequest unitRequest)
         {
             buildingUnits.Add(unitRequest);
             pipelineView.AddPipeline(unitRequest.Id, unitRequest.FactionData.Icon, unitRequest.FactionData.BuildTime);

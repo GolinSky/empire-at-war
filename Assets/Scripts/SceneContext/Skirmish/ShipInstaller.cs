@@ -50,19 +50,15 @@ namespace EmpireAtWar.SceneContext
             {
                 case PlayerType.Player:
                 {
-                    Container
-                        .BindInterfacesAndSelfTo<SelectionComponent>()
-                        .AsSingle();
+                    Container.BindSingle<SelectionComponent>();
 
                     Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(shipType);
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                               
-                    Container
-                        .BindInterfacesAndSelfTo<EnemySelectionComponent>()
-                        .AsSingle();
+
+                    Container.BindSingle<EnemySelectionComponent>();
                     
                     Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(shipType);
                     break;

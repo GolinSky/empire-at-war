@@ -33,6 +33,11 @@ MonoBehaviour:
     - key: 102
       value: {fileID: -7875661336892348539, guid: 07fbb46098b845b4f847f4511e25b732,
         type: 3}
+  spawnFacilityWrapper:
+    keyValue:
+    - key: 0
+      value: {fileID: 5422768365347329368, guid: d84a981dd98ca8d469ba6d297ddf571d,
+        type: 3}
   <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
     type: 3}
   <MaxUnitCapacity>k__BackingField: 20

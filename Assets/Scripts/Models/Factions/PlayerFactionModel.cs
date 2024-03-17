@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Models.Factions
         FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
         Dictionary<ShipType, FactionData> FactionData { get; }
+        Dictionary<MiningFacilityType, FactionData> MiningFactions { get; }
         FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
     }
@@ -48,11 +50,12 @@ namespace EmpireAtWar.Models.Factions
         [Inject(Id = PlayerType.Player)] 
         public FactionType FactionType { get; }
         
-        public UnitRequest ShipTypeToBuild
+        public UnitRequest UnitToBuild
         {
             set => OnUnitBuild?.Invoke(value);
         }
-        
+
+        public Dictionary<MiningFacilityType, FactionData> MiningFactions => factionsModel.MiningFactionsData;
         public Dictionary<ShipType, FactionData> FactionData => GetFactionData(FactionType);
 
         public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType) => factionsModel.GetFactionData(factionType);

@@ -9,11 +9,11 @@ namespace EmpireAtWar
 {
     public interface ISpawnShipUi
     {
-        ShipType ShipType { get; }
+        string UnitType { get; }
         void DecreaseUnitCount();
         void AddUnit();
         void Activate(bool isActive);
-        void Init(IReinforcementVisitor reinforcementVisitor, ShipType shipType, FactionData factionData);
+        void Init(IReinforcementVisitor reinforcementVisitor, string unitType, FactionData factionData);
     }
     
     public class SpawnShipUi : MonoBehaviour, IBeginDragHandler, IDragHandler, ISpawnShipUi
@@ -32,24 +32,24 @@ namespace EmpireAtWar
         private int count;
         private bool isBlocked;
         
-
-        public ShipType ShipType { get; private set; }
+        public string UnitType { get; private set; }
 
         private void Awake()
         {
             originColor = backgroundImage.color;
         }
 
-        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, ShipType shipType, FactionData factionData)
+        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, string unitType, FactionData factionData)
         {
+            UnitType = unitType;
             this.reinforcementVisitor = reinforcementVisitor;
             iconImage.sprite = factionData.Icon;
             unitCapacityText.text = factionData.UnitCapacity.ToString();
-            ShipType = shipType;
             count = DefaultCountValue;
             UpdateUnitCountText();
         }
-        
+
+
         void ISpawnShipUi.DecreaseUnitCount()
         {
             count--;
@@ -69,6 +69,7 @@ namespace EmpireAtWar
         void ISpawnShipUi.Activate(bool isActive)
         {
             backgroundImage.color = isActive ? originColor : blockedColor;
+            isBlocked = !isActive;
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
