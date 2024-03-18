@@ -50,8 +50,11 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
             Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.deltaTime;
-            newPos.y = Model.ZoomRange.Clamp(newPos.y);
-            Model.CameraPosition = newPos;
+            if(Model.ZoomRange.IsInRange(newPos.y))
+            {
+                newPos.y = Model.ZoomRange.Clamp(newPos.y);
+                Model.CameraPosition = newPos;
+            }
         }
 
         private void HandleInput(InputType inputType, TouchPhase phase, Vector2 screenPosition)
