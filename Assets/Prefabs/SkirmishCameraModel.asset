@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: SkirmishCameraModel
   m_EditorClassIdentifier: 
   models: []
-  <MapSize>k__BackingField: {x: 500, y: 400, z: 500}
+  <MoveRange>k__BackingField:
+    <Min>k__BackingField: {x: -50, y: -300}
+    <Max>k__BackingField: {x: 200, y: -25}
   <ZoomRange>k__BackingField:
-    <Min>k__BackingField: 50
-    <Max>k__BackingField: 500
+    <Min>k__BackingField: 80
+    <Max>k__BackingField: 300
   <MoveSpeed>k__BackingField: 0
   <PanSpeed>k__BackingField: 3
   <ZoomSpeed>k__BackingField: 15

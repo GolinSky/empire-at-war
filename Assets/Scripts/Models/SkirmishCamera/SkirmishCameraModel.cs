@@ -12,15 +12,17 @@ namespace EmpireAtWar.Models.SkirmishCamera
         event Action<float> OnFovChanged;
         
         float MoveSpeed { get; }
+        Vector2Range MoveRange { get;}
         
     }
+
     [CreateAssetMenu(fileName = "SkirmishCameraModel", menuName = "Model/SkirmishCameraModel")]
     public class SkirmishCameraModel:Model, ISkirmishCameraModelObserver
     {
         public event Action<Vector3> OnTranslateDirectionChanged;
         public event Action<Vector3> OnPositionChanged;
         public event Action<float> OnFovChanged;
-        [field:SerializeField] public Vector3 MapSize { get; private set; }
+        [field:SerializeField] public Vector2Range MoveRange { get; private set; }
         [field:SerializeField] public FloatRange ZoomRange { get; private set; }
         [field:SerializeField] public float MoveSpeed { get; private set; }
         [field:SerializeField] public float PanSpeed { get; private set; }

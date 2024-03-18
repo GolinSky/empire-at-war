@@ -37,9 +37,18 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             mainCamera.fieldOfView = fieldOfView;
         }
-        
+
+        private Vector2 ToXZ(Vector3 vector3)
+        {
+            return new Vector2(vector3.x, vector3.z);
+        }
         private void SetPosition(Vector3 position)
         {
+            // if(!Model.MoveRange.IsInRange(ToXZ(position)))
+            //     return;
+            Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
+            position.x = clampedPosition.x;
+            position.z = clampedPosition.y;
             moveSequence.KillIfExist();
             moveSequence = DOTween.Sequence();
             moveSequence.Append(cameraTransform
