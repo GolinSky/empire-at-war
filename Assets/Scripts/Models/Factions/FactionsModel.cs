@@ -23,11 +23,6 @@ namespace EmpireAtWar.Models.Factions
             return FactionData[factionType].Dictionary;
         }
 
-        // public FactionData GetMiningFactionData(MiningFacilityType miningFacilityType)
-        // {
-        //     return miningFactionsData.Dictionary[miningFacilityType];
-        // }
-
         public FactionData GetLevelFactionData(int level)
         {
             if (level > MaxLevel) return null;

@@ -44,8 +44,6 @@ namespace EmpireAtWar.Views.SkirmishCamera
         }
         private void SetPosition(Vector3 position)
         {
-            // if(!Model.MoveRange.IsInRange(ToXZ(position)))
-            //     return;
             Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
             position.x = clampedPosition.x;
             position.z = clampedPosition.y;

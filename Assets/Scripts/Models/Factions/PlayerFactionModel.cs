@@ -56,10 +56,8 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public Dictionary<MiningFacilityType, FactionData> MiningFactions => factionsModel.MiningFactionsData;
-        public Dictionary<ShipType, FactionData> FactionData => GetFactionData(FactionType);
-
-        public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType) => factionsModel.GetFactionData(factionType);
-
+        public Dictionary<ShipType, FactionData> FactionData => factionsModel.GetFactionData(FactionType);
+        
         public int CurrentLevel
         {
             get => currentLevel;
