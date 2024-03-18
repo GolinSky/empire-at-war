@@ -9,6 +9,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.Ship;
+using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
 
@@ -16,12 +17,14 @@ namespace EmpireAtWar.SceneContext
 {
     public class ShipInstaller:Installer
     {
+        private readonly IRepository repository;
         private readonly ShipType shipType;
         private readonly PlayerType playerType;
         private readonly Vector3 startPosition;
 
-        public ShipInstaller(ShipType shipType, PlayerType playerType, Vector3 startPosition)
+        public ShipInstaller(IRepository repository, ShipType shipType, PlayerType playerType, Vector3 startPosition)
         {
+            this.repository = repository;
             this.shipType = shipType;
             this.playerType = playerType;
             this.startPosition = startPosition;
@@ -29,41 +32,38 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
-            Container
-                .BindInstance(startPosition)
-                .AsSingle();
+            Container.BindEntity(startPosition);
+            Container.BindEntity(playerType);
 
             Container
-                .BindInstance(playerType)
-                .AsSingle();
-            
+                .BindInterfaces<MoveComponent>()
+                .BindInterfaces<HealthComponent>()
+                .BindInterfaces<WeaponComponent>()
+                .BindInterfaces<RadarComponent>()
+                .BindInterfaces<AiComponent>();
 
-            Container
-                .BindSingle<MoveComponent>()
-                .BindSingle<HealthComponent>()
-                .BindSingle<WeaponComponent>()
-                .BindSingle<RadarComponent>()
-                .BindSingle<AiComponent>();
-            
-            
+            Container.BindEntity(shipType);
+
             switch (playerType)
             {
                 case PlayerType.Player:
                 {
-                    Container.BindSingle<SelectionComponent>();
-
-                    Container.BindShipEntity<ShipController, ShipView, ShipModel, PlayerShipCommand>(shipType);
+                    Container.BindInterfaces<SelectionComponent>();
+                    Container.BindInterfaces<PlayerShipCommand>();
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-
-                    Container.BindSingle<EnemySelectionComponent>();
-                    
-                    Container.BindShipEntity<ShipController, ShipView, ShipModel, EnemyShipCommand>(shipType);
+                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container.BindInterfaces<EnemyShipCommand>();
                     break;
                 }
             }
+            
+            Container
+                .BindModel<ShipModel>(repository, shipType.ToString())
+                .BindInterfaces<ShipController>()
+                .BindViewFromNewComponent<ShipView>(repository, shipType.ToString());
         }
     }
 }

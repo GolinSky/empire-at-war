@@ -1,150 +1,94 @@
 using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
-using UnityEngine;
 using LightWeightFramework.Components;
 using LightWeightFramework.Command;
 using LightWeightFramework.Components.Repository;
-using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        //todo: rename
-        public static void BindEntityFromPrefab<TController, TView, TModel, TCommand>(this DiContainer container, FactionType factionType)
-            where TController : Controller<TModel>
-            where TView : Component, IView
-            where TModel : Model
-            where TCommand : Command
-        {
-            IRepository repository = container.Resolve<IRepository>();
-
-            container.BindInterfacesAndSelfTo<TCommand>()
-                .AsSingle();
-            
-            container.BindModel<TModel>();
-
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsSingle();
-            
-            container
-                .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>($"{factionType}{typeof(TView).Name}"))
-                .AsSingle();
-        }
         
-        public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TView view)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
-            where TCommand : Command
-        {
-            container
-                .BindInterfacesAndSelfTo<TCommand>()
-                .AsSingle();
-
-            container.BindEntity<TController, TView, TModel>(view);
-        }
+        // public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TView view)
+        //     where TController : Controller<TModel>
+        //     where TView : IView
+        //     where TModel : Model
+        //     where TCommand : Command
+        // {
+        //     container.BindInterfaces<TCommand>();
+        //
+        //     container.BindEntity<TController, TView, TModel>(view);
+        // }
+        //
+        // public static void BindEntity<TController, TView, TModel>(this DiContainer container,  TView view)
+        //     where TController : Controller<TModel>
+        //     where TView : IView
+        //     where TModel : Model
+        // {
+        //     IRepository repository = container.Resolve<IRepository>();
+        //
+        //     container.BindModel<TModel>(repository);
+        //
+        //     container.BindInterfaces<TController>();
+        //
+        //     container.BindViewFromInstance(view);
+        // }
         
-        public static void BindEntity<TController, TView, TModel>(this DiContainer container,  TView view)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
-        {
-            container
-                .BindModel<TModel>();
 
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsSingle();
-            
-            container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsSingle();
-        }
-        
-        
-        public static void BindShipEntity<TController, TView, TModel, TCommand>(this DiContainer container, ShipType shipType)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
-            where TCommand : Command
-        {
-            IRepository repository = container.Resolve<IRepository>();
-
-            container.BindInstance(shipType)
-                .AsSingle();
-            
-            container.BindInterfacesAndSelfTo<TCommand>()
-                .AsSingle();
-
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>($"{shipType}{(typeof(TModel).Name)}"))
-                .AsSingle()
-                .OnInstantiated((context, o) =>
-                {
-                    Model model = (Model)o;
-                    foreach (IModel currentModel in model.CurrentModels)
-                    {
-                        context.Container.Inject(currentModel);
-                    }
-                })
-                .NonLazy();
-            
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsSingle();
-            
-            
-            container
-                .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>($"{shipType}{(typeof(TView).Name)}"))
-                .AsSingle()
-                .OnInstantiated((context, o) =>
-                {
-                    TView view = (TView)o;
-                    foreach (ViewComponent component in view.ViewComponents)
-                    {
-                        context.Container.Inject(component);
-                        context.Container.BindInterfacesTo(component.GetType()).FromComponentOn(component.gameObject).AsSingle();
-                    }
-                } );
-        }
-
-
-        public static DiContainer BindService<TService>(this DiContainer container)
-        {
-            container
-                .BindInterfacesAndSelfTo<TService>()
-                .AsSingle()
-                .NonLazy();
-            return container;
-        }
-
-        public static DiContainer BindModel<TModel>(this DiContainer container) where TModel: ScriptableObject, IModel
-        {
-            IRepository repository = container.Resolve<IRepository>();
-
-            container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(typeof(TModel).Name))
-                
-                .AsSingle();
-
-            return container;
-        }
-
-        public static DiContainer BindSingle<TEntity>(this DiContainer container)
+        public static DiContainer BindInterfaces<TEntity>(this DiContainer container)
         {
             container.BindInterfacesAndSelfTo<TEntity>()
                 .AsSingle()
                 .NonLazy();
             return container;
+        }
+        
+        public static DiContainer BindModel<TModel>(this DiContainer container, IRepository repository, string prefix = null, string postfix = null)
+         where TModel: Model
+        {
+            ModelDependencyBuilder
+                .ConstructBuilder(container)
+                .AppendToPath(prefix, postfix)
+                .BindFromNewScriptable<TModel>(repository);
+            return container;
+        }
+
+        public static DiContainer BindViewFromNewComponent<TView>(
+            this DiContainer container,
+            IRepository repository,
+            string prefix = null,
+            string postfix = null)
+            where TView :  IView
+        {
+            ViewDependencyBuilder
+                .ConstructBuilder(container)
+                .AppendToPath(prefix, postfix)
+                .BindFromNewComponent<TView>(repository);
+            return container;
+        }
+        
+        public static DiContainer BindViewFromInstance<TView>(
+            this DiContainer container,
+            TView view,
+            string prefix = null,
+            string postfix = null)
+            where TView :  IView
+        {
+            ViewDependencyBuilder
+                .ConstructBuilder(container)
+                .AppendToPath(prefix, postfix)
+                .BindFromInstance<TView>(view);
+            return container;
+        }
+
+        public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
+        {
+            var binder =  container
+                .BindInstance(@entity)
+                .AsSingle();
+            return binder;
         }
     }
 }

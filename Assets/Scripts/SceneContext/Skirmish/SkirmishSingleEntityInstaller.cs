@@ -37,6 +37,7 @@ using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.SkirmishCamera;
 using EmpireAtWar.Views.Terrain;
+using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
 
@@ -57,54 +58,79 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [Inject]
     private IGameModelObserver GameModelObserver { get; }
     
+    [Inject]
+    private IRepository Repository { get; }
+    
     public override void InstallBindings()
     {
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
         Container
-            .BindModel<FactionsModel>()
-            .BindModel<WeaponDamageModel>()
-            .BindModel<ProjectileModel>()
-            .BindModel<LayerModel>()
-            .BindModel<DamageCalculationModel>();
+            .BindModel<FactionsModel>(Repository)
+            .BindModel<WeaponDamageModel>(Repository)
+            .BindModel<ProjectileModel>(Repository)
+            .BindModel<LayerModel>(Repository)
+            .BindModel<DamageCalculationModel>(Repository);
 
-        Container.BindService<UnitRequestFactory>();
+        Container.BindInterfaces<UnitRequestFactory>();
+
+        Container
+            .BindModel<EconomyModel>(Repository)
+            .BindInterfaces<EconomyController>()
+            .BindViewFromInstance(economyView);
         
         Container
-            .BindEntity<EconomyController, EconomyView, EconomyModel>(economyView);
+            .BindModel<MenuModel>(Repository)
+            .BindInterfaces<MenuController>()
+            .BindViewFromInstance(menuView);
         
         Container
-            .BindEntity<MenuController, MenuView, MenuModel>(menuView);
+            .BindModel<MapModel>(Repository)
+            .BindInterfaces<MapController>()
+            .BindViewFromInstance(mapView);
         
         Container
-            .BindEntity<MapController, MapView, MapModel>(mapView);
+            .BindModel<NavigationModel>(Repository)
+            .BindInterfaces<NavigationController>()
+            .BindViewFromInstance(navigationUiView);
         
         Container
-            .BindEntity<NavigationController, NavigationUiView, NavigationModel>(navigationUiView);
+            .BindModel<SkirmishCameraModel>(Repository)
+            .BindInterfaces<SkirmishCameraController>()
+            .BindViewFromInstance(cameraView);
         
         Container
-            .BindEntity<SkirmishCameraController, SkirmishCameraView, SkirmishCameraModel>(cameraView);
-            
+            .BindModel<TerrainModel>(Repository)
+            .BindInterfaces<TerrainController>()
+            .BindViewFromInstance(terrainView);
+
         Container
-            .BindEntity<TerrainController, TerrainView, TerrainModel>(terrainView);
+            .BindModel<ShipUiModel>(Repository)
+            .BindInterfaces<ShipUiController>()
+            .BindViewFromInstance(shipUiView);
         
         Container
-            .BindEntity<ShipUiController, ShipUiView, ShipUiModel, ShipUiCommand>(shipUiView);
+            .BindModel<PlayerFactionModel>(Repository)
+            .BindInterfaces<FactionController>()
+            .BindViewFromInstance(factionUiView);
         
         Container
-            .BindEntity<FactionController, FactionUiView, PlayerFactionModel>(factionUiView);
+            .BindModel<SkirmishGameModel>(Repository)
+            .BindInterfaces<SkirmishGameController>()
+            .BindViewFromInstance(gameView);
         
         Container
-            .BindEntity<SkirmishGameController, SkirmishGameView, SkirmishGameModel>(gameView);
+            .BindModel<PlanetModel>(Repository)
+            .BindInterfaces<PlanetController>()
+            .BindViewFromInstance(planetView);
         
         Container
-            .BindEntity<PlanetController, PlanetView, PlanetModel>(planetView);
+            .BindModel<ReinforcementModel>(Repository)
+            .BindInterfaces<ReinforcementController>()
+            .BindViewFromInstance(reinforcementView);
         
-        Container
-            .BindEntity<ReinforcementController, ReinforcementView, ReinforcementModel>(reinforcementView);
-        
-        Container.BindService<PurchaseMediator>();
+        Container.BindInterfaces<PurchaseMediator>();
     }
 
     private FactionType GetPlayerFactionType()

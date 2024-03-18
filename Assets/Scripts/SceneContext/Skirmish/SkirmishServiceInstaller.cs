@@ -19,14 +19,14 @@ public class SkirmishServiceInstaller : MonoInstaller
     {
         Container.BindInstance(mainCamera);
         Container
-            .BindService<NavigationService>()
-            .BindService<InputService>()
-            .BindService<ShipService>()
-            .BindService<CameraService>()
-            .BindService<EnemyService>()
-            .BindService<PlayerService>()
-            .BindService<SelectionService>()
-            .BindService<ComponentHub>()
-            .BindService<BattleService>();
+            .BindInterfaces<NavigationService>()
+            .BindInterfaces<InputService>()
+            .BindInterfaces<ShipService>()
+            .BindInterfaces<CameraService>()
+            .BindInterfaces<EnemyService>()
+            .BindInterfaces<PlayerService>()
+            .BindInterfaces<SelectionService>()
+            .BindInterfaces<ComponentHub>()
+            .BindInterfaces<BattleService>();
     }
 }

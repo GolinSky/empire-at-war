@@ -29,8 +29,6 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<MiningFacilityInstaller>()
                 .NonLazy();
-            
-            //PlayerType,MiningFacilityType,Vector3,MiningFacilityView
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Ship;
@@ -10,7 +11,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
 {
-    public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable
+    public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand
     {
         private readonly INavigationService navigationService;
 
