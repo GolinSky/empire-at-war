@@ -55,20 +55,32 @@ namespace EmpireAtWar.Models.Health
         protected override void OnInit()
         {
             shieldsBaseValue = Shields;
-            float health = (Armor*WeaponSystemCoefficient) / (ShipUnitModels.Length - MainSystemAmount);
-
-            foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
+            if (ShipUnitModels.Length <= MainSystemAmount)
             {
-                if (shipUnitModel.ShipUnitType == ShipUnitType.Engines ||
-                    shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator)
-                {
-                    shipUnitModel.SetHealth(Armor*MainSystemCoefficient);
-                }
-                else
+                float health = Armor / ShipUnitModels.Length;
+                foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
                 {
                     shipUnitModel.SetHealth(health);
                 }
             }
+            else
+            {
+                float health = (Armor*WeaponSystemCoefficient) / (ShipUnitModels.Length - MainSystemAmount);
+
+                foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
+                {
+                    if (shipUnitModel.ShipUnitType == ShipUnitType.Engines ||
+                        shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator)
+                    {
+                        shipUnitModel.SetHealth(Armor*MainSystemCoefficient);
+                    }
+                    else
+                    {
+                        shipUnitModel.SetHealth(health);
+                    }
+                }
+            }
+      
         }
         
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)

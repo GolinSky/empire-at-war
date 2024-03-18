@@ -1,7 +1,8 @@
-﻿using EmpireAtWar.Models.MiningFacility;
+﻿using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Models.MiningFacility;
 using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
-using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Controllers.MiningFacility
 {
@@ -9,14 +10,33 @@ namespace EmpireAtWar.Controllers.MiningFacility
     {
         
     }
-    public class MiningFacilityController : Controller<MiningFacilityModel>, IMiningFacilityCommand
+    
+    public class MiningFacilityController : Controller<MiningFacilityModel>, IMiningFacilityCommand, IIncomeProvider, IInitializable, ILateDisposable
     {
-        private readonly Vector3 spawnPosition;
+        private readonly IEconomyProvider economyProvider;
+        
+        public float Income => Model.Income;
 
-        public MiningFacilityController(MiningFacilityModel model, Vector3 startPosition) : base(model)
+        public MiningFacilityController(MiningFacilityModel model, IEconomyProvider economyProvider) : base(model)
         {
-            this.spawnPosition = startPosition;
+            this.economyProvider = economyProvider;
+        }
+
+        public void Initialize()
+        {
+            Model.HealthModel.OnDestroy += HandleDestroy;
+            economyProvider.AddProvider(this);
         }
         
+        public void LateDispose()
+        {
+            Model.HealthModel.OnDestroy -= HandleDestroy;
+            economyProvider.RemoveProvider(this);
+        }
+        
+        private void HandleDestroy()
+        {
+            economyProvider.RemoveProvider(this);
+        }
     }
 }

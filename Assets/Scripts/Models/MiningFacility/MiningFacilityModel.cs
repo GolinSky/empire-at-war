@@ -18,7 +18,8 @@ namespace EmpireAtWar.Models.MiningFacility
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
         [field:SerializeField] public MoveModel MoveModel { get; private set; }
 
-
+        [field:SerializeField] public float Income { get; private set; }
+        
         protected override void Awake()
         {
             base.Awake();
