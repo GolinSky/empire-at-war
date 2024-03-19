@@ -63,7 +63,7 @@ namespace EmpireAtWar.Services.InputService
                         break;
                     case TouchPhase.Ended:
                     {
-                        if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Moved && touch.deltaTime < 0.1f)
+                        if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Moved)
                         {
                             InvokeInputEvent(InputType.Selection);
                         }
