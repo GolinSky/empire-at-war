@@ -48,7 +48,7 @@ namespace EmpireAtWar.Controllers.Ship
         {
             if (enginesUnitModel.Health <= 0f)
             {
-                Model.MoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
+                Model.ShipMoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
             }
         }
     }

@@ -16,14 +16,14 @@ namespace EmpireAtWar.Models.MiningFacility
     {
         [field:SerializeField] public HealthModel HealthModel { get; private set; }
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
-        [field:SerializeField] public MoveModel MoveModel { get; private set; }
+        [field:SerializeField] public SimpleMoveModel SimpleMoveModel { get; private set; }
 
         [field:SerializeField] public float Income { get; private set; }
         
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModels(HealthModel, RadarModel, MoveModel);
+            AddInnerModels(HealthModel, RadarModel, SimpleMoveModel);
         }
     }
 }

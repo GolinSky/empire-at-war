@@ -40,10 +40,10 @@ namespace EmpireAtWar.Controllers.Navigation
         
         private void HandleAttackInput(IModel model)
         {
-            IMoveModelObserver moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
-            if (moveModelObserver != null)
+            IShipMoveModelObserver shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            if (shipMoveModelObserver != null)
             {
-                Model.AttackPosition = cameraService.WorldToScreenPoint(moveModelObserver.CurrentPosition);
+                Model.AttackPosition = cameraService.WorldToScreenPoint(shipMoveModelObserver.CurrentPosition);
             }
         }
         

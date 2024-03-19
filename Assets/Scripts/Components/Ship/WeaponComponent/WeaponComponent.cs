@@ -9,7 +9,6 @@ using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using LightWeightFramework.Components.Components;
 using Zenject;
-using ICommand = LightWeightFramework.Command.ICommand;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
@@ -20,20 +19,10 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         bool HasEnoughRange(float distance);
     }
 
-    public enum AttackType
-    {
-        Base = 0,
-        MainTarget = 1,
-    }
-
-    public interface IWeaponCommand:ICommand
-    {
-        void ApplyDamage(IShipUnitView unitView, WeaponType weaponType);
-    }
-    public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable
+    public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable
     {
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly IMoveModelObserver moveModelObserver;
+        private readonly IShipMoveModelObserver shipMoveModelObserver;
         private readonly ITimer attackTimer;
         private float endTimeTween;
 
@@ -44,7 +33,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.timerPoolWrapperService = timerPoolWrapperService;
-            moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
         }
 
@@ -99,7 +88,12 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                         {   
                             if(!attackDataList.Contains(attackData)) return;
                             
-                            ApplyDamageInternal(attackData, weaponType, unitView.Id,
+                            if(unitView == null) return;// todo: fix bug when loading main menu
+                            
+                            ApplyDamageInternal(
+                                attackData,
+                                weaponType,
+                                unitView.Id,
                                 GetDistance(unitView.Position));
                         },
                         Model.ProjectileDuration);
@@ -139,7 +133,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         }
 
         private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
+            Vector3.Distance(shipMoveModelObserver.CurrentPosition, targetPosition);
 
         private void RemoveAttackData(AttackData attackData)
         {
@@ -162,15 +156,18 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                         mainAttackData = null;
                         Model.MainUnitsTarget = null;
                     }
-         
                 }
-             
                 
                 for (var i = 0; i < attackDataList.Count; i++)
                 {
                     CheckAttackData(attackDataList[i]);
                 }
             }
+        }
+
+        public void LateDispose()
+        {
+            attackDataList.Clear();
         }
     }
 }

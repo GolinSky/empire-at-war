@@ -9,19 +9,21 @@ namespace EmpireAtWar.Components.Ship.Radar
 {
     public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable
     {
+        private const float OffsetDistance = 100f;
+        
         private readonly ITimer timer;
-        private readonly IMoveModelObserver moveModelObserver;
+        private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
         private readonly Vector3 offset;
 
         private RaycastHit[] raycastHits;
 
-        private Vector3 CenterCast => moveModelObserver.CurrentPosition - offset;
+        private Vector3 CenterCast => simpleMoveModelObserver.CurrentPosition - offset;
         public RadarComponent(IModel model) : base(model)
         {
-            offset = Vector3.up * 100;
+            offset = Vector3.up * OffsetDistance;
             timer = TimerFactory.ConstructTimer(Model.Delay);
             timer.StartTimer();
-            moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
         }
 
         public void FixedTick()
@@ -38,11 +40,6 @@ namespace EmpireAtWar.Components.Ship.Radar
 
                 if (raycastHits != null && raycastHits.Length != 0)
                 {
-                    // string names = "RaycastHits: ";
-                    // foreach (var raycastHit in raycastHits)
-                    // {
-                    //     names += $"{raycastHit.collider.name},  ";
-                    // }
                     Model.AddHit(raycastHits);
                 }
                 timer.StartTimer();

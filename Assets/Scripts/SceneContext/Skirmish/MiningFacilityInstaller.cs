@@ -43,7 +43,7 @@ namespace EmpireAtWar.SceneContext
             
             Container
                 .BindInterfaces<HealthComponent>()
-                .BindInterfaces<MoveComponent>()
+                .BindInterfaces<SimpleMoveComponent>()
                 .BindInterfaces<RadarComponent>();
 
             switch (playerType)

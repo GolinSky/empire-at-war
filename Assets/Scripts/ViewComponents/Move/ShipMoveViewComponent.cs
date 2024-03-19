@@ -12,7 +12,7 @@ using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.ViewComponents.Move
 {
-    public class MoveViewComponent : ViewComponent<IMoveModelObserver>
+    public class ShipMoveViewComponent : ViewComponent<IShipMoveModelObserver>
     {
         private const float BodyRotationDefaultDuration = 1f;
         

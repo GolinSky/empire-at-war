@@ -5,6 +5,7 @@ using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace EmpireAtWar.Models.Ship
@@ -20,8 +21,10 @@ namespace EmpireAtWar.Models.Ship
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
     public class ShipModel : Model, IShipModelObserver
     {
+        [FormerlySerializedAs("shipShipMoveModel")]
+        [FormerlySerializedAs("moveModel")]
         [Header("Move Model")]
-        [SerializeField] private MoveModel moveModel;
+        [SerializeField] private ShipMoveModel shipMoveModel;
         
         [Header("Health Model")]
         [SerializeField] private HealthModel healthModel;
@@ -40,7 +43,7 @@ namespace EmpireAtWar.Models.Ship
         [Inject]
         public ShipType ShipType { get; }
 
-        public MoveModel MoveModel => moveModel;
+        public ShipMoveModel ShipMoveModel => shipMoveModel;
 
         public HealthModel HealthModel => healthModel;
 
@@ -52,7 +55,7 @@ namespace EmpireAtWar.Models.Ship
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModels(moveModel, healthModel, weaponModel, radarModel);
+            AddInnerModels(shipMoveModel, healthModel, weaponModel, radarModel);
         }
 
         public ShipInfoUi FillWithData(ShipInfoUi shipInfoUi)

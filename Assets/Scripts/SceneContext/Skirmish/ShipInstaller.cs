@@ -36,7 +36,7 @@ namespace EmpireAtWar.SceneContext
             Container.BindEntity(playerType);
 
             Container
-                .BindInterfaces<MoveComponent>()
+                .BindInterfaces<ShipShipMoveComponent>()
                 .BindInterfaces<HealthComponent>()
                 .BindInterfaces<WeaponComponent>()
                 .BindInterfaces<RadarComponent>()

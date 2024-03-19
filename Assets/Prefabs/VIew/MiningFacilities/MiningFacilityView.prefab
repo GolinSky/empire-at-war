@@ -430,8 +430,8 @@ GameObject:
   - component: {fileID: 8695393852091650333}
   - component: {fileID: 2552602495019356737}
   - component: {fileID: 8153750395777210056}
-  - component: {fileID: 1695670858258911670}
   - component: {fileID: 5684733674363030782}
+  - component: {fileID: 760299439799475096}
   m_Layer: 0
   m_Name: MiningFacilityView
   m_TagString: Untagged
@@ -472,7 +472,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewComponents:
   - {fileID: 8426529281907543628}
-  - {fileID: 1695670858258911670}
+  - {fileID: 760299439799475096}
   - {fileID: 5684733674363030782}
 --- !u!114 &2552602495019356737
 MonoBehaviour:
@@ -509,24 +509,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 7, y: 11.861645, z: 8.435343}
   m_Center: {x: 0, y: -1.782603, z: 0.023150444}
---- !u!114 &1695670858258911670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8290540933441299966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01a120d55b6843a3a42af33e2a39cd50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationMode: 0
-  lookAtEase: 0
-  moveEase: 0
-  hyperSpaceEase: 0
-  lineRenderer: {fileID: 0}
-  bodyTransform: {fileID: 844202057271608548}
 --- !u!114 &5684733674363030782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,6 +519,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0aea22f94f5443f58d01435620375231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &760299439799475096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8864fa54cfe24ae6b614f133e3407bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1584723210409687961

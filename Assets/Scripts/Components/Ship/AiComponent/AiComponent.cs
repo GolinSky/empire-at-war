@@ -22,12 +22,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
     public class AiComponent : Component, IInitializable, ILateDisposable
     {
         private const ShipUnitType DefaultTargetType = ShipUnitType.Any;
-        private readonly IMoveComponent moveComponent;
+        private readonly IShipMoveComponent shipMoveComponent;
         private readonly IWeaponComponent weaponComponent;
         private readonly IComponentHub componentHub;
         private readonly ISelectionService selectionService;
         private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly IMoveModelObserver moveModelObserver;
+        private readonly IShipMoveModelObserver shipMoveModelObserver;
         private readonly IWeaponModelObserver weaponModelObserver;
         private readonly ITimer moveAroundTimer;
         
@@ -37,16 +37,16 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
 
         //todo: radar component
-        public AiComponent(IModel model, IMoveComponent moveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService)
+        public AiComponent(IModel model, IShipMoveComponent shipMoveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService)
         {
-            this.moveComponent = moveComponent;
+            this.shipMoveComponent = shipMoveComponent;
             this.weaponComponent = weaponComponent;
             this.componentHub = componentHub;
             this.selectionService = selectionService;
             healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
             radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
-            moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
             weaponModelObserver = model.GetModelObserver<IWeaponModelObserver>();
             moveAroundTimer = TimerFactory.ConstructTimer(10f);
         }
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             //add condition - if under attack
             if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
             {
-                moveAroundTimer.ChangeDelay(moveComponent.MoveAround()); 
+                moveAroundTimer.ChangeDelay(shipMoveComponent.MoveAround()); 
                 moveAroundTimer.StartTimer();
             }
         }
@@ -85,18 +85,18 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
                 Vector3 targetPosition = raycastHit.transform.position;
-                float distance = Vector3.Distance(moveModelObserver.CurrentPosition, targetPosition);
+                float distance = Vector3.Distance(shipMoveModelObserver.CurrentPosition, targetPosition);
                 if (!weaponComponent.HasEnoughRange(distance))
                 {
-                    Vector3 lookDirection = moveComponent.CalculateLookDirection(targetPosition);
+                    Vector3 lookDirection = shipMoveComponent.CalculateLookDirection(targetPosition);
                     float attackDistance = distance - (weaponModelObserver.MaxAttackDistance/2f);
-                    Vector3 attackPosition = moveModelObserver.CurrentPosition +
+                    Vector3 attackPosition = shipMoveModelObserver.CurrentPosition +
                                              lookDirection.normalized*attackDistance;
-                    moveComponent.MoveToPosition(attackPosition);
+                    shipMoveComponent.MoveToPosition(attackPosition);
                 }
                 else
                 {
-                    moveComponent.LookAtTarget(targetPosition);
+                    shipMoveComponent.LookAtTarget(targetPosition);
                 }
                 weaponComponent.AddTarget(new AttackData(mainTarget,
                     componentHub.GetComponent(mainTarget.ModelObserver),

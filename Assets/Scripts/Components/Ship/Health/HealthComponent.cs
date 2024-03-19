@@ -18,18 +18,19 @@ namespace EmpireAtWar.Components.Ship.Health
 
     public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
     {
-        private readonly IMoveModelObserver moveModelObserver;
+        private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
         private readonly IComponentHub componentHub;
         private readonly IModel rootModel;
         private readonly ITimer refreshShieldsTimer;
+        
         private float originShieldValue;
+        
         public bool Destroyed => Model.IsDestroyed;
-
-
+        
         public HealthComponent(IModel model, IComponentHub componentHub) : base(model)
         {
             this.componentHub = componentHub;
-            moveModelObserver = model.GetModelObserver<IMoveModelObserver>();
+            simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             rootModel = model;
             originShieldValue = Model.Shields;
             refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
@@ -54,7 +55,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
         {
-            bool isMoving = moveModelObserver is { IsMoving: true };
+            bool isMoving = simpleMoveModelObserver is { IsMoving: true };
             Model.ApplyDamage(damage, weaponType, isMoving, shipUnitId);
         }
 

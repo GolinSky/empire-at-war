@@ -27,13 +27,10 @@ MonoBehaviour:
     <Range>k__BackingField: 30
     <Delay>k__BackingField: 30
     <Distance>k__BackingField: 50
-  <MoveModel>k__BackingField:
-    speed: 0
-    <FallDownDirection>k__BackingField: {x: 0, y: -40, z: 0}
-    <RotationSpeed>k__BackingField: 0
-    <MinRotationDuration>k__BackingField: 0
-    <HyperSpaceSpeed>k__BackingField: 0
-    <FallDownDuration>k__BackingField: 300
+  <SimpleMoveModel>k__BackingField:
     <Height>k__BackingField: -5
-    <BodyRotationMaxAngle>k__BackingField: 0
+    <FallDownDirection>k__BackingField: {x: 0, y: -40, z: 0}
+    <FallDownDuration>k__BackingField: 260
+    <CanMove>k__BackingField: 0
+    speed: 0
   <Income>k__BackingField: 10
