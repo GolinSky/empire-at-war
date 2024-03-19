@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Movement;
+﻿using System.Linq;
+using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -15,7 +16,9 @@ namespace EmpireAtWar.Components.Ship.Radar
         private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
         private readonly Vector3 offset;
 
-        private RaycastHit[] raycastHits;
+        private int hitAmount;
+
+        private RaycastHit[] raycastHits = new RaycastHit[5];
 
         private Vector3 CenterCast => simpleMoveModelObserver.CurrentPosition - offset;
         public RadarComponent(IModel model) : base(model)
@@ -30,17 +33,19 @@ namespace EmpireAtWar.Components.Ship.Radar
         {
             if (timer.IsComplete)
             {
-                raycastHits = Physics.BoxCastAll(
+                hitAmount = Physics.BoxCastNonAlloc(
                     CenterCast,
                     Vector3.one * Model.Range,
                     Vector3.up,
+                    raycastHits,
                     Quaternion.identity,
                     Model.Distance + offset.y,
                     Model.EnemyLayerMask);
+               
 
-                if (raycastHits != null && raycastHits.Length != 0)
+                if (raycastHits != null && raycastHits.Length != 0 && hitAmount != 0)
                 {
-                    Model.AddHit(raycastHits);
+                    Model.AddHit(raycastHits.Take(hitAmount).ToArray());
                 }
                 timer.StartTimer();
             }
