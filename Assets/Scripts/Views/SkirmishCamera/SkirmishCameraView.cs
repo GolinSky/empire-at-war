@@ -47,11 +47,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
             Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
             position.x = clampedPosition.x;
             position.z = clampedPosition.y;
-            moveSequence.KillIfExist();
-            moveSequence = DOTween.Sequence();
-            moveSequence.Append(cameraTransform
-                .DOMove(position, Model.MoveSpeed)
-                .SetEase(moveEase));
+            cameraTransform.position = position;
         }
 
         private void Translate(Vector3 direction)

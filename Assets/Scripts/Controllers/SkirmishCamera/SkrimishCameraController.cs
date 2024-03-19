@@ -49,7 +49,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-            Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.deltaTime;
+            Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.unscaledDeltaTime;
             if(Model.ZoomRange.IsInRange(newPos.y))
             {
                 newPos.y = Model.ZoomRange.Clamp(newPos.y);
@@ -66,13 +66,11 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 case TouchPhase.Moved:
                 {
                     Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-                    Vector3 move = new Vector3(-touchDeltaPosition.x, 0, -touchDeltaPosition.y) * Model.PanSpeed * Time.deltaTime;
+                    Vector3 move = new Vector3(-touchDeltaPosition.x, 0, -touchDeltaPosition.y) * Model.PanSpeed * Time.unscaledDeltaTime;
                     Model.TranslateDirection = move;
                     break;
                 }
             }
         }
-
-
     }
 }
