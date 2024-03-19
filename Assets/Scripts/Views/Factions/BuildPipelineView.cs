@@ -39,8 +39,7 @@ namespace EmpireAtWar.Views.Factions
             else
             {
                 PipelineView freePipeline = pipelineViews
-                    .Where(x => !x.IsBusy)
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => !x.IsBusy);
                 
                 SetUpPipeline(freePipeline);
                 workingPipelines.Add(id, freePipeline);

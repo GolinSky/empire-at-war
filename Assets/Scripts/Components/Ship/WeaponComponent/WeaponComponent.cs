@@ -26,6 +26,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private readonly ITimer attackTimer;
         private float endTimeTween;
 
+        private List<CustomCoroutine> customCoroutines = new List<CustomCoroutine>();
         private List<AttackData> attackDataList = new List<AttackData>();
         private AttackData mainAttackData = null;
         public WeaponComponent(
@@ -83,7 +84,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 if (attackDataList[i].Contains(unitView))
                 {
                     AttackData attackData = attackDataList[i];
-                    timerPoolWrapperService.Invoke(
+                    CustomCoroutine customCoroutine = timerPoolWrapperService.Invoke(
                         ()=>
                         {   
                             if(!attackDataList.Contains(attackData)) return;
@@ -97,9 +98,17 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                                 GetDistance(unitView.Position));
                         },
                         Model.ProjectileDuration);
+                    customCoroutines.Add(customCoroutine);
+                    customCoroutine.OnFinished += DeleteFromCollection;
                     break;
                 }
             }
+        }
+
+        private void DeleteFromCollection(CustomCoroutine customCoroutine)
+        {
+            customCoroutine.OnFinished -= DeleteFromCollection;
+            customCoroutines.Remove(customCoroutine);
         }
 
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
@@ -168,6 +177,14 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public void LateDispose()
         {
             attackDataList.Clear();
+            if (customCoroutines.Count > 0)
+            {
+                for (var i = 0; i < customCoroutines.Count; i++)
+                {
+                    customCoroutines[i].Release();
+                }
+
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ namespace EmpireAtWar.Views.Factions
         private void SkipSequence()
         {
             fillImageSequence.KillIfExist();
-            DOTween.KillAll();
+            DOTween.KillAll();// todo: make sure only tween on this object will be killed
             Complete(false);
         }
 
