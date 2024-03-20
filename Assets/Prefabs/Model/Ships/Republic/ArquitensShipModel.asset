@@ -14,14 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
-  moveModel:
+  shipMoveModel:
+    <Height>k__BackingField: 15
+    <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
+    <FallDownRotation>k__BackingField:
+      x:
+        <Min>k__BackingField: -90
+        <Max>k__BackingField: 90
+      y:
+        <Min>k__BackingField: -10
+        <Max>k__BackingField: 10
+      z:
+        <Min>k__BackingField: -360
+        <Max>k__BackingField: 360
+    <FallDownDuration>k__BackingField: 180
+    <CanMove>k__BackingField: 1
     speed: 3
-    <FallDownDirection>k__BackingField: {x: 0, y: -40, z: 0}
     <RotationSpeed>k__BackingField: 2
     <MinRotationDuration>k__BackingField: 5
     <HyperSpaceSpeed>k__BackingField: 2
-    <FallDownDuration>k__BackingField: 260
-    <Height>k__BackingField: 15
     <BodyRotationMaxAngle>k__BackingField: 30
   healthModel:
     dexterity: 0.8

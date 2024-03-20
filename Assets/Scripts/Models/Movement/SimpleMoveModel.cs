@@ -1,4 +1,5 @@
 ﻿using System;
+using EmpireAtWar.Utils.Random;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -11,6 +12,7 @@ namespace EmpireAtWar.Models.Movement
         Vector3 Position { get; }
         Vector3 CurrentPosition { get; }
         Vector3 FallDownDirection { get; }
+        RandomVector3 FallDownRotation { get; }
         float FallDownDuration { get; }
         float Speed { get; }
         bool IsMoving { get; }
@@ -23,6 +25,8 @@ namespace EmpireAtWar.Models.Movement
         
         [field: SerializeField] public float Height { get; private set; }
         [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
+        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
+        
         [field: SerializeField] public float FallDownDuration { get; private set; }
         [field: SerializeField] public bool CanMove { get; private set; } = true;
 

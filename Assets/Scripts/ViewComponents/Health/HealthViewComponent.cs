@@ -61,10 +61,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (shieldView != null)
             {
-                if (shieldView != null)
-                {
-                    shieldsAnimatedCoroutine = StartCoroutine(AnimateShields()); 
-                }
+                shieldsAnimatedCoroutine = StartCoroutine(AnimateShields()); 
             }
         }
         

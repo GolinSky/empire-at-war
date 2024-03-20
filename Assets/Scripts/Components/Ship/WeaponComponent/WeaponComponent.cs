@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         bool HasEnoughRange(float distance);
     }
 
-    public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable
+    public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable, IDisposable
     {
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
         private readonly IShipMoveModelObserver shipMoveModelObserver;
@@ -185,6 +186,11 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 }
 
             }
+        }
+
+        public void Dispose()
+        {
+            // TODO release managed resources here
         }
     }
 }

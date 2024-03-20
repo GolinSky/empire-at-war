@@ -29,8 +29,18 @@ MonoBehaviour:
     <Distance>k__BackingField: 50
   <SimpleMoveModel>k__BackingField:
     <Height>k__BackingField: -5
-    <FallDownDirection>k__BackingField: {x: 0, y: -40, z: 0}
-    <FallDownDuration>k__BackingField: 260
+    <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
+    <FallDownRotation>k__BackingField:
+      x:
+        <Min>k__BackingField: -90
+        <Max>k__BackingField: 90
+      y:
+        <Min>k__BackingField: -10
+        <Max>k__BackingField: 10
+      z:
+        <Min>k__BackingField: -360
+        <Max>k__BackingField: 360
+    <FallDownDuration>k__BackingField: 10
     <CanMove>k__BackingField: 0
     speed: 0
   <Income>k__BackingField: 10

@@ -8,7 +8,6 @@ namespace EmpireAtWar.Views.SpaceStation
     {
         protected override void OnInitialize()
         {
-            transform.position = Model.StartPosition;
         }
 
         protected override void OnDispose()

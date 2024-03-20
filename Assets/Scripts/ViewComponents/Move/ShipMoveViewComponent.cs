@@ -80,16 +80,19 @@ namespace EmpireAtWar.ViewComponents.Move
         private void FallDown()
         {
             Vector3 point = CurrentPosition - Model.FallDownDirection;
-
-            Vector3 randomRotation = new Vector3(Random.Range(-90, 90),
-                transform.localRotation.eulerAngles.y + Random.Range(-10, 10), Random.Range(0, 360));
-
+          
             moveSequence.KillIfExist();
             moveSequence = DOTween.Sequence();
             moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
             moveSequence.Join(transform.DOLocalRotate(
-                randomRotation,
+                Model.FallDownRotation.Value,
                 Model.FallDownDuration));
+            moveSequence.AppendCallback(DestroyView);
+        }
+
+        private void DestroyView()
+        {
+            Destroy(View.Transform.parent.gameObject);
         }
 
         private void HyperSpaceJump(Vector3 point)

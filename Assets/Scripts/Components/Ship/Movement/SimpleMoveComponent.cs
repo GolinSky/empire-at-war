@@ -14,5 +14,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         }
         
         public void MoveToPosition(Vector2 screenPosition) {}
+        
+        
     }
 }

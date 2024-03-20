@@ -1,5 +1,8 @@
 ﻿using EmpireAtWar.Commands.SpaceStation;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -31,18 +34,26 @@ namespace EmpireAtWar.SceneContext
             Container.BindEntity(startPosition);
             Container.BindEntity(playerType);
 
+            Container
+                .BindInterfaces<HealthComponent>()
+                .BindInterfaces<SimpleMoveComponent>()
+                .BindInterfaces<RadarComponent>()
+                .BindInterfaces<WeaponComponent>();
+
             switch (playerType)
             {
                 case PlayerType.Player:
                 {
-                    Container.BindInterfaces<SpaceStationCommand>();
-                    Container.BindInterfaces<SelectionComponent>();
+                    Container
+                        .BindInterfaces<SpaceStationCommand>()
+                        .BindInterfaces<SelectionComponent>();
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                    Container.BindInterfaces<EnemySpaceStationCommand>();
-                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container
+                        .BindInterfaces<EnemySpaceStationCommand>()
+                        .BindInterfaces<EnemySelectionComponent>();
                     break;
                 }
             }
