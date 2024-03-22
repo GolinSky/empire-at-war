@@ -1,4 +1,5 @@
 using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.Audio;
 using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
@@ -36,11 +37,12 @@ namespace EmpireAtWar.SceneContext
             Container.BindEntity(playerType);
 
             Container
-                .BindInterfaces<ShipShipMoveComponent>()
+                .BindInterfaces<ShipMoveComponent>()
                 .BindInterfaces<HealthComponent>()
                 .BindInterfaces<WeaponComponent>()
                 .BindInterfaces<RadarComponent>()
-                .BindInterfaces<AiComponent>();
+                .BindInterfaces<AiComponent>()
+                .BindInterfaces<AudioShipComponent>();
 
             Container.BindEntity(shipType);
 

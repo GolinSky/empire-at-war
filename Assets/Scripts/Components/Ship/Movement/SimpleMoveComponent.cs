@@ -10,7 +10,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public SimpleMoveComponent(IModel model, Vector3 startPosition) : base(model)
         {
-            Model.Position = startPosition;
+            Model.TargetPosition = startPosition;
         }
         
         public void MoveToPosition(Vector2 screenPosition) {}

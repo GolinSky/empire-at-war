@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Audio;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
@@ -15,14 +14,18 @@ namespace EmpireAtWar.Services.Audio
 {
     public interface IAudioService:IService
     {
-        
+        void PlayOneShot(AudioClip audioClip, AudioType audioType);
     }
-    public class AudioService: Service, IInitializable, ILateDisposable, ITickable
+
+    public class AudioService: Service, IInitializable, ILateDisposable, ITickable, IAudioService
     {
+        private const string SourcePath = "MusicSource";
+        private const string DialogSourcePath = "AudioDialogSource";
         private readonly ISceneService sceneService;
         private readonly IGameModelObserver gameModelObserver;
         private readonly MusicAudioModel musicAudioModel;
-        private readonly AudioSource audioSource;
+        private readonly AudioSource backgroundSource;
+        private readonly AudioSource dialogSource;
         private readonly Random random;
         private readonly ITimer timer;
         private List<AudioClip> clips;
@@ -35,8 +38,10 @@ namespace EmpireAtWar.Services.Audio
             this.gameModelObserver = gameModelObserver;
             timer = TimerFactory.ConstructTimer();
             musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
-            audioSource = Object.Instantiate(repository.LoadComponent<AudioSource>("MusicSource"));
-            Object.DontDestroyOnLoad(audioSource);
+            backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SourcePath));
+            dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DialogSourcePath));
+            Object.DontDestroyOnLoad(backgroundSource);
+            Object.DontDestroyOnLoad(dialogSource);
             random = new Random();
         }
         
@@ -69,8 +74,8 @@ namespace EmpireAtWar.Services.Audio
             if(clips == null || clips.Count == 0) return;
             int randomIndex = random.Next(clips.Count);
             AudioClip audioClip = clips.ElementAt(randomIndex);
-            audioSource.clip = audioClip;
-            audioSource.Play();
+            backgroundSource.clip = audioClip;
+            backgroundSource.Play();
             timer.ChangeDelay(audioClip.length);
             timer.StartTimer();
             isMusicPlaying = true;
@@ -86,6 +91,11 @@ namespace EmpireAtWar.Services.Audio
                 PlayMusicInternal();
                 timer.StartTimer();
             }
+        }
+
+        public void PlayOneShot(AudioClip audioClip, AudioType audioType)
+        {
+            dialogSource.PlayOneShot(audioClip);
         }
     }
 }

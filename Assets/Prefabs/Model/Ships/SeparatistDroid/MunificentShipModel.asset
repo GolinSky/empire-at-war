@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
+  - {fileID: 11400000, guid: 3c3e6847e2f3d68408516d8339afde3f, type: 2}
   shipMoveModel:
     <Height>k__BackingField: 10
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}

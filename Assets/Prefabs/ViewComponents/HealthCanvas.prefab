@@ -198,7 +198,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6993838301850367445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +214,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 93545462449633584}
   shieldsFillImage: {fileID: 4263434846155426421}
   armorFillImage: {fileID: 3238675861055171681}
+  shieldView: {fileID: 0}
+  shipUnitViewArray: []
 --- !u!1 &6665474811874896340
 GameObject:
   m_ObjectHideFlags: 0

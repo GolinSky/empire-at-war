@@ -13,7 +13,7 @@ namespace EmpireAtWar.ViewComponents.Move
         protected override void OnInit()
         {
             base.OnInit();
-            transform.position = Model.Position;
+            transform.position = Model.TargetPosition;
         }
 
 
