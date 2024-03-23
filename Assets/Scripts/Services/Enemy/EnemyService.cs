@@ -17,7 +17,6 @@ namespace EmpireAtWar.Services.Enemy
     public class EnemyService : Service, IInitializable, IEnemyService
     {
         private static readonly Vector3 Offset = new Vector3(250, 0, 250);
-        private static readonly Vector3 Offset1 = new Vector3(-20, 0, 10);
         
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly SpaceStationViewFacade spaceStationViewFacade;

@@ -2,13 +2,19 @@
 using EmpireAtWar.Models.Audio;
 using LightWeightFramework.Components.ViewComponents;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Audio
 {
-    public class AudioShipViewComponent: ViewComponent<IAudioShipModelObserver>, IInitializable, ILateDisposable
+    public class AudioShipViewComponent: ViewComponent<IAudioShipModelObserver>
     {
-        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioSource source;
+
+
+        private void Start()
+        {
+            PlayLoop(Model.AmbientClip);
+
+        }
 
         protected override void OnInit()
         {
@@ -20,21 +26,19 @@ namespace EmpireAtWar.ViewComponents.Audio
         {
             base.OnRelease();
             Model.OnOneShotPlayed -= PlayOneShot;
-
-        }
-
-        public void Initialize()
-        {
-        }
-
-        public void LateDispose()
-        {
-            Model.OnOneShotPlayed -= PlayOneShot;
         }
         
-        private void PlayOneShot(AudioClip audioClip)
+        private void PlayOneShot(AudioClip clip)
         {
-             audioSource.PlayOneShot(audioClip);
+            source.PlayOneShot(clip);
+        }
+        
+        private void PlayLoop(AudioClip clip)
+        {
+            source.Stop();
+            source.clip = clip;
+            source.loop = true;
+            source.Play(0);
         }
     }
 }

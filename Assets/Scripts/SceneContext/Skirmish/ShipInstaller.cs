@@ -52,6 +52,7 @@ namespace EmpireAtWar.SceneContext
                 {
                     Container.BindInterfaces<SelectionComponent>();
                     Container.BindInterfaces<PlayerShipCommand>();
+                    Container.BindInterfaces<AudioDialogShipComponent>();
                     break;
                 }
                 case PlayerType.Opponent:

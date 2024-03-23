@@ -15,7 +15,9 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   - {fileID: 11400000, guid: 3c3e6847e2f3d68408516d8339afde3f, type: 2}
+  - {fileID: 11400000, guid: 7a4bfb5f7b726044ab56858e9a73e245, type: 2}
   shipMoveModel:
+    speed: 3
     <Height>k__BackingField: 10
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
@@ -30,7 +32,6 @@ MonoBehaviour:
         <Max>k__BackingField: 360
     <FallDownDuration>k__BackingField: 180
     <CanMove>k__BackingField: 1
-    speed: 3
     <RotationSpeed>k__BackingField: 3
     <MinRotationDuration>k__BackingField: 10
     <HyperSpaceSpeed>k__BackingField: 2
