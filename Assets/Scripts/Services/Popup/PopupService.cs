@@ -46,7 +46,7 @@ namespace EmpireAtWar.Services.Popup
         {
             if (popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
             {
-                popupUI.ClosePopup();
+                //popupUI.ClosePopup();
             }
             else
             {

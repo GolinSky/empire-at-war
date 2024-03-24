@@ -22,6 +22,7 @@ namespace EmpireAtWar
 
         public void OpenOptions()
         {
+            popupService.OpenPopup(PopupType.Settings);
         }
 
         public void ExitApplication()

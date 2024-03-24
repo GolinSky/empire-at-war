@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using LightWeightFramework.Command;
+using UnityEngine;
 using LightWeightFramework.Components.Service;
 using Zenject;
 
@@ -6,9 +7,15 @@ namespace EmpireAtWar.Services.Settings
 {
     public interface ISettingsService: IService
     {
+        
     }
 
-    public class SettingsService : Service, ISettingsService, IInitializable
+    public interface ISettingsCommand:ICommand
+    {
+        void SetQualityPreset(int index);
+    }
+
+    public class SettingsService : Service, ISettingsService, IInitializable, ISettingsCommand
     {
         public void Initialize()
         {
@@ -19,6 +26,11 @@ namespace EmpireAtWar.Services.Settings
 #else
             Application.targetFrameRate = 60;
 #endif
+        }
+
+        public void SetQualityPreset(int index)
+        {
+            QualitySettings.SetQualityLevel(index);
         }
     }
 }

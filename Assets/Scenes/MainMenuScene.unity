@@ -1275,6 +1275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewComponents: []
   startDemoButton: {fileID: 885747870}
+  optionsButton: {fileID: 1932443179}
   quitApplicationButton: {fileID: 377294401}
 --- !u!1 &1095036628
 GameObject:
