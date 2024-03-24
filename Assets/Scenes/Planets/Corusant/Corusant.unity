@@ -12933,6 +12933,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6142601787874384283}
     m_Modifications:
+    - target: {fileID: 684805454339942356, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.6500015
+      objectReference: {fileID: 0}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
       propertyPath: pipelineView.canvas
@@ -13445,6 +13450,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ships
       objectReference: {fileID: 0}
+    - target: {fileID: 6155007160174439210, guid: c67b3f91948d87045b48e6cc114d4ad1,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -4.000244
+      objectReference: {fileID: 0}
     - target: {fileID: 8768730661901922601, guid: c67b3f91948d87045b48e6cc114d4ad1,
         type: 3}
       propertyPath: m_Pivot.x
@@ -13704,7 +13714,7 @@ PrefabInstance:
     - target: {fileID: 8834900319507924357, guid: 953cf1b9158bd8740acf4a01005bc922,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 8.131592
+      value: 8.131653
       objectReference: {fileID: 0}
     - target: {fileID: 8834900319507924357, guid: 953cf1b9158bd8740acf4a01005bc922,
         type: 3}
