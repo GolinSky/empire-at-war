@@ -1,0 +1,201 @@
+<linker>
+  <assembly fullname="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="EmpireAtWar.Models.Audio.AudioShipDialogModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Audio.AudioShipModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Audio.MusicAudioModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Economy.EconomyModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Factions.FactionsModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Factions.PlayerFactionModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Game.GameModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Health.DamageCalculationModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Loading.LoadingModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Map.MapModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Menu.MenuModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.MenuUi.MenuUiModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.MiningFacility.MiningFacilityModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Navigation.NavigationModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Planet.PlanetModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Radar.LayerModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Reinforcement.ReinforcementModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Selection.SelectionModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Ship.ShipModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.ShipUi.ShipUiModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.SkirmishCamera.SkirmishCameraModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.SkirmishGame.SkirmishGameModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.SpaceStation.SpaceStationModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Terrain.TerrainModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Weapon.ProjectileModel" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Weapon.WeaponDamageModel" preserve="all" />
+    <type fullname="EmpireAtWar.ShipInfoUi" preserve="all" />
+    <type fullname="EmpireAtWar.ShipUnitUi" preserve="all" />
+    <type fullname="EmpireAtWar.SpawnShipUi" preserve="all" />
+    <type fullname="EmpireAtWar.Ui.Popups.SettingsPopupUi" preserve="all" />
+    <type fullname="EmpireAtWar.Ui.Popups.SkirmishPopupUi" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Audio.AudioShipViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Health.HealthViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Health.ShieldView" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Health.ShipUnitView" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Move.ShipMoveViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Move.SimpleMoveViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Radar.RadarViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Selection.PlayerSelectionComponent" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Weapon.TurretView" preserve="all" />
+    <type fullname="EmpireAtWar.ViewComponents.Weapon.WeaponViewComponent" preserve="all" />
+    <type fullname="EmpireAtWar.Views.Factions.FactionUnitUi" preserve="all" />
+    <type fullname="EmpireAtWar.Views.MiningFacility.MiningFacilityView" preserve="all" />
+    <type fullname="EmpireAtWar.Views.Reinforcement.UnitSpawnView" preserve="all" />
+    <type fullname="EmpireAtWar.Views.Ship.ShipView" preserve="all" />
+    <type fullname="EmpireAtWar.Views.SpaceStation.SpaceStationView" preserve="all" />
+    <type fullname="EmpireAtWar.WeaponVfxView" preserve="all" />
+    <type fullname="PPFXAutodestruct" preserve="all" />
+    <type fullname="PPFXLightFlare" preserve="all" />
+    <type fullname="PPFXPhysicForce" preserve="all" />
+    <type fullname="PPFXRendererLayer" preserve="all" />
+    <type fullname="PPFXScale" preserve="all" />
+    <type fullname="EmpireAtWar.Models.Audio.MusicData" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Factions.FactionData" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Factions.FactionDataWrapper" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Health.DamageModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Health.HealthModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Health.ShipUnitModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Movement.ShipMoveModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Movement.SimpleMoveModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Radar.RadarModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.SkirmishCamera.Vector2Range" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Weapon.DamageModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Weapon.ProjectileData" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Models.Weapon.WeaponModel" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Utils.Random.RandomAudioClips" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Utils.Random.RandomFloat" preserve="nothing" serialized="true" />
+    <type fullname="EmpireAtWar.Utils.Random.RandomVector3" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.Addressables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.AddressableAssets.Addressables" preserve="all" />
+    <type fullname="UnityEngine.AddressableAssets.AssetReferenceT`1[UnityEngine.AudioClip]" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="Unity.RenderPipelines.Universal.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Rendering.Universal.UniversalAdditionalLightData" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" preserve="all">
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.LegacyResourcesProvider" preserve="all" />
+    <type fullname="UnityEngine.ResourceManagement.ResourceProviders.SceneProvider" preserve="all" />
+  </assembly>
+  <assembly fullname="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="TMPro.TextMeshProUGUI" preserve="all" />
+    <type fullname="TMPro.TMP_Dropdown" preserve="all" />
+    <type fullname="TMPro.TMP_FontAsset" preserve="all" />
+    <type fullname="TMPro.FaceInfo_Legacy" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.FontAssetCreationSettings" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.KerningTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Character" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Dropdown/DropdownEvent" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Dropdown/OptionData" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_Dropdown/OptionDataList" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontFeatureTable" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_FontWeightPair" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_GlyphAdjustmentRecord" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_GlyphPairAdjustmentRecord" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.TMP_GlyphValueRecord" preserve="nothing" serialized="true" />
+    <type fullname="TMPro.VertexGradient" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEditor.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEditor.Audio.AudioMixerSnapshotController" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Audio.AudioMixer" preserve="all" />
+    <type fullname="UnityEngine.Audio.AudioMixerGroup" preserve="all" />
+    <type fullname="UnityEngine.AudioClip" preserve="all" />
+    <type fullname="UnityEngine.AudioSource" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Flare" preserve="all" />
+    <type fullname="UnityEngine.GameObject" preserve="all" />
+    <type fullname="UnityEngine.Light" preserve="all" />
+    <type fullname="UnityEngine.LineRenderer" preserve="all" />
+    <type fullname="UnityEngine.Material" preserve="all" />
+    <type fullname="UnityEngine.Mesh" preserve="all" />
+    <type fullname="UnityEngine.MeshFilter" preserve="all" />
+    <type fullname="UnityEngine.MeshRenderer" preserve="all" />
+    <type fullname="UnityEngine.Object" preserve="all" />
+    <type fullname="UnityEngine.RectTransform" preserve="all" />
+    <type fullname="UnityEngine.Shader" preserve="all" />
+    <type fullname="UnityEngine.Sprite" preserve="all" />
+    <type fullname="UnityEngine.Texture2D" preserve="all" />
+    <type fullname="UnityEngine.Transform" preserve="all" />
+    <type fullname="UnityEngine.Events.PersistentCallGroup" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.ParticleSystem" preserve="all" />
+    <type fullname="UnityEngine.ParticleSystemForceField" preserve="all" />
+    <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.BoxCollider" preserve="all" />
+    <type fullname="UnityEngine.Rigidbody" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Font" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.UI.Button" preserve="all" />
+    <type fullname="UnityEngine.UI.CanvasScaler" preserve="all" />
+    <type fullname="UnityEngine.UI.GraphicRaycaster" preserve="all" />
+    <type fullname="UnityEngine.UI.Image" preserve="all" />
+    <type fullname="UnityEngine.UI.Mask" preserve="all" />
+    <type fullname="UnityEngine.UI.Scrollbar" preserve="all" />
+    <type fullname="UnityEngine.UI.ScrollRect" preserve="all" />
+    <type fullname="UnityEngine.UI.Toggle" preserve="all" />
+    <type fullname="UnityEngine.UI.AnimationTriggers" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Button/ButtonClickedEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.ColorBlock" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.MaskableGraphic/CullStateChangedEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Navigation" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.ScrollRect/ScrollRectEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Scrollbar/ScrollEvent" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.SpriteState" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.UI.Toggle/ToggleEvent" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <type fullname="UnityEngine.Canvas" preserve="all" />
+    <type fullname="UnityEngine.CanvasRenderer" preserve="all" />
+  </assembly>
+  <assembly fullname="ScriptUtils.EditorSerialization">
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Factions.FactionType,EmpireAtWar.Models.Factions.FactionDataWrapper]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Factions.FactionType,System.Collections.Generic.List`1[UnityEngine.AudioClip]]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Factions.PlayerType,UnityEngine.Vector3]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Factions.ShipType,EmpireAtWar.ShipInfoUi]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Factions.ShipType,EmpireAtWar.Views.Reinforcement.UnitSpawnView]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.MiningFacility.MiningFacilityType,EmpireAtWar.Models.Factions.FactionData]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.MiningFacility.MiningFacilityType,EmpireAtWar.Views.Reinforcement.UnitSpawnView]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Health.DamageModel]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Weapon.DamageModel]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Weapon.ProjectileData]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Weapon.WeaponType,System.Collections.Generic.List`1[EmpireAtWar.ViewComponents.Weapon.TurretView]]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.DictionaryWrapper`2[EmpireAtWar.Models.Weapon.WeaponType,System.Int32]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.FactionType,EmpireAtWar.Models.Factions.FactionDataWrapper]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.FactionType,System.Collections.Generic.List`1[UnityEngine.AudioClip]]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.PlayerType,UnityEngine.Vector3]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.ShipType,EmpireAtWar.Models.Factions.FactionData]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.ShipType,EmpireAtWar.ShipInfoUi]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Factions.ShipType,EmpireAtWar.Views.Reinforcement.UnitSpawnView]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.MiningFacility.MiningFacilityType,EmpireAtWar.Models.Factions.FactionData]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.MiningFacility.MiningFacilityType,EmpireAtWar.Views.Reinforcement.UnitSpawnView]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Health.DamageModel]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Weapon.DamageModel]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Weapon.WeaponType,EmpireAtWar.Models.Weapon.ProjectileData]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Weapon.WeaponType,System.Collections.Generic.List`1[EmpireAtWar.ViewComponents.Weapon.TurretView]]" preserve="nothing" serialized="true" />
+    <type fullname="Utilities.ScriptUtils.EditorSerialization.KeyValue`2[EmpireAtWar.Models.Weapon.WeaponType,System.Int32]" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="ScriptUtils.Zenject">
+    <type fullname="Utilities.ScriptUtils.Math.FloatRange" preserve="nothing" serialized="true" />
+  </assembly>
+  <assembly fullname="UnityEngine.TextCoreFontEngineModule">
+    <type fullname="UnityEngine.TextCore.FaceInfo" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.Glyph" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphMetrics" preserve="nothing" serialized="true" />
+    <type fullname="UnityEngine.TextCore.GlyphRect" preserve="nothing" serialized="true" />
+  </assembly>
+</linker>
