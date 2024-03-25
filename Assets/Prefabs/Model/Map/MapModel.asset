@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: MapModel
   m_EditorClassIdentifier: 
   models: []
-  <Size>k__BackingField: {x: 0, y: 0}
   stationPositionWrapper:
     keyValue:
     - key: 1
-      value: {x: -30, y: -15, z: 20}
+      value: {x: -180, y: -15, z: 170}
     - key: 2
-      value: {x: 200, y: -15, z: -170}
+      value: {x: 160, y: -15, z: -170}
+  <SizeRange>k__BackingField:
+    <Min>k__BackingField: {x: -250, y: -250}
+    <Max>k__BackingField: {x: 250, y: 250}

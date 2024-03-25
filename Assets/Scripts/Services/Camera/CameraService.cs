@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EmpireAtWar.Commands.Camera;
+using UnityEngine;
 using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.Camera
@@ -12,16 +13,25 @@ namespace EmpireAtWar.Services.Camera
         float FieldOfView { get; }
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
         Vector2 WorldToScreenPoint(Vector3 position);
+        void MoveTo(Vector3 worldPoint);
+        void AddCommand(ICameraCommand cameraCommand);
     }
 
     public class CameraService : Service, ICameraService
     {
+        private  ICameraCommand cameraCommand;
         private readonly UnityEngine.Camera camera;
         private Plane plane = new Plane();
 
         public Vector3 CameraPosition => camera.transform.position;
         public Vector3 CameraForward => camera.transform.forward;
         public float FieldOfView => camera.fieldOfView;
+
+        public CameraService(UnityEngine.Camera camera)
+        {
+            this.camera = camera;
+        }
+        
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
         {
             return camera.WorldToViewportPoint(currentPosition);
@@ -32,9 +42,14 @@ namespace EmpireAtWar.Services.Camera
             return camera.WorldToScreenPoint(position);
         }
 
-        public CameraService(UnityEngine.Camera camera)
+        public void MoveTo(Vector3 worldPoint)
         {
-            this.camera = camera;
+            cameraCommand.MoveTo(worldPoint);
+        }
+
+        public void AddCommand(ICameraCommand cameraCommand)
+        {
+            this.cameraCommand = cameraCommand;
         }
 
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)

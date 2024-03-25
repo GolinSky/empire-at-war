@@ -3,7 +3,6 @@ using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.Views.SkirmishCamera
 {

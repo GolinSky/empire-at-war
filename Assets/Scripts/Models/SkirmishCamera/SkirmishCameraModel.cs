@@ -11,7 +11,6 @@ namespace EmpireAtWar.Models.SkirmishCamera
         event Action<Vector3> OnPositionChanged;
         event Action<float> OnFovChanged;
         
-        float MoveSpeed { get; }
         Vector2Range MoveRange { get;}
         
     }
@@ -24,7 +23,6 @@ namespace EmpireAtWar.Models.SkirmishCamera
         public event Action<float> OnFovChanged;
         [field:SerializeField] public Vector2Range MoveRange { get; private set; }
         [field:SerializeField] public FloatRange ZoomRange { get; private set; }
-        [field:SerializeField] public float MoveSpeed { get; private set; }
         [field:SerializeField] public float PanSpeed { get; private set; }
         
         [field:SerializeField] public float ZoomSpeed { get; private set; }

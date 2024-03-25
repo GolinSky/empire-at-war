@@ -23,6 +23,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         {
             this.cameraService = cameraService;
             this.inputService = inputService;
+            cameraService.AddCommand(this);
         }
 
         public void Initialize()
@@ -71,6 +72,12 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                     break;
                 }
             }
+        }
+
+        public void MoveTo(Vector3 worldPoint)
+        {
+            worldPoint.y = cameraService.CameraPosition.y;
+            Model.CameraPosition = worldPoint;
         }
     }
 }

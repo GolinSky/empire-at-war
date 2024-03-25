@@ -15,7 +15,6 @@ namespace EmpireAtWar.Services.Popup
     
     public class PopupService : Service, IPopupService,IPopupCommand
     {
-
         private readonly PopupUiFacade popupUiFacade;
         private readonly Transform popupParent;
 
@@ -44,14 +43,14 @@ namespace EmpireAtWar.Services.Popup
 
         public void ClosePopup(PopupType popupType)
         {
-            if (popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
-            {
-                //popupUI.ClosePopup();
-            }
-            else
-            {
-                Debug.LogError($"No popup with id {popupType} found for closing");
-            }
+            // if (popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
+            // {
+            //     //popupUI.ClosePopup();
+            // }
+            // else
+            // {
+            //     Debug.LogError($"No popup with id {popupType} found for closing");
+            // }
         }
     }
 }

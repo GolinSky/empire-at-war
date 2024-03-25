@@ -4,6 +4,7 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Map;
 using EmpireAtWar.Controllers.Menu;
+using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.Planet;
 using EmpireAtWar.Controllers.Reinforcement;
@@ -17,6 +18,7 @@ using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.Menu;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Models.Radar;
@@ -32,6 +34,7 @@ using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.Map;
 using EmpireAtWar.Views.Menu;
+using EmpireAtWar.Views.MiniMap;
 using EmpireAtWar.Views.NavigationUiView;
 using EmpireAtWar.Views.Planet;
 using EmpireAtWar.Views.Reinforcement;
@@ -54,6 +57,7 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
     [SerializeField] private MapView mapView;
     [SerializeField] private MenuView menuView;
     [SerializeField] private EconomyView economyView;
+    [SerializeField] private MiniMapView miniMapView;
     
     [Inject]
     private IGameModelObserver GameModelObserver { get; }
@@ -129,6 +133,11 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindModel<ReinforcementModel>(Repository)
             .BindInterfaces<ReinforcementController>()
             .BindViewFromInstance(reinforcementView);
+
+        Container
+            .BindModel<MiniMapModel>(Repository)
+            .BindInterfaces<MiniMapController>()
+            .BindViewFromInstance(miniMapView);
         
         Container.BindInterfaces<PurchaseMediator>();
     }

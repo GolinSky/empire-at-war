@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 330de582d576410cb60d703ffb555647, type: 3}
+  m_Name: MiniMapModel
+  m_EditorClassIdentifier: 
+  models: []
+  <MarkWrapper>k__BackingField:
+    keyValue:
+    - key: 0
+      value: {fileID: 21300000, guid: 18faf426d460ece49970252ef5e8a56d, type: 3}
+    - key: 1
+      value: {fileID: 21300010, guid: 0fd21678280ad9c47aa2d32baf438c5d, type: 3}
+  <MarkViewPrefab>k__BackingField: {fileID: 4051374237946736738, guid: ec4540f8f43e06440af603e172aaa66d,
+    type: 3}
