@@ -44,11 +44,9 @@ namespace EmpireAtWar.Views.Reinforcement
 
             Model.OnSpawnUnit += HandleSpawning;
             Model.OnReinforcementAdded += AddUi;
-            Model.OnFacilitiesAdded += AddUi;
             Model.OnCapacityChanged += UpdateCapacityData;
         }
-  
-
+        
         protected override void OnDispose()
         {
             switchButton.onClick.RemoveListener(ActivateCanvas);
@@ -56,14 +54,11 @@ namespace EmpireAtWar.Views.Reinforcement
             
             Model.OnSpawnUnit -= HandleSpawning;
             Model.OnReinforcementAdded -= AddUi;
-            Model.OnFacilitiesAdded -= AddUi;
             Model.OnCapacityChanged -= UpdateCapacityData;
         }
         
-        private void AddUi(MiningFacilityType miningFacilityType, FactionData factionData)
+        private void AddUi(string key, FactionData factionData)
         {
-            string key = miningFacilityType.ToString();
-
             if (spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
             {
                 shipUi.AddUnit();
@@ -73,26 +68,14 @@ namespace EmpireAtWar.Views.Reinforcement
                 ISpawnShipUi spawnShipUi = Instantiate(Model.ReinforcementButton, spawnTransform);
                 spawnShipUi.Init(this, key, factionData);
                 spawnUnitUiDictionary.Add(key, spawnShipUi);
+                if (Enum.TryParse(key, out ShipType result))
+                {
+                    ActiveShipUnitUi(result, spawnShipUi);
+                }
             }
             PlayTweens();
         }
         
-        private void AddUi(ShipType shipType, FactionData factionData)
-        {
-            string key = shipType.ToString();
-            if (spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
-            {
-                shipUi.AddUnit();
-            }
-            else
-            {
-                ISpawnShipUi spawnShipUi = Instantiate(Model.ReinforcementButton, spawnTransform);
-                spawnShipUi.Init(this, key, factionData);
-                ActiveShipUnitUi(shipType, spawnShipUi);
-                spawnUnitUiDictionary.Add(key, spawnShipUi);
-            }
-            PlayTweens();
-        }
 
         private void PlayTweens()
         {
@@ -145,14 +128,7 @@ namespace EmpireAtWar.Views.Reinforcement
             DisableCanvas();
             currenSpawnUnitUi = spawnShipUi;
 
-            if (Enum.TryParse(spawnShipUi.UnitType, out ShipType result))
-            {
-                Command.TrySpawnShip(result);
-            }
-            else if (Enum.TryParse(spawnShipUi.UnitType, out MiningFacilityType facilityType))
-            {
-                Command.TrySpawnMiningFacility(facilityType);
-            }
+            Command.TrySpawnReinforcement(spawnShipUi.UnitType);
         }
 
         public void OnRelease(ISpawnShipUi spawnShipUi)

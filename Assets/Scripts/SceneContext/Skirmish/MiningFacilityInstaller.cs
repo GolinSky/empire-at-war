@@ -33,13 +33,8 @@ namespace EmpireAtWar.SceneContext
 
         public override void InstallBindings()
         {
-            Container
-                .BindInstance(startPosition)
-                .AsSingle();
-
-            Container
-                .BindInstance(playerType)
-                .AsSingle();
+            Container.BindEntity(startPosition);
+            Container.BindEntity(playerType);
             
             Container
                 .BindInterfaces<HealthComponent>()

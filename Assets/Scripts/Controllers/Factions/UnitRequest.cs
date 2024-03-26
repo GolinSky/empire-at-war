@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Controllers.Factions
 {
@@ -7,46 +6,21 @@ namespace EmpireAtWar.Controllers.Factions
     {
         public FactionData FactionData { get; }
         public abstract string Id { get;  }
-
+    
         protected UnitRequest(FactionData factionData)
         {
             FactionData = factionData;
         }
     }
 
-
-    public class ShipUnitRequest: UnitRequest
+    public abstract class UnitRequest<TKey>:UnitRequest
     {
-        public ShipType ShipType { get; }
-        public override string Id => ShipType.ToString();
+        public TKey Key { get; }
+        public sealed override string Id => Key.ToString();
 
-        public ShipUnitRequest(FactionData factionData, ShipType shipType) : base(factionData)
+        protected UnitRequest(FactionData factionData, TKey key):base(factionData)
         {
-            ShipType = shipType;
+            Key = key;
         }
-    }
-
-    public class LevelUnitRequest : UnitRequest
-    {
-        public int Level { get; }
-        public override string Id { get; }
-
-        public LevelUnitRequest(FactionData factionData, int level) : base(factionData)
-        {
-            Level = level;
-            Id = level.ToString();
-        }
-    }
-
-    public class MiningFacilityUnitRequest : UnitRequest
-    {
-        public MiningFacilityType MiningFacilityType { get; }
-        public override string Id => MiningFacilityType.ToString();
-
-        public MiningFacilityUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType) : base(factionData)
-        {
-            MiningFacilityType = miningFacilityType;
-        }
-
     }
 }

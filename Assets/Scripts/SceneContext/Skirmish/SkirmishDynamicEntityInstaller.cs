@@ -1,5 +1,7 @@
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
+using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
@@ -28,6 +30,12 @@ namespace EmpireAtWar.SceneContext
                 .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacadeFactory>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<MiningFacilityInstaller>()
+                .NonLazy();
+            
+            Container
+                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
+                .FromSubContainerResolve()
+                .ByNewGameObjectInstaller<DefendPlatformInstaller>()
                 .NonLazy();
         }
     }

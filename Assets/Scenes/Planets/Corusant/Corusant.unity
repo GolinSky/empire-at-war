@@ -14516,6 +14516,11 @@ PrefabInstance:
       propertyPath: switcherButton
       value: 
       objectReference: {fileID: 6548786930507789803}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.5463867
+      objectReference: {fileID: 0}
     - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}
       propertyPath: m_Enabled

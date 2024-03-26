@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         }
         public void Initialize()
         {
-            factionData = factionsModel.GetFactionData(FactionType);
+            factionData = factionsModel.GetShipFactionData(FactionType);
 
             stationPosition = mapModel.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  stationPosition);

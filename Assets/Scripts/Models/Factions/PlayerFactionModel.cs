@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Models.Factions
         SelectionType SelectionType { get; }
         Dictionary<ShipType, FactionData> FactionData { get; }
         Dictionary<MiningFacilityType, FactionData> MiningFactions { get; }
+        Dictionary<DefendPlatformType, FactionData> DefendPlatforms { get; }
         FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
     }
@@ -56,7 +58,8 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public Dictionary<MiningFacilityType, FactionData> MiningFactions => factionsModel.MiningFactionsData;
-        public Dictionary<ShipType, FactionData> FactionData => factionsModel.GetFactionData(FactionType);
+        public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => factionsModel.DefendPlatformDictionary;
+        public Dictionary<ShipType, FactionData> FactionData => factionsModel.GetShipFactionData(FactionType);
         
         public int CurrentLevel
         {

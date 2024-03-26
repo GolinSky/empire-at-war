@@ -1,12 +1,14 @@
 ﻿using System;
 using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Reinforcement;
 using EmpireAtWar.Views.Ship;
@@ -18,10 +20,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Controllers.Reinforcement
 {
-    public interface IReinforcementChain:IChainHandler<UnitRequest>
-    {
-        
-    }
+    public interface IReinforcementChain:IChainHandler<UnitRequest> {}
 
     public class ReinforcementController : Controller<ReinforcementModel>, IReinforcementCommand, ITickable,
         IInitializable, ILateDisposable, IReinforcementChain
@@ -30,24 +29,28 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ICameraService cameraService;
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly MiningFacilityFacadeFactory miningFacilityFacadeFactory;
+        private readonly DefendPlatformFacade defendPlatformFacade;
 
         private IChainHandler<UnitRequest> nextChain;
         private UnitSpawnView spawnReinforcement;
         private ShipType currentShipType;
         private SpawnType currentSpawnType;
         private MiningFacilityType currentFacilityType;
+        private DefendPlatformType currentPlatformType;
 
         public ReinforcementController(
             ReinforcementModel model,
             InputService inputService,
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
-            MiningFacilityFacadeFactory miningFacilityFacadeFactory) : base(model)
+            MiningFacilityFacadeFactory miningFacilityFacadeFactory,
+            DefendPlatformFacade defendPlatformFacade) : base(model)
         {
             this.inputService = inputService;
             this.cameraService = cameraService;
             this.shipFacadeFactory = shipFacadeFactory;
             this.miningFacilityFacadeFactory = miningFacilityFacadeFactory;
+            this.defendPlatformFacade = defendPlatformFacade;
         }
 
         public void Initialize()
@@ -84,6 +87,11 @@ namespace EmpireAtWar.Controllers.Reinforcement
                         miningFacilityFacadeFactory.Create(PlayerType.Player, currentFacilityType, spawnPosition);
                         break;
                     }
+                    case SpawnType.DefendPlatform:
+                    {
+                        defendPlatformFacade.Create(PlayerType.Player, currentPlatformType, spawnPosition);
+                        break;
+                    }
                 }
             }
             spawnReinforcement.Destroy();
@@ -95,28 +103,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         {
             Model.RemoveUnitCapacity(shipType);
         }
-
-        public void TrySpawnShip(ShipType shipType)
-        {
-            if (Model.CanSpawnUnit(shipType))
-            {
-                currentSpawnType = SpawnType.Ship;
-                currentShipType = shipType;
-                inputService.Block(true);
-                Model.IsTrySpawning = true;
-                spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
-            }
-        }
-
-        public void TrySpawnMiningFacility(MiningFacilityType miningFacilityType)
-        {
-            currentSpawnType = SpawnType.MiningFacility;
-            currentFacilityType = miningFacilityType;
-            inputService.Block(true);
-            Model.IsTrySpawning = true;
-            spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(miningFacilityType));
-        }
-
+        
         public void Tick()
         {
             if (!Model.IsTrySpawning) return;
@@ -137,10 +124,14 @@ namespace EmpireAtWar.Controllers.Reinforcement
             switch (request)
             {
                 case ShipUnitRequest shipUnitRequest:
+                    Model.UpdateShipData(shipUnitRequest);
                     Model.AddReinforcement(shipUnitRequest);
                     break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
                     Model.AddReinforcement(miningFacilityUnitRequest);
+                    break;
+                case DefendPlatformUnitRequest defendPlatformUnitRequest:
+                    Model.AddReinforcement(defendPlatformUnitRequest);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));
@@ -150,6 +141,38 @@ namespace EmpireAtWar.Controllers.Reinforcement
             {
                 nextChain.Handle(request);
             }
+        }
+
+        public void TrySpawnReinforcement(string id)
+        {
+            if (Enum.TryParse(id, out ShipType shipType))
+            {
+                if (Model.CanSpawnUnit(shipType))
+                {
+                    StartSpawnSequence(SpawnType.Ship);
+                    currentShipType = shipType;
+                    spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
+                }
+            }
+            else if (Enum.TryParse(id, out MiningFacilityType facilityType))
+            {
+                StartSpawnSequence(SpawnType.MiningFacility);
+                currentFacilityType = facilityType;
+                spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(facilityType));
+            }
+            else if(Enum.TryParse(id, out DefendPlatformType defendPlatformType))
+            {
+                StartSpawnSequence(SpawnType.DefendPlatform);
+                currentPlatformType = defendPlatformType;
+                spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(defendPlatformType));
+            }
+        }
+
+        private void StartSpawnSequence(SpawnType spawnType)
+        {
+            currentSpawnType = spawnType;
+            inputService.Block(true);
+            Model.IsTrySpawning = true;
         }
     }
 }

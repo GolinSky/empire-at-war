@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.MiningFacility;
 using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
@@ -10,18 +11,22 @@ namespace EmpireAtWar.Models.Factions
     public class FactionsModel : Model
     {
         [SerializeField] private DictionaryWrapper<FactionType, FactionDataWrapper> factionDataWrapper;
-        [SerializeField] private FactionData[] levelFactionsData;
         [SerializeField] private DictionaryWrapper<MiningFacilityType, FactionData> miningFactionsData;
+        [SerializeField] private DictionaryWrapper<DefendPlatformType, FactionData> defendPlatformWrapper;
+
+        [SerializeField] private FactionData[] levelFactionsData;
+                
         [field: SerializeField] public int MaxLevel { get; private set; }
         
-        private Dictionary<FactionType, FactionDataWrapper> FactionData => factionDataWrapper.Dictionary;
 
         public Dictionary<MiningFacilityType, FactionData> MiningFactionsData => miningFactionsData.Dictionary;
 
-        public Dictionary<ShipType, FactionData> GetFactionData(FactionType factionType)
+        public Dictionary<ShipType, FactionData> GetShipFactionData(FactionType factionType)
         {
-            return FactionData[factionType].Dictionary;
+            return factionDataWrapper.Dictionary[factionType].Dictionary;
         }
+
+        public Dictionary<DefendPlatformType, FactionData> DefendPlatformDictionary => defendPlatformWrapper.Dictionary;
 
         public FactionData GetLevelFactionData(int level)
         {

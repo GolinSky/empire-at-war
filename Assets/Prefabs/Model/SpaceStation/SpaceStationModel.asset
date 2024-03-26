@@ -36,7 +36,8 @@ MonoBehaviour:
     <Delay>k__BackingField: 10
     <Distance>k__BackingField: 100
   <SimpleMoveModel>k__BackingField:
-    <Height>k__BackingField: 0
+    speed: 0
+    <Height>k__BackingField: -20
     <FallDownDirection>k__BackingField: {x: 0, y: -100, z: 0}
     <FallDownRotation>k__BackingField:
       x:
@@ -50,7 +51,6 @@ MonoBehaviour:
         <Max>k__BackingField: 0
     <FallDownDuration>k__BackingField: 180
     <CanMove>k__BackingField: 0
-    speed: 0
   <WeaponModel>k__BackingField:
     weaponCount:
       keyValue:

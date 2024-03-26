@@ -4,5 +4,6 @@
     {
         Ship = 0,
         MiningFacility = 1,
+        DefendPlatform = 2,
     }
 }

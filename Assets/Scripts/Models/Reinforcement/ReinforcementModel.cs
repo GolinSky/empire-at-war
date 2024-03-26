@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -15,10 +16,7 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         event Action<int> OnCapacityChanged; 
         event Action<bool> OnSpawnUnit;
-        event Action<ShipType, FactionData> OnReinforcementAdded;
-        public event Action<MiningFacilityType, FactionData> OnFacilitiesAdded;
-
-        
+        event Action<string, FactionData> OnReinforcementAdded;
         bool IsTrySpawning { get; }
         int MaxUnitCapacity { get; }
         int CurrentUnitCapacity { get; }
@@ -27,8 +25,6 @@ namespace EmpireAtWar.Models.Reinforcement
 
         SpawnShipUi ReinforcementButton { get; }
         bool CanSpawnUnit(ShipType shipType);
-        
-
     }
     
     [CreateAssetMenu(fileName = "ReinforcementModel", menuName = "Model/ReinforcementModel")]
@@ -36,11 +32,12 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         public event Action<int> OnCapacityChanged;
         public event Action<bool> OnSpawnUnit;
-        public event Action<ShipType, FactionData> OnReinforcementAdded;
-        public event Action<MiningFacilityType, FactionData> OnFacilitiesAdded;
+        public event Action<string, FactionData> OnReinforcementAdded;
+
         
         [SerializeField] private DictionaryWrapper<ShipType, UnitSpawnView> spawnShipWrapper;
         [SerializeField] private DictionaryWrapper<MiningFacilityType, UnitSpawnView> spawnFacilityWrapper;
+        [SerializeField] private DictionaryWrapper<DefendPlatformType, UnitSpawnView> defendPlatformWrapper;
 
         [field: SerializeField] public SpawnShipUi ReinforcementButton { get; private set; }
         [field: SerializeField] public int MaxUnitCapacity { get; private set; }
@@ -83,6 +80,15 @@ namespace EmpireAtWar.Models.Reinforcement
 
             return spawnFacilityWrapper.Dictionary.Values.FirstOrDefault();
         }
+        public UnitSpawnView GetSpawnPrefab(DefendPlatformType defendPlatformType)
+        {
+            if (defendPlatformWrapper.Dictionary.TryGetValue(defendPlatformType, out UnitSpawnView spawnTransform))
+            {
+                return spawnTransform;
+            }
+
+            return spawnFacilityWrapper.Dictionary.Values.FirstOrDefault();
+        }
 
         public void InvokeSpawnShipEvent(bool success)
         {
@@ -104,18 +110,17 @@ namespace EmpireAtWar.Models.Reinforcement
             CurrentUnitCapacity -= shipFactionData[shipType].UnitCapacity;
         }
         
-        public void AddReinforcement(ShipUnitRequest shipUnitRequest)
+        public void UpdateShipData(ShipUnitRequest shipUnitRequest)
         {
-            if (!shipFactionData.ContainsKey(shipUnitRequest.ShipType))
+            if (!shipFactionData.ContainsKey(shipUnitRequest.Key))
             {
-                shipFactionData.Add(shipUnitRequest.ShipType,  shipUnitRequest.FactionData);
+                shipFactionData.Add(shipUnitRequest.Key,  shipUnitRequest.FactionData);
             }
-            OnReinforcementAdded?.Invoke(shipUnitRequest.ShipType, shipUnitRequest.FactionData);
         }
-
-        public void AddReinforcement(MiningFacilityUnitRequest miningFacilityUnitRequest)
+        
+        public void AddReinforcement(UnitRequest unitRequest)
         {
-            OnFacilitiesAdded?.Invoke(miningFacilityUnitRequest.MiningFacilityType, miningFacilityUnitRequest.FactionData);
+            OnReinforcementAdded?.Invoke(unitRequest.Id,  unitRequest.FactionData);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
+﻿using EmpireAtWar.Models.DefendPlatform;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Controllers.Factions
@@ -7,11 +8,11 @@ namespace EmpireAtWar.Controllers.Factions
     {
         ShipUnitRequest ConstructUnitRequest(FactionData factionData, ShipType shipType);
         LevelUnitRequest ConstructUnitRequest(FactionData factionData, int level);
-
         MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType);
+        DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType);
     }
-    
-    public class UnitRequestFactory:IUnitRequestFactory
+
+    public class UnitRequestFactory : IUnitRequestFactory
     {
         public ShipUnitRequest ConstructUnitRequest(FactionData factionData, ShipType shipType)
         {
@@ -23,9 +24,15 @@ namespace EmpireAtWar.Controllers.Factions
             return new LevelUnitRequest(factionData, level);
         }
 
-        public MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType)
+        public MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData,
+            MiningFacilityType miningFacilityType)
         {
             return new MiningFacilityUnitRequest(factionData, miningFacilityType);
+        }
+
+        public DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType)
+        {
+            return new DefendPlatformUnitRequest(factionData, platformType);
         }
     }
 }

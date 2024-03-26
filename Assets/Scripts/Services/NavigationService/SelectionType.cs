@@ -7,5 +7,6 @@
         Base = 2,
         Ship = 3,
         MiningFacility = 4,
+        DefendPlatform = 5,
     }
 }
