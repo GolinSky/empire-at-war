@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Controllers.MiniMap;
+﻿using DG.Tweening;
+using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
@@ -8,37 +9,51 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.MiniMap
 {
-    public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler
+    public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler
     {
         private const float DeltaOffset = 0.5f;
-        
+        private const float HighlightDuration = 1f;
+        private const float HighlightAlpha = 0.1f;
+        private const float FadeDuration = 0.5f;
+
         [SerializeField] private Button switcherButton;
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
+        [SerializeField] private Image mapImage;
         
         private Vector2Range mapRange;
-
+        private float originAlpha;
+        private bool isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         protected override void OnInitialize()
         {
+            originAlpha = mapImage.color.a;
             mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
             Model.OnMarkAdded += AddMark;
+            Model.OnInteractableChanged += ActivateInteraction;
             switcherButton.onClick.AddListener(SetCanvasActive);
         }
 
         protected override void OnDispose()
         {
             Model.OnMarkAdded -= AddMark;
+            Model.OnInteractableChanged -= ActivateInteraction;
             switcherButton.onClick.RemoveListener(SetCanvasActive);
         }
         
         private void SetCanvasActive()
         {
             canvas.enabled = !canvas.enabled;
+        }
+
+        private void ActivateInteraction(bool isActive)
+        {
+            isInteractable = isActive;
+            mapImage.DOFade(isActive ? originAlpha : 0, FadeDuration);
         }
         
         private void AddMark(MarkData markData)
@@ -63,8 +78,13 @@ namespace EmpireAtWar.Views.MiniMap
         
         public void OnPointerMove(PointerEventData eventData)
         {
-            if(!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
+            if(!isInteractable) return;
+            
+            if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
+            {
+                mapImage.DOFade(originAlpha, FadeDuration);
                 return;
+            }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 miniMapRectTransform,
@@ -84,6 +104,11 @@ namespace EmpireAtWar.Views.MiniMap
             };
             
             Command.MoveTo(worldPoint);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            mapImage.DOFade(HighlightAlpha, HighlightDuration);
         }
     }
 }

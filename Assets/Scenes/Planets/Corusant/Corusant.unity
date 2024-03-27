@@ -10926,6 +10926,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e31246b411864262b9aa0fb8f6235529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1668355717 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8576872378924644243, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+    type: 3}
+  m_PrefabInstance: {fileID: 9008166488248886878}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1782055877 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5233012742759148230, guid: 59a22247254dcd940938e92f73528b82,
@@ -11799,7 +11811,7 @@ PrefabInstance:
     - target: {fileID: 812305163281907676, guid: 9c732463c09dbca4fb6c7ba38929d048,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.00012207031
       objectReference: {fileID: 0}
     - target: {fileID: 1092957607193559788, guid: 9c732463c09dbca4fb6c7ba38929d048,
         type: 3}
@@ -12980,6 +12992,31 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6142601787874384283}
     m_Modifications:
+    - target: {fileID: 346196118999153585, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 346196118999153585, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 346196118999153585, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_OverrideSorting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 346196118999153585, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_VertexColorAlwaysGammaSpace
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 354622154482008490, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_BlockingObjects
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 684805454339942356, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -13015,6 +13052,11 @@ PrefabInstance:
       propertyPath: pipelineView.pipelineViews.Array.data[4]
       value: 
       objectReference: {fileID: 454914296}
+    - target: {fileID: 1191557640446797143, guid: a89611b9093e21a4a8bcf6aee7005e07,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.15686275
+      objectReference: {fileID: 0}
     - target: {fileID: 2246060991756042200, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -13023,7 +13065,7 @@ PrefabInstance:
     - target: {fileID: 2246060991756042200, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.00010681152
+      value: -0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 5072223673756055565, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
@@ -14513,23 +14555,83 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7032466655325374716, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}
+      propertyPath: mapImage
+      value: 
+      objectReference: {fileID: 1668355717}
+    - target: {fileID: 7032466655325374716, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
       propertyPath: switcherButton
       value: 
       objectReference: {fileID: 6548786930507789803}
     - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.36133587
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.44200003
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.47961426
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -4.962097
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.22436523
+      objectReference: {fileID: 0}
+    - target: {fileID: 7655334293289922460, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.5463867
+      value: -1.8809814
       objectReference: {fileID: 0}
     - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_OverrideSorting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_VertexColorAlwaysGammaSpace
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8292755036016046107, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
-      value: 0
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8576872378924644243, guid: 7f28d0bab5d08794096e1d38ee2bc176,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.003921569
       objectReference: {fileID: 0}
     - target: {fileID: 9008054160743074511, guid: 7f28d0bab5d08794096e1d38ee2bc176,
         type: 3}

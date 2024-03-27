@@ -21,8 +21,7 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly IEconomyProvider economyProvider;
         private IChainHandler<UnitRequest> nextChain;
         public float Income { get; private set; }
-    
-
+        
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,

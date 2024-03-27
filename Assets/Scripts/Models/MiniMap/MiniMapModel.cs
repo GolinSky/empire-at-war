@@ -9,6 +9,7 @@ namespace EmpireAtWar.Models.MiniMap
 {
     public interface IMiniMapModelObserver : IModelObserver
     {
+        event Action<bool> OnInteractableChanged;
         event Action<MarkData> OnMarkAdded;
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Models.MiniMap
     [CreateAssetMenu(fileName = "MiniMapModel", menuName = "Model/MiniMapModel")]
     public class MiniMapModel : Model, IMiniMapModelObserver
     {
+        public event Action<bool> OnInteractableChanged;
         public event Action<MarkData> OnMarkAdded;
         public Vector2Range MapRange { get; set; }
         public MarkData PlayerBase { get; private set; }
@@ -26,6 +28,11 @@ namespace EmpireAtWar.Models.MiniMap
 
         [field:SerializeField] public DictionaryWrapper<MarkType, Sprite> MarkWrapper { get; private set; }
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }
+
+        public bool IsInteractive
+        {
+            set => OnInteractableChanged?.Invoke(value);
+        }
 
         public void AddMark(MarkType markType, Vector3 position)
         {
