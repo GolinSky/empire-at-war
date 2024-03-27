@@ -1,7 +1,6 @@
 ﻿using EmpireAtWar.Commands;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
-using JetBrains.Annotations;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Components.Ship.Selection

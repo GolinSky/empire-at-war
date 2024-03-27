@@ -42,6 +42,8 @@ namespace EmpireAtWar.Services.Battle
             
             RaycastHit raycastHit = cameraService.ScreenPointToRay(touchPosition);
 
+            if(raycastHit.collider == null) return;
+            
             SelectionViewComponent selectionComponent = raycastHit.collider.GetComponent<SelectionViewComponent>();
 
             if (selectionComponent != null)

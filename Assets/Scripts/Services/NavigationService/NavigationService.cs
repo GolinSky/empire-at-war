@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.InputService;
 using UnityEngine;
 using LightWeightFramework.Components.Service;
@@ -11,7 +10,7 @@ namespace EmpireAtWar.Services.NavigationService
     {
         event Action<SelectionType> OnTypeChanged;
         SelectionType SelectionType { get; }
-        
+
         ISelectable Selectable { get; }
         void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType);
 
@@ -25,7 +24,7 @@ namespace EmpireAtWar.Services.NavigationService
 
         private readonly IInputService inputService;
         private IMovable movable;
-        
+
         public ISelectable Selectable { get; private set; }
         public SelectionType SelectionType { get; private set; }
 
@@ -46,7 +45,7 @@ namespace EmpireAtWar.Services.NavigationService
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
-            if(inputType != InputType.ShipInput) return;
+            if (inputType != InputType.ShipInput) return;
             if (movable == null) return;
 
             if (movable.CanMove)
@@ -57,24 +56,19 @@ namespace EmpireAtWar.Services.NavigationService
 
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
-            if(inputService.CurrentTouchPhase == TouchPhase.Moved) return;
-            if(selectionType == SelectionType.Terrain) return;
+            if (selectionType == SelectionType.Terrain) return;
 
             if (Selectable != null)
             {
                 RemoveSelectable(Selectable);
-                //return;
             }
-            
+
             Selectable = selectableObject;
             movable = selectableObject.Movable;
             selectableObject.SetActive(true);
-            
-          //  if (SelectionType != selectionType)
-            {
-                SelectionType = selectionType;
-                OnTypeChanged?.Invoke(SelectionType);
-            }
+
+            SelectionType = selectionType;
+            OnTypeChanged?.Invoke(SelectionType);
         }
 
         public void RemoveSelectable(ISelectable selectable)
