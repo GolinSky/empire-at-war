@@ -108,6 +108,8 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if(!isInteractable) return;
+
             mapImage.DOFade(HighlightAlpha, HighlightDuration);
         }
     }
