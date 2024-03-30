@@ -12,16 +12,27 @@ namespace EmpireAtWar.Extentions
         {
         }
         
-        public void BindFromNewComponent<TView>(IRepository repository)
+        public void BindFromNewComponent<TView>(IRepository repository, bool notInjectViewComponents = false)
             where TView : IView
         {
             ConstructName<TView>();
 
-            Container
-                .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
-                .AsSingle()
-                .OnInstantiated(HandleCreation<TView>);
+            if (notInjectViewComponents)
+            {
+                Container
+                    .BindInterfacesAndSelfTo<TView>()
+                    .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
+                    .AsSingle();
+            }
+            else
+            {
+                Container
+                    .BindInterfacesAndSelfTo<TView>()
+                    .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
+                    .AsSingle()
+                    .OnInstantiated(HandleCreation<TView>);
+            }
+   
         }
 
         public void BindFromInstance<TView>(object view)
@@ -47,6 +58,7 @@ namespace EmpireAtWar.Extentions
             }
         }
 
+        
         public static ViewDependencyBuilder ConstructBuilder(DiContainer container)
         {
             return new ViewDependencyBuilder(container);

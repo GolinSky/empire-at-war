@@ -16,7 +16,7 @@ namespace EmpireAtWar.Controllers.Economy
         void RecalculateIncome(IIncomeProvider incomeProvider);
     }
 
-    public class EconomyController : Controller<EconomyModel>, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider
+    public class EconomyController : Controller<EconomyModel>, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
     {
         private const float DefaultIncome = 1f;
 
@@ -31,9 +31,12 @@ namespace EmpireAtWar.Controllers.Economy
         {
             incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
             Model.Money = Model.StartMoneyAmount;
+        }
+        public void Initialize()
+        {
             AddProvider(this);
         }
-
+        
         public void Tick()
         {
             if (incomeTimer.IsComplete)
@@ -108,5 +111,7 @@ namespace EmpireAtWar.Controllers.Economy
                 commonIncome += provider.Income;
             }
         }
+
+   
     }
 }

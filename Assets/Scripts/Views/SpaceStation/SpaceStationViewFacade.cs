@@ -6,6 +6,7 @@ namespace EmpireAtWar.Views.SpaceStation
 {
     public class SpaceStationViewFacade:PlaceholderFactory<PlayerType, FactionType, Vector3, SpaceStationView>
     {
-        
+
+   
     }
 }

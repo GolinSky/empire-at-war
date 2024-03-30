@@ -5,6 +5,7 @@ using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
+using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
 
@@ -12,6 +13,8 @@ namespace EmpireAtWar.SceneContext
 {
     public class SkirmishDynamicEntityInstaller : MonoInstaller
     {
+        [Inject] private IRepository Repository { get; }
+        
         public override void InstallBindings()
         {
             Container
@@ -19,7 +22,7 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<ShipInstaller>()
                 .NonLazy();
-
+            
             Container
                 .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
                 .FromSubContainerResolve()
@@ -35,8 +38,9 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<DefendPlatformInstaller>()
+                .ByNewContextPrefab<ViewInstaller>(Repository.Load<GameObject>(nameof(DefendPlatformView)))
                 .NonLazy();
+
         }
     }
 }

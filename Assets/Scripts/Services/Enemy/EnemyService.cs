@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly SpaceStationViewFacade spaceStationViewFacade;
         private readonly FactionsModel factionsModel;
-        private readonly MapModel mapModel;
+        private readonly LazyInject<IMapModelObserver> mapModel;
         private Dictionary<ShipType, FactionData> factionData;
         private Vector3 stationPosition;
         
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.Enemy
             ShipFacadeFactory shipFacadeFactory,
             SpaceStationViewFacade spaceStationViewFacade,
             FactionsModel factionsModel,
-            MapModel mapModel)
+            LazyInject<IMapModelObserver> mapModel)
         {
             this.shipFacadeFactory = shipFacadeFactory;
             this.spaceStationViewFacade = spaceStationViewFacade;
@@ -44,9 +44,10 @@ namespace EmpireAtWar.Services.Enemy
         {
             factionData = factionsModel.GetShipFactionData(FactionType);
 
-            stationPosition = mapModel.GetStationPosition(PlayerType.Opponent);
+            stationPosition = mapModel.Value.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  stationPosition);
 
+            return;
             Sequence sequence = DOTween.Sequence();
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             

@@ -17,7 +17,7 @@ namespace EmpireAtWar.Controllers.Factions
         private const float DefaultIncome = 5f;
         
         private readonly INavigationService navigationService;
-        private readonly IPurchaseMediator purchaseMediator;
+        private readonly LazyInject<IPurchaseMediator> purchaseMediator;
         private readonly IEconomyProvider economyProvider;
         private IChainHandler<UnitRequest> nextChain;
         public float Income { get; private set; }
@@ -25,18 +25,19 @@ namespace EmpireAtWar.Controllers.Factions
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,
-            IPurchaseMediator purchaseMediator,
+            LazyInject<IPurchaseMediator> purchaseMediator,
             IEconomyProvider economyProvider) : base(model)
         {
             Income = DefaultIncome;
             this.navigationService = navigationService;
             this.purchaseMediator = purchaseMediator;
             this.economyProvider = economyProvider;
-            purchaseMediator.Add(this);
         }
         
         public void Initialize()
         {
+            purchaseMediator.Value.Add(this);
+
             navigationService.OnTypeChanged += UpdateType;
             economyProvider.AddProvider(this);
         }
@@ -75,12 +76,12 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            purchaseMediator.Handle(unitRequest);
+            purchaseMediator.Value.Handle(unitRequest);
         }
 
         public void RevertBuilding(UnitRequest unitRequest)
         {
-            purchaseMediator.RevertFlow(unitRequest);
+            purchaseMediator.Value.RevertFlow(unitRequest);
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)

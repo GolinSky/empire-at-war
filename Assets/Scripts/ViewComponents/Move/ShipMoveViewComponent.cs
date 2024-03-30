@@ -35,7 +35,6 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             transform.position = Model.HyperSpacePosition - Vector3.right * 1000f; // move magic number to model
             HyperSpaceJump(Model.HyperSpacePosition);
-            MoveCommand.Assign(transform); // inject transform
 
             Model.OnTargetPositionChanged += UpdateTargetPosition;
             Model.OnStop += StopAllMovement;

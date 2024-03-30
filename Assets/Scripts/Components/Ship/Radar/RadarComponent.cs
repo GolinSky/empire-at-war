@@ -42,13 +42,13 @@ namespace EmpireAtWar.Components.Ship.Radar
                     Vector3.up,
                     raycastHits,
                     Quaternion.identity,
-                    Model.Distance,// + offset.y, //todo : fix this
+                    Model.Distance + offset.y, //todo : fix this
                     Model.EnemyLayerMask);
                
 
                 if (raycastHits != null && raycastHits.Length != 0 && hitAmount != 0)
                 {
-                    raycastHits = raycastHits.Take(hitAmount).OrderBy(x => x.colliderInstanceID).ToArray();
+                    raycastHits = raycastHits.Take(hitAmount).ToArray();
                     Model.AddHit(raycastHits.Take(hitAmount).ToArray());
                 }
                 timer.StartTimer();

@@ -7,21 +7,22 @@ using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SpaceStation;
-using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.SceneContext
+namespace EmpireAtWar
 {
-    public class StationInstaller : Installer
+    public class SpaceStationInstaller : BaseViewInstaller<SpaceStationController, SpaceStationModel>
     {
-        private readonly IRepository repository;
-        private readonly FactionType factionType;
-        private readonly PlayerType playerType;
-        private readonly Vector3 startPosition;
+        private IRepository repository;
+        private FactionType factionType;
+        private PlayerType playerType;
+        private Vector3 startPosition;
 
-        public StationInstaller(IRepository repository, FactionType factionType, PlayerType playerType, Vector3 startPosition)
+        [Inject]
+        public void Construct(IRepository repository, FactionType factionType, PlayerType playerType,
+            Vector3 startPosition)
         {
             this.repository = repository;
             this.factionType = factionType;
@@ -31,15 +32,6 @@ namespace EmpireAtWar.SceneContext
 
         public override void InstallBindings()
         {
-            Container.BindEntity(startPosition);
-            Container.BindEntity(playerType);
-
-            Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
-
             switch (playerType)
             {
                 case PlayerType.Player:
@@ -57,11 +49,14 @@ namespace EmpireAtWar.SceneContext
                     break;
                 }
             }
-
+            
             Container
-                .BindModel<SpaceStationModel>(repository)
-                .BindInterfaces<SpaceStationController>()
-                .BindViewFromNewComponent<SpaceStationView>(repository, factionType.ToString());
+                .BindInterfaces<HealthComponent>()
+                .BindInterfaces<SimpleMoveComponent>()
+                .BindInterfaces<RadarComponent>()
+                .BindInterfaces<WeaponComponent>();
+            
+            base.InstallBindings();
         }
     }
 }

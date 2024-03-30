@@ -7,7 +7,7 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, ITickable, IInitializable
+    public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, IInitializable
     {
         private readonly ICameraService cameraService;
         private Transform transform;
@@ -40,19 +40,8 @@ namespace EmpireAtWar.Components.Ship.Selection
 
             return point;
         }
+        
 
-        public void Assign(Transform transform)
-        {
-            this.transform = transform;
-        }
-
-        public void Tick()
-        {
-            if (transform != null)
-            {
-                Model.CurrentPosition = transform.position;
-            }
-        }
 
         public float MoveAround()
         {

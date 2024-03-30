@@ -1379,6 +1379,8 @@ GameObject:
   - component: {fileID: 8076068659022331315}
   - component: {fileID: 3950275667884880574}
   - component: {fileID: 8174140805971395696}
+  - component: {fileID: 470235265056036138}
+  - component: {fileID: 7553879736929750385}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
   m_TagString: Untagged
@@ -1495,6 +1497,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8864fa54cfe24ae6b614f133e3407bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &470235265056036138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 7553879736929750385}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
+--- !u!114 &7553879736929750385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a666df14946f4eb8a1c65e8ade2cf52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 5745535490289906719}
+  bindViewComponents: 1
+  bindMonoComponent: 1
 --- !u!1001 &242065708644883426
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Selection
 {
+    
+    //todo: rename to view component
     public class PlayerSelectionComponent:SelectionViewComponent
     {
         [SerializeField] private Canvas selectedCanvas;

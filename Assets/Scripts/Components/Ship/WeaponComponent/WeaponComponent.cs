@@ -23,7 +23,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable, IDisposable
     {
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly IShipMoveModelObserver shipMoveModelObserver;
+        private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
         private readonly ITimer attackTimer;
         private float endTimeTween;
 
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.timerPoolWrapperService = timerPoolWrapperService;
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
         }
 
@@ -143,7 +143,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         }
 
         private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(shipMoveModelObserver.CurrentPosition, targetPosition);
+            Vector3.Distance(simpleMoveModelObserver.CurrentPosition, targetPosition);
 
         private void RemoveAttackData(AttackData attackData)
         {

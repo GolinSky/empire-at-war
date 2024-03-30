@@ -19,9 +19,7 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>(PathToFile))
                 .AsSingle()
-                .OnInstantiated(HandleModel<TModel>)
-                .NonLazy();
-            
+                .OnInstantiated(HandleModel<TModel>);
             return Container;
         }
          

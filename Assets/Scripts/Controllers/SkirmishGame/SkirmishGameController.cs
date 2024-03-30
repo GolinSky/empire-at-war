@@ -15,12 +15,12 @@ namespace EmpireAtWar.Controllers.Game
         private const float SpeedUpTimeScale = 4f;
         private const float DefaultTimeScale = 1f;
         private const float PauseTimeScale = 0f;
-        private readonly IUserStateNotifier userStateNotifier;
+        private readonly LazyInject<IUserStateNotifier> userStateNotifier;
         private readonly IGameCommand gameCommand;
         private readonly FactionsModel factionsModel;
         private GameTimeMode gameTimeMode;
         
-        public SkirmishGameController(SkirmishGameModel model, IUserStateNotifier userStateNotifier, IGameCommand gameCommand) : base(model)
+        public SkirmishGameController(SkirmishGameModel model, LazyInject<IUserStateNotifier> userStateNotifier, IGameCommand gameCommand) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
@@ -30,12 +30,12 @@ namespace EmpireAtWar.Controllers.Game
         
         public void Initialize()
         {
-            userStateNotifier.AddObserver(this);
+            userStateNotifier.Value.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            userStateNotifier.RemoveObserver(this);
+            userStateNotifier.Value.RemoveObserver(this);
         }
 
         public void Play()

@@ -110,6 +110,8 @@ GameObject:
   - component: {fileID: 6327239269419678945}
   - component: {fileID: 7742231190893136385}
   - component: {fileID: 1387384039836268560}
+  - component: {fileID: 7999837810212360190}
+  - component: {fileID: 6997024168328682474}
   m_Layer: 0
   m_Name: DefendPlatformView
   m_TagString: Untagged
@@ -213,6 +215,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 21.313969, y: 8.833265, z: 20.05054}
   m_Center: {x: -0.05053711, y: -1.5919228, z: 1.2886982}
+--- !u!114 &7999837810212360190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 6997024168328682474}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
+--- !u!114 &6997024168328682474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a53b11a66ed428c9bd67546325a8dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 3098522355029747233}
 --- !u!1 &2484499334210203976
 GameObject:
   m_ObjectHideFlags: 0
