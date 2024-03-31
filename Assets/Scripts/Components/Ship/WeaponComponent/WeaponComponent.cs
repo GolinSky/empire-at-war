@@ -25,14 +25,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
         private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
         private readonly ITimer attackTimer;
-        private float endTimeTween;
 
         private List<CustomCoroutine> customCoroutines = new List<CustomCoroutine>();
         private List<AttackData> attackDataList = new List<AttackData>();
         private AttackData mainAttackData = null;
-        public WeaponComponent(
-            IModel model,
-            ITimerPoolWrapperService timerPoolWrapperService) : base(model)
+        private float endTimeTween;
+
+        public WeaponComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.timerPoolWrapperService = timerPoolWrapperService;
             simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
