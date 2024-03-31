@@ -101,7 +101,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1000
-        <BuildTime>k__BackingField: 30
+        <BuildTime>k__BackingField: 5
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300010, guid: 0fd21678280ad9c47aa2d32baf438c5d,
           type: 3}

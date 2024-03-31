@@ -22,7 +22,9 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<ShipInstaller>()
                 .NonLazy();
-            
+            // Container
+            //     .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
+            //     .FromFactory<SpaceStationViewFactory>();
             Container
                 .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
                 .FromSubContainerResolve()
@@ -38,7 +40,7 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
                 .FromSubContainerResolve()
-                .ByNewContextPrefab<ViewInstaller>(Repository.Load<GameObject>(nameof(DefendPlatformView)))
+                .ByNewContextPrefab<DefendPlatformInstaller>(Repository.Load<GameObject>(nameof(DefendPlatformInstaller)))
                 .NonLazy();
 
         }
