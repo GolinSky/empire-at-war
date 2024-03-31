@@ -1,4 +1,4 @@
-using EmpireAtWar.Commands.Ship;
+﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.Audio;
 using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Health;
@@ -10,32 +10,35 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.Ship;
-using LightWeightFramework.Components.Repository;
-using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.SceneContext
+namespace EmpireAtWar.Ship
 {
-    public class ShipInstaller:Installer
+    public class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
     {
-        private readonly IRepository repository;
-        private readonly ShipType shipType;
-        private readonly PlayerType playerType;
-        private readonly Vector3 startPosition;
+        private ShipType shipType;
+        private PlayerType playerType;
 
-        public ShipInstaller(IRepository repository, ShipType shipType, PlayerType playerType, Vector3 startPosition)
+        protected override string ModelPathPrefix => shipType.ToString();
+        protected override string ViewPathPrefix => shipType.ToString();
+
+        [Inject]
+        public void Construct(ShipType shipType, PlayerType playerType)
         {
-            this.repository = repository;
             this.shipType = shipType;
             this.playerType = playerType;
-            this.startPosition = startPosition;
         }
-        
-        public override void InstallBindings()
-        {
-            Container.BindEntity(startPosition);
-            Container.BindEntity(playerType);
 
+        protected override void OnBindData()
+        {
+            base.OnBindData();
+            Container.BindEntity(playerType);
+            Container.BindEntity(shipType);
+        }
+
+        protected override void BindComponents()
+        {
+            base.BindComponents();
             Container
                 .BindInterfaces<ShipMoveComponent>()
                 .BindInterfaces<HealthComponent>()
@@ -43,9 +46,7 @@ namespace EmpireAtWar.SceneContext
                 .BindInterfaces<RadarComponent>()
                 .BindInterfaces<AiComponent>()
                 .BindInterfaces<AudioShipComponent>();
-
-            Container.BindEntity(shipType);
-
+            
             switch (playerType)
             {
                 case PlayerType.Player:
@@ -62,11 +63,6 @@ namespace EmpireAtWar.SceneContext
                     break;
                 }
             }
-            
-            Container
-                .BindModel<ShipModel>(repository, shipType.ToString())
-                .BindInterfaces<ShipController>()
-                .BindViewFromNewComponent<ShipView>(repository, shipType.ToString());
         }
     }
 }

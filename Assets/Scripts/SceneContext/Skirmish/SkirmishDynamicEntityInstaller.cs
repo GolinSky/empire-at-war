@@ -2,6 +2,7 @@ using EmpireAtWar.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
+using EmpireAtWar.Ship;
 using EmpireAtWar.SpaceStation;
 using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
@@ -22,7 +23,7 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindFactory<PlayerType, ShipType, Vector3, ShipView, ShipFacadeFactory>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<ShipInstaller>()
+                .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
                 .NonLazy();
     
             Container
