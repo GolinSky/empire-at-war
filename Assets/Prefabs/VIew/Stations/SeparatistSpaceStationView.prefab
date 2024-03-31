@@ -310,8 +310,6 @@ GameObject:
   - component: {fileID: 6187346483544078542}
   - component: {fileID: 2133442880983917843}
   - component: {fileID: 6574646280854771831}
-  - component: {fileID: -8622150395836085060}
-  - component: {fileID: 8971869585046959800}
   m_Layer: 0
   m_Name: SeparatistSpaceStationView
   m_TagString: Untagged
@@ -467,39 +465,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8864fa54cfe24ae6b614f133e3407bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-8622150395836085060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914769984232844324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 8971869585046959800}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &8971869585046959800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914769984232844324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a666df14946f4eb8a1c65e8ade2cf52a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  view: {fileID: 1895762315140337424}
-  bindViewComponents: 1
-  bindMonoComponent: 1
 --- !u!1001 &1368702453865185897
 PrefabInstance:
   m_ObjectHideFlags: 0

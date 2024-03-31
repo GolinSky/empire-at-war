@@ -34,6 +34,19 @@ namespace EmpireAtWar.Extentions
             }
    
         }
+        
+        public void BindFromNewComponent<TView>(IRepository repository, Transform parent)
+            where TView : IView
+        {
+            ConstructName<TView>();
+
+            Container
+                .BindInterfacesAndSelfTo<TView>()
+                .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
+                .UnderTransform(parent)
+                .AsSingle();
+   
+        }
 
         public void BindFromInstance<TView>(object view)
             where TView : IView

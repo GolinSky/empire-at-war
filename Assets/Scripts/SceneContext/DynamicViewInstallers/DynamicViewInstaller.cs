@@ -25,8 +25,10 @@ namespace EmpireAtWar
 
         protected virtual string ModelPathPrefix { get; } = string.Empty;
         protected virtual string ModelPathPostfix { get; } = string.Empty;
+        
+        protected virtual string ViewPathPrefix { get; } = string.Empty;
+        protected virtual string ViewPathPostfix { get; } = string.Empty;
 
-        protected virtual string ViewPath { get; } = typeof(TView).Name;
 
         [Inject]
         public void Constructor(IRepository repository, Vector3 startPosition)
@@ -49,7 +51,7 @@ namespace EmpireAtWar
 
         protected virtual void AssignView()
         {
-            view = Container.Resolve<DefendPlatformView>();
+            view = Container.Resolve<TView>();
         }
 
         protected virtual  void BindViewComponents()
@@ -68,7 +70,7 @@ namespace EmpireAtWar
             }
         }
 
-        protected virtual void BindData()
+        protected void BindData()
         {
             Container.BindEntity(startPosition);
             OnBindData();
@@ -88,11 +90,10 @@ namespace EmpireAtWar
 
         protected virtual void BindView()
         {
-            Container
-                .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>(ViewPath))
-                .UnderTransform(ViewTransformParent)
-                .AsSingle();
+            ViewDependencyBuilder
+                .ConstructBuilder(Container)
+                .AppendToPath(ViewPathPrefix, ViewPathPostfix)
+                .BindFromNewComponent<TView>(repository, ViewTransformParent);
         }
     }
 }

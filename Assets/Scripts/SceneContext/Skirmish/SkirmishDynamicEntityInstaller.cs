@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
+using EmpireAtWar.SpaceStation;
 using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Ship;
@@ -22,13 +23,11 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<ShipInstaller>()
                 .NonLazy();
-            // Container
-            //     .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
-            //     .FromFactory<SpaceStationViewFactory>();
+    
             Container
                 .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<StationInstaller>()
+                .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
                 .NonLazy();
 
             Container
@@ -40,9 +39,14 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
                 .FromSubContainerResolve()
-                .ByNewContextPrefab<DefendPlatformInstaller>(Repository.Load<GameObject>(nameof(DefendPlatformInstaller)))
+                .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();
 
+        }
+
+        private GameObject GetPath<T>()
+        {
+            return Repository.Load<GameObject>(typeof(T).Name);
         }
     }
 }

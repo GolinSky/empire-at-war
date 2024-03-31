@@ -7,31 +7,36 @@ using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SpaceStation;
-using LightWeightFramework.Components.Repository;
-using UnityEngine;
+using EmpireAtWar.Views.SpaceStation;
 using Zenject;
 
-namespace EmpireAtWar
+namespace EmpireAtWar.SpaceStation
 {
-    public class SpaceStationInstaller : BaseViewInstaller<SpaceStationController, SpaceStationModel>
+    public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationController, SpaceStationModel, SpaceStationView>
     {
-        private IRepository repository;
         private FactionType factionType;
         private PlayerType playerType;
-        private Vector3 startPosition;
+
+        protected override string ViewPathPrefix => factionType.ToString();
+        
 
         [Inject]
-        public void Construct(IRepository repository, FactionType factionType, PlayerType playerType,
-            Vector3 startPosition)
+        public void Construct(FactionType factionType, PlayerType playerType)
         {
-            this.repository = repository;
             this.factionType = factionType;
             this.playerType = playerType;
-            this.startPosition = startPosition;
         }
 
-        public override void InstallBindings()
+        protected override void OnBindData()
         {
+            base.OnBindData();
+            Container.BindEntity(playerType);
+            Container.BindEntity(factionType);
+        }
+
+        protected override void BindComponents()
+        {
+            base.BindComponents();
             switch (playerType)
             {
                 case PlayerType.Player:
@@ -52,11 +57,10 @@ namespace EmpireAtWar
             
             Container
                 .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()
                 .BindInterfaces<RadarComponent>()
                 .BindInterfaces<WeaponComponent>();
             
-            base.InstallBindings();
+            Container.BindInterfacesNonLazy<SimpleMoveComponent>();
         }
     }
 }
