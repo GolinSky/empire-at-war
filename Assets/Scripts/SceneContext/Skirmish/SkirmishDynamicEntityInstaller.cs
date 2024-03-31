@@ -1,3 +1,4 @@
+using EmpireAtWar.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
@@ -31,9 +32,9 @@ namespace EmpireAtWar.SceneContext
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacadeFactory>()
+                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacade>()
                 .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<MiningFacilityInstaller>()
+                .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
                 .NonLazy();
             
             Container

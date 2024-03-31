@@ -5,5 +5,5 @@ using Zenject;
 
 namespace EmpireAtWar.Views.MiningFacility
 {
-    public class MiningFacilityFacadeFactory : PlaceholderFactory<PlayerType,MiningFacilityType,Vector3,MiningFacilityView> {}
+    public class MiningFacilityFacade : PlaceholderFactory<PlayerType,MiningFacilityType,Vector3,MiningFacilityView> {}
 }

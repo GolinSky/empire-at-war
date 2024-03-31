@@ -28,7 +28,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly InputService inputService;
         private readonly ICameraService cameraService;
         private readonly ShipFacadeFactory shipFacadeFactory;
-        private readonly MiningFacilityFacadeFactory miningFacilityFacadeFactory;
+        private readonly MiningFacilityFacade miningFacilityFacade;
         private readonly DefendPlatformFacade defendPlatformFacade;
 
         private IChainHandler<UnitRequest> nextChain;
@@ -43,13 +43,13 @@ namespace EmpireAtWar.Controllers.Reinforcement
             InputService inputService,
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
-            MiningFacilityFacadeFactory miningFacilityFacadeFactory,
+            MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade) : base(model)
         {
             this.inputService = inputService;
             this.cameraService = cameraService;
             this.shipFacadeFactory = shipFacadeFactory;
-            this.miningFacilityFacadeFactory = miningFacilityFacadeFactory;
+            this.miningFacilityFacade = miningFacilityFacade;
             this.defendPlatformFacade = defendPlatformFacade;
         }
 
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
                     }
                     case SpawnType.MiningFacility:
                     {
-                        miningFacilityFacadeFactory.Create(PlayerType.Player, currentFacilityType, spawnPosition);
+                        miningFacilityFacade.Create(PlayerType.Player, currentFacilityType, spawnPosition);
                         break;
                     }
                     case SpawnType.DefendPlatform:
