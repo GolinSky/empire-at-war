@@ -11,10 +11,12 @@ namespace EmpireAtWar.Models.MiniMap
     {
         event Action<bool> OnInteractableChanged;
         event Action<MarkData> OnMarkAdded;
+        
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
         MarkData PlayerBase { get; }
         MarkData EnemyBase { get; }
+        bool IsInputBlocked { get; }
     }
 
     [CreateAssetMenu(fileName = "MiniMapModel", menuName = "Model/MiniMapModel")]
@@ -33,6 +35,8 @@ namespace EmpireAtWar.Models.MiniMap
         {
             set => OnInteractableChanged?.Invoke(value);
         }
+        
+        public bool IsInputBlocked { get; set; }
 
         public void AddMark(MarkType markType, Vector3 position)
         {

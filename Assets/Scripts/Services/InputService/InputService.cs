@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.InputService
     public class InputService : Service, IInputService, ITickable
     {
         public event Action<Vector2> OnEndDrag;
+        public event Action<bool> OnBlocked;
         public event Action<InputType, TouchPhase, Vector2> OnInput;
         public event Action<InputType, Touch, Touch> OnDoubleInput;
 
@@ -96,6 +97,7 @@ namespace EmpireAtWar.Services.InputService
         public void Block(bool isBlocked)
         {
             this.isBlocked = isBlocked;
+            OnBlocked?.Invoke(isBlocked);
         }
     }
 }

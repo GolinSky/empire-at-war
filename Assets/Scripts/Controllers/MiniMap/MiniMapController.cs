@@ -2,10 +2,13 @@
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.MiniMap
@@ -19,11 +22,22 @@ namespace EmpireAtWar.Controllers.MiniMap
     {
         private readonly ICameraService cameraService;
         private readonly INavigationService navigationService;
-
-        public MiniMapController(MiniMapModel model, IMapModelObserver mapModel, ICameraService cameraService, INavigationService navigationService) : base(model)
+        private readonly IInputService inputService;
+        private readonly ITimerPoolWrapperService timerPoolWrapperService;
+        private CustomCoroutine unblockCoroutine;
+        
+        public MiniMapController(
+            MiniMapModel model,
+            IMapModelObserver mapModel,
+            ICameraService cameraService,
+            INavigationService navigationService,
+            IInputService inputService,
+            ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.cameraService = cameraService;
             this.navigationService = navigationService;
+            this.inputService = inputService;
+            this.timerPoolWrapperService = timerPoolWrapperService;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(PlayerType.Player));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
@@ -37,11 +51,29 @@ namespace EmpireAtWar.Controllers.MiniMap
         public void Initialize()
         {
             navigationService.OnTypeChanged += UpdateSelectionType;
+            inputService.OnBlocked += UpdateBlockState;
         }
-
+        
         public void LateDispose()
         {
             navigationService.OnTypeChanged -= UpdateSelectionType;
+            inputService.OnBlocked -= UpdateBlockState;
+        }
+        
+        private void UpdateBlockState(bool isBlocked)
+        {
+            if (unblockCoroutine != null)
+            {
+                unblockCoroutine.Release();
+            }
+            if (!isBlocked)
+            {
+                unblockCoroutine = timerPoolWrapperService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
+            }
+            else
+            {
+                Model.IsInputBlocked = isBlocked;
+            }
         }
         
         private void UpdateSelectionType(SelectionType selectionType)

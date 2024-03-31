@@ -79,6 +79,7 @@ namespace EmpireAtWar.Views.MiniMap
         public void OnPointerMove(PointerEventData eventData)
         {
             if(!isInteractable) return;
+            if(Model.IsInputBlocked) return;
             
             if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
             {
