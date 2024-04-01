@@ -43,7 +43,6 @@ namespace EmpireAtWar.SceneContext
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();
-
         }
 
         private GameObject GetPath<T>()

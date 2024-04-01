@@ -274,6 +274,8 @@ GameObject:
   - component: {fileID: 276480687}
   - component: {fileID: 276480688}
   - component: {fileID: 276480689}
+  - component: {fileID: 276480691}
+  - component: {fileID: 276480690}
   m_Layer: 5
   m_Name: LoadingCanvas
   m_TagString: Untagged
@@ -397,6 +399,39 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &276480690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276480681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b46ff7c9f345fc834a1e38ba4b2abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 276480688}
+  bindViewComponents: 0
+  bindMonoComponent: 0
+--- !u!114 &276480691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276480681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 276480690}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!1 &993515743
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,7 +726,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1927858823}
   - component: {fileID: 1927858822}
-  - component: {fileID: 1927858821}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -699,19 +733,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1927858821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1927858820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 785ccfa046d8f7b49befa48ad20f149e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loadingView: {fileID: 276480688}
 --- !u!114 &1927858822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -725,8 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 1927858821}
+  _monoInstallers: []
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:

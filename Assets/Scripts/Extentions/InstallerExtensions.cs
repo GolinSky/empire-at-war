@@ -32,19 +32,7 @@ namespace EmpireAtWar.Extentions
             return container;
         }
 
-        public static DiContainer BindViewFromNewComponent<TView>(
-            this DiContainer container,
-            IRepository repository,
-            string prefix = null,
-            string postfix = null)
-            where TView :  IView
-        {
-            ViewDependencyBuilder
-                .ConstructBuilder(container)
-                .AppendToPath(prefix, postfix)
-                .BindFromNewComponent<TView>(repository);
-            return container;
-        }
+    
         
         public static DiContainer BindViewFromInstance<TView>(
             this DiContainer container,

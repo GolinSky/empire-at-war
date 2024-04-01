@@ -142,7 +142,6 @@ GameObject:
   m_Component:
   - component: {fileID: 160162170}
   - component: {fileID: 160162169}
-  - component: {fileID: 160162168}
   - component: {fileID: 160162171}
   m_Layer: 0
   m_Name: SceneContext
@@ -151,19 +150,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &160162168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160162167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de018a688923b914e92f213a710541e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menuUiView: {fileID: 905983719}
 --- !u!114 &160162169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,7 +164,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 160162168}
   - {fileID: 160162171}
   _installerPrefabs: []
   _autoRun: 1
@@ -1135,6 +1120,8 @@ GameObject:
   - component: {fileID: 905983718}
   - component: {fileID: 905983717}
   - component: {fileID: 905983719}
+  - component: {fileID: 905983721}
+  - component: {fileID: 905983720}
   m_Layer: 5
   m_Name: MainMenuUi
   m_TagString: Untagged
@@ -1277,6 +1264,39 @@ MonoBehaviour:
   startDemoButton: {fileID: 885747870}
   optionsButton: {fileID: 1932443179}
   quitApplicationButton: {fileID: 377294401}
+--- !u!114 &905983720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905983712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9d50d923bc4e99983e84678f1019b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  view: {fileID: 905983719}
+  bindViewComponents: 0
+  bindMonoComponent: 0
+--- !u!114 &905983721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905983712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 905983720}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!1 &1095036628
 GameObject:
   m_ObjectHideFlags: 0
