@@ -47,7 +47,6 @@ namespace EmpireAtWar.Services.Enemy
             stationPosition = mapModel.Value.GetStationPosition(PlayerType.Opponent);
             spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  stationPosition);
 
-            return;
             Sequence sequence = DOTween.Sequence();
             Vector3 position = stationPosition + new Vector3(20, 0 , -20);
             

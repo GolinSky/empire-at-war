@@ -3,6 +3,7 @@ using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
+using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.Views.SkirmishCamera
 {
@@ -51,7 +52,14 @@ namespace EmpireAtWar.Views.SkirmishCamera
 
         private void Translate(Vector3 direction)
         {
-            SetPosition(transform.position + direction);
+            Vector3 targetPosition = transform.position + direction;
+            
+            Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(targetPosition));
+            targetPosition.x = clampedPosition.x;
+            targetPosition.z = clampedPosition.y;
+
+            moveSequence.KillIfExist();
+            moveSequence.Append(cameraTransform.DOMove(targetPosition, Model.TweenSpeed).SetEase(moveEase));
         }
     }
 }

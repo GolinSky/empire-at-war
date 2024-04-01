@@ -13861,7 +13861,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewComponents: []
   mainCamera: {fileID: 8501415028430152077}
-  moveEase: 18
+  moveEase: 15
 --- !u!114 &4775344582375106414
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,8 @@ namespace EmpireAtWar.Models.SkirmishCamera
         event Action<float> OnFovChanged;
         
         Vector2Range MoveRange { get;}
-        
+
+        float TweenSpeed { get; }
     }
 
     [CreateAssetMenu(fileName = "CoreCameraModel", menuName = "Model/Core/CoreCameraModel")]
@@ -24,8 +25,8 @@ namespace EmpireAtWar.Models.SkirmishCamera
         [field:SerializeField] public Vector2Range MoveRange { get; private set; }
         [field:SerializeField] public FloatRange ZoomRange { get; private set; }
         [field:SerializeField] public float PanSpeed { get; private set; }
-        
         [field:SerializeField] public float ZoomSpeed { get; private set; }
+        [field:SerializeField] public float TweenSpeed { get; private set; }
         public Vector3 TranslateDirection
         {
             set => OnTranslateDirectionChanged?.Invoke(value);
