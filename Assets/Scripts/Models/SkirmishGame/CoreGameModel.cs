@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.SkirmishGame
 {
-    public interface ISkirmishGameModelObserver:IModelObserver
+    public interface ICoreGameModelObserver:IModelObserver
     {
         event Action<GameTimeMode> OnGameTimeModeChange;
         GameTimeMode GameTimeMode { get; }
     }
     
-    [CreateAssetMenu(fileName = "SkirmishGameModel", menuName = "Model/SkirmishGameModel")]
-    public class SkirmishGameModel: Model, ISkirmishGameModelObserver
+    [CreateAssetMenu(fileName = "CoreGameModel", menuName = "Model/Core/CoreGameModel")]
+    public class CoreGameModel: Model, ICoreGameModelObserver
     {
         public event Action<GameTimeMode> OnGameTimeModeChange;
 
@@ -27,6 +27,5 @@ namespace EmpireAtWar.Models.SkirmishGame
                 OnGameTimeModeChange?.Invoke(gameTimeMode);
             }
         }
-        
     }
 }

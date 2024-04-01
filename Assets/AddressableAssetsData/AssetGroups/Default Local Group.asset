@@ -133,7 +133,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
-    m_Address: Assets/Prefabs/Model/Camera/CoreCameraModel.asset
+    m_Address: CoreCameraModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -143,7 +143,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7c667c14d310a4499d62638ddd5c2f8
-    m_Address: SkirmishGameModel
+    m_Address: CoreGameModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

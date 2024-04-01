@@ -15,7 +15,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
         
     }
 
-    [CreateAssetMenu(fileName = "CoreCameraModel", menuName = "Model/CoreCameraModel")]
+    [CreateAssetMenu(fileName = "CoreCameraModel", menuName = "Model/Core/CoreCameraModel")]
     public class CoreCameraModel:Model, ICoreCameraModelObserver
     {
         public event Action<Vector3> OnTranslateDirectionChanged;

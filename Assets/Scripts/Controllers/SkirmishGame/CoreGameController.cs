@@ -10,7 +10,7 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Game
 {
 
-    public class SkirmishGameController : Controller<SkirmishGameModel>, ISkirmishGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
+    public class CoreGameController : Controller<CoreGameModel>, ICoreGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
         private const float SpeedUpTimeScale = 4f;
         private const float DefaultTimeScale = 1f;
@@ -20,7 +20,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly FactionsModel factionsModel;
         private GameTimeMode gameTimeMode;
         
-        public SkirmishGameController(SkirmishGameModel model, LazyInject<IUserStateNotifier> userStateNotifier, IGameCommand gameCommand) : base(model)
+        public CoreGameController(CoreGameModel model, LazyInject<IUserStateNotifier> userStateNotifier, IGameCommand gameCommand) : base(model)
         {
             this.userStateNotifier = userStateNotifier;
             this.gameCommand = gameCommand;
