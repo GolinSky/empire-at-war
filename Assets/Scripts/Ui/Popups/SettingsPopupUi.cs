@@ -10,7 +10,6 @@ namespace EmpireAtWar.Ui.Popups
     {
         [SerializeField] private TMP_Dropdown qualitySettingsDropdown;
         [SerializeField] private Button applyButton;
-        [SerializeField] private Button closeButton;
         
         [Inject]
         private ISettingsCommand SettingsCommand { get; }
@@ -24,14 +23,12 @@ namespace EmpireAtWar.Ui.Popups
                 qualitySettingsDropdown.options.Add(new TMP_Dropdown.OptionData(qualityPreset));
             }
             applyButton.onClick.AddListener(ApplySettings);
-            closeButton.onClick.AddListener(ClosePopup);
         }
 
         public override void LateDispose()
         {
             base.LateDispose();
             applyButton.onClick.RemoveListener(ApplySettings);
-            closeButton.onClick.RemoveListener(ClosePopup);
 
         }
 

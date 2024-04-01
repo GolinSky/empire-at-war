@@ -1,16 +1,18 @@
 ﻿using EmpireAtWar.Commands.PopupCommands;
 using EmpireAtWar.Services.Popup;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace EmpireAtWar.Ui.Popups
 {
-    public abstract class PopupUi: MonoBehaviour , IInitializable, ILateDisposable
+    public abstract class PopupUi : MonoBehaviour, IInitializable, ILateDisposable
     {
-        [SerializeField] private PopupType popupType;// not need here
+        [SerializeField] private PopupType popupType; // not need here
+        [SerializeField] protected Button closeButton;
 
         [Inject] private IPopupCommand popupCommand;
-        
+
         public void OpenPopup()
         {
             SetPopupState(true);
@@ -34,11 +36,23 @@ namespace EmpireAtWar.Ui.Popups
         {
             gameObject.SetActive(state);
         }
-        
-        protected virtual void OnPopupOpen() {}
-        protected virtual void OnPopupClose() {}
-        public virtual void Initialize() {}
 
-        public virtual void LateDispose() {}
+        protected virtual void OnPopupOpen()
+        {
+        }
+
+        protected virtual void OnPopupClose()
+        {
+        }
+
+        public virtual void Initialize() //todo: make template method
+        {
+            closeButton.onClick.AddListener(ClosePopup);
+        }
+
+        public virtual void LateDispose() //todo: make template method
+        {
+            closeButton.onClick.RemoveListener(ClosePopup);
+        }
     }
 }

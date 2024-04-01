@@ -18,6 +18,7 @@ namespace EmpireAtWar.Ui.Popups
 
         public override void Initialize()
         {
+            base.Initialize();
             startGameButton.onClick.AddListener(OnStartGame);
             SetData(playerFactionDropdown);
             SetData(enemyFactionDropdown);
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Ui.Popups
 
         public override void LateDispose()
         {
+            base.LateDispose();
             startGameButton.onClick.RemoveListener(OnStartGame);
         }
 
