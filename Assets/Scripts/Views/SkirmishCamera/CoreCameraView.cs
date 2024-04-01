@@ -42,12 +42,20 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             return new Vector2(vector3.x, vector3.z);
         }
-        private void SetPosition(Vector3 position)
+        private void SetPosition(Vector3 position, bool useTweens)
         {
+            moveSequence.KillIfExist();
             Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
             position.x = clampedPosition.x;
             position.z = clampedPosition.y;
-            cameraTransform.position = position;
+            if (useTweens)
+            {
+                moveSequence.Append(cameraTransform.DOMove(position, Model.TweenSpeed).SetEase(moveEase));
+            }
+            else
+            {
+                cameraTransform.position = position;
+            }
         }
 
         private void Translate(Vector3 direction)

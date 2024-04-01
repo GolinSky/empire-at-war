@@ -8,7 +8,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
     public interface ICoreCameraModelObserver: IModelObserver
     {
         event Action<Vector3> OnTranslateDirectionChanged;
-        event Action<Vector3> OnPositionChanged;
+        event Action<Vector3, bool> OnPositionChanged;
         event Action<float> OnFovChanged;
         
         Vector2Range MoveRange { get;}
@@ -20,7 +20,7 @@ namespace EmpireAtWar.Models.SkirmishCamera
     public class CoreCameraModel:Model, ICoreCameraModelObserver
     {
         public event Action<Vector3> OnTranslateDirectionChanged;
-        public event Action<Vector3> OnPositionChanged;
+        public event Action<Vector3, bool> OnPositionChanged;
         public event Action<float> OnFovChanged;
         [field:SerializeField] public Vector2Range MoveRange { get; private set; }
         [field:SerializeField] public FloatRange ZoomRange { get; private set; }
@@ -33,7 +33,12 @@ namespace EmpireAtWar.Models.SkirmishCamera
         }
         public Vector3 CameraPosition
         {
-            set => OnPositionChanged?.Invoke(value);
+            set => OnPositionChanged?.Invoke(value, false);
+        }
+        
+        public Vector3 CameraPositionUsingTween
+        {
+            set => OnPositionChanged?.Invoke(value, true);
         }
 
         public float FieldOfView

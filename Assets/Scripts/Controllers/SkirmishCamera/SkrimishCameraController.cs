@@ -77,7 +77,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         public void MoveTo(Vector3 worldPoint)
         {
             worldPoint.y = cameraService.CameraPosition.y;
-            Model.CameraPosition = worldPoint;
+            Model.CameraPositionUsingTween = worldPoint;
         }
     }
 }
