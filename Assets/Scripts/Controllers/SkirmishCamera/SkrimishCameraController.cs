@@ -8,7 +8,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.SkirmishCamera
 {
-    public class SkirmishCameraController : Controller<SkirmishCameraModel>, IInitializable, ILateDisposable, ICameraCommand
+    public class CoreCameraController : Controller<CoreCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
         private readonly ICameraService cameraService;
         private readonly IInputService inputService;
@@ -16,8 +16,8 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         private Vector3 cameraPosition;
         private bool moved;
 
-        public SkirmishCameraController(
-            SkirmishCameraModel model,
+        public CoreCameraController(
+            CoreCameraModel model,
             ICameraService cameraService,
             IInputService inputService) : base(model)
         {

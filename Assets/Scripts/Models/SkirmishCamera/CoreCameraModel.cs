@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.SkirmishCamera
 {
-    public interface ISkirmishCameraModelObserver: IModelObserver
+    public interface ICoreCameraModelObserver: IModelObserver
     {
         event Action<Vector3> OnTranslateDirectionChanged;
         event Action<Vector3> OnPositionChanged;
@@ -15,8 +15,8 @@ namespace EmpireAtWar.Models.SkirmishCamera
         
     }
 
-    [CreateAssetMenu(fileName = "SkirmishCameraModel", menuName = "Model/SkirmishCameraModel")]
-    public class SkirmishCameraModel:Model, ISkirmishCameraModelObserver
+    [CreateAssetMenu(fileName = "CoreCameraModel", menuName = "Model/CoreCameraModel")]
+    public class CoreCameraModel:Model, ICoreCameraModelObserver
     {
         public event Action<Vector3> OnTranslateDirectionChanged;
         public event Action<Vector3> OnPositionChanged;

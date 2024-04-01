@@ -19,7 +19,7 @@ namespace EmpireAtWar.Ui.Popups
             OnPopupOpen();
         }
 
-        public void ClosePopup()
+        private void ClosePopup()
         {
             popupCommand.ClosePopup(popupType);
             SetPopupState(false);

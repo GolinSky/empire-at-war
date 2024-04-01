@@ -4,7 +4,7 @@ using EmpireAtWar.Models.SkirmishCamera;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.CoreCamera
 {
-    public class CoreCameraInstaller:BaseViewInstaller<SkirmishCameraController, SkirmishCameraModel>
+    public class CoreCameraInstaller:BaseViewInstaller<CoreCameraController, CoreCameraModel>
     {
         
     }

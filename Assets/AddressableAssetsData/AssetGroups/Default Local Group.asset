@@ -132,8 +132,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4b4a85081e612ac49ab54d40c3a3d025
-    m_Address: SkirmishCameraModel
+  - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
+    m_Address: Assets/Prefabs/Model/Camera/CoreCameraModel.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace EmpireAtWar.Views.SkirmishCamera
 {
-    public class SkirmishCameraView : View<ISkirmishCameraModelObserver, ICameraCommand>
+    public class CoreCameraView : View<ICoreCameraModelObserver, ICameraCommand>
     {
         [SerializeField] private Camera mainCamera;
-        [SerializeField] private Ease moveEase;
+        [SerializeField] private Ease moveEase;//out expo
 
         private Sequence moveSequence;
         private Transform cameraTransform;
