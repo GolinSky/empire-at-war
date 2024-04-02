@@ -15,10 +15,10 @@ MonoBehaviour:
   models: []
   <MoveRange>k__BackingField:
     <Min>k__BackingField: {x: -200, y: -250}
-    <Max>k__BackingField: {x: 200, y: 80}
+    <Max>k__BackingField: {x: 200, y: 250}
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 80
     <Max>k__BackingField: 300
-  <PanSpeed>k__BackingField: 70
+  <PanSpeed>k__BackingField: 50
   <ZoomSpeed>k__BackingField: 15
   <TweenSpeed>k__BackingField: 3
