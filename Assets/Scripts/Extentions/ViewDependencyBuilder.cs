@@ -5,12 +5,12 @@ using Zenject;
 
 namespace EmpireAtWar.Extentions
 {
-    public class ViewDependencyBuilder:DependencyBuilder<ViewDependencyBuilder>
+    public class ViewDependencyBuilder : DependencyBuilder<ViewDependencyBuilder>
     {
         private ViewDependencyBuilder(DiContainer container) : base(container)
         {
         }
-        
+
         public void BindFromNewComponent<TView>(IRepository repository, Transform parent)
             where TView : IView
         {
@@ -21,19 +21,8 @@ namespace EmpireAtWar.Extentions
                 .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
                 .UnderTransform(parent)
                 .AsSingle();
-   
         }
 
-        public void BindFromInstance<TView>(object view)
-            where TView : IView
-        {
-            Container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsSingle();
-        }
-        
-        
         public static ViewDependencyBuilder ConstructBuilder(DiContainer container)
         {
             return new ViewDependencyBuilder(container);

@@ -31,22 +31,7 @@ namespace EmpireAtWar.Extentions
                 .BindFromNewScriptable<TModel>(repository);
             return container;
         }
-
-    
         
-        public static DiContainer BindViewFromInstance<TView>(
-            this DiContainer container,
-            TView view,
-            string prefix = null,
-            string postfix = null)
-            where TView :  IView
-        {
-            ViewDependencyBuilder
-                .ConstructBuilder(container)
-                .AppendToPath(prefix, postfix)
-                .BindFromInstance<TView>(view);
-            return container;
-        }
 
         public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
         {
