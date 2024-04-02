@@ -8,6 +8,8 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Image iconImage;
         [SerializeField] private RectTransform rectTransform;
 
+        public Image IconImage => iconImage;
+
         public void SetData(Transform parent, Vector2 anchoredPosition, Sprite sprite)
         {
             rectTransform.SetParent(parent, false);

@@ -10,6 +10,8 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 {
     public class CoreCameraController : Controller<CoreCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
+        private const float OffsetCameraPoint = 100f;
+        
         private readonly ICameraService cameraService;
         private readonly IInputService inputService;
         private Vector3 translateDirection;
@@ -76,6 +78,11 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 
         public void MoveTo(Vector3 worldPoint)
         {
+            //b = a/tgA || a&ctgA
+            // double a = worldPoint.z;
+            // double b = a / Mathf.Tan(35f);// 180 - 90 - 55
+            // worldPoint.z = (float)b -  worldPoint.z;
+            worldPoint.z -= OffsetCameraPoint;
             worldPoint.y = cameraService.CameraPosition.y;
             Model.CameraPositionUsingTween = worldPoint;
         }

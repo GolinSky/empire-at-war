@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System.Collections.Generic;
+using DG.Tweening;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -13,23 +14,24 @@ namespace EmpireAtWar.Views.MiniMap
     {
         private const float DeltaOffset = 0.5f;
         private const float HighlightDuration = 1f;
-        private const float HighlightAlpha = 0.1f;
+        private const float HighlightMapAlpha = 0.1f;
+        private const float HighlightMarkAlpha = 1f;
         private const float FadeDuration = 0.5f;
-
+        private const float OriginMapAlpha = 0.01f;
+        
         [SerializeField] private Button switcherButton;
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         
+        private List<Image> mapMarkers = new List<Image>();
         private Vector2Range mapRange;
-        private float originAlpha;
         private bool isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         protected override void OnInitialize()
         {
-            originAlpha = mapImage.color.a;
             mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
@@ -53,13 +55,16 @@ namespace EmpireAtWar.Views.MiniMap
         private void ActivateInteraction(bool isActive)
         {
             isInteractable = isActive;
-            mapImage.DOFade(isActive ? originAlpha : 0, FadeDuration);
+            float targetAlpha = isActive ? OriginMapAlpha : 0;
+            mapImage.DOFade(targetAlpha, FadeDuration);
+            DoFade(targetAlpha, FadeDuration);
         }
         
         private void AddMark(MarkData markData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData(iconParent, GetPosition(markData.Position), markData.Icon);
+            mapMarkers.Add(view.IconImage);
         }
 
         private Vector2 GetPosition(Vector3 worldPos)
@@ -83,7 +88,8 @@ namespace EmpireAtWar.Views.MiniMap
             
             if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
             {
-                mapImage.DOFade(originAlpha, FadeDuration);
+                mapImage.DOFade(OriginMapAlpha, FadeDuration);
+                DoFade(OriginMapAlpha, FadeDuration);
                 return;
             }
 
@@ -97,7 +103,6 @@ namespace EmpireAtWar.Views.MiniMap
             percentage.x = localPoint.x / MiniMapRect.width + DeltaOffset;
             percentage.y = localPoint.y / MiniMapRect.height + DeltaOffset;
 
-        
             Vector3 worldPoint = new Vector3
             {
                 x = Mathf.Lerp(mapRange.Min.x, mapRange.Max.x, Mathf.Abs(percentage.x)) ,
@@ -110,8 +115,19 @@ namespace EmpireAtWar.Views.MiniMap
         public void OnPointerEnter(PointerEventData eventData)
         {
             if(!isInteractable) return;
+            if(Model.IsInputBlocked) return;
 
-            mapImage.DOFade(HighlightAlpha, HighlightDuration);
+            DoFade(HighlightMarkAlpha, HighlightDuration);
+            mapImage.DOFade(HighlightMapAlpha, HighlightDuration);
+        }
+
+
+        private void DoFade(float alpha, float duration)
+        {
+            for (var i = 0; i < mapMarkers.Count; i++)
+            {
+                mapMarkers[i].DOFade(alpha, duration);
+            }
         }
     }
 }
