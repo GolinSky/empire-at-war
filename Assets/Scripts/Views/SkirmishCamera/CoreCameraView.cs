@@ -21,14 +21,12 @@ namespace EmpireAtWar.Views.SkirmishCamera
         protected override void OnInitialize()
         {
             cameraTransform = mainCamera.transform;
-            Model.OnTranslateDirectionChanged += Translate;
             Model.OnPositionChanged += SetPosition;
             Model.OnFovChanged += UpdateFieldOfView;
         }
 
         protected override void OnDispose()
         {
-            Model.OnTranslateDirectionChanged -= Translate;
             Model.OnPositionChanged -= SetPosition;
             Model.OnFovChanged -= UpdateFieldOfView;
         }
@@ -37,18 +35,12 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             mainCamera.fieldOfView = fieldOfView;
         }
-
-        private Vector2 ToXZ(Vector3 vector3)
-        {
-            return new Vector2(vector3.x, vector3.z);
-        }
+        
         private void SetPosition(Vector3 position, bool useTweens)
         {
             moveSequence.KillIfExist();
             DOTween.Kill(transform);
-            Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
-            position.x = clampedPosition.x;
-            position.z = clampedPosition.y;
+          
             if (useTweens)
             {
                 moveSequence.Append(cameraTransform.DOMove(position, Model.TweenSpeed).SetEase(moveEase));
@@ -57,12 +49,6 @@ namespace EmpireAtWar.Views.SkirmishCamera
             {
                 cameraTransform.position = position;
             }
-        }
-
-        private void Translate(Vector3 direction)
-        {
-            Vector3 targetPosition = transform.position + direction;
-            SetPosition(targetPosition, true);
         }
     }
 }

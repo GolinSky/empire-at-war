@@ -1,4 +1,5 @@
 using EmpireAtWar.Commands.Camera;
+using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
@@ -10,13 +11,15 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 {
     public class CoreCameraController : Controller<CoreCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
-        private const float OffsetCameraPoint = 100f;
-        
         private readonly ICameraService cameraService;
         private readonly IInputService inputService;
         private Vector3 translateDirection;
         private Vector3 cameraPosition;
         private bool moved;
+        [Inject(Id = EntityBindType.ViewTransform)]
+        private Transform Transform { get; }
+
+        private Vector3 Position => Transform.position;
 
         public CoreCameraController(
             CoreCameraModel model,
@@ -56,7 +59,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             if(Model.ZoomRange.IsInRange(newPos.y))
             {
                 newPos.y = Model.ZoomRange.Clamp(newPos.y);
-                Model.CameraPosition = newPos;
+                Model.CameraPosition = ClampPosition(newPos);
             }
         }
 
@@ -70,7 +73,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 {
                     Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
                     Vector3 move = new Vector3(-touchDeltaPosition.x, 0, -touchDeltaPosition.y) * Model.PanSpeed * Time.unscaledDeltaTime;
-                    Model.TranslateDirection = move;
+                    Model.CameraPositionUsingTween = ClampPosition(move+Position) ;
                     break;
                 }
             }
@@ -78,13 +81,20 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 
         public void MoveTo(Vector3 worldPoint)
         {
-            //b = a/tgA || a&ctgA
-            // double a = worldPoint.z;
-            // double b = a / Mathf.Tan(35f);// 180 - 90 - 55
-            // worldPoint.z = (float)b -  worldPoint.z;
-            worldPoint.z -= OffsetCameraPoint;
-            worldPoint.y = cameraService.CameraPosition.y;
-            Model.CameraPositionUsingTween = worldPoint;
+            //b = a * sin B
+            double b = Position.y * Mathf.Sin(Transform.rotation.eulerAngles.x); 
+            worldPoint.z += (float)b;// -  worldPoint.z;
+            var v2 = cameraService.CameraPosition;
+            worldPoint.y = Position.y;
+            Model.CameraPositionUsingTween = ClampPosition(worldPoint);
+        }
+        
+
+        private Vector3 ClampPosition(Vector3 position)
+        {
+            float height = Position.y;
+            float heightPercentage = Mathf.InverseLerp(Model.ZoomRange.Min, Model.ZoomRange.Max, height);
+            return Model.ClampPosition(heightPercentage, position);
         }
     }
 }
