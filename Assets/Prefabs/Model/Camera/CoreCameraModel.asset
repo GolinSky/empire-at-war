@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: CoreCameraModel
   m_EditorClassIdentifier: 
   models: []
-  <MoveRange>k__BackingField:
+  <MinMoveRange>k__BackingField:
     <Min>k__BackingField: {x: -200, y: -250}
     <Max>k__BackingField: {x: 200, y: 250}
+  <MaxMoveRange>k__BackingField:
+    <Min>k__BackingField: {x: -200, y: -350}
+    <Max>k__BackingField: {x: 200, y: 350}
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 80
     <Max>k__BackingField: 300

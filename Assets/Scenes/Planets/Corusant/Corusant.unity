@@ -14925,7 +14925,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   view: {fileID: 4728788731979168195}
   bindViewComponents: 0
-  bindMonoComponent: 0
+  bindMonoComponent: 1
 --- !u!114 &8702119885498884021
 MonoBehaviour:
   m_ObjectHideFlags: 0
