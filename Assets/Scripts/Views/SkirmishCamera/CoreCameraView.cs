@@ -45,6 +45,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
         private void SetPosition(Vector3 position, bool useTweens)
         {
             moveSequence.KillIfExist();
+            DOTween.Kill(transform);
             Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(position));
             position.x = clampedPosition.x;
             position.z = clampedPosition.y;
@@ -61,13 +62,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
         private void Translate(Vector3 direction)
         {
             Vector3 targetPosition = transform.position + direction;
-            
-            Vector2 clampedPosition = Model.MoveRange.Clamp(ToXZ(targetPosition));
-            targetPosition.x = clampedPosition.x;
-            targetPosition.z = clampedPosition.y;
-
-            moveSequence.KillIfExist();
-            moveSequence.Append(cameraTransform.DOMove(targetPosition, Model.TweenSpeed).SetEase(moveEase));
+            SetPosition(targetPosition, true);
         }
     }
 }
