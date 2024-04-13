@@ -20,8 +20,6 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Controllers.Reinforcement
 {
-    public interface IReinforcementChain:IChainHandler<UnitRequest> {}
-
     public class ReinforcementController : Controller<ReinforcementModel>, IReinforcementCommand, ITickable,
         IInitializable, ILateDisposable, IReinforcementChain
     {

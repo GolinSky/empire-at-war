@@ -111,7 +111,5 @@ namespace EmpireAtWar.Controllers.Economy
                 commonIncome += provider.Income;
             }
         }
-
-   
     }
 }

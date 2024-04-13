@@ -4,7 +4,7 @@ using Zenject;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {
-    public class CoreMenuInstaller:BaseViewInstaller<MenuController, MenuModel>
+    public class CoreMenuInstaller:StaticViewInstaller<MenuController, MenuModel>
     {
         [Inject]
         private Zenject.SceneContext SceneContext { get; }

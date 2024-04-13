@@ -8,7 +8,7 @@ using Zenject;
 
 namespace EmpireAtWar
 {
-    public abstract class BaseViewInstaller<TController, TModel> : MonoInstaller
+    public abstract class StaticViewInstaller<TController, TModel> : MonoInstaller
         where TController : Controller
         where TModel : Model
     {

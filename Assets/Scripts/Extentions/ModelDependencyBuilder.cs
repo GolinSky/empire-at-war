@@ -1,4 +1,5 @@
-﻿using LightWeightFramework.Components.Repository;
+﻿using EmpireAtWar.Models.Factions;
+using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Model;
 using Zenject;
 
@@ -19,6 +20,20 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>(PathToFile))
                 .AsSingle()
+                .OnInstantiated(HandleModel<TModel>);
+            return Container;
+        }
+        
+        public DiContainer BindFromNewScriptable<TModel>(IRepository repository, object id) 
+            where TModel : Model
+        {
+            ConstructName<TModel>();
+            
+            Container
+                .BindInterfacesAndSelfTo<TModel>()
+                .FromNewScriptableObject(repository.Load<TModel>(PathToFile))
+                .AsSingle()
+                .WithConcreteId(id)
                 .OnInstantiated(HandleModel<TModel>);
             return Container;
         }

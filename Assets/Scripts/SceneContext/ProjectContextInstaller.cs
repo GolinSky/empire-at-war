@@ -14,9 +14,8 @@ public class ProjectContextInstaller : MonoInstaller
     private IRepository repository;
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<AddressableRepository>()
-            .AsSingle();
-
+        Container.BindInterfaces<AddressableRepository>();
+        
         repository = Container.Resolve<IRepository>();
         
         ModelDependencyBuilder

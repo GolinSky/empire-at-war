@@ -20,7 +20,8 @@ namespace EmpireAtWar
                 .BindInterfacesTo<PopupService>()
                 .AsSingle();
         
-            Container.BindFactory<PopupType, PopupUi, PopupUiFacade>()
+            Container
+                .BindFactory<PopupType, PopupUi, PopupUiFacade>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<PopupDynamicInstaller>();
         }

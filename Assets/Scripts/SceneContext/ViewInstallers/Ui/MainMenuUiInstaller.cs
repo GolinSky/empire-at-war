@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {
-    public class MainMenuUiInstaller:BaseViewInstaller<MenuUiController, MenuUiModel>
+    public class MainMenuUiInstaller:StaticViewInstaller<MenuUiController, MenuUiModel>
     {
         
     }

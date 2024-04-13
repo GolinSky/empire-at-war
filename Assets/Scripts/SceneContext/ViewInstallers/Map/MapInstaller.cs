@@ -4,7 +4,7 @@ using Zenject;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Map
 {
-    public class MapInstaller:BaseViewInstaller<MapController, MapModel>
+    public class MapInstaller:StaticViewInstaller<MapController, MapModel>
     {
         [Inject]
         private Zenject.SceneContext SceneContext { get; }

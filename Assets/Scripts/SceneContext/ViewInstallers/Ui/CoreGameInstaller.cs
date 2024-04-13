@@ -3,7 +3,7 @@ using EmpireAtWar.Models.SkirmishGame;
 
 namespace EmpireAtWar.Ui
 {
-    public class CoreGameInstaller: BaseViewInstaller<CoreGameController, CoreGameModel>
+    public class CoreGameInstaller: StaticViewInstaller<CoreGameController, CoreGameModel>
     {
     
     }

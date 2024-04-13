@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {
-    public class FactionInstaller:BaseViewInstaller<FactionController, PlayerFactionModel>
+    public class FactionInstaller:StaticViewInstaller<FactionController, PlayerFactionModel>
     {
         
     }

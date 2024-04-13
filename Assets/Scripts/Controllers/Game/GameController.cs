@@ -15,7 +15,6 @@ namespace EmpireAtWar.Controllers.Game
             this.sceneService = sceneService;
         }
         
-        
         public void StartGame(FactionType playerFactionType, FactionType enemyFactionType)
         {
             Model.EnemyFactionType = enemyFactionType;

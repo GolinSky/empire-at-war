@@ -3,7 +3,7 @@ using EmpireAtWar.Models.ShipUi;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {
-    public class ShipUiInstaller: BaseViewInstaller<ShipUiController, ShipUiModel>
+    public class ShipUiInstaller: StaticViewInstaller<ShipUiController, ShipUiModel>
     {
         
     }

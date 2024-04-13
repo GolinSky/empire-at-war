@@ -3,7 +3,7 @@ using EmpireAtWar.Models.MiniMap;
 
 namespace EmpireAtWar
 {
-    public class MiniMapInstaller: BaseViewInstaller<MiniMapController, MiniMapModel>
+    public class MiniMapInstaller: StaticViewInstaller<MiniMapController, MiniMapModel>
     {
         
     }

@@ -1,5 +1,4 @@
 using LightWeightFramework.Model;
-using LightWeightFramework.Components;
 using LightWeightFramework.Components.Repository;
 using Zenject;
 
@@ -9,14 +8,29 @@ namespace EmpireAtWar.Extentions
     {
         public static DiContainer BindInterfaces<TEntity>(this DiContainer container)
         {
-            container.BindInterfacesAndSelfTo<TEntity>()
+            container
+                .BindInterfacesAndSelfTo<TEntity>()
                 .AsSingle();
             return container;
         }
         
+        public static DiContainer BindInterfaces<TEntity>(this DiContainer container, object id)
+        {
+            container
+                .BindInterfacesAndSelfTo<TEntity>()
+                .AsSingle()
+                .WithConcreteId(id);
+
+        
+            
+            return container;
+        }
+
+        
         public static DiContainer BindInterfacesNonLazy<TEntity>(this DiContainer container)
         {
-            container.BindInterfacesAndSelfTo<TEntity>()
+            container
+                .BindInterfacesAndSelfTo<TEntity>()
                 .AsSingle()
                 .NonLazy();
             return container;
@@ -32,6 +46,7 @@ namespace EmpireAtWar.Extentions
             return container;
         }
         
+
 
         public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
         {

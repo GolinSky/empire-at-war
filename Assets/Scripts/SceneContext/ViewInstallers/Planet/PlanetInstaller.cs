@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Planet;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Planet
 {
-    public class PlanetInstaller:BaseViewInstaller<PlanetController, PlanetModel>
+    public class PlanetInstaller:StaticViewInstaller<PlanetController, PlanetModel>
     {
         
     }

@@ -2,38 +2,36 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
+using EmpireAtWar.Services.EconomyMediator;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IBuildShipChain : IChainHandler<UnitRequest>
-    {
-        
-    }
-    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand, IBuildShipChain, IIncomeProvider
+    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
+        IBuildShipChain, IIncomeProvider
     {
         private const float DefaultIncome = 5f;
-        
+
         private readonly INavigationService navigationService;
         private readonly LazyInject<IPurchaseMediator> purchaseMediator;
         private readonly IEconomyProvider economyProvider;
         private IChainHandler<UnitRequest> nextChain;
         public float Income { get; private set; }
-        
+
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,
-            LazyInject<IPurchaseMediator> purchaseMediator,
-            IEconomyProvider economyProvider) : base(model)
+            [Inject(Id = PlayerType.Player)] LazyInject<IPurchaseMediator> purchaseMediator,
+            IEconomyMediator economyMediator) : base(model)
         {
             Income = DefaultIncome;
             this.navigationService = navigationService;
             this.purchaseMediator = purchaseMediator;
-            this.economyProvider = economyProvider;
+            economyProvider = economyMediator.GetProvider(PlayerType.Player);
         }
-        
+
         public void Initialize()
         {
             purchaseMediator.Value.Add(this);
@@ -52,7 +50,7 @@ namespace EmpireAtWar.Controllers.Factions
         {
             Model.SelectionType = selectionType;
         }
-        
+
         public void CloseSelection()
         {
             navigationService.RemoveSelectable();
@@ -68,6 +66,7 @@ namespace EmpireAtWar.Controllers.Factions
                     economyProvider.RecalculateIncome(this);
                     break;
             }
+
             if (nextChain != null)
             {
                 nextChain.Handle(unitRequest);
@@ -94,6 +93,5 @@ namespace EmpireAtWar.Controllers.Factions
         {
             Model.UnitToBuild = unitRequest;
         }
-
     }
 }

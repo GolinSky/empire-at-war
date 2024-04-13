@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Navigation;
 
 namespace EmpireAtWar
 {
-    public class CoreNavigationInstaller: BaseViewInstaller<NavigationController, NavigationModel>
+    public class CoreNavigationInstaller: StaticViewInstaller<NavigationController, NavigationModel>
     {
 
     }

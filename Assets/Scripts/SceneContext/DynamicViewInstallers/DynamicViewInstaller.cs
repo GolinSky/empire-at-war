@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Extentions;
-using EmpireAtWar.Views.DefendPlatform;
 using LightWeightFramework.Components;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Controller;
@@ -17,9 +16,9 @@ namespace EmpireAtWar
         [SerializeField] private bool bindViewComponents;
         [SerializeField] private bool bindMonoComponent;
 
-        protected View view;
-        protected Vector3 startPosition;
-        protected IRepository repository;
+        protected View View { get; private set; }
+        protected Vector3 StartPosition { get; private set; }
+        protected IRepository Repository { get; private set; }
 
         protected virtual Transform ViewTransformParent => transform;
 
@@ -33,8 +32,8 @@ namespace EmpireAtWar
         [Inject]
         public void Constructor(IRepository repository, Vector3 startPosition)
         {
-            this.repository = repository;
-            this.startPosition = startPosition;
+            Repository = repository;
+            StartPosition = startPosition;
         }
 
         public sealed override void InstallBindings()
@@ -51,14 +50,14 @@ namespace EmpireAtWar
 
         protected virtual void AssignView()
         {
-            view = Container.Resolve<TView>();
+            View = Container.Resolve<TView>();
         }
 
         protected virtual  void BindViewComponents()
         {
             if (bindViewComponents)
             {
-                Container.Install<ViewComponentsInstaller>(new object[] { view });
+                Container.Install<ViewComponentsInstaller>(new object[] { View });
             }
         }
 
@@ -66,13 +65,13 @@ namespace EmpireAtWar
         {
             if (bindMonoComponent)
             {
-                Container.Install<MonoComponentInstaller>(new object[] { view.Transform });
+                Container.Install<MonoComponentInstaller>(new object[] { View.Transform });
             }
         }
 
-        protected void BindData()
+        protected void BindData()// BindParameters
         {
-            Container.BindEntity(startPosition);
+            Container.BindEntity(StartPosition);
             OnBindData();
         }
         protected virtual void OnBindData() {}
@@ -85,7 +84,7 @@ namespace EmpireAtWar
 
         protected virtual void BindModel()
         {
-            Container.BindModel<TModel>(repository, ModelPathPrefix, ModelPathPostfix);
+            Container.BindModel<TModel>(Repository, ModelPathPrefix, ModelPathPostfix);
         }
 
         protected virtual void BindView()
@@ -93,7 +92,7 @@ namespace EmpireAtWar
             ViewDependencyBuilder
                 .ConstructBuilder(Container)
                 .AppendToPath(ViewPathPrefix, ViewPathPostfix)
-                .BindFromNewComponent<TView>(repository, ViewTransformParent);
+                .BindFromNewComponent<TView>(Repository, ViewTransformParent);
         }
     }
 }
