@@ -19,7 +19,7 @@ namespace EmpireAtWar.Models.Factions
 
         FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
-        Dictionary<ShipType, FactionData> FactionData { get; }
+        Dictionary<ShipType, FactionData> ShipFactionData { get; }
         Dictionary<MiningFacilityType, FactionData> MiningFactions { get; }
         Dictionary<DefendPlatformType, FactionData> DefendPlatforms { get; }
         FactionData GetCurrentLevelFactionData();
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Models.Factions
 
         public Dictionary<MiningFacilityType, FactionData> MiningFactions => factionsModel.MiningFactionsData;
         public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => factionsModel.DefendPlatformDictionary;
-        public Dictionary<ShipType, FactionData> FactionData => factionsModel.GetShipFactionData(FactionType);
+        public Dictionary<ShipType, FactionData> ShipFactionData => factionsModel.GetShipFactionData(FactionType);
         
         public int CurrentLevel
         {

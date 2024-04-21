@@ -2,7 +2,9 @@
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Patterns.Strategy
 {
@@ -10,9 +12,10 @@ namespace EmpireAtWar.Patterns.Strategy
     {
         protected IUnitRequestFactory UnitRequestFactory { get; }
         protected EnemyFactionModel FactionModel { get; }
-        protected  IPurchaseMediator EnemyPurchaseMediator { get; }
-        
-        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, IPurchaseMediator enemyPurchaseMediator, IUnitRequestFactory unitRequestFactory)
+        protected IEnemyPurchaseMediator EnemyPurchaseMediator { get; }
+
+        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator,
+            IUnitRequestFactory unitRequestFactory)
         {
             FactionModel = factionModel;
             EnemyPurchaseMediator = enemyPurchaseMediator;
@@ -27,24 +30,39 @@ namespace EmpireAtWar.Patterns.Strategy
         {
             EnemyPurchaseMediator.Handle(unitRequest);
         }
-        
-        protected virtual void BuildShipUnit(KeyValuePair<ShipType,FactionData> keyValuePair)
+
+        protected virtual void BuildUnit(KeyValuePair<ShipType, FactionData> keyValuePair)
         {
             BuildUnit(UnitRequestFactory.ConstructUnitRequest(keyValuePair.Value, keyValuePair.Key));
         }
-
+        
+        protected virtual void BuildUnit(KeyValuePair<MiningFacilityType, FactionData> keyValuePair)
+        {
+            BuildUnit(UnitRequestFactory.ConstructUnitRequest(keyValuePair.Value, keyValuePair.Key));
+        }
+        
+        protected virtual void BuildUnit(KeyValuePair<DefendPlatformType, FactionData> keyValuePair)
+        {
+            BuildUnit(UnitRequestFactory.ConstructUnitRequest(keyValuePair.Value, keyValuePair.Key));
+        }
+        
+        protected virtual void BuildUnit(int level, FactionData factionData)
+        {
+            BuildUnit(UnitRequestFactory.ConstructUnitRequest(factionData, level));
+        }
     }
 
-    public class LevelUpStrategy:BaseUnitSpawnStrategy
+    public class LevelUpStrategy : BaseUnitSpawnStrategy
     {
-        public LevelUpStrategy(EnemyFactionModel factionModel, IPurchaseMediator enemyPurchaseMediator, IUnitRequestFactory unitRequestFactory) 
+        public LevelUpStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator,
+            IUnitRequestFactory unitRequestFactory)
             : base(factionModel, enemyPurchaseMediator, unitRequestFactory)
         {
         }
 
         public override void Start()
         {
-            BuildShipUnit(FactionModel.ShipFactionData.FirstOrDefault());
+            BuildUnit(FactionModel.ShipFactionData.FirstOrDefault());
         }
 
         public override void Update()

@@ -35,13 +35,13 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindModel<DamageCalculationModel>(Repository);
 
         Container
-            .BindInterfaces<UnitRequestFactory>();
-            // .BindInterfaces<PurchaseMediator>(PlayerType.Player)
-            // .BindInterfaces<EnemyPurchaseMediator>(PlayerType.Opponent)
+            .BindInterfaces<UnitRequestFactory>()
+            .BindInterfaces<PurchaseMediator>()
+            .BindInterfaces<EnemyPurchaseMediator>();
             //.BindInterfaces<EnemyBuildService>();
 
-        Container.Bind<IPurchaseMediator>().WithId(PlayerType.Player).To<PurchaseMediator>().AsSingle();
-        Container.Bind<IPurchaseMediator>().WithId(PlayerType.Opponent).To<EnemyPurchaseMediator>().AsSingle();
+        // Container.Bind<IPurchaseMediator>().WithId(PlayerType.Player).To<PurchaseMediator>().AsSingle();
+        // Container.Bind<IPurchaseMediator>().WithId(PlayerType.Opponent).To<EnemyPurchaseMediator>().AsSingle();
         
         //enemy
         ModelDependencyBuilder

@@ -54,16 +54,32 @@ namespace EmpireAtWar.Entities.EnemyReinforcement
             switch (request)
             {
                 case ShipUnitRequest shipUnitRequest:
+                {
                     timerPoolWrapperService.Invoke(() =>
                         {
                             shipFacadeFactory.Create(PlayerType, shipUnitRequest.Key, GenerateShipCoordinates());
                         },
                         shipUnitRequest.FactionData.BuildTime);
                     break;
+                }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
+                {
+                    timerPoolWrapperService.Invoke(() =>
+                        {
+                            miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateShipCoordinates());
+                        },
+                        miningFacilityUnitRequest.FactionData.BuildTime);
                     break;
+                }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
+                {
+                    timerPoolWrapperService.Invoke(() =>
+                        {
+                            defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateShipCoordinates());
+                        },
+                        defendPlatformUnitRequest.FactionData.BuildTime);
                     break;
+                }
             }
           
             if (nextChain != null)

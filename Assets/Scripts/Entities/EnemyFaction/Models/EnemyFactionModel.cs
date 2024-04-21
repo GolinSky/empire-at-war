@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.MiningFacility;
 using UnityEngine;
 using LightWeightFramework.Model;
 using Zenject;
@@ -14,7 +16,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     [CreateAssetMenu(fileName = "EnemyFactionModel", menuName = "Model/EnemyFactionModel")]
     public class EnemyFactionModel : Model, IEnemyFactionModelObserver
     {
-        
         [Inject] 
         private FactionsModel FactionsModel { get; }
         
@@ -22,5 +23,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public FactionType FactionType { get; }
 
         public Dictionary<ShipType, FactionData> ShipFactionData => FactionsModel.GetShipFactionData(FactionType);
+        public Dictionary<MiningFacilityType, FactionData> MiningFactions => FactionsModel.MiningFactionsData;
+        public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => FactionsModel.DefendPlatformDictionary;
+
+        public int CurrentLevel { get; set; } = 1;
+        
+        public FactionData GetCurrentLevelFactionData()
+        {
+            return FactionsModel.GetLevelFactionData(CurrentLevel);
+        }
+
     }
 }

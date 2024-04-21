@@ -106,43 +106,35 @@ MonoBehaviour:
         <Icon>k__BackingField: {fileID: 21300010, guid: 0fd21678280ad9c47aa2d32baf438c5d,
           type: 3}
   levelFactionsData:
-  - <Name>k__BackingField: 1
-    <MaxCount>k__BackingField: 1
-    <AvailableLevel>k__BackingField: 0
-    <Price>k__BackingField: 10
-    <BuildTime>k__BackingField: 10
-    <UnitCapacity>k__BackingField: 0
-    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
-      type: 3}
   - <Name>k__BackingField: 2
     <MaxCount>k__BackingField: 1
-    <AvailableLevel>k__BackingField: 0
+    <AvailableLevel>k__BackingField: 1
     <Price>k__BackingField: 100
-    <BuildTime>k__BackingField: 30
+    <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
   - <Name>k__BackingField: 3
     <MaxCount>k__BackingField: 1
-    <AvailableLevel>k__BackingField: 0
+    <AvailableLevel>k__BackingField: 2
     <Price>k__BackingField: 200
-    <BuildTime>k__BackingField: 40
+    <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
   - <Name>k__BackingField: 4
     <MaxCount>k__BackingField: 1
-    <AvailableLevel>k__BackingField: 0
-    <Price>k__BackingField: 300
-    <BuildTime>k__BackingField: 50
+    <AvailableLevel>k__BackingField: 3
+    <Price>k__BackingField: 400
+    <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
   - <Name>k__BackingField: 5
     <MaxCount>k__BackingField: 1
-    <AvailableLevel>k__BackingField: 0
-    <Price>k__BackingField: 400
-    <BuildTime>k__BackingField: 60
+    <AvailableLevel>k__BackingField: 4
+    <Price>k__BackingField: 800
+    <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}

@@ -24,8 +24,7 @@ namespace EmpireAtWar.Controllers.Factions
             return new LevelUnitRequest(factionData, level);
         }
 
-        public MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData,
-            MiningFacilityType miningFacilityType)
+        public MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType)
         {
             return new MiningFacilityUnitRequest(factionData, miningFacilityType);
         }

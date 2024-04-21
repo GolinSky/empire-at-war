@@ -36,7 +36,7 @@ namespace EmpireAtWar.Views.Factions
         {
             pipelineView.Init();
             HandleSelectionChanged(Model.SelectionType);
-            foreach (var data in Model.FactionData)
+            foreach (var data in Model.ShipFactionData)
             {
                 AddUi(UnitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
             }

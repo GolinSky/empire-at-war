@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Controllers.Factions;
+﻿using System;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
@@ -17,12 +18,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         void SetStrategy(UnitSpawnStrategyType strategyType);
     }
     
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IInitializable, ILateDisposable, IEnemyShipSpawner, IBuildShipChain
+    public class EnemyFactionController : Controller<EnemyFactionModel>, IInitializable, ILateDisposable, IEnemyShipSpawner, IBuildShipChain, ITickable
     {
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly SpaceStationViewFacade spaceStationViewFacade;
         private readonly LazyInject<IMapModelObserver> mapModel;
-        private readonly LazyInject<IPurchaseMediator> purchaseMediator;
+        private readonly LazyInject<IEnemyPurchaseMediator> purchaseMediator;
         private readonly IUnitRequestFactory unitRequestFactory;
 
         private Vector3 stationPosition;
@@ -35,7 +36,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ShipFacadeFactory shipFacadeFactory,
             SpaceStationViewFacade spaceStationViewFacade,
             LazyInject<IMapModelObserver> mapModel,
-            [Inject(Id = PlayerType.Opponent)]  LazyInject<IPurchaseMediator> purchaseMediator,
+            LazyInject<IEnemyPurchaseMediator> purchaseMediator,
             IUnitRequestFactory unitRequestFactory) : base(model)
         {
             this.shipFacadeFactory = shipFacadeFactory;
@@ -63,28 +64,30 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Handle(UnitRequest unitRequest)
         {
+            switch (unitRequest)
+            {
+                case LevelUnitRequest levelUnitRequest:
+                    Model.CurrentLevel++;
+                    break;
+                
+            }
             nextChain.Handle(unitRequest);
         }
 
-        public void Start()
-        {
-            currentStrategy?.Start();
-        }
-
-        public void Update()
+        public void Tick()
         {
             currentStrategy?.Update();
         }
 
-        public void Stop()
-        {
-            currentStrategy?.Stop();
-        }
-
         public void SetStrategy(UnitSpawnStrategyType strategyType)
         {
-            currentStrategy = new LevelUpStrategy(Model, purchaseMediator.Value, unitRequestFactory);
+            if (currentStrategy != null)
+            {
+                currentStrategy.Stop();
+            }
+            currentStrategy = new TempStrategy(Model, purchaseMediator.Value, unitRequestFactory);
             currentStrategy.Start();
         }
+
     }
 }

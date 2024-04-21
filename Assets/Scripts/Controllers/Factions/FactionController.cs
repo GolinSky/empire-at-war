@@ -23,7 +23,7 @@ namespace EmpireAtWar.Controllers.Factions
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,
-            [Inject(Id = PlayerType.Player)] LazyInject<IPurchaseMediator> purchaseMediator,
+            LazyInject<IPurchaseMediator> purchaseMediator,
             IEconomyMediator economyMediator) : base(model)
         {
             Income = DefaultIncome;

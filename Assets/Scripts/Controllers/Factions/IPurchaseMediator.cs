@@ -7,4 +7,9 @@ namespace EmpireAtWar.Controllers.Factions
         void Add(IBuildShipChain buildShipChain);
         void RevertFlow(UnitRequest result);
     }
+
+    public interface IEnemyPurchaseMediator: IChainHandler<UnitRequest>
+    {
+        
+    }
 }

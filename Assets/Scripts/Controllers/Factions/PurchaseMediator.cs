@@ -5,7 +5,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public sealed class PurchaseMediator : BasePurchaseMediator
+    public sealed class PurchaseMediator : BasePurchaseMediator, IPurchaseMediator
     {
         private readonly IPurchaseChain purchaseChain;
         private readonly IReinforcementChain reinforcementChain;
@@ -19,14 +19,18 @@ namespace EmpireAtWar.Controllers.Factions
             this.reinforcementChain = reinforcementChain;
         }
 
-        
-        public override void RevertFlow(UnitRequest result)
-        {
-            purchaseChain.Revert(result);
 
+        public void Add(IBuildShipChain buildShipChain)
+        {
+            ConstructChains(buildShipChain);
         }
 
-        protected override void ConstructChains(IBuildShipChain buildShipChain)
+        public void RevertFlow(UnitRequest result)
+        {
+            purchaseChain.Revert(result);
+        }
+
+        private void ConstructChains(IBuildShipChain buildShipChain)
         {
             SetNext(purchaseChain)
                 .SetNext(buildShipChain)
