@@ -11,6 +11,8 @@ namespace EmpireAtWar.Models.Movement
     public interface ISimpleMoveModelObserver : IModelObserver
     {
         event Action<Vector3> OnTargetPositionChanged;
+        
+        Vector3 StartPosition { get; }
         Vector3 TargetPosition { get; }
         Vector3 CurrentPosition { get; }
         Vector3 FallDownDirection { get; }
@@ -42,6 +44,9 @@ namespace EmpireAtWar.Models.Movement
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
         public float Speed => speed * speedCoefficient;
+        
+        [Inject]
+        public Vector3 StartPosition { get; }
 
         public Vector3 TargetPosition
         {

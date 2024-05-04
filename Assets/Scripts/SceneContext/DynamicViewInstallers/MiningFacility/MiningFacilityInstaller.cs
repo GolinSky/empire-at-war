@@ -6,6 +6,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Views.MiningFacility;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.MiningFacility
@@ -21,6 +22,8 @@ namespace EmpireAtWar.MiningFacility
         {
             this.playerType = playerType;
             this.miningFacilityType = miningFacilityType;
+            Debug.Log($"MiningFacilityInstaller: {StartPosition}");
+
         }
 
         protected override void OnBindData()

@@ -53,12 +53,13 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .FromResolve()
             .AsSingle();
         
-        
         ModelDependencyBuilder
             .ConstructBuilder(Container)
             .BindFromNewScriptable<EnemyFactionModel>(Repository, PlayerType.Opponent);
 
-        Container.BindInterfaces<EnemyFactionController>(PlayerType.Opponent);
+        Container
+            .BindInterfaces<EnemyFactionController>(PlayerType.Opponent);
+        
         Container
             .Bind<IBuildShipChain>()
             .WithId(PlayerType.Opponent)

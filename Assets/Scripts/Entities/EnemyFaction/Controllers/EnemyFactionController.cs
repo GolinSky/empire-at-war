@@ -119,9 +119,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         
         private Vector3 GenerateShipCoordinates()
         {
-            Vector3 startPosition = mapModel.Value.GetStationPosition(PlayerType);
-            startPosition += new Vector3(Random.Range(-50, 50), 0, Random.Range(-50, 50));
-            return startPosition;
+            Vector3 minRange = mapModel.Value.SizeRange.Min;
+            Vector3 maxRange = mapModel.Value.SizeRange.Max;
+            Random.InitState((int)DateTime.Now.Ticks);
+
+            Vector3 vector3 = new Vector3(Random.Range(minRange.x, maxRange.x), 
+                0f,
+                Random.Range(minRange.y, maxRange.y));
+            Debug.Log($"GenerateShipCoordinates:{vector3}");
+            return vector3;
         }
 
         public void Tick()

@@ -7,6 +7,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.DefendPlatform;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar
@@ -21,6 +22,8 @@ namespace EmpireAtWar
         {
             this.miningFacilityType = miningFacilityType;
             this.playerType = playerType;
+            
+            Debug.Log($"DefendPlatformInstaller: {StartPosition}");
         }
 
         protected override void OnBindData()
