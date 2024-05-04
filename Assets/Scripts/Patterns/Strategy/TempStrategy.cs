@@ -33,6 +33,7 @@ namespace EmpireAtWar.Patterns.Strategy
                 if (currentLevelData == null)
                 {
                     isMaxLevelReached = true;
+                    return;
                 }
                 BuildUnit(FactionModel.CurrentLevel, FactionModel.GetCurrentLevelFactionData());
                 Debug.Log($"Upgrading level: {FactionModel.CurrentLevel}");

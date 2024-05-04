@@ -15,6 +15,9 @@ namespace EmpireAtWar.Services.EconomyMediator
         [Inject(Id = PlayerType.Player)] 
         private IEconomyProvider PlayerEconomyProvider { get; }
         
+        [Inject(Id = PlayerType.Opponent)] 
+        private IEconomyProvider OpponentEconomyProvider { get; }
+        
         public IEconomyProvider GetProvider(PlayerType playerType)
         {
             switch (playerType)
@@ -22,7 +25,7 @@ namespace EmpireAtWar.Services.EconomyMediator
                 case PlayerType.Player:
                     return PlayerEconomyProvider;
                 case PlayerType.Opponent:
-                    break;
+                    return OpponentEconomyProvider;
             }
 
             return null;

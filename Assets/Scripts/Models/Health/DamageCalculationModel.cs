@@ -25,7 +25,7 @@ namespace EmpireAtWar.Models.Health
         [Range(0,1)][SerializeField] private float damageOnArmorCoefficient;
         [Range(0,1)][SerializeField] private float minAccuracyCoefficient;
         [Range(0,1)][SerializeField] private float maxAccuracyCoefficient;
-        [Range(0, 1)] [SerializeField] private float shieldPenetrationCoefficient;
+        [Range(0,1)][SerializeField] private float shieldPenetrationCoefficient;
 
         private float AccuracyCoefficient => Random.Range(minAccuracyCoefficient, maxAccuracyCoefficient);
         

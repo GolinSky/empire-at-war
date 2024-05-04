@@ -10,8 +10,7 @@ namespace EmpireAtWar.Controllers.Factions
             [Inject(Id = PlayerType.Opponent)] IPurchaseChain purchaseChain,
             [Inject(Id = PlayerType.Opponent)] IBuildShipChain buildShipChain)
         {
-            buildShipChain
-                .SetNext(purchaseChain)
+                SetNext(purchaseChain)
                 .SetNext(buildShipChain);
         }
     }

@@ -5,11 +5,15 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Patterns.Strategy;
+using EmpireAtWar.Services.TimerPoolWrapperService;
+using EmpireAtWar.Views.DefendPlatform;
+using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
@@ -30,17 +34,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private SpaceStationView spaceStationView;
         private IChainHandler<UnitRequest> nextChain;
         private IUnitSpawnStrategy currentStrategy;
+        private readonly MiningFacilityFacade miningFacilityFacade;
+        private readonly DefendPlatformFacade defendPlatformFacade;
+        private readonly ITimerPoolWrapperService timerPoolWrapperService;
+
+        private PlayerType PlayerType => PlayerType.Opponent;
 
         public EnemyFactionController(
             EnemyFactionModel model,
-            ShipFacadeFactory shipFacadeFactory,
             SpaceStationViewFacade spaceStationViewFacade,
+            ShipFacadeFactory shipFacadeFactory,
+            MiningFacilityFacade miningFacilityFacade,
+            DefendPlatformFacade defendPlatformFacade,
+            ITimerPoolWrapperService timerPoolWrapperService, 
             LazyInject<IMapModelObserver> mapModel,
             LazyInject<IEnemyPurchaseMediator> purchaseMediator,
             IUnitRequestFactory unitRequestFactory) : base(model)
         {
             this.shipFacadeFactory = shipFacadeFactory;
             this.spaceStationViewFacade = spaceStationViewFacade;
+            this.miningFacilityFacade = miningFacilityFacade;
+            this.defendPlatformFacade = defendPlatformFacade;
+            this.timerPoolWrapperService = timerPoolWrapperService;
             this.mapModel = mapModel;
             this.purchaseMediator = purchaseMediator;
             this.unitRequestFactory = unitRequestFactory;
@@ -68,10 +83,45 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             {
                 case LevelUnitRequest levelUnitRequest:
                     Model.CurrentLevel++;
+                    Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
+                case ShipUnitRequest shipUnitRequest:
+                {
+                    timerPoolWrapperService.Invoke(() =>
+                        {
+                            shipFacadeFactory.Create(PlayerType, shipUnitRequest.Key, GenerateShipCoordinates());
+                        },
+                        shipUnitRequest.FactionData.BuildTime);
+                    break;
+                }
+                case MiningFacilityUnitRequest miningFacilityUnitRequest:
+                {
+                    timerPoolWrapperService.Invoke(() =>
+                        {
+                            miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateShipCoordinates());
+                        },
+                        miningFacilityUnitRequest.FactionData.BuildTime);
+                    break;
+                }
+                case DefendPlatformUnitRequest defendPlatformUnitRequest:
+                {
+                    timerPoolWrapperService.Invoke(() =>
+                        {
+                            defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateShipCoordinates());
+                        },
+                        defendPlatformUnitRequest.FactionData.BuildTime);
+                    break;
+                }
                 
             }
-            nextChain.Handle(unitRequest);
+            nextChain?.Handle(unitRequest);
+        }
+        
+        private Vector3 GenerateShipCoordinates()
+        {
+            Vector3 startPosition = mapModel.Value.GetStationPosition(PlayerType);
+            startPosition += new Vector3(Random.Range(-50, 50), 0, Random.Range(-50, 50));
+            return startPosition;
         }
 
         public void Tick()

@@ -2,7 +2,6 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.EnemyReinforcement;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
@@ -40,31 +39,31 @@ public class SkirmishSingleEntityInstaller : MonoInstaller
             .BindInterfaces<EnemyPurchaseMediator>();
             //.BindInterfaces<EnemyBuildService>();
 
-        // Container.Bind<IPurchaseMediator>().WithId(PlayerType.Player).To<PurchaseMediator>().AsSingle();
-        // Container.Bind<IPurchaseMediator>().WithId(PlayerType.Opponent).To<EnemyPurchaseMediator>().AsSingle();
         
         //enemy
         ModelDependencyBuilder
             .ConstructBuilder(Container)
             .BindFromNewScriptable<EconomyModel>(Repository, PlayerType.Opponent);
+
+        Container.BindInterfaces<EconomyController>();
         
         Container
-            .Bind<IPurchaseChain>()
+            .Bind(typeof(IPurchaseChain), typeof(IEconomyProvider))
             .WithId(PlayerType.Opponent)
-            .To<EconomyController>()
+            .FromResolve()
             .AsSingle();
-
-        Container
-            .Bind<IBuildShipChain>()
-            .WithId(PlayerType.Opponent)
-            .To<EnemyBuildService>()
-            .AsSingle();
+        
         
         ModelDependencyBuilder
             .ConstructBuilder(Container)
             .BindFromNewScriptable<EnemyFactionModel>(Repository, PlayerType.Opponent);
 
         Container.BindInterfaces<EnemyFactionController>(PlayerType.Opponent);
+        Container
+            .Bind<IBuildShipChain>()
+            .WithId(PlayerType.Opponent)
+            .FromResolve()
+            .AsSingle();
     }
 
     private FactionType GetPlayerFactionType()

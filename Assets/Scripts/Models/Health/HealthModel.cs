@@ -43,6 +43,7 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
 
         protected float shieldsBaseValue;
+        
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }
         public bool IsDestroyed { get; private set; }
@@ -80,7 +81,6 @@ namespace EmpireAtWar.Models.Health
                     }
                 }
             }
-      
         }
         
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
