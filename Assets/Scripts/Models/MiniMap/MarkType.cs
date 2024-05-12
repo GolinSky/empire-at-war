@@ -6,5 +6,6 @@
         EnemyBase = 1,
         EnemyMining = 2,
         PlayerMining = 3,
+        Camera = 4,
     }
 }

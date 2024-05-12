@@ -79,6 +79,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Handle(UnitRequest unitRequest)
         {
+            //todo: store reinforcement - not spawn them here
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:

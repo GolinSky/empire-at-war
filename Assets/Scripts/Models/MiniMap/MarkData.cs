@@ -2,9 +2,9 @@
 
 namespace EmpireAtWar.Models.MiniMap
 {
-    public class MarkData
+    public class MarkData:IMarkData
     {
-        public Vector3 Position { get; }
+        public virtual Vector3 Position { get; }
         public Sprite Icon { get; }
         
         public MarkData(Vector3 position, Sprite icon)

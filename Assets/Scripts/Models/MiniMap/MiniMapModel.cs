@@ -11,11 +11,13 @@ namespace EmpireAtWar.Models.MiniMap
     {
         event Action<bool> OnInteractableChanged;
         event Action<MarkData> OnMarkAdded;
+        event Action<DynamicMarkData> OnDynamicMarkAdded;
         
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
         MarkData PlayerBase { get; }
         MarkData EnemyBase { get; }
+        DynamicMarkData CameraMark { get;}
         bool IsInputBlocked { get; }
     }
 
@@ -24,9 +26,11 @@ namespace EmpireAtWar.Models.MiniMap
     {
         public event Action<bool> OnInteractableChanged;
         public event Action<MarkData> OnMarkAdded;
+        public event Action<DynamicMarkData> OnDynamicMarkAdded;
         public Vector2Range MapRange { get; set; }
         public MarkData PlayerBase { get; private set; }
         public MarkData EnemyBase { get; private set; }
+        public DynamicMarkData CameraMark { get; private set; }
 
         [field:SerializeField] public DictionaryWrapper<MarkType, Sprite> MarkWrapper { get; private set; }
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }
@@ -53,6 +57,18 @@ namespace EmpireAtWar.Models.MiniMap
             OnMarkAdded?.Invoke(new MarkData(position, icon));
         }
 
+        
+        public void AddMark(MarkType markType, Transform transform)
+        {
+            Sprite icon = GetIcon(markType);
+            if (markType == MarkType.Camera)
+            {
+                CameraMark = new CameraMarkData(transform.position, icon, transform);
+                return;
+            }
+            OnMarkAdded?.Invoke(new DynamicMarkData(transform.position, icon, transform));
+        }
+        
         private Sprite GetIcon(MarkType markType) => MarkWrapper.Dictionary[markType];
     }
 }

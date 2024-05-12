@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Camera
         Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
         RaycastHit ScreenPointToRay(Vector2 screenPoint);
         Vector3 CameraPosition { get; }
+        Transform CameraTransform { get; }
         Vector3 CameraForward { get; }
         float FieldOfView { get; }
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Services.Camera
         private Plane plane = new Plane();
 
         public Vector3 CameraPosition => camera.transform.position;
+        public Transform CameraTransform => camera.transform;
         public Vector3 CameraForward => camera.transform.forward;
         public float FieldOfView => camera.fieldOfView;
 

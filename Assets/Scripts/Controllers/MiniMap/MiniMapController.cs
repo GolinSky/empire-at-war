@@ -43,15 +43,12 @@ namespace EmpireAtWar.Controllers.MiniMap
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
         }
 
-        public void MoveTo(Vector3 worldPoint)
-        {
-            cameraService.MoveTo(worldPoint);
-        }
-
+    
         public void Initialize()
         {
             navigationService.OnTypeChanged += UpdateSelectionType;
             inputService.OnBlocked += UpdateBlockState;
+            Model.AddMark(MarkType.Camera, cameraService.CameraTransform);
         }
         
         public void LateDispose()
@@ -59,6 +56,12 @@ namespace EmpireAtWar.Controllers.MiniMap
             navigationService.OnTypeChanged -= UpdateSelectionType;
             inputService.OnBlocked -= UpdateBlockState;
         }
+        
+        public void MoveTo(Vector3 worldPoint)
+        {
+            cameraService.MoveTo(worldPoint);
+        }
+
         
         private void UpdateBlockState(bool isBlocked)
         {

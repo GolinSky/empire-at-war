@@ -10,7 +10,11 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.MiniMap
 {
-    public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler
+    public interface IMiniMapPositionConvector
+    {
+        Vector2 GetPosition(Vector3 worldPos);
+    }
+    public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler, IMiniMapPositionConvector
     {
         private const float DeltaOffset = 0.5f;
         private const float HighlightDuration = 1f;
@@ -35,7 +39,9 @@ namespace EmpireAtWar.Views.MiniMap
             mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
+            AddDynamicMark(Model.CameraMark);
             Model.OnMarkAdded += AddMark;
+            Model.OnDynamicMarkAdded += AddDynamicMark;
             Model.OnInteractableChanged += ActivateInteraction;
             switcherButton.onClick.AddListener(SetCanvasActive);
         }
@@ -43,10 +49,12 @@ namespace EmpireAtWar.Views.MiniMap
         protected override void OnDispose()
         {
             Model.OnMarkAdded -= AddMark;
+            Model.OnDynamicMarkAdded -= AddDynamicMark;
             Model.OnInteractableChanged -= ActivateInteraction;
             switcherButton.onClick.RemoveListener(SetCanvasActive);
         }
-        
+
+  
         private void SetCanvasActive()
         {
             canvas.enabled = !canvas.enabled;
@@ -63,11 +71,18 @@ namespace EmpireAtWar.Views.MiniMap
         private void AddMark(MarkData markData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
-            view.SetData(iconParent, GetPosition(markData.Position), markData.Icon);
+            view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
+            mapMarkers.Add(view.IconImage);
+        }
+        
+        private void AddDynamicMark(DynamicMarkData dynamicMarkData)
+        {
+            MarkView view = Instantiate(Model.MarkViewPrefab);
+            view.SetData(this, iconParent, dynamicMarkData);
             mapMarkers.Add(view.IconImage);
         }
 
-        private Vector2 GetPosition(Vector3 worldPos)
+        public Vector2 GetPosition(Vector3 worldPos)
         {
             float x = Mathf.InverseLerp(mapRange.Min.x, mapRange.Max.x, worldPos.x);
             float y = Mathf.InverseLerp(mapRange.Min.y, mapRange.Max.y, worldPos.z);
@@ -105,7 +120,7 @@ namespace EmpireAtWar.Views.MiniMap
 
             Vector3 worldPoint = new Vector3
             {
-                x = Mathf.Lerp(mapRange.Min.x, mapRange.Max.x, Mathf.Abs(percentage.x)) ,
+                x = Mathf.Lerp(mapRange.Min.x, mapRange.Max.x, Mathf.Abs(percentage.x)),
                 z = Mathf.Lerp(mapRange.Min.y, mapRange.Max.y, Mathf.Abs(percentage.y))  
             };
             

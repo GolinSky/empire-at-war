@@ -73,7 +73,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 {
                     Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
                     Vector3 move = new Vector3(-touchDeltaPosition.x, 0, -touchDeltaPosition.y) * Model.PanSpeed * Time.unscaledDeltaTime;
-                    Model.CameraPositionUsingTween = ClampPosition(move+Position) ;
+                    Model.CameraPositionUsingTween = ClampPosition(move+Position);
                     break;
                 }
             }
@@ -81,10 +81,8 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 
         public void MoveTo(Vector3 worldPoint)
         {
-            //b = a * sin B
             double b = Position.y * Mathf.Sin(Transform.rotation.eulerAngles.x); 
-            worldPoint.z += (float)b;// -  worldPoint.z;
-            var v2 = cameraService.CameraPosition;
+            worldPoint.z += (float)b;
             worldPoint.y = Position.y;
             Model.CameraPositionUsingTween = ClampPosition(worldPoint);
         }
