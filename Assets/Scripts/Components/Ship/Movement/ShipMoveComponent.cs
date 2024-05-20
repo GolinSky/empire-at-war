@@ -40,8 +40,6 @@ namespace EmpireAtWar.Components.Ship.Selection
 
             return point;
         }
-        
-
 
         public float MoveAround()
         {
@@ -60,6 +58,11 @@ namespace EmpireAtWar.Components.Ship.Selection
         {
             targetPosition.y = Model.Height;
             Model.TargetPosition = targetPosition;
+        }
+
+        public void MoveToPositionOnScreen(Vector2 targetPosition)
+        {
+            MoveToPosition(targetPosition);
         }
 
         public void LookAtTarget(Vector3 targetPosition)

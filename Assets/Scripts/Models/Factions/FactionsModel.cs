@@ -30,7 +30,7 @@ namespace EmpireAtWar.Models.Factions
 
         public FactionData GetLevelFactionData(int level)
         {
-            if (level > MaxLevel) return null;
+            if (level >= MaxLevel) return null;
             
             return levelFactionsData[level-1];
         }

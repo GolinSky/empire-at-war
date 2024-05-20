@@ -18,7 +18,7 @@ namespace EmpireAtWar.Services.NavigationService
         void RemoveSelectable();
     }
 
-    public class NavigationService : Service, INavigationService, IInitializable, ILateDisposable
+    public class NavigationService : Service, INavigationService
     {
         public event Action<SelectionType> OnTypeChanged;
 
@@ -32,28 +32,7 @@ namespace EmpireAtWar.Services.NavigationService
         {
             this.inputService = inputService;
         }
-
-        public void Initialize()
-        {
-            inputService.OnInput += HandleInput;
-        }
-
-        public void LateDispose()
-        {
-            inputService.OnInput -= HandleInput;
-        }
-
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
-        {
-            if (inputType != InputType.ShipInput) return;
-            if (movable == null) return;
-
-            if (movable.CanMove)
-            {
-                movable.MoveToPosition(screenPosition);
-            }
-        }
-
+        
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
             if (selectionType == SelectionType.Terrain) return;

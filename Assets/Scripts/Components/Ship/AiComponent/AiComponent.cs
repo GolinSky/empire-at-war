@@ -1,125 +1,91 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Selection;
+﻿using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.ComponentHub;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using Zenject;
 using Component = LightWeightFramework.Components.Components.Component;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class AiComponent : Component, IInitializable, ILateDisposable
+    public class AiComponent : Component, IInitializable, ILateDisposable, ITickable
     {
-        private const ShipUnitType DefaultTargetType = ShipUnitType.Any;
-        private readonly IShipMoveComponent shipMoveComponent;
-        private readonly IWeaponComponent weaponComponent;
-        private readonly IComponentHub componentHub;
         private readonly ISelectionService selectionService;
+        private readonly IInputService inputService;
         private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly IShipMoveModelObserver shipMoveModelObserver;
-        private readonly IWeaponModelObserver weaponModelObserver;
-        private readonly ITimer moveAroundTimer;
-        
-        private IHealthModelObserver healthModelObserver;
-        private IRadarModelObserver radarModelObserver;
-        private IShipUnitsProvider mainTarget;
-
+        private readonly ShipIdleState shipIdleState;
+        private readonly ShipStateMachine shipStateMachine;
+        private readonly MoveToPointState moveToPointState;
+        private readonly LockMainTargetState lockMainTargetState;
 
         //todo: radar component
-        public AiComponent(IModel model, IShipMoveComponent shipMoveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService)
+        public AiComponent(
+            IModel model,
+            IShipMoveComponent shipMoveComponent,
+            IWeaponComponent weaponComponent,
+            IComponentHub componentHub,
+            ISelectionService selectionService,
+            IInputService inputService)
         {
-            this.shipMoveComponent = shipMoveComponent;
-            this.weaponComponent = weaponComponent;
-            this.componentHub = componentHub;
             this.selectionService = selectionService;
-            healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
+            this.inputService = inputService;
+
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            weaponModelObserver = model.GetModelObserver<IWeaponModelObserver>();
-            moveAroundTimer = TimerFactory.ConstructTimer(10f);
+            shipStateMachine = new ShipStateMachine(
+                shipMoveComponent, 
+                weaponComponent,
+                componentHub,
+                model);
+
+            shipIdleState = new ShipIdleState(shipStateMachine);
+            moveToPointState = new MoveToPointState(shipStateMachine);
+            lockMainTargetState = new LockMainTargetState(shipStateMachine);
+            shipStateMachine.SetDefaultState(shipIdleState);
+            shipStateMachine.ChangeState(shipIdleState);
         }
 
         public void Initialize()
         {
-            radarModelObserver.OnHitDetected += HandleEnemy;
             selectionService.OnHitSelected += HandleSelected;
-            healthModelObserver.OnValueChanged += HandleHealth;
+            inputService.OnInput += HandleInput;
         }
 
         public void LateDispose()
         {
-            radarModelObserver.OnHitDetected -= HandleEnemy;
             selectionService.OnHitSelected -= HandleSelected;
-            healthModelObserver.OnValueChanged -= HandleHealth;
+            inputService.OnInput -= HandleInput;
         }
         
-        private void HandleHealth()
+        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
-            if(mainTarget != null) return;
-            
-            //add condition - if under attack
-            if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
-            {
-                moveAroundTimer.ChangeDelay(shipMoveComponent.MoveAround()); 
-                moveAroundTimer.StartTimer();
-            }
+            if (inputType != InputType.ShipInput) return;
+            if(!selectionModelObserver.IsSelected) return;
+
+            moveToPointState.SetCoordinates(screenPosition);
+            shipStateMachine.ChangeState(moveToPointState);
         }
         
         private void HandleSelected(RaycastHit raycastHit)
         {
             if(!selectionModelObserver.IsSelected) return;
             
-            mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
+            IShipUnitsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                Vector3 targetPosition = raycastHit.transform.position;
-                float distance = Vector3.Distance(shipMoveModelObserver.CurrentPosition, targetPosition);
-                if (!weaponComponent.HasEnoughRange(distance))
-                {
-                    Vector3 lookDirection = shipMoveComponent.CalculateLookDirection(targetPosition);
-                    float attackDistance = distance - (weaponModelObserver.MaxAttackDistance/2f);
-                    Vector3 attackPosition = shipMoveModelObserver.CurrentPosition +
-                                             lookDirection.normalized*attackDistance;
-                    shipMoveComponent.MoveToPosition(attackPosition);
-                }
-                else
-                {
-                    shipMoveComponent.LookAtTarget(targetPosition);
-                }
-                weaponComponent.AddTarget(new AttackData(mainTarget,
-                    componentHub.GetComponent(mainTarget.ModelObserver),
-                    DefaultTargetType), AttackType.MainTarget);
+                lockMainTargetState.SetData(mainTarget, raycastHit.transform.position); 
+                shipStateMachine.ChangeState(lockMainTargetState);
             }
         }
 
-        private void HandleEnemy(RaycastHit[] raycastHit)
+        public void Tick()
         {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), DefaultTargetType));
-                }
-            }
-
-            if (healthComponents.Count != 0)
-            {
-                weaponComponent.AddTargets(healthComponents.ToArray());
-            }
+            shipStateMachine.Update();
         }
     }
 }
