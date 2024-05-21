@@ -25,7 +25,7 @@ namespace EmpireAtWar.Controllers.SpaceStation
         private readonly IWeaponModelObserver weaponModelObserver;
         
         private IRadarModelObserver radarModelObserver;
-        private IShipUnitsProvider mainTarget;
+        private IHardPointsProvider mainTarget;
         public SpaceStationController(
             SpaceStationModel model,
             IWeaponComponent weaponComponent,
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Controllers.SpaceStation
         {
             if(!selectionModelObserver.IsSelected) return;
             
-            mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();// make unit not depends on ship entity
+            mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();// make unit not depends on ship entity
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
                 weaponComponent.AddTarget(new AttackData(mainTarget,
@@ -70,7 +70,7 @@ namespace EmpireAtWar.Controllers.SpaceStation
             List<AttackData> healthComponents = new List<AttackData>();
             foreach (RaycastHit hit in raycastHit)
             {
-                IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
+                IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
                 if (unitsProvider != null && unitsProvider.HasUnits)
                 {
                     healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), DefaultTargetType));

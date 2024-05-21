@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Selection;
+﻿using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Services.ComponentHub;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
-using UnityEngine;
 using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
-    public class ShipIdleState:BaseState
+    public class ShipIdleState:UnitIdleState
     {
         private const float MoveAroundDuration = 10f;
         private readonly ITimer moveAroundTimer;
@@ -41,33 +37,13 @@ namespace EmpireAtWar.Patterns.StateMachine
         public override void Enter()
         {
             base.Enter();
-            radarModelObserver.OnHitDetected += HandleEnemy;
             healthModelObserver.OnValueChanged += HandleHealth;
         }
 
         public override void Exit()
         {
             base.Exit();
-            radarModelObserver.OnHitDetected -= HandleEnemy;
             healthModelObserver.OnValueChanged -= HandleHealth;
-        }
-        
-        private void HandleEnemy(RaycastHit[] raycastHit)
-        {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), ShipUnitType.Any));
-                }
-            }
-
-            if (healthComponents.Count != 0)
-            {
-                weaponComponent.AddTargets(healthComponents.ToArray());
-            }
         }
         
         protected virtual void HandleHealth()

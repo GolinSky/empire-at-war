@@ -8,14 +8,14 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public class AttackData
     {
-        private readonly IShipUnitsProvider shipUnitsProvider;
+        private readonly IHardPointsProvider shipUnitsProvider;
         private IHealthComponent HealthComponent { get; }
 
         public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
         public List<IShipUnitView> Units { get; private set; }
     
 
-        public AttackData(IShipUnitsProvider shipUnitsProvider, IHealthComponent healthComponent, ShipUnitType shipUnitType)
+        public AttackData(IHardPointsProvider shipUnitsProvider, IHealthComponent healthComponent, ShipUnitType shipUnitType)
         {
             this.shipUnitsProvider = shipUnitsProvider;
             Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();

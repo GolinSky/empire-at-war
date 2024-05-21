@@ -22,7 +22,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         private readonly ShipIdleState shipIdleState;
         private readonly ShipStateMachine shipStateMachine;
         private readonly MoveToPointState moveToPointState;
-        private readonly LockMainTargetState lockMainTargetState;
+        private readonly ShipLockMainTargetState shipLockMainTargetState;
 
         //todo: radar component
         public AiComponent(
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
             shipIdleState = new ShipIdleState(shipStateMachine);
             moveToPointState = new MoveToPointState(shipStateMachine);
-            lockMainTargetState = new LockMainTargetState(shipStateMachine);
+            shipLockMainTargetState = new ShipLockMainTargetState(shipStateMachine);
             shipStateMachine.SetDefaultState(shipIdleState);
             shipStateMachine.ChangeState(shipIdleState);
         }
@@ -75,11 +75,11 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         {
             if(!selectionModelObserver.IsSelected) return;
             
-            IShipUnitsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();
+            IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                lockMainTargetState.SetData(mainTarget, raycastHit.transform.position); 
-                shipStateMachine.ChangeState(lockMainTargetState);
+                shipLockMainTargetState.SetData(mainTarget, raycastHit.transform.position); 
+                shipStateMachine.ChangeState(shipLockMainTargetState);
             }
         }
 

@@ -5,19 +5,18 @@ using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
-    public class ShipStateMachine : StateMachine
+    public class ShipStateMachine : UnitStateMachine
     {
-        public ShipStateMachine(IShipMoveComponent shipMoveComponent, IWeaponComponent weaponComponent, IComponentHub componentHub, IModel model)
+        public ShipStateMachine(
+            IShipMoveComponent shipMoveComponent,
+            IWeaponComponent weaponComponent,
+            IComponentHub componentHub,
+            IModel model) 
+            : base(weaponComponent, componentHub, model)
         {
             ShipMoveComponent = shipMoveComponent;
-            WeaponComponent = weaponComponent;
-            ComponentHub = componentHub;
-            Model = model;
         }
-
-        public IModel Model { get; }
-        public IComponentHub ComponentHub { get; }
-        public IWeaponComponent WeaponComponent { get; }
+        
         public IShipMoveComponent ShipMoveComponent { get; }
     }
 }

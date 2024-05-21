@@ -15,7 +15,7 @@ using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public interface IShipUnitsProvider
+    public interface IHardPointsProvider
     {
         bool HasUnits { get; }
         IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
@@ -23,7 +23,7 @@ namespace EmpireAtWar.ViewComponents.Health
         PlayerType PlayerType { get; }
     }
 
-    public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IShipUnitsProvider, ITickable
+    public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IHardPointsProvider, ITickable
     {
         private static readonly Vector3 DefaultRotation = new(0, 180, 0);
         private const float TweenDuration = 0.1f;

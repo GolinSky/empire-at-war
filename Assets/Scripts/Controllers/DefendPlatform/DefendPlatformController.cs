@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.ViewComponents.Health;
@@ -15,37 +12,34 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.DefendPlatform
 {
-    public class DefendPlatformController : Controller<DefendPlatformModel>, IInitializable, ILateDisposable
+    public class DefendPlatformController : Controller<DefendPlatformModel>, IInitializable, ILateDisposable, ITickable
     {
-        private const ShipUnitType DefaultTargetType = ShipUnitType.Any;
-        private readonly IWeaponComponent weaponComponent;
-        private readonly IComponentHub componentHub;
         private readonly ISelectionService selectionService;
         private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly IWeaponModelObserver weaponModelObserver;
-        
-        private IRadarModelObserver radarModelObserver;
-        private IShipUnitsProvider mainTarget;
+
+        private readonly UnitStateMachine stateMachine;
+        private readonly UnitIdleState idleState;
+        private readonly LockMainTargetState lockMainTargetState;
         
         public DefendPlatformController(DefendPlatformModel model, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService) : base(model)
         {
-            this.weaponComponent = weaponComponent;
-            this.componentHub = componentHub;
             this.selectionService = selectionService;
             selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
-            weaponModelObserver = Model.GetModelObserver<IWeaponModelObserver>();
-            radarModelObserver = Model.GetModelObserver<IRadarModelObserver>();
+
+            stateMachine = new UnitStateMachine(weaponComponent, componentHub, Model);
+            idleState = new UnitIdleState(stateMachine);
+            lockMainTargetState = new LockMainTargetState(stateMachine);
+            stateMachine.SetDefaultState(idleState);
+            stateMachine.ChangeState(idleState);
         }
         
         public void Initialize()
         {
-            radarModelObserver.OnHitDetected += HandleEnemy;
             selectionService.OnHitSelected += HandleSelected;
         }
 
         public void LateDispose()
         {
-            radarModelObserver.OnHitDetected -= HandleEnemy;
             selectionService.OnHitSelected -= HandleSelected;
         }
         
@@ -53,31 +47,17 @@ namespace EmpireAtWar.Controllers.DefendPlatform
         {
             if(!selectionModelObserver.IsSelected) return;
             
-            mainTarget = raycastHit.collider.GetComponentInChildren<IShipUnitsProvider>();// make unit not depends on ship entity
+            IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                weaponComponent.AddTarget(new AttackData(mainTarget,
-                    componentHub.GetComponent(mainTarget.ModelObserver),
-                    DefaultTargetType), AttackType.MainTarget);
+                lockMainTargetState.SetData(mainTarget); 
+                stateMachine.ChangeState(lockMainTargetState);
             }
         }
 
-        private void HandleEnemy(RaycastHit[] raycastHit)
+        public void Tick()
         {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IShipUnitsProvider unitsProvider = hit.collider.GetComponentInChildren<IShipUnitsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), DefaultTargetType));
-                }
-            }
-
-            if (healthComponents.Count != 0)
-            {
-                weaponComponent.AddTargets(healthComponents.ToArray());
-            }
+            stateMachine.Update();
         }
     }
 }
