@@ -13,7 +13,6 @@ namespace EmpireAtWar.Views
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private Transform rootTransform;
-        private ShipInfoUi shipInfoUi;
 
         protected override void OnInitialize()
         {
@@ -35,14 +34,10 @@ namespace EmpireAtWar.Views
         private void HandleChangedSelection(SelectionType selectionType)
         {
             canvas.enabled = selectionType == SelectionType.Ship;
-
-       
+            shipIconImage.enabled = selectionType == SelectionType.Ship;
             if (selectionType == SelectionType.Ship)
             {
-                shipInfoUi = Model.ShipInfoUi;
-                shipInfoUi.SetParent(rootTransform);
-                
-                //shipIconImage.sprite = Model.ShipIcon;
+                shipIconImage.sprite = Model.ShipIcon;
             }
         }
     }

@@ -15,7 +15,6 @@ namespace EmpireAtWar.Controllers.ShipUi
     {
         private readonly INavigationService navigationService;
 
-        private Dictionary<ShipType, ShipInfoUi> shipUiDictionary = new Dictionary<ShipType, ShipInfoUi>();
         
         public ShipUiController(ShipUiModel model, INavigationService navigationService) : base(model)
         {
@@ -39,22 +38,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                 IShipModelObserver shipModelObserver = navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
                 if (shipModelObserver != null)
                 {
-                    ShipInfoUi shipInfoUi = null;
-                    if (!shipUiDictionary.TryGetValue(shipModelObserver.ShipType, out shipInfoUi))
-                    {
-                        shipInfoUi =
-                            Object.Instantiate(Model.GetShipInfoUi(shipModelObserver.ShipType));
-                        shipUiDictionary.Add(shipModelObserver.ShipType, shipInfoUi);
-                    }
-
-                    ShipInfoUi previousUi = Model.ShipInfoUi;
-                    if (previousUi != null)
-                    {
-                        previousUi.SetActive(false);
-                    }
-                    //todo: disable prev ui
-                    Model.ShipInfoUi = shipModelObserver.FillWithData(shipInfoUi);
-                    Model.ShipInfoUi.SetActive(true);
+                    Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);
                 }
             }
             Model.UpdateSelection(selectionType);

@@ -14,8 +14,6 @@ namespace EmpireAtWar.Models.Ship
     {
         ParticleSystem DeathExplosionVfx { get; }
         ShipType ShipType { get; }
-
-        ShipInfoUi FillWithData(ShipInfoUi shipInfoUi);
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
@@ -56,12 +54,6 @@ namespace EmpireAtWar.Models.Ship
         {
             base.Awake();
             AddInnerModels(shipMoveModel, healthModel, weaponModel, radarModel);
-        }
-
-        public ShipInfoUi FillWithData(ShipInfoUi shipInfoUi)
-        {
-            shipInfoUi.Init(healthModel.ShipUnitModels);
-            return shipInfoUi;
         }
     }
 }

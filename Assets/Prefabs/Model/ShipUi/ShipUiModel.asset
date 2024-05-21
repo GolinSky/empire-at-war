@@ -13,23 +13,17 @@ MonoBehaviour:
   m_Name: ShipUiModel
   m_EditorClassIdentifier: 
   models: []
-  shipUiWrapper:
+  shipIconWrapper:
     keyValue:
     - key: 0
-      value: {fileID: 2980371240824619358, guid: ff2d91043061b39448cec0162be9136f,
-        type: 3}
+      value: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa, type: 3}
     - key: 1
-      value: {fileID: 2980371240824619358, guid: a68d1c522bd6e434487e48e36a5ffb09,
-        type: 3}
+      value: {fileID: 21300000, guid: 2ce1aa3deeeb0a541bb85a35a38c9390, type: 3}
     - key: 2
-      value: {fileID: 2980371240824619358, guid: 3e5f2a226d5758f4eb156cc200fe017e,
-        type: 3}
+      value: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767, type: 3}
     - key: 100
-      value: {fileID: 2980371240824619358, guid: 9050d1918e8032842b2d2ff3c6be6cb3,
-        type: 3}
+      value: {fileID: 21300000, guid: 3483e2ea8c3953b49be48aab2fc422ad, type: 3}
     - key: 101
-      value: {fileID: 2980371240824619358, guid: 1417d41111d76884e8870bf20fd23dd8,
-        type: 3}
+      value: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f, type: 3}
     - key: 102
-      value: {fileID: 2980371240824619358, guid: 9b745a8341409ce469858843b828d733,
-        type: 3}
+      value: {fileID: 21300000, guid: 16fe756bf7147cb4bba0f9f818d06a81, type: 3}
