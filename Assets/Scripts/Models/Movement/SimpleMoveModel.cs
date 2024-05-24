@@ -40,7 +40,7 @@ namespace EmpireAtWar.Models.Movement
         private Vector3 position;
         protected float speedCoefficient = 1;
         [Inject(Id = EntityBindType.ViewTransform)]
-        protected LazyInject<Transform> ViewTransform { get; }
+        public LazyInject<Transform> ViewTransform { get; }
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
         public float Speed => speed * speedCoefficient;

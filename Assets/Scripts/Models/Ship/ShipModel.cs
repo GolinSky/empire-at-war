@@ -10,7 +10,7 @@ using Zenject;
 
 namespace EmpireAtWar.Models.Ship
 {
-    public interface IShipModelObserver : IModelObserver
+    public interface IShipModelObserver : IModelObserver, IUnitModelObserver
     {
         ParticleSystem DeathExplosionVfx { get; }
         ShipType ShipType { get; }

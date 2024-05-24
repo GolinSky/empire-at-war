@@ -1,5 +1,4 @@
-﻿using System;
-using EmpireAtWar.Models.MiniMap;
+﻿using EmpireAtWar.Models.MiniMap;
 using UnityEngine;
 using UnityEngine.UI;
 

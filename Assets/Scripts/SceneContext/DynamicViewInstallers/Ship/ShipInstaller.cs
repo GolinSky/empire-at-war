@@ -44,7 +44,6 @@ namespace EmpireAtWar.Ship
                 .BindInterfaces<HealthComponent>()
                 .BindInterfaces<WeaponComponent>()
                 .BindInterfaces<RadarComponent>()
-                .BindInterfaces<AiComponent>()
                 .BindInterfaces<AudioShipComponent>();
             
             switch (playerType)
@@ -54,12 +53,15 @@ namespace EmpireAtWar.Ship
                     Container.BindInterfaces<SelectionComponent>();
                     Container.BindInterfaces<PlayerShipCommand>();
                     Container.BindInterfaces<AudioDialogShipComponent>();
+                    Container.BindInterfaces<PlayerStateComponent>();
+
                     break;
                 }
                 case PlayerType.Opponent:
                 {
                     Container.BindInterfaces<EnemySelectionComponent>();
                     Container.BindInterfaces<EnemyShipCommand>();
+                    Container.BindInterfaces<EnemyStateComponent>();
                     break;
                 }
             }

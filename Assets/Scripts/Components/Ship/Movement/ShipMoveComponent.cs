@@ -43,7 +43,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public float MoveAround()
         {
-            Vector3 backPosition = Model.CurrentPosition - transform.forward * Random.Range(30, 50f) + transform.right * Random.Range(-30, 30);
+            Vector3 backPosition = Model.CurrentPosition - Model.ViewTransform.Value.forward * Random.Range(30, 50f) + transform.right * Random.Range(-30, 30);
             Model.TargetPosition = backPosition;
             return Vector3.Distance(backPosition, Model.CurrentPosition) / Model.Speed;
         }

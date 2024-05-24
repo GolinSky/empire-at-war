@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Utils.Random;
 using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Models.Map
         [field:SerializeField] public Vector2Range SizeRange { get; private set; }
         private Dictionary<PlayerType, Vector3> StationPositions => stationPositionWrapper.Dictionary;
 
+        
         public Vector3 GetStationPosition(PlayerType opponent)
         {
             return StationPositions[opponent];

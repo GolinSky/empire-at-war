@@ -14,18 +14,19 @@ using Component = LightWeightFramework.Components.Components.Component;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class AiComponent : Component, IInitializable, ILateDisposable, ITickable
+    public class PlayerStateComponent : Component, IInitializable, ILateDisposable, ITickable
     {
         private readonly ISelectionService selectionService;
         private readonly IInputService inputService;
         private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly ShipIdleState shipIdleState;
         private readonly ShipStateMachine shipStateMachine;
+
+        private readonly ShipIdleState shipIdleState;
         private readonly MoveToPointState moveToPointState;
         private readonly ShipLockMainTargetState shipLockMainTargetState;
 
         //todo: radar component
-        public AiComponent(
+        public PlayerStateComponent(
             IModel model,
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
