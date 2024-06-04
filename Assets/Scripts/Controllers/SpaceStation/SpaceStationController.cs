@@ -15,6 +15,9 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.SpaceStation
 {
+    /// <summary>
+    ///  add state component
+    /// </summary>
     public class SpaceStationController : Controller<SpaceStationModel>, IInitializable, ILateDisposable
     {
         private const ShipUnitType DefaultTargetType = ShipUnitType.Any;

@@ -84,7 +84,10 @@ namespace EmpireAtWar
 
         protected virtual void BindModel()
         {
-            Container.BindModel<TModel>(Repository, ModelPathPrefix, ModelPathPostfix);
+            ModelDependencyBuilder
+                .ConstructBuilder(Container)
+                .AppendToPath(ModelPathPrefix, ModelPathPostfix)
+                .BindFromNewScriptable<TModel>(Repository, OnModelCreated);
         }
 
         protected virtual void BindView()
@@ -94,5 +97,7 @@ namespace EmpireAtWar
                 .AppendToPath(ViewPathPrefix, ViewPathPostfix)
                 .BindFromNewComponent<TView>(Repository, ViewTransformParent);
         }
+
+        protected virtual void OnModelCreated() {}
     }
 }

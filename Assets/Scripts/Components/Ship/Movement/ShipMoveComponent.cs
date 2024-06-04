@@ -10,7 +10,6 @@ namespace EmpireAtWar.Components.Ship.Selection
     public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, IInitializable
     {
         private readonly ICameraService cameraService;
-        private Transform transform;
         private Vector3 startPosition;
         public bool CanMove => Model.CanMove;
 
@@ -43,7 +42,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public float MoveAround()
         {
-            Vector3 backPosition = Model.CurrentPosition - Model.ViewTransform.Value.forward * Random.Range(30, 50f) + transform.right * Random.Range(-30, 30);
+            Vector3 backPosition = Model.CurrentPosition - Model.ViewTransform.Value.forward * Random.Range(30, 50f) + Model.ViewTransform.Value.right * Random.Range(-30, 30);
             Model.TargetPosition = backPosition;
             return Vector3.Distance(backPosition, Model.CurrentPosition) / Model.Speed;
         }

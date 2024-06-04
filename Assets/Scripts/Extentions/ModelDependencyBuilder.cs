@@ -1,17 +1,19 @@
-﻿using EmpireAtWar.Models.Factions;
+﻿using System;
+using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Model;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
 {
+    //todo: remove 
     public class ModelDependencyBuilder:DependencyBuilder<ModelDependencyBuilder>
     {
         private ModelDependencyBuilder(DiContainer container) : base(container)
         {
         }
 
-        public DiContainer BindFromNewScriptable<TModel>(IRepository repository) 
+        public DiContainer BindFromNewScriptable<TModel>(IRepository repository,  Action onCompleted = null) 
             where TModel : Model
         {
             ConstructName<TModel>();
@@ -20,11 +22,15 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TModel>()
                 .FromNewScriptableObject(repository.Load<TModel>(PathToFile))
                 .AsSingle()
-                .OnInstantiated(HandleModel<TModel>);
+                .OnInstantiated((context, o) =>
+                {
+                    HandleModel<TModel>(context, o);
+                    onCompleted?.Invoke();
+                });
             return Container;
         }
-        
-        public DiContainer BindFromNewScriptable<TModel>(IRepository repository, object id) 
+
+        public DiContainer BindFromNewScriptable<TModel>(IRepository repository, object id, Action onCompleted = null) 
             where TModel : Model
         {
             ConstructName<TModel>();
@@ -34,7 +40,11 @@ namespace EmpireAtWar.Extentions
                 .FromNewScriptableObject(repository.Load<TModel>(PathToFile))
                 .AsSingle()
                 .WithConcreteId(id)
-                .OnInstantiated(HandleModel<TModel>);
+                .OnInstantiated((context, o) =>
+                {
+                    HandleModel<TModel>(context, o);
+                    onCompleted?.Invoke();
+                });
             return Container;
         }
          

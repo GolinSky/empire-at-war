@@ -1,13 +1,14 @@
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
+using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.SpaceStation
 {
-    public interface ISpaceStationModelObserver:IModelObserver
+    public interface ISpaceStationModelObserver:IModelObserver, IUnitModelObserver
     {
     }
     [CreateAssetMenu(fileName = "SpaceStationModel", menuName = "Model/SpaceStationModel")]

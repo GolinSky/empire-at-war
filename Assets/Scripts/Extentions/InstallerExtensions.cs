@@ -1,5 +1,7 @@
+using System;
 using LightWeightFramework.Model;
 using LightWeightFramework.Components.Repository;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
@@ -20,8 +22,6 @@ namespace EmpireAtWar.Extentions
                 .BindInterfacesAndSelfTo<TEntity>()
                 .AsSingle()
                 .WithConcreteId(id);
-
-        
             
             return container;
         }
@@ -36,7 +36,11 @@ namespace EmpireAtWar.Extentions
             return container;
         }
         
-        public static DiContainer BindModel<TModel>(this DiContainer container, IRepository repository, string prefix = null, string postfix = null)
+        public static DiContainer BindModel<TModel>(
+            this DiContainer container,
+            IRepository repository,
+            string prefix = null,
+            string postfix = null)
          where TModel: Model
         {
             ModelDependencyBuilder
@@ -46,14 +50,20 @@ namespace EmpireAtWar.Extentions
             return container;
         }
         
+       
 
-
+      
         public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
         {
             var binder =  container
                 .BindInstance(@entity)
                 .AsSingle();
             return binder;
+        }
+        
+        private static string ConstructName<T>()
+        {
+            return typeof(T).Name;
         }
     }
 }

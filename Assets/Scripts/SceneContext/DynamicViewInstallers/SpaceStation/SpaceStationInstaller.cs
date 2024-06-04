@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.SpaceStation;
+using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SpaceStation;
@@ -16,13 +17,15 @@ namespace EmpireAtWar.SpaceStation
     {
         private FactionType factionType;
         private PlayerType playerType;
+        private IModelMediatorService modelMediatorService;
 
         protected override string ViewPathPrefix => factionType.ToString();
         
 
         [Inject]
-        public void Construct(FactionType factionType, PlayerType playerType)
+        public void Construct(IModelMediatorService modelMediatorService, FactionType factionType, PlayerType playerType)
         {
+            this.modelMediatorService = modelMediatorService;
             this.factionType = factionType;
             this.playerType = playerType;
         }
@@ -61,6 +64,13 @@ namespace EmpireAtWar.SpaceStation
                 .BindInterfaces<WeaponComponent>();
             
             Container.BindInterfacesNonLazy<SimpleMoveComponent>();
+        }
+        
+           
+        protected override void OnModelCreated()
+        {
+            base.OnModelCreated();
+            modelMediatorService.AddUnit(Container.Resolve<SpaceStationModel>());
         }
     }
 }

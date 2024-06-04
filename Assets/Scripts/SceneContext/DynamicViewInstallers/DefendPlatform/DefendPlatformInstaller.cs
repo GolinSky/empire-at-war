@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.DefendPlatform;
+using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
@@ -16,10 +17,12 @@ namespace EmpireAtWar
     {
         private PlayerType playerType;
         private DefendPlatformType miningFacilityType;
+        private IModelMediatorService modelMediatorService;
 
         [Inject]
-        public void Constructor(DefendPlatformType miningFacilityType, PlayerType playerType)
+        public void Constructor(IModelMediatorService modelMediatorService, DefendPlatformType miningFacilityType, PlayerType playerType)
         {
+            this.modelMediatorService = modelMediatorService;
             this.miningFacilityType = miningFacilityType;
             this.playerType = playerType;
             
@@ -51,6 +54,12 @@ namespace EmpireAtWar
                     Container.BindInterfaces<EnemySelectionComponent>();
                     break;
             }
+        }
+        
+        protected override void OnModelCreated()
+        {
+            base.OnModelCreated();
+            modelMediatorService.AddUnit(Container.Resolve<DefendPlatformModel>());
         }
     }
 }

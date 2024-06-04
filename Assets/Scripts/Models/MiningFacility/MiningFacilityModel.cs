@@ -1,12 +1,13 @@
 ﻿using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
+using EmpireAtWar.Models.Ship;
 using UnityEngine;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Models.MiningFacility
 {
-    public interface IMiningFacilityModelObserver : IModelObserver
+    public interface IMiningFacilityModelObserver : IModelObserver, IUnitModelObserver
     {
 
     }
