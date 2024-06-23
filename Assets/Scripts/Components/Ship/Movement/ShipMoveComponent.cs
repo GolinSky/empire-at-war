@@ -13,6 +13,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         private Vector3 startPosition;
         public bool CanMove => Model.CanMove;
 
+        
         public ShipMoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
         {
             this.cameraService = cameraService;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Initialize()
         {
             Model.HyperSpacePosition = startPosition;
+            MoveAround();
         }
         
         public void MoveToPosition(Vector2 screenPosition)

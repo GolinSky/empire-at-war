@@ -75,6 +75,9 @@ MonoBehaviour:
       <ShipUnitType>k__BackingField: 2
     - <Id>k__BackingField: 15
       <ShipUnitType>k__BackingField: 1
+    <ShieldDangerStateRange>k__BackingField:
+      <Min>k__BackingField: 0.2
+      <Max>k__BackingField: 0.4
   weaponModel:
     weaponCount:
       keyValue:

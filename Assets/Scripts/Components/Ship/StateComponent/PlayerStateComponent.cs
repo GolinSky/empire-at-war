@@ -79,7 +79,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                shipLockMainTargetState.SetData(mainTarget, raycastHit.transform.position); 
+                shipLockMainTargetState.SetData(mainTarget); //  remove raycastHit.transform.position
                 shipStateMachine.ChangeState(shipLockMainTargetState);
             }
         }

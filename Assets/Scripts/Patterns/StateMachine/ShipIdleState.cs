@@ -4,6 +4,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Services.ComponentHub;
 using LightWeightFramework.Model;
+using UnityEngine;
+using Utilities.ScriptUtils.Math;
 using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Patterns.StateMachine
@@ -49,7 +51,9 @@ namespace EmpireAtWar.Patterns.StateMachine
         protected virtual void HandleHealth()
         {
             //add condition - if under attack
-            if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < 0.5f)
+            float randomRange = Random.Range(healthModelObserver.ShieldDangerStateRange.Min,
+                healthModelObserver.ShieldDangerStateRange.Max);
+            if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < randomRange)
             {
                 moveAroundTimer.ChangeDelay(shipMoveComponent.MoveAround()); 
                 moveAroundTimer.StartTimer();

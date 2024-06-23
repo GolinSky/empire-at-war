@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utilities.ScriptUtils.Math;
 using Zenject;
 
 namespace EmpireAtWar.Models.Health
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Models.Health
         float ShieldPercentage { get; }
         bool IsDestroyed { get; }
         bool IsLostShieldGenerator { get; }
+        FloatRange ShieldDangerStateRange { get; }
 
     }
 
@@ -41,6 +43,7 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
+        [field:SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
 
         protected float shieldsBaseValue;
         

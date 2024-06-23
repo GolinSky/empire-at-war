@@ -14,7 +14,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         private readonly IWeaponModelObserver weaponModel;
         private readonly IHealthModelObserver targetHealth;
         private IHardPointsProvider mainTarget;
-        private Vector3 targetPosition;
+        private Vector3 TargetPosition => mainTarget.Transform.position;
         
         public ShipLockMainTargetState(ShipStateMachine stateMachine) : base(stateMachine)
         {
@@ -22,33 +22,36 @@ namespace EmpireAtWar.Patterns.StateMachine
             weaponModel = model.GetModelObserver<IWeaponModelObserver>();
         }
 
-        public void SetData(IHardPointsProvider mainTarget, Vector3 targetPosition)
+        public void SetData(IHardPointsProvider mainTarget)
         {
-            this.targetPosition = targetPosition;
             this.mainTarget = mainTarget;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
               
-            float distance = Vector3.Distance(moveModel.CurrentPosition, targetPosition);
-            if (!weaponComponent.HasEnoughRange(distance))
-            {
-                Vector3 lookDirection = shipMoveComponent.CalculateLookDirection(targetPosition);
-                float attackDistance = distance - (weaponModel.MaxAttackDistance / 2f);
-                Vector3 attackPosition = moveModel.CurrentPosition +
-                                         lookDirection.normalized * attackDistance;
-                shipMoveComponent.MoveToPosition(attackPosition);
-            }
-            else
-            {
-                shipMoveComponent.LookAtTarget(targetPosition);
-            }
+            UpdateMoveState();
             
             weaponComponent.AddTarget(new AttackData(mainTarget,
                 componentHub.GetComponent(mainTarget.ModelObserver),
                 ShipUnitType.Any), AttackType.MainTarget);
+        }
+
+        private void UpdateMoveState()
+        {
+            float distance = Vector3.Distance(moveModel.CurrentPosition, TargetPosition);
+
+            if (!weaponComponent.HasEnoughRange(distance))
+            {
+                Vector3 positionToMove = Vector3.Lerp(moveModel.CurrentPosition, TargetPosition, 0.8f);//todo move to so
+                shipMoveComponent.MoveToPosition(positionToMove);
+            }
+            else
+            {
+                shipMoveComponent.LookAtTarget(TargetPosition);
+            }
         }
 
         public override void Update()
@@ -57,7 +60,14 @@ namespace EmpireAtWar.Patterns.StateMachine
             if (!mainTarget.HasUnits)
             {
                 StateMachine.ChangeToDefaultState();
+                return;
             }
+
+            if (!moveModel.IsMoving)
+            {
+                UpdateMoveState();
+            }
+            
             //check if target is alive
         }
 

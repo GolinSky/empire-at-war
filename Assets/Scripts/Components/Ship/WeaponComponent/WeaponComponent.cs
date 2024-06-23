@@ -18,6 +18,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         void AddTargets(AttackData[] healthComponent);
         void AddTarget(AttackData healthComponent, AttackType attackType);
         bool HasEnoughRange(float distance);
+        float OptimalAttackRange { get; }
     }
 
     public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable, IDisposable
@@ -31,11 +32,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private AttackData mainAttackData = null;
         private float endTimeTween;
 
+        public float OptimalAttackRange { get; }
         public WeaponComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.timerPoolWrapperService = timerPoolWrapperService;
             simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
+            OptimalAttackRange = Model.MaxAttackDistance * 0.2f;
         }
 
         public void AddTargets(AttackData[] attackDataArray)
@@ -74,7 +77,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public bool HasEnoughRange(float distance)
         {
-            return Model.MaxAttackDistance > distance;
+            return OptimalAttackRange > distance;
         }
 
         public void ApplyDamage(IShipUnitView unitView, WeaponType weaponType)

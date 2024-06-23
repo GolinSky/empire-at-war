@@ -21,6 +21,7 @@ namespace EmpireAtWar.ViewComponents.Health
         IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
         IModelObserver ModelObserver { get; }
         PlayerType PlayerType { get; }
+        Transform Transform { get; }
     }
 
     public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IHardPointsProvider, ITickable
@@ -43,6 +44,8 @@ namespace EmpireAtWar.ViewComponents.Health
         
         [Inject]
         public PlayerType PlayerType { get; }
+
+        public Transform Transform => View.Transform;
 
         public bool HasUnits => shipUnitViewArray.Any(x => !x.IsDestroyed);
 
