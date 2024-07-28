@@ -21,7 +21,7 @@ namespace EmpireAtWar.Views.MiniMap
         private const float HighlightMapAlpha = 0.1f;
         private const float HighlightMarkAlpha = 1f;
         private const float FadeDuration = 0.5f;
-        private const float OriginMapAlpha = 0.01f;
+        private const float OriginMapAlpha = 1f;
         
         [SerializeField] private Button switcherButton;
         [SerializeField] private Canvas canvas;
