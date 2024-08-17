@@ -118,6 +118,14 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.inputsystem": {
+      "version": "file:com.unity.inputsystem@1.7.0",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0"
+      }
+    },
     "com.unity.mathematics": {
       "version": "1.2.6",
       "depth": 1,
