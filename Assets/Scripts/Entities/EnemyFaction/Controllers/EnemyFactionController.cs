@@ -84,7 +84,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             {
                 case LevelUnitRequest levelUnitRequest:
                     Model.CurrentLevel++;
-                    Debug.Log($"Upgrade level {Model.CurrentLevel}");
+                  //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
                 case ShipUnitRequest shipUnitRequest:
                 {
@@ -127,7 +127,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             Vector3 vector3 = new Vector3(Random.Range(minRange.x, maxRange.x), 
                 0f,
                 Random.Range(minRange.y, maxRange.y));
-            Debug.Log($"GenerateShipCoordinates:{vector3}");
+         //   Debug.Log($"GenerateShipCoordinates:{vector3}");
             return vector3;
         }
 

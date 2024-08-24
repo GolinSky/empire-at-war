@@ -72,7 +72,7 @@ namespace UnityEngine.InputSystem.EnhancedTouch
             }
         }
 
-        protected void AddPointer(Pointer pointer)
+        public void AddPointer(Pointer pointer)
         {
             if (pointer == null)
                 throw new ArgumentNullException(nameof(pointer));

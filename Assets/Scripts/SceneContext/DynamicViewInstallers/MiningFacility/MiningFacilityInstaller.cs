@@ -26,7 +26,7 @@ namespace EmpireAtWar.MiningFacility
             this.modelMediatorService = modelMediatorService;
             this.playerType = playerType;
             this.miningFacilityType = miningFacilityType;
-            Debug.Log($"MiningFacilityInstaller: {StartPosition}");
+           // Debug.Log($"MiningFacilityInstaller: {StartPosition}");
 
         }
 

@@ -34,13 +34,25 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         public void Initialize()
         {
             inputService.OnInput += HandleInput;
-            inputService.OnDoubleInput += ZoomCamera;
+            inputService.OnSwipe += OnSwipe;
+            inputService.OnZoom += ZoomCamera;
         }
         
+
         public void LateDispose()
         {
             inputService.OnInput -= HandleInput;
-            inputService.OnDoubleInput -= ZoomCamera;
+            inputService.OnSwipe -= OnSwipe;
+            inputService.OnZoom -= ZoomCamera;
+        }
+        
+        private void OnSwipe(Vector2 direction)
+        {
+            Vector3 worldDirection = Vector3.zero;
+            worldDirection.x = direction.x;
+            worldDirection.z = direction.y;
+            Vector3 move = -worldDirection * Model.PanSpeed * Time.unscaledDeltaTime;
+            Model.CameraPositionUsingTween = ClampPosition(move+Position);
         }
         
         private void ZoomCamera(InputType inputType, Touch firstTouch, Touch secondTouch)
@@ -62,6 +74,18 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
                 Model.CameraPosition = ClampPosition(newPos);
             }
         }
+        
+        private void ZoomCamera(float scrollDelta)
+        {
+            scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
+            Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * scrollDelta * Model.ZoomSpeed * Time.unscaledDeltaTime;
+            if(Model.ZoomRange.IsInRange(newPos.y))
+            {
+                newPos.y = Model.ZoomRange.Clamp(newPos.y);
+                Model.CameraPosition = ClampPosition(newPos);
+            }
+        }
+
 
         private void HandleInput(InputType inputType, TouchPhase phase, Vector2 screenPosition)
         {
