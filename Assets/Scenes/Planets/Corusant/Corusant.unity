@@ -205,7 +205,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 409f0194e63b6f94da04a76e4e4976a3, type: 3}
-  m_Color: {r: 0.051886797, g: 0.80516666, b: 1, a: 0.003921569}
+  m_Color: {r: 0.051886797, g: 0.80516666, b: 1, a: 0.007843138}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
@@ -5880,13 +5880,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
       propertyPath: m_Intensity
-      value: 2
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_BounceIntensity
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
       propertyPath: m_ColorTemperature
-      value: 5843
+      value: 20000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 247
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
@@ -12265,12 +12280,12 @@ MeshRenderer:
   m_ReceiveShadows: 1
   m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
-  m_MotionVectors: 0
+  m_MotionVectors: 2
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 2d370365e58727f4db0df35c347fc381, type: 2}
@@ -12617,7 +12632,7 @@ GameObject:
   - component: {fileID: 9144353121359452204}
   - component: {fileID: 5039720229351888685}
   - component: {fileID: 2998813116494977384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: clouds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14886,7 +14901,7 @@ GameObject:
   - component: {fileID: 8024874379946076298}
   - component: {fileID: 7406324367240237156}
   - component: {fileID: 3426651624932496663}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: clouds (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15020,7 +15035,7 @@ GameObject:
   - component: {fileID: 3730045982124430311}
   - component: {fileID: 1101623049047037624}
   - component: {fileID: 556099085464727485}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
