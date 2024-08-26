@@ -25,7 +25,8 @@ namespace EmpireAtWar.Components.Audio
         private readonly ISelectionModelObserver selectionModelObserver;
         private readonly IRadarModelObserver radarModelObserver;
         private readonly ITimer alarmRadarTimer;
-        
+        private bool isSelected;
+
         public AudioDialogShipComponent(IModel model, IAudioService audioService, PlayerType playerType) : base(model)
         {
             this.audioService = audioService;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Components.Audio
             selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MinAlarmDelay, MaxAlarmDelay));
+            alarmRadarTimer.StartTimer();
         }
         
         public void Initialize()
@@ -56,30 +58,43 @@ namespace EmpireAtWar.Components.Audio
 
         private void PlayAlarmSights(RaycastHit[] raycastHits)
         {
-            if (alarmRadarTimer.IsComplete)
+            if (isSelected)
             {
-                alarmRadarTimer.StartTimer();
-                Play(Model.GetAlarmSightsClip(playerType));
+                if (alarmRadarTimer.IsComplete)
+                {
+                    alarmRadarTimer.StartTimer();
+                    Play(Model.GetAlarmSightsClip(playerType));
+                }
             }
         }
 
         private void PlayDamageClip()
         {
-            Play(Model.GetDamageClip(playerType));
+            if (isSelected)
+            {
+                Play(Model.GetDamageClip(playerType));
+            }
         }
 
         private void PlayMoveClip(Vector3 obj)
         {
-            Play(Model.GetMoveClip(playerType));
+            if (isSelected)
+            {
+                Play(Model.GetMoveClip(playerType));
+            }
         }
         
         private void PlayAttackClip(Vector3 vector3)
         {
-            Play(Model.GetAttackClip(playerType));
+            if (isSelected)
+            {
+                Play(Model.GetAttackClip(playerType));
+            }
         }
         
         private void PlaySelectionClip(bool isSelected)
         {
+            this.isSelected = isSelected;
             if (isSelected)
             {
                 Play(Model.GetDialogClip(playerType));
