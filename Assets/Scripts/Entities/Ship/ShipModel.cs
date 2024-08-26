@@ -9,9 +9,9 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
 
-namespace EmpireAtWar.Models.Ship
+namespace EmpireAtWar.Ship
 {
-    public interface IShipModelObserver : IModelObserver, IUnitModelObserver
+    public interface IShipModelObserver : IUnitModelObserver
     {
         ParticleSystem DeathExplosionVfx { get; }
         ShipType ShipType { get; }
@@ -20,8 +20,6 @@ namespace EmpireAtWar.Models.Ship
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
     public class ShipModel : Model, IShipModelObserver
     {
-       
-        
         [FormerlySerializedAs("shipShipMoveModel")]
         [FormerlySerializedAs("moveModel")]
         [Header("Move Model")]

@@ -6,7 +6,6 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.SpaceStation;
 using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
-using EmpireAtWar.Views.Ship;
 using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;

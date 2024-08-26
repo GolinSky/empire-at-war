@@ -8,7 +8,7 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Player;
-using EmpireAtWar.Services.Ship;
+using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
 

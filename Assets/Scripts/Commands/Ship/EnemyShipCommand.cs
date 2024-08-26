@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Controllers.Ship;
+﻿using EmpireAtWar.Ship;
 using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Ship

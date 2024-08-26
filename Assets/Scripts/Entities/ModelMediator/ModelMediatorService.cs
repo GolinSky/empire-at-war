@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Models.Ship;
+using EmpireAtWar.Ship;
 using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Entities.ModelMediator

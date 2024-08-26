@@ -2,7 +2,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Views.Ship
+namespace EmpireAtWar.Ship
 {
     public class ShipFacadeFactory : PlaceholderFactory<PlayerType,ShipType,Vector3,ShipView> {}
 }

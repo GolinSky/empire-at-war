@@ -1,8 +1,8 @@
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Ship;
 using LightWeightFramework.Model;
 using UnityEngine;
 

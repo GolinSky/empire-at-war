@@ -1,14 +1,14 @@
 ﻿using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Ship;
 using UnityEngine;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Models.DefendPlatform
 {
-    public interface IDefendPlatformModelObserver : IModelObserver, IUnitModelObserver
+    public interface IDefendPlatformModelObserver : IUnitModelObserver
     {
 
     }

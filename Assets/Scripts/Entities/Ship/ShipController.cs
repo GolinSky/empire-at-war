@@ -1,11 +1,9 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Ship;
-using EmpireAtWar.Services.Ship;
 using LightWeightFramework.Controller;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.Ship
+namespace EmpireAtWar.Ship
 {
     public interface IShipEntity
     {

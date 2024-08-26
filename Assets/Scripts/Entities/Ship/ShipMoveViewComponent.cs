@@ -9,7 +9,7 @@ using UnityEngine;
 using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
-namespace EmpireAtWar.ViewComponents.Move
+namespace EmpireAtWar.Move
 {
     public class ShipMoveViewComponent : ViewComponent<IShipMoveModelObserver>
     {

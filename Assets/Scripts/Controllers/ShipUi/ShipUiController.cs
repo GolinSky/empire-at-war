@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Commands.ShipUi;
-using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Ship;
+﻿using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Ship;
 using LightWeightFramework.Controller;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi

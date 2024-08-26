@@ -1,6 +1,6 @@
 ﻿using System;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Ship;
+using EmpireAtWar.Ship;
 using UnityEditor;
 
 namespace EmpireAtWar.Editor.EditorWindows.ShipModelEditor

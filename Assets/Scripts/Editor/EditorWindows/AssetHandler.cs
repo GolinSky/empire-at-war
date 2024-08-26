@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Editor.EditorWindows.ShipModelEditor;
-using EmpireAtWar.Models.Ship;
+using EmpireAtWar.Ship;
 using UnityEditor;
 
 namespace EmpireAtWar.Editor.EditorWindows

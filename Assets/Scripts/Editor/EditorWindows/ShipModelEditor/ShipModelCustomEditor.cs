@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.Ship;
+﻿using EmpireAtWar.Ship;
 using UnityEditor;
 using UnityEngine;
 

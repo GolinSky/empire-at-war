@@ -1,6 +1,6 @@
 ﻿using LightWeightFramework.Model;
 
-namespace EmpireAtWar.Models.Ship
+namespace EmpireAtWar.Ship
 {
     public interface IUnitModelObserver:IModelObserver
     {

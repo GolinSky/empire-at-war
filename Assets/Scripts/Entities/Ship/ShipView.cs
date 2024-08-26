@@ -1,11 +1,10 @@
 using System;
 using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Ship;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 
-namespace EmpireAtWar.Views.Ship
+namespace EmpireAtWar.Ship
 {
     public class ShipView : View<IShipModelObserver, IShipCommand>
     {

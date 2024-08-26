@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Controllers.Ship;
 using LightWeightFramework.Components.Service;
 
-namespace EmpireAtWar.Services.Ship
+namespace EmpireAtWar.Ship
 {
     public interface IShipService : IService
     {
