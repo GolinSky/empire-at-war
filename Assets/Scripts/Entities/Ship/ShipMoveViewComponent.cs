@@ -28,12 +28,13 @@ namespace EmpireAtWar.Move
         private float duration;
 
         [Inject] private IMoveCommand MoveCommand { get; }
-
+        
         private Vector3 CurrentPosition => transform.position;
 
         protected override void OnInit()
         {
-            transform.position = Model.HyperSpacePosition - Vector3.right * 1000f; // move magic number to model
+            transform.rotation = Model.StartRotation;
+            transform.position = Model.JumpPosition;
             HyperSpaceJump(Model.HyperSpacePosition);
 
             Model.OnTargetPositionChanged += UpdateTargetPosition;
