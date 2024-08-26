@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Models.Ship
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
     public class ShipModel : Model, IShipModelObserver
     {
+       
+        
         [FormerlySerializedAs("shipShipMoveModel")]
         [FormerlySerializedAs("moveModel")]
         [Header("Move Model")]
