@@ -28,4 +28,4 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 484059bbbb6e8b44d92e293db7d8e0e5, type: 3}
   <AlarmDelay>k__BackingField:
     <Min>k__BackingField: 45
-    <Max>k__BackingField: 300
+    <Max>k__BackingField: 90
