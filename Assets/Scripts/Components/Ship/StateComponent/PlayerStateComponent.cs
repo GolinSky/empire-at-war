@@ -68,7 +68,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             if (inputType != InputType.ShipInput) return;
             if(!selectionModelObserver.IsSelected) return;
 
-            moveToPointState.SetCoordinates(screenPosition);
+            moveToPointState.SetScreenCoordinates(screenPosition);
             shipStateMachine.ChangeState(moveToPointState);
         }
         

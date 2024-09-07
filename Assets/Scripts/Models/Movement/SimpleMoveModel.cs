@@ -20,6 +20,7 @@ namespace EmpireAtWar.Models.Movement
         float FallDownDuration { get; }
         float Speed { get; }
         bool IsMoving { get; }
+        bool IsTargetPositionWasSet { get; }
     }
 
     [Serializable]
@@ -44,6 +45,7 @@ namespace EmpireAtWar.Models.Movement
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
         public float Speed => speed * speedCoefficient;
+        public bool IsTargetPositionWasSet { get; private set; }
         
         [Inject]
         public Vector3 StartPosition { get; }
@@ -55,6 +57,7 @@ namespace EmpireAtWar.Models.Movement
             {
                 position = value;
                 OnTargetPositionChanged?.Invoke(position);
+                IsTargetPositionWasSet = true;
             }
         }
         public bool IsMoving => !CurrentPosition.IsEqual(TargetPosition);

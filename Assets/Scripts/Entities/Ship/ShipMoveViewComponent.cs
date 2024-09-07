@@ -104,6 +104,15 @@ namespace EmpireAtWar.Move
             moveSequence = DOTween.Sequence();
             moveSequence.Append(transform.DOMove(point, Model.HyperSpaceSpeed)
                 .SetEase(hyperSpaceEase));
+            moveSequence.OnComplete(OnHyperJumpFinish);
+        }
+
+        private void OnHyperJumpFinish()
+        {
+            if (Model.IsTargetPositionWasSet)
+            {
+                UpdateTargetPosition(Model.TargetPosition);
+            }
         }
 
         private void UpdateTargetPosition(Vector3 targetPosition)

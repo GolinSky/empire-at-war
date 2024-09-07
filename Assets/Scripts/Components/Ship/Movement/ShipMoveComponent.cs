@@ -25,7 +25,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Initialize()
         {
             Model.HyperSpacePosition = startPosition;
-            MoveAround();
         }
         
         public void MoveToPosition(Vector2 screenPosition)

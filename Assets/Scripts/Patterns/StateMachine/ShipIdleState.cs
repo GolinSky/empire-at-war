@@ -19,7 +19,6 @@ namespace EmpireAtWar.Patterns.StateMachine
         protected readonly IComponentHub componentHub;
         protected readonly IWeaponComponent weaponComponent;
         protected readonly IShipMoveComponent shipMoveComponent;
-        protected readonly IRadarModelObserver radarModelObserver;
         protected readonly IHealthModelObserver healthModelObserver;
         public new ShipStateMachine StateMachine { get; }
         
@@ -30,7 +29,6 @@ namespace EmpireAtWar.Patterns.StateMachine
             componentHub = stateMachine.ComponentHub;
             weaponComponent = stateMachine.WeaponComponent;
             shipMoveComponent = stateMachine.ShipMoveComponent;
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
             StateMachine = stateMachine;
             moveAroundTimer = TimerFactory.ConstructTimer(MoveAroundDuration);

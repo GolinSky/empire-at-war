@@ -5,8 +5,9 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class MoveToPointState:ShipIdleState
     {
-        private Vector3 screenPosition;
+        private Vector3 targetPosition;
         private IShipMoveModelObserver shipMoveModelObserver;
+        private bool useScreenCoordinates;
         public MoveToPointState(ShipStateMachine stateMachine) : base(stateMachine)
         {
             shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
@@ -15,12 +16,27 @@ namespace EmpireAtWar.Patterns.StateMachine
         public override void Enter()
         {
             base.Enter();
-            shipMoveComponent.MoveToPositionOnScreen(screenPosition);
+            if (useScreenCoordinates)
+            {
+                shipMoveComponent.MoveToPositionOnScreen(targetPosition);
+            }
+            else
+            {
+                shipMoveComponent.MoveToPosition(targetPosition);
+
+            }
         }
 
-        public void SetCoordinates(Vector2 screenPosition)
+        public void SetScreenCoordinates(Vector2 screenPosition)
         {
-            this.screenPosition = screenPosition;
+            useScreenCoordinates = true;
+            targetPosition = screenPosition;
+        }
+        
+        public void SetWorldCoordinates(Vector3 screenPosition)
+        {
+            useScreenCoordinates = false;
+            targetPosition = screenPosition;
         }
 
         public override void Update()
