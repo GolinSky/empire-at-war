@@ -5,21 +5,26 @@ using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
     public class ShipLockMainTargetState:ShipIdleState
     {
+        private const float MOVE_TIMER_DELAY = 15f;
+        
         private readonly IShipMoveModelObserver moveModel;
         private readonly IWeaponModelObserver weaponModel;
         private readonly IHealthModelObserver targetHealth;
         private IHardPointsProvider mainTarget;
+        private ITimer moveTimer;
         private Vector3 TargetPosition => mainTarget.Transform.position;
         
         public ShipLockMainTargetState(ShipStateMachine stateMachine) : base(stateMachine)
         {
             moveModel = model.GetModelObserver<IShipMoveModelObserver>();
             weaponModel = model.GetModelObserver<IWeaponModelObserver>();
+            moveTimer = TimerFactory.ConstructTimer(MOVE_TIMER_DELAY);
         }
 
         public void SetData(IHardPointsProvider mainTarget)
@@ -45,7 +50,7 @@ namespace EmpireAtWar.Patterns.StateMachine
 
             if (!weaponComponent.HasEnoughRange(distance))
             {
-                Vector3 positionToMove = Vector3.Lerp(moveModel.CurrentPosition, TargetPosition, 0.8f);//todo move to so
+                Vector3 positionToMove = Vector3.Lerp(moveModel.CurrentPosition, TargetPosition, 0.8f);//todo move to SO
                 shipMoveComponent.MoveToPosition(positionToMove);
             }
             else
@@ -63,10 +68,15 @@ namespace EmpireAtWar.Patterns.StateMachine
                 return;
             }
 
-            if (!moveModel.IsMoving)
+            if (moveTimer.IsComplete)
             {
-                UpdateMoveState();
+                if (moveModel.IsMoving)
+                {
+                    UpdateMoveState();
+                    moveTimer?.StartTimer();
+                }
             }
+        
             
             //check if target is alive
         }
