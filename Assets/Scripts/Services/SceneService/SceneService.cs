@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace EmpireAtWar.Services.SceneService
     {
         event Action<SceneType> OnSceneActivation; 
         void LoadScene(SceneType sceneType);
+        void LoadSceneByPlanetType(PlanetType planetType);
         SceneType TargetScene { get; }
         bool IsSceneLoaded { get; }
         void ActivateScene();
@@ -27,20 +29,38 @@ namespace EmpireAtWar.Services.SceneService
 
         private AsyncOperation asyncOperation;
 
+        
+        private readonly Dictionary<PlanetType, SceneType> planetScenes = new Dictionary<PlanetType, SceneType>
+        {
+            {  PlanetType.Coruscant, SceneType.Coruscant },
+            {  PlanetType.Kamino, SceneType.Kamino }
+        };
+
         private readonly Dictionary<SceneType, int> buildIndexDictionary = new Dictionary<SceneType, int>
         {
             { SceneType.MainMenu, 0 },
-            { SceneType.Skirmish, 1 },
+            { SceneType.Coruscant, 1 },
+            { SceneType.Kamino, 3 },
             { SceneType.Loading, LoadingBuildIndex }
         };
 
-        
         private readonly Dictionary<int, SceneType> reverseBuildIndexDictionary = new Dictionary<int, SceneType>
         {
-            {  0, SceneType.MainMenu },
-            {  1, SceneType.Skirmish },
+            { 0, SceneType.MainMenu },
+            { 1, SceneType.Coruscant },
+            { 3, SceneType.Kamino },
             { LoadingBuildIndex, SceneType.Loading }
         };
+        
+        public void LoadSceneByPlanetType(PlanetType planetType)
+        {
+            if (!planetScenes.TryGetValue(planetType, out SceneType sceneType))
+            {
+                Debug.LogError($"No scene type for {planetType}");
+            }
+            
+            LoadScene(sceneType);
+        }
 
         public SceneType TargetScene { get; private set; }
 

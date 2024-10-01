@@ -3,5 +3,6 @@
     public enum PlanetType
     {
         Coruscant = 0,
+        Kamino = 1,
     }
 }

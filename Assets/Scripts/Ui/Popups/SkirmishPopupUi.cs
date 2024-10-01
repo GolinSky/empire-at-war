@@ -1,6 +1,7 @@
 ﻿using System;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Planet;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
         [SerializeField] private TMP_Dropdown enemyFactionDropdown;
+        [SerializeField] private TMP_Dropdown planetsDropdown;
         [Inject] private IGameCommand GameCommand { get; }
 
 
@@ -20,14 +22,15 @@ namespace EmpireAtWar.Ui.Popups
         {
             base.Initialize();
             startGameButton.onClick.AddListener(OnStartGame);
-            SetData(playerFactionDropdown);
-            SetData(enemyFactionDropdown);
+            SetData<FactionType>(playerFactionDropdown);
+            SetData<FactionType>(enemyFactionDropdown);
+            SetData<PlanetType>(planetsDropdown);
         }
 
-        private void SetData(TMP_Dropdown dropdown)
+        private void SetData<TEnum>(TMP_Dropdown dropdown)
         {
             dropdown.options.Clear();
-            foreach (var factionType in Enum.GetNames(typeof(FactionType)))
+            foreach (var factionType in Enum.GetNames(typeof(TEnum)))
             {
                 dropdown.options.Add(new TMP_Dropdown.OptionData(factionType));
             }
@@ -43,11 +46,12 @@ namespace EmpireAtWar.Ui.Popups
         {
             GameCommand
                 .StartGame(
-                    GetEnum(playerFactionDropdown.captionText.text),
-                    GetEnum(enemyFactionDropdown.captionText.text));
+                    GetEnum<FactionType>(playerFactionDropdown.captionText.text),
+                    GetEnum<FactionType>(enemyFactionDropdown.captionText.text),
+                    GetEnum<PlanetType>(planetsDropdown.captionText.text));
         }
 
-        private FactionType GetEnum(string text) => Enum.Parse<FactionType>(text);
+        private TEnum GetEnum<TEnum>(string text) where TEnum : struct => Enum.Parse<TEnum>(text);
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
+using EmpireAtWar.Models.Planet;
 using EmpireAtWar.Services.SceneService;
 using LightWeightFramework.Controller;
 
@@ -15,11 +16,13 @@ namespace EmpireAtWar.Controllers.Game
             this.sceneService = sceneService;
         }
         
-        public void StartGame(FactionType playerFactionType, FactionType enemyFactionType)
+        public void StartGame(FactionType playerFactionType, FactionType enemyFactionType, PlanetType planetType)
         {
             Model.EnemyFactionType = enemyFactionType;
             Model.PlayerFactionType = playerFactionType;
-            sceneService.LoadScene(SceneType.Skirmish);
+            Model.PlanetType = planetType;
+            Model.GameMode = GameMode.Skirmish;
+            sceneService.LoadSceneByPlanetType(planetType);
         }
 
         public void ExitGame()
