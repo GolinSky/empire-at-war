@@ -21,8 +21,8 @@ namespace EmpireAtWar.Services.SceneService
 
     public class SceneService : Service, ISceneService, IInitializable, ILateDisposable
     {
+        private readonly SceneModel sceneModel;
         private const float MinSceneProgress = 0.88f;
-        private const int LoadingBuildIndex = 2;
         public event Action<SceneType> OnSceneActivation;
 
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
@@ -35,22 +35,13 @@ namespace EmpireAtWar.Services.SceneService
             {  PlanetType.Coruscant, SceneType.Coruscant },
             {  PlanetType.Kamino, SceneType.Kamino }
         };
+        
 
-        private readonly Dictionary<SceneType, int> buildIndexDictionary = new Dictionary<SceneType, int>
+        public SceneService(SceneModel sceneModel, ITimerPoolWrapperService timerPoolWrapperService )
         {
-            { SceneType.MainMenu, 0 },
-            { SceneType.Coruscant, 1 },
-            { SceneType.Kamino, 3 },
-            { SceneType.Loading, LoadingBuildIndex }
-        };
-
-        private readonly Dictionary<int, SceneType> reverseBuildIndexDictionary = new Dictionary<int, SceneType>
-        {
-            { 0, SceneType.MainMenu },
-            { 1, SceneType.Coruscant },
-            { 3, SceneType.Kamino },
-            { LoadingBuildIndex, SceneType.Loading }
-        };
+            this.sceneModel = sceneModel;
+            this.timerPoolWrapperService = timerPoolWrapperService;
+        }
         
         public void LoadSceneByPlanetType(PlanetType planetType)
         {
@@ -76,10 +67,7 @@ namespace EmpireAtWar.Services.SceneService
             }
         }
 
-        public SceneService(ITimerPoolWrapperService timerPoolWrapperService )
-        {
-            this.timerPoolWrapperService = timerPoolWrapperService;
-        }
+       
 
         public void ActivateScene()//fix this
         {
@@ -94,13 +82,15 @@ namespace EmpireAtWar.Services.SceneService
         public void LoadScene(SceneType sceneType)
         {
             TargetScene = sceneType;
-            SceneManager.LoadScene(buildIndexDictionary[SceneType.Loading], LoadSceneMode.Single);
+            
+            SceneManager.LoadScene(sceneModel.GetLoadScene().SceneName, LoadSceneMode.Single);
         }
 
         public void Initialize()
         {
             SceneManager.sceneLoaded += HandleLoadingScene;
-            TargetScene = reverseBuildIndexDictionary[SceneManager.GetActiveScene().buildIndex];
+
+            TargetScene = sceneModel.GetCurrentScene();
         }
 
         public void LateDispose()
@@ -110,16 +100,16 @@ namespace EmpireAtWar.Services.SceneService
         
         private void HandleLoadingScene(Scene scene, LoadSceneMode loadSceneMode)
         {
-            OnSceneActivation?.Invoke(reverseBuildIndexDictionary[scene.buildIndex]);
-            if (scene.buildIndex == LoadingBuildIndex)
+            OnSceneActivation?.Invoke(sceneModel.GetSceneType(scene));
+            if (sceneModel.IsLoadingScene(scene))
             {
-                timerPoolWrapperService.Invoke(LoadTargetScene, 1f);
+                timerPoolWrapperService.Invoke(LoadTargetScene, 1f);//todo: move to const
             }
         }
 
         private void LoadTargetScene()
         {
-            asyncOperation = SceneManager.LoadSceneAsync(buildIndexDictionary[TargetScene]);
+            asyncOperation = SceneManager.LoadSceneAsync(sceneModel.GetScene(TargetScene).SceneName);
             asyncOperation.allowSceneActivation = false;
         }
     }

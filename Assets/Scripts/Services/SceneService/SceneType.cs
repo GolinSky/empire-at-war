@@ -6,5 +6,7 @@
         Loading = 2,
         Coruscant = 1,
         Kamino = 3,
+        
+        Undefined = 999,
     }
 }

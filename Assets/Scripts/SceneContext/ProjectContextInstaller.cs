@@ -21,6 +21,8 @@ public class ProjectContextInstaller : MonoInstaller
         ModelDependencyBuilder
             .ConstructBuilder(Container)
             .BindFromNewScriptable<GameModel>(repository);
+
+        Container.BindModel<SceneModel>(repository);
         
         Container
             .BindInterfaces<TimerPoolWrapperService>()
