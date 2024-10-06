@@ -8,6 +8,9 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
+	"last_search.A0629AC7" = "ref=\"Assets/ScriptUtils/Input/ReinforcementDraggable.cs\""
+	"OpenInspectorPreview.A0629AC7" = "0"
+	"currentGroup.A0629AC7" = "all"
 }
 providers = {
 	find = {
@@ -53,6 +56,11 @@ providers = {
 	asset = {
 		active = true
 		priority = 25
+		defaultAction = null
+	}
+	dep = {
+		active = false
+		priority = 31
 		defaultAction = null
 	}
 }

@@ -1,11 +1,9 @@
-using System;
-using EmpireAtWar.Commands.Terrain;
 using EmpireAtWar.Models.Terrain;
 using EmpireAtWar.Views.ViewImpl;
 
 namespace EmpireAtWar.Views.Terrain
 {
-    public class TerrainView:View<ITerrainModelObserver, ITerrainCommand>
+    public class TerrainView:View<ITerrainModelObserver>
     {
         protected override void OnInitialize()
         {
@@ -15,11 +13,6 @@ namespace EmpireAtWar.Views.Terrain
         protected override void OnDispose()
         {
             
-        }
-
-        private void OnMouseDown()
-        {
-            Command?.SelectionCommand.OnSelected();
         }
     }
 }

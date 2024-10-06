@@ -1,69 +1,75 @@
-using EmpireAtWar.Services.Input;
+using System;
+using EmpireAtWar.Services.InputService;
 using UnityEngine;
-using WorkShop.LightWeightFramework.Game;
-using WorkShop.LightWeightFramework.Service;
+using LightWeightFramework.Components.Service;
 using Zenject;
 
 namespace EmpireAtWar.Services.NavigationService
 {
     public interface INavigationService : IService
     {
-        void UpdateSelectable(ISelectable selectable);
+        event Action<SelectionType> OnTypeChanged;
+        SelectionType SelectionType { get; }
+
+        ISelectable Selectable { get; }
+        void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType);
+
+        void RemoveSelectable(ISelectable selectable);
+        void RemoveSelectable();
     }
 
-    public class NavigationService : Service, INavigationService, IInitializable, ILateDisposable
+    public class NavigationService : Service, INavigationService
     {
-        private ISelectable selectable;
+        public event Action<SelectionType> OnTypeChanged;
+
         private readonly IInputService inputService;
+        private IMovable movable;
+
+        public ISelectable Selectable { get; private set; }
+        public SelectionType SelectionType { get; private set; }
 
         public NavigationService(IInputService inputService)
         {
             this.inputService = inputService;
         }
-
-        public void Initialize()
+        
+        public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
         {
-            inputService.OnInput += HandleInput;
-            inputService.OnSelect += ResetSelectable;
-        }
+            if (selectionType == SelectionType.Terrain) return;
 
-        public void LateDispose()
-        {
-            inputService.OnInput -= HandleInput;
-            inputService.OnSelect -= ResetSelectable;
-        }
-
-        private void ResetSelectable()
-        {
-           // selectable?.SetActive(false);
-          //  selectable = null;
-        }
-        private void HandleInput(Vector2 screenPosition)
-        {
-            if (selectable == null) return;
-
-            if (selectable.CanMove)
+            if (Selectable != null)
             {
-                selectable.MoveToPosition(screenPosition);
+                RemoveSelectable(Selectable);
+            }
+
+            Selectable = selectableObject;
+            movable = selectableObject.Movable;
+            selectableObject.SetActive(true);
+
+            SelectionType = selectionType;
+            OnTypeChanged?.Invoke(SelectionType);
+        }
+
+        public void RemoveSelectable(ISelectable selectable)
+        {
+            if (Selectable == selectable)
+            {
+                Selectable?.SetActive(false);
+                Selectable = null;
+                OnTypeChanged?.Invoke(SelectionType.None);
             }
         }
 
-        public void UpdateSelectable(ISelectable selectable)
+        public void RemoveSelectable()
         {
-            if (this.selectable != null)
+            if (Selectable != null)
             {
-                this.selectable.SetActive(false);
+                Selectable.SetActive(false);
+                Selectable = null;
+                movable = null;
+                SelectionType = SelectionType.None;
+                OnTypeChanged?.Invoke(SelectionType);
             }
-            this.selectable = selectable;
-            selectable.SetActive(true);
-        }
-
-        protected override void OnInit(IGameObserver gameObserver)
-        {
-        }
-
-        protected override void Release()
-        {
         }
     }
 }

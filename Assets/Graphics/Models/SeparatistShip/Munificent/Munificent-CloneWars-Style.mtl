@@ -1,0 +1,72 @@
+# Blender 4.0.2 MTL File: 'Munificent-CloneWars-Style.blend'
+# www.blender.org
+
+newmtl ArmorShape
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/golin/Downloads/star-wars-the-clone-wars-munificent-s7-style/source/Munificent_MIL-1.psd
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_1_Specular.dds
+
+newmtl BL_mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Munificent_wings-L.dds
+
+newmtl EngineShape
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_2_ColorMap.dds
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_2_Specular.dds
+
+newmtl SecAr
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_1_ColorMap.dds
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_1_Specular.dds
+
+newmtl Shields_Mat
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/golin/Downloads/star-wars-the-clone-wars-munificent-s7-style/source/новые щитки/Shields_Military.dds
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_Shields_Specular.dds
+
+newmtl SuperstructureShape
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Munificent_wings.dds
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_3_Specular.dds
+
+newmtl WeaponsShape
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_4_ColorMapD.dds
+map_Ns C:/Users/lord2/Documents/Paradox Interactive/Stellaris/mod/ConfederacyShips-OP/gfx/models/ships/CIS/CIS_Munificent_A/Textures/Mun_A_P_4_Specular.dds

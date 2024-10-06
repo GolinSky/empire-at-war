@@ -1,11 +1,59 @@
 {
   "dependencies": {
+    "com.light-weight-framework": {
+      "version": "https://github.com/GolinSky/LightWeightFramework.git?path=/Assets/LightWeightFramework",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "eec545fd9b57375d6d7475f356c0223758689610"
+    },
+    "com.script-utils.dotween": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7a93f802d01050cefcf30d558675244434035e97"
+    },
+    "com.script-utils.editor-serialization": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "386e2d982ca7b37a27b48fd133169360c8a83271"
+    },
+    "com.script-utils.layer": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d40aedeb3476a7eea9abd89d381645cf37a1f9a5"
+    },
+    "com.script-utils.math": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Math",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c6e35b6adade245010c0e2709f8f05dc697079de"
+    },
+    "com.script-utils.time": {
+      "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Time",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "598c53798f5489adb8b0244aff9ea423db863cd7"
+    },
+    "com.unity.2d.sprite": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
     "com.unity.addressables": {
-      "version": "1.21.17",
+      "version": "1.21.19",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.scriptablebuildpipeline": "1.21.9",
+        "com.unity.scriptablebuildpipeline": "1.21.21",
         "com.unity.modules.assetbundle": "1.0.0",
         "com.unity.modules.imageconversion": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
@@ -15,16 +63,24 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.7",
+      "version": "1.8.12",
       "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.mathematics": "1.2.1"
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.0.5",
+      "version": "2.2.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.device-simulator.devices": {
+      "version": "1.0.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -38,7 +94,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.24",
+      "version": "3.0.28",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -47,7 +103,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.18",
+      "version": "2.0.22",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -62,6 +118,14 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.inputsystem": {
+      "version": "file:com.unity.inputsystem@1.7.0",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0"
+      }
+    },
     "com.unity.mathematics": {
       "version": "1.2.6",
       "depth": 1,
@@ -69,8 +133,17 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
+    "com.unity.postprocessing": {
+      "version": "3.4.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.physics": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.render-pipelines.core": {
-      "version": "14.0.8",
+      "version": "14.0.10",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
@@ -81,22 +154,38 @@
       }
     },
     "com.unity.render-pipelines.universal": {
-      "version": "14.0.8",
+      "version": "14.0.10",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
-        "com.unity.burst": "1.8.4",
-        "com.unity.render-pipelines.core": "14.0.8",
-        "com.unity.shadergraph": "14.0.8"
+        "com.unity.burst": "1.8.9",
+        "com.unity.render-pipelines.core": "14.0.10",
+        "com.unity.shadergraph": "14.0.10",
+        "com.unity.render-pipelines.universal-config": "14.0.9"
+      }
+    },
+    "com.unity.render-pipelines.universal-config": {
+      "version": "14.0.9",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "14.0.9"
       }
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.21.9",
+      "version": "1.21.21",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
+    },
+    "com.unity.search.extensions": {
+      "version": "https://github.com/Unity-Technologies/com.unity.search.extensions.git?path=package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "5dd16653ea872bcd3bdf87d335e40e62c82788df"
     },
     "com.unity.searcher": {
       "version": "4.9.2",
@@ -106,11 +195,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
-      "version": "14.0.8",
+      "version": "14.0.10",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "14.0.8",
+        "com.unity.render-pipelines.core": "14.0.10",
         "com.unity.searcher": "4.9.2"
       }
     },
@@ -135,7 +224,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.7.5",
+      "version": "1.7.6",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -156,7 +245,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.8.0",
+      "version": "1.9.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {

@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39634b4f586636a44bf517fb6c678df7, type: 3}
   m_Name: TerrainModel
   m_EditorClassIdentifier: 
+  models:
+  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}

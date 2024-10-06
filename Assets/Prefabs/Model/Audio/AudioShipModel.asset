@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 632e69ab338d48fcb95618d05391900d, type: 3}
+  m_Name: AudioShipModel
+  m_EditorClassIdentifier: 
+  models: []
+  hyperSpaceAudioReference:
+    m_AssetGUID: 13f17b0e7ab1cb347808b6e4561b6563
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  alarmRandomClips:
+    array:
+    - {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+    - {fileID: 8300000, guid: 8569d4160b2fbed4ba562e97bc2c8ad9, type: 3}
+  backgroundClips:
+    array:
+    - {fileID: 8300000, guid: e9a2976f1d814bc458cb99b45d6126fc, type: 3}
+    - {fileID: 8300000, guid: 484059bbbb6e8b44d92e293db7d8e0e5, type: 3}
+  <AlarmDelay>k__BackingField:
+    <Min>k__BackingField: 45
+    <Max>k__BackingField: 90

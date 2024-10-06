@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73059e39df065a1499c87549d1d330a5, type: 3}
+  m_Name: SpaceStationModel
+  m_EditorClassIdentifier: 
+  models:
+  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
+  <HealthModel>k__BackingField:
+    dexterity: 0
+    <Armor>k__BackingField: 100000
+    <Shields>k__BackingField: 300000
+    <ShieldRegenerateValue>k__BackingField: 10000
+    <ShieldRegenerateDelay>k__BackingField: 30
+    <ShipUnitModels>k__BackingField:
+    - <Id>k__BackingField: 0
+      <ShipUnitType>k__BackingField: 2
+    - <Id>k__BackingField: 1
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 2
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 3
+      <ShipUnitType>k__BackingField: 0
+    - <Id>k__BackingField: 4
+      <ShipUnitType>k__BackingField: 0
+  <RadarModel>k__BackingField:
+    <Range>k__BackingField: 80
+    <Delay>k__BackingField: 10
+    <Distance>k__BackingField: 100
+  <SimpleMoveModel>k__BackingField:
+    speed: 0
+    <Height>k__BackingField: -20
+    <FallDownDirection>k__BackingField: {x: 0, y: -100, z: 0}
+    <FallDownRotation>k__BackingField:
+      x:
+        <Min>k__BackingField: 0
+        <Max>k__BackingField: 0
+      y:
+        <Min>k__BackingField: 0
+        <Max>k__BackingField: 0
+      z:
+        <Min>k__BackingField: 0
+        <Max>k__BackingField: 0
+    <FallDownDuration>k__BackingField: 180
+    <CanMove>k__BackingField: 0
+  <WeaponModel>k__BackingField:
+    weaponCount:
+      keyValue:
+      - key: 3
+        value: 4
+    <ProjectileDuration>k__BackingField: 1
+    <DelayBetweenAttack>k__BackingField: 1

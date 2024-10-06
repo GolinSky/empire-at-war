@@ -6,8 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 03b45194646177d4fb19a45021f0fc46
+  - enabled: 1
+    path: Assets/Scenes/Planets/Corusant/Corusant.unity
+    guid: 34b18fe45641ce14aa229a661decc4e4
+  - enabled: 1
+    path: Assets/Scenes/Loading.unity
+    guid: f70fd0dad05de5541849b2f86d12668c
+  - enabled: 1
+    path: Assets/Scenes/Planets/Kamino/Kamino.unity
+    guid: bdc570f0e10c1da4d8a58e8b0d8386d0
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 8a737ba8901af884da0c516b5a59fdbf,
+      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 332f95e6344423b4aa5679cc44e83cf4,
       type: 2}

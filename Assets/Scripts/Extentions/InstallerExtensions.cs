@@ -1,55 +1,69 @@
-using LightWeightFramework.Controller;
+using System;
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Components.Repository;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        public static void BindEntity<TController, TView, TModel, TCommand>(this DiContainer container, TModel model, TView view)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
-            where TCommand : Command
+        public static DiContainer BindInterfaces<TEntity>(this DiContainer container)
         {
-            container.BindInterfacesAndSelfTo<TCommand>()
-                .AsTransient();
-
             container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(model)
-                .AsTransient();
-
-            container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsTransient();
-
-            container
-                .BindInterfacesAndSelfTo<TController>()
-                .AsTransient();
+                .BindInterfacesAndSelfTo<TEntity>()
+                .AsSingle();
+            return container;
         }
         
-        public static void BindEntityNoCommand<TController, TView, TModel>(this DiContainer container, TModel model, TView view)
-            where TController : Controller<TModel>
-            where TView : IView
-            where TModel : Model
+        public static DiContainer BindInterfaces<TEntity>(this DiContainer container, object id)
         {
             container
-                .BindInterfacesAndSelfTo<TModel>()
-                .FromInstance(model)
-                .AsSingle();
+                .BindInterfacesAndSelfTo<TEntity>()
+                .AsSingle()
+                .WithConcreteId(id);
+            
+            return container;
+        }
 
+        
+        public static DiContainer BindInterfacesNonLazy<TEntity>(this DiContainer container)
+        {
             container
-                .BindInterfacesTo<TView>()
-                .FromInstance(view)
-                .AsSingle();
+                .BindInterfacesAndSelfTo<TEntity>()
+                .AsSingle()
+                .NonLazy();
+            return container;
+        }
+        
+        public static DiContainer BindModel<TModel>(
+            this DiContainer container,
+            IRepository repository,
+            string prefix = null,
+            string postfix = null)
+         where TModel: Model
+        {
+            ModelDependencyBuilder
+                .ConstructBuilder(container)
+                .AppendToPath(prefix, postfix)
+                .BindFromNewScriptable<TModel>(repository);
+            return container;
+        }
+        
+       
 
-            container
-                .BindInterfacesAndSelfTo<TController>()
+      
+        public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
+        {
+            var binder =  container
+                .BindInstance(@entity)
                 .AsSingle();
+            return binder;
+        }
+        
+        private static string ConstructName<T>()
+        {
+            return typeof(T).Name;
         }
     }
 }

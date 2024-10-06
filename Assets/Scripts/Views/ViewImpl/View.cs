@@ -1,6 +1,7 @@
 using LightWeightFramework.Model;
-using WorkShop.LightWeightFramework;
-using WorkShop.LightWeightFramework.Command;
+using LightWeightFramework.Components;
+using LightWeightFramework.Command;
+using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Views.ViewImpl
@@ -9,16 +10,14 @@ namespace EmpireAtWar.Views.ViewImpl
         where TModel:IModelObserver
     {
         [Inject]
-        protected TModel Model { get; private set; }
-
-        // [Inject]
-        // public void Construct(TModel model)
-        // {
-        //     Model = model;
-        //     Debug.Log("InjectedView Initialize");
-        //     Init(Model);
-        // }
-
+        protected new TModel Model { get; private set; }
+        
+        public void Initialize()
+        {
+            Init(Model);
+            OnInitialize();
+        }
+        
         public void LateDispose()
         {
             Release();
@@ -27,11 +26,6 @@ namespace EmpireAtWar.Views.ViewImpl
 
         protected abstract void OnInitialize();
         protected abstract void OnDispose();
-        public void Initialize()
-        {
-            OnInitialize();
-
-        }
     }
 
     public abstract class View<TModel, TCommand>:View<TModel>

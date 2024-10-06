@@ -1,26 +1,34 @@
+using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Extentions;
+using EmpireAtWar.Models.Game;
 using EmpireAtWar.Repository;
-using EmpireAtWar.SceneContext;
-using WorkShop.LightWeightFramework.Factory;
-using WorkShop.LightWeightFramework.Game;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.SceneService;
+using EmpireAtWar.Services.Settings;
+using EmpireAtWar.Services.TimerPoolWrapperService;
+using LightWeightFramework.Components.Repository;
 using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
 {
+    private IRepository repository;
     public override void InstallBindings()
     {
-        //game
-        Container.BindInterfacesAndSelfTo<MyCustomGameContext>()
-            .AsSingle();
+        Container.BindInterfaces<AddressableRepository>();
         
-        Container.BindInterfacesAndSelfTo<AddressableRepository>()
-            .AsSingle();
+        repository = Container.Resolve<IRepository>();
         
-        Container.BindInterfacesAndSelfTo<FeatureAbstractFactory>()
-            .AsCached();
+        ModelDependencyBuilder
+            .ConstructBuilder(Container)
+            .BindFromNewScriptable<GameModel>(repository);
+
+        Container.BindModel<SceneModel>(repository);
         
-        Container.BindInterfacesAndSelfTo<Game>()
-            .AsCached();
-        //game
-        ///////////////////////////////////////////////////////////////
+        Container
+            .BindInterfaces<TimerPoolWrapperService>()
+            .BindInterfaces<GameController>()
+            .BindInterfaces<SceneService>()
+            .BindInterfaces<SettingsService>()
+            .BindInterfaces<AudioService>();
     }
 }

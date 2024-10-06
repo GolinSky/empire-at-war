@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0378b6afa0064bbfb5901fb34d50ff69, type: 3}
+  m_Name: ReinforcementModel
+  m_EditorClassIdentifier: 
+  models: []
+  spawnShipWrapper:
+    keyValue:
+    - key: 0
+      value: {fileID: 5422768365347329368, guid: 22aad1d1d6cecd043901814978cdaac2,
+        type: 3}
+    - key: 1
+      value: {fileID: 2658831815141062857, guid: 81f78a6bd8ddb7943b29a5b1706d8b63,
+        type: 3}
+    - key: 2
+      value: {fileID: 4060278176297156384, guid: 602616906d6d9844aa9086252a1423f4,
+        type: 3}
+    - key: 100
+      value: {fileID: 7224548515634706539, guid: 80484c47f0fde8944b6852594a403c69,
+        type: 3}
+    - key: 101
+      value: {fileID: 5155813271684836544, guid: 2c860664286ce464e830a24e1585937e,
+        type: 3}
+    - key: 102
+      value: {fileID: -7875661336892348539, guid: 07fbb46098b845b4f847f4511e25b732,
+        type: 3}
+  spawnFacilityWrapper:
+    keyValue:
+    - key: 0
+      value: {fileID: 5422768365347329368, guid: d84a981dd98ca8d469ba6d297ddf571d,
+        type: 3}
+  defendPlatformWrapper:
+    keyValue:
+    - key: 0
+      value: {fileID: 5422768365347329368, guid: 87174290095be7649a260133a3e3f11a,
+        type: 3}
+  <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
+    type: 3}
+  <MaxUnitCapacity>k__BackingField: 20
