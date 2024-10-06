@@ -147,17 +147,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d2a3d300e656f974084156ee3864d711,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -207
+      value: 330
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d2a3d300e656f974084156ee3864d711,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -220
+      value: -145
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d2a3d300e656f974084156ee3864d711,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 185
+      value: 53
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d2a3d300e656f974084156ee3864d711,
         type: 3}
@@ -3560,7 +3560,7 @@ GameObject:
   - component: {fileID: 8797581386183861241}
   - component: {fileID: 8797581386183861240}
   m_Layer: 0
-  m_Name: CorusantPlanetView
+  m_Name: PlanetView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4682,8 +4682,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2573306495493427844}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.82815814, w: 0.5604946}
-  m_LocalPosition: {x: 11.8, y: -147.4, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -39.2, y: -234.9, z: -6.68}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4691,7 +4691,7 @@ Transform:
   - {fileID: 392940114}
   - {fileID: 2768045106496748321}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 111.82}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &6019706613557103440
 CanvasRenderer:
   m_ObjectHideFlags: 0

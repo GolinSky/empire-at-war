@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   models: []
   <MinMoveRange>k__BackingField:
-    <Min>k__BackingField: {x: -200, y: -250}
-    <Max>k__BackingField: {x: 200, y: 250}
+    <Min>k__BackingField: {x: -300, y: -350}
+    <Max>k__BackingField: {x: 300, y: 350}
   <MaxMoveRange>k__BackingField:
-    <Min>k__BackingField: {x: -200, y: -350}
-    <Max>k__BackingField: {x: 200, y: 350}
+    <Min>k__BackingField: {x: -300, y: -350}
+    <Max>k__BackingField: {x: 300, y: 350}
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 80
     <Max>k__BackingField: 300
