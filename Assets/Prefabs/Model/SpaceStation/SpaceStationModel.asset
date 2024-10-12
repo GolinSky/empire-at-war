@@ -41,7 +41,7 @@ MonoBehaviour:
   <SimpleMoveModel>k__BackingField:
     speed: 0
     <Height>k__BackingField: -40
-    <FallDownDirection>k__BackingField: {x: 0, y: -100, z: 0}
+    <FallDownDirection>k__BackingField: {x: 0, y: 100, z: 0}
     <FallDownRotation>k__BackingField:
       x:
         <Min>k__BackingField: 0
