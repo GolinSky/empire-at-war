@@ -38,15 +38,15 @@ MonoBehaviour:
     - key: 1
       value:
         <Color>k__BackingField: {r: 1, g: 0.036082476, b: 0, a: 1}
-        <Size>k__BackingField: {x: 2, y: 1, z: 6}
+        <Size>k__BackingField: {x: 1, y: 1, z: 6}
     - key: 2
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
-        <Size>k__BackingField: {x: 2, y: 1, z: 7}
+        <Size>k__BackingField: {x: 1, y: 1, z: 7}
     - key: 9
       value:
         <Color>k__BackingField: {r: 0, g: 0.78207374, b: 1, a: 1}
-        <Size>k__BackingField: {x: 2, y: 6, z: 1}
+        <Size>k__BackingField: {x: 1, y: 6, z: 1}
     - key: 11
       value:
         <Color>k__BackingField: {r: 0.5518868, g: 1, b: 1, a: 1}
