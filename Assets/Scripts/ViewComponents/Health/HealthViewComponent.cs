@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LightWeightFramework.Components.ViewComponents;
 using Utilities.ScriptUtils.Dotween;
-
+using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
@@ -35,6 +35,8 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private ShieldView shieldView;
         
         [SerializeField] private List<ShipUnitView> shipUnitViewArray;
+        [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
+        [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
         private Coroutine shieldsAnimatedCoroutine;
         private Sequence sequence;
@@ -56,7 +58,8 @@ namespace EmpireAtWar.ViewComponents.Health
             baseArmorValue = Model.Armor;
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += Destroy;
-            
+            shieldsFillImage.color = shieldColors.Dictionary[PlayerType];
+            armorFillImage.color = hullColors.Dictionary[PlayerType];
             UpdateShipUnit();
         }
 
