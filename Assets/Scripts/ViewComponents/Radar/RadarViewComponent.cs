@@ -39,8 +39,14 @@ namespace EmpireAtWar.ViewComponents.Radar
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(CenterCast, halfExtents*2f);
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(CenterCast, halfExtents*2f);
+            }
+#endif
+      
         }
     }
 }
