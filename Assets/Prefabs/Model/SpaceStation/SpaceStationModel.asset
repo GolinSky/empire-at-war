@@ -31,13 +31,16 @@ MonoBehaviour:
       <ShipUnitType>k__BackingField: 0
     - <Id>k__BackingField: 4
       <ShipUnitType>k__BackingField: 0
+    <ShieldDangerStateRange>k__BackingField:
+      <Min>k__BackingField: 0
+      <Max>k__BackingField: 0
   <RadarModel>k__BackingField:
     <Range>k__BackingField: 80
     <Delay>k__BackingField: 10
     <Distance>k__BackingField: 100
   <SimpleMoveModel>k__BackingField:
     speed: 0
-    <Height>k__BackingField: -20
+    <Height>k__BackingField: -40
     <FallDownDirection>k__BackingField: {x: 0, y: -100, z: 0}
     <FallDownRotation>k__BackingField:
       x:

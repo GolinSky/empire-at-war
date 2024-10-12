@@ -1396,7 +1396,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2897079190677795258}
@@ -1455,8 +1455,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 34.1, y: 13.74, z: 29.12}
-  m_Center: {x: 20.6, y: 1, z: 8.8}
+  m_Size: {x: 16.5336, y: 3.0968444, z: 16.720215}
+  m_Center: {x: 16.77674, y: 6.321582, z: 2.6000977}
 --- !u!114 &8076068659022331315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1495,6 +1495,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8864fa54cfe24ae6b614f133e3407bec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug: 1
 --- !u!1001 &242065708644883426
 PrefabInstance:
   m_ObjectHideFlags: 0
