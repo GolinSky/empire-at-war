@@ -17,7 +17,7 @@ MonoBehaviour:
     keyValue:
     - key: 1
       value:
-        damage: 500
+        damage: 1500
         <Distance>k__BackingField: 175
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -45,7 +45,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 2
       value:
-        damage: 750
+        damage: 1750
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -73,7 +73,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 3
       value:
-        damage: 1000
+        damage: 2000
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -101,7 +101,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 4
       value:
-        damage: 500
+        damage: 1500
         <Distance>k__BackingField: 175
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -129,7 +129,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 5
       value:
-        damage: 750
+        damage: 1750
         <Distance>k__BackingField: 175
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -157,7 +157,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 6
       value:
-        damage: 1000
+        damage: 2000
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -185,7 +185,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 7
       value:
-        damage: 500
+        damage: 1500
         <Distance>k__BackingField: 200
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -213,7 +213,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 8
       value:
-        damage: 250
+        damage: 1250
         <Distance>k__BackingField: 200
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -241,7 +241,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 9
       value:
-        damage: 1000
+        damage: 2000
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -269,7 +269,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 10
       value:
-        damage: 500
+        damage: 1000
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
@@ -297,7 +297,7 @@ MonoBehaviour:
           m_RotationOrder: 4
     - key: 11
       value:
-        damage: 1000
+        damage: 2000
         <Distance>k__BackingField: 150
         <DistanceCurve>k__BackingField:
           serializedVersion: 2
