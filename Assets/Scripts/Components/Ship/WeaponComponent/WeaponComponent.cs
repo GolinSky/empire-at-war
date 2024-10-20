@@ -19,6 +19,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         void AddTarget(AttackData healthComponent, AttackType attackType);
         bool HasEnoughRange(float distance);
         float OptimalAttackRange { get; }
+        void ResetTarget();
     }
 
     public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable, IDisposable
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private float endTimeTween;
 
         public float OptimalAttackRange { get; }
+
         public WeaponComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             this.timerPoolWrapperService = timerPoolWrapperService;
@@ -75,12 +77,17 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             }
         }
 
+        public void ResetTarget()
+        {
+            ResetMainTarget();
+        }
+        
         public bool HasEnoughRange(float distance)
         {
             return OptimalAttackRange > distance;
         }
 
-        public void ApplyDamage(IShipUnitView unitView, WeaponType weaponType)
+        public void ApplyDamage(IHardPointView unitView, WeaponType weaponType)
         {
             for (var i = 0; i < attackDataList.Count; i++)
             {
@@ -161,20 +168,27 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             {
                 attackTimer.StartTimer();
 
-                if (mainAttackData is not null)
+                // if (mainAttackData != null && mainAttackData.IsDestroyed)
+                // {
+                //     ResetMainTarget();
+                // }
+                if (mainAttackData?.IsDestroyed == true)
                 {
-                    if (mainAttackData.IsDestroyed)
-                    {
-                        mainAttackData = null;
-                        Model.MainUnitsTarget = null;
-                    }
+                    ResetMainTarget();
                 }
+               
                 
                 for (var i = 0; i < attackDataList.Count; i++)
                 {
                     CheckAttackData(attackDataList[i]);
                 }
             }
+        }
+
+        private void ResetMainTarget()
+        {
+            mainAttackData = null;
+            Model.MainUnitsTarget = null;
         }
 
         public void LateDispose()

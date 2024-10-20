@@ -14,12 +14,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
 {
     public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>, ITickable
     {
-        [SerializeField] private DictionaryWrapper<WeaponType, List<TurretView>> turretDictionary;
+        [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
 
-        private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
+        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
 
-        private List<IShipUnitView> shipUnitViews;
-        private List<IShipUnitView> targets;
+        private List<IHardPointView> shipUnitViews;
+        private List<IHardPointView> targets;
         private IProjectileModel projectileModel;
         private ITimer attackTimer;
         private Random random = new Random();
@@ -36,9 +36,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
+                if(keyValuePair.Value == null) continue;
+                
                 float attackDistance = Model.GetAttackDistance(keyValuePair.Key);
-                foreach (TurretView turretView in keyValuePair.Value)
+                foreach (WeaponHardPointView turretView in keyValuePair.Value)
                 {
+                    if(turretView == null) continue;
                     turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], Model.ProjectileDuration, attackDistance);
                 }
             }
@@ -50,7 +53,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             isDead = true;
         }
         
-        public List<IShipUnitView> GenerateRandomLoop(List<IShipUnitView> listToShuffle)
+        public List<IHardPointView> GetShuffledHardPoint(List<IHardPointView> listToShuffle)
         {
             for (int i = listToShuffle.Count - 1; i > 0; i--)
             {
@@ -70,24 +73,25 @@ namespace EmpireAtWar.ViewComponents.Weapon
             
             if (attackTimer.IsComplete)
             {
-                if (Model.MainUnitsTarget != null )
+                if (Model.MainUnitsTarget != null && Model.MainUnitsTarget.Count != 0)
                 {
                     attackTimer.StartTimer();
 
-                    foreach (KeyValue<WeaponType, List<TurretView>> keyValue in turretDictionary.KeyValueList)
+                    foreach (KeyValue<WeaponType, List<WeaponHardPointView>> keyValue in turretDictionary.KeyValueList)
                     {
-                        foreach (TurretView turretView in keyValue.Value)
+                        foreach (WeaponHardPointView weaponHardPointView in keyValue.Value)
                         {
-                            foreach (IShipUnitView shipUnitView in Model.MainUnitsTarget)
+                            foreach (IHardPointView shipUnitView in Model.MainUnitsTarget)
                             {
                                 if(shipUnitView.IsDestroyed) continue;
-                                if (turretView.Destroyed || turretView.IsBusy ||
-                                    !turretView.CanAttack(shipUnitView.Position))
+                                
+                                if (weaponHardPointView.Destroyed || weaponHardPointView.IsBusy ||
+                                    !weaponHardPointView.CanAttack(shipUnitView.Position))
                                 {
                                     continue;
                                 }
                                 
-                                turretView.Attack(shipUnitView.Position);
+                                weaponHardPointView.Attack(shipUnitView.Position);
                                 WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key);
                             }
                         }
@@ -96,15 +100,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 if (targets != null && targets.Count > 0)
                 {
                     attackTimer.StartTimer();
-                    shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
+                    shipUnitViews = GetShuffledHardPoint(targets.Where(x => !x.IsDestroyed).ToList());
                     
-                    foreach (IShipUnitView unitView in shipUnitViews)
+                    foreach (IHardPointView unitView in shipUnitViews)
                     {
                         if(unitView.IsDestroyed) continue;
                         
-                        foreach (KeyValue<WeaponType,List<TurretView>> keyValue in turretDictionary.KeyValueList)
+                        foreach (KeyValue<WeaponType,List<WeaponHardPointView>> keyValue in turretDictionary.KeyValueList)
                         {
-                            foreach (TurretView turretView in keyValue.Value)
+                            foreach (WeaponHardPointView turretView in keyValue.Value)
                             {
                                 if (turretView.Destroyed || turretView.IsBusy || !turretView.CanAttack(unitView.Position))
                                 {

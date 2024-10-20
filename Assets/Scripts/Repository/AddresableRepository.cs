@@ -15,5 +15,11 @@ namespace EmpireAtWar.Repository
         {
             return Addressables.LoadAssetAsync<GameObject>(key).WaitForCompletion().GetComponent<TComponent>();
         }
+        
+        
+        public GameObject LoadPrefab(string key)
+        {
+            return Addressables.LoadAssetAsync<GameObject>(key).WaitForCompletion();
+        }
     }
 }

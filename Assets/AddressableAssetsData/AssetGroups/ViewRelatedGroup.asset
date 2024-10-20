@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: ViewRelatedGroup
+  m_EditorClassIdentifier: 
+  m_GroupName: ViewRelatedGroup
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 2b4fe54194f72934d8803c259adc365b
+  m_SerializeEntries:
+  - m_GUID: d08e869a202dee742b31818cc8c5b23b
+    m_Address: DualProjectile
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d90ad13c075512a478c24f41fbf7c0b6
+    m_Address: Projectile
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 996d4737fb225224eb7fce7153238ad0, type: 2}
+    - {fileID: 11400000, guid: 2ca7cc1efcdd29e4fb091daf67bda15e, type: 2}

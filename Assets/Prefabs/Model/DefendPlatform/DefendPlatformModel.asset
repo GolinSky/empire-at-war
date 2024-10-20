@@ -20,21 +20,24 @@ MonoBehaviour:
     <Shields>k__BackingField: 10000
     <ShieldRegenerateValue>k__BackingField: 1000
     <ShieldRegenerateDelay>k__BackingField: 15
-    <ShipUnitModels>k__BackingField:
+    <HardPointModels>k__BackingField:
     - <Id>k__BackingField: 0
-      <ShipUnitType>k__BackingField: 2
-    - <Id>k__BackingField: 1
-      <ShipUnitType>k__BackingField: 0
-    - <Id>k__BackingField: 2
-      <ShipUnitType>k__BackingField: 0
-    - <Id>k__BackingField: 3
-      <ShipUnitType>k__BackingField: 0
-    - <Id>k__BackingField: 4
-      <ShipUnitType>k__BackingField: 0
-    - <Id>k__BackingField: 5
-      <ShipUnitType>k__BackingField: 0
-    - <Id>k__BackingField: 6
-      <ShipUnitType>k__BackingField: 0
+      <HardPointType>k__BackingField: 2
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    - <Id>k__BackingField: 0
+      <HardPointType>k__BackingField: 0
+    <ShieldDangerStateRange>k__BackingField:
+      <Min>k__BackingField: 0
+      <Max>k__BackingField: 0
   <RadarModel>k__BackingField:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5

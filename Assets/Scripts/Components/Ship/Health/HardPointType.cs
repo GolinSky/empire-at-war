@@ -1,6 +1,6 @@
 ﻿namespace EmpireAtWar.Components.Ship.Health
 {
-    public enum ShipUnitType
+    public enum HardPointType
     {
         Weapon = 0,
         Engines = 1,

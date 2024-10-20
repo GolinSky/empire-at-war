@@ -20,7 +20,7 @@ namespace EmpireAtWar.Controllers.SpaceStation
     /// </summary>
     public class SpaceStationController : Controller<SpaceStationModel>, IInitializable, ILateDisposable
     {
-        private const ShipUnitType DefaultTargetType = ShipUnitType.Any;
+        private const HardPointType DefaultTargetType = HardPointType.Any;
         private readonly IWeaponComponent weaponComponent;
         private readonly IComponentHub componentHub;
         private readonly ISelectionService selectionService;

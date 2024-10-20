@@ -13,7 +13,7 @@ namespace EmpireAtWar.Ship
     public class ShipController : Controller<ShipModel>, IInitializable, ILateDisposable, IShipEntity
     {
         private readonly IShipService shipService;
-        private ShipUnitModel enginesUnitModel;
+        private HardPointModel enginesUnitModel;
         
         public IShipModelObserver ModelObserver => Model;
 
@@ -25,9 +25,9 @@ namespace EmpireAtWar.Ship
         public void Initialize()
         {
             shipService.Add(this);
-            foreach (ShipUnitModel shipUnitModel in Model.HealthModel.ShipUnitModels)
+            foreach (HardPointModel shipUnitModel in Model.HealthModel.HardPointModels)
             {
-                if (shipUnitModel.ShipUnitType == ShipUnitType.Engines)
+                if (shipUnitModel.HardPointType == HardPointType.Engines)
                 {
                     enginesUnitModel = shipUnitModel;
                 }

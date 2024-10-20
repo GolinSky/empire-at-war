@@ -7,17 +7,17 @@ namespace EmpireAtWar.Models.Health
     public interface IShipUnitModel
     {
         event Action OnShipUnitChanged;
-        ShipUnitType ShipUnitType { get; }
+        HardPointType HardPointType { get; }
 
         float HealthPercentage { get; }
         int Id { get; }
     }
 
     [Serializable]
-    public class ShipUnitModel : IShipUnitModel
+    public class HardPointModel : IShipUnitModel
     {
         [field: SerializeField] public int Id { get; private set; }
-        [field: SerializeField] public ShipUnitType ShipUnitType { get; private set; }
+        [field: SerializeField] public HardPointType HardPointType { get; private set; }
 
         private float originHealth;
         private float health;
@@ -40,5 +40,14 @@ namespace EmpireAtWar.Models.Health
             HealthPercentage = health / originHealth;
             OnShipUnitChanged?.Invoke();
         }
+
+
+#if UNITY_EDITOR
+        public void SetDataFromEditor(int id, HardPointType hardPointType)
+        {
+            Id = id;
+            HardPointType = hardPointType;
+        }
+#endif
     }
 }

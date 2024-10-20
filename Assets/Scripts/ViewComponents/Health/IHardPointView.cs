@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public interface IShipUnitView
+    public interface IHardPointView
     {
         bool IsDestroyed { get; }
         int Id { get; }
