@@ -89,8 +89,7 @@ MonoBehaviour:
         value: 2
       - key: 2
         value: 2
-    <ProjectileDuration>k__BackingField: 2
-    <DelayBetweenAttack>k__BackingField: 0.1
+    <DelayBetweenAttack>k__BackingField: 1.5
   radarModel:
     <Range>k__BackingField: 60
     <Delay>k__BackingField: 5
