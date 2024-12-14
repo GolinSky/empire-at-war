@@ -21,17 +21,17 @@ namespace EmpireAtWar.Models.SkirmishCamera
         public event Action<Vector3> OnTranslateDirectionChanged;
         public event Action<Vector3, bool> OnPositionChanged;
         public event Action<float> OnFovChanged;
-        [field:SerializeField] public Vector2Range MinMoveRange { get; private set; }
-        [field:SerializeField] public Vector2Range MaxMoveRange { get; private set; }
+        [field:SerializeField] public Vector2Range MinMoveRangeX { get; private set; }
+        [field:SerializeField] public Vector2Range MaxMoveRangeY { get; private set; }
         [field:SerializeField] public FloatRange ZoomRange { get; private set; }
         [field:SerializeField] public float PanSpeed { get; private set; }
         [field:SerializeField] public float ZoomSpeed { get; private set; }
         public Vector3 ClampPosition(float heightPercentage, Vector3 position)
         {
-            float xMin = Mathf.Lerp(MinMoveRange.Min.x, MaxMoveRange.Min.x, heightPercentage);
-            float xMax = Mathf.Lerp(MinMoveRange.Max.x, MaxMoveRange.Max.x, heightPercentage);
-            float YMin = Mathf.Lerp(MinMoveRange.Min.y, MaxMoveRange.Min.y, heightPercentage);
-            float YMax = Mathf.Lerp(MinMoveRange.Max.y, MaxMoveRange.Max.y, heightPercentage);
+            float xMin = Mathf.Lerp(MinMoveRangeX.Min.x, MaxMoveRangeY.Min.x, heightPercentage);
+            float xMax = Mathf.Lerp(MinMoveRangeX.Max.x, MaxMoveRangeY.Max.x, heightPercentage);
+            float YMin = Mathf.Lerp(MinMoveRangeX.Min.y, MaxMoveRangeY.Min.y, heightPercentage);
+            float YMax = Mathf.Lerp(MinMoveRangeX.Max.y, MaxMoveRangeY.Max.y, heightPercentage);
             position.x = Mathf.Clamp(position.x, xMin, xMax);
             position.z = Mathf.Clamp(position.z, YMin, YMax);
             return position;

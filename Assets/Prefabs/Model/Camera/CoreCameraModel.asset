@@ -20,8 +20,8 @@ MonoBehaviour:
     <Min>k__BackingField: {x: -300, y: -350}
     <Max>k__BackingField: {x: 300, y: 350}
   <ZoomRange>k__BackingField:
-    <Min>k__BackingField: 80
-    <Max>k__BackingField: 300
+    <Min>k__BackingField: 60
+    <Max>k__BackingField: 500
   <PanSpeed>k__BackingField: 500
   <ZoomSpeed>k__BackingField: 200
   <TweenSpeed>k__BackingField: 5
