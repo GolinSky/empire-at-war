@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ShipUnitType>k__BackingField: 2
+  <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
 --- !u!114 &8252437575238339472
 MonoBehaviour:
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d2aa1578157814689f927186043d2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionVfx: {fileID: 5522257181008222904}
+  explosionVfxPrefab: {fileID: 0}
 --- !u!1 &1295155889020873871
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,12 +740,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b471a89871e7b1240a19c87e15e6375b, type: 3}
---- !u!198 &5522257181008222904 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8259483064382226888, guid: b471a89871e7b1240a19c87e15e6375b,
-    type: 3}
-  m_PrefabInstance: {fileID: 4484859223704066928}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5522257181026645810 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,

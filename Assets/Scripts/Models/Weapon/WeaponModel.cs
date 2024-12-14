@@ -10,27 +10,30 @@ namespace EmpireAtWar.Models.Weapon
 {
     public interface IWeaponModelObserver : IModelObserver
     {
+        event Action OnMainUnitSwitched;
         Dictionary<WeaponType, int> WeaponDictionary { get; }
         IProjectileModel ProjectileModel { get; }
         
-        float ProjectileDuration { get;}
         float MaxAttackDistance { get; }
-        List<IShipUnitView> Targets { get; }
-        List<IShipUnitView> MainUnitsTarget { get; }
+        List<IHardPointView> Targets { get; }
+        List<IHardPointView> MainUnitsTarget { get; }
+        float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
     }
 
     [Serializable]
     public class WeaponModel : InnerModel, IWeaponModelObserver
     {
+        public event Action OnMainUnitSwitched;
+
 
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
 
-        [field: SerializeField] public float ProjectileDuration { get; private set; }
 
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
-        private List<IShipUnitView> shipUnitViews = new List<IShipUnitView>();
+        private List<IHardPointView> shipUnitViews = new List<IHardPointView>();
+        private List<IHardPointView> _mainUnitsTarget;
 
 
         public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
@@ -39,8 +42,17 @@ namespace EmpireAtWar.Models.Weapon
 
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
-        List<IShipUnitView> IWeaponModelObserver.Targets => shipUnitViews;
-        public List<IShipUnitView> MainUnitsTarget { get; set; }
+        List<IHardPointView> IWeaponModelObserver.Targets => shipUnitViews;
+
+        public List<IHardPointView> MainUnitsTarget
+        {
+            get => _mainUnitsTarget;
+            set
+            {
+                _mainUnitsTarget = value;
+                OnMainUnitSwitched?.Invoke();
+            }
+        }
 
         public float MaxAttackDistance
         {
@@ -93,14 +105,14 @@ namespace EmpireAtWar.Models.Weapon
         }
 
 
-    public void AddShipUnits(IEnumerable<IShipUnitView> units)
+    public void AddShipUnits(IEnumerable<IHardPointView> units)
         {
             shipUnitViews.AddRange(units);
         }
 
-        public void RemoveShipUnits(IEnumerable<IShipUnitView> unitViews)
+        public void RemoveShipUnits(IEnumerable<IHardPointView> unitViews)
         {
-            foreach (IShipUnitView shipUnitView in unitViews)
+            foreach (IHardPointView shipUnitView in unitViews)
             {
                 shipUnitViews.Remove(shipUnitView);
             }

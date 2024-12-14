@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using LightWeightFramework.Components.ViewComponents;
 using Utilities.ScriptUtils.Dotween;
-
+using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
@@ -18,7 +18,7 @@ namespace EmpireAtWar.ViewComponents.Health
     public interface IHardPointsProvider
     {
         bool HasUnits { get; }
-        IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType);
+        IHardPointView[] GetShipUnits(HardPointType hardPointType);
         IModelObserver ModelObserver { get; }
         PlayerType PlayerType { get; }
         Transform Transform { get; }
@@ -34,7 +34,9 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private Image armorFillImage;
         [SerializeField] private ShieldView shieldView;
         
-        [SerializeField] private List<ShipUnitView> shipUnitViewArray;
+        [SerializeField] private List<HardPointView> shipUnitViewArray;
+        [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
+        [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
         private Coroutine shieldsAnimatedCoroutine;
         private Sequence sequence;
@@ -56,7 +58,8 @@ namespace EmpireAtWar.ViewComponents.Health
             baseArmorValue = Model.Armor;
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += Destroy;
-            
+            shieldsFillImage.color = shieldColors.Dictionary[PlayerType];
+            armorFillImage.color = hullColors.Dictionary[PlayerType];
             UpdateShipUnit();
         }
 
@@ -107,8 +110,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private void UpdateShipUnit()
         {
-            ShipUnitModel[] shipUnitModels = Model.ShipUnitModels.OrderBy(x=>x.Id).ToArray();
-            ShipUnitView[] shipUnitViews = shipUnitViewArray.OrderBy(x => x.Id).ToArray();
+            HardPointModel[] shipUnitModels = Model.HardPointModels.OrderBy(x=>x.Id).ToArray();
+            HardPointView[] shipUnitViews = shipUnitViewArray.OrderBy(x => x.Id).ToArray();
             for (var i = 0; i < shipUnitModels.Length; i++)
             {
                 shipUnitViews[i].Init(shipUnitModels[i]);
@@ -128,7 +131,7 @@ namespace EmpireAtWar.ViewComponents.Health
             sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TweenDuration));
         }
 
-        public IShipUnitView[] GetShipUnits(ShipUnitType shipUnitType)
+        public IHardPointView[] GetShipUnits(HardPointType hardPointType)
         {
             shipUnitViewArray = shipUnitViewArray.Where(x => !x.IsDestroyed).ToList();
 
@@ -136,15 +139,15 @@ namespace EmpireAtWar.ViewComponents.Health
             {
                 return null;
             }
-            if (shipUnitType == ShipUnitType.Any)
+            if (hardPointType == HardPointType.Any)
             {
                 return shipUnitViewArray.ToArray();
             }
             else
             {
-                if (shipUnitViewArray.Any(x => x.ShipUnitType == shipUnitType))
+                if (shipUnitViewArray.Any(x => x.HardPointType == hardPointType))
                 {
-                    return shipUnitViewArray.Where(x => x.ShipUnitType == shipUnitType).ToArray();
+                    return shipUnitViewArray.Where(x => x.HardPointType == hardPointType).ToArray();
                 }
                 else
                 {

@@ -1,27 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 using Random = System.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>, ITickable
+    public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>
     {
-        [SerializeField] private DictionaryWrapper<WeaponType, List<TurretView>> turretDictionary;
+        [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
 
-        private Dictionary<WeaponType, List<TurretView>> TurretDictionary => turretDictionary.Dictionary;
+        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
 
-        private List<IShipUnitView> shipUnitViews;
-        private List<IShipUnitView> targets;
+        private List<IHardPointView> shipUnitViews;
+        private List<IHardPointView> targets;
         private IProjectileModel projectileModel;
-        private ITimer attackTimer;
+        private Coroutine mainTargetAttackFlow;
+        private Coroutine commonAttackFlow;
         private Random random = new Random();
         private bool isDead;
         
@@ -30,27 +32,96 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         protected override void OnInit()
         {
-            attackTimer = TimerFactory.ConstructTimer(1f);
             targets = Model.Targets;
 
             projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
+                if(keyValuePair.Value == null) continue;
+                
                 float attackDistance = Model.GetAttackDistance(keyValuePair.Key);
-                foreach (TurretView turretView in keyValuePair.Value)
+                foreach (WeaponHardPointView turretView in keyValuePair.Value)
                 {
-                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], Model.ProjectileDuration, attackDistance);
+                    if(turretView == null) continue;
+                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], attackDistance);
                 }
             }
+
+        }
+
+        private void OnEnable()
+        {
+            Model.OnMainUnitSwitched += HandleNewMainTarget;
+            commonAttackFlow = StartCoroutine(CommonAttackFlow());
         }
 
         protected override void OnRelease()
         {
             base.OnRelease();
+            Model.OnMainUnitSwitched -= HandleNewMainTarget;
             isDead = true;
+
+            if (mainTargetAttackFlow != null)
+            {
+                StopCoroutine(mainTargetAttackFlow);
+            }
+            if(commonAttackFlow != null)
+            {
+                StopCoroutine(commonAttackFlow);
+            }
         }
         
-        public List<IShipUnitView> GenerateRandomLoop(List<IShipUnitView> listToShuffle)
+        private void HandleNewMainTarget()
+        {
+            if(isDead) return;
+            if(mainTargetAttackFlow != null) StopCoroutine(mainTargetAttackFlow);
+            
+            if(Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0) return;
+            
+            mainTargetAttackFlow = StartCoroutine(AttackFlow(Model.MainUnitsTarget));
+        }
+
+        private IEnumerator CommonAttackFlow()
+        {
+            while (!isDead)
+            {
+                if (targets != null && targets.Count > 0)
+                {
+                    shipUnitViews = GetShuffledHardPoint(targets.Where(x => !x.IsDestroyed).ToList());
+                    yield return AttackFlow(shipUnitViews);
+                }
+                else
+                {
+                    yield return new WaitUntil(()=> targets != null && targets.Count > 0);
+                }
+            }
+        }
+
+        private IEnumerator AttackFlow(List<IHardPointView> hardPointViews)
+        {
+            foreach (KeyValue<WeaponType, List<WeaponHardPointView>> keyValue in turretDictionary.KeyValueList)
+            {
+                foreach (WeaponHardPointView weaponHardPointView in keyValue.Value)
+                {
+                    foreach (IHardPointView shipUnitView in hardPointViews)
+                    {
+                        if (weaponHardPointView.Destroyed || weaponHardPointView.IsBusy ||
+                            !weaponHardPointView.CanAttack(shipUnitView.Position))
+                        {
+                            continue;
+                        }
+                        
+                        float duration = weaponHardPointView.Attack(shipUnitView.Position);
+                        WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key, duration);
+                        yield return new WaitForSeconds(Model.DelayBetweenAttack);
+                    }
+                }
+            }
+        }
+
+      
+        
+        private List<IHardPointView> GetShuffledHardPoint(List<IHardPointView> listToShuffle)
         {
             for (int i = listToShuffle.Count - 1; i > 0; i--)
             {
@@ -62,63 +133,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             listToShuffle.Reverse();
             return listToShuffle;
-        }
-
-        public void Tick()
-        {
-            if(isDead) return;
-            
-            if (attackTimer.IsComplete)
-            {
-                if (Model.MainUnitsTarget != null )
-                {
-                    attackTimer.StartTimer();
-
-                    foreach (KeyValue<WeaponType, List<TurretView>> keyValue in turretDictionary.KeyValueList)
-                    {
-                        foreach (TurretView turretView in keyValue.Value)
-                        {
-                            foreach (IShipUnitView shipUnitView in Model.MainUnitsTarget)
-                            {
-                                if(shipUnitView.IsDestroyed) continue;
-                                if (turretView.Destroyed || turretView.IsBusy ||
-                                    !turretView.CanAttack(shipUnitView.Position))
-                                {
-                                    continue;
-                                }
-                                
-                                turretView.Attack(shipUnitView.Position);
-                                WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key);
-                            }
-                        }
-                    }
-                }
-                if (targets != null && targets.Count > 0)
-                {
-                    attackTimer.StartTimer();
-                    shipUnitViews = GenerateRandomLoop(targets.Where(x => !x.IsDestroyed).ToList());
-                    
-                    foreach (IShipUnitView unitView in shipUnitViews)
-                    {
-                        if(unitView.IsDestroyed) continue;
-                        
-                        foreach (KeyValue<WeaponType,List<TurretView>> keyValue in turretDictionary.KeyValueList)
-                        {
-                            foreach (TurretView turretView in keyValue.Value)
-                            {
-                                if (turretView.Destroyed || turretView.IsBusy || !turretView.CanAttack(unitView.Position))
-                                {
-                                    continue;
-                                }
-                                
-                                turretView.Attack(unitView.Position);
-                                WeaponCommand.ApplyDamage(unitView, keyValue.Key);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

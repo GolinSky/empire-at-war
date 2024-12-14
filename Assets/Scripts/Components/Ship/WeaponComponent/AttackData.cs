@@ -9,22 +9,22 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     public class AttackData
     {
         private readonly IHardPointsProvider shipUnitsProvider;
-        private IHealthComponent HealthComponent { get; }
+        public IHealthComponent HealthComponent { get; }
 
         public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
-        public List<IShipUnitView> Units { get; private set; }
+        public List<IHardPointView> Units { get; private set; }
     
 
-        public AttackData(IHardPointsProvider shipUnitsProvider, IHealthComponent healthComponent, ShipUnitType shipUnitType)
+        public AttackData(IHardPointsProvider shipUnitsProvider, IHealthComponent healthComponent, HardPointType hardPointType)
         {
             this.shipUnitsProvider = shipUnitsProvider;
-            Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
+            Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
             HealthComponent = healthComponent;
         }
 
-        public bool Contains(IShipUnitView shipUnitView)
+        public bool Contains(IHardPointView hardPointView)
         {
-            return Units.Contains(shipUnitView);
+            return Units.Contains(hardPointView);
         }
 
         public void ApplyDamage(float damage, WeaponType weaponType, int id)
@@ -32,12 +32,12 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             HealthComponent.ApplyDamage(damage, weaponType, id);
         }
 
-        public bool TryUpdateNewUnits(ShipUnitType shipUnitType = ShipUnitType.Any)
+        public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
         {
             Units.Clear();
             if (shipUnitsProvider.HasUnits)
             {
-                Units = shipUnitsProvider.GetShipUnits(shipUnitType).ToList();
+                Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
                 return Units is { Count: > 0 };
             }
             else

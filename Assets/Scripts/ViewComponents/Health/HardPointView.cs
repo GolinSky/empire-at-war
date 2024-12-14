@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public interface IShipUnitProvider
+    public interface IHardPointProvider
     {
         void SetId(int id);
+        HardPointType HardPointType { get; }
+        int Id { get; }
     }
-    public class ShipUnitView : MonoBehaviour, IShipUnitView, INotifier<float>, IShipUnitProvider
+    public class HardPointView : MonoBehaviour, IHardPointView, INotifier<float>, IHardPointProvider
     {
-        [field: SerializeField] public ShipUnitType ShipUnitType { get; private set; }
+        [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
 
         private List<IObserver<float>> observers = new List<IObserver<float>>();
@@ -43,6 +45,8 @@ namespace EmpireAtWar.ViewComponents.Health
             {
                 observer.UpdateState(healthPercentage);
             }
+
+            OnStateUpdated(healthPercentage);
         }
 
         void INotifier<float>.AddObserver(IObserver<float> observer)
@@ -55,9 +59,15 @@ namespace EmpireAtWar.ViewComponents.Health
             observers.Remove(observer);
         }
 
-        void IShipUnitProvider.SetId(int id)
+        void IHardPointProvider.SetId(int id)
         {
             Id = id;
         }
+        
+        
+        protected virtual void OnInit(){}
+        protected virtual void OnRelease(){}
+        
+        protected virtual void OnStateUpdated(float healthPercentage){}
     }
 }

@@ -132,6 +132,14 @@ namespace EmpireAtWar.Services.InputService
                 OnZoom.Invoke(scrollValue);
             }
 
+            if (MapActions.Zoom.IsPressed())
+            {
+                float zoomValue = MapActions.Zoom.ReadValue<float>();
+                Debug.Log($"zoomValue:{zoomValue}");
+                OnZoom.Invoke(zoomValue);
+
+            }
+
            
             // if (Input.touchCount == 1)
             // {

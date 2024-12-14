@@ -2,6 +2,7 @@
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Models.Health
         event Action OnDestroy;
         event Action OnValueChanged;
 
-        ShipUnitModel[] ShipUnitModels { get; }
+        HardPointModel[] HardPointModels { get; }
         float Armor { get; }
         float Shields { get; }
         float ShieldPercentage { get; }
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Models.Health
         
         [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [field:SerializeField] public ShipUnitModel[] ShipUnitModels { get; private set; }
+        [field:SerializeField] public HardPointModel[] HardPointModels { get; private set; }
         [field:SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
 
         protected float shieldsBaseValue;
@@ -59,22 +60,22 @@ namespace EmpireAtWar.Models.Health
         protected override void OnInit()
         {
             shieldsBaseValue = Shields;
-            if (ShipUnitModels.Length <= MainSystemAmount)
+            if (HardPointModels.Length <= MainSystemAmount)
             {
-                float health = Armor / ShipUnitModels.Length;
-                foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
+                float health = Armor / HardPointModels.Length;
+                foreach (HardPointModel shipUnitModel in HardPointModels)
                 {
                     shipUnitModel.SetHealth(health);
                 }
             }
             else
             {
-                float health = (Armor*WeaponSystemCoefficient) / (ShipUnitModels.Length - MainSystemAmount);
+                float health = (Armor*WeaponSystemCoefficient) / (HardPointModels.Length - MainSystemAmount);
 
-                foreach (ShipUnitModel shipUnitModel in ShipUnitModels)
+                foreach (HardPointModel shipUnitModel in HardPointModels)
                 {
-                    if (shipUnitModel.ShipUnitType == ShipUnitType.Engines ||
-                        shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator)
+                    if (shipUnitModel.HardPointType == HardPointType.Engines ||
+                        shipUnitModel.HardPointType == HardPointType.ShieldGenerator)
                     {
                         shipUnitModel.SetHealth(Armor*MainSystemCoefficient);
                     }
@@ -93,16 +94,16 @@ namespace EmpireAtWar.Models.Health
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
                 //todo : why here out of bounds 
-            ShipUnitModel shipUnitModel = ShipUnitModels[shipUnitId];
-            if (damageData.ArmorDamage > shipUnitModel.Health)
+            HardPointModel hardPointModel = HardPointModels[shipUnitId];
+            if (damageData.ArmorDamage > hardPointModel.Health)
             {
-                float damageLeft = damageData.ArmorDamage - shipUnitModel.Health;
-                ApplyDamageOnShipUnit(shipUnitModel, shipUnitModel.Health);
+                float damageLeft = damageData.ArmorDamage - hardPointModel.Health;
+                ApplyDamageOnShipUnit(hardPointModel, hardPointModel.Health);
                 ApplyDamageOnAllUnit(damageLeft);
             }
             else
             {
-                ApplyDamageOnShipUnit(shipUnitModel, damageData.ArmorDamage);
+                ApplyDamageOnShipUnit(hardPointModel, damageData.ArmorDamage);
             }
                 
             if (Armor <= 0)
@@ -116,18 +117,18 @@ namespace EmpireAtWar.Models.Health
 
         public void ApplyDamageOnAllUnit(float damage)
         {
-            ShipUnitModel[] unitModels = ShipUnitModels.Where(x => x.Health > 0).ToArray();
+            HardPointModel[] unitModels = HardPointModels.Where(x => x.Health > 0).ToArray();
             float damagePerUnit = damage / unitModels.Length;
-            foreach (ShipUnitModel shipUnitModel in unitModels)
+            foreach (HardPointModel shipUnitModel in unitModels)
             {
                 ApplyDamageOnShipUnit(shipUnitModel, damagePerUnit);
             }
         }
 
-        private void ApplyDamageOnShipUnit(ShipUnitModel shipUnitModel, float damage)
+        private void ApplyDamageOnShipUnit(HardPointModel hardPointModel, float damage)
         {
-            shipUnitModel.ApplyDamage(damage);
-            if (shipUnitModel.ShipUnitType == ShipUnitType.ShieldGenerator && shipUnitModel.Health <= 0f)
+            hardPointModel.ApplyDamage(damage);
+            if (hardPointModel.HardPointType == HardPointType.ShieldGenerator && hardPointModel.Health <= 0f)
             {
                 IsLostShieldGenerator = true;
                 Shields = 0;
@@ -140,5 +141,18 @@ namespace EmpireAtWar.Models.Health
             Shields += value;
             OnValueChanged?.Invoke();
         }
+
+
+#if UNITY_EDITOR
+        public void SetHardPoints(IHardPointProvider[] providers)
+        {
+            HardPointModels = new HardPointModel[providers.Length];
+            for (var i = 0; i < providers.Length; i++)
+            {
+                HardPointModels[i] = new HardPointModel(); // Initialize each element
+                HardPointModels[i].SetDataFromEditor(providers[i].Id, providers[i].HardPointType);
+            }
+        }  
+#endif
     }
 }

@@ -49,7 +49,7 @@ namespace EmpireAtWar.Patterns.StateMachine
                 IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
                 if (unitsProvider != null && unitsProvider.HasUnits)
                 {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), ShipUnitType.Any));
+                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
                 }
             }
 

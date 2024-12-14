@@ -22,7 +22,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             base.Enter();
             weaponComponent.AddTarget(new AttackData(mainTarget,
                 componentHub.GetComponent(mainTarget.ModelObserver),
-                ShipUnitType.Any), AttackType.MainTarget);
+                HardPointType.Any), AttackType.MainTarget);
         }
 
         public override void Update()

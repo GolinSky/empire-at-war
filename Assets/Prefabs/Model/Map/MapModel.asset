@@ -16,9 +16,9 @@ MonoBehaviour:
   stationPositionWrapper:
     keyValue:
     - key: 1
-      value: {x: -180, y: -15, z: 170}
+      value: {x: -180, y: -40, z: 170}
     - key: 2
-      value: {x: 160, y: -15, z: -170}
+      value: {x: 160, y: -40, z: -170}
   <SizeRange>k__BackingField:
     <Min>k__BackingField: {x: -250, y: -250}
     <Max>k__BackingField: {x: 250, y: 250}

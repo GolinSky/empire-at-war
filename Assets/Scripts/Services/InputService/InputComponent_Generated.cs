@@ -89,6 +89,15 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""f69c9648-c4ab-4f65-bad1-540f587d811c"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -212,6 +221,39 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""action"": ""SecondaryPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""c6d65865-fbf7-44ee-b186-1bb289042ca2"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""0be6cc3a-446d-4c16-b334-a570b8d40976"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""b38cc561-3e38-4196-a4c4-9ffafeb370b1"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -288,6 +330,7 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         m_TouchMap_Scroll = m_TouchMap.FindAction("Scroll", throwIfNotFound: true);
         m_TouchMap_TouchCount = m_TouchMap.FindAction("TouchCount", throwIfNotFound: true);
         m_TouchMap_SecondaryPosition = m_TouchMap.FindAction("SecondaryPosition", throwIfNotFound: true);
+        m_TouchMap_Zoom = m_TouchMap.FindAction("Zoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -356,6 +399,7 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
     private readonly InputAction m_TouchMap_Scroll;
     private readonly InputAction m_TouchMap_TouchCount;
     private readonly InputAction m_TouchMap_SecondaryPosition;
+    private readonly InputAction m_TouchMap_Zoom;
     public struct TouchMapActions
     {
         private @InputComponent_Generated m_Wrapper;
@@ -367,6 +411,7 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         public InputAction @Scroll => m_Wrapper.m_TouchMap_Scroll;
         public InputAction @TouchCount => m_Wrapper.m_TouchMap_TouchCount;
         public InputAction @SecondaryPosition => m_Wrapper.m_TouchMap_SecondaryPosition;
+        public InputAction @Zoom => m_Wrapper.m_TouchMap_Zoom;
         public InputActionMap Get() { return m_Wrapper.m_TouchMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -397,6 +442,9 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
             @SecondaryPosition.started += instance.OnSecondaryPosition;
             @SecondaryPosition.performed += instance.OnSecondaryPosition;
             @SecondaryPosition.canceled += instance.OnSecondaryPosition;
+            @Zoom.started += instance.OnZoom;
+            @Zoom.performed += instance.OnZoom;
+            @Zoom.canceled += instance.OnZoom;
         }
 
         private void UnregisterCallbacks(ITouchMapActions instance)
@@ -422,6 +470,9 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
             @SecondaryPosition.started -= instance.OnSecondaryPosition;
             @SecondaryPosition.performed -= instance.OnSecondaryPosition;
             @SecondaryPosition.canceled -= instance.OnSecondaryPosition;
+            @Zoom.started -= instance.OnZoom;
+            @Zoom.performed -= instance.OnZoom;
+            @Zoom.canceled -= instance.OnZoom;
         }
 
         public void RemoveCallbacks(ITouchMapActions instance)
@@ -493,5 +544,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         void OnScroll(InputAction.CallbackContext context);
         void OnTouchCount(InputAction.CallbackContext context);
         void OnSecondaryPosition(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
     }
 }

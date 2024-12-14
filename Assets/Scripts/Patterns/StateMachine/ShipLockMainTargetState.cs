@@ -41,7 +41,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             
             weaponComponent.AddTarget(new AttackData(mainTarget,
                 componentHub.GetComponent(mainTarget.ModelObserver),
-                ShipUnitType.Any), AttackType.MainTarget);
+                HardPointType.Any), AttackType.MainTarget);
         }
 
         private void UpdateMoveState()
@@ -64,6 +64,8 @@ namespace EmpireAtWar.Patterns.StateMachine
             base.Update();
             if (!mainTarget.HasUnits)
             {
+                weaponComponent.ResetTarget();
+                //shipMoveComponent.Reset();
                 StateMachine.ChangeToDefaultState();
                 return;
             }
