@@ -6,6 +6,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public interface IWeaponCommand:ICommand
     {
-        void ApplyDamage(IHardPointView unitView, WeaponType weaponType);
+        void ApplyDamage(IHardPointView unitView, WeaponType weaponType, float duration);
     }
 }

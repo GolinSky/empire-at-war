@@ -87,7 +87,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             return OptimalAttackRange > distance;
         }
 
-        public void ApplyDamage(IHardPointView unitView, WeaponType weaponType)
+        public void ApplyDamage(IHardPointView unitView, WeaponType weaponType, float duration)
         {
             for (var i = 0; i < attackDataList.Count; i++)
             {
@@ -107,7 +107,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                                 unitView.Id,
                                 GetDistance(unitView.Position));
                         },
-                        Model.ProjectileDuration);
+                        duration);
                     customCoroutines.Add(customCoroutine);
                     customCoroutine.OnFinished += DeleteFromCollection;
                     break;
@@ -164,9 +164,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         {
             if(attackDataList.Count == 0) return;
 
-            if (attackTimer.IsComplete)
+          //  if (attackTimer.IsComplete)
             {
-                attackTimer.StartTimer();
+              //  attackTimer.StartTimer();
 
                 // if (mainAttackData != null && mainAttackData.IsDestroyed)
                 // {

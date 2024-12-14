@@ -10,27 +10,30 @@ namespace EmpireAtWar.Models.Weapon
 {
     public interface IWeaponModelObserver : IModelObserver
     {
+        event Action OnMainUnitSwitched;
         Dictionary<WeaponType, int> WeaponDictionary { get; }
         IProjectileModel ProjectileModel { get; }
         
-        float ProjectileDuration { get;}
         float MaxAttackDistance { get; }
         List<IHardPointView> Targets { get; }
         List<IHardPointView> MainUnitsTarget { get; }
+        float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
     }
 
     [Serializable]
     public class WeaponModel : InnerModel, IWeaponModelObserver
     {
+        public event Action OnMainUnitSwitched;
+
 
         [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
 
-        [field: SerializeField] public float ProjectileDuration { get; private set; }
 
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
         private List<IHardPointView> shipUnitViews = new List<IHardPointView>();
+        private List<IHardPointView> _mainUnitsTarget;
 
 
         public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
@@ -40,7 +43,16 @@ namespace EmpireAtWar.Models.Weapon
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
         List<IHardPointView> IWeaponModelObserver.Targets => shipUnitViews;
-        public List<IHardPointView> MainUnitsTarget { get; set; }
+
+        public List<IHardPointView> MainUnitsTarget
+        {
+            get => _mainUnitsTarget;
+            set
+            {
+                _mainUnitsTarget = value;
+                OnMainUnitSwitched?.Invoke();
+            }
+        }
 
         public float MaxAttackDistance
         {

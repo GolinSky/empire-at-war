@@ -16,8 +16,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   <HealthModel>k__BackingField:
     dexterity: 0
-    <Armor>k__BackingField: 50000
-    <Shields>k__BackingField: 10000
+    <Armor>k__BackingField: 90000
+    <Shields>k__BackingField: 50000
     <ShieldRegenerateValue>k__BackingField: 1000
     <ShieldRegenerateDelay>k__BackingField: 15
     <HardPointModels>k__BackingField:
@@ -38,6 +38,7 @@ MonoBehaviour:
     <ShieldDangerStateRange>k__BackingField:
       <Min>k__BackingField: 0
       <Max>k__BackingField: 0
+    debugble: 0
   <RadarModel>k__BackingField:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
@@ -63,5 +64,4 @@ MonoBehaviour:
       keyValue:
       - key: 4
         value: 6
-    <ProjectileDuration>k__BackingField: 1
-    <DelayBetweenAttack>k__BackingField: 0.1
+    <DelayBetweenAttack>k__BackingField: 1

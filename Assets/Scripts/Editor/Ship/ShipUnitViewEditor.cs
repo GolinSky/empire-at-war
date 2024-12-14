@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Ship;
 using EmpireAtWar.ViewComponents.Health;
@@ -7,6 +9,7 @@ using EmpireAtWar.ViewComponents.Weapon;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Editor.Ship
 {
@@ -14,6 +17,20 @@ namespace EmpireAtWar.Editor.Ship
     {
         private const string HARD_POINT_PATH = "WeaponHardPoint";
 
+        [MenuItem("Custom/Ships/SetCorrectPosition")]
+        public static void SetCorrectPosition()
+        {
+            AddressableRepository addressableRepository = new AddressableRepository();
+
+            string[] shipNames = Enum.GetNames(typeof(ShipType));
+            
+            foreach (string shipName in shipNames)
+            {
+                ShipView view = addressableRepository.LoadComponent<ShipView>($"{shipName}{nameof(ShipView)}");
+                ShipModel model = addressableRepository.Load<ShipModel>($"{shipName}{nameof(ShipModel)}");
+                
+            }
+        }
         [MenuItem("Custom/Ships/SetUpShipUnits")]
         public static void SetUpShipUnits()
         {
