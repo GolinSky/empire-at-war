@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "eec545fd9b57375d6d7475f356c0223758689610"
+      "hash": "1ff5c0442e034d1ae20511132e4569563ebbb4d9"
     },
     "com.script-utils.dotween": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
@@ -94,7 +94,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.28",
+      "version": "3.0.34",
       "depth": 0,
       "source": "registry",
       "dependencies": {

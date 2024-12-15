@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Extentions;
-using LightWeightFramework.Components;
+using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;

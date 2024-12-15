@@ -125,6 +125,8 @@ MonoBehaviour:
   - {fileID: 9181149355859393031}
   - {fileID: 7492724889174075485}
   - {fileID: 4425837566844359438}
+  <ModelDependencies>k__BackingField:
+  - {fileID: 3151456598021722762}
 --- !u!65 &4990550169039385743
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15786,6 +15788,11 @@ PrefabInstance:
       objectReference: {fileID: 4643624909457517490}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
+      propertyPath: healthModelDependency
+      value: 
+      objectReference: {fileID: 3151456598021722762}
+    - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
       propertyPath: shipUnitViewArray.Array.size
       value: 10
       objectReference: {fileID: 0}
@@ -15857,7 +15864,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3151456598021722762}
   m_SourcePrefab: {fileID: 100100000, guid: 35c8d89f211482848a0438585d8d9afd, type: 3}
 --- !u!114 &2572485011283519561 stripped
 MonoBehaviour:
@@ -15865,7 +15876,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4808814836527783324}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6968894943475844009}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b112db4ee8bd4d57a8c36c5714464690, type: 3}
@@ -15877,6 +15888,35 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4808814836527783324}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6968894943475844009 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+    type: 3}
+  m_PrefabInstance: {fileID: 4808814836527783324}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3151456598021722762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6968894943475844009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShipUnits>k__BackingField:
+  - {fileID: 5242897595597171810}
+  - {fileID: 7258418188646328008}
+  - {fileID: 3854033994161667754}
+  - {fileID: 4772148314960195881}
+  - {fileID: 4276695649427471237}
+  - {fileID: 1345248204800110707}
+  - {fileID: 6411720674404516733}
+  - {fileID: 3407299230071023220}
+  - {fileID: 746876643857132625}
+  - {fileID: 656960128395284562}
 --- !u!1001 &5447628073572970863
 PrefabInstance:
   m_ObjectHideFlags: 0

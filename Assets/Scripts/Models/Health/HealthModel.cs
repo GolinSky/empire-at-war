@@ -2,6 +2,7 @@
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -23,20 +24,23 @@ namespace EmpireAtWar.Models.Health
         bool IsLostShieldGenerator { get; }
         FloatRange ShieldDangerStateRange { get; }
 
+        void InjectDependency(HealthModelDependency healthModelDependency);
     }
 
     [Serializable]
     public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
     {
-        private const float MainSystemCoefficient = 0.1f;
-        private const float WeaponSystemCoefficient = 0.8f;
-        private const int MainSystemAmount = 2; 
+        private const float MAIN_SYSTEM_COEFFICIENT = 0.1f;
+        private const float WEAPON_SYSTEM_COEFFICIENT = 0.8f;
+        private const int MAIN_SYSTEM_AMOUNT = 2; 
         public event Action OnValueChanged;
         public event Action OnDestroy;
         
         [SerializeField] 
         [Range(0f, 1f)]
-        private float dexterity;
+        private float dexterity;//why this is private
+        protected float shieldsBaseValue;
+        private HealthModelDependency _healthModelDependency;
 
         [field:SerializeField] public float Armor { get; private set; }
         [field:SerializeField] public float Shields { get; private set; }
@@ -45,11 +49,14 @@ namespace EmpireAtWar.Models.Health
         [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field:SerializeField] public HardPointModel[] HardPointModels { get; private set; }
         [field:SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
+     
 
-        protected float shieldsBaseValue;
-        
+
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }
+        
+   
+        
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
         public float Dexterity => dexterity;
@@ -57,10 +64,18 @@ namespace EmpireAtWar.Models.Health
 
         public bool IsLostShieldGenerator { get; private set; }
         
-        protected override void OnInit()
+        
+        public void InjectDependency(HealthModelDependency healthModelDependency)
         {
-            shieldsBaseValue = Shields;
-            if (HardPointModels.Length <= MainSystemAmount)
+            _healthModelDependency = healthModelDependency;
+            HardPointModels = new HardPointModel[_healthModelDependency.ShipUnits.Count];
+            for (var i = 0; i < _healthModelDependency.ShipUnits.Count; i++)
+            {
+                HardPointModels[i] = new HardPointModel(); // Initialize each element
+                HardPointModels[i].SetData(_healthModelDependency.ShipUnits[i]);
+            }
+
+            if (HardPointModels.Length <= MAIN_SYSTEM_AMOUNT)
             {
                 float health = Armor / HardPointModels.Length;
                 foreach (HardPointModel shipUnitModel in HardPointModels)
@@ -70,14 +85,14 @@ namespace EmpireAtWar.Models.Health
             }
             else
             {
-                float health = (Armor*WeaponSystemCoefficient) / (HardPointModels.Length - MainSystemAmount);
+                float health = (Armor * WEAPON_SYSTEM_COEFFICIENT) / (HardPointModels.Length - MAIN_SYSTEM_AMOUNT);
 
                 foreach (HardPointModel shipUnitModel in HardPointModels)
                 {
                     if (shipUnitModel.HardPointType == HardPointType.Engines ||
                         shipUnitModel.HardPointType == HardPointType.ShieldGenerator)
                     {
-                        shipUnitModel.SetHealth(Armor*MainSystemCoefficient);
+                        shipUnitModel.SetHealth(Armor * MAIN_SYSTEM_COEFFICIENT);
                     }
                     else
                     {
@@ -85,6 +100,11 @@ namespace EmpireAtWar.Models.Health
                     }
                 }
             }
+        }
+        
+        protected override void OnInit()
+        {
+            shieldsBaseValue = Shields;
         }
         
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)

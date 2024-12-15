@@ -1,10 +1,12 @@
 ﻿using EmpireAtWar.Extentions;
+using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Components;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
+using View = EmpireAtWar.Views.ViewImpl.View;
 
 namespace EmpireAtWar
 {
@@ -44,6 +46,7 @@ namespace EmpireAtWar
             BindComponents();
             BindView();
             AssignView();
+            BindModelDependency();
             BindMonoComponent();
             BindViewComponents();
         }
@@ -51,9 +54,15 @@ namespace EmpireAtWar
         protected virtual void AssignView()
         {
             View = Container.Resolve<TView>();
+            OnViewCreated();
+        }
+        
+        protected virtual void BindModelDependency()
+        {
+            Container.Install<ModelDependencyInstaller>(new object[] { View });
         }
 
-        protected virtual  void BindViewComponents()
+        protected virtual void BindViewComponents()
         {
             if (bindViewComponents)
             {
@@ -61,7 +70,7 @@ namespace EmpireAtWar
             }
         }
 
-        protected virtual  void BindMonoComponent()
+        protected virtual void BindMonoComponent()
         {
             if (bindMonoComponent)
             {
@@ -99,5 +108,7 @@ namespace EmpireAtWar
         }
 
         protected virtual void OnModelCreated() {}
+
+        protected virtual void OnViewCreated() {}
     }
 }

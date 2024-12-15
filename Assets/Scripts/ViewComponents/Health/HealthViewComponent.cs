@@ -1,14 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
 using LightWeightFramework.Components.ViewComponents;
+using UnityEngine.Serialization;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
@@ -35,6 +38,7 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private ShieldView shieldView;
         
         [SerializeField] private List<HardPointView> shipUnitViewArray;
+        [FormerlySerializedAs("healthViewModel")] [SerializeField] private HealthModelDependency healthModelDependency; 
         [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
         [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
@@ -43,13 +47,16 @@ namespace EmpireAtWar.ViewComponents.Health
         private Sequence shieldSequence;
         private float baseShieldsValue;
         private float baseArmorValue;
+        private List<HardPointView> currentShipUnits;
         
         [Inject]
         public PlayerType PlayerType { get; }
 
         public Transform Transform => View.Transform;
 
-        public bool HasUnits => shipUnitViewArray.Any(x => !x.IsDestroyed);
+        public bool HasUnits => ShipUnits.Any(x => !x.IsDestroyed);
+        
+        private List<HardPointView> ShipUnits => healthModelDependency.ShipUnits;
 
 
         protected override void OnInit()
@@ -80,7 +87,12 @@ namespace EmpireAtWar.ViewComponents.Health
         
         private void Destroy()
         {
-            View.Release();
+            //invoke model that is completely destroyed - use command
+            if (View is View view)
+            {
+                view.Release();
+            }
+            
             if (shieldsAnimatedCoroutine != null)
             {
                 StopCoroutine(shieldsAnimatedCoroutine);
@@ -108,14 +120,15 @@ namespace EmpireAtWar.ViewComponents.Health
             }
         }
 
+        [Obsolete]
         private void UpdateShipUnit()
         {
-            HardPointModel[] shipUnitModels = Model.HardPointModels.OrderBy(x=>x.Id).ToArray();
-            HardPointView[] shipUnitViews = shipUnitViewArray.OrderBy(x => x.Id).ToArray();
-            for (var i = 0; i < shipUnitModels.Length; i++)
-            {
-                shipUnitViews[i].Init(shipUnitModels[i]);
-            }
+            // HardPointModel[] shipUnitModels = Model.HardPointModels.OrderBy(x=>x.Id).ToArray();
+            // HardPointView[] shipUnitViews = ShipUnits.OrderBy(x => x.Id).ToArray();
+            // for (var i = 0; i < shipUnitModels.Length; i++)
+            // {
+            //     shipUnitViews[i].Init(shipUnitModels[i]);
+            // }
         }
         
         private void UpdateData()
@@ -133,25 +146,25 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public IHardPointView[] GetShipUnits(HardPointType hardPointType)
         {
-            shipUnitViewArray = shipUnitViewArray.Where(x => !x.IsDestroyed).ToList();
+            currentShipUnits = ShipUnits.Where(x => !x.IsDestroyed).ToList();
 
-            if (shipUnitViewArray.Count == 0)
+            if (currentShipUnits.Count == 0)
             {
                 return null;
             }
             if (hardPointType == HardPointType.Any)
             {
-                return shipUnitViewArray.ToArray();
+                return currentShipUnits.ToArray();
             }
             else
             {
-                if (shipUnitViewArray.Any(x => x.HardPointType == hardPointType))
+                if (currentShipUnits.Any(x => x.HardPointType == hardPointType))
                 {
-                    return shipUnitViewArray.Where(x => x.HardPointType == hardPointType).ToArray();
+                    return currentShipUnits.Where(x => x.HardPointType == hardPointType).ToArray();
                 }
                 else
                 {
-                    return shipUnitViewArray.ToArray();
+                    return currentShipUnits.ToArray();
                 }
             }
         }

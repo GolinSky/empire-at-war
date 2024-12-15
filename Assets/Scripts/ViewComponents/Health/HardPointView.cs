@@ -13,34 +13,20 @@ namespace EmpireAtWar.ViewComponents.Health
     }
     public class HardPointView : MonoBehaviour, IHardPointView, INotifier<float>, IHardPointProvider
     {
+        private const float MAX_HEALTH = 1f;
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
 
         private List<IObserver<float>> observers = new List<IObserver<float>>();
-        private IShipUnitModel shipUnitModel;
-        private float healthPercentage;
+        private float _healthPercentage = MAX_HEALTH;
 
         public Vector3 Position => transform.position;
-        public bool IsDestroyed => healthPercentage <= 0f;
+        public bool IsDestroyed => _healthPercentage <= 0f;
 
-        public void Init(IShipUnitModel shipUnitModel)
-        {
-            this.shipUnitModel = shipUnitModel;
-            UpdateData();
-            shipUnitModel.OnShipUnitChanged += UpdateData;
-        }
 
-        private void OnDestroy()
+        public void UpdateData(float healthPercentage)
         {
-            if (shipUnitModel != null)
-            {
-                shipUnitModel.OnShipUnitChanged -= UpdateData;
-            }
-        }
-
-        private void UpdateData()
-        {
-            healthPercentage = shipUnitModel.HealthPercentage;
+            _healthPercentage = healthPercentage;
             foreach (IObserver<float> observer in observers)
             {
                 observer.UpdateState(healthPercentage);

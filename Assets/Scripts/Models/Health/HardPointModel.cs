@@ -1,5 +1,6 @@
 ﻿using System;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Health
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Models.Health
 
         private float originHealth;
         private float health;
+        private HardPointView _hardPointView;
 
         public event Action OnShipUnitChanged;
         public float HealthPercentage { get; private set; } = 1f;
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Models.Health
             originHealth = health;
             this.health = health;
             HealthPercentage = 1;
+            _hardPointView.UpdateData(HealthPercentage);
         }
 
         public void ApplyDamage(float damage)
@@ -39,6 +42,7 @@ namespace EmpireAtWar.Models.Health
             health -= damage;
             HealthPercentage = health / originHealth;
             OnShipUnitChanged?.Invoke();
+            _hardPointView.UpdateData(HealthPercentage);
         }
 
 
@@ -49,5 +53,11 @@ namespace EmpireAtWar.Models.Health
             HardPointType = hardPointType;
         }
 #endif
+        public void SetData(HardPointView hardPointView)
+        {
+            _hardPointView = hardPointView;
+            Id = hardPointView.Id;
+            HardPointType = hardPointView.HardPointType;
+        }
     }
 }

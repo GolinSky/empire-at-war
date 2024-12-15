@@ -154,6 +154,8 @@ MonoBehaviour:
   - {fileID: 1386830985663112150}
   - {fileID: 1758456774145276596}
   - {fileID: 7742231190893136385}
+  <ModelDependencies>k__BackingField:
+  - {fileID: 8790118625856709142}
 --- !u!114 &364058294306338289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1447,6 +1449,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
+      propertyPath: healthModelDependency
+      value: 
+      objectReference: {fileID: 8790118625856709142}
+    - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
       propertyPath: shipUnitView.Array.size
       value: 14
       objectReference: {fileID: 0}
@@ -1597,7 +1604,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8790118625856709142}
   m_SourcePrefab: {fileID: 100100000, guid: 35c8d89f211482848a0438585d8d9afd, type: 3}
 --- !u!114 &1758456774145276596 stripped
 MonoBehaviour:
@@ -1605,12 +1616,38 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 8748332435609030497}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6584961280077467988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b112db4ee8bd4d57a8c36c5714464690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6584961280077467988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+    type: 3}
+  m_PrefabInstance: {fileID: 8748332435609030497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8790118625856709142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6584961280077467988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShipUnits>k__BackingField:
+  - {fileID: 4857334380463656886}
+  - {fileID: 2159636519144197231}
+  - {fileID: 8644830824659767434}
+  - {fileID: 3224702364876874753}
+  - {fileID: 3904722521049085063}
+  - {fileID: 4187391721111521243}
+  - {fileID: 3007545869417895737}
 --- !u!224 &7288503275261041721 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2039469701158245208, guid: 35c8d89f211482848a0438585d8d9afd,
