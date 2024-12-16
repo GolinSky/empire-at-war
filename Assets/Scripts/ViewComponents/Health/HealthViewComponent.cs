@@ -30,15 +30,14 @@ namespace EmpireAtWar.ViewComponents.Health
     public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IHardPointsProvider, ITickable
     {
         private static readonly Vector3 DefaultRotation = new(0, 180, 0);
-        private const float TweenDuration = 0.1f;
+        private const float TWEEN_DURATION = 0.1f;
         
         [SerializeField] private Canvas healthCanvas;
         [SerializeField] private Image shieldsFillImage;
         [SerializeField] private Image armorFillImage;
         [SerializeField] private ShieldView shieldView;
         
-        [SerializeField] private List<HardPointView> shipUnitViewArray;
-        [FormerlySerializedAs("healthViewModel")] [SerializeField] private HealthModelDependency healthModelDependency; 
+        [SerializeField] private HealthModelDependency healthModelDependency; 
         [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
         [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
@@ -67,7 +66,6 @@ namespace EmpireAtWar.ViewComponents.Health
             Model.OnDestroy += Destroy;
             shieldsFillImage.color = shieldColors.Dictionary[PlayerType];
             armorFillImage.color = hullColors.Dictionary[PlayerType];
-            UpdateShipUnit();
         }
 
         private void Start()
@@ -120,16 +118,6 @@ namespace EmpireAtWar.ViewComponents.Health
             }
         }
 
-        [Obsolete]
-        private void UpdateShipUnit()
-        {
-            // HardPointModel[] shipUnitModels = Model.HardPointModels.OrderBy(x=>x.Id).ToArray();
-            // HardPointView[] shipUnitViews = ShipUnits.OrderBy(x => x.Id).ToArray();
-            // for (var i = 0; i < shipUnitModels.Length; i++)
-            // {
-            //     shipUnitViews[i].Init(shipUnitModels[i]);
-            // }
-        }
         
         private void UpdateData()
         {
@@ -140,8 +128,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
             sequence.KillIfExist();
             sequence = DOTween.Sequence();
-            sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TweenDuration));
-            sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TweenDuration));
+            sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TWEEN_DURATION));
+            sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TWEEN_DURATION));
         }
 
         public IHardPointView[] GetShipUnits(HardPointType hardPointType)

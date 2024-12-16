@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
@@ -7,7 +6,6 @@ using EmpireAtWar.Models.Weapon;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 using Random = System.Random;
 
@@ -20,7 +18,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
 
         private List<IHardPointView> shipUnitViews;
-        private List<IHardPointView> targets;
         private IProjectileModel projectileModel;
         private Coroutine mainTargetAttackFlow;
         private Coroutine commonAttackFlow;
@@ -30,10 +27,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [Inject]
         private IWeaponCommand WeaponCommand { get; }
         
+        private List<IHardPointView> Targets => Model.Targets;
+
         protected override void OnInit()
         {
-            targets = Model.Targets;
-
             projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
@@ -85,14 +82,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             while (!isDead)
             {
-                if (targets != null && targets.Count > 0)
+                if (Targets != null && Targets.Count > 0)
                 {
-                    shipUnitViews = GetShuffledHardPoint(targets.Where(x => !x.IsDestroyed).ToList());
-                    yield return AttackFlow(shipUnitViews);
+                    shipUnitViews = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
+                    if (shipUnitViews.Count > 0)
+                    {
+                        yield return AttackFlow(shipUnitViews);
+                    }
                 }
                 else
                 {
-                    yield return new WaitUntil(()=> targets != null && targets.Count > 0);
+                    yield return new WaitUntil(()=> Targets != null && Targets.Count > 0);
                 }
             }
         }
@@ -103,17 +103,27 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 foreach (WeaponHardPointView weaponHardPointView in keyValue.Value)
                 {
+                    if (weaponHardPointView.Destroyed || weaponHardPointView.IsBusy)
+                    {
+                        continue;
+                    }
+                    
                     foreach (IHardPointView shipUnitView in hardPointViews)
                     {
-                        if (weaponHardPointView.Destroyed || weaponHardPointView.IsBusy ||
-                            !weaponHardPointView.CanAttack(shipUnitView.Position))
-                        {
-                            continue;
-                        }
+                        if(shipUnitView.IsDestroyed) continue;
+                        
+                        if(!weaponHardPointView.CanAttack(shipUnitView.Position)) continue;
                         
                         float duration = weaponHardPointView.Attack(shipUnitView.Position);
                         WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key, duration);
                         yield return new WaitForSeconds(Model.DelayBetweenAttack);
+                    }
+                    
+                    bool allDestroyed = hardPointViews.All(x => x.IsDestroyed);
+
+                    if (allDestroyed)
+                    {
+                        yield break;
                     }
                 }
             }

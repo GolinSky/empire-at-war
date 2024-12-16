@@ -44,7 +44,7 @@ namespace EmpireAtWar.Ship
         
         private void HandleEnginesData()
         {
-            if (enginesUnitModel.Health <= 0f)
+            if (enginesUnitModel.IsDestroyed)
             {
                 Model.ShipMoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
             }

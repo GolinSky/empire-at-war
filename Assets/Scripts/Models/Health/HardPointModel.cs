@@ -28,12 +28,14 @@ namespace EmpireAtWar.Models.Health
         public float HealthPercentage { get; private set; } = 1f;
 
         public float Health => health;
+        
+        public bool IsDestroyed => HealthPercentage <= 0f;
 
         public void SetHealth(float health)
         {
             originHealth = health;
             this.health = health;
-            HealthPercentage = 1;
+            HealthPercentage = health;
             _hardPointView.UpdateData(HealthPercentage);
         }
 
@@ -58,6 +60,19 @@ namespace EmpireAtWar.Models.Health
             _hardPointView = hardPointView;
             Id = hardPointView.Id;
             HardPointType = hardPointView.HardPointType;
+        }
+
+        public float TryApplyDamage(float damage)
+        {
+            if (health >= damage)
+            {
+                ApplyDamage(damage);
+                return 0.0f;
+            }
+
+            float damageLeft = damage - health;
+            ApplyDamage(health);
+            return damageLeft;
         }
     }
 }
