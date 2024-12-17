@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace EmpireAtWar
 {
@@ -15,6 +16,7 @@ namespace EmpireAtWar
             {
                 notifier.AddObserver(this);
             }
+            Assert.IsNotNull(notifier, "Notifier is null");
             
             //explosionVfxPrefab.transform.SetParent(transform.parent);// todo: refactor
         }
