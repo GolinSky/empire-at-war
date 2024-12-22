@@ -74,7 +74,9 @@ namespace EmpireAtWar.Models.Health
                 HardPointModels[i].SetData(_healthModelDependency.ShipUnits[i]);
             }
 
-            if (HardPointModels.Length <= MAIN_SYSTEM_AMOUNT)
+            float mainSystemCount = HardPointModels.Count(x=> x.HardPointType == HardPointType.Engines || x.HardPointType == HardPointType.ShieldGenerator);
+
+            if (mainSystemCount == 0)
             {
                 float health = Armor / HardPointModels.Length;
                 foreach (HardPointModel shipUnitModel in HardPointModels)
@@ -84,13 +86,10 @@ namespace EmpireAtWar.Models.Health
             }
             else
             {
-                
-                float mainSystemCount = HardPointModels.Count(x=> x.HardPointType == HardPointType.Engines || x.HardPointType == HardPointType.ShieldGenerator);
-               
                 float weaponHealth = Armor * WEAPON_SYSTEM_COEFFICIENT;
                 float weaponHealthPerUnit = weaponHealth / (HardPointModels.Length - mainSystemCount);
                 float mainSystemHealth = Armor - weaponHealth;
-                float mainSystemHealthPerUnit = mainSystemHealth / mainSystemCount;
+                float mainSystemHealthPerUnit = mainSystemHealth / mainSystemCount;// assert 0 division
                 
                 foreach (HardPointModel shipUnitModel in HardPointModels)
                 {
@@ -134,10 +133,6 @@ namespace EmpireAtWar.Models.Health
             {
                 IsDestroyed = true;
                 
-                foreach (HardPointModel hardPoint in HardPointModels)
-                {
-                    hardPoint.SetHealth(0.0f);
-                }
                 OnDestroy?.Invoke();
             }
             
@@ -146,11 +141,10 @@ namespace EmpireAtWar.Models.Health
 
         public void ApplyDamageOnAllUnit(float damage)
         {
-
-            float damageLeft = 0f;
+            float damageLeft = damage;
             foreach (HardPointModel hardPointModel in HardPointModels)
             {
-                damageLeft = ApplyDamageOnShipUnit(hardPointModel, damage);
+                damageLeft = ApplyDamageOnShipUnit(hardPointModel, damageLeft);
                 if (damageLeft == 0)
                 {
                     break;
