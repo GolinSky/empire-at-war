@@ -27,8 +27,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public bool Destroyed { get; private set; }
         public bool IsBusy => turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
         
-        [Inject]
-        private IRepository Repository { get; }
+
 
 
         protected override void OnInit()

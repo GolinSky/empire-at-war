@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace EmpireAtWar
 {
+    [Obsolete]
     public class WeaponVfxView : MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem explosionVfxPrefab;

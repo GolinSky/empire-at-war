@@ -225,7 +225,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5463022329213883117}
   - component: {fileID: 4857334380463656886}
-  - component: {fileID: 8153155611497128551}
   m_Layer: 0
   m_Name: ShieldGenerator
   m_TagString: Untagged
@@ -263,19 +262,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
---- !u!114 &8153155611497128551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2484499334210203976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42d2aa1578157814689f927186043d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionVfxPrefab: {fileID: 8779991178638103338}
 --- !u!1 &5251928304144284263
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,12 +669,6 @@ PrefabInstance:
 --- !u!4 &8779991178622844576 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-    type: 3}
-  m_PrefabInstance: {fileID: 812723137728877282}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &8779991178638103338 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 8259483064382226888, guid: b471a89871e7b1240a19c87e15e6375b,
     type: 3}
   m_PrefabInstance: {fileID: 812723137728877282}
   m_PrefabAsset: {fileID: 0}
