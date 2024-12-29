@@ -10161,6 +10161,9 @@ MonoBehaviour:
   - {fileID: -4097660584529175339}
   - {fileID: 1710973070478048274}
   - {fileID: 601056798967197844}
+  <ModelDependencies>k__BackingField:
+  - {fileID: 6765395737017688069}
+  - {fileID: 4007920957619527630}
 --- !u!114 &3669284567344977784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15280,7 +15283,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5744379302176795738}
   - component: {fileID: 6852928509335582908}
-  - component: {fileID: 8229464183474933926}
   m_Layer: 0
   m_Name: ShieldGenerator
   m_TagString: Untagged
@@ -15318,19 +15320,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 14
---- !u!114 &8229464183474933926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5330281516269666010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42d2aa1578157814689f927186043d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionVfxPrefab: {fileID: 0}
 --- !u!1 &5496146784751829218
 GameObject:
   m_ObjectHideFlags: 0
@@ -15341,6 +15330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7812385636187694204}
   - component: {fileID: 1710973070478048274}
+  - component: {fileID: 4007920957619527630}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -15387,6 +15377,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b045f6750f94b268b7959acb7653a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretDictionary:
+    keyValue:
+    - key: 9
+      value:
+      - {fileID: 5805539600596289671}
+      - {fileID: 7319587430659081685}
+      - {fileID: 6024391529670597917}
+      - {fileID: 4435948693078054958}
+      - {fileID: 480853964861437089}
+      - {fileID: 7712950437010518041}
+      - {fileID: 7759192415052020530}
+      - {fileID: 3072555694578085480}
+    - key: 11
+      value:
+      - {fileID: 8917034741421043246}
+      - {fileID: 1577275718195777145}
+    - key: 3
+      value:
+      - {fileID: 7756765708194923692}
+      - {fileID: 5471302012087759742}
+    - key: 2
+      value:
+      - {fileID: 4714089933600182028}
+      - {fileID: 4306931013480455252}
+  attackModelDependency: {fileID: 4007920957619527630}
+--- !u!114 &4007920957619527630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5496146784751829218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8421c4df5c08434b81adb8fc222a9dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turretDictionary:
@@ -20539,7 +20566,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4793793392322633965}
   - component: {fileID: 5054377183115151904}
-  - component: {fileID: 2726132347824775346}
   m_Layer: 0
   m_Name: Engines
   m_TagString: Untagged
@@ -20577,19 +20603,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 15
---- !u!114 &2726132347824775346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8580690436455717418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42d2aa1578157814689f927186043d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionVfxPrefab: {fileID: 0}
 --- !u!1001 &260754928343626785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20762,6 +20775,11 @@ PrefabInstance:
       objectReference: {fileID: 567627425847091216}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
+      propertyPath: healthModelDependency
+      value: 
+      objectReference: {fileID: 6765395737017688069}
+    - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
       propertyPath: shipUnitView.Array.size
       value: 14
       objectReference: {fileID: 0}
@@ -20868,7 +20886,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6765395737017688069}
   m_SourcePrefab: {fileID: 100100000, guid: 35c8d89f211482848a0438585d8d9afd, type: 3}
 --- !u!224 &2293394179498125177 stripped
 RectTransform:
@@ -20876,13 +20898,48 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 260754928343626785}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2419639866018212372 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
+    type: 3}
+  m_PrefabInstance: {fileID: 260754928343626785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6765395737017688069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2419639866018212372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ShipUnits>k__BackingField:
+  - {fileID: 5805539600596289671}
+  - {fileID: 7319587430659081685}
+  - {fileID: 6024391529670597917}
+  - {fileID: 4435948693078054958}
+  - {fileID: 480853964861437089}
+  - {fileID: 7712950437010518041}
+  - {fileID: 7759192415052020530}
+  - {fileID: 3072555694578085480}
+  - {fileID: 8917034741421043246}
+  - {fileID: 1577275718195777145}
+  - {fileID: 7756765708194923692}
+  - {fileID: 5471302012087759742}
+  - {fileID: 4714089933600182028}
+  - {fileID: 4306931013480455252}
+  - {fileID: 6852928509335582908}
+  - {fileID: 5054377183115151904}
 --- !u!114 &7102592058695959028 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
     type: 3}
   m_PrefabInstance: {fileID: 260754928343626785}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2419639866018212372}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b112db4ee8bd4d57a8c36c5714464690, type: 3}
