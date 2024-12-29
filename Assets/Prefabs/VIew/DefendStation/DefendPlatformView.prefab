@@ -244,8 +244,7 @@ Transform:
   m_LocalPosition: {x: -0.502, y: 2.92, z: 0.8239999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8779991178622844576}
+  m_Children: []
   m_Father: {fileID: 9012350264189186865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4857334380463656886
@@ -548,6 +547,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5246781089788651524}
   - component: {fileID: 1386830985663112150}
+  - component: {fileID: 3588378085080412915}
   m_Layer: 0
   m_Name: WeaponComponent
   m_TagString: Untagged
@@ -598,80 +598,29 @@ MonoBehaviour:
       - {fileID: 3904722521049085063}
       - {fileID: 4187391721111521243}
       - {fileID: 3007545869417895737}
---- !u!1001 &812723137728877282
-PrefabInstance:
+  attackModelDependency: {fileID: 3588378085080412915}
+--- !u!114 &3588378085080412915
+MonoBehaviour:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 5463022329213883117}
-    m_Modifications:
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8259483064400627614, guid: b471a89871e7b1240a19c87e15e6375b,
-        type: 3}
-      propertyPath: m_Name
-      value: ppfxExplosionFireball02
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b471a89871e7b1240a19c87e15e6375b, type: 3}
---- !u!4 &8779991178622844576 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8259483064400522306, guid: b471a89871e7b1240a19c87e15e6375b,
-    type: 3}
-  m_PrefabInstance: {fileID: 812723137728877282}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9208288799206979059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8421c4df5c08434b81adb8fc222a9dd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretDictionary:
+    keyValue:
+    - key: 5
+      value:
+      - {fileID: 2159636519144197231}
+      - {fileID: 8644830824659767434}
+      - {fileID: 3224702364876874753}
+      - {fileID: 3904722521049085063}
+      - {fileID: 4187391721111521243}
+      - {fileID: 3007545869417895737}
 --- !u!1001 &1052237977207897725
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ namespace EmpireAtWar.ViewComponents
         protected override void OnInit()
         {
             base.OnInit();
-            Model.InjectDependency(this);
+            Model.InjectDependency(this);// move it to the base class
         }
     }
 }

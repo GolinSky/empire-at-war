@@ -14,8 +14,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>
     {
         [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
-
-        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
+        [SerializeField] private AttackModelDependency attackModelDependency;
+        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => attackModelDependency.TurretDictionary;
 
         private List<IHardPointView> shipUnitViews;
         private IProjectileModel projectileModel;
@@ -99,7 +99,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private IEnumerator AttackFlow(List<IHardPointView> hardPointViews)
         {
-            foreach (KeyValue<WeaponType, List<WeaponHardPointView>> keyValue in turretDictionary.KeyValueList)
+            foreach (var keyValue in TurretDictionary)
             {
                 foreach (WeaponHardPointView weaponHardPointView in keyValue.Value)
                 {

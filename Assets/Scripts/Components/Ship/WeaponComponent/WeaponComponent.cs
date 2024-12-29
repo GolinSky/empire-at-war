@@ -40,7 +40,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             this.timerPoolWrapperService = timerPoolWrapperService;
             simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
-            OptimalAttackRange = Model.MaxAttackDistance * 0.2f;
+            OptimalAttackRange = Model.MaxAttackDistance * 0.5f;
         }
 
         public void AddTargets(AttackData[] attackDataArray)

@@ -802,6 +802,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8628998317442634045}
   - component: {fileID: 6099279991972190791}
+  - component: {fileID: 7150230931884623299}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -838,6 +839,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b045f6750f94b268b7959acb7653a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretDictionary:
+    keyValue:
+    - key: 3
+      value:
+      - {fileID: 8177678813357081521}
+      - {fileID: 3338842454457253282}
+      - {fileID: 8636718447074006593}
+      - {fileID: 5541572143087454584}
+  attackModelDependency: {fileID: 7150230931884623299}
+--- !u!114 &7150230931884623299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280282883185443766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8421c4df5c08434b81adb8fc222a9dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turretDictionary:
