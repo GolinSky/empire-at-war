@@ -71,8 +71,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private void HandleNewMainTarget()
         {
             if(isDead) return;
-            if(mainTargetAttackFlow != null) StopCoroutine(mainTargetAttackFlow);
             
+            if(mainTargetAttackFlow != null) StopCoroutine(mainTargetAttackFlow);
+
             if(Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0) return;
             
             mainTargetAttackFlow = StartCoroutine(AttackFlow(Model.MainUnitsTarget));
@@ -89,6 +90,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     {
                         yield return AttackFlow(shipUnitViews);
                     }
+                    else
+                    {
+                        yield return new WaitForEndOfFrame();
+
+                    }
+                
                 }
                 else
                 {

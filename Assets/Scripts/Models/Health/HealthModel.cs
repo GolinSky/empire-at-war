@@ -113,6 +113,8 @@ namespace EmpireAtWar.Models.Health
         
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
         {
+            if(IsDestroyed) return;
+            
             DamageData damageData = DamageCalculationModel.GetDamage(weaponType, this, isMoving, damage);
             
             
@@ -144,6 +146,8 @@ namespace EmpireAtWar.Models.Health
             float damageLeft = damage;
             foreach (HardPointModel hardPointModel in HardPointModels)
             {
+                if(hardPointModel.IsDestroyed) continue;
+                
                 damageLeft = ApplyDamageOnShipUnit(hardPointModel, damageLeft);
                 if (damageLeft == 0)
                 {
@@ -166,7 +170,7 @@ namespace EmpireAtWar.Models.Health
             {
                 IsLostShieldGenerator = true;
                 Shields = 0;
-                OnValueChanged?.Invoke();
+                // OnValueChanged?.Invoke();
             }
 
             return damageLeft;
