@@ -46,10 +46,10 @@ namespace EmpireAtWar.Models.Health
         
         [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [field:SerializeField] public HardPointModel[] HardPointModels { get; private set; }
         [field:SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
      
 
+        public HardPointModel[] HardPointModels { get; private set; }
 
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }

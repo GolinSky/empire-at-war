@@ -93,7 +93,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     else
                     {
                         yield return new WaitForEndOfFrame();
-
                     }
                 
                 }

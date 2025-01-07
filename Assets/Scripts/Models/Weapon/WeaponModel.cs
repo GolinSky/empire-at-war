@@ -28,17 +28,12 @@ namespace EmpireAtWar.Models.Weapon
     {
         public event Action OnMainUnitSwitched;
 
-
-        [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
-
-
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
         private List<IHardPointView> shipUnitViews = new List<IHardPointView>();
         private List<IHardPointView> _mainUnitsTarget;
 
 
-        // public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
         public Dictionary<WeaponType, int> WeaponDictionary { get; } = new Dictionary<WeaponType, int>();
 
         [Inject] public IProjectileModel ProjectileModel { get; }
