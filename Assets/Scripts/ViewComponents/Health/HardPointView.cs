@@ -24,7 +24,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private float _healthPercentage = MAX_HEALTH;
 
-        public Vector3 Position => transform.position;
+        public Vector3 Position => Transform.position;
+        public Transform Transform => transform;
         public bool IsDestroyed => _healthPercentage <= 0f;
 
         [Inject]

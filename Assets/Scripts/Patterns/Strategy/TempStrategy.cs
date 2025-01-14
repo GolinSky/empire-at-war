@@ -19,7 +19,10 @@ namespace EmpireAtWar.Patterns.Strategy
             levelUpgradeTimer = TimerFactory.ConstructTimer(FactionModel.GetCurrentLevelFactionData().BuildTime);
         }
 
-        public override void Start() {}
+        public override void Start()
+        {
+           // BuildDefends();
+        }
         
         public override void Stop() {}
 
@@ -79,6 +82,7 @@ namespace EmpireAtWar.Patterns.Strategy
 
         public override void Update()
         {
+            //return;
             if (decisionTimer.IsComplete)
             {
                 TryLevelUp();

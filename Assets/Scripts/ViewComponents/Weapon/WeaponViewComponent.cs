@@ -120,7 +120,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         
                         if(!weaponHardPointView.CanAttack(shipUnitView.Position)) continue;
                         
-                        float duration = weaponHardPointView.Attack(shipUnitView.Position);
+                        float duration = weaponHardPointView.Attack(shipUnitView);
                         WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key, duration);
                         yield return new WaitForSeconds(Model.DelayBetweenAttack);
                     }

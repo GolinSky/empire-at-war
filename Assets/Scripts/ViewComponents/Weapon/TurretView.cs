@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.ViewComponents.Health;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -6,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class TurretView: MonoBehaviour
+    public class TurretView:  BaseTurretView
     {
         [SerializeField] private ParticleSystem vfx;
         [SerializeField] private FloatRange yAxisRange;
@@ -19,14 +20,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private float Distance { get; set; }
         private float MaxAttackDistance { get; set; }
         
-        public bool IsBusy => vfx.isPlaying;
+        public override bool IsBusy => vfx.isPlaying;
 
-        public float Speed => vfx.main.startSpeed.constant;
+        public override float Speed => vfx.main.startSpeed.constant;
         
         public FloatRange YAxisRange => yAxisRange;
 
 
-        public void SetData(ProjectileData projectileData,  float attackDistance)
+        public override void SetData(ProjectileData projectileData,  float attackDistance)
         {
             MaxAttackDistance = attackDistance;
             var mainModule = vfx.main;
@@ -41,7 +42,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
          //   attackTimer = TimerFactory.ConstructTimer(mainModule.duration + Random.Range(1f, 3f));
         }
 
-        public void Attack(Vector3 targetPosition, float duration)
+        public override void Attack(IHardPointView hardPointView, float duration)
         {
             var mainModule = vfx.main;
             // attackTimer.ChangeDelay(duration);
@@ -49,7 +50,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
 
       //      mainModule.duration = duration;
-            lookPosition = targetPosition;
+            lookPosition = hardPointView.Position;
             vfx.Emit(1);
             vfx.Play();
         }
@@ -59,13 +60,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             transform.LookAt(lookPosition);
         }
 
-        public void SetParent(Transform parent)
+        public override void SetParent(Transform parent)
         {
             transform.SetParent(parent);
             transform.localPosition = Vector3.zero;
         }
 
-        public void ResetParent()
+        public override void ResetParent()
         {
             transform.parent = null;
         }

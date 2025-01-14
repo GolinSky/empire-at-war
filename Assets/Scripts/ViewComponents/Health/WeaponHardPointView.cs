@@ -19,22 +19,15 @@ namespace EmpireAtWar.ViewComponents.Health
         
         [SerializeField] private FloatRange yAxisRange;
 
-        private List<TurretView> turrets = new List<TurretView>();
+        private List<BaseTurretView> turrets = new List<BaseTurretView>();
         private ProjectileData projectileData;
-        private ITimer attackTimer;
 
         private float maxAttackDistance;
         public bool Destroyed { get; private set; }
         public bool IsBusy => turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
         
 
-
-
-        protected override void OnInit()
-        {
-            base.OnInit();
-            attackTimer = TimerFactory.ConstructTimer();
-        }
+        
 
         public void SetData(FloatRange floatRange)
         {
@@ -61,22 +54,22 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public float Attack(Vector3 targetPosition)
+        public float Attack(IHardPointView hardPointView)
         {
-            TurretView turretView = GetTurret();
+            BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);
-            float distance = Vector3.Distance(targetPosition, transform.position);
+            float distance = Vector3.Distance(hardPointView.Position, transform.position);
             float duration = distance / turretView.Speed;
 
-            turretView.Attack(targetPosition, duration);
+            turretView.Attack(hardPointView, duration);
             turretView.ResetParent();
             return duration;
         }
 
-        private TurretView GetTurret()
+        private BaseTurretView GetTurret()
         {
-            TurretView turret = null;
-            foreach (TurretView turretView in turrets)
+            BaseTurretView turret = null;
+            foreach (BaseTurretView turretView in turrets)
             {
                 if (!turretView.IsBusy)
                 {
@@ -86,7 +79,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
             if (turret == null)
             {
-                var prefab =  Repository.LoadComponent<TurretView>(projectileData.TurretType == TurretType.Dual
+                var prefab =  Repository.LoadComponent<BaseTurretView>(projectileData.TurretType == TurretType.Dual
                     ? DOUBLE_TURRET_PATH
                     : TURRET_PATH);
                 turret = Instantiate(prefab, transform);
