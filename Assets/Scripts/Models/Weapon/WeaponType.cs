@@ -13,5 +13,6 @@
         DualHeavyTurboLaserDBY827 = 9,
         IonCannon = 10,
         HeavyIonCannon = 11,
+        LaserBeam = 12,
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Weapon;
-using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
@@ -13,7 +12,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
 {
     public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>
     {
-        [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
         [SerializeField] private AttackModelDependency attackModelDependency;
         private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => attackModelDependency.TurretDictionary;
 
@@ -118,7 +116,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     {
                         if(shipUnitView.IsDestroyed) continue;
                         
-                        if(!weaponHardPointView.CanAttack(shipUnitView.Position)) continue;
+                        if(!weaponHardPointView.CanAttack(shipUnitView.Position) || weaponHardPointView.Destroyed || weaponHardPointView.IsBusy) continue;
                         
                         float duration = weaponHardPointView.Attack(shipUnitView);
                         WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key, duration);

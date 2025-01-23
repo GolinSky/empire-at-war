@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
-using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
-using Utilities.ScriptUtils.Time;
-using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
@@ -14,8 +12,9 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         private const string TURRET_PATH = "Projectile";
         private const string DOUBLE_TURRET_PATH = "DualProjectile";
+        private const string LASER_TURRET_PATH = "LaserProjectile";
         
-        private const int MAX_ATTACKING_TURRETS = 2;
+        private const int MAX_ATTACKING_TURRETS = 1;
         
         [SerializeField] private FloatRange yAxisRange;
 
@@ -79,11 +78,28 @@ namespace EmpireAtWar.ViewComponents.Health
 
             if (turret == null)
             {
-                var prefab =  Repository.LoadComponent<BaseTurretView>(projectileData.TurretType == TurretType.Dual
-                    ? DOUBLE_TURRET_PATH
-                    : TURRET_PATH);
+                string turretPath = TURRET_PATH;
+                switch (projectileData.TurretType)
+                {
+                    case TurretType.Single:
+                        turretPath = TURRET_PATH;
+                        break;
+                    case TurretType.Dual:
+                        turretPath = DOUBLE_TURRET_PATH;
+                        break;
+                    case TurretType.Laser:
+                        turretPath = LASER_TURRET_PATH;
+                        break;
+                    case TurretType.Torpedo:
+                        break;
+                    case TurretType.Rocket:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                var prefab =  Repository.LoadComponent<BaseTurretView>(turretPath);
                 turret = Instantiate(prefab, transform);
-                turret.transform.localPosition = Vector3.zero;
+                turret.transform.localPosition = Vector3.zero;// move it to set data method
                 turret.SetData(projectileData, maxAttackDistance);
                 turrets.Add(turret);
             }
