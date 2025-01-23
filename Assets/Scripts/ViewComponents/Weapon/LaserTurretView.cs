@@ -1,8 +1,5 @@
-﻿using System;
-using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.ViewComponents.Health;
+﻿using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using VolumetricLines;
 
 namespace EmpireAtWar.ViewComponents.Weapon
@@ -11,23 +8,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private VolumetricLineBehavior volumetricLineBehavior;
 
-        public override bool IsBusy => !_delayTimer.IsComplete;
         public override float Speed => 100f;
-        
-        private ITimer _attackTimer = TimerFactory.ConstructTimer();
-        private ITimer _delayTimer = TimerFactory.ConstructTimer();
-        
-        private IHardPointView _hardPointView;
 
         private bool _isAttacking;
         private Vector3 _targetPosition = Vector3.zero;
-        private ProjectileData _projectileData;
+        
 
-
-        public override void SetData(ProjectileData projectileData, float attackDistance)
-        {
-            _projectileData = projectileData;
-        }
 
         public override void Attack(IHardPointView hardPointView, float duration)
         {
@@ -37,13 +23,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
             volumetricLineBehavior.SetStartAndEndPoints(Vector3.zero, _targetPosition);
 
 
-            _attackTimer.ChangeDelay(duration);
-            _delayTimer.ChangeDelay(_projectileData.Delay + duration);
+            _attackTimer
+                .ChangeDelay(duration)
+                .StartTimer();
             
-            _attackTimer.StartTimer();
-            _delayTimer.StartTimer();
+            _delayTimer
+                .ChangeDelay(_projectileData.Delay + duration)
+                .StartTimer();
+            
             _isAttacking = true;
-            //volumetricLineBehavior.UpdateLineScale();
         }
 
         public override void SetParent(Transform parent)
@@ -52,10 +40,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             transform.localPosition = Vector3.zero;
         }
 
-        public override void ResetParent()
-        {
-          //  transform.parent = null;
-        }
+
 
         private void Update()
         {

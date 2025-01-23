@@ -1,9 +1,7 @@
-﻿using System;
-using EmpireAtWar.Models.Weapon;
+﻿using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -13,14 +11,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private FloatRange yAxisRange;
 
         private INotifier<float> _notifier;
-        private readonly ITimer _attackTimer = TimerFactory.ConstructTimer();
-        private readonly ITimer _delayTimer = TimerFactory.ConstructTimer();
+       
         private Vector3 _lookPosition = Vector3.zero;
-        private ProjectileData _projectileData;
-
-
-        private float Distance { get; set; }
-
+        
         public override bool IsBusy => !_delayTimer.IsComplete;
 
         public override float Speed => vfx.main.startSpeed.constant;
@@ -47,15 +40,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
     
             mainModule.startLifetime = duration;
 
-      //      mainModule.duration = duration;
             _lookPosition = hardPointView.Position;
             vfx.Emit(1);
             vfx.Play();
             
-            _attackTimer.ChangeDelay(duration);
-            _delayTimer.ChangeDelay(_projectileData.Delay + duration);
-            _attackTimer.StartTimer();
-            _delayTimer.StartTimer();
+            _attackTimer
+                .ChangeDelay(duration)
+                .StartTimer();
+            
+            _delayTimer
+                .ChangeDelay(_projectileData.Delay + duration)
+                .StartTimer();
         }
         
         private void Update()
