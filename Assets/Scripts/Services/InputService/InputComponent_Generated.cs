@@ -234,7 +234,7 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
+                    ""name"": ""positive"",
                     ""id"": ""0be6cc3a-446d-4c16-b334-a570b8d40976"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
@@ -245,7 +245,7 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
+                    ""name"": ""negative"",
                     ""id"": ""b38cc561-3e38-4196-a4c4-9ffafeb370b1"",
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",

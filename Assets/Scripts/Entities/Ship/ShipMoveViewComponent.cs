@@ -3,10 +3,11 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Movement;
+using EmpireAtWar.ViewComponents;
+using EmpireAtWar.Views.ViewImpl;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
-using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Move
@@ -92,7 +93,9 @@ namespace EmpireAtWar.Move
 
         private void DestroyView()
         {
-            Destroy(View.Transform.parent.gameObject);
+            //- use command
+            //todo: invoke move model that fall flow is finished 
+            //Destroy(View.Transform.parent.gameObject);
         }
 
         private void HyperSpaceJump(Vector3 point)

@@ -50,7 +50,7 @@ namespace EmpireAtWar.Patterns.StateMachine
 
             if (!weaponComponent.HasEnoughRange(distance))
             {
-                Vector3 positionToMove = Vector3.Lerp(moveModel.CurrentPosition, TargetPosition, 0.8f);//todo move to SO
+                Vector3 positionToMove = Vector3.Lerp(moveModel.CurrentPosition, TargetPosition, 0.5f);//todo move to SO
                 shipMoveComponent.MoveToPosition(positionToMove);
             }
             else

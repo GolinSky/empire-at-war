@@ -16,11 +16,6 @@ namespace EmpireAtWar.Ship
 
         protected override void OnDispose()
         {
-        }
-
-        public override void Release()
-        {
-            base.Release();
             if (gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(Model.ShipType);

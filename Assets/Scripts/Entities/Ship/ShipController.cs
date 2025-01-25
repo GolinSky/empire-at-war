@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Initialiaze;
 using LightWeightFramework.Controller;
 using Zenject;
 
@@ -10,7 +11,7 @@ namespace EmpireAtWar.Ship
         IShipModelObserver ModelObserver { get; }
     }
 
-    public class ShipController : Controller<ShipModel>, IInitializable, ILateDisposable, IShipEntity
+    public class ShipController : Controller<ShipModel>, IInitializable, ILateDisposable, IShipEntity, ILateIInitializable
     {
         private readonly IShipService shipService;
         private HardPointModel enginesUnitModel;
@@ -25,6 +26,12 @@ namespace EmpireAtWar.Ship
         public void Initialize()
         {
             shipService.Add(this);
+           
+
+        }
+        
+        public void LateInitialize()
+        {
             foreach (HardPointModel shipUnitModel in Model.HealthModel.HardPointModels)
             {
                 if (shipUnitModel.HardPointType == HardPointType.Engines)
@@ -32,8 +39,8 @@ namespace EmpireAtWar.Ship
                     enginesUnitModel = shipUnitModel;
                 }
             }
-
             enginesUnitModel.OnShipUnitChanged += HandleEnginesData;
+
         }
         
         public void LateDispose()
@@ -44,10 +51,12 @@ namespace EmpireAtWar.Ship
         
         private void HandleEnginesData()
         {
-            if (enginesUnitModel.Health <= 0f)
+            if (enginesUnitModel.IsDestroyed)
             {
                 Model.ShipMoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
             }
         }
+
+ 
     }
 }

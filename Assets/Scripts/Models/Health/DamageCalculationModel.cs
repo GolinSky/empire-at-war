@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Weapon;
 using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Models.Health
@@ -21,6 +22,9 @@ namespace EmpireAtWar.Models.Health
     [Serializable]
     public class DamageModel
     {
+        private const float MIN_DEXTERITY_COEFFICIENT = 0.3f;
+        private const float MAX_DEXTERITY_COEFFICIENT = 0.6f;
+        
         [Range(0,1)][SerializeField] private float damageOnShieldCoefficient;
         [Range(0,1)][SerializeField] private float damageOnArmorCoefficient;
         [Range(0,1)][SerializeField] private float minAccuracyCoefficient;
@@ -28,6 +32,8 @@ namespace EmpireAtWar.Models.Health
         [Range(0,1)][SerializeField] private float shieldPenetrationCoefficient;
 
         private float AccuracyCoefficient => Random.Range(minAccuracyCoefficient, maxAccuracyCoefficient);
+        
+        private float DexterityCoefficient => Random.Range(MIN_DEXTERITY_COEFFICIENT, MAX_DEXTERITY_COEFFICIENT);
         
         public DamageData GetDamage(IHealthData healthData, bool isMoving, float damage)
         {
@@ -54,16 +60,23 @@ namespace EmpireAtWar.Models.Health
                 damageOnArmor = GetCalculatedDamage(healthData, isMoving, damage);
             }
 
-
+            Debug.Assert(damageOnShield >= 0, $"{nameof(damageOnShield)} cannot be smaller than 0.");
+            Debug.Assert(damageOnArmor >= 0, $"{nameof(damageOnArmor)} cannot be smaller than 0.");
+            
             return new DamageData(damageOnShield, damageOnArmor);
         }
 
         private float GetCalculatedDamage(IHealthData healthData, bool isMoving, float damage)
         {
             float calculatedDamage = damage;
-            calculatedDamage *= isMoving
-                ? (AccuracyCoefficient - healthData.Dexterity)
-                : AccuracyCoefficient;
+            
+            calculatedDamage *= AccuracyCoefficient;
+
+            if (isMoving)
+            {
+                calculatedDamage -= (calculatedDamage*DexterityCoefficient) * healthData.Dexterity; 
+            }
+          
             
             calculatedDamage *= healthData.HasShields
                 ? damageOnShieldCoefficient 

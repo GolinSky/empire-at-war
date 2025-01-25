@@ -40,7 +40,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             this.timerPoolWrapperService = timerPoolWrapperService;
             simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             attackTimer = TimerFactory.ConstructTimer(3f);
-            OptimalAttackRange = Model.MaxAttackDistance * 0.2f;
+            OptimalAttackRange = Model.MaxAttackDistance * 0.5f;
         }
 
         public void AddTargets(AttackData[] attackDataArray)
@@ -162,26 +162,16 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public void LateTick()
         {
-            if(attackDataList.Count == 0) return;
-
-          //  if (attackTimer.IsComplete)
+            if (mainAttackData?.IsDestroyed == true)
             {
-              //  attackTimer.StartTimer();
-
-                // if (mainAttackData != null && mainAttackData.IsDestroyed)
-                // {
-                //     ResetMainTarget();
-                // }
-                if (mainAttackData?.IsDestroyed == true)
-                {
-                    ResetMainTarget();
-                }
-               
-                
-                for (var i = 0; i < attackDataList.Count; i++)
-                {
-                    CheckAttackData(attackDataList[i]);
-                }
+                ResetMainTarget();
+            }
+            
+            if(attackDataList.Count == 0) return;
+ 
+            for (var i = 0; i < attackDataList.Count; i++)
+            {
+                CheckAttackData(attackDataList[i]);
             }
         }
 
@@ -193,6 +183,10 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public void LateDispose()
         {
+            for (var i = 0; i < attackDataList.Count; i++)
+            {
+                RemoveAttackData(attackDataList[i]);
+            }
             attackDataList.Clear();
             if (customCoroutines.Count > 0)
             {
@@ -200,7 +194,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 {
                     customCoroutines[i].Release();
                 }
-
             }
         }
 

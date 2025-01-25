@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4512357853715943265}
   - component: {fileID: 8945311068636919721}
   m_Layer: 0
-  m_Name: ppfxExplosionFireball02
+  m_Name: ExplosionVfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

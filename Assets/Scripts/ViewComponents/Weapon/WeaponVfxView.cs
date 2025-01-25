@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace EmpireAtWar
 {
+    [Obsolete]
     public class WeaponVfxView : MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem explosionVfxPrefab;
@@ -15,6 +18,7 @@ namespace EmpireAtWar
             {
                 notifier.AddObserver(this);
             }
+            Assert.IsNotNull(notifier, "Notifier is null");
             
             //explosionVfxPrefab.transform.SetParent(transform.parent);// todo: refactor
         }

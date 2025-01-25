@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
-using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
-using Utilities.ScriptUtils.Time;
-using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
@@ -14,28 +12,21 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         private const string TURRET_PATH = "Projectile";
         private const string DOUBLE_TURRET_PATH = "DualProjectile";
+        private const string LASER_TURRET_PATH = "LaserProjectile";
         
-        private const int MAX_ATTACKING_TURRETS = 2;
+        private const int MAX_ATTACKING_TURRETS = 1;
         
         [SerializeField] private FloatRange yAxisRange;
 
-        private List<TurretView> turrets = new List<TurretView>();
+        private List<BaseTurretView> turrets = new List<BaseTurretView>();
         private ProjectileData projectileData;
-        private ITimer attackTimer;
 
         private float maxAttackDistance;
         public bool Destroyed { get; private set; }
         public bool IsBusy => turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
         
-        [Inject]
-        private IRepository Repository { get; }
 
-
-        protected override void OnInit()
-        {
-            base.OnInit();
-            attackTimer = TimerFactory.ConstructTimer();
-        }
+        
 
         public void SetData(FloatRange floatRange)
         {
@@ -62,22 +53,22 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public float Attack(Vector3 targetPosition)
+        public float Attack(IHardPointView hardPointView)
         {
-            TurretView turretView = GetTurret();
+            BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);
-            float distance = Vector3.Distance(targetPosition, transform.position);
+            float distance = Vector3.Distance(hardPointView.Position, transform.position);
             float duration = distance / turretView.Speed;
 
-            turretView.Attack(targetPosition, duration);
+            turretView.Attack(hardPointView, duration);
             turretView.ResetParent();
             return duration;
         }
 
-        private TurretView GetTurret()
+        private BaseTurretView GetTurret()
         {
-            TurretView turret = null;
-            foreach (TurretView turretView in turrets)
+            BaseTurretView turret = null;
+            foreach (BaseTurretView turretView in turrets)
             {
                 if (!turretView.IsBusy)
                 {
@@ -87,11 +78,28 @@ namespace EmpireAtWar.ViewComponents.Health
 
             if (turret == null)
             {
-                var prefab =  Repository.LoadComponent<TurretView>(projectileData.TurretType == TurretType.Dual
-                    ? DOUBLE_TURRET_PATH
-                    : TURRET_PATH);
+                string turretPath = TURRET_PATH;
+                switch (projectileData.TurretType)
+                {
+                    case TurretType.Single:
+                        turretPath = TURRET_PATH;
+                        break;
+                    case TurretType.Dual:
+                        turretPath = DOUBLE_TURRET_PATH;
+                        break;
+                    case TurretType.Laser:
+                        turretPath = LASER_TURRET_PATH;
+                        break;
+                    case TurretType.Torpedo:
+                        break;
+                    case TurretType.Rocket:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                var prefab =  Repository.LoadComponent<BaseTurretView>(turretPath);
                 turret = Instantiate(prefab, transform);
-                turret.transform.localPosition = Vector3.zero;
+                turret.transform.localPosition = Vector3.zero;// move it to set data method
                 turret.SetData(projectileData, maxAttackDistance);
                 turrets.Add(turret);
             }

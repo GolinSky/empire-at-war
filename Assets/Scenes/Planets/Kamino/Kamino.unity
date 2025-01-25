@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1013198810}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1124,6 +1123,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: Borders
       objectReference: {fileID: 0}
+    - target: {fileID: 3751971395273243981, guid: 4891e5365cf083442bc4acb5d9990585,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132718357028191687, guid: 4891e5365cf083442bc4acb5d9990585,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f9d78118f000dc74f9e3f7a49d815f3e, type: 2}
+    - target: {fileID: 7132718357028191687, guid: 4891e5365cf083442bc4acb5d9990585,
+        type: 3}
+      propertyPath: m_Positions.Array.data[1].z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8518730612529888269, guid: 4891e5365cf083442bc4acb5d9990585,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f9d78118f000dc74f9e3f7a49d815f3e, type: 2}
+    - target: {fileID: 8518730612529888269, guid: 4891e5365cf083442bc4acb5d9990585,
+        type: 3}
+      propertyPath: m_Positions.Array.data[1].z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1233,6 +1257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents: []
+  <ModelDependencies>k__BackingField: []
 --- !u!4 &845370227
 Transform:
   m_ObjectHideFlags: 0
@@ -2067,6 +2092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents: []
+  <ModelDependencies>k__BackingField: []
   moneyText: {fileID: 1384364032}
 --- !u!114 &1479057662
 MonoBehaviour:
@@ -2675,7 +2701,7 @@ PrefabInstance:
     - target: {fileID: 812305163281907676, guid: 9c732463c09dbca4fb6c7ba38929d048,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000091552734
       objectReference: {fileID: 0}
     - target: {fileID: 1092957607193559788, guid: 9c732463c09dbca4fb6c7ba38929d048,
         type: 3}
@@ -4035,7 +4061,7 @@ PrefabInstance:
     - target: {fileID: 2246060991756042200, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000061035156
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 2740288087729451011, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
@@ -5330,6 +5356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents: []
+  <ModelDependencies>k__BackingField: []
   planetTransform: {fileID: 2768045106496748321}
   cloudTransform: {fileID: 9144353121359452204}
 --- !u!114 &8797581386183861240

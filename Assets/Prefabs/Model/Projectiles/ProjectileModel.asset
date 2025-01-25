@@ -20,48 +20,64 @@ MonoBehaviour:
         <Color>k__BackingField: {r: 0.9811321, g: 0, b: 0.18968536, a: 1}
         <Size>k__BackingField: {x: 1, y: 3, z: 1}
         <TurretType>k__BackingField: 1
+        <Delay>k__BackingField: 4
     - key: 7
       value:
         <Color>k__BackingField: {r: 1, g: 0.67976373, b: 0, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 1
+        <Delay>k__BackingField: 2
     - key: 5
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0.054250717, a: 1}
         <Size>k__BackingField: {x: 1, y: 3, z: 1}
         <TurretType>k__BackingField: 1
+        <Delay>k__BackingField: 2
     - key: 8
       value:
         <Color>k__BackingField: {r: 1, g: 0.3115187, b: 0, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 1
     - key: 4
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0.11678028, a: 1}
         <Size>k__BackingField: {x: 1.5, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 2
     - key: 1
       value:
         <Color>k__BackingField: {r: 1, g: 0.036082476, b: 0, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 3
     - key: 2
       value:
         <Color>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 4
     - key: 9
       value:
         <Color>k__BackingField: {r: 0, g: 0.78207374, b: 1, a: 1}
         <Size>k__BackingField: {x: 1, y: 3, z: 1}
         <TurretType>k__BackingField: 1
+        <Delay>k__BackingField: 3
     - key: 11
       value:
         <Color>k__BackingField: {r: 0.5518868, g: 1, b: 1, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 3
     - key: 10
       value:
         <Color>k__BackingField: {r: 0.39716092, g: 0.8718848, b: 0.990566, a: 1}
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 0
+        <Delay>k__BackingField: 2
+    - key: 12
+      value:
+        <Color>k__BackingField: {r: 0.39716092, g: 0.8718848, b: 0.990566, a: 1}
+        <Size>k__BackingField: {x: 1, y: 1, z: 1}
+        <TurretType>k__BackingField: 2
+        <Delay>k__BackingField: 5

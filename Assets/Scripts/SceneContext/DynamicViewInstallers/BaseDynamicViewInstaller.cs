@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Extentions;
-using LightWeightFramework.Components;
+using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
@@ -8,6 +8,7 @@ using Zenject;
 
 namespace EmpireAtWar
 {
+    //todo: check duplicate issue with DynamicViewInstaller
     public abstract class BaseDynamicViewInstaller<TController, TModel, TView> : MonoInstaller
         where TController : Controller<TModel>
         where TModel : Model
@@ -46,6 +47,7 @@ namespace EmpireAtWar
             BindViewComponents();
         }
 
+  
         protected virtual void AssignView()
         {
             View = Container.Resolve<TView>();

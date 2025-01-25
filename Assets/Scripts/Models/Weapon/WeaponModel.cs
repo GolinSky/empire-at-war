@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Models.Weapon
         List<IHardPointView> MainUnitsTarget { get; }
         float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
+        void InjectDependency(AttackModelDependency attackModelDependency);
     }
 
     [Serializable]
@@ -26,17 +28,13 @@ namespace EmpireAtWar.Models.Weapon
     {
         public event Action OnMainUnitSwitched;
 
-
-        [SerializeField] private DictionaryWrapper<WeaponType, int> weaponCount;
-
-
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
         private List<IHardPointView> shipUnitViews = new List<IHardPointView>();
         private List<IHardPointView> _mainUnitsTarget;
 
 
-        public Dictionary<WeaponType, int> WeaponDictionary => weaponCount.Dictionary;
+        public Dictionary<WeaponType, int> WeaponDictionary { get; } = new Dictionary<WeaponType, int>();
 
         [Inject] public IProjectileModel ProjectileModel { get; }
 
@@ -104,8 +102,16 @@ namespace EmpireAtWar.Models.Weapon
             return WeaponDamageModel.DamageDictionary[weaponType].Distance;
         }
 
+        public void InjectDependency(AttackModelDependency attackModelDependency)
+        {
+            foreach (var keyValuePair in attackModelDependency.TurretDictionary)
+            {
+                WeaponDictionary.Add(keyValuePair.Key, keyValuePair.Value.Count);
+            }
+        }
 
-    public void AddShipUnits(IEnumerable<IHardPointView> units)
+
+        public void AddShipUnits(IEnumerable<IHardPointView> units)
         {
             shipUnitViews.AddRange(units);
         }

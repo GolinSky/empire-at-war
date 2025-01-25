@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7187503342576515073}
   - component: {fileID: 5340457548758121022}
   - component: {fileID: 5542285853262679020}
-  - component: {fileID: 4499903487185892413}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -4848,17 +4847,3 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 0
---- !u!114 &4499903487185892413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2671880916283441755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42d2aa1578157814689f927186043d2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionVfxPrefab: {fileID: 4512357853715943265, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
-    type: 3}

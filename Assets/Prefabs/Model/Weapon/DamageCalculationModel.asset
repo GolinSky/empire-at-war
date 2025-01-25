@@ -92,3 +92,10 @@ MonoBehaviour:
         minAccuracyCoefficient: 0.7
         maxAccuracyCoefficient: 1
         shieldPenetrationCoefficient: 0
+    - key: 12
+      value:
+        damageOnShieldCoefficient: 1
+        damageOnArmorCoefficient: 1
+        minAccuracyCoefficient: 1
+        maxAccuracyCoefficient: 1
+        shieldPenetrationCoefficient: 0

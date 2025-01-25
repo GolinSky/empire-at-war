@@ -3,6 +3,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.TimerPoolWrapperService;
@@ -14,6 +15,10 @@ public class ProjectContextInstaller : MonoInstaller
     private IRepository repository;
     public override void InstallBindings()
     {
+        Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
+        Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
+
+
         Container.BindInterfaces<AddressableRepository>();
         
         repository = Container.Resolve<IRepository>();

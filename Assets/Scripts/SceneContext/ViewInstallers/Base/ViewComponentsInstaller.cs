@@ -1,4 +1,4 @@
-﻿using LightWeightFramework.Components;
+﻿using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 

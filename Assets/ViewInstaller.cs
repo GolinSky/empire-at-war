@@ -6,7 +6,7 @@ using EmpireAtWar.Controllers.DefendPlatform;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Components;
+using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Components.Repository;
 using LightWeightFramework.Components.ViewComponents;
 using UnityEngine;

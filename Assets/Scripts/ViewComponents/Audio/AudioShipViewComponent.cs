@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Models.Audio;
-using LightWeightFramework.Components.ViewComponents;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Audio
