@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -406,6 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LensFlareData: {fileID: 11400000, guid: 69ffd98bf7a2a4bf9a1217c6d30c381d, type: 2}
+  version: 0
   intensity: 0.5
   maxAttenuationDistance: 1
   maxAttenuationScale: 1
@@ -483,8 +481,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   useOcclusion: 1
-  occlusionRadius: 0.1
   useBackgroundCloudOcclusion: 0
+  environmentOcclusion: 0
+  useWaterOcclusion: 0
+  occlusionRadius: 0.1
   sampleCount: 32
   occlusionOffset: 0.05
   scale: 0.2
@@ -519,6 +519,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+  lightOverride: {fileID: 0}
 --- !u!4 &392940114
 Transform:
   m_ObjectHideFlags: 0
@@ -596,6 +597,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 4695780636364179970, guid: e3d76f722a2402f42afd45b06e18a7c8,
+        type: 3}
+      propertyPath: far clip plane
+      value: 5000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1130,7 +1136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7132718357028191687, guid: 4891e5365cf083442bc4acb5d9990585,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: f9d78118f000dc74f9e3f7a49d815f3e, type: 2}
     - target: {fileID: 7132718357028191687, guid: 4891e5365cf083442bc4acb5d9990585,
@@ -1140,7 +1146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8518730612529888269, guid: 4891e5365cf083442bc4acb5d9990585,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: f9d78118f000dc74f9e3f7a49d815f3e, type: 2}
     - target: {fileID: 8518730612529888269, guid: 4891e5365cf083442bc4acb5d9990585,
@@ -1357,6 +1363,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6427,7 +6436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1226441013
 Transform:
   m_ObjectHideFlags: 0
@@ -6461,10 +6470,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0b3922197b20d77459bcebf713bed3fe, type: 2}
+  - {fileID: 2100000, guid: 7d012fe999631904ab2aa8298ed5eebe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6488,8 +6500,8 @@ ParticleSystemRenderer:
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 1
-  m_MinParticleSize: 0
-  m_MaxParticleSize: 0.5
+  m_MinParticleSize: 0.15
+  m_MaxParticleSize: 0.4
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
@@ -7231,11 +7243,11 @@ ParticleSystem:
     m_TextureColorAffectsParticles: 1
     m_TextureAlphaAffectsParticles: 1
     m_TextureBilinearFiltering: 0
-    randomDirectionAmount: 0
+    randomDirectionAmount: 1
     sphericalDirectionAmount: 1
-    randomPositionAmount: 0
+    randomPositionAmount: 1500
     radius:
-      value: 1000
+      value: 500
       mode: 0
       spread: 0
       speed:
@@ -7294,7 +7306,7 @@ ParticleSystem:
     arc:
       value: 360
       mode: 0
-      spread: 0
+      spread: 1
       speed:
         serializedVersion: 2
         minMaxState: 0
@@ -11653,15 +11665,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -11951,7 +11965,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2014695124
 Transform:
   m_ObjectHideFlags: 0
@@ -11985,10 +11999,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0b3922197b20d77459bcebf713bed3fe, type: 2}
+  - {fileID: 2100000, guid: 7d012fe999631904ab2aa8298ed5eebe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12258,7 +12275,7 @@ ParticleSystem:
         atime5: 0
         atime6: 0
         atime7: 0
-        m_Mode: 2
+        m_Mode: 0
         m_ColorSpace: 0
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
@@ -17075,6 +17092,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -17925,15 +17945,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -17962,7 +17984,17 @@ PrefabInstance:
     - target: {fileID: 449953927666966229, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 607674859104945662, guid: b8b423c1887ca92438b219b9eaa1d187,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 607674859104945662, guid: b8b423c1887ca92438b219b9eaa1d187,
+        type: 3}
+      propertyPath: ShapeModule.m_Scale.z
+      value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 2067535193319325687, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
@@ -17979,6 +18011,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6360436344373088194, guid: b8b423c1887ca92438b219b9eaa1d187,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -367
+      objectReference: {fileID: 0}
     - target: {fileID: 7287119041305564453, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17987,7 +18024,7 @@ PrefabInstance:
     - target: {fileID: 7287119041305564453, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.9873466
+      value: -544
       objectReference: {fileID: 0}
     - target: {fileID: 7287119041305564453, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
@@ -18125,7 +18162,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.39632952, y: 0.58559626, z: -0.58559614, w: 0.39632946}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 104, y: 104, z: 104}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5825448358213500568}
@@ -18325,6 +18362,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -18390,6 +18430,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -18543,37 +18586,37 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[0]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[0]'
       value: 
       objectReference: {fileID: 934432978}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[1]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[1]'
       value: 
       objectReference: {fileID: 1287289652}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[2]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[2]'
       value: 
       objectReference: {fileID: 2073570974}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[3]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[3]'
       value: 
       objectReference: {fileID: 959975455}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[4]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[4]'
       value: 
       objectReference: {fileID: 454914296}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[5]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[5]'
       value: 
       objectReference: {fileID: 367655036}
     - target: {fileID: 1168781857408660717, guid: a89611b9093e21a4a8bcf6aee7005e07,
         type: 3}
-      propertyPath: pipelineView.pipelineViews.Array.data[6]
+      propertyPath: 'pipelineView.pipelineViews.Array.data[6]'
       value: 
       objectReference: {fileID: 1309284202}
     - target: {fileID: 2246060991756042200, guid: a89611b9093e21a4a8bcf6aee7005e07,
@@ -18758,7 +18801,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2341257516622426705}
-  m_Mesh: {fileID: 4711208715938537054, guid: 8e81866d79eeef141a125ccad43e57a3, type: 3}
+  m_Mesh: {fileID: 4151621958628188828, guid: 64e6a04015a3b564ca5afe4bab414bb1, type: 3}
 --- !u!1 &4338009403160486384
 GameObject:
   m_ObjectHideFlags: 0
@@ -19022,6 +19065,7 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!114 &5011543847992244371
 MonoBehaviour:
   m_ObjectHideFlags: 0
