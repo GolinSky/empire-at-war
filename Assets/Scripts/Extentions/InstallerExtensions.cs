@@ -8,7 +8,8 @@ namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
-        public static DiContainer BindInterfaces<TEntity>(this DiContainer container)
+        //todo: rename it 
+        public static DiContainer BindInterfacesExt<TEntity>(this DiContainer container)
         {
             container
                 .BindInterfacesAndSelfTo<TEntity>()
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Extentions
             return container;
         }
         
-        public static DiContainer BindInterfaces<TEntity>(this DiContainer container, object id)
+        public static DiContainer BindInterfacesExt<TEntity>(this DiContainer container, object id)
         {
             container
                 .BindInterfacesAndSelfTo<TEntity>()
@@ -27,7 +28,7 @@ namespace EmpireAtWar.Extentions
         }
 
         
-        public static DiContainer BindInterfacesNonLazy<TEntity>(this DiContainer container)
+        public static DiContainer BindInterfacesNonLazyExt<TEntity>(this DiContainer container)
         {
             container
                 .BindInterfacesAndSelfTo<TEntity>()

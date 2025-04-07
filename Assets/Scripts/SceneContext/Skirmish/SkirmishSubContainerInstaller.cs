@@ -13,7 +13,7 @@ using Zenject;
 
 namespace EmpireAtWar.SceneContext
 {
-    public class SkirmishDynamicEntityInstaller : MonoInstaller
+    public class SkirmishSubContainerInstaller : MonoInstaller
     {
         [Inject] private IRepository Repository { get; }
         

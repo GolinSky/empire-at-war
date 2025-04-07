@@ -41,17 +41,17 @@ namespace EmpireAtWar.MiningFacility
         {
             base.BindComponents();
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()// todo: make non lazy for enemy
-                .BindInterfaces<RadarComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<SimpleMoveComponent>()// todo: make non lazy for enemy
+                .BindInterfacesExt<RadarComponent>();
 
             switch (playerType)
             {
                 case PlayerType.Player:
-                    Container.BindInterfaces<SelectionComponent>();
+                    Container.BindInterfacesExt<SelectionComponent>();
                     break;
                 case PlayerType.Opponent:
-                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
             }
         }

@@ -2,13 +2,15 @@
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
+using Zenject;
 using Zenject.SpaceFighter;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {
+    //todo: move it to player context installer
     public class EconomyInstaller: StaticViewInstaller<EconomyController,EconomyModel>
     {
-        [SerializeField] private Zenject.SceneContext SceneContext;
+        [Inject] private Zenject.SceneContext SceneContext { get; }
 
         protected override void BindController()
         {

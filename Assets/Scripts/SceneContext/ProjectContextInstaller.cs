@@ -19,7 +19,7 @@ public class ProjectContextInstaller : MonoInstaller
         Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
 
 
-        Container.BindInterfaces<AddressableRepository>();
+        Container.BindInterfacesExt<AddressableRepository>();
         
         repository = Container.Resolve<IRepository>();
         
@@ -30,10 +30,10 @@ public class ProjectContextInstaller : MonoInstaller
         Container.BindModel<SceneModel>(repository);
         
         Container
-            .BindInterfaces<TimerPoolWrapperService>()
-            .BindInterfaces<GameController>()
-            .BindInterfaces<SceneService>()
-            .BindInterfaces<SettingsService>()
-            .BindInterfaces<AudioService>();
+            .BindInterfacesExt<TimerPoolWrapperService>()
+            .BindInterfacesExt<GameController>()
+            .BindInterfacesExt<SceneService>()
+            .BindInterfacesExt<SettingsService>()
+            .BindInterfacesExt<AudioService>();
     }
 }

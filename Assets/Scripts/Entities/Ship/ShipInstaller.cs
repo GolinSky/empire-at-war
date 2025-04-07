@@ -40,28 +40,28 @@ namespace EmpireAtWar.Ship
         {
             base.BindComponents();
             Container
-                .BindInterfaces<ShipMoveComponent>()
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<WeaponComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<AudioShipComponent>();
+                .BindInterfacesExt<ShipMoveComponent>()
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<WeaponComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<AudioShipComponent>();
             
             switch (playerType)
             {
                 case PlayerType.Player:
                 {
-                    Container.BindInterfaces<SelectionComponent>();
-                    Container.BindInterfaces<PlayerShipCommand>();
-                    Container.BindInterfaces<AudioDialogShipComponent>();
-                    Container.BindInterfaces<PlayerStateComponent>();
+                    Container.BindInterfacesExt<SelectionComponent>();
+                    Container.BindInterfacesExt<PlayerShipCommand>();
+                    Container.BindInterfacesExt<AudioDialogShipComponent>();
+                    Container.BindInterfacesExt<PlayerStateComponent>();
 
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                    Container.BindInterfaces<EnemySelectionComponent>();
-                    Container.BindInterfaces<EnemyShipCommand>();
-                    Container.BindInterfaces<EnemyStateComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemyShipCommand>();
+                    Container.BindInterfacesExt<EnemyStateComponent>();
                     break;
                 }
             }

@@ -40,18 +40,18 @@ namespace EmpireAtWar
         {
             base.BindComponents();
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<SimpleMoveComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>();
             
             switch (playerType)
             {
                 case PlayerType.Player:
-                    Container.BindInterfaces<SelectionComponent>();
+                    Container.BindInterfacesExt<SelectionComponent>();
                     break;
                 case PlayerType.Opponent:
-                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
             }
         }

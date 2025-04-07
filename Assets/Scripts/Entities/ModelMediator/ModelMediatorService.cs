@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.ModelMediator
         void RemoveUnit(IUnitModelObserver unitModelObserver);
     }
     
+    //todo : rename it
     public class ModelMediatorService: Service, IModelMediatorService
     {
         private readonly List<IUnitModelObserver> units = new List<IUnitModelObserver>();

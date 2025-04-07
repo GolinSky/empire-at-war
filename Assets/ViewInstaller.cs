@@ -52,24 +52,24 @@ namespace EmpireAtWar
             Container.BindEntity(playerType);
 
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<SimpleMoveComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>();
 
             switch (playerType)
             {
                 case PlayerType.Player:
-                    Container.BindInterfaces<SelectionComponent>();
+                    Container.BindInterfacesExt<SelectionComponent>();
                     break;
                 case PlayerType.Opponent:
-                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
             }
 
             Container
                 .BindModel<DefendPlatformModel>(repository)
-                .BindInterfaces<DefendPlatformController>();
+                .BindInterfacesExt<DefendPlatformController>();
 
             Container
                 .BindInterfacesAndSelfTo(view.GetType())

@@ -14,7 +14,8 @@ namespace EmpireAtWar.Patterns.Strategy
         protected EnemyFactionModel FactionModel { get; }
         protected IEnemyPurchaseMediator EnemyPurchaseMediator { get; }
 
-        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator,
+        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, 
+            IEnemyPurchaseMediator enemyPurchaseMediator,
             IUnitRequestFactory unitRequestFactory)
         {
             FactionModel = factionModel;

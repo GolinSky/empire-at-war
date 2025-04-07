@@ -20,15 +20,15 @@ public class SkirmishServiceInstaller : MonoInstaller
     {
         Container.BindInstance(mainCamera);
         Container
-            .BindInterfaces<NavigationService>()
-            .BindInterfaces<InputService>()
-            .BindInterfaces<ShipService>()
-            .BindInterfaces<CameraService>()
-            .BindInterfaces<EnemyService>()
-            .BindInterfaces<PlayerService>()
-            .BindInterfaces<SelectionService>()
-            .BindInterfaces<ComponentHub>()
-            .BindInterfaces<BattleService>()
-            .BindInterfaces<EconomyMediator>();
+            .BindInterfacesExt<NavigationService>()
+            .BindInterfacesExt<InputService>()
+            .BindInterfacesExt<ShipService>()
+            .BindInterfacesExt<CameraService>()
+            // .BindInterfaces<EnemyService>()
+            .BindInterfacesExt<PlayerService>()
+            .BindInterfacesExt<SelectionService>()
+            .BindInterfacesExt<ComponentHub>()
+            .BindInterfacesExt<BattleService>()
+            .BindInterfacesExt<EconomyMediator>();
     }
 }

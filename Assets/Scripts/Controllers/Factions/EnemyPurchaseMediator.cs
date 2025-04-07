@@ -7,8 +7,10 @@ namespace EmpireAtWar.Controllers.Factions
     public sealed class EnemyPurchaseMediator : BasePurchaseMediator,IEnemyPurchaseMediator
     {
         public EnemyPurchaseMediator(
-            [Inject(Id = PlayerType.Opponent)] IPurchaseChain purchaseChain,
-            [Inject(Id = PlayerType.Opponent)] IBuildShipChain buildShipChain)
+            // [Inject(Id = PlayerType.Opponent)] IPurchaseChain purchaseChain,
+            // [Inject(Id = PlayerType.Opponent)] IBuildShipChain buildShipChain) 
+                IPurchaseChain purchaseChain,
+                IBuildShipChain buildShipChain)
         {
                 SetNext(purchaseChain)
                 .SetNext(buildShipChain);

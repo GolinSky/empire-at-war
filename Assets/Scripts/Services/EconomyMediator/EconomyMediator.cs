@@ -10,25 +10,28 @@ namespace EmpireAtWar.Services.EconomyMediator
         IEconomyProvider GetProvider(PlayerType playerType);
     }
 
+    //todo: this is more facade than mediator - rebuild
     public class EconomyMediator : Service, IEconomyMediator
     {
         [Inject(Id = PlayerType.Player)] 
-        private IEconomyProvider PlayerEconomyProvider { get; }
+        private LazyInject<IEconomyProvider> PlayerEconomyProvider { get; }
         
         [Inject(Id = PlayerType.Opponent)] 
-        private IEconomyProvider OpponentEconomyProvider { get; }
-        
+        private LazyInject<IEconomyProvider> OpponentEconomyProvider { get; }
+
+
         public IEconomyProvider GetProvider(PlayerType playerType)
         {
             switch (playerType)
             {
                 case PlayerType.Player:
-                    return PlayerEconomyProvider;
+                    return PlayerEconomyProvider.Value;
                 case PlayerType.Opponent:
-                    return OpponentEconomyProvider;
+                    return OpponentEconomyProvider.Value;
             }
 
             return null;
         }
+        
     }
 }

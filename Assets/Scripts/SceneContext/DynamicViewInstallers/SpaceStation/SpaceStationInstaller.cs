@@ -45,25 +45,25 @@ namespace EmpireAtWar.SpaceStation
                 case PlayerType.Player:
                 {
                     Container
-                        .BindInterfaces<SpaceStationCommand>()
-                        .BindInterfaces<SelectionComponent>();
+                        .BindInterfacesExt<SpaceStationCommand>()
+                        .BindInterfacesExt<SelectionComponent>();
                     break;
                 }
                 case PlayerType.Opponent:
                 {
                     Container
-                        .BindInterfaces<EnemySpaceStationCommand>()
-                        .BindInterfaces<EnemySelectionComponent>();
+                        .BindInterfacesExt<EnemySpaceStationCommand>()
+                        .BindInterfacesExt<EnemySelectionComponent>();
                     break;
                 }
             }
             
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>();
             
-            Container.BindInterfacesNonLazy<SimpleMoveComponent>();
+            Container.BindInterfacesNonLazyExt<SimpleMoveComponent>();
         }
         
            
