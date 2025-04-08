@@ -36,16 +36,16 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private FactionsModel factionsModel;
         [field: SerializeField] public FactionUnitUi ShipUnit { get; private set; }
 
-        private SelectionType selectionType;
-        private int currentLevel = 1;
+        private SelectionType _selectionType;
+        private int _currentLevel = 1;
         
         public SelectionType SelectionType
         {
-            get => selectionType;
+            get => _selectionType;
             set
             {
-                selectionType = value;
-                OnSelectionTypeChanged?.Invoke(selectionType);
+                _selectionType = value;
+                OnSelectionTypeChanged?.Invoke(_selectionType);
             }
         }
 
@@ -63,11 +63,11 @@ namespace EmpireAtWar.Models.Factions
         
         public int CurrentLevel
         {
-            get => currentLevel;
+            get => _currentLevel;
             set
             {
-                currentLevel = value;
-                OnLevelUpgraded?.Invoke(currentLevel);
+                _currentLevel = value;
+                OnLevelUpgraded?.Invoke(_currentLevel);
             }
         }
 

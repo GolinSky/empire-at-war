@@ -11,19 +11,19 @@ namespace EmpireAtWar.ViewComponents.Selection
         [SerializeField] private SelectionType selectionType;
         
         [Inject]
-        private ISelectionCommand selectionCommand;
+        private ISelectionCommand _selectionCommand;
         
         protected override void OnInit() {}
 
         protected override void OnRelease()
         {
-            selectionCommand?.OnSkipSelection(selectionType);
-            selectionCommand = null;
+            _selectionCommand?.OnSkipSelection(selectionType);
+            _selectionCommand = null;
         }
 
         public void OnSelected()
         {
-            selectionCommand?.OnSelected(selectionType);
+            _selectionCommand?.OnSelected(selectionType);
         }
     }
 }

@@ -18,18 +18,18 @@ namespace EmpireAtWar.Controllers.Economy
 
     public class EconomyController : Controller<EconomyModel>, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
     {
-        private const float DefaultIncome = 1f;
+        private const float DEFAULT_INCOME = 1f;
 
-        private readonly ITimer incomeTimer;
-        private IChainHandler<UnitRequest> nextChain;
-        private List<IIncomeProvider> incomeProviders = new List<IIncomeProvider>();
+        private readonly ITimer _incomeTimer;
+        private IChainHandler<UnitRequest> _nextChain;
+        private List<IIncomeProvider> _incomeProviders = new List<IIncomeProvider>();
         
-        private float commonIncome;
-        public float Income => DefaultIncome;
+        private float _commonIncome;
+        public float Income => DEFAULT_INCOME;
 
         public EconomyController(EconomyModel model) : base(model)
         {
-            incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
+            _incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
             Model.Money = Model.StartMoneyAmount;
         }
         public void Initialize()
@@ -39,10 +39,10 @@ namespace EmpireAtWar.Controllers.Economy
         
         public void Tick()
         {
-            if (incomeTimer.IsComplete)
+            if (_incomeTimer.IsComplete)
             {
-                incomeTimer.StartTimer();
-                Model.Money += commonIncome;
+                _incomeTimer.StartTimer();
+                Model.Money += _commonIncome;
             }
         }
         
@@ -58,17 +58,17 @@ namespace EmpireAtWar.Controllers.Economy
         
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
-            nextChain = chainHandler;
-            return nextChain;
+            _nextChain = chainHandler;
+            return _nextChain;
         }
 
         public void Handle(UnitRequest unitRequest)
         {
             if (TryBuyUnit(unitRequest.FactionData.Price))
             {
-                if (nextChain != null)
+                if (_nextChain != null)
                 {
-                    nextChain.Handle(unitRequest);
+                    _nextChain.Handle(unitRequest);
                 }
             }
         }
@@ -80,21 +80,21 @@ namespace EmpireAtWar.Controllers.Economy
 
         public void AddProvider(IIncomeProvider incomeProvider)
         {
-            if (incomeProviders.Contains(incomeProvider))
+            if (_incomeProviders.Contains(incomeProvider))
             {
                 Debug.LogError("Income already in collection");
             }
-            incomeProviders.Add(incomeProvider);
+            _incomeProviders.Add(incomeProvider);
             CalculateBaseIncome();
         }
 
         public void RemoveProvider(IIncomeProvider incomeProvider)
         {
-            if (!incomeProviders.Contains(incomeProvider))
+            if (!_incomeProviders.Contains(incomeProvider))
             {
                 Debug.LogError("Income not contains in collection");
             }
-            incomeProviders.Remove(incomeProvider);
+            _incomeProviders.Remove(incomeProvider);
             CalculateBaseIncome();
         }
 
@@ -105,10 +105,10 @@ namespace EmpireAtWar.Controllers.Economy
 
         private void CalculateBaseIncome()
         {
-            commonIncome = 0;
-            foreach (IIncomeProvider provider in incomeProviders)
+            _commonIncome = 0;
+            foreach (IIncomeProvider provider in _incomeProviders)
             {
-                commonIncome += provider.Income;
+                _commonIncome += provider.Income;
             }
         }
     }

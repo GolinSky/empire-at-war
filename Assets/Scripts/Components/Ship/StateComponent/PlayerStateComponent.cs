@@ -16,14 +16,14 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 {
     public class PlayerStateComponent : Component, IInitializable, ILateDisposable, ITickable
     {
-        private readonly ISelectionService selectionService;
-        private readonly IInputService inputService;
-        private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly ShipStateMachine shipStateMachine;
+        private readonly ISelectionService _selectionService;
+        private readonly IInputService _inputService;
+        private readonly ISelectionModelObserver _selectionModelObserver;
+        private readonly ShipStateMachine _shipStateMachine;
 
-        private readonly ShipIdleState shipIdleState;
-        private readonly MoveToPointState moveToPointState;
-        private readonly ShipLockMainTargetState shipLockMainTargetState;
+        private readonly ShipIdleState _shipIdleState;
+        private readonly MoveToPointState _moveToPointState;
+        private readonly ShipLockMainTargetState _shipLockMainTargetState;
 
         //todo: radar component
         public PlayerStateComponent(
@@ -34,59 +34,59 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             ISelectionService selectionService,
             IInputService inputService)
         {
-            this.selectionService = selectionService;
-            this.inputService = inputService;
+            _selectionService = selectionService;
+            _inputService = inputService;
 
-            selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
-            shipStateMachine = new ShipStateMachine(
+            _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
+            _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
                 weaponComponent,
                 componentHub,
                 model);
 
-            shipIdleState = new ShipIdleState(shipStateMachine);
-            moveToPointState = new MoveToPointState(shipStateMachine);
-            shipLockMainTargetState = new ShipLockMainTargetState(shipStateMachine);
-            shipStateMachine.SetDefaultState(shipIdleState);
-            shipStateMachine.ChangeState(shipIdleState);
+            _shipIdleState = new ShipIdleState(_shipStateMachine);
+            _moveToPointState = new MoveToPointState(_shipStateMachine);
+            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine);
+            _shipStateMachine.SetDefaultState(_shipIdleState);
+            _shipStateMachine.ChangeState(_shipIdleState);
         }
 
         public void Initialize()
         {
-            selectionService.OnHitSelected += HandleSelected;
-            inputService.OnInput += HandleInput;
+            _selectionService.OnHitSelected += HandleSelected;
+            _inputService.OnInput += HandleInput;
         }
 
         public void LateDispose()
         {
-            selectionService.OnHitSelected -= HandleSelected;
-            inputService.OnInput -= HandleInput;
+            _selectionService.OnHitSelected -= HandleSelected;
+            _inputService.OnInput -= HandleInput;
         }
         
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
         {
             if (inputType != InputType.ShipInput) return;
-            if(!selectionModelObserver.IsSelected) return;
+            if(!_selectionModelObserver.IsSelected) return;
 
-            moveToPointState.SetScreenCoordinates(screenPosition);
-            shipStateMachine.ChangeState(moveToPointState);
+            _moveToPointState.SetScreenCoordinates(screenPosition);
+            _shipStateMachine.ChangeState(_moveToPointState);
         }
         
         private void HandleSelected(RaycastHit raycastHit)
         {
-            if(!selectionModelObserver.IsSelected) return;
+            if(!_selectionModelObserver.IsSelected) return;
             
             IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                shipLockMainTargetState.SetData(mainTarget); //  remove raycastHit.transform.position
-                shipStateMachine.ChangeState(shipLockMainTargetState);
+                _shipLockMainTargetState.SetData(mainTarget); //  remove raycastHit.transform.position
+                _shipStateMachine.ChangeState(_shipLockMainTargetState);
             }
         }
 
         public void Tick()
         {
-            shipStateMachine.Update();
+            _shipStateMachine.Update();
         }
     }
 }

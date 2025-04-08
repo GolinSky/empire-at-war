@@ -8,7 +8,7 @@ namespace EmpireAtWar.ViewComponents.Move
 {
     public class SimpleMoveViewComponent:ViewComponent<ISimpleMoveModelObserver>
     {
-        private Sequence moveSequence;
+        private Sequence _moveSequence;
 
         protected override void OnInit()
         {
@@ -27,13 +27,13 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             Vector3 point = transform.position - Model.FallDownDirection;
 
-            moveSequence.KillIfExist();
-            moveSequence = DOTween.Sequence();
-            moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
-            moveSequence.Join(transform.DOLocalRotate(
+            _moveSequence.KillIfExist();
+            _moveSequence = DOTween.Sequence();
+            _moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
+            _moveSequence.Join(transform.DOLocalRotate(
                 Model.FallDownRotation.Value,
                 Model.FallDownDuration));
-            moveSequence.AppendCallback(DestroyView);
+            _moveSequence.AppendCallback(DestroyView);
         }
 
         private void DestroyView()

@@ -20,11 +20,11 @@ namespace EmpireAtWar.Controllers.MiniMap
 
     public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand, IInitializable, ILateDisposable
     {
-        private readonly ICameraService cameraService;
-        private readonly INavigationService navigationService;
-        private readonly IInputService inputService;
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private CustomCoroutine unblockCoroutine;
+        private readonly ICameraService _cameraService;
+        private readonly INavigationService _navigationService;
+        private readonly IInputService _inputService;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private CustomCoroutine _unblockCoroutine;
         
         public MiniMapController(
             MiniMapModel model,
@@ -34,10 +34,10 @@ namespace EmpireAtWar.Controllers.MiniMap
             IInputService inputService,
             ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
-            this.cameraService = cameraService;
-            this.navigationService = navigationService;
-            this.inputService = inputService;
-            this.timerPoolWrapperService = timerPoolWrapperService;
+            _cameraService = cameraService;
+            _navigationService = navigationService;
+            _inputService = inputService;
+            _timerPoolWrapperService = timerPoolWrapperService;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(PlayerType.Player));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
@@ -46,32 +46,32 @@ namespace EmpireAtWar.Controllers.MiniMap
     
         public void Initialize()
         {
-            navigationService.OnTypeChanged += UpdateSelectionType;
-            inputService.OnBlocked += UpdateBlockState;
-            Model.AddMark(MarkType.Camera, cameraService.CameraTransform);
+            _navigationService.OnTypeChanged += UpdateSelectionType;
+            _inputService.OnBlocked += UpdateBlockState;
+            Model.AddMark(MarkType.Camera, _cameraService.CameraTransform);
         }
         
         public void LateDispose()
         {
-            navigationService.OnTypeChanged -= UpdateSelectionType;
-            inputService.OnBlocked -= UpdateBlockState;
+            _navigationService.OnTypeChanged -= UpdateSelectionType;
+            _inputService.OnBlocked -= UpdateBlockState;
         }
         
         public void MoveTo(Vector3 worldPoint)
         {
-            cameraService.MoveTo(worldPoint);
+            _cameraService.MoveTo(worldPoint);
         }
 
         
         private void UpdateBlockState(bool isBlocked)
         {
-            if (unblockCoroutine != null)
+            if (_unblockCoroutine != null)
             {
-                unblockCoroutine.Release();
+                _unblockCoroutine.Release();
             }
             if (!isBlocked)
             {
-                unblockCoroutine = timerPoolWrapperService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
+                _unblockCoroutine = _timerPoolWrapperService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
             }
             else
             {

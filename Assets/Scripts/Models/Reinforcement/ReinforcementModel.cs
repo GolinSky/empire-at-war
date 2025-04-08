@@ -42,17 +42,17 @@ namespace EmpireAtWar.Models.Reinforcement
         [field: SerializeField] public SpawnShipUi ReinforcementButton { get; private set; }
         [field: SerializeField] public int MaxUnitCapacity { get; private set; }
 
-        private Dictionary<ShipType, FactionData> shipFactionData = new Dictionary<ShipType, FactionData>();
+        private Dictionary<ShipType, FactionData> _shipFactionData = new Dictionary<ShipType, FactionData>();
         
-        private int currentUnitCapacity;
+        private int _currentUnitCapacity;
 
         public int CurrentUnitCapacity
         {
-            get => currentUnitCapacity;
+            get => _currentUnitCapacity;
             set
             {
-                currentUnitCapacity = value;
-                OnCapacityChanged?.Invoke(currentUnitCapacity);
+                _currentUnitCapacity = value;
+                OnCapacityChanged?.Invoke(_currentUnitCapacity);
             }
         }
 
@@ -97,24 +97,24 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public bool CanSpawnUnit(ShipType shipType)
         {
-            return shipFactionData[shipType].UnitCapacity <= CapacityLeft;
+            return _shipFactionData[shipType].UnitCapacity <= CapacityLeft;
         }
 
         public void AddUnitCapacity(ShipType shipType)
         {
-            CurrentUnitCapacity += shipFactionData[shipType].UnitCapacity;
+            CurrentUnitCapacity += _shipFactionData[shipType].UnitCapacity;
         }
         
         public void RemoveUnitCapacity(ShipType shipType)
         {
-            CurrentUnitCapacity -= shipFactionData[shipType].UnitCapacity;
+            CurrentUnitCapacity -= _shipFactionData[shipType].UnitCapacity;
         }
         
         public void UpdateShipData(ShipUnitRequest shipUnitRequest)
         {
-            if (!shipFactionData.ContainsKey(shipUnitRequest.Key))
+            if (!_shipFactionData.ContainsKey(shipUnitRequest.Key))
             {
-                shipFactionData.Add(shipUnitRequest.Key,  shipUnitRequest.FactionData);
+                _shipFactionData.Add(shipUnitRequest.Key,  shipUnitRequest.FactionData);
             }
         }
         

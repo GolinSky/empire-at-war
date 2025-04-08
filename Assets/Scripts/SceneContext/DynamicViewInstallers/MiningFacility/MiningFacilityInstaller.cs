@@ -16,16 +16,16 @@ namespace EmpireAtWar.MiningFacility
     public class MiningFacilityInstaller : DynamicViewInstaller<MiningFacilityController, MiningFacilityModel,
         MiningFacilityView>
     {
-        private PlayerType playerType;
-        private MiningFacilityType miningFacilityType;
-        private IModelMediatorService modelMediatorService;
+        private PlayerType _playerType;
+        private MiningFacilityType _miningFacilityType;
+        private IModelMediatorService _modelMediatorService;
 
         [Inject]
         public void Construct(IModelMediatorService modelMediatorService, PlayerType playerType, MiningFacilityType miningFacilityType)
         {
-            this.modelMediatorService = modelMediatorService;
-            this.playerType = playerType;
-            this.miningFacilityType = miningFacilityType;
+            _modelMediatorService = modelMediatorService;
+            _playerType = playerType;
+            _miningFacilityType = miningFacilityType;
            // Debug.Log($"MiningFacilityInstaller: {StartPosition}");
 
         }
@@ -33,8 +33,8 @@ namespace EmpireAtWar.MiningFacility
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(playerType);
-            Container.BindEntity(miningFacilityType);
+            Container.BindEntity(_playerType);
+            Container.BindEntity(_miningFacilityType);
         }
 
         protected override void BindComponents()
@@ -45,7 +45,7 @@ namespace EmpireAtWar.MiningFacility
                 .BindInterfacesExt<SimpleMoveComponent>()// todo: make non lazy for enemy
                 .BindInterfacesExt<RadarComponent>();
 
-            switch (playerType)
+            switch (_playerType)
             {
                 case PlayerType.Player:
                     Container.BindInterfacesExt<SelectionComponent>();
@@ -59,7 +59,7 @@ namespace EmpireAtWar.MiningFacility
         protected override void OnModelCreated()
         {
             base.OnModelCreated();
-            modelMediatorService.AddUnit(Container.Resolve<MiningFacilityModel>());
+            _modelMediatorService.AddUnit(Container.Resolve<MiningFacilityModel>());
         }
     }
 }

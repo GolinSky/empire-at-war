@@ -11783,7 +11783,6 @@ MonoBehaviour:
   view: {fileID: 1479057661}
   bindViewComponents: 1
   bindMonoComponent: 1
-  SceneContext: {fileID: 5276054573720733372}
 --- !u!114 &1479057663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18127,7 +18126,7 @@ GameObject:
   - component: {fileID: 2296478332890034127}
   - component: {fileID: 2233613475334625949}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18814,7 +18813,7 @@ GameObject:
   - component: {fileID: 7785149083866486864}
   - component: {fileID: 6532291890251010145}
   m_Layer: 5
-  m_Name: Your icon03
+  m_Name: MoneyIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19802,7 +19801,7 @@ GameObject:
   - component: {fileID: 4704538277110480457}
   - component: {fileID: 6773843052739572239}
   m_Layer: 5
-  m_Name: BaseIconTemplate
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

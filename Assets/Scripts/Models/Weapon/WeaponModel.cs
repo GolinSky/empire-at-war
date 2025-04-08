@@ -30,7 +30,7 @@ namespace EmpireAtWar.Models.Weapon
 
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
-        private List<IHardPointView> shipUnitViews = new List<IHardPointView>();
+        private List<IHardPointView> _shipUnitViews = new List<IHardPointView>();
         private List<IHardPointView> _mainUnitsTarget;
 
 
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Models.Weapon
 
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
-        List<IHardPointView> IWeaponModelObserver.Targets => shipUnitViews;
+        List<IHardPointView> IWeaponModelObserver.Targets => _shipUnitViews;
 
         public List<IHardPointView> MainUnitsTarget
         {
@@ -113,14 +113,14 @@ namespace EmpireAtWar.Models.Weapon
 
         public void AddShipUnits(IEnumerable<IHardPointView> units)
         {
-            shipUnitViews.AddRange(units);
+            _shipUnitViews.AddRange(units);
         }
 
         public void RemoveShipUnits(IEnumerable<IHardPointView> unitViews)
         {
             foreach (IHardPointView shipUnitView in unitViews)
             {
-                shipUnitViews.Remove(shipUnitView);
+                _shipUnitViews.Remove(shipUnitView);
             }
         }
         

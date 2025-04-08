@@ -12,7 +12,7 @@ using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
 {
-    private IRepository repository;
+    private IRepository _repository;
     public override void InstallBindings()
     {
         Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
@@ -21,13 +21,13 @@ public class ProjectContextInstaller : MonoInstaller
 
         Container.BindInterfacesExt<AddressableRepository>();
         
-        repository = Container.Resolve<IRepository>();
+        _repository = Container.Resolve<IRepository>();
         
         ModelDependencyBuilder
             .ConstructBuilder(Container)
-            .BindFromNewScriptable<GameModel>(repository);
+            .BindFromNewScriptable<GameModel>(_repository);
 
-        Container.BindModel<SceneModel>(repository);
+        Container.BindModel<SceneModel>(_repository);
         
         Container
             .BindInterfacesExt<TimerPoolWrapperService>()

@@ -12,33 +12,33 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class UnitIdleState:BaseState
     {
-        protected readonly IModel model;
-        protected readonly IComponentHub componentHub;
-        protected readonly IWeaponComponent weaponComponent;
-        protected readonly IRadarModelObserver radarModelObserver;
-        protected readonly IHealthModelObserver healthModelObserver;
+        protected readonly IModel _model;
+        protected readonly IComponentHub _componentHub;
+        protected readonly IWeaponComponent _weaponComponent;
+        protected readonly IRadarModelObserver _radarModelObserver;
+        protected readonly IHealthModelObserver _healthModelObserver;
         public new UnitStateMachine StateMachine { get; }
         
         public UnitIdleState(UnitStateMachine stateMachine) : base(stateMachine)
         {
             StateMachine = stateMachine;
-            model = stateMachine.Model;
-            componentHub = stateMachine.ComponentHub;
-            weaponComponent = stateMachine.WeaponComponent;
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
-            healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
+            _model = stateMachine.Model;
+            _componentHub = stateMachine.ComponentHub;
+            _weaponComponent = stateMachine.WeaponComponent;
+            _radarModelObserver = _model.GetModelObserver<IRadarModelObserver>();
+            _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
         }
         
         public override void Enter()
         {
             base.Enter();
-            radarModelObserver.OnHitDetected += HandleEnemy;
+            _radarModelObserver.OnHitDetected += HandleEnemy;
         }
 
         public override void Exit()
         {
             base.Exit();
-            radarModelObserver.OnHitDetected -= HandleEnemy;
+            _radarModelObserver.OnHitDetected -= HandleEnemy;
         }
         
         private void HandleEnemy(RaycastHit[] raycastHit)
@@ -49,13 +49,13 @@ namespace EmpireAtWar.Patterns.StateMachine
                 IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
                 if (unitsProvider != null && unitsProvider.HasUnits)
                 {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
+                    healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
                 }
             }
 
             if (healthComponents.Count != 0)
             {
-                weaponComponent.AddTargets(healthComponents.ToArray());
+                _weaponComponent.AddTargets(healthComponents.ToArray());
             }
         }
     }

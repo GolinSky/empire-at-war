@@ -21,49 +21,49 @@ namespace EmpireAtWar.Components.Audio
         private const float HYPER_SPACE_TIME_PERCENTAGE = 0.8f;
         
         
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly IAudioService audioService;
-        private readonly IShipMoveModelObserver shipMoveModelObserver;
-        private readonly IRadarModelObserver radarModelObserver;
-        private readonly ITimer alarmTimer;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly IAudioService _audioService;
+        private readonly IShipMoveModelObserver _shipMoveModelObserver;
+        private readonly IRadarModelObserver _radarModelObserver;
+        private readonly ITimer _alarmTimer;
         
         public AudioShipComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService, IAudioService audioService) : base(model)
         {
-            this.timerPoolWrapperService = timerPoolWrapperService;
-            this.audioService = audioService;
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
-            alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
+            _timerPoolWrapperService = timerPoolWrapperService;
+            _audioService = audioService;
+            _shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            _radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
+            _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
         }
 
         public void Initialize()
         {
-            radarModelObserver.OnHitDetected += PlayAlarm;
+            _radarModelObserver.OnHitDetected += PlayAlarm;
             PlayHyperSpaceClip();
         }
 
         public void LateDispose()
         {
-            radarModelObserver.OnHitDetected -= PlayAlarm;
+            _radarModelObserver.OnHitDetected -= PlayAlarm;
         }
         
         private void PlayAlarm(RaycastHit[] raycastHits)
         {
-            if (alarmTimer.IsComplete)
+            if (_alarmTimer.IsComplete)
             {
-                if (audioService.CanPlayAlarm())
+                if (_audioService.CanPlayAlarm())
                 {
-                    alarmTimer.StartTimer();
+                    _alarmTimer.StartTimer();
                     Model.PlayAlarm();
-                    audioService.RegisterAlarmPlaying();
+                    _audioService.RegisterAlarmPlaying();
                 }
             }
         }
         
         private void PlayHyperSpaceClip()
         {
-            timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
-                shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
+            _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
+                _shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace EmpireAtWar.Views.Factions
 
         [SerializeField] private List<PipelineView> pipelineViews;
 
-        private Dictionary<string, PipelineView> workingPipelines = new Dictionary<string, PipelineView>();
+        private Dictionary<string, PipelineView> _workingPipelines = new Dictionary<string, PipelineView>();
 
         public void Init()
         {
@@ -31,7 +31,7 @@ namespace EmpireAtWar.Views.Factions
         public float AddPipeline(string id, Sprite icon, float fillTime)
         {
             canvas.enabled = true;
-            if (workingPipelines.TryGetValue(id, out PipelineView pipelineView))
+            if (_workingPipelines.TryGetValue(id, out PipelineView pipelineView))
             {
                 pipelineView.AddCount();
                 return pipelineView.TimeLeft;
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Views.Factions
                     .FirstOrDefault(x => !x.IsBusy);
                 
                 SetUpPipeline(freePipeline);
-                workingPipelines.Add(id, freePipeline);
+                _workingPipelines.Add(id, freePipeline);
                 return fillTime;
             }
 
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Views.Factions
         private void OnComplete(string id, bool isSuccess)
         {
             OnFinishSequence?.Invoke(isSuccess, id);
-            workingPipelines.Remove(id);
+            _workingPipelines.Remove(id);
         }
 
         public void OnFinishPipeline(string id, bool isSuccess, int countLeft)
@@ -65,7 +65,7 @@ namespace EmpireAtWar.Views.Factions
             OnFinishSequence?.Invoke(isSuccess, id);
             if (countLeft == 1)
             {
-                workingPipelines.Remove(id);
+                _workingPipelines.Remove(id);
             }
         }
     }

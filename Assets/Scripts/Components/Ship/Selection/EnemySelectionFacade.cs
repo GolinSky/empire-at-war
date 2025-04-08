@@ -6,16 +6,16 @@ namespace EmpireAtWar.Components.Ship.Selection
 {
     public class EnemySelectionFacade:PlaceholderFactory<IModel, EnemySelectionComponent>
     {
-        private readonly IBattleService battleService;
+        private readonly IBattleService _battleService;
 
         public EnemySelectionFacade(IBattleService battleService)
         {
-            this.battleService = battleService;
+            _battleService = battleService;
         }
 
         public override EnemySelectionComponent Create(IModel model)
         {
-            return new EnemySelectionComponent(model, battleService);
+            return new EnemySelectionComponent(model, _battleService);
         }
     }
 }

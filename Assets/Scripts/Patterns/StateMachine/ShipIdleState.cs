@@ -12,49 +12,49 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class ShipIdleState:UnitIdleState
     {
-        private const float MoveAroundDuration = 10f;
-        private readonly ITimer moveAroundTimer;
+        private const float MOVE_AROUND_DURATION = 10f;
+        private readonly ITimer _moveAroundTimer;
 
-        protected readonly IModel model;
-        protected readonly IComponentHub componentHub;
-        protected readonly IWeaponComponent weaponComponent;
-        protected readonly IShipMoveComponent shipMoveComponent;
-        protected readonly IHealthModelObserver healthModelObserver;
+        protected readonly IModel _model;
+        protected readonly IComponentHub _componentHub;
+        protected readonly IWeaponComponent _weaponComponent;
+        protected readonly IShipMoveComponent _shipMoveComponent;
+        protected readonly IHealthModelObserver _healthModelObserver;
         public new ShipStateMachine StateMachine { get; }
         
         
         public ShipIdleState(ShipStateMachine stateMachine) : base(stateMachine)
         {
-            model = stateMachine.Model;
-            componentHub = stateMachine.ComponentHub;
-            weaponComponent = stateMachine.WeaponComponent;
-            shipMoveComponent = stateMachine.ShipMoveComponent;
-            healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
+            _model = stateMachine.Model;
+            _componentHub = stateMachine.ComponentHub;
+            _weaponComponent = stateMachine.WeaponComponent;
+            _shipMoveComponent = stateMachine.ShipMoveComponent;
+            _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
             StateMachine = stateMachine;
-            moveAroundTimer = TimerFactory.ConstructTimer(MoveAroundDuration);
+            _moveAroundTimer = TimerFactory.ConstructTimer(MOVE_AROUND_DURATION);
         }
 
         public override void Enter()
         {
             base.Enter();
-            healthModelObserver.OnValueChanged += HandleHealth;
+            _healthModelObserver.OnValueChanged += HandleHealth;
         }
 
         public override void Exit()
         {
             base.Exit();
-            healthModelObserver.OnValueChanged -= HandleHealth;
+            _healthModelObserver.OnValueChanged -= HandleHealth;
         }
         
         protected virtual void HandleHealth()
         {
             //add condition - if under attack
-            float randomRange = Random.Range(healthModelObserver.ShieldDangerStateRange.Min,
-                healthModelObserver.ShieldDangerStateRange.Max);
-            if (moveAroundTimer.IsComplete && healthModelObserver.ShieldPercentage < randomRange)
+            float randomRange = Random.Range(_healthModelObserver.ShieldDangerStateRange.Min,
+                _healthModelObserver.ShieldDangerStateRange.Max);
+            if (_moveAroundTimer.IsComplete && _healthModelObserver.ShieldPercentage < randomRange)
             {
-                moveAroundTimer.ChangeDelay(shipMoveComponent.MoveAround()); 
-                moveAroundTimer.StartTimer();
+                _moveAroundTimer.ChangeDelay(_shipMoveComponent.MoveAround()); 
+                _moveAroundTimer.StartTimer();
             }
         }
     }

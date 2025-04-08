@@ -23,14 +23,14 @@ namespace EmpireAtWar.Services.InputService
         public event Action<bool> OnBlocked;
         public event Action<InputType, TouchPhase, Vector2> OnInput;
 
-        private InputComponent_Generated inputComponentGenerated;
-        private InputComponent_Generated.TouchMapActions MapActions => inputComponentGenerated.TouchMap;
-        private Touch touch;
-        private TouchPhase lastTouchPhase;
+        private InputComponent_Generated _inputComponentGenerated;
+        private InputComponent_Generated.TouchMapActions MapActions => _inputComponentGenerated.TouchMap;
+        private Touch _touch;
+        private TouchPhase _lastTouchPhase;
 
         
-        private bool isBlocked;
-        private float previousMagnitude;
+        private bool _isBlocked;
+        private float _previousMagnitude;
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition =>  MapActions.PrimaryPosition.ReadValue<Vector2>();
         public Vector2 SecondaryTouchPosition =>  MapActions.SecondaryPosition.ReadValue<Vector2>();
@@ -38,12 +38,12 @@ namespace EmpireAtWar.Services.InputService
 
         public InputService()
         {
-            inputComponentGenerated = new InputComponent_Generated();
+            _inputComponentGenerated = new InputComponent_Generated();
         }
 
         public void Initialize()
         {
-            inputComponentGenerated.Enable();
+            _inputComponentGenerated.Enable();
             EnhancedTouchSupport.Enable();
             
             MapActions.PrimaryContact.canceled += OnTouchReleased;
@@ -53,8 +53,8 @@ namespace EmpireAtWar.Services.InputService
         public void Dispose()
         {
             EnhancedTouchSupport.Disable();
-            inputComponentGenerated.Disable();
-            inputComponentGenerated?.Dispose();
+            _inputComponentGenerated.Disable();
+            _inputComponentGenerated?.Dispose();
             
             MapActions.PrimaryContact.canceled -= OnTouchReleased;
             MapActions.SecondaryPosition.performed -= OnSecondaryTouchPerformed;
@@ -62,21 +62,21 @@ namespace EmpireAtWar.Services.InputService
 
         private void OnSecondaryTouchPerformed(InputAction.CallbackContext callbackContext)
         {
-            if (isBlocked) return;
+            if (_isBlocked) return;
 
             float magnitude = (TouchPosition - SecondaryTouchPosition).magnitude;
-            if (previousMagnitude == 0f)
+            if (_previousMagnitude == 0f)
             {
-                previousMagnitude = magnitude;
+                _previousMagnitude = magnitude;
             }
-            float difference = magnitude - previousMagnitude;
-            previousMagnitude = magnitude;
+            float difference = magnitude - _previousMagnitude;
+            _previousMagnitude = magnitude;
             OnZoom?.Invoke(-difference);
         }
 
         private void OnTouchReleased(InputAction.CallbackContext callbackContext)
         {
-            if (isBlocked)
+            if (_isBlocked)
             {
                 OnEndDrag?.Invoke(MapActions.PrimaryPosition.ReadValue<Vector2>());
             }
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.InputService
 
                 if (MapActions.PrimaryContact.IsPressed() && !isBlockedByUi )
                 {
-                    if (!isBlocked)
+                    if (!_isBlocked)
                     {
                         Vector2 delta = MapActions.TouchDelta.ReadValue<Vector2>();
 
@@ -220,7 +220,7 @@ namespace EmpireAtWar.Services.InputService
 
         public void Block(bool isBlocked)
         {
-            this.isBlocked = isBlocked;
+            _isBlocked = isBlocked;
             OnBlocked?.Invoke(isBlocked);
         }
         

@@ -20,46 +20,46 @@ namespace EmpireAtWar.Services.Camera
 
     public class CameraService : Service, ICameraService
     {
-        private  ICameraCommand cameraCommand;
-        private readonly UnityEngine.Camera camera;
-        private Plane plane = new Plane();
+        private  ICameraCommand _cameraCommand;
+        private readonly UnityEngine.Camera _camera;
+        private Plane _plane = new Plane();
 
-        public Vector3 CameraPosition => camera.transform.position;
-        public Transform CameraTransform => camera.transform;
-        public Vector3 CameraForward => camera.transform.forward;
-        public float FieldOfView => camera.fieldOfView;
+        public Vector3 CameraPosition => _camera.transform.position;
+        public Transform CameraTransform => _camera.transform;
+        public Vector3 CameraForward => _camera.transform.forward;
+        public float FieldOfView => _camera.fieldOfView;
 
         public CameraService(UnityEngine.Camera camera)
         {
-            this.camera = camera;
+            _camera = camera;
         }
         
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
         {
-            return camera.WorldToViewportPoint(currentPosition);
+            return _camera.WorldToViewportPoint(currentPosition);
         }
 
         public Vector2 WorldToScreenPoint(Vector3 position)
         {
-            return camera.WorldToScreenPoint(position);
+            return _camera.WorldToScreenPoint(position);
         }
 
         public void MoveTo(Vector3 worldPoint)
         {
-            cameraCommand.MoveTo(worldPoint);
+            _cameraCommand.MoveTo(worldPoint);
         }
 
         public void AddCommand(ICameraCommand cameraCommand)
         {
-            this.cameraCommand = cameraCommand;
+            _cameraCommand = cameraCommand;
         }
 
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
         {           
-            Ray ray = camera.ScreenPointToRay(screenPoint);
-            plane.SetNormalAndPosition(Vector3.up, Vector3.up*position.y);
+            Ray ray = _camera.ScreenPointToRay(screenPoint);
+            _plane.SetNormalAndPosition(Vector3.up, Vector3.up*position.y);
             
-            if (plane.Raycast(ray, out float distance))
+            if (_plane.Raycast(ray, out float distance))
             {
                 return ray.GetPoint(distance);
             }
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Services.Camera
         
         public RaycastHit ScreenPointToRay(Vector2 screenPoint)
         {  
-            Ray ray = camera.ScreenPointToRay(screenPoint);
+            Ray ray = _camera.ScreenPointToRay(screenPoint);
 
             Physics.Raycast(ray, out RaycastHit hit);
             

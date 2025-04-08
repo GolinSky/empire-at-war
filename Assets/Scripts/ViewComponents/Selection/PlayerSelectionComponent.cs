@@ -9,19 +9,19 @@ namespace EmpireAtWar.ViewComponents.Selection
     {
         [SerializeField] private Canvas selectedCanvas;
 
-        private ISelectionModelObserver modelObserver;
+        private ISelectionModelObserver _modelObserver;
         
         protected override void OnInit()
         {
             base.OnInit();
-            modelObserver = ModelObserver.GetModelObserver<ISelectionModelObserver>();
-            modelObserver.OnSelected += OnSelected;
+            _modelObserver = ModelObserver.GetModelObserver<ISelectionModelObserver>();
+            _modelObserver.OnSelected += OnSelected;
         }
 
         protected override void OnRelease()
         {
             base.OnRelease();
-            modelObserver.OnSelected -= OnSelected;
+            _modelObserver.OnSelected -= OnSelected;
             OnSelected(false);
         }
 

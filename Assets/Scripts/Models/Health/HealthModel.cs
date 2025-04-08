@@ -38,7 +38,7 @@ namespace EmpireAtWar.Models.Health
         [SerializeField] 
         [Range(0f, 1f)]
         private float dexterity;//why this is private
-        protected float shieldsBaseValue;
+        protected float _shieldsBaseValue;
         private HealthModelDependency _healthModelDependency;
 
         [field:SerializeField] public float Armor { get; private set; }
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Models.Health
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
         public float Dexterity => dexterity;
-        public float ShieldPercentage => Shields/ shieldsBaseValue;
+        public float ShieldPercentage => Shields/ _shieldsBaseValue;
 
         public bool IsLostShieldGenerator { get; private set; }
         
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Models.Health
         
         protected override void OnInit()
         {
-            shieldsBaseValue = Shields;
+            _shieldsBaseValue = Shields;
         }
         
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)

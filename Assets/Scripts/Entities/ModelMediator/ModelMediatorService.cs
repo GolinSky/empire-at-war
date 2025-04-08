@@ -14,18 +14,18 @@ namespace EmpireAtWar.Entities.ModelMediator
     //todo : rename it
     public class ModelMediatorService: Service, IModelMediatorService
     {
-        private readonly List<IUnitModelObserver> units = new List<IUnitModelObserver>();
+        private readonly List<IUnitModelObserver> _units = new List<IUnitModelObserver>();
 
-        public List<IUnitModelObserver> Units => units;
+        public List<IUnitModelObserver> Units => _units;
 
         public void AddUnit(IUnitModelObserver unitModelObserver)
         {
-            units.Add(unitModelObserver);
+            _units.Add(unitModelObserver);
         }
         
         public void RemoveUnit(IUnitModelObserver unitModelObserver)
         {
-            units.Remove(unitModelObserver);
+            _units.Remove(unitModelObserver);
         }
     }
 }

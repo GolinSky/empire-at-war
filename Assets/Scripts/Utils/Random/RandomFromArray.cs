@@ -8,11 +8,11 @@ namespace EmpireAtWar.Utils.Random
     {
         [SerializeField] protected T[] array;
 
-        protected System.Random random = new System.Random();
+        protected System.Random _random = new System.Random();
         
         public T GetRandom()
         {
-            return array[random.Next(array.Length)];
+            return array[_random.Next(array.Length)];
         } 
     }
 

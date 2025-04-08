@@ -13,19 +13,19 @@ namespace EmpireAtWar.Ship
 
     public class ShipController : Controller<ShipModel>, IInitializable, ILateDisposable, IShipEntity, ILateIInitializable
     {
-        private readonly IShipService shipService;
-        private HardPointModel enginesUnitModel;
+        private readonly IShipService _shipService;
+        private HardPointModel _enginesUnitModel;
         
         public IShipModelObserver ModelObserver => Model;
 
         public ShipController(ShipModel model, IShipService shipService) : base(model)
         {
-            this.shipService = shipService;
+            _shipService = shipService;
         }
 
         public void Initialize()
         {
-            shipService.Add(this);
+            _shipService.Add(this);
            
 
         }
@@ -36,22 +36,22 @@ namespace EmpireAtWar.Ship
             {
                 if (shipUnitModel.HardPointType == HardPointType.Engines)
                 {
-                    enginesUnitModel = shipUnitModel;
+                    _enginesUnitModel = shipUnitModel;
                 }
             }
-            enginesUnitModel.OnShipUnitChanged += HandleEnginesData;
+            _enginesUnitModel.OnShipUnitChanged += HandleEnginesData;
 
         }
         
         public void LateDispose()
         {
-            shipService.Remove(this);
-            enginesUnitModel.OnShipUnitChanged -= HandleEnginesData;
+            _shipService.Remove(this);
+            _enginesUnitModel.OnShipUnitChanged -= HandleEnginesData;
         }
         
         private void HandleEnginesData()
         {
-            if (enginesUnitModel.IsDestroyed)
+            if (_enginesUnitModel.IsDestroyed)
             {
                 Model.ShipMoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
             }

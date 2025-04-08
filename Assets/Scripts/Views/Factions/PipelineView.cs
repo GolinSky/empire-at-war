@@ -8,20 +8,20 @@ namespace EmpireAtWar.Views.Factions
 {
     public class PipelineView:MonoBehaviour
     {
-        private const float FillImageStartValue = 1f;
+        private const float FILL_IMAGE_START_VALUE = 1f;
         
         [SerializeField] private Image fillIcon;
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private Button skipButton;
         
-        private IBuildPipeline buildPipeline;
-        private Sequence fillImageSequence;
-        private float fillTime;
-        private float tweenStartTime;
-        private int count = 1;
+        private IBuildPipeline _buildPipeline;
+        private Sequence _fillImageSequence;
+        private float _fillTime;
+        private float _tweenStartTime;
+        private int _count = 1;
         public bool IsBusy { get; private set; }
-        public float TimeLeft => (tweenStartTime - Time.time) + (count-1)*fillTime;
+        public float TimeLeft => (_tweenStartTime - Time.time) + (_count-1)*_fillTime;
         private string Id { get; set; }
 
         private void Awake()
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Views.Factions
 
         private void SkipSequence()
         {
-            fillImageSequence.KillIfExist();
+            _fillImageSequence.KillIfExist();
             DOTween.Kill(fillIcon);
             Complete(false);
         }
@@ -44,17 +44,17 @@ namespace EmpireAtWar.Views.Factions
         public void Fill(float fillTime, string id)
         {
             Id = id;
-            this.fillTime = fillTime;
-            fillImageSequence.KillIfExist();
-            fillImageSequence = DOTween.Sequence();
+            _fillTime = fillTime;
+            _fillImageSequence.KillIfExist();
+            _fillImageSequence = DOTween.Sequence();
             FillImage();
         }
 
         private void FillImage()
         {
-            tweenStartTime = Time.time + fillTime;
-            fillIcon.fillAmount = FillImageStartValue;
-            fillImageSequence.Append(fillIcon.DOFillAmount(0, fillTime)
+            _tweenStartTime = Time.time + _fillTime;
+            fillIcon.fillAmount = FILL_IMAGE_START_VALUE;
+            _fillImageSequence.Append(fillIcon.DOFillAmount(0, _fillTime)
                 .OnComplete(Complete));
         }
 
@@ -65,29 +65,29 @@ namespace EmpireAtWar.Views.Factions
 
         private void Complete(bool isSuccess)
         {
-            if (count == 1)
+            if (_count == 1)
             {
                 Activate(false);
             }
             else
             {
-                count--;
-                countText.text = count.ToString();
+                _count--;
+                countText.text = _count.ToString();
                 FillImage();
             }
-            buildPipeline.OnFinishPipeline(Id, isSuccess, count);
+            _buildPipeline.OnFinishPipeline(Id, isSuccess, _count);
         }
 
         public void AddCount()
         {
-            count++;
-            countText.text = count.ToString();
+            _count++;
+            countText.text = _count.ToString();
         }
         
         public void SetIcon(Sprite icon)
         {
             this.icon.sprite = icon;
-            countText.text = count.ToString();
+            countText.text = _count.ToString();
         }
 
         public void Activate(bool isActive)
@@ -98,7 +98,7 @@ namespace EmpireAtWar.Views.Factions
 
         public void Init(IBuildPipeline buildPipeline)
         {
-            this.buildPipeline = buildPipeline;
+            _buildPipeline = buildPipeline;
         }
     }
 }

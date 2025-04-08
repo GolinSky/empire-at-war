@@ -14,16 +14,16 @@ namespace EmpireAtWar.Models.Selection
     public class SelectionModel : Model, ISelectionModelObserver
     {
         public event Action<bool> OnSelected;
-        private bool isSelected;
+        private bool _isSelected;
         
         public bool IsSelected
         {
             set
             {
-                isSelected = value;
-                OnSelected?.Invoke(isSelected);
+                _isSelected = value;
+                OnSelected?.Invoke(_isSelected);
             }
-            get => isSelected;
+            get => _isSelected;
         }
     }
 }

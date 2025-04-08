@@ -15,12 +15,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private AttackModelDependency attackModelDependency;
         private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => attackModelDependency.TurretDictionary;
 
-        private List<IHardPointView> shipUnitViews;
-        private IProjectileModel projectileModel;
-        private Coroutine mainTargetAttackFlow;
-        private Coroutine commonAttackFlow;
-        private Random random = new Random();
-        private bool isDead;
+        private List<IHardPointView> _shipUnitViews;
+        private IProjectileModel _projectileModel;
+        private Coroutine _mainTargetAttackFlow;
+        private Coroutine _commonAttackFlow;
+        private Random _random = new Random();
+        private bool _isDead;
         
         [Inject]
         private IWeaponCommand WeaponCommand { get; }
@@ -29,7 +29,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected override void OnInit()
         {
-            projectileModel = Model.ProjectileModel;
+            _projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
                 if(keyValuePair.Value == null) continue;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 foreach (WeaponHardPointView turretView in keyValuePair.Value)
                 {
                     if(turretView == null) continue;
-                    turretView.SetData(projectileModel.ProjectileData[keyValuePair.Key], attackDistance);
+                    turretView.SetData(_projectileModel.ProjectileData[keyValuePair.Key], attackDistance);
                 }
             }
 
@@ -47,46 +47,46 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private void OnEnable()
         {
             Model.OnMainUnitSwitched += HandleNewMainTarget;
-            commonAttackFlow = StartCoroutine(CommonAttackFlow());
+            _commonAttackFlow = StartCoroutine(CommonAttackFlow());
         }
 
         protected override void OnRelease()
         {
             base.OnRelease();
             Model.OnMainUnitSwitched -= HandleNewMainTarget;
-            isDead = true;
+            _isDead = true;
 
-            if (mainTargetAttackFlow != null)
+            if (_mainTargetAttackFlow != null)
             {
-                StopCoroutine(mainTargetAttackFlow);
+                StopCoroutine(_mainTargetAttackFlow);
             }
-            if(commonAttackFlow != null)
+            if(_commonAttackFlow != null)
             {
-                StopCoroutine(commonAttackFlow);
+                StopCoroutine(_commonAttackFlow);
             }
         }
         
         private void HandleNewMainTarget()
         {
-            if(isDead) return;
+            if(_isDead) return;
             
-            if(mainTargetAttackFlow != null) StopCoroutine(mainTargetAttackFlow);
+            if(_mainTargetAttackFlow != null) StopCoroutine(_mainTargetAttackFlow);
 
             if(Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0) return;
             
-            mainTargetAttackFlow = StartCoroutine(AttackFlow(Model.MainUnitsTarget));
+            _mainTargetAttackFlow = StartCoroutine(AttackFlow(Model.MainUnitsTarget));
         }
 
         private IEnumerator CommonAttackFlow()
         {
-            while (!isDead)
+            while (!_isDead)
             {
                 if (Targets != null && Targets.Count > 0)
                 {
-                    shipUnitViews = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
-                    if (shipUnitViews.Count > 0)
+                    _shipUnitViews = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
+                    if (_shipUnitViews.Count > 0)
                     {
-                        yield return AttackFlow(shipUnitViews);
+                        yield return AttackFlow(_shipUnitViews);
                     }
                     else
                     {
@@ -139,7 +139,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             for (int i = listToShuffle.Count - 1; i > 0; i--)
             {
-                var k = random.Next(i + 1);
+                var k = _random.Next(i + 1);
                 var value = listToShuffle[k];
                 listToShuffle[k] = listToShuffle[i];
                 listToShuffle[i] = value;

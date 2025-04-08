@@ -41,12 +41,12 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
         [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
-        private Coroutine shieldsAnimatedCoroutine;
-        private Sequence sequence;
-        private Sequence shieldSequence;
-        private float baseShieldsValue;
-        private float baseArmorValue;
-        private List<HardPointView> currentShipUnits;
+        private Coroutine _shieldsAnimatedCoroutine;
+        private Sequence _sequence;
+        private Sequence _shieldSequence;
+        private float _baseShieldsValue;
+        private float _baseArmorValue;
+        private List<HardPointView> _currentShipUnits;
         
         [Inject]
         public PlayerType PlayerType { get; }
@@ -60,8 +60,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected override void OnInit()
         {
-            baseShieldsValue = Model.Shields;
-            baseArmorValue = Model.Armor;
+            _baseShieldsValue = Model.Shields;
+            _baseArmorValue = Model.Armor;
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += Destroy;
             shieldsFillImage.color = shieldColors.Dictionary[PlayerType];
@@ -72,7 +72,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (shieldView != null)
             {
-                shieldsAnimatedCoroutine = StartCoroutine(AnimateShields()); 
+                _shieldsAnimatedCoroutine = StartCoroutine(AnimateShields()); 
             }
         }
         
@@ -91,9 +91,9 @@ namespace EmpireAtWar.ViewComponents.Health
                 view.Release();
             }
             
-            if (shieldsAnimatedCoroutine != null)
+            if (_shieldsAnimatedCoroutine != null)
             {
-                StopCoroutine(shieldsAnimatedCoroutine);
+                StopCoroutine(_shieldsAnimatedCoroutine);
             }
         }
         
@@ -126,33 +126,33 @@ namespace EmpireAtWar.ViewComponents.Health
                 shieldView.SetActive(Model.Shields>0f);
             }
 
-            sequence.KillIfExist();
-            sequence = DOTween.Sequence();
-            sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / baseShieldsValue, TWEEN_DURATION));
-            sequence.Append(armorFillImage.DOFillAmount(Model.Armor / baseArmorValue, TWEEN_DURATION));
+            _sequence.KillIfExist();
+            _sequence = DOTween.Sequence();
+            _sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / _baseShieldsValue, TWEEN_DURATION));
+            _sequence.Append(armorFillImage.DOFillAmount(Model.Armor / _baseArmorValue, TWEEN_DURATION));
         }
 
         public IHardPointView[] GetShipUnits(HardPointType hardPointType)
         {
-            currentShipUnits = ShipUnits.Where(x => !x.IsDestroyed).ToList();
+            _currentShipUnits = ShipUnits.Where(x => !x.IsDestroyed).ToList();
 
-            if (currentShipUnits.Count == 0)
+            if (_currentShipUnits.Count == 0)
             {
                 return null;
             }
             if (hardPointType == HardPointType.Any)
             {
-                return currentShipUnits.ToArray();
+                return _currentShipUnits.ToArray();
             }
             else
             {
-                if (currentShipUnits.Any(x => x.HardPointType == hardPointType))
+                if (_currentShipUnits.Any(x => x.HardPointType == hardPointType))
                 {
-                    return currentShipUnits.Where(x => x.HardPointType == hardPointType).ToArray();
+                    return _currentShipUnits.Where(x => x.HardPointType == hardPointType).ToArray();
                 }
                 else
                 {
-                    return currentShipUnits.ToArray();
+                    return _currentShipUnits.ToArray();
                 }
             }
         }

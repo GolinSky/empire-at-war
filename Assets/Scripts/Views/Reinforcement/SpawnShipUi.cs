@@ -18,43 +18,43 @@ namespace EmpireAtWar
     
     public class SpawnShipUi : MonoBehaviour, IBeginDragHandler, IDragHandler, ISpawnShipUi
     {
-        private const int DefaultCountValue = 1;
+        private const int DEFAULT_COUNT_VALUE = 1;
         
         [SerializeField] private Image iconImage;
         [SerializeField] private Image backgroundImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
        
-        private IReinforcementVisitor reinforcementVisitor;
+        private IReinforcementVisitor _reinforcementVisitor;
         
-        private Color originColor;
-        private Color blockedColor = Color.gray;
-        private int count;
-        private bool isBlocked;
+        private Color _originColor;
+        private Color _blockedColor = Color.gray;
+        private int _count;
+        private bool _isBlocked;
         
         public string UnitType { get; private set; }
 
         private void Awake()
         {
-            originColor = backgroundImage.color;
+            _originColor = backgroundImage.color;
         }
 
         void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, string unitType, FactionData factionData)
         {
             UnitType = unitType;
-            this.reinforcementVisitor = reinforcementVisitor;
+            _reinforcementVisitor = reinforcementVisitor;
             iconImage.sprite = factionData.Icon;
             unitCapacityText.text = factionData.UnitCapacity.ToString();
-            count = DefaultCountValue;
+            _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();
         }
 
 
         void ISpawnShipUi.DecreaseUnitCount()
         {
-            count--;
+            _count--;
             UpdateUnitCountText();
-            if (count <= 0)
+            if (_count <= 0)
             {
                 Destroy();
             }
@@ -62,34 +62,34 @@ namespace EmpireAtWar
 
         void ISpawnShipUi.AddUnit()
         {
-            count++;
+            _count++;
             UpdateUnitCountText();
         }
         
         void ISpawnShipUi.Activate(bool isActive)
         {
-            backgroundImage.color = isActive ? originColor : blockedColor;
-            isBlocked = !isActive;
+            backgroundImage.color = isActive ? _originColor : _blockedColor;
+            _isBlocked = !isActive;
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            if(isBlocked) return;
+            if(_isBlocked) return;
             
-            reinforcementVisitor?.Handle(this);
+            _reinforcementVisitor?.Handle(this);
         }
         
         void IDragHandler.OnDrag(PointerEventData eventData) {}
         
         private void UpdateUnitCountText()
         {
-            unitCountText.text = count.ToString();
+            unitCountText.text = _count.ToString();
         }
         
         private void Destroy()
         {
-            reinforcementVisitor.OnRelease(this);
-            reinforcementVisitor = null;
+            _reinforcementVisitor.OnRelease(this);
+            _reinforcementVisitor = null;
             Destroy(gameObject);
         }
     }

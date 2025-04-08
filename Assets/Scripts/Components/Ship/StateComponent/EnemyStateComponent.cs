@@ -12,12 +12,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 {
     public class EnemyStateComponent: Component, IInitializable, ILateDisposable, ITickable
     {
-        private readonly IMapModelObserver mapModelObserver;
-        private readonly ShipStateMachine shipStateMachine;
+        private readonly IMapModelObserver _mapModelObserver;
+        private readonly ShipStateMachine _shipStateMachine;
 
-        private readonly ShipIdleState shipIdleState;
-        private readonly ShipLockMainTargetState shipLockMainTargetState;
-        private readonly MoveToPointState moveToPointState;
+        private readonly ShipIdleState _shipIdleState;
+        private readonly ShipLockMainTargetState _shipLockMainTargetState;
+        private readonly MoveToPointState _moveToPointState;
 
         public EnemyStateComponent(
             IModel model,
@@ -26,24 +26,24 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IComponentHub componentHub,
             IMapModelObserver mapModelObserver)
         {
-            this.mapModelObserver = mapModelObserver;
-            shipStateMachine = new ShipStateMachine(
+            _mapModelObserver = mapModelObserver;
+            _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
                 weaponComponent,
                 componentHub,
                 model);
             
-            shipIdleState = new ShipIdleState(shipStateMachine);
-            shipLockMainTargetState = new ShipLockMainTargetState(shipStateMachine);
-            moveToPointState = new MoveToPointState(shipStateMachine);
+            _shipIdleState = new ShipIdleState(_shipStateMachine);
+            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine);
+            _moveToPointState = new MoveToPointState(_shipStateMachine);
 
-            shipStateMachine.SetDefaultState(shipIdleState);
-            shipStateMachine.ChangeState(shipIdleState);
+            _shipStateMachine.SetDefaultState(_shipIdleState);
+            _shipStateMachine.ChangeState(_shipIdleState);
         }
         public void Initialize()
         {
-            moveToPointState.SetWorldCoordinates(mapModelObserver.GetStationPosition(PlayerType.Player));
-            shipStateMachine.ChangeState(moveToPointState);
+            _moveToPointState.SetWorldCoordinates(_mapModelObserver.GetStationPosition(PlayerType.Player));
+            _shipStateMachine.ChangeState(_moveToPointState);
         }
 
         public void LateDispose()
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
         public void Tick()
         {
-            shipStateMachine.Update();
+            _shipStateMachine.Update();
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public enum DefendPlatformType
     {
-        XQ6 = 0,
+        Xq6 = 0,
     }
 }

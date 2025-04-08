@@ -18,15 +18,15 @@ namespace EmpireAtWar.Models.Economy
         [field: SerializeField] public float IncomeDelay { get; private set; }
         [field: SerializeField] public float StartMoneyAmount { get; private set; }
         
-        private float money;
+        private float _money;
         
         public float Money
         {
-            get => money;
+            get => _money;
             set
             {
-                money = value;
-                OnMoneyChanged?.Invoke(money);
+                _money = value;
+                OnMoneyChanged?.Invoke(_money);
             }
         }
     }

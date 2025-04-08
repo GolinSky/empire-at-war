@@ -10,7 +10,7 @@
         PhotonTorpedo = 6,
         DualLaser = 7,
         Laser = 8,
-        DualHeavyTurboLaserDBY827 = 9,
+        DualHeavyTurboLaserDby827 = 9,
         IonCannon = 10,
         HeavyIonCannon = 11,
         LaserBeam = 12,

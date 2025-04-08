@@ -1,9 +1,7 @@
 ﻿using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
-using UnityEngine;
 using Zenject;
-using Zenject.SpaceFighter;
 
 namespace EmpireAtWar.SceneContext.ViewInstallers.Ui
 {

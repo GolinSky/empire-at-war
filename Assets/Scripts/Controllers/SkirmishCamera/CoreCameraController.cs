@@ -11,11 +11,11 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 {
     public class CoreCameraController : Controller<CoreCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {
-        private readonly ICameraService cameraService;
-        private readonly IInputService inputService;
-        private Vector3 translateDirection;
-        private Vector3 cameraPosition;
-        private bool moved;
+        private readonly ICameraService _cameraService;
+        private readonly IInputService _inputService;
+        private Vector3 _translateDirection;
+        private Vector3 _cameraPosition;
+        private bool _moved;
         [Inject(Id = EntityBindType.ViewTransform)]
         private Transform Transform { get; }
 
@@ -26,24 +26,24 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
             ICameraService cameraService,
             IInputService inputService) : base(model)
         {
-            this.cameraService = cameraService;
-            this.inputService = inputService;
+            _cameraService = cameraService;
+            _inputService = inputService;
             cameraService.AddCommand(this);
         }
 
         public void Initialize()
         {
-            inputService.OnInput += HandleInput;
-            inputService.OnSwipe += OnSwipe;
-            inputService.OnZoom += ZoomCamera;
+            _inputService.OnInput += HandleInput;
+            _inputService.OnSwipe += OnSwipe;
+            _inputService.OnZoom += ZoomCamera;
         }
         
 
         public void LateDispose()
         {
-            inputService.OnInput -= HandleInput;
-            inputService.OnSwipe -= OnSwipe;
-            inputService.OnZoom -= ZoomCamera;
+            _inputService.OnInput -= HandleInput;
+            _inputService.OnSwipe -= OnSwipe;
+            _inputService.OnZoom -= ZoomCamera;
         }
         
         private void OnSwipe(Vector2 direction)
@@ -67,7 +67,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
 
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-            Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.unscaledDeltaTime;
+            Vector3 newPos = _cameraService.CameraPosition - _cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.unscaledDeltaTime;
             if(Model.ZoomRange.IsInRange(newPos.y))
             {
                 newPos.y = Model.ZoomRange.Clamp(newPos.y);
@@ -78,7 +78,7 @@ namespace EmpireAtWar.Controllers.SkirmishCamera
         private void ZoomCamera(float scrollDelta)
         {
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
-            Vector3 newPos = cameraService.CameraPosition - cameraService.CameraForward * scrollDelta * Model.ZoomSpeed * Time.unscaledDeltaTime;
+            Vector3 newPos = _cameraService.CameraPosition - _cameraService.CameraForward * scrollDelta * Model.ZoomSpeed * Time.unscaledDeltaTime;
             if(Model.ZoomRange.IsInRange(newPos.y))
             {
                 newPos.y = Model.ZoomRange.Clamp(newPos.y);

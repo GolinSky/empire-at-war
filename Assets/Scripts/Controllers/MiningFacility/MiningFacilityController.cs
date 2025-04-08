@@ -15,7 +15,7 @@ namespace EmpireAtWar.Controllers.MiningFacility
     public class MiningFacilityController : Controller<MiningFacilityModel>, IMiningFacilityCommand, IIncomeProvider,
         IInitializable, ILateDisposable
     {
-        private readonly IEconomyProvider economyProvider;
+        private readonly IEconomyProvider _economyProvider;
 
         public float Income => Model.Income;
 
@@ -24,24 +24,24 @@ namespace EmpireAtWar.Controllers.MiningFacility
             PlayerType playerType,
             IEconomyMediator economyMediator) : base(model)
         {
-            economyProvider = economyMediator.GetProvider(playerType);
+            _economyProvider = economyMediator.GetProvider(playerType);
         }
 
         public void Initialize()
         {
             Model.HealthModel.OnDestroy += HandleDestroy;
-            economyProvider.AddProvider(this);
+            _economyProvider.AddProvider(this);
         }
 
         public void LateDispose()
         {
             Model.HealthModel.OnDestroy -= HandleDestroy;
-            economyProvider.RemoveProvider(this);
+            _economyProvider.RemoveProvider(this);
         }
 
         private void HandleDestroy()
         {
-            economyProvider.RemoveProvider(this);
+            _economyProvider.RemoveProvider(this);
         }
     }
 }

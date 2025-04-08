@@ -21,12 +21,12 @@ namespace EmpireAtWar.Models.Audio
         [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> attackAudioClipsWrapper;
         [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> alarmSightsAudioClipsWrapper;
         [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> damageAudioClipsWrapper;
-        private AudioClip hyperSpaceAudioClip;
-        private Random dialogRandom = new Random();
-        private Random attackRandom = new Random();
-        private Random moveRandom = new Random();
-        private Random alarmSightsRandom = new Random();
-        private Random damaageRandom = new Random();
+        private AudioClip _hyperSpaceAudioClip;
+        private Random _dialogRandom = new Random();
+        private Random _attackRandom = new Random();
+        private Random _moveRandom = new Random();
+        private Random _alarmSightsRandom = new Random();
+        private Random _damaageRandom = new Random();
         
         [Inject(Id = PlayerType.Player)] 
         private FactionType PlayerFactionType { get; }
@@ -36,27 +36,27 @@ namespace EmpireAtWar.Models.Audio
         
         public AudioClip GetDialogClip(PlayerType playerType)
         {
-            return GetClip(playerType, dialogAudioClipsWrapper.Dictionary, dialogRandom);
+            return GetClip(playerType, dialogAudioClipsWrapper.Dictionary, _dialogRandom);
         }
         
         public AudioClip GetAttackClip(PlayerType playerType)
         {
-            return GetClip(playerType, attackAudioClipsWrapper.Dictionary, attackRandom);
+            return GetClip(playerType, attackAudioClipsWrapper.Dictionary, _attackRandom);
         }
         
         public AudioClip GetMoveClip(PlayerType playerType)
         {
-            return GetClip(playerType, moveAudioClipsWrapper.Dictionary, moveRandom);
+            return GetClip(playerType, moveAudioClipsWrapper.Dictionary, _moveRandom);
         }
         
         public AudioClip GetAlarmSightsClip(PlayerType playerType)
         {
-            return GetClip(playerType, alarmSightsAudioClipsWrapper.Dictionary, alarmSightsRandom);
+            return GetClip(playerType, alarmSightsAudioClipsWrapper.Dictionary, _alarmSightsRandom);
         }
 
         public AudioClip GetDamageClip(PlayerType playerType)
         {
-            return GetClip(playerType, damageAudioClipsWrapper.Dictionary, damaageRandom);
+            return GetClip(playerType, damageAudioClipsWrapper.Dictionary, _damaageRandom);
         }
         private AudioClip GetClip(PlayerType playerType, Dictionary<FactionType, List<AudioClip>> clipDictionary, Random random)
         {

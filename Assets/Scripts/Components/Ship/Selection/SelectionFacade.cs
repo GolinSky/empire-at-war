@@ -6,16 +6,16 @@ namespace EmpireAtWar.Components.Ship.Selection
 {
     public class SelectionFacade : PlaceholderFactory<IModel,IMovable, SelectionComponent>
     {
-        private readonly INavigationService navigationService;
+        private readonly INavigationService _navigationService;
 
         public SelectionFacade(INavigationService navigationService)
         {
-            this.navigationService = navigationService;
+            _navigationService = navigationService;
         }
         
         public override SelectionComponent Create(IModel model, IMovable movable)
         {
-            return new SelectionComponent(model, navigationService, movable);
+            return new SelectionComponent(model, _navigationService, movable);
         }
     }
 }

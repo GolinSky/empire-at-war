@@ -20,29 +20,29 @@ namespace EmpireAtWar.Models.Health
         [field: SerializeField] public int Id { get; private set; }
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
 
-        private float originHealth;
-        private float health;
+        private float _originHealth;
+        private float _health;
         private HardPointView _hardPointView;
 
         public event Action OnShipUnitChanged;
         public float HealthPercentage { get; private set; } = 1f;
 
-        public float Health => health;
+        public float Health => _health;
         
         public bool IsDestroyed => HealthPercentage <= 0f;
 
         public void SetHealth(float health)
         {
-            originHealth = health;
-            this.health = health;
+            _originHealth = health;
+            _health = health;
             HealthPercentage = health;
             _hardPointView.UpdateData(HealthPercentage);
         }
 
         public void ApplyDamage(float damage)
         {
-            health -= damage;
-            HealthPercentage = health / originHealth;
+            _health -= damage;
+            HealthPercentage = _health / _originHealth;
             OnShipUnitChanged?.Invoke();
             _hardPointView.UpdateData(HealthPercentage);
         }
@@ -64,14 +64,14 @@ namespace EmpireAtWar.Models.Health
 
         public float TryApplyDamage(float damage)
         {
-            if (health >= damage)
+            if (_health >= damage)
             {
                 ApplyDamage(damage);
                 return 0.0f;
             }
 
-            float damageLeft = damage - health;
-            ApplyDamage(health);
+            float damageLeft = damage - _health;
+            ApplyDamage(_health);
             return damageLeft;
         }
     }

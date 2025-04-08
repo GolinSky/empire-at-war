@@ -14,26 +14,26 @@ namespace EmpireAtWar.Ship
 {
     public class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
     {
-        private ShipType shipType;
-        private PlayerType playerType;
-        private IModelMediatorService modelMediatorService;
+        private ShipType _shipType;
+        private PlayerType _playerType;
+        private IModelMediatorService _modelMediatorService;
 
-        protected override string ModelPathPrefix => shipType.ToString();
-        protected override string ViewPathPrefix => shipType.ToString();
+        protected override string ModelPathPrefix => _shipType.ToString();
+        protected override string ViewPathPrefix => _shipType.ToString();
 
         [Inject]
         public void Construct(IModelMediatorService modelMediatorService, ShipType shipType, PlayerType playerType)
         {
-            this.modelMediatorService = modelMediatorService;
-            this.shipType = shipType;
-            this.playerType = playerType;
+            _modelMediatorService = modelMediatorService;
+            _shipType = shipType;
+            _playerType = playerType;
         }
 
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(playerType);
-            Container.BindEntity(shipType);
+            Container.BindEntity(_playerType);
+            Container.BindEntity(_shipType);
         }
 
         protected override void BindComponents()
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Ship
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AudioShipComponent>();
             
-            switch (playerType)
+            switch (_playerType)
             {
                 case PlayerType.Player:
                 {
@@ -70,7 +70,7 @@ namespace EmpireAtWar.Ship
         protected override void OnModelCreated()
         {
             base.OnModelCreated();
-            modelMediatorService.AddUnit(Container.Resolve<ShipModel>());
+            _modelMediatorService.AddUnit(Container.Resolve<ShipModel>());
         }
     }
 }

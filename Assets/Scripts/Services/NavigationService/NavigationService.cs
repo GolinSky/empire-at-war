@@ -22,15 +22,15 @@ namespace EmpireAtWar.Services.NavigationService
     {
         public event Action<SelectionType> OnTypeChanged;
 
-        private readonly IInputService inputService;
-        private IMovable movable;
+        private readonly IInputService _inputService;
+        private IMovable _movable;
 
         public ISelectable Selectable { get; private set; }
         public SelectionType SelectionType { get; private set; }
 
         public NavigationService(IInputService inputService)
         {
-            this.inputService = inputService;
+            _inputService = inputService;
         }
         
         public void UpdateSelectable(ISelectable selectableObject, SelectionType selectionType)
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Services.NavigationService
             }
 
             Selectable = selectableObject;
-            movable = selectableObject.Movable;
+            _movable = selectableObject.Movable;
             selectableObject.SetActive(true);
 
             SelectionType = selectionType;
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Services.NavigationService
             {
                 Selectable.SetActive(false);
                 Selectable = null;
-                movable = null;
+                _movable = null;
                 SelectionType = SelectionType.None;
                 OnTypeChanged?.Invoke(SelectionType);
             }

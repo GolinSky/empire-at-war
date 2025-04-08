@@ -18,12 +18,12 @@ namespace EmpireAtWar.ViewComponents.Health
         
         [SerializeField] private FloatRange yAxisRange;
 
-        private List<BaseTurretView> turrets = new List<BaseTurretView>();
-        private ProjectileData projectileData;
+        private List<BaseTurretView> _turrets = new List<BaseTurretView>();
+        private ProjectileData _projectileData;
 
-        private float maxAttackDistance;
+        private float _maxAttackDistance;
         public bool Destroyed { get; private set; }
-        public bool IsBusy => turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
+        public bool IsBusy => _turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
         
 
         
@@ -35,14 +35,14 @@ namespace EmpireAtWar.ViewComponents.Health
         
         public void SetData(ProjectileData projectileData, float maxAttackDistance)
         {
-            this.maxAttackDistance = maxAttackDistance;
-            this.projectileData = projectileData;
+            _maxAttackDistance = maxAttackDistance;
+            _projectileData = projectileData;
         }
 
         public bool CanAttack(Vector3 targetPosition)
         {
             float distance = Vector3.Distance(targetPosition, transform.position);
-            if (distance > maxAttackDistance) return false;
+            if (distance > _maxAttackDistance) return false;
             
             Vector3 direction = targetPosition - transform.position;
 
@@ -68,7 +68,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private BaseTurretView GetTurret()
         {
             BaseTurretView turret = null;
-            foreach (BaseTurretView turretView in turrets)
+            foreach (BaseTurretView turretView in _turrets)
             {
                 if (!turretView.IsBusy)
                 {
@@ -79,7 +79,7 @@ namespace EmpireAtWar.ViewComponents.Health
             if (turret == null)
             {
                 string turretPath = TURRET_PATH;
-                switch (projectileData.TurretType)
+                switch (_projectileData.TurretType)
                 {
                     case TurretType.Single:
                         turretPath = TURRET_PATH;
@@ -100,8 +100,8 @@ namespace EmpireAtWar.ViewComponents.Health
                 var prefab =  Repository.LoadComponent<BaseTurretView>(turretPath);
                 turret = Instantiate(prefab, transform);
                 turret.transform.localPosition = Vector3.zero;// move it to set data method
-                turret.SetData(projectileData, maxAttackDistance);
-                turrets.Add(turret);
+                turret.SetData(_projectileData, _maxAttackDistance);
+                _turrets.Add(turret);
             }
 
             return turret;

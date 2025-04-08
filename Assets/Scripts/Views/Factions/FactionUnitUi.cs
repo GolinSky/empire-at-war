@@ -12,8 +12,8 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private TextMeshProUGUI unitPriceText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
-        private IFactionView factionView;
-        private UnitRequest unitRequest;
+        private IFactionView _factionView;
+        private UnitRequest _unitRequest;
         public FactionData FactionData { get; private set; }
         public int Level { get; private set; }
 
@@ -26,8 +26,8 @@ namespace EmpireAtWar.Views.Factions
             unitPriceText.text = factionData.Price.ToString();
             purchaseButton.onClick.AddListener(HandleClick);
             Level = factionData.AvailableLevel;
-            this.factionView = factionView;
-            this.unitRequest = unitRequest;
+            _factionView = factionView;
+            _unitRequest = unitRequest;
         }
 
         private void OnDestroy()
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick()
         {
-            factionView.BuyUnit(unitRequest, FactionData);
+            _factionView.BuyUnit(_unitRequest, FactionData);
         }
 
         public void SetActive(bool isActive)

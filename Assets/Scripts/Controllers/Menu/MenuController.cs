@@ -10,7 +10,7 @@ namespace EmpireAtWar.Controllers.Menu
     
     public class MenuController : Controller<MenuModel>, IMenuCommand, IUserStateNotifier
     {
-        private List<IObserver<UserNotifierState>> observers = new List<IObserver<UserNotifierState>>();
+        private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         
         public MenuController(MenuModel model) : base(model)
         {
@@ -33,7 +33,7 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void UpdateState(UserNotifierState state)
         {
-            foreach (IObserver<UserNotifierState> observer in observers)
+            foreach (IObserver<UserNotifierState> observer in _observers)
             {
                 observer.UpdateState(state);
             }
@@ -41,17 +41,17 @@ namespace EmpireAtWar.Controllers.Menu
 
         public void AddObserver(IObserver<UserNotifierState> observer)
         {
-            if (observers.Contains(observer))
+            if (_observers.Contains(observer))
             {
                 Debug.LogError($"{observer} is already in collection");
                 return;
             }
-            observers.Add(observer);
+            _observers.Add(observer);
         }
 
         public void RemoveObserver(IObserver<UserNotifierState> observer)
         {
-            observers.Remove(observer);
+            _observers.Remove(observer);
         }
     }
 }

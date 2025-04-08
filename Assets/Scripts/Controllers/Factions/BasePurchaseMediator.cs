@@ -4,19 +4,19 @@ namespace EmpireAtWar.Controllers.Factions
 {
     public abstract class BasePurchaseMediator: IChainHandler<UnitRequest>
     {
-        protected IChainHandler<UnitRequest> next;
+        protected IChainHandler<UnitRequest> _next;
         
         public virtual IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
-            next = chainHandler;
-            return next;
+            _next = chainHandler;
+            return _next;
         }
 
         public virtual void Handle(UnitRequest request)
         {
-            if (next != null)
+            if (_next != null)
             {
-                next.Handle(request);
+                _next.Handle(request);
             }
         }
     }

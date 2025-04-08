@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Linq;
 using System.IO;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -32,19 +33,19 @@ namespace EmpireAtWar
 #if UNITY_EDITOR
 		// Reference to the asset used in the editor. Player builds don't know about SceneAsset.
 		// Will be used to update the scene path.
-		[SerializeField] private SceneAsset m_SceneAsset;
+		[FormerlySerializedAs("m_SceneAsset")] [SerializeField] private SceneAsset mSceneAsset;
 
 #pragma warning disable 0414 // Never used warning - will be used by SerializedProperty.
 		// Used to dirtify the data when needed upon displaying in the inspector.
 		// Otherwise the user will never get the changes to save (unless he changes any other field of the object / scene).
-		[SerializeField] private bool m_IsDirty;
+		[FormerlySerializedAs("m_IsDirty")] [SerializeField] private bool mIsDirty;
 #pragma warning restore 0414
 #endif
 
 		// Player builds will use the path stored here. Should be updated in the editor or during build.
 		// If scene is deleted, path will remain.
-		[SerializeField]
-		private string m_ScenePath = string.Empty;
+		[FormerlySerializedAs("m_ScenePath")] [SerializeField]
+		private string mScenePath = string.Empty;
 
 
 		/// <summary>
@@ -59,20 +60,20 @@ namespace EmpireAtWar
 				AutoUpdateReference();
 #endif
 
-				return m_ScenePath;
+				return mScenePath;
 			}
 
 			set {
-				m_ScenePath = value;
+				mScenePath = value;
 
 #if UNITY_EDITOR
-				if (string.IsNullOrEmpty(m_ScenePath)) {
-					m_SceneAsset = null;
+				if (string.IsNullOrEmpty(mScenePath)) {
+					mSceneAsset = null;
 					return;
 				}
 
-				m_SceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(m_ScenePath);
-				if (m_SceneAsset == null) {
+				mSceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(mScenePath);
+				if (mSceneAsset == null) {
 					Debug.LogError($"Setting {nameof(SceneReference)} to {value}, but no scene could be located there.");
 				}
 #endif
@@ -95,18 +96,18 @@ namespace EmpireAtWar
 
 		public SceneReference(SceneReference other)
 		{
-			m_ScenePath = other.m_ScenePath;
+			mScenePath = other.mScenePath;
 
 #if UNITY_EDITOR
-			m_SceneAsset = other.m_SceneAsset;
-			m_IsDirty = other.m_IsDirty;
+			mSceneAsset = other.mSceneAsset;
+			mIsDirty = other.mIsDirty;
 
 			AutoUpdateReference();
 #endif
 		}
 
 #if UNITY_EDITOR
-		private static bool s_ReloadingAssemblies = false;
+		private static bool _sReloadingAssemblies = false;
 
 		static SceneReference()
 		{
@@ -115,7 +116,7 @@ namespace EmpireAtWar
 
 		private static void OnBeforeAssemblyReload()
 		{
-			s_ReloadingAssemblies = true;
+			_sReloadingAssemblies = true;
 		}
 #endif
 
@@ -123,7 +124,7 @@ namespace EmpireAtWar
 
 		public override string ToString()
 		{
-			return m_ScenePath;
+			return mScenePath;
 		}
 
 		[Obsolete("Needed for the editor, don't use it in runtime code!", true)]
@@ -132,7 +133,7 @@ namespace EmpireAtWar
 #if UNITY_EDITOR
 			// In rare cases this error may be logged when trying to change SceneReference while assembly is reloading:
 			// "Objects are trying to be loaded during a domain backup. This is not allowed as it will lead to undefined behaviour!"
-			if (s_ReloadingAssemblies)
+			if (_sReloadingAssemblies)
 				return;
 
 			AutoUpdateReference();
@@ -159,14 +160,14 @@ namespace EmpireAtWar
 
 		private void AutoUpdateReference()
 		{
-			if (m_SceneAsset == null) {
-				if (string.IsNullOrEmpty(m_ScenePath))
+			if (mSceneAsset == null) {
+				if (string.IsNullOrEmpty(mScenePath))
 					return;
 
-				SceneAsset foundAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(m_ScenePath);
+				SceneAsset foundAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(mScenePath);
 				if (foundAsset) {
-					m_SceneAsset = foundAsset;
-					m_IsDirty = true;
+					mSceneAsset = foundAsset;
+					mIsDirty = true;
 
 					if (!Application.isPlaying) {
 						// NOTE: This doesn't work for scriptable objects, hence the m_IsDirty.
@@ -174,13 +175,13 @@ namespace EmpireAtWar
 					}
 				}
 			} else {
-				string foundPath = AssetDatabase.GetAssetPath(m_SceneAsset);
+				string foundPath = AssetDatabase.GetAssetPath(mSceneAsset);
 				if (string.IsNullOrEmpty(foundPath))
 					return;
 
-				if (foundPath != m_ScenePath) {
-					m_ScenePath = foundPath;
-					m_IsDirty = true;
+				if (foundPath != mScenePath) {
+					mScenePath = foundPath;
+					mIsDirty = true;
 
 					if (!Application.isPlaying) {
 						// NOTE: This doesn't work for scriptable objects, hence the m_IsDirty.
