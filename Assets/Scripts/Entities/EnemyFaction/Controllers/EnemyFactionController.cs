@@ -1,9 +1,11 @@
 ﻿using System;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
+using EmpireAtWar.Services.EconomyMediator;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.DefendPlatform;
@@ -16,18 +18,23 @@ using Random = UnityEngine.Random;
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic 
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IBuildShipChain
+    public class EnemyFactionController : Controller<EnemyFactionModel>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
     {
+        private const float DEFAULT_INCOME = 5f;
+
         private readonly ShipFacadeFactory shipFacadeFactory;
         private readonly LazyInject<IMapModelObserver> mapModel;
+        private readonly IEconomyProvider economyProvider;
 
-  
+
         private IChainHandler<UnitRequest> nextChain;
         private readonly MiningFacilityFacade miningFacilityFacade;
         private readonly DefendPlatformFacade defendPlatformFacade;
         private readonly ITimerPoolWrapperService timerPoolWrapperService;
 
         private PlayerType PlayerType => PlayerType.Opponent;
+        public float Income => DEFAULT_INCOME;
+
 
         public EnemyFactionController(
             EnemyFactionModel model,
@@ -36,16 +43,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             DefendPlatformFacade defendPlatformFacade,
             ITimerPoolWrapperService timerPoolWrapperService, 
             LazyInject<IMapModelObserver> mapModel,
-            IUnitRequestFactory unitRequestFactory) : base(model)
+            IEconomyProvider economyProvider) : base(model)
         {
             this.shipFacadeFactory = shipFacadeFactory;
             this.miningFacilityFacade = miningFacilityFacade;
             this.defendPlatformFacade = defendPlatformFacade;
             this.timerPoolWrapperService = timerPoolWrapperService;
             this.mapModel = mapModel;
+            this.economyProvider = economyProvider;
         }
-
-
+        
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
@@ -105,6 +112,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 Random.Range(minRange.y, maxRange.y));
          //   Debug.Log($"GenerateShipCoordinates:{vector3}");
             return vector3;
+        }
+
+        public void Initialize()
+        {
+            economyProvider.AddProvider(this);
+        }
+
+        public void LateDispose()
+        {
+            economyProvider.AddProvider(this);
         }
     }
 }

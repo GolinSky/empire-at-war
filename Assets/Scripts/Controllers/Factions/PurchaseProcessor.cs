@@ -5,12 +5,12 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public sealed class PurchaseMediator : BasePurchaseMediator, IPurchaseMediator
+    public sealed class PurchaseProcessor : BasePurchaseMediator, IPurchaseProcessor
     {
         private readonly IPurchaseChain purchaseChain;
         private readonly IReinforcementChain reinforcementChain;
         
-        public PurchaseMediator(
+        public PurchaseProcessor(
             [Inject(Id = PlayerType.Player)] IPurchaseChain purchaseChain,
             [Inject(Id = PlayerType.Player)] IReinforcementChain reinforcementChain)
 

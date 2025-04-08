@@ -33,7 +33,7 @@ public class SkirmishMainInstaller : MonoInstaller
 
         Container
             .BindInterfacesExt<UnitRequestFactory>()
-            .BindInterfacesExt<PurchaseMediator>();
+            .BindInterfacesExt<PurchaseProcessor>();
             // .BindInterfacesExt<EnemyPurchaseMediator>();
         //.BindInterfaces<EnemyBuildService>();
 

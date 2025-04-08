@@ -12,8 +12,8 @@ namespace EmpireAtWar.Patterns.Strategy
         private readonly ITimer decisionTimer;
         private readonly ITimer levelUpgradeTimer;
         private bool isMaxLevelReached;
-        public TempStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator, IUnitRequestFactory unitRequestFactory) 
-            : base(factionModel, enemyPurchaseMediator, unitRequestFactory)
+        public TempStrategy(EnemyFactionModel factionModel, IEnemyPurchaseProcessor enemyPurchaseProcessor, IUnitRequestFactory unitRequestFactory) 
+            : base(factionModel, enemyPurchaseProcessor, unitRequestFactory)
         {
             decisionTimer = TimerFactory.ConstructTimer(DecisionDelay);
             levelUpgradeTimer = TimerFactory.ConstructTimer(FactionModel.GetCurrentLevelFactionData().BuildTime);

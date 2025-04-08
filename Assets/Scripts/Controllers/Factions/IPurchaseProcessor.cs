@@ -2,13 +2,13 @@
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IPurchaseMediator : IChainHandler<UnitRequest>
+    public interface IPurchaseProcessor : IChainHandler<UnitRequest>
     {
         void Add(IBuildShipChain buildShipChain);
         void RevertFlow(UnitRequest result);
     }
 
-    public interface IEnemyPurchaseMediator: IChainHandler<UnitRequest>
+    public interface IEnemyPurchaseProcessor: IChainHandler<UnitRequest>
     {
         
     }

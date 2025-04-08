@@ -20,10 +20,9 @@ namespace EmpireAtWar.SceneContext
         {
             Container.BindInterfacesExt<EnemyService>();
             
-            Container.BindInterfacesExt<EnemyPurchaseMediator>();
+            Container.BindInterfacesExt<EnemyPurchaseProcessor>();
             
             Container.BindInterfacesExt<EnemyFactionController>();
-            // Container.BindInterfacesExt<EnemyFactionController>(PlayerType.Opponent);
             
             
             ModelDependencyBuilder

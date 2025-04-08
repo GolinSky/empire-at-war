@@ -15,7 +15,7 @@ namespace EmpireAtWar.Controllers.Factions
         private const float DefaultIncome = 5f;
 
         private readonly INavigationService navigationService;
-        private readonly LazyInject<IPurchaseMediator> purchaseMediator;
+        private readonly LazyInject<IPurchaseProcessor> purchaseMediator;
         private readonly IEconomyProvider economyProvider;
         private IChainHandler<UnitRequest> nextChain;
         public float Income { get; private set; }
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Controllers.Factions
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,
-            LazyInject<IPurchaseMediator> purchaseMediator,
+            LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyMediator economyMediator) : base(model)
         {
             Income = DefaultIncome;

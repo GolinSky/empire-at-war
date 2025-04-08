@@ -1,14 +1,10 @@
 ﻿using EmpireAtWar.Controllers.Economy;
-using EmpireAtWar.Models.Factions;
-using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public sealed class EnemyPurchaseMediator : BasePurchaseMediator,IEnemyPurchaseMediator
+    public sealed class EnemyPurchaseProcessor : BasePurchaseMediator,IEnemyPurchaseProcessor
     {
-        public EnemyPurchaseMediator(
-            // [Inject(Id = PlayerType.Opponent)] IPurchaseChain purchaseChain,
-            // [Inject(Id = PlayerType.Opponent)] IBuildShipChain buildShipChain) 
+        public EnemyPurchaseProcessor(
                 IPurchaseChain purchaseChain,
                 IBuildShipChain buildShipChain)
         {

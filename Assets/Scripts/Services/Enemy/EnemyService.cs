@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 stationPosition;
         private SpaceStationView spaceStationView;
         private readonly SpaceStationViewFacade spaceStationViewFacade;
-        private readonly EnemyPurchaseMediator enemyPurchaseMediator;
+        private readonly EnemyPurchaseProcessor enemyPurchaseProcessor;
         private readonly LazyInject<IMapModelObserver> mapModel;
         private readonly IUnitRequestFactory unitRequestFactory;
         private readonly EnemyFactionModel enemyFactionModel;
@@ -32,13 +32,13 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
             SpaceStationViewFacade spaceStationViewFacade,
-            EnemyPurchaseMediator enemyPurchaseMediator, 
+            EnemyPurchaseProcessor enemyPurchaseProcessor, 
             IUnitRequestFactory unitRequestFactory,
             EnemyFactionModel enemyFactionModel)
         {
             this.mapModel = mapModel;
             this.spaceStationViewFacade = spaceStationViewFacade;
-            this.enemyPurchaseMediator = enemyPurchaseMediator;
+            this.enemyPurchaseProcessor = enemyPurchaseProcessor;
             this.unitRequestFactory = unitRequestFactory;
             this.enemyFactionModel = enemyFactionModel;
         }
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Services.Enemy
                 currentStrategy.Stop();
             }
             //todo: refactor this - get rid of new - use factory
-            currentStrategy = new TempStrategy(enemyFactionModel, enemyPurchaseMediator, unitRequestFactory);
+            currentStrategy = new TempStrategy(enemyFactionModel, enemyPurchaseProcessor, unitRequestFactory);
             currentStrategy.Start();
         }
     }
