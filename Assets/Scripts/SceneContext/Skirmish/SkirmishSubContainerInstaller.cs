@@ -19,29 +19,29 @@ namespace EmpireAtWar.SceneContext
         
         public override void InstallBindings()
         {
-            Container
-                .BindFactory<PlayerType, ShipType, Vector3, ShipView, ShipFacadeFactory>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
-                .NonLazy();
-    
-            Container
-                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
-                .NonLazy();
-
-            Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacade>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
-                .NonLazy();
-            
-            Container
-                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
-                .FromSubContainerResolve()
-                .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
-                .NonLazy();
+            // Container
+            //     .BindFactory<PlayerType, ShipType, Vector3, ShipView, ShipFacadeFactory>()
+            //     .FromSubContainerResolve()
+            //     .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
+            //     .NonLazy();
+            //
+            // Container
+            //     .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
+            //     .FromSubContainerResolve()
+            //     .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
+            //     .NonLazy();
+            //
+            // Container
+            //     .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacade>()
+            //     .FromSubContainerResolve()
+            //     .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
+            //     .NonLazy();
+            //
+            // Container
+            //     .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
+            //     .FromSubContainerResolve()
+            //     .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
+            //     .NonLazy();
         }
 
         private GameObject GetPath<T>()

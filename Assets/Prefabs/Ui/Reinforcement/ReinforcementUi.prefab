@@ -281,7 +281,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.059547555, y: 0.029456303}
   m_AnchorMax: {x: 0.9315476, y: 0.7924563}
-  m_AnchoredPosition: {x: 2.3955688, y: 15.1608}
+  m_AnchoredPosition: {x: 2.3955688, y: 15.160828}
   m_SizeDelta: {x: 3.9604, y: -34.3217}
   m_Pivot: {x: 0.5000005, y: 0.5}
 --- !u!222 &940526229562314011
@@ -478,8 +478,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6283284511448297895}
   m_HandleRect: {fileID: 296402806635291146}
   m_Direction: 0
-  m_Value: -0.0000011544538
-  m_Size: 0.69351137
+  m_Value: -0.0000024082938
+  m_Size: 0.8530798
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -702,15 +702,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -762,7 +764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00024414062, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0.00024414062, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1237223659022048574
@@ -1334,8 +1336,6 @@ GameObject:
   - component: {fileID: 8247924901146808094}
   - component: {fileID: 6402506525792237653}
   - component: {fileID: 2582927013417079221}
-  - component: {fileID: 6671633581250858960}
-  - component: {fileID: 8908088158596181786}
   m_Layer: 5
   m_Name: ReinforcementUi
   m_TagString: Untagged
@@ -1417,6 +1417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   viewComponents: []
+  <ModelDependencies>k__BackingField: []
   spawnTransform: {fileID: 812305163281907676}
   switchButton: {fileID: 7349140832176908858}
   closeButton: {fileID: 6149023881478231343}
@@ -1440,40 +1441,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6671633581250858960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8197294553891939371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 8908088158596181786}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &8908088158596181786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8197294553891939371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 003d68a691f744ab98576606023facd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  view: {fileID: 6402506525792237653}
-  bindViewComponents: 0
-  bindMonoComponent: 0
-  SceneContext: {fileID: 0}
 --- !u!1 &8206913793986213746
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -15,7 +15,7 @@ namespace EmpireAtWar.Views.Factions
     {
         void BuyUnit(UnitRequest shipUnitRequest, FactionData factionData);
     }
-    public class FactionUiView : View<IPlayerFactionModelObserver, IFactionCommand>, IFactionView
+    public class FactionUi : BaseUi<IPlayerFactionModelObserver, IFactionCommand>, IFactionView, IInitializable, ILateDisposable
     {
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
@@ -32,7 +32,8 @@ namespace EmpireAtWar.Views.Factions
         [Inject]
         private IUnitRequestFactory UnitRequestFactory { get; }
         
-        protected override void OnInitialize()
+        
+        public void Initialize()
         {
             pipelineView.Init();
             HandleSelectionChanged(Model.SelectionType);
@@ -58,6 +59,15 @@ namespace EmpireAtWar.Views.Factions
             Model.OnUnitBuild += BuildUnit;
             exitButton.onClick.AddListener(ExitUi);
             pipelineView.OnFinishSequence += HandleEndOfBuilding;
+        }
+        
+        public void LateDispose()
+        {
+            Model.OnSelectionTypeChanged -= HandleSelectionChanged;
+            Model.OnLevelUpgraded -= UpdateUnits;
+            Model.OnUnitBuild -= BuildUnit;
+            exitButton.onClick.RemoveListener(ExitUi);
+            pipelineView.OnFinishSequence -= HandleEndOfBuilding;
         }
 
         private void AddUi(UnitRequest unitRequest)
@@ -85,14 +95,6 @@ namespace EmpireAtWar.Views.Factions
             }
 
             return null;
-        }
-        protected override void OnDispose()
-        {
-            Model.OnSelectionTypeChanged -= HandleSelectionChanged;
-            Model.OnLevelUpgraded -= UpdateUnits;
-            Model.OnUnitBuild -= BuildUnit;
-            exitButton.onClick.RemoveListener(ExitUi);
-            pipelineView.OnFinishSequence -= HandleEndOfBuilding;
         }
         
         private void HandleEndOfBuilding(bool isSuccess, string id)

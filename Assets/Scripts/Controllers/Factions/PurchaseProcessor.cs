@@ -1,7 +1,5 @@
 ﻿using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Reinforcement;
-using EmpireAtWar.Models.Factions;
-using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions
 {
@@ -10,10 +8,7 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly IPurchaseChain _purchaseChain;
         private readonly IReinforcementChain _reinforcementChain;
         
-        public PurchaseProcessor(
-            [Inject(Id = PlayerType.Player)] IPurchaseChain purchaseChain,
-            [Inject(Id = PlayerType.Player)] IReinforcementChain reinforcementChain)
-
+        public PurchaseProcessor(IPurchaseChain purchaseChain, IReinforcementChain reinforcementChain)
         {
             _purchaseChain = purchaseChain;
             _reinforcementChain = reinforcementChain;

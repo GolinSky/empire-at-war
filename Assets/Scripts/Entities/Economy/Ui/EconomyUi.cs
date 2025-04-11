@@ -1,21 +1,22 @@
 ﻿using System.Globalization;
 using EmpireAtWar.Models.Economy;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Views.Economy
 {
-    public class EconomyView : View<IEconomyModelObserver>
+    public class EconomyUi : BaseUi<IEconomyModelObserver>, IInitializable, ILateDisposable
     {
         [SerializeField] private TextMeshProUGUI moneyText;
-
-        protected override void OnInitialize()
+        
+        public void Initialize()
         {
             Model.OnMoneyChanged += UpdateMoneyText;
         }
 
-        protected override void OnDispose()
+        public void LateDispose()
         {
             Model.OnMoneyChanged -= UpdateMoneyText;
         }

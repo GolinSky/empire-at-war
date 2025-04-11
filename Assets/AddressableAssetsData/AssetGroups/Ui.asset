@@ -10,18 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Audio
+  m_Name: Ui
   m_EditorClassIdentifier: 
-  m_GroupName: Audio
-  m_GUID: 755137ef93843ef4f8032c8dc9cd87c5
+  m_GroupName: Ui
+  m_GUID: d65a788370bd4fd458defeede90be2c1
   m_SerializeEntries:
-  - m_GUID: 13f17b0e7ab1cb347808b6e4561b6563
-    m_Address: mixkit-cinematic-impact-thunder-1286
+  - m_GUID: 1d9fbb3039acbce4cb3a081d4f92e7e1
+    m_Address: ReinforcementUi
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d105f3706327c274db845257a59e3bdf
-    m_Address: SHIP_ALARM
+  - m_GUID: 44c88130ec726cf479ff760e55f8d98d
+    m_Address: EconomyUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a89611b9093e21a4a8bcf6aee7005e07
+    m_Address: FactionUi
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -29,5 +34,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 788dafe18d83ccb4f8ffcdd3141286a5, type: 2}
-    - {fileID: 11400000, guid: 5947c4da0df63ab4d8360a9d846f8c09, type: 2}
+    - {fileID: 11400000, guid: a890233ca86ea0a44aa058fbd77aa8eb, type: 2}
+    - {fileID: 11400000, guid: 2da18f26ec21d734db7cf229f66485c4, type: 2}

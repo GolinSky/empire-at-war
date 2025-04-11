@@ -2,7 +2,6 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Services.EconomyMediator;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
 using Zenject;
@@ -10,7 +9,7 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Factions
 {
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
-        IBuildShipChain, IIncomeProvider
+        IBuildShipChain, IIncomeProvider, ITickable
     {
         private const float DEFAULT_INCOME = 5f;
 
@@ -24,12 +23,12 @@ namespace EmpireAtWar.Controllers.Factions
             PlayerFactionModel model,
             INavigationService navigationService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
-            IEconomyMediator economyMediator) : base(model)
+            IEconomyProvider economyProvider) : base(model)
         {
             Income = DEFAULT_INCOME;
             _navigationService = navigationService;
             _purchaseMediator = purchaseMediator;
-            _economyProvider = economyMediator.GetProvider(PlayerType.Player);
+            _economyProvider = economyProvider;
         }
 
         public void Initialize()
@@ -92,6 +91,11 @@ namespace EmpireAtWar.Controllers.Factions
         public void Handle(UnitRequest unitRequest)
         {
             Model.UnitToBuild = unitRequest;
+        }
+
+        public void Tick()
+        {
+            
         }
     }
 }

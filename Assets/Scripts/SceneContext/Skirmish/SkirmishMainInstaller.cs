@@ -1,3 +1,4 @@
+using EmpireAtWar;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
@@ -8,17 +9,23 @@ using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.SceneContext;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Player;
 using LightWeightFramework.Components.Repository;
+using UnityEngine;
 using Zenject;
+using LocationService = EmpireAtWar.Services.Location.LocationService;
 
 public class SkirmishMainInstaller : MonoInstaller
 {
+    [SerializeField] private LocationService locationService;
+    
     [Inject] private IGameModelObserver GameModelObserver { get; }
-
     [Inject] private IRepository Repository { get; }
 
     public override void InstallBindings()
     {
+        Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
+        
         //todo: use GameModelObserver.PlayerFactionType directly
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
@@ -32,59 +39,22 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindModel<DamageCalculationModel>(Repository);
 
         Container
-            .BindInterfacesExt<UnitRequestFactory>()
-            .BindInterfacesExt<PurchaseProcessor>();
-            // .BindInterfacesExt<EnemyPurchaseMediator>();
-        //.BindInterfaces<EnemyBuildService>();
+            .BindInterfacesExt<UnitRequestFactory>();
 
-        Container
-            .BindInterfacesAndSelfTo<EnemyService>()
-            .FromSubContainerResolve()
-            .ByInstaller<EnemyCoreInstaller>()
-            .AsSingle()
-            .NonLazy();
-        
         // Container
-        //     .Bind<PlayerImpl>()
-        //     .FromSubContainerResolve()
-        //     .ByInstaller<PlayerCoreInstaller>()
-        //     .AsSingle()
-        //     .NonLazy();
-        //
-        //
-        // Container
-        //     .Bind<EnemyImpl>()
+        //     .BindInterfacesAndSelfTo<EnemyService>()
         //     .FromSubContainerResolve()
         //     .ByInstaller<EnemyCoreInstaller>()
         //     .AsSingle()
         //     .NonLazy();
-        //
-        //todo: move enemy to another container
-        //enemy
-        // ModelDependencyBuilder
-        //     .ConstructBuilder(Container)
-        //     .BindFromNewScriptable<EconomyModel>(Repository, PlayerType.Opponent);
-        //
-        // Container.BindInterfacesExt<EconomyController>();
-        //
+        
         // Container
-        //     .Bind(typeof(IPurchaseChain), typeof(IEconomyProvider))
-        //     .WithId(PlayerType.Opponent)
-        //     .FromResolve()
-        //     .AsSingle();
-        //
-        // ModelDependencyBuilder
-        //     .ConstructBuilder(Container)
-        //     .BindFromNewScriptable<EnemyFactionModel>(Repository, PlayerType.Opponent);
+        //     .BindInterfacesAndSelfTo<PlayerService>()
+        //     .FromSubContainerResolve()
+        //     .ByInstaller<PlayerCoreInstaller>()
+        //     .AsSingle()
+        //     .NonLazy();
 
-        // Container
-        //     .BindInterfacesExt<EnemyFactionController>(PlayerType.Opponent);
-
-        // Container
-        //     .Bind<IBuildShipChain>()
-        //     .WithId(PlayerType.Opponent)
-        //     .FromResolve()
-        //     .AsSingle();
 
         Container.BindInterfacesExt<ModelMediatorService>();
     }

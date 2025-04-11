@@ -22,9 +22,9 @@ namespace EmpireAtWar.Controllers.MiningFacility
         public MiningFacilityController(
             MiningFacilityModel model,
             PlayerType playerType,
-            IEconomyMediator economyMediator) : base(model)
+            IEconomyProvider economyProvider) : base(model)
         {
-            _economyProvider = economyMediator.GetProvider(playerType);
+            _economyProvider = economyProvider;
         }
 
         public void Initialize()

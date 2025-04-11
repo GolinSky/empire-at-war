@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.Visitor;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.ViewImpl;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.ScriptUtils.Dotween;
+using Zenject;
 
 namespace EmpireAtWar.Views.Reinforcement
 {
@@ -18,7 +19,7 @@ namespace EmpireAtWar.Views.Reinforcement
     {
         void OnRelease(ISpawnShipUi spawnShipUi);
     }
-    public class ReinforcementView:View<IReinforcementModelObserver, IReinforcementCommand>, IReinforcementVisitor
+    public class ReinforcementUi:BaseUi<IReinforcementModelObserver, IReinforcementCommand>, IReinforcementVisitor, IInitializable, ILateDisposable
     {
         private const string UNIT_CAPACITY_TEXT = "Reinforcement: ";
         
@@ -33,8 +34,8 @@ namespace EmpireAtWar.Views.Reinforcement
         private ISpawnShipUi _currenSpawnUnitUi;
         private Sequence _fadeSequence;
         private Color _originColor;
-
-        protected override void OnInitialize()
+        
+        public void Initialize()
         {
             _originColor = signalImage.color;
             unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{Model.MaxUnitCapacity}";
@@ -46,8 +47,8 @@ namespace EmpireAtWar.Views.Reinforcement
             Model.OnReinforcementAdded += AddUi;
             Model.OnCapacityChanged += UpdateCapacityData;
         }
-        
-        protected override void OnDispose()
+
+        public void LateDispose()
         {
             switchButton.onClick.RemoveListener(ActivateCanvas);
             closeButton.onClick.RemoveListener(DisableCanvas);
@@ -140,5 +141,7 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             shipUnitUi.Activate(Model.CanSpawnUnit(shipType));
         }
+
+
     }
 }
