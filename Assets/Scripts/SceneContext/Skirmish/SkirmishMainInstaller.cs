@@ -1,15 +1,14 @@
-using EmpireAtWar;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
+using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.SceneContext;
-using EmpireAtWar.Services.Enemy;
-using EmpireAtWar.Services.Player;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
@@ -29,8 +28,13 @@ public class SkirmishMainInstaller : MonoInstaller
         //todo: use GameModelObserver.PlayerFactionType directly
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
+        
+        Container.BindInterfacesExt<UiService>();
 
 
+        Container.BindModel<CoreGameModel>(Repository);
+        Container.BindInterfacesNonLazyExt<CoreGameController>();
+        
         Container
             .BindModel<FactionsModel>(Repository)
             .BindModel<WeaponDamageModel>(Repository)
@@ -41,19 +45,10 @@ public class SkirmishMainInstaller : MonoInstaller
         Container
             .BindInterfacesExt<UnitRequestFactory>();
 
-        // Container
-        //     .BindInterfacesAndSelfTo<EnemyService>()
-        //     .FromSubContainerResolve()
-        //     .ByInstaller<EnemyCoreInstaller>()
-        //     .AsSingle()
-        //     .NonLazy();
-        
-        // Container
-        //     .BindInterfacesAndSelfTo<PlayerService>()
-        //     .FromSubContainerResolve()
-        //     .ByInstaller<PlayerCoreInstaller>()
-        //     .AsSingle()
-        //     .NonLazy();
+        Container
+            .BindFactory<UiType, Transform, BaseUi, UiFacade>()
+            .FromSubContainerResolve()
+            .ByNewGameObjectInstaller<UiInstaller>();
 
 
         Container.BindInterfacesExt<ModelMediatorService>();

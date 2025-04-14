@@ -3,13 +3,13 @@ using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-
     public class CoreGameController : Controller<CoreGameModel>, ICoreGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
         private const float SPEED_UP_TIME_SCALE = 4f;
@@ -17,13 +17,19 @@ namespace EmpireAtWar.Controllers.Game
         private const float PAUSE_TIME_SCALE = 0f;
         private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
         private readonly IGameCommand _gameCommand;
+        private readonly IUiService _uiService;
         private readonly FactionsModel _factionsModel;
         private GameTimeMode _gameTimeMode;
         
-        public CoreGameController(CoreGameModel model, LazyInject<IUserStateNotifier> userStateNotifier, IGameCommand gameCommand) : base(model)
+        public CoreGameController(
+            CoreGameModel model,
+            LazyInject<IUserStateNotifier> userStateNotifier,
+            IGameCommand gameCommand,
+            IUiService uiService) : base(model)
         {
             _userStateNotifier = userStateNotifier;
             _gameCommand = gameCommand;
+            _uiService = uiService;
             _gameTimeMode = GameTimeMode.Common;
             ChangeTime(_gameTimeMode);
         }
@@ -31,6 +37,7 @@ namespace EmpireAtWar.Controllers.Game
         public void Initialize()
         {
             _userStateNotifier.Value.AddObserver(this);
+            _uiService.CreateUi(UiType.CoreGame);
         }
 
         public void LateDispose()

@@ -34,13 +34,14 @@ namespace EmpireAtWar
             
             Container.BindInterfacesExt<PlayerService>();
           
-            //todo: rebind it here - bind it in scene context
+            //rebind scene context binding here to be able to inject current subcontainer dependency to BaseUi impl instances
             Container
                 .BindFactory<UiType, Transform, BaseUi, UiFacade>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<UiInstaller>();
             
             Container.BindInterfacesExt<UiService>();
+
             Container.BindInterfacesExt<PurchaseProcessor>();
         }
         
