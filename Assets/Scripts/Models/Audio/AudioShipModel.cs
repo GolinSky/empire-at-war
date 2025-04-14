@@ -21,19 +21,19 @@ namespace EmpireAtWar.Models.Audio
         [SerializeField] private AssetReferenceT<AudioClip> hyperSpaceAudioReference;
         [SerializeField] private RandomAudioClips alarmRandomClips;
         [SerializeField] private RandomAudioClips backgroundClips;
-        private AudioClip hyperSpaceAudioClip;
+        private AudioClip _hyperSpaceAudioClip;
 
 
         public AudioClip HyperSpaceAudioClip
         {
             get
             {
-                if (hyperSpaceAudioClip == null)
+                if (_hyperSpaceAudioClip == null)
                 {
-                    hyperSpaceAudioClip = hyperSpaceAudioReference.LoadAssetAsync().WaitForCompletion();
+                    _hyperSpaceAudioClip = hyperSpaceAudioReference.LoadAssetAsync().WaitForCompletion();
                 }
 
-                return hyperSpaceAudioClip;
+                return _hyperSpaceAudioClip;
             }
         }
 

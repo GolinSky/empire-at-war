@@ -14,50 +14,50 @@ namespace EmpireAtWar.Controllers.DefendPlatform
 {
     public class DefendPlatformController : Controller<DefendPlatformModel>, IInitializable, ILateDisposable, ITickable
     {
-        private readonly ISelectionService selectionService;
-        private readonly ISelectionModelObserver selectionModelObserver;
+        private readonly ISelectionService _selectionService;
+        private readonly ISelectionModelObserver _selectionModelObserver;
 
-        private readonly UnitStateMachine stateMachine;
-        private readonly UnitIdleState idleState;
-        private readonly LockMainTargetState lockMainTargetState;
+        private readonly UnitStateMachine _stateMachine;
+        private readonly UnitIdleState _idleState;
+        private readonly LockMainTargetState _lockMainTargetState;
         
         public DefendPlatformController(DefendPlatformModel model, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService) : base(model)
         {
-            this.selectionService = selectionService;
-            selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
+            _selectionService = selectionService;
+            _selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
 
-            stateMachine = new UnitStateMachine(weaponComponent, componentHub, Model);
-            idleState = new UnitIdleState(stateMachine);
-            lockMainTargetState = new LockMainTargetState(stateMachine);
-            stateMachine.SetDefaultState(idleState);
-            stateMachine.ChangeState(idleState);
+            _stateMachine = new UnitStateMachine(weaponComponent, componentHub, Model);
+            _idleState = new UnitIdleState(_stateMachine);
+            _lockMainTargetState = new LockMainTargetState(_stateMachine);
+            _stateMachine.SetDefaultState(_idleState);
+            _stateMachine.ChangeState(_idleState);
         }
         
         public void Initialize()
         {
-            selectionService.OnHitSelected += HandleSelected;
+            _selectionService.OnHitSelected += HandleSelected;
         }
 
         public void LateDispose()
         {
-            selectionService.OnHitSelected -= HandleSelected;
+            _selectionService.OnHitSelected -= HandleSelected;
         }
         
         private void HandleSelected(RaycastHit raycastHit)
         {
-            if(!selectionModelObserver.IsSelected) return;
+            if(!_selectionModelObserver.IsSelected) return;
             
             IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
             if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                lockMainTargetState.SetData(mainTarget); 
-                stateMachine.ChangeState(lockMainTargetState);
+                _lockMainTargetState.SetData(mainTarget); 
+                _stateMachine.ChangeState(_lockMainTargetState);
             }
         }
 
         public void Tick()
         {
-            stateMachine.Update();
+            _stateMachine.Update();
         }
     }
 }

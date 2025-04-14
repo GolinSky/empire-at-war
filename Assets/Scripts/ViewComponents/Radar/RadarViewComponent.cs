@@ -9,26 +9,26 @@ namespace EmpireAtWar.ViewComponents.Radar
 {
     public class RadarViewComponent:ViewComponent
     {
-        private IRadarModelObserver radarModelObserver;
-        private Vector3 offset;
-        private ISimpleMoveModelObserver moveModel;
-        private Vector3 halfExtents;
-        private Vector3 CenterCast => moveModel.CurrentPosition - offset;
+        private IRadarModelObserver _radarModelObserver;
+        private Vector3 _offset;
+        private ISimpleMoveModelObserver _moveModel;
+        private Vector3 _halfExtents;
+        private Vector3 CenterCast => _moveModel.CurrentPosition - _offset;
 
         protected override void OnInit()
         {
-            moveModel = ModelObserver.GetModelObserver<ISimpleMoveModelObserver>();
+            _moveModel = ModelObserver.GetModelObserver<ISimpleMoveModelObserver>();
 
-            radarModelObserver = ModelObserver.GetModelObserver<IRadarModelObserver>();
-            int layer = radarModelObserver.LayerMask.ToSingleLayer();
+            _radarModelObserver = ModelObserver.GetModelObserver<IRadarModelObserver>();
+            int layer = _radarModelObserver.LayerMask.ToSingleLayer();
             View.gameObject.layer = layer;
             Transform[] children = View.gameObject.GetComponentsInChildren<Transform>();
             foreach (Transform child in children)
             {
                 child.gameObject.layer = layer;
             }
-            offset = Vector3.up * 100f;
-            halfExtents = Vector3.one * radarModelObserver.Range;
+            _offset = Vector3.up * 100f;
+            _halfExtents = Vector3.one * _radarModelObserver.Range;
 
         }
   
@@ -43,7 +43,7 @@ namespace EmpireAtWar.ViewComponents.Radar
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(CenterCast, halfExtents*2f);
+                Gizmos.DrawWireCube(CenterCast, _halfExtents*2f);
             }
 #endif
       

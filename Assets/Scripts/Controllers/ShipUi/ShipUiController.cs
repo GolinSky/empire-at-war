@@ -9,29 +9,29 @@ namespace EmpireAtWar.Controllers.ShipUi
 {
     public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand
     {
-        private readonly INavigationService navigationService;
+        private readonly INavigationService _navigationService;
 
         
         public ShipUiController(ShipUiModel model, INavigationService navigationService) : base(model)
         {
-            this.navigationService = navigationService;
+            _navigationService = navigationService;
         }
 
         public void Initialize()
         {
-            navigationService.OnTypeChanged += UpdateType;
+            _navigationService.OnTypeChanged += UpdateType;
         }
 
         public void LateDispose()
         {
-            navigationService.OnTypeChanged -= UpdateType;
+            _navigationService.OnTypeChanged -= UpdateType;
         }
         
         private void UpdateType(SelectionType selectionType)
         {
             if (selectionType == SelectionType.Ship)
             {
-                IShipModelObserver shipModelObserver = navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
+                IShipModelObserver shipModelObserver = _navigationService.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
                 if (shipModelObserver != null)
                 {
                     Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public void CloseSelection()
         {
-            navigationService.RemoveSelectable();
+            _navigationService.RemoveSelectable();
         }
     }
 }

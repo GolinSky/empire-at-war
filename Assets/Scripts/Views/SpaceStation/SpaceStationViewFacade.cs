@@ -8,13 +8,13 @@ namespace EmpireAtWar.Views.SpaceStation
 {
     public class SpaceStationViewFacade:PlaceholderFactory<PlayerType, FactionType, Vector3, SpaceStationView>
     {
-        private readonly DiContainer container;
-        private readonly IRepository repository;
+        private readonly DiContainer _container;
+        private readonly IRepository _repository;
 
         public SpaceStationViewFacade(DiContainer container, IRepository repository)
         {
-            this.container = container;
-            this.repository = repository;
+            _container = container;
+            _repository = repository;
         }
         // public override SpaceStationView Create(PlayerType playerType, FactionType factionType, Vector3 startPoint)
         // {
@@ -34,24 +34,24 @@ namespace EmpireAtWar.Views.SpaceStation
 
     public class SpaceStationViewFactory:IFactory<PlayerType, FactionType, Vector3, SpaceStationView>
     {
-        private readonly DiContainer container;
-        private readonly IRepository repository;
+        private readonly DiContainer _container;
+        private readonly IRepository _repository;
 
         public SpaceStationViewFactory(DiContainer container, IRepository repository)
         {
-            this.container = container;
-            this.repository = repository;
+            _container = container;
+            _repository = repository;
         }
         public SpaceStationView Create(PlayerType playerType, FactionType factionType, Vector3 startPoint)
         {
-            container.BindEntity(startPoint).MoveIntoDirectSubContainers();
-            container.BindEntity(playerType).MoveIntoDirectSubContainers();
-            container.BindEntity(factionType).MoveIntoDirectSubContainers();
-            SpaceStationView spaceStationView = container
+            _container.BindEntity(startPoint).MoveIntoDirectSubContainers();
+            _container.BindEntity(playerType).MoveIntoDirectSubContainers();
+            _container.BindEntity(factionType).MoveIntoDirectSubContainers();
+            SpaceStationView spaceStationView = _container
                 .InstantiatePrefabForComponent<SpaceStationView>(
-                    repository.LoadComponent<SpaceStationView>($"{factionType}{nameof(SpaceStationView)}"));
+                    _repository.LoadComponent<SpaceStationView>($"{factionType}{nameof(SpaceStationView)}"));
 
-            container
+            _container
                 .Bind<SpaceStationView>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab(spaceStationView)

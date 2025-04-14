@@ -24,22 +24,22 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
     public class WeaponComponent : BaseComponent<WeaponModel>, IWeaponComponent, IWeaponCommand, ILateTickable, ILateDisposable, IDisposable
     {
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
-        private readonly ITimer attackTimer;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly ISimpleMoveModelObserver _simpleMoveModelObserver;
+        private readonly ITimer _attackTimer;
 
-        private List<CustomCoroutine> customCoroutines = new List<CustomCoroutine>();
-        private List<AttackData> attackDataList = new List<AttackData>();
-        private AttackData mainAttackData = null;
-        private float endTimeTween;
+        private List<CustomCoroutine> _customCoroutines = new List<CustomCoroutine>();
+        private List<AttackData> _attackDataList = new List<AttackData>();
+        private AttackData _mainAttackData = null;
+        private float _endTimeTween;
 
         public float OptimalAttackRange { get; }
 
         public WeaponComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
-            this.timerPoolWrapperService = timerPoolWrapperService;
-            simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
-            attackTimer = TimerFactory.ConstructTimer(3f);
+            _timerPoolWrapperService = timerPoolWrapperService;
+            _simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
+            _attackTimer = TimerFactory.ConstructTimer(3f);
             OptimalAttackRange = Model.MaxAttackDistance * 0.5f;
         }
 
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             {
                 case AttackType.Base:
                 {
-                    foreach (AttackData data in attackDataList)
+                    foreach (AttackData data in _attackDataList)
                     {
                         if (attackData == data)
                         {
@@ -65,13 +65,13 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                         }
                     }
                     Model.AddShipUnits(attackData.Units);
-                    attackDataList.Add(attackData);
+                    _attackDataList.Add(attackData);
                     break;
                 }
                 case AttackType.MainTarget:
                 {
-                    mainAttackData = attackData;
-                    Model.MainUnitsTarget = mainAttackData.Units;
+                    _mainAttackData = attackData;
+                    Model.MainUnitsTarget = _mainAttackData.Units;
                     break;
                 }
             }
@@ -89,15 +89,15 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public void ApplyDamage(IHardPointView unitView, WeaponType weaponType, float duration)
         {
-            for (var i = 0; i < attackDataList.Count; i++)
+            for (var i = 0; i < _attackDataList.Count; i++)
             {
-                if (attackDataList[i].Contains(unitView))
+                if (_attackDataList[i].Contains(unitView))
                 {
-                    AttackData attackData = attackDataList[i];
-                    CustomCoroutine customCoroutine = timerPoolWrapperService.Invoke(
+                    AttackData attackData = _attackDataList[i];
+                    CustomCoroutine customCoroutine = _timerPoolWrapperService.Invoke(
                         ()=>
                         {   
-                            if(!attackDataList.Contains(attackData)) return;
+                            if(!_attackDataList.Contains(attackData)) return;
                             
                             if(unitView == null) return;// todo: fix bug when loading main menu
                             
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                                 GetDistance(unitView.Position));
                         },
                         duration);
-                    customCoroutines.Add(customCoroutine);
+                    _customCoroutines.Add(customCoroutine);
                     customCoroutine.OnFinished += DeleteFromCollection;
                     break;
                 }
@@ -118,7 +118,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         private void DeleteFromCollection(CustomCoroutine customCoroutine)
         {
             customCoroutine.OnFinished -= DeleteFromCollection;
-            customCoroutines.Remove(customCoroutine);
+            _customCoroutines.Remove(customCoroutine);
         }
 
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
@@ -152,47 +152,47 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         }
 
         private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(simpleMoveModelObserver.CurrentPosition, targetPosition);
+            Vector3.Distance(_simpleMoveModelObserver.CurrentPosition, targetPosition);
 
         private void RemoveAttackData(AttackData attackData)
         {
-            attackDataList.Remove(attackData);
+            _attackDataList.Remove(attackData);
             Model.RemoveShipUnits(attackData.Units);
         }
 
         public void LateTick()
         {
-            if (mainAttackData?.IsDestroyed == true)
+            if (_mainAttackData?.IsDestroyed == true)
             {
                 ResetMainTarget();
             }
             
-            if(attackDataList.Count == 0) return;
+            if(_attackDataList.Count == 0) return;
  
-            for (var i = 0; i < attackDataList.Count; i++)
+            for (var i = 0; i < _attackDataList.Count; i++)
             {
-                CheckAttackData(attackDataList[i]);
+                CheckAttackData(_attackDataList[i]);
             }
         }
 
         private void ResetMainTarget()
         {
-            mainAttackData = null;
+            _mainAttackData = null;
             Model.MainUnitsTarget = null;
         }
 
         public void LateDispose()
         {
-            for (var i = 0; i < attackDataList.Count; i++)
+            for (var i = 0; i < _attackDataList.Count; i++)
             {
-                RemoveAttackData(attackDataList[i]);
+                RemoveAttackData(_attackDataList[i]);
             }
-            attackDataList.Clear();
-            if (customCoroutines.Count > 0)
+            _attackDataList.Clear();
+            if (_customCoroutines.Count > 0)
             {
-                for (var i = 0; i < customCoroutines.Count; i++)
+                for (var i = 0; i < _customCoroutines.Count; i++)
                 {
-                    customCoroutines[i].Release();
+                    _customCoroutines[i].Release();
                 }
             }
         }

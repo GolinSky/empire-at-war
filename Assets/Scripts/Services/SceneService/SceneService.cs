@@ -21,16 +21,16 @@ namespace EmpireAtWar.Services.SceneService
 
     public class SceneService : Service, ISceneService, IInitializable, ILateDisposable
     {
-        private readonly SceneModel sceneModel;
-        private const float MinSceneProgress = 0.88f;
+        private readonly SceneModel _sceneModel;
+        private const float MIN_SCENE_PROGRESS = 0.88f;
         public event Action<SceneType> OnSceneActivation;
 
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
 
-        private AsyncOperation asyncOperation;
+        private AsyncOperation _asyncOperation;
 
         
-        private readonly Dictionary<PlanetType, SceneType> planetScenes = new Dictionary<PlanetType, SceneType>
+        private readonly Dictionary<PlanetType, SceneType> _planetScenes = new Dictionary<PlanetType, SceneType>
         {
             {  PlanetType.Coruscant, SceneType.Coruscant },
             {  PlanetType.Kamino, SceneType.Kamino }
@@ -39,13 +39,13 @@ namespace EmpireAtWar.Services.SceneService
 
         public SceneService(SceneModel sceneModel, ITimerPoolWrapperService timerPoolWrapperService )
         {
-            this.sceneModel = sceneModel;
-            this.timerPoolWrapperService = timerPoolWrapperService;
+            _sceneModel = sceneModel;
+            _timerPoolWrapperService = timerPoolWrapperService;
         }
         
         public void LoadSceneByPlanetType(PlanetType planetType)
         {
-            if (!planetScenes.TryGetValue(planetType, out SceneType sceneType))
+            if (!_planetScenes.TryGetValue(planetType, out SceneType sceneType))
             {
                 Debug.LogError($"No scene type for {planetType}");
             }
@@ -59,11 +59,11 @@ namespace EmpireAtWar.Services.SceneService
         {
             get
             {
-                if (asyncOperation == null)
+                if (_asyncOperation == null)
                 {
                     return false;
                 }
-                return asyncOperation.progress > MinSceneProgress;
+                return _asyncOperation.progress > MIN_SCENE_PROGRESS;
             }
         }
 
@@ -71,11 +71,11 @@ namespace EmpireAtWar.Services.SceneService
 
         public void ActivateScene()//fix this
         {
-            if(asyncOperation == null) return;
+            if(_asyncOperation == null) return;
             
           //  OnSceneActivation?.Invoke(LoadingScene);
-            asyncOperation.allowSceneActivation = true;
-            asyncOperation = null;
+            _asyncOperation.allowSceneActivation = true;
+            _asyncOperation = null;
         }
 
 
@@ -83,14 +83,14 @@ namespace EmpireAtWar.Services.SceneService
         {
             TargetScene = sceneType;
             
-            SceneManager.LoadScene(sceneModel.GetLoadScene().SceneName, LoadSceneMode.Single);
+            SceneManager.LoadScene(_sceneModel.GetLoadScene().SceneName, LoadSceneMode.Single);
         }
 
         public void Initialize()
         {
             SceneManager.sceneLoaded += HandleLoadingScene;
 
-            TargetScene = sceneModel.GetCurrentScene();
+            TargetScene = _sceneModel.GetCurrentScene();
         }
 
         public void LateDispose()
@@ -100,17 +100,17 @@ namespace EmpireAtWar.Services.SceneService
         
         private void HandleLoadingScene(Scene scene, LoadSceneMode loadSceneMode)
         {
-            OnSceneActivation?.Invoke(sceneModel.GetSceneType(scene));
-            if (sceneModel.IsLoadingScene(scene))
+            OnSceneActivation?.Invoke(_sceneModel.GetSceneType(scene));
+            if (_sceneModel.IsLoadingScene(scene))
             {
-                timerPoolWrapperService.Invoke(LoadTargetScene, 1f);//todo: move to const
+                _timerPoolWrapperService.Invoke(LoadTargetScene, 1f);//todo: move to const
             }
         }
 
         private void LoadTargetScene()
         {
-            asyncOperation = SceneManager.LoadSceneAsync(sceneModel.GetScene(TargetScene).SceneName);
-            asyncOperation.allowSceneActivation = false;
+            _asyncOperation = SceneManager.LoadSceneAsync(_sceneModel.GetScene(TargetScene).SceneName);
+            _asyncOperation.allowSceneActivation = false;
         }
     }
 }

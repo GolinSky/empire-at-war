@@ -29,7 +29,6 @@ namespace EmpireAtWar.Ui.Popups
         {
             base.LateDispose();
             applyButton.onClick.RemoveListener(ApplySettings);
-
         }
 
         private void ApplySettings()

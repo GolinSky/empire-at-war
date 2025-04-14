@@ -9,11 +9,11 @@ namespace EmpireAtWar.Controllers.Game
 {
     public class GameController : Controller<GameModel>, IGameCommand
     {
-        private readonly ISceneService sceneService;
+        private readonly ISceneService _sceneService;
 
         public GameController(GameModel model, ISceneService sceneService) : base(model)
         {
-            this.sceneService = sceneService;
+            _sceneService = sceneService;
         }
         
         public void StartGame(FactionType playerFactionType, FactionType enemyFactionType, PlanetType planetType)
@@ -22,12 +22,12 @@ namespace EmpireAtWar.Controllers.Game
             Model.PlayerFactionType = playerFactionType;
             Model.PlanetType = planetType;
             Model.GameMode = GameMode.Skirmish;
-            sceneService.LoadSceneByPlanetType(planetType);
+            _sceneService.LoadSceneByPlanetType(planetType);
         }
 
         public void ExitGame()
         {
-            sceneService.LoadScene(SceneType.MainMenu);
+            _sceneService.LoadScene(SceneType.MainMenu);
         }
     }
 }

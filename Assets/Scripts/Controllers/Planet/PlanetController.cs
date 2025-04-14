@@ -7,8 +7,8 @@ namespace EmpireAtWar.Controllers.Planet
 {
     public class PlanetController:Controller<PlanetModel>, ITickable
     {
-        private Vector3 cloudRotation;
-        private Vector3 planetRotation;
+        private Vector3 _cloudRotation;
+        private Vector3 _planetRotation;
         
         public PlanetController(PlanetModel model) : base(model)
         {

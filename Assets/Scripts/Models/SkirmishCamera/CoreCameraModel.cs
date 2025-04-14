@@ -30,10 +30,10 @@ namespace EmpireAtWar.Models.SkirmishCamera
         {
             float xMin = Mathf.Lerp(MinMoveRangeX.Min.x, MaxMoveRangeY.Min.x, heightPercentage);
             float xMax = Mathf.Lerp(MinMoveRangeX.Max.x, MaxMoveRangeY.Max.x, heightPercentage);
-            float YMin = Mathf.Lerp(MinMoveRangeX.Min.y, MaxMoveRangeY.Min.y, heightPercentage);
-            float YMax = Mathf.Lerp(MinMoveRangeX.Max.y, MaxMoveRangeY.Max.y, heightPercentage);
+            float yMin = Mathf.Lerp(MinMoveRangeX.Min.y, MaxMoveRangeY.Min.y, heightPercentage);
+            float yMax = Mathf.Lerp(MinMoveRangeX.Max.y, MaxMoveRangeY.Max.y, heightPercentage);
             position.x = Mathf.Clamp(position.x, xMin, xMax);
-            position.z = Mathf.Clamp(position.z, YMin, YMax);
+            position.z = Mathf.Clamp(position.z, yMin, yMax);
             return position;
         }
 

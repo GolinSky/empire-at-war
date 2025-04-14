@@ -7,19 +7,19 @@ namespace EmpireAtWar.Controllers.Loading
 {
     public class LoadingController : Controller<LoadingModel>, ITickable
     {
-        private readonly ISceneService sceneService;
+        private readonly ISceneService _sceneService;
 
         public LoadingController(LoadingModel model, ISceneService sceneService) : base(model)
         {
-            this.sceneService = sceneService;
+            _sceneService = sceneService;
         }
 
         public void Tick()
         {
 
-            if (sceneService.IsSceneLoaded)
+            if (_sceneService.IsSceneLoaded)
             {
-                sceneService.ActivateScene();
+                _sceneService.ActivateScene();
             }
         }
     }

@@ -12,28 +12,28 @@ using Zenject;
 
 public class ProjectContextInstaller : MonoInstaller
 {
-    private IRepository repository;
+    private IRepository _repository;
     public override void InstallBindings()
     {
         Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
         Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
 
 
-        Container.BindInterfaces<AddressableRepository>();
+        Container.BindInterfacesExt<AddressableRepository>();
         
-        repository = Container.Resolve<IRepository>();
+        _repository = Container.Resolve<IRepository>();
         
         ModelDependencyBuilder
             .ConstructBuilder(Container)
-            .BindFromNewScriptable<GameModel>(repository);
+            .BindFromNewScriptable<GameModel>(_repository);
 
-        Container.BindModel<SceneModel>(repository);
+        Container.BindModel<SceneModel>(_repository);
         
         Container
-            .BindInterfaces<TimerPoolWrapperService>()
-            .BindInterfaces<GameController>()
-            .BindInterfaces<SceneService>()
-            .BindInterfaces<SettingsService>()
-            .BindInterfaces<AudioService>();
+            .BindInterfacesExt<TimerPoolWrapperService>()
+            .BindInterfacesExt<GameController>()
+            .BindInterfacesExt<SceneService>()
+            .BindInterfacesExt<SettingsService>()
+            .BindInterfacesExt<AudioService>();
     }
 }

@@ -9,8 +9,8 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Image iconImage;
         [SerializeField] private RectTransform rectTransform;
         
-        private IMiniMapPositionConvector miniMapPositionConvector;
-        private IMarkData markData;
+        private IMiniMapPositionConvector _miniMapPositionConvector;
+        private IMarkData _markData;
         
         public Image IconImage => iconImage;
 
@@ -23,18 +23,18 @@ namespace EmpireAtWar.Views.MiniMap
         
         public void SetData(IMiniMapPositionConvector miniMapPositionConvector, Transform parent, IMarkData markData)
         {
-            this.miniMapPositionConvector = miniMapPositionConvector;
+            _miniMapPositionConvector = miniMapPositionConvector;
             rectTransform.SetParent(parent, false);
             rectTransform.anchoredPosition = miniMapPositionConvector.GetPosition(markData.Position);
             iconImage.sprite = markData.Icon;
-            this.markData = markData;
+            _markData = markData;
         }
 
         private void Update()
         {
-            if (markData != null)
+            if (_markData != null)
             {
-                rectTransform.anchoredPosition = miniMapPositionConvector.GetPosition(markData.Position);
+                rectTransform.anchoredPosition = _miniMapPositionConvector.GetPosition(_markData.Position);
             }
         }
     }

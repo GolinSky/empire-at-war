@@ -2,7 +2,6 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Services.EconomyMediator;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Controller;
 using Zenject;
@@ -10,40 +9,40 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Factions
 {
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
-        IBuildShipChain, IIncomeProvider
+        IBuildShipChain, IIncomeProvider, ITickable
     {
-        private const float DefaultIncome = 5f;
+        private const float DEFAULT_INCOME = 5f;
 
-        private readonly INavigationService navigationService;
-        private readonly LazyInject<IPurchaseMediator> purchaseMediator;
-        private readonly IEconomyProvider economyProvider;
-        private IChainHandler<UnitRequest> nextChain;
+        private readonly INavigationService _navigationService;
+        private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
+        private readonly IEconomyProvider _economyProvider;
+        private IChainHandler<UnitRequest> _nextChain;
         public float Income { get; private set; }
 
         public FactionController(
             PlayerFactionModel model,
             INavigationService navigationService,
-            LazyInject<IPurchaseMediator> purchaseMediator,
-            IEconomyMediator economyMediator) : base(model)
+            LazyInject<IPurchaseProcessor> purchaseMediator,
+            IEconomyProvider economyProvider) : base(model)
         {
-            Income = DefaultIncome;
-            this.navigationService = navigationService;
-            this.purchaseMediator = purchaseMediator;
-            economyProvider = economyMediator.GetProvider(PlayerType.Player);
+            Income = DEFAULT_INCOME;
+            _navigationService = navigationService;
+            _purchaseMediator = purchaseMediator;
+            _economyProvider = economyProvider;
         }
 
         public void Initialize()
         {
-            purchaseMediator.Value.Add(this);
+            _purchaseMediator.Value.Add(this);
 
-            navigationService.OnTypeChanged += UpdateType;
-            economyProvider.AddProvider(this);
+            _navigationService.OnTypeChanged += UpdateType;
+            _economyProvider.AddProvider(this);
         }
 
         public void LateDispose()
         {
-            navigationService.OnTypeChanged -= UpdateType;
-            economyProvider.RemoveProvider(this);
+            _navigationService.OnTypeChanged -= UpdateType;
+            _economyProvider.RemoveProvider(this);
         }
 
         private void UpdateType(SelectionType selectionType)
@@ -53,7 +52,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void CloseSelection()
         {
-            navigationService.RemoveSelectable();
+            _navigationService.RemoveSelectable();
         }
 
         public void BuildUnit(UnitRequest unitRequest)
@@ -62,36 +61,41 @@ namespace EmpireAtWar.Controllers.Factions
             {
                 case LevelUnitRequest levelUnitRequest:
                     Model.CurrentLevel++;
-                    Income = DefaultIncome * Model.CurrentLevel;
-                    economyProvider.RecalculateIncome(this);
+                    Income = DEFAULT_INCOME * Model.CurrentLevel;
+                    _economyProvider.RecalculateIncome(this);
                     break;
             }
 
-            if (nextChain != null)
+            if (_nextChain != null)
             {
-                nextChain.Handle(unitRequest);
+                _nextChain.Handle(unitRequest);
             }
         }
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            purchaseMediator.Value.Handle(unitRequest);
+            _purchaseMediator.Value.Handle(unitRequest);
         }
 
         public void RevertBuilding(UnitRequest unitRequest)
         {
-            purchaseMediator.Value.RevertFlow(unitRequest);
+            _purchaseMediator.Value.RevertFlow(unitRequest);
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
-            nextChain = chainHandler;
-            return nextChain;
+            _nextChain = chainHandler;
+            return _nextChain;
         }
 
         public void Handle(UnitRequest unitRequest)
         {
             Model.UnitToBuild = unitRequest;
+        }
+
+        public void Tick()
+        {
+            
         }
     }
 }

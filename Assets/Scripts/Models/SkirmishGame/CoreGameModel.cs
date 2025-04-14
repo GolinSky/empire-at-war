@@ -16,15 +16,15 @@ namespace EmpireAtWar.Models.SkirmishGame
     {
         public event Action<GameTimeMode> OnGameTimeModeChange;
 
-        private GameTimeMode gameTimeMode;
+        private GameTimeMode _gameTimeMode;
 
         public GameTimeMode GameTimeMode
         {
-            get => gameTimeMode;
+            get => _gameTimeMode;
             set
             {
-                gameTimeMode = value;
-                OnGameTimeModeChange?.Invoke(gameTimeMode);
+                _gameTimeMode = value;
+                OnGameTimeModeChange?.Invoke(_gameTimeMode);
             }
         }
     }

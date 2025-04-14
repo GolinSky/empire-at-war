@@ -8,21 +8,21 @@ namespace EmpireAtWar
 {
     public class MenuUiController : Controller<MenuUiModel>, IMenuUiCommand
     {
-        private readonly IPopupService popupService;
+        private readonly IPopupService _popupService;
 
         public MenuUiController(MenuUiModel model, IPopupService popupService) : base(model)
         {
-            this.popupService = popupService;
+            _popupService = popupService;
         }
 
         public void StartDemo()
         {
-            popupService.OpenPopup(PopupType.SkirmishGameSetUp);
+            _popupService.OpenPopup(PopupType.SkirmishGameSetUp);
         }
 
         public void OpenOptions()
         {
-            popupService.OpenPopup(PopupType.Settings);
+            _popupService.OpenPopup(PopupType.Settings);
         }
 
         public void ExitApplication()

@@ -16,12 +16,12 @@ namespace EmpireAtWar.Views.MiniMap
     }
     public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler, IMiniMapPositionConvector
     {
-        private const float DeltaOffset = 0.5f;
-        private const float HighlightDuration = 1f;
-        private const float HighlightMapAlpha = 0.1f;
-        private const float HighlightMarkAlpha = 1f;
-        private const float FadeDuration = 0.5f;
-        private const float OriginMapAlpha = 1f;
+        private const float DELTA_OFFSET = 0.5f;
+        private const float HIGHLIGHT_DURATION = 1f;
+        private const float HIGHLIGHT_MAP_ALPHA = 0.1f;
+        private const float HIGHLIGHT_MARK_ALPHA = 1f;
+        private const float FADE_DURATION = 0.5f;
+        private const float ORIGIN_MAP_ALPHA = 1f;
         
         [SerializeField] private Button switcherButton;
         [SerializeField] private Canvas canvas;
@@ -29,14 +29,14 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         
-        private List<Image> mapMarkers = new List<Image>();
-        private Vector2Range mapRange;
-        private bool isInteractable = true;
+        private List<Image> _mapMarkers = new List<Image>();
+        private Vector2Range _mapRange;
+        private bool _isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         protected override void OnInitialize()
         {
-            mapRange = Model.MapRange;
+            _mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
             AddDynamicMark(Model.CameraMark);
@@ -62,30 +62,30 @@ namespace EmpireAtWar.Views.MiniMap
 
         private void ActivateInteraction(bool isActive)
         {
-            isInteractable = isActive;
-            float targetAlpha = isActive ? OriginMapAlpha : 0;
-            mapImage.DOFade(targetAlpha, FadeDuration);
-            DoFade(targetAlpha, FadeDuration);
+            _isInteractable = isActive;
+            float targetAlpha = isActive ? ORIGIN_MAP_ALPHA : 0;
+            mapImage.DOFade(targetAlpha, FADE_DURATION);
+            DoFade(targetAlpha, FADE_DURATION);
         }
         
         private void AddMark(MarkData markData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
-            mapMarkers.Add(view.IconImage);
+            _mapMarkers.Add(view.IconImage);
         }
         
         private void AddDynamicMark(DynamicMarkData dynamicMarkData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData(this, iconParent, dynamicMarkData);
-            mapMarkers.Add(view.IconImage);
+            _mapMarkers.Add(view.IconImage);
         }
 
         public Vector2 GetPosition(Vector3 worldPos)
         {
-            float x = Mathf.InverseLerp(mapRange.Min.x, mapRange.Max.x, worldPos.x);
-            float y = Mathf.InverseLerp(mapRange.Min.y, mapRange.Max.y, worldPos.z);
+            float x = Mathf.InverseLerp(_mapRange.Min.x, _mapRange.Max.x, worldPos.x);
+            float y = Mathf.InverseLerp(_mapRange.Min.y, _mapRange.Max.y, worldPos.z);
             
             Vector2 miniMapPos = new Vector2
             {
@@ -98,13 +98,13 @@ namespace EmpireAtWar.Views.MiniMap
         
         public void OnPointerMove(PointerEventData eventData)
         {
-            if(!isInteractable) return;
+            if(!_isInteractable) return;
             if(Model.IsInputBlocked) return;
             
             if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
             {
-                mapImage.DOFade(OriginMapAlpha, FadeDuration);
-                DoFade(OriginMapAlpha, FadeDuration);
+                mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
+                DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
                 return;
             }
 
@@ -115,13 +115,13 @@ namespace EmpireAtWar.Views.MiniMap
                 out Vector2 localPoint);
 
             Vector2 percentage;
-            percentage.x = localPoint.x / MiniMapRect.width + DeltaOffset;
-            percentage.y = localPoint.y / MiniMapRect.height + DeltaOffset;
+            percentage.x = localPoint.x / MiniMapRect.width + DELTA_OFFSET;
+            percentage.y = localPoint.y / MiniMapRect.height + DELTA_OFFSET;
 
             Vector3 worldPoint = new Vector3
             {
-                x = Mathf.Lerp(mapRange.Min.x, mapRange.Max.x, Mathf.Abs(percentage.x)),
-                z = Mathf.Lerp(mapRange.Min.y, mapRange.Max.y, Mathf.Abs(percentage.y))  
+                x = Mathf.Lerp(_mapRange.Min.x, _mapRange.Max.x, Mathf.Abs(percentage.x)),
+                z = Mathf.Lerp(_mapRange.Min.y, _mapRange.Max.y, Mathf.Abs(percentage.y))  
             };
             
             Command.MoveTo(worldPoint);
@@ -129,19 +129,19 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if(!isInteractable) return;
+            if(!_isInteractable) return;
             if(Model.IsInputBlocked) return;
 
-            DoFade(HighlightMarkAlpha, HighlightDuration);
-            mapImage.DOFade(HighlightMapAlpha, HighlightDuration);
+            DoFade(HIGHLIGHT_MARK_ALPHA, HIGHLIGHT_DURATION);
+            mapImage.DOFade(HIGHLIGHT_MAP_ALPHA, HIGHLIGHT_DURATION);
         }
 
 
         private void DoFade(float alpha, float duration)
         {
-            for (var i = 0; i < mapMarkers.Count; i++)
+            for (var i = 0; i < _mapMarkers.Count; i++)
             {
-                mapMarkers[i].DOFade(alpha, duration);
+                _mapMarkers[i].DOFade(alpha, duration);
             }
         }
     }

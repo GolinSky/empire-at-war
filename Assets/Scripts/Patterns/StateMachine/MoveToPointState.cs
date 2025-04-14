@@ -5,44 +5,44 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class MoveToPointState:ShipIdleState
     {
-        private Vector3 targetPosition;
-        private IShipMoveModelObserver shipMoveModelObserver;
-        private bool useScreenCoordinates;
+        private Vector3 _targetPosition;
+        private IShipMoveModelObserver _shipMoveModelObserver;
+        private bool _useScreenCoordinates;
         public MoveToPointState(ShipStateMachine stateMachine) : base(stateMachine)
         {
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            _shipMoveModelObserver = _model.GetModelObserver<IShipMoveModelObserver>();
         }
         
         public override void Enter()
         {
             base.Enter();
-            if (useScreenCoordinates)
+            if (_useScreenCoordinates)
             {
-                shipMoveComponent.MoveToPositionOnScreen(targetPosition);
+                _shipMoveComponent.MoveToPositionOnScreen(_targetPosition);
             }
             else
             {
-                shipMoveComponent.MoveToPosition(targetPosition);
+                _shipMoveComponent.MoveToPosition(_targetPosition);
 
             }
         }
 
         public void SetScreenCoordinates(Vector2 screenPosition)
         {
-            useScreenCoordinates = true;
-            targetPosition = screenPosition;
+            _useScreenCoordinates = true;
+            _targetPosition = screenPosition;
         }
         
         public void SetWorldCoordinates(Vector3 screenPosition)
         {
-            useScreenCoordinates = false;
-            targetPosition = screenPosition;
+            _useScreenCoordinates = false;
+            _targetPosition = screenPosition;
         }
 
         public override void Update()
         {
             base.Update();
-            if (!shipMoveModelObserver.IsMoving)
+            if (!_shipMoveModelObserver.IsMoving)
             {
                 StateMachine.ChangeToDefaultState();
             }

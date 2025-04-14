@@ -14,11 +14,11 @@ namespace EmpireAtWar.Services.ComponentHub
     }
     public class ComponentHub:Service, IComponentHub
     {
-        private List<IHealthComponent> healthComponents = new List<IHealthComponent>();
+        private List<IHealthComponent> _healthComponents = new List<IHealthComponent>();
         
         public IHealthComponent GetComponent(IModelObserver modelObserver)
         {
-            foreach (IHealthComponent healthComponent in healthComponents)
+            foreach (IHealthComponent healthComponent in _healthComponents)
             {
                 if (healthComponent.Equal(modelObserver))
                 {
@@ -31,12 +31,12 @@ namespace EmpireAtWar.Services.ComponentHub
 
         public void Add(IHealthComponent healthComponent)
         {
-            healthComponents.Add(healthComponent);
+            _healthComponents.Add(healthComponent);
         }
 
         public void Remove(IHealthComponent healthComponent)
         {
-            healthComponents.Remove(healthComponent);
+            _healthComponents.Remove(healthComponent);
         }
     }
 }

@@ -12,13 +12,14 @@ namespace EmpireAtWar.Patterns.Strategy
     {
         protected IUnitRequestFactory UnitRequestFactory { get; }
         protected EnemyFactionModel FactionModel { get; }
-        protected IEnemyPurchaseMediator EnemyPurchaseMediator { get; }
+        protected IEnemyPurchaseProcessor EnemyPurchaseProcessor { get; }
 
-        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator,
+        protected BaseUnitSpawnStrategy(EnemyFactionModel factionModel, 
+            IEnemyPurchaseProcessor enemyPurchaseProcessor,
             IUnitRequestFactory unitRequestFactory)
         {
             FactionModel = factionModel;
-            EnemyPurchaseMediator = enemyPurchaseMediator;
+            EnemyPurchaseProcessor = enemyPurchaseProcessor;
             UnitRequestFactory = unitRequestFactory;
         }
 
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Patterns.Strategy
 
         protected virtual void BuildUnit(UnitRequest unitRequest)
         {
-            EnemyPurchaseMediator.Handle(unitRequest);
+            EnemyPurchaseProcessor.Handle(unitRequest);
         }
 
         protected virtual void BuildUnit(KeyValuePair<ShipType, FactionData> keyValuePair)
@@ -54,9 +55,9 @@ namespace EmpireAtWar.Patterns.Strategy
 
     public class LevelUpStrategy : BaseUnitSpawnStrategy
     {
-        public LevelUpStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator,
+        public LevelUpStrategy(EnemyFactionModel factionModel, IEnemyPurchaseProcessor enemyPurchaseProcessor,
             IUnitRequestFactory unitRequestFactory)
-            : base(factionModel, enemyPurchaseMediator, unitRequestFactory)
+            : base(factionModel, enemyPurchaseProcessor, unitRequestFactory)
         {
         }
 

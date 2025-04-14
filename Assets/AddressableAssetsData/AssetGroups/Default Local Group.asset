@@ -13,42 +13,20 @@ MonoBehaviour:
   m_Name: Default Local Group
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
-  m_Data:
-    m_SerializedData: []
   m_GUID: 12e0ac2bd01053b42bbebe281843e094
   m_SerializeEntries:
-  - m_GUID: fecf936004296974b821296b00f2065f
-    m_Address: VenatorShipModel
+  - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
+    m_Address: CoreCameraModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7744e602809a95a4a96fbb9870d3df19
-    m_Address: VenatorShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9d00a7db30c4cfd4fa25a15ab1d04197
-    m_Address: ArquitensShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 691bb38511b36a64894408d57d5744b9
-    m_Address: ArquitensShipModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6d020e23c659ac141ab82d2f25751fa2
-    m_Address: ProvidenceShipView
+  - m_GUID: 023f129b8c45cdc45a5710abd9de1183
+    m_Address: MusicAudioModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 036dc1095929d7d4fa18c87931bf9cfd
     m_Address: SkirmishGameSetUpPopupUi
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec359ffc69a7a3345aae8f7e9be0dc60
-    m_Address: ProvidenceShipModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -62,68 +40,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5efdec56a487ebd429ddded2e410a66d
-    m_Address: RecusantShipModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 76e32cae182412b4289ed05333d1fcc7
-    m_Address: MunificentShipModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 805152c4e5b48d44ea985871b332e269
-    m_Address: AcclamatorShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3ba22e215b4787a44ae118a021f83b79
-    m_Address: AcclamatorShipModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9c0c6e83b6cae5b4891c8397b9e908b5
-    m_Address: RepublicSpaceStationView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
-    m_Address: SeparatistSpaceStationView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b73aaa91e66d8ce48ae38c8806b1992b
-    m_Address: SpaceStationModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b971ad1a3d99dd4590f41be6e6fee50
-    m_Address: ProjectileModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
-    m_Address: MusicSource
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 023f129b8c45cdc45a5710abd9de1183
-    m_Address: MusicAudioModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3495db65815525b40b2a6feb53aef27e
-    m_Address: ReinforcementModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6227c36cf093ee14d846e82b50de15f1
-    m_Address: TerrainModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
-    m_Address: ShipUiModel
+  - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
+    m_Address: EnemyFactionModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -132,38 +50,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
-    m_Address: CoreCameraModel
+  - m_GUID: 2510ebd5efb7d064a9f43448fb8e55f0
+    m_Address: GameModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 010d166b46b84614e81cdae3086ff99f
-    m_Address: PlayerFactionModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7c667c14d310a4499d62638ddd5c2f8
-    m_Address: CoreGameModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fbbdc831ce20cd7438fbdb30070fa53c
-    m_Address: PlanetModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fe9263937c08b0640bccd82aea55b9d7
-    m_Address: MenuUiModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8881836f549b03847be8d3173622e376
-    m_Address: LoadingModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3de703d0a2c0ac5428de8b8f64093d18
-    m_Address: FactionsModel
+  - m_GUID: 2b971ad1a3d99dd4590f41be6e6fee50
+    m_Address: ProjectileModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -172,58 +65,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dce26a8d996febd4a8ad15563ab38472
-    m_Address: LayerModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3147ba13197ab094b8cdfa36c3b45a50
     m_Address: DamageCalculationModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3e84814326b95ad439662fee97464b33
-    m_Address: MapModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2510ebd5efb7d064a9f43448fb8e55f0
-    m_Address: GameModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cec5011cf91f219438a8b647c98b2398
-    m_Address: MenuModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7b34d2700a80663478c172116a6b9ec4
-    m_Address: EconomyModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
-    m_Address: MiningFacilityView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4e9982630aa2fc24aadc3d4d3e5dea74
-    m_Address: MiningFacilityModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6a6d31e1dc51bf845b60d21e62b7e673
-    m_Address: AudioDialogSource
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
-    m_Address: AudioShipDialogModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
-    m_Address: SettingsPopupUi
+  - m_GUID: 3495db65815525b40b2a6feb53aef27e
+    m_Address: ReinforcementModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -232,13 +80,148 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ba22e215b4787a44ae118a021f83b79
+    m_Address: AcclamatorShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de703d0a2c0ac5428de8b8f64093d18
+    m_Address: FactionsModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e84814326b95ad439662fee97464b33
+    m_Address: MapModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e9982630aa2fc24aadc3d4d3e5dea74
+    m_Address: MiningFacilityModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
+    m_Address: MiningFacilityView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
+    m_Address: ShipUiModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5efdec56a487ebd429ddded2e410a66d
+    m_Address: RecusantShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6227c36cf093ee14d846e82b50de15f1
+    m_Address: TerrainModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 691bb38511b36a64894408d57d5744b9
+    m_Address: ArquitensShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
+    m_Address: MusicSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6d31e1dc51bf845b60d21e62b7e673
+    m_Address: AudioDialogSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d020e23c659ac141ab82d2f25751fa2
+    m_Address: ProvidenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76e32cae182412b4289ed05333d1fcc7
+    m_Address: MunificentShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7744e602809a95a4a96fbb9870d3df19
+    m_Address: VenatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
+    m_Address: AudioShipDialogModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b34d2700a80663478c172116a6b9ec4
+    m_Address: EconomyModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7eedc46a86a94114fabe4735b77bdeff
     m_Address: DefendPlatformView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 805152c4e5b48d44ea985871b332e269
+    m_Address: AcclamatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84600a7480cad2b46937e09ca1f373d6
     m_Address: DefendPlatformModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8881836f549b03847be8d3173622e376
+    m_Address: LoadingModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
+    m_Address: SettingsPopupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c0c6e83b6cae5b4891c8397b9e908b5
+    m_Address: RepublicSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d00a7db30c4cfd4fa25a15ab1d04197
+    m_Address: ArquitensShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b68ebe0d40d378f4c936e357035d799d
+    m_Address: MiningFacilityInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b73aaa91e66d8ce48ae38c8806b1992b
+    m_Address: SpaceStationModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8062674d66d079419593e17879a77b8
+    m_Address: SceneModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6751126098e6404ab308cdd43135bc6
+    m_Address: ShipInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7c667c14d310a4499d62638ddd5c2f8
+    m_Address: CoreGameModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cec5011cf91f219438a8b647c98b2398
+    m_Address: MenuModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -252,23 +235,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b68ebe0d40d378f4c936e357035d799d
-    m_Address: MiningFacilityInstaller
+  - m_GUID: dce26a8d996febd4a8ad15563ab38472
+    m_Address: LayerModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c6751126098e6404ab308cdd43135bc6
-    m_Address: ShipInstaller
+  - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
+    m_Address: SeparatistSpaceStationView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
-    m_Address: EnemyFactionModel
+  - m_GUID: ec359ffc69a7a3345aae8f7e9be0dc60
+    m_Address: ProvidenceShipModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b8062674d66d079419593e17879a77b8
-    m_Address: SceneModel
+  - m_GUID: fbbdc831ce20cd7438fbdb30070fa53c
+    m_Address: PlanetModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe9263937c08b0640bccd82aea55b9d7
+    m_Address: MenuUiModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fecf936004296974b821296b00f2065f
+    m_Address: VenatorShipModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -276,5 +269,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: e1625925a1de577499f7d045834f949a, type: 2}
     - {fileID: 11400000, guid: e4d00d7758db7864cbddcf5bdd13b40b, type: 2}
+    - {fileID: 11400000, guid: e1625925a1de577499f7d045834f949a, type: 2}

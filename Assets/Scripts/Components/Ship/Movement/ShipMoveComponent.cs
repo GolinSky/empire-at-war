@@ -9,22 +9,22 @@ namespace EmpireAtWar.Components.Ship.Selection
 {
     public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, IInitializable
     {
-        private readonly ICameraService cameraService;
-        private Vector3 startPosition;
+        private readonly ICameraService _cameraService;
+        private Vector3 _startPosition;
         public bool CanMove => Model.CanMove;
 
         
         public ShipMoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
         {
-            this.cameraService = cameraService;
+            _cameraService = cameraService;
             startPosition.y = Model.Height;
-            this.startPosition = startPosition;
+            _startPosition = startPosition;
             // Model.TargetPosition = startPosition;
         }
         
         public void Initialize()
         {
-            Model.HyperSpacePosition = startPosition;
+            Model.HyperSpacePosition = _startPosition;
         }
         
         public void MoveToPosition(Vector2 screenPosition)
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
-            Vector3 point = cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
+            Vector3 point = _cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
             point.y = Model.Height;
 
             return point;

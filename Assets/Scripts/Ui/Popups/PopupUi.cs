@@ -11,7 +11,7 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private PopupType popupType; // not need here
         [SerializeField] protected Button closeButton;
 
-        [Inject] private IPopupCommand popupCommand;
+        [Inject] private IPopupCommand _popupCommand;
 
         public void OpenPopup()
         {
@@ -21,7 +21,7 @@ namespace EmpireAtWar.Ui.Popups
 
         private void ClosePopup()
         {
-            popupCommand.ClosePopup(popupType);
+            _popupCommand.ClosePopup(popupType);
             SetPopupState(false);
             OnPopupClose();
         }

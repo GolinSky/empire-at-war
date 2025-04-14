@@ -15,28 +15,28 @@ namespace EmpireAtWar.Services.Popup
     
     public class PopupService : Service, IPopupService,IPopupCommand
     {
-        private readonly PopupUiFacade popupUiFacade;
-        private readonly Transform popupParent;
+        private readonly PopupUiFacade _popupUiFacade;
+        private readonly Transform _popupParent;
 
-        private Dictionary<PopupType, PopupUi> popupDictionary = new Dictionary<PopupType, PopupUi>();
+        private Dictionary<PopupType, PopupUi> _popupDictionary = new Dictionary<PopupType, PopupUi>();
 
         public PopupService(PopupUiFacade popupUiFacade, Transform popupParent)
         {
-            this.popupUiFacade = popupUiFacade;
-            this.popupParent = popupParent;
+            _popupUiFacade = popupUiFacade;
+            _popupParent = popupParent;
         }
 
         public void OpenPopup(PopupType popupType)
         {
-            if (popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
+            if (_popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
             {
                 popupUI.OpenPopup();
             }
             else
             {
-                PopupUi newPopupUI = popupUiFacade.Create(popupType);
-                popupDictionary.Add(popupType, newPopupUI);
-                newPopupUI.SetParent(popupParent);
+                PopupUi newPopupUI = _popupUiFacade.Create(popupType);
+                _popupDictionary.Add(popupType, newPopupUI);
+                newPopupUI.SetParent(_popupParent);
                 newPopupUI.OpenPopup();
             }
         }

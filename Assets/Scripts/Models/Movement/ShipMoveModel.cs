@@ -48,7 +48,7 @@ namespace EmpireAtWar.Models.Movement
         }
         public void ApplyMoveCoefficient(float coefficient)
         {
-            speedCoefficient = coefficient;
+            _speedCoefficient = coefficient;
             OnStop?.Invoke();
         }
     }

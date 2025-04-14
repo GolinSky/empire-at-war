@@ -15,62 +15,62 @@ namespace EmpireAtWar.SpaceStation
 {
     public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationController, SpaceStationModel, SpaceStationView>
     {
-        private FactionType factionType;
-        private PlayerType playerType;
-        private IModelMediatorService modelMediatorService;
+        private FactionType _factionType;
+        private PlayerType _playerType;
+        private IModelMediatorService _modelMediatorService;
 
-        protected override string ViewPathPrefix => factionType.ToString();
+        protected override string ViewPathPrefix => _factionType.ToString();
         
 
         [Inject]
         public void Construct(IModelMediatorService modelMediatorService, FactionType factionType, PlayerType playerType)
         {
-            this.modelMediatorService = modelMediatorService;
-            this.factionType = factionType;
-            this.playerType = playerType;
+            _modelMediatorService = modelMediatorService;
+            _factionType = factionType;
+            _playerType = playerType;
         }
 
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(playerType);
-            Container.BindEntity(factionType);
+            Container.BindEntity(_playerType);
+            Container.BindEntity(_factionType);
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            switch (playerType)
+            switch (_playerType)
             {
                 case PlayerType.Player:
                 {
                     Container
-                        .BindInterfaces<SpaceStationCommand>()
-                        .BindInterfaces<SelectionComponent>();
+                        .BindInterfacesExt<SpaceStationCommand>()
+                        .BindInterfacesExt<SelectionComponent>();
                     break;
                 }
                 case PlayerType.Opponent:
                 {
                     Container
-                        .BindInterfaces<EnemySpaceStationCommand>()
-                        .BindInterfaces<EnemySelectionComponent>();
+                        .BindInterfacesExt<EnemySpaceStationCommand>()
+                        .BindInterfacesExt<EnemySelectionComponent>();
                     break;
                 }
             }
             
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>();
             
-            Container.BindInterfacesNonLazy<SimpleMoveComponent>();
+            Container.BindInterfacesNonLazyExt<SimpleMoveComponent>();
         }
         
            
         protected override void OnModelCreated()
         {
             base.OnModelCreated();
-            modelMediatorService.AddUnit(Container.Resolve<SpaceStationModel>());
+            _modelMediatorService.AddUnit(Container.Resolve<SpaceStationModel>());
         }
     }
 }

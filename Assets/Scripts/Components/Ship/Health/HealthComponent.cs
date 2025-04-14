@@ -18,59 +18,59 @@ namespace EmpireAtWar.Components.Ship.Health
 
     public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
     {
-        private readonly ISimpleMoveModelObserver simpleMoveModelObserver;
-        private readonly IComponentHub componentHub;
-        private readonly IModel rootModel;
-        private readonly ITimer refreshShieldsTimer;
+        private readonly ISimpleMoveModelObserver _simpleMoveModelObserver;
+        private readonly IComponentHub _componentHub;
+        private readonly IModel _rootModel;
+        private readonly ITimer _refreshShieldsTimer;
         
-        private float originShieldValue;
+        private float _originShieldValue;
         
         public bool Destroyed => Model.IsDestroyed;
         
         public HealthComponent(IModel model, IComponentHub componentHub) : base(model)
         {
-            this.componentHub = componentHub;
-            simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
-            rootModel = model;
-            originShieldValue = Model.Shields;
-            refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
+            _componentHub = componentHub;
+            _simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
+            _rootModel = model;
+            _originShieldValue = Model.Shields;
+            _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
         }
 
         public void Initialize()
         {
             Model.OnDestroy += Destroy;
-            componentHub.Add(this);
+            _componentHub.Add(this);
         }
 
         public void LateDispose()
         {
             Model.OnDestroy -= Destroy;
-            componentHub.Remove(this);
+            _componentHub.Remove(this);
         }
 
         private void Destroy()
         {
-            componentHub.Remove(this);
+            _componentHub.Remove(this);
         }
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
         {
-            bool isMoving = simpleMoveModelObserver is { IsMoving: true };
+            bool isMoving = _simpleMoveModelObserver is { IsMoving: true };
             Model.ApplyDamage(damage, weaponType, isMoving, shipUnitId);
         }
 
         public bool Equal(IModelObserver modelObserver)
         {
-            return rootModel == modelObserver;
+            return _rootModel == modelObserver;
         }
 
         public void Tick()
         {
-            if (!Model.IsLostShieldGenerator && Model.Shields < originShieldValue)
+            if (!Model.IsLostShieldGenerator && Model.Shields < _originShieldValue)
             {
-                if (refreshShieldsTimer.IsComplete)
+                if (_refreshShieldsTimer.IsComplete)
                 {
-                    refreshShieldsTimer.StartTimer();
+                    _refreshShieldsTimer.StartTimer();
                     Model.RegenerateShields(Model.ShieldRegenerateValue);
                 }
             }

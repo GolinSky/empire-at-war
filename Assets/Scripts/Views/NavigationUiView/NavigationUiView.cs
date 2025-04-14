@@ -13,8 +13,8 @@ namespace EmpireAtWar.Views.NavigationUiView
         [SerializeField] private Image attackImage;
         [SerializeField] private Canvas canvas;
 
-        private Sequence fadeSequence;
-        private Sequence fadeAttackSequence;
+        private Sequence _fadeSequence;
+        private Sequence _fadeAttackSequence;
         
         protected override void OnInitialize()
         {
@@ -35,28 +35,28 @@ namespace EmpireAtWar.Views.NavigationUiView
         {
             tapImage.GetComponent<RectTransform>().position = tapPosition;
 
-            fadeSequence.KillIfExist();
-            fadeSequence = DOTween.Sequence();
+            _fadeSequence.KillIfExist();
+            _fadeSequence = DOTween.Sequence();
             
-            fadeSequence.Append(tapImage.DOFade(1, 0f));
-            fadeSequence.Append(tapImage.rectTransform.DOScale(0.3f, 0f));
+            _fadeSequence.Append(tapImage.DOFade(1, 0f));
+            _fadeSequence.Append(tapImage.rectTransform.DOScale(0.3f, 0f));
             
-            fadeSequence.Append(tapImage.rectTransform.DOScale(1, 1f));
-            fadeSequence.Join(tapImage.DOFade(0f, 2f));
+            _fadeSequence.Append(tapImage.rectTransform.DOScale(1, 1f));
+            _fadeSequence.Join(tapImage.DOFade(0f, 2f));
         }
         
         private void UpdateAttackPosition(Vector3 screenPoint)
         {
             attackImage.rectTransform.position = screenPoint;
 
-            fadeAttackSequence.KillIfExist();
-            fadeAttackSequence = DOTween.Sequence();
+            _fadeAttackSequence.KillIfExist();
+            _fadeAttackSequence = DOTween.Sequence();
             
-            fadeAttackSequence.Append(attackImage.DOFade(1, 0f));
-            fadeAttackSequence.Append(attackImage.rectTransform.DOScale(0.3f, 0f));
+            _fadeAttackSequence.Append(attackImage.DOFade(1, 0f));
+            _fadeAttackSequence.Append(attackImage.rectTransform.DOScale(0.3f, 0f));
             
-            fadeAttackSequence.Append(attackImage.rectTransform.DOScale(1, 1f));
-            fadeAttackSequence.Join(attackImage.DOFade(0f, 2f));
+            _fadeAttackSequence.Append(attackImage.rectTransform.DOScale(1, 1f));
+            _fadeAttackSequence.Join(attackImage.DOFade(0f, 2f));
         }
     }
 }

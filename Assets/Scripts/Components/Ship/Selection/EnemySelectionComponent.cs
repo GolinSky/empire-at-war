@@ -9,22 +9,22 @@ namespace EmpireAtWar.Components.Ship.Selection
 {
     public class EnemySelectionComponent:BaseComponent<SelectionModel>, ISelectionCommand
     {
-        private readonly IModel model;
-        private readonly IBattleService battleService;
-        private readonly ISelectionService selectionService;
+        private readonly IModel _model;
+        private readonly IBattleService _battleService;
+        private readonly ISelectionService _selectionService;
       
 
 
         public EnemySelectionComponent(IModel model, IBattleService battleService) : base(model)
         {
-            this.model = model;
-            this.battleService = battleService;
+            _model = model;
+            _battleService = battleService;
         }
         
 
         public void OnSelected(SelectionType selectionType)
         {
-            battleService.NotifyAttack(model); 
+            _battleService.NotifyAttack(_model); 
         }
 
         public void OnSkipSelection(SelectionType selectionType)

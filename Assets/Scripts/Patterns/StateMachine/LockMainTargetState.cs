@@ -6,7 +6,7 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class LockMainTargetState: UnitIdleState
     {
-        private IHardPointsProvider mainTarget;
+        private IHardPointsProvider _mainTarget;
 
         public LockMainTargetState(UnitStateMachine stateMachine) : base(stateMachine)
         {
@@ -14,21 +14,21 @@ namespace EmpireAtWar.Patterns.StateMachine
         
         public void SetData(IHardPointsProvider mainTarget)
         {
-            this.mainTarget = mainTarget;
+            _mainTarget = mainTarget;
         }
 
         public override void Enter()
         {
             base.Enter();
-            weaponComponent.AddTarget(new AttackData(mainTarget,
-                componentHub.GetComponent(mainTarget.ModelObserver),
+            _weaponComponent.AddTarget(new AttackData(_mainTarget,
+                _componentHub.GetComponent(_mainTarget.ModelObserver),
                 HardPointType.Any), AttackType.MainTarget);
         }
 
         public override void Update()
         {
             base.Update();
-            if (!mainTarget.HasUnits)
+            if (!_mainTarget.HasUnits)
             {
                 StateMachine.ChangeToDefaultState();
             }

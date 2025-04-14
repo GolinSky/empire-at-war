@@ -8,15 +8,15 @@ namespace EmpireAtWar.Patterns.Strategy
 {
     public class TempStrategy: BaseUnitSpawnStrategy
     {
-        private const float DecisionDelay = 30f;
-        private readonly ITimer decisionTimer;
-        private readonly ITimer levelUpgradeTimer;
-        private bool isMaxLevelReached;
-        public TempStrategy(EnemyFactionModel factionModel, IEnemyPurchaseMediator enemyPurchaseMediator, IUnitRequestFactory unitRequestFactory) 
-            : base(factionModel, enemyPurchaseMediator, unitRequestFactory)
+        private const float DECISION_DELAY = 30f;
+        private readonly ITimer _decisionTimer;
+        private readonly ITimer _levelUpgradeTimer;
+        private bool _isMaxLevelReached;
+        public TempStrategy(EnemyFactionModel factionModel, IEnemyPurchaseProcessor enemyPurchaseProcessor, IUnitRequestFactory unitRequestFactory) 
+            : base(factionModel, enemyPurchaseProcessor, unitRequestFactory)
         {
-            decisionTimer = TimerFactory.ConstructTimer(DecisionDelay);
-            levelUpgradeTimer = TimerFactory.ConstructTimer(FactionModel.GetCurrentLevelFactionData().BuildTime);
+            _decisionTimer = TimerFactory.ConstructTimer(DECISION_DELAY);
+            _levelUpgradeTimer = TimerFactory.ConstructTimer(FactionModel.GetCurrentLevelFactionData().BuildTime);
         }
 
         public override void Start()
@@ -28,19 +28,19 @@ namespace EmpireAtWar.Patterns.Strategy
 
         private void TryLevelUp()
         {
-            if(isMaxLevelReached) return;
+            if(_isMaxLevelReached) return;
             
-            if (levelUpgradeTimer.IsComplete)
+            if (_levelUpgradeTimer.IsComplete)
             {
                 FactionData currentLevelData = FactionModel.GetCurrentLevelFactionData();
                 if (currentLevelData == null)
                 {
-                    isMaxLevelReached = true;
+                    _isMaxLevelReached = true;
                     return;
                 }
                 BuildUnit(FactionModel.CurrentLevel, FactionModel.GetCurrentLevelFactionData());
                 Debug.Log($"Upgrading level: {FactionModel.CurrentLevel}");
-                levelUpgradeTimer.StartTimer();
+                _levelUpgradeTimer.StartTimer();
             }
         }
 
@@ -83,13 +83,13 @@ namespace EmpireAtWar.Patterns.Strategy
         public override void Update()
         {
             //return;
-            if (decisionTimer.IsComplete)
+            if (_decisionTimer.IsComplete)
             {
                 TryLevelUp();
                 BuildShip();
                 BuildMining();
                 BuildDefends();
-                decisionTimer.StartTimer();
+                _decisionTimer.StartTimer();
             }
         }
     }

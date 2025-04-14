@@ -12,15 +12,15 @@ namespace EmpireAtWar.Views.SkirmishCamera
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Ease moveEase;//out expo
 
-        private Sequence moveSequence;
-        private Transform cameraTransform;
-        private Vector3 worldStartPoint;
-        private Vector3 cameraPosition;
+        private Sequence _moveSequence;
+        private Transform _cameraTransform;
+        private Vector3 _worldStartPoint;
+        private Vector3 _cameraPosition;
         
         
         protected override void OnInitialize()
         {
-            cameraTransform = mainCamera.transform;
+            _cameraTransform = mainCamera.transform;
             Model.OnPositionChanged += SetPosition;
             Model.OnFovChanged += UpdateFieldOfView;
         }
@@ -38,16 +38,16 @@ namespace EmpireAtWar.Views.SkirmishCamera
         
         private void SetPosition(Vector3 position, bool useTweens)
         {
-            moveSequence.KillIfExist();
+            _moveSequence.KillIfExist();
             DOTween.Kill(transform);
           
             if (useTweens)
             {
-                moveSequence.Append(cameraTransform.DOMove(position, Model.TweenSpeed).SetEase(moveEase));
+                _moveSequence.Append(_cameraTransform.DOMove(position, Model.TweenSpeed).SetEase(moveEase));
             }
             else
             {
-                cameraTransform.position = position;
+                _cameraTransform.position = position;
             }
         }
     }

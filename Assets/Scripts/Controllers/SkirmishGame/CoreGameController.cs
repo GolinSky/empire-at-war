@@ -12,65 +12,65 @@ namespace EmpireAtWar.Controllers.Game
 
     public class CoreGameController : Controller<CoreGameModel>, ICoreGameCommand, IObserver<UserNotifierState>, IInitializable, ILateDisposable
     {
-        private const float SpeedUpTimeScale = 4f;
-        private const float DefaultTimeScale = 1f;
-        private const float PauseTimeScale = 0f;
-        private readonly LazyInject<IUserStateNotifier> userStateNotifier;
-        private readonly IGameCommand gameCommand;
-        private readonly FactionsModel factionsModel;
-        private GameTimeMode gameTimeMode;
+        private const float SPEED_UP_TIME_SCALE = 4f;
+        private const float DEFAULT_TIME_SCALE = 1f;
+        private const float PAUSE_TIME_SCALE = 0f;
+        private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
+        private readonly IGameCommand _gameCommand;
+        private readonly FactionsModel _factionsModel;
+        private GameTimeMode _gameTimeMode;
         
         public CoreGameController(CoreGameModel model, LazyInject<IUserStateNotifier> userStateNotifier, IGameCommand gameCommand) : base(model)
         {
-            this.userStateNotifier = userStateNotifier;
-            this.gameCommand = gameCommand;
-            gameTimeMode = GameTimeMode.Common;
-            ChangeTime(gameTimeMode);
+            _userStateNotifier = userStateNotifier;
+            _gameCommand = gameCommand;
+            _gameTimeMode = GameTimeMode.Common;
+            ChangeTime(_gameTimeMode);
         }
         
         public void Initialize()
         {
-            userStateNotifier.Value.AddObserver(this);
+            _userStateNotifier.Value.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            userStateNotifier.Value.RemoveObserver(this);
+            _userStateNotifier.Value.RemoveObserver(this);
         }
 
         public void Play()
         {
-            switch (gameTimeMode)
+            switch (_gameTimeMode)
             {
                 case GameTimeMode.Common:
-                    gameTimeMode = GameTimeMode.Pause;
+                    _gameTimeMode = GameTimeMode.Pause;
                     break;
                 case GameTimeMode.SpeedUp:
-                    gameTimeMode = GameTimeMode.Pause;
+                    _gameTimeMode = GameTimeMode.Pause;
                     break;
                 case GameTimeMode.Pause:
-                    gameTimeMode = GameTimeMode.Common;
+                    _gameTimeMode = GameTimeMode.Common;
                     break;
             }
 
-            ChangeTime(gameTimeMode);
+            ChangeTime(_gameTimeMode);
         }
 
         public void SpeedUp()
         {
-            switch (gameTimeMode)
+            switch (_gameTimeMode)
             {
                 case GameTimeMode.Common:
-                    gameTimeMode = GameTimeMode.SpeedUp;
+                    _gameTimeMode = GameTimeMode.SpeedUp;
                     break;
                 case GameTimeMode.SpeedUp:
-                    gameTimeMode = GameTimeMode.Common;
+                    _gameTimeMode = GameTimeMode.Common;
                     break;
                 case GameTimeMode.Pause:
-                    gameTimeMode = GameTimeMode.SpeedUp;
+                    _gameTimeMode = GameTimeMode.SpeedUp;
                     break;
             }
-            ChangeTime(gameTimeMode);
+            ChangeTime(_gameTimeMode);
         }
         
         private void ChangeTime(GameTimeMode mode)
@@ -78,13 +78,13 @@ namespace EmpireAtWar.Controllers.Game
             switch (mode)
             {
                 case GameTimeMode.Common:
-                    Time.timeScale = DefaultTimeScale;
+                    Time.timeScale = DEFAULT_TIME_SCALE;
                     break;
                 case GameTimeMode.SpeedUp:
-                    Time.timeScale = SpeedUpTimeScale;
+                    Time.timeScale = SPEED_UP_TIME_SCALE;
                     break;
                 case GameTimeMode.Pause:
-                    Time.timeScale = PauseTimeScale;
+                    Time.timeScale = PAUSE_TIME_SCALE;
                     break;
             }
             Model.GameTimeMode = mode;
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Controllers.Game
             if (notifierState == UserNotifierState.ExitGame)
             {
                 ChangeTime(GameTimeMode.Common);
-                gameCommand.ExitGame();
+                _gameCommand.ExitGame();
                 return;
             }
             ChangeTime(notifierState == UserNotifierState.InMenu ? GameTimeMode.Pause : GameTimeMode.Common);

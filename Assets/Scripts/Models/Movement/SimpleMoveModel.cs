@@ -38,13 +38,13 @@ namespace EmpireAtWar.Models.Movement
         [field: SerializeField] public bool CanMove { get; private set; } = true;
 
 
-        private Vector3 position;
-        protected float speedCoefficient = 1;
+        private Vector3 _position;
+        protected float _speedCoefficient = 1;
         [Inject(Id = EntityBindType.ViewTransform)]
         public LazyInject<Transform> ViewTransform { get; }
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
-        public float Speed => speed * speedCoefficient;
+        public float Speed => speed * _speedCoefficient;
         public bool IsTargetPositionWasSet { get; private set; }
         
         [Inject]
@@ -52,11 +52,11 @@ namespace EmpireAtWar.Models.Movement
 
         public Vector3 TargetPosition
         {
-            get => position;
+            get => _position;
             set
             {
-                position = value;
-                OnTargetPositionChanged?.Invoke(position);
+                _position = value;
+                OnTargetPositionChanged?.Invoke(_position);
                 IsTargetPositionWasSet = true;
             }
         }

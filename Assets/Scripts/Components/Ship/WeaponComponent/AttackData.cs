@@ -8,7 +8,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public class AttackData
     {
-        private readonly IHardPointsProvider shipUnitsProvider;
+        private readonly IHardPointsProvider _shipUnitsProvider;
         public IHealthComponent HealthComponent { get; }
 
         public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
@@ -17,7 +17,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public AttackData(IHardPointsProvider shipUnitsProvider, IHealthComponent healthComponent, HardPointType hardPointType)
         {
-            this.shipUnitsProvider = shipUnitsProvider;
+            _shipUnitsProvider = shipUnitsProvider;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
             HealthComponent = healthComponent;
         }
@@ -35,9 +35,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
         {
             Units.Clear();
-            if (shipUnitsProvider.HasUnits)
+            if (_shipUnitsProvider.HasUnits)
             {
-                Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
+                Units = _shipUnitsProvider.GetShipUnits(hardPointType).ToList();
                 return Units is { Count: > 0 };
             }
             else

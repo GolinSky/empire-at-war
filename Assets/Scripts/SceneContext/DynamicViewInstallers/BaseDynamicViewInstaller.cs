@@ -75,7 +75,7 @@ namespace EmpireAtWar
 
         protected virtual void BindController()
         {
-            Container.BindInterfaces<TController>();
+            Container.BindInterfacesExt<TController>();
         }
 
         protected virtual void BindModel()

@@ -8,26 +8,26 @@ namespace EmpireAtWar
     public class WeaponVfxView : MonoBehaviour, IObserver<float>
     {
         [SerializeField] private ParticleSystem explosionVfxPrefab;
-        private ParticleSystem explosionVfx;
+        private ParticleSystem _explosionVfx;
 
-        private INotifier<float> notifier;
+        private INotifier<float> _notifier;
         private void Start()
         {
-            notifier = gameObject.GetComponent<INotifier<float>>();
-            if (notifier != null)
+            _notifier = gameObject.GetComponent<INotifier<float>>();
+            if (_notifier != null)
             {
-                notifier.AddObserver(this);
+                _notifier.AddObserver(this);
             }
-            Assert.IsNotNull(notifier, "Notifier is null");
+            Assert.IsNotNull(_notifier, "Notifier is null");
             
             //explosionVfxPrefab.transform.SetParent(transform.parent);// todo: refactor
         }
 
         private void OnDestroy()
         {
-            if (notifier != null)
+            if (_notifier != null)
             {
-                notifier.RemoveObserver(this);
+                _notifier.RemoveObserver(this);
             }
         }
 
@@ -35,8 +35,8 @@ namespace EmpireAtWar
         {
             if (value <= 0)
             {
-                explosionVfx = Instantiate(explosionVfxPrefab, transform.parent);
-                explosionVfx.Play();
+                _explosionVfx = Instantiate(explosionVfxPrefab, transform.parent);
+                _explosionVfx.Play();
             }
         }
     }

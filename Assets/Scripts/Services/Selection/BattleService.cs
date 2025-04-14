@@ -16,31 +16,31 @@ namespace EmpireAtWar.Services.Battle
 
     public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable
     {
-        private readonly IInputService inputService;
-        private readonly ICameraService cameraService;
+        private readonly IInputService _inputService;
+        private readonly ICameraService _cameraService;
         public event Action<RaycastHit> OnHitSelected;
 
         public SelectionService(IInputService inputService, ICameraService cameraService)
         {
-            this.inputService = inputService;
-            this.cameraService = cameraService;
+            _inputService = inputService;
+            _cameraService = cameraService;
         }
         
         public void Initialize()
         {
-            inputService.OnInput += HandleInput;
+            _inputService.OnInput += HandleInput;
         }
         
         public void LateDispose()
         {
-            inputService.OnInput -= HandleInput;
+            _inputService.OnInput -= HandleInput;
         }
         
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
             if(inputType != InputType.Selection) return;
             
-            RaycastHit raycastHit = cameraService.ScreenPointToRay(touchPosition);
+            RaycastHit raycastHit = _cameraService.ScreenPointToRay(touchPosition);
 
             if(raycastHit.collider == null) return;
             

@@ -1,15 +1,14 @@
 ﻿using System;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Patterns.Strategy;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
-using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
@@ -17,64 +16,47 @@ using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
-    public interface IEnemyShipSpawner
+   //todo: why we have here spawn logic 
+    public class EnemyFactionController : Controller<EnemyFactionModel>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
     {
-        void SetStrategy(UnitSpawnStrategyType strategyType);
-    }
-    
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IInitializable, ILateDisposable, IEnemyShipSpawner, IBuildShipChain, ITickable
-    {
-        private readonly ShipFacadeFactory shipFacadeFactory;
-        private readonly SpaceStationViewFacade spaceStationViewFacade;
-        private readonly LazyInject<IMapModelObserver> mapModel;
-        private readonly LazyInject<IEnemyPurchaseMediator> purchaseMediator;
-        private readonly IUnitRequestFactory unitRequestFactory;
+        private const float DEFAULT_INCOME = 5f;
 
-        private Vector3 stationPosition;
-        private SpaceStationView spaceStationView;
-        private IChainHandler<UnitRequest> nextChain;
-        private IUnitSpawnStrategy currentStrategy;
-        private readonly MiningFacilityFacade miningFacilityFacade;
-        private readonly DefendPlatformFacade defendPlatformFacade;
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
+        private readonly ShipFacadeFactory _shipFacadeFactory;
+        private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IEconomyProvider _economyProvider;
+
+
+        private IChainHandler<UnitRequest> _nextChain;
+        private readonly MiningFacilityFacade _miningFacilityFacade;
+        private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
 
         private PlayerType PlayerType => PlayerType.Opponent;
+        public float Income => DEFAULT_INCOME;
+
 
         public EnemyFactionController(
             EnemyFactionModel model,
-            SpaceStationViewFacade spaceStationViewFacade,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,
             ITimerPoolWrapperService timerPoolWrapperService, 
             LazyInject<IMapModelObserver> mapModel,
-            LazyInject<IEnemyPurchaseMediator> purchaseMediator,
-            IUnitRequestFactory unitRequestFactory) : base(model)
+            IEconomyProvider economyProvider) : base(model)
         {
-            this.shipFacadeFactory = shipFacadeFactory;
-            this.spaceStationViewFacade = spaceStationViewFacade;
-            this.miningFacilityFacade = miningFacilityFacade;
-            this.defendPlatformFacade = defendPlatformFacade;
-            this.timerPoolWrapperService = timerPoolWrapperService;
-            this.mapModel = mapModel;
-            this.purchaseMediator = purchaseMediator;
-            this.unitRequestFactory = unitRequestFactory;
+            _shipFacadeFactory = shipFacadeFactory;
+            _miningFacilityFacade = miningFacilityFacade;
+            _defendPlatformFacade = defendPlatformFacade;
+            _timerPoolWrapperService = timerPoolWrapperService;
+            _mapModel = mapModel;
+            _economyProvider = economyProvider;
         }
-
-        public void Initialize()
-        {
-            stationPosition = mapModel.Value.GetStationPosition(PlayerType.Opponent);
-            spaceStationView = spaceStationViewFacade.Create(PlayerType.Opponent, Model.FactionType,  stationPosition);
-        }
-
-        public void LateDispose()
-        {
-        }
+        
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
-            nextChain = chainHandler;
-            return nextChain;
+            _nextChain = chainHandler;
+            return _nextChain;
         }
 
         public void Handle(UnitRequest unitRequest)
@@ -88,40 +70,40 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     break;
                 case ShipUnitRequest shipUnitRequest:
                 {
-                    timerPoolWrapperService.Invoke(() =>
+                    _timerPoolWrapperService.Invoke(() =>
                         {
-                            shipFacadeFactory.Create(PlayerType, shipUnitRequest.Key, GenerateShipCoordinates());
+                            _shipFacadeFactory.Create(PlayerType, shipUnitRequest.Key, GenerateShipCoordinates());
                         },
                         shipUnitRequest.FactionData.BuildTime);
                     break;
                 }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
                 {
-                    timerPoolWrapperService.Invoke(() =>
+                    _timerPoolWrapperService.Invoke(() =>
                         {
-                            miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateShipCoordinates());
+                            _miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateShipCoordinates());
                         },
                         miningFacilityUnitRequest.FactionData.BuildTime);
                     break;
                 }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
                 {
-                    timerPoolWrapperService.Invoke(() =>
+                    _timerPoolWrapperService.Invoke(() =>
                         {
-                            defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateShipCoordinates());
+                            _defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateShipCoordinates());
                         },
                         defendPlatformUnitRequest.FactionData.BuildTime);
                     break;
                 }
                 
             }
-            nextChain?.Handle(unitRequest);
+            _nextChain?.Handle(unitRequest);
         }
         
         private Vector3 GenerateShipCoordinates()
         {
-            Vector3 minRange = mapModel.Value.SizeRange.Min;
-            Vector3 maxRange = mapModel.Value.SizeRange.Max;
+            Vector3 minRange = _mapModel.Value.SizeRange.Min;
+            Vector3 maxRange = _mapModel.Value.SizeRange.Max;
             Random.InitState((int)DateTime.Now.Ticks);
 
             Vector3 vector3 = new Vector3(Random.Range(minRange.x, maxRange.x), 
@@ -131,20 +113,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             return vector3;
         }
 
-        public void Tick()
+        public void Initialize()
         {
-            currentStrategy?.Update();
+            _economyProvider.AddProvider(this);
         }
 
-        public void SetStrategy(UnitSpawnStrategyType strategyType)
+        public void LateDispose()
         {
-            if (currentStrategy != null)
-            {
-                currentStrategy.Stop();
-            }
-            currentStrategy = new TempStrategy(Model, purchaseMediator.Value, unitRequestFactory);
-            currentStrategy.Start();
+            _economyProvider.AddProvider(this);
         }
-
     }
 }

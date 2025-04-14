@@ -15,16 +15,16 @@ namespace EmpireAtWar
 {
     public class DefendPlatformInstaller : DynamicViewInstaller<DefendPlatformController, DefendPlatformModel, DefendPlatformView>
     {
-        private PlayerType playerType;
-        private DefendPlatformType miningFacilityType;
-        private IModelMediatorService modelMediatorService;
+        private PlayerType _playerType;
+        private DefendPlatformType _miningFacilityType;
+        private IModelMediatorService _modelMediatorService;
 
         [Inject]
         public void Constructor(IModelMediatorService modelMediatorService, DefendPlatformType miningFacilityType, PlayerType playerType)
         {
-            this.modelMediatorService = modelMediatorService;
-            this.miningFacilityType = miningFacilityType;
-            this.playerType = playerType;
+            _modelMediatorService = modelMediatorService;
+            _miningFacilityType = miningFacilityType;
+            _playerType = playerType;
             
             Debug.Log($"DefendPlatformInstaller: {StartPosition}");
         }
@@ -32,26 +32,26 @@ namespace EmpireAtWar
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(playerType);
-            Container.BindEntity(miningFacilityType);
+            Container.BindEntity(_playerType);
+            Container.BindEntity(_miningFacilityType);
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
             Container
-                .BindInterfaces<HealthComponent>()
-                .BindInterfaces<SimpleMoveComponent>()
-                .BindInterfaces<RadarComponent>()
-                .BindInterfaces<WeaponComponent>();
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<SimpleMoveComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>();
             
-            switch (playerType)
+            switch (_playerType)
             {
                 case PlayerType.Player:
-                    Container.BindInterfaces<SelectionComponent>();
+                    Container.BindInterfacesExt<SelectionComponent>();
                     break;
                 case PlayerType.Opponent:
-                    Container.BindInterfaces<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
             }
         }
@@ -59,7 +59,7 @@ namespace EmpireAtWar
         protected override void OnModelCreated()
         {
             base.OnModelCreated();
-            modelMediatorService.AddUnit(Container.Resolve<DefendPlatformModel>());
+            _modelMediatorService.AddUnit(Container.Resolve<DefendPlatformModel>());
         }
     }
 }

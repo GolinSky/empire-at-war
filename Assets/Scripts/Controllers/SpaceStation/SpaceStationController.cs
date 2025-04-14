@@ -20,51 +20,51 @@ namespace EmpireAtWar.Controllers.SpaceStation
     /// </summary>
     public class SpaceStationController : Controller<SpaceStationModel>, IInitializable, ILateDisposable
     {
-        private const HardPointType DefaultTargetType = HardPointType.Any;
-        private readonly IWeaponComponent weaponComponent;
-        private readonly IComponentHub componentHub;
-        private readonly ISelectionService selectionService;
-        private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly IWeaponModelObserver weaponModelObserver;
+        private const HardPointType DEFAULT_TARGET_TYPE = HardPointType.Any;
+        private readonly IWeaponComponent _weaponComponent;
+        private readonly IComponentHub _componentHub;
+        private readonly ISelectionService _selectionService;
+        private readonly ISelectionModelObserver _selectionModelObserver;
+        private readonly IWeaponModelObserver _weaponModelObserver;
         
-        private IRadarModelObserver radarModelObserver;
-        private IHardPointsProvider mainTarget;
+        private IRadarModelObserver _radarModelObserver;
+        private IHardPointsProvider _mainTarget;
         public SpaceStationController(
             SpaceStationModel model,
             IWeaponComponent weaponComponent,
             IComponentHub componentHub,
             ISelectionService selectionService) : base(model)
         {
-            this.weaponComponent = weaponComponent;
-            this.componentHub = componentHub;
-            this.selectionService = selectionService;
-            selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
-            weaponModelObserver = Model.GetModelObserver<IWeaponModelObserver>();
-            radarModelObserver = Model.GetModelObserver<IRadarModelObserver>();
+            _weaponComponent = weaponComponent;
+            _componentHub = componentHub;
+            _selectionService = selectionService;
+            _selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
+            _weaponModelObserver = Model.GetModelObserver<IWeaponModelObserver>();
+            _radarModelObserver = Model.GetModelObserver<IRadarModelObserver>();
         }
         
         public void Initialize()
         {
-            radarModelObserver.OnHitDetected += HandleEnemy;
-            selectionService.OnHitSelected += HandleSelected;
+            _radarModelObserver.OnHitDetected += HandleEnemy;
+            _selectionService.OnHitSelected += HandleSelected;
         }
 
         public void LateDispose()
         {
-            radarModelObserver.OnHitDetected -= HandleEnemy;
-            selectionService.OnHitSelected -= HandleSelected;
+            _radarModelObserver.OnHitDetected -= HandleEnemy;
+            _selectionService.OnHitSelected -= HandleSelected;
         }
         
         private void HandleSelected(RaycastHit raycastHit)
         {
-            if(!selectionModelObserver.IsSelected) return;
+            if(!_selectionModelObserver.IsSelected) return;
             
-            mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();// make unit not depends on ship entity
-            if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
+            _mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();// make unit not depends on ship entity
+            if (_mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
             {
-                weaponComponent.AddTarget(new AttackData(mainTarget,
-                    componentHub.GetComponent(mainTarget.ModelObserver),
-                    DefaultTargetType), AttackType.MainTarget);
+                _weaponComponent.AddTarget(new AttackData(_mainTarget,
+                    _componentHub.GetComponent(_mainTarget.ModelObserver),
+                    DEFAULT_TARGET_TYPE), AttackType.MainTarget);
             }
         }
 
@@ -76,13 +76,13 @@ namespace EmpireAtWar.Controllers.SpaceStation
                 IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
                 if (unitsProvider != null && unitsProvider.HasUnits)
                 {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), DefaultTargetType));
+                    healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), DEFAULT_TARGET_TYPE));
                 }
             }
 
             if (healthComponents.Count != 0)
             {
-                weaponComponent.AddTargets(healthComponents.ToArray());
+                _weaponComponent.AddTargets(healthComponents.ToArray());
             }
         }
     }
