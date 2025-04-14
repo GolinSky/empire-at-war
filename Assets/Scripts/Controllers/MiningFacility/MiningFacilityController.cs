@@ -1,7 +1,6 @@
 ﻿using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
-using EmpireAtWar.Services.EconomyMediator;
 using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
 using Zenject;
