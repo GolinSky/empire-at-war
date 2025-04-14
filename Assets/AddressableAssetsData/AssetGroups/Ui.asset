@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Ui
   m_GUID: d65a788370bd4fd458defeede90be2c1
   m_SerializeEntries:
+  - m_GUID: 036dc1095929d7d4fa18c87931bf9cfd
+    m_Address: SkirmishGameSetUpPopupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d9fbb3039acbce4cb3a081d4f92e7e1
     m_Address: ReinforcementUi
     m_ReadOnly: 0
@@ -22,6 +27,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 44c88130ec726cf479ff760e55f8d98d
     m_Address: EconomyUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
+    m_Address: SettingsPopupUi
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

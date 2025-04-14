@@ -14,7 +14,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 0ba88225dba572b4194964454002a11e
+    m_Address: RecusantShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c9100437434e874fbbc39ea7716be81
+    m_Address: MunificentShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
+    m_Address: MiningFacilityView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d020e23c659ac141ab82d2f25751fa2
+    m_Address: ProvidenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7744e602809a95a4a96fbb9870d3df19
+    m_Address: VenatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7eedc46a86a94114fabe4735b77bdeff
+    m_Address: DefendPlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 805152c4e5b48d44ea985871b332e269
+    m_Address: AcclamatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c0c6e83b6cae5b4891c8397b9e908b5
+    m_Address: RepublicSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d00a7db30c4cfd4fa25a15ab1d04197
+    m_Address: ArquitensShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
+    m_Address: SeparatistSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
   m_SchemaSet:

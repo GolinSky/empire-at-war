@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: ViewRelatedGroup
+  m_Name: Installers
   m_EditorClassIdentifier: 
-  m_GroupName: ViewRelatedGroup
-  m_GUID: 2b4fe54194f72934d8803c259adc365b
+  m_GroupName: Installers
+  m_GUID: 6fb2ca6d5bc2e0f429cf54bc19d92fe2
   m_SerializeEntries:
-  - m_GUID: 17a65e70ac12d8e4b839ac0bd03f953b
-    m_Address: ExplosionVfx
+  - m_GUID: b68ebe0d40d378f4c936e357035d799d
+    m_Address: MiningFacilityInstaller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c7eb2540db56a04a9448f731881de79
-    m_Address: LaserProjectile
+  - m_GUID: c6751126098e6404ab308cdd43135bc6
+    m_Address: ShipInstaller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d08e869a202dee742b31818cc8c5b23b
-    m_Address: DualProjectile
+  - m_GUID: d1015cfc037add141aca99418c39b590
+    m_Address: DefendPlatformInstaller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d90ad13c075512a478c24f41fbf7c0b6
-    m_Address: Projectile
+  - m_GUID: dc14dab4bd7163a4988425df3c77fd90
+    m_Address: SpaceStationInstaller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -39,5 +39,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 996d4737fb225224eb7fce7153238ad0, type: 2}
-    - {fileID: 11400000, guid: 2ca7cc1efcdd29e4fb091daf67bda15e, type: 2}
+    - {fileID: 11400000, guid: 33ed29a6246de974bbe05ce778714088, type: 2}
+    - {fileID: 11400000, guid: c334521bb71a7214bb8dc22a0927d37a, type: 2}
