@@ -20,6 +20,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
+    m_Address: MusicSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6d31e1dc51bf845b60d21e62b7e673
+    m_Address: AudioDialogSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d105f3706327c274db845257a59e3bdf
     m_Address: SHIP_ALARM
     m_ReadOnly: 0
