@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f28d0bab5d08794096e1d38ee2bc176
+    m_Address: MiniMapUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
     m_Address: SettingsPopupUi
     m_ReadOnly: 0

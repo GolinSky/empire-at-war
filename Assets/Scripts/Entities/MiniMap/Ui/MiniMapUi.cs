@@ -3,10 +3,11 @@ using DG.Tweening;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views.MiniMap
 {
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Views.MiniMap
     {
         Vector2 GetPosition(Vector3 worldPos);
     }
-    public class MiniMapView : View<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler, IMiniMapPositionConvector
+    public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
     {
         private const float DELTA_OFFSET = 0.5f;
         private const float HIGHLIGHT_DURATION = 1f;
@@ -33,8 +34,9 @@ namespace EmpireAtWar.Views.MiniMap
         private Vector2Range _mapRange;
         private bool _isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
-
-        protected override void OnInitialize()
+        
+        
+        public void Initialize()
         {
             _mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
@@ -46,15 +48,14 @@ namespace EmpireAtWar.Views.MiniMap
             switcherButton.onClick.AddListener(SetCanvasActive);
         }
 
-        protected override void OnDispose()
+        public void LateDispose()
         {
             Model.OnMarkAdded -= AddMark;
             Model.OnDynamicMarkAdded -= AddDynamicMark;
             Model.OnInteractableChanged -= ActivateInteraction;
             switcherButton.onClick.RemoveListener(SetCanvasActive);
         }
-
-  
+        
         private void SetCanvasActive()
         {
             canvas.enabled = !canvas.enabled;

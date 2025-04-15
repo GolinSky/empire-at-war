@@ -9,5 +9,6 @@ namespace EmpireAtWar.Ui.Base
         Faction = 1,
         Economy = 2,
         CoreGame = 3,
+        MiniMap = 4,
     }
 }

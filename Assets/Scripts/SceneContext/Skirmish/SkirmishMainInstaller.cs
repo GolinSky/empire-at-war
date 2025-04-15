@@ -1,10 +1,13 @@
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Map;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Weapon;
@@ -31,7 +34,11 @@ public class SkirmishMainInstaller : MonoInstaller
         
         Container.BindInterfacesExt<UiService>();
 
-
+        //todo: merge map model with minimap 
+        Container.BindModel<MapModel>(Repository);
+        Container.BindModel<MiniMapModel>(Repository);
+        Container.BindInterfacesNonLazyExt<MiniMapController>();
+        
         Container.BindModel<CoreGameModel>(Repository);
         Container.BindInterfacesNonLazyExt<CoreGameController>();
         

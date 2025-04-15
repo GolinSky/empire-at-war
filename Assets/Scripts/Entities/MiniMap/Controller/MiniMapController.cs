@@ -5,6 +5,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly INavigationService _navigationService;
         private readonly IInputService _inputService;
         private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly IUiService _uiService;
         private CustomCoroutine _unblockCoroutine;
         
         public MiniMapController(
@@ -32,12 +34,14 @@ namespace EmpireAtWar.Controllers.MiniMap
             ICameraService cameraService,
             INavigationService navigationService,
             IInputService inputService,
-            ITimerPoolWrapperService timerPoolWrapperService) : base(model)
+            ITimerPoolWrapperService timerPoolWrapperService,
+            IUiService uiService) : base(model)
         {
             _cameraService = cameraService;
             _navigationService = navigationService;
             _inputService = inputService;
             _timerPoolWrapperService = timerPoolWrapperService;
+            _uiService = uiService;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(PlayerType.Player));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
@@ -49,6 +53,8 @@ namespace EmpireAtWar.Controllers.MiniMap
             _navigationService.OnTypeChanged += UpdateSelectionType;
             _inputService.OnBlocked += UpdateBlockState;
             Model.AddMark(MarkType.Camera, _cameraService.CameraTransform);
+            _uiService.CreateUi(UiType.MiniMap);
+
         }
         
         public void LateDispose()
@@ -61,7 +67,6 @@ namespace EmpireAtWar.Controllers.MiniMap
         {
             _cameraService.MoveTo(worldPoint);
         }
-
         
         private void UpdateBlockState(bool isBlocked)
         {
