@@ -3,6 +3,7 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using Zenject;
 
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly INavigationService _navigationService;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
+        private readonly IUiService _uiService;
         private IChainHandler<UnitRequest> _nextChain;
         public float Income { get; private set; }
 
@@ -23,12 +25,14 @@ namespace EmpireAtWar.Controllers.Factions
             PlayerFactionModel model,
             INavigationService navigationService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
-            IEconomyProvider economyProvider) : base(model)
+            IEconomyProvider economyProvider,
+            IUiService uiService) : base(model)
         {
             Income = DEFAULT_INCOME;
             _navigationService = navigationService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
+            _uiService = uiService;
         }
 
         public void Initialize()
@@ -37,6 +41,7 @@ namespace EmpireAtWar.Controllers.Factions
 
             _navigationService.OnTypeChanged += UpdateType;
             _economyProvider.AddProvider(this);
+            _uiService.CreateUi(UiType.Faction);
         }
 
         public void LateDispose()

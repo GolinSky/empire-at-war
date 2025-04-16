@@ -18,7 +18,6 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
