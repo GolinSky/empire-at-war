@@ -12,5 +12,6 @@ namespace EmpireAtWar.Ui.Base
         MiniMap = 4,
         Ship = 5,
         Navigation = 6,
+        Menu = 7,
     }
 }

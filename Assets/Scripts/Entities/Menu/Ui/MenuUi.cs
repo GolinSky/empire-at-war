@@ -1,19 +1,21 @@
 ﻿using EmpireAtWar.Commands.Menu;
 using EmpireAtWar.Models.Menu;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views.Menu
 {
-    public class MenuView : View<IMenuModelModelObserver, IMenuCommand>
+    public class MenuUi : BaseUi<IMenuModelModelObserver, IMenuCommand>, IInitializable, ILateDisposable
     {
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private Button openMenuButton;
         [SerializeField] private Canvas menuCanvas;
-        
-        protected override void OnInitialize()
+
+
+        public void Initialize()
         {
             openMenuButton.onClick.AddListener(Command.OpenMenu);
             openMenuButton.onClick.AddListener(EnableMenuCanvas);
@@ -21,8 +23,8 @@ namespace EmpireAtWar.Views.Menu
             resumeButton.onClick.AddListener(Command.ResumeGame);
             resumeButton.onClick.AddListener(DisableMenuCanvas);
         }
-        
-        protected override void OnDispose()
+
+        public void LateDispose()
         {
             openMenuButton.onClick.RemoveListener(Command.OpenMenu);
             openMenuButton.onClick.AddListener(EnableMenuCanvas);
@@ -45,5 +47,7 @@ namespace EmpireAtWar.Views.Menu
         {
             menuCanvas.enabled = isActive;
         }
+
+  
     }
 }

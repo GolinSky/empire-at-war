@@ -1,5 +1,6 @@
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.ShipUi;
@@ -9,6 +10,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
+using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Radar;
@@ -42,7 +44,10 @@ public class SkirmishMainInstaller : MonoInstaller
 
         Container.BindModel<NavigationModel>(Repository);
         Container.BindInterfacesNonLazyExt<NavigationController>();
-        
+
+
+        Container.BindModel<MenuModel>(Repository);
+        Container.BindInterfacesNonLazyExt<MenuController>();
         
         Container.BindModel<ShipUiModel>(Repository);
         Container.BindInterfacesNonLazyExt<ShipUiController>();
