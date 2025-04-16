@@ -78,7 +78,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 26848829901883186}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
@@ -975,6 +975,7 @@ GameObject:
   - component: {fileID: 1956025509028033572}
   - component: {fileID: 4649828564192346632}
   - component: {fileID: 861124727599670525}
+  - component: {fileID: 8392622828758574358}
   m_Layer: 5
   m_Name: MenuBackground
   m_TagString: Untagged
@@ -1038,6 +1039,33 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &8392622828758574358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344257429221902907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 354b79ed24219c14cb872c57b6f564ce, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &9054926391531620057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,8 +1167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adfa5d141a1b49fe8894896cb72291c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewComponents: []
-  <ModelDependencies>k__BackingField: []
   resumeButton: {fileID: 4566893665544095418}
   exitButton: {fileID: 5294919370127645030}
   openMenuButton: {fileID: 460984369106197722}
