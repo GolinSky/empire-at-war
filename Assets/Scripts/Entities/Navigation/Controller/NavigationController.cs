@@ -4,6 +4,7 @@ using EmpireAtWar.Services.BattleService;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -17,19 +18,28 @@ namespace EmpireAtWar.Controllers.Navigation
         private readonly INavigationService _navigationService;
         private readonly IBattleService _battleService;
         private readonly ICameraService _cameraService;
+        private readonly IUiService _uiService;
 
-        public NavigationController(NavigationModel model, IInputService inputService, INavigationService navigationService, IBattleService battleService, ICameraService cameraService) : base(model)
+        public NavigationController(
+            NavigationModel model,
+            IInputService inputService,
+            INavigationService navigationService,
+            IBattleService battleService,
+            ICameraService cameraService,
+            IUiService uiService) : base(model)
         {
             _inputService = inputService;
             _navigationService = navigationService;
             _battleService = battleService;// temp here
             _cameraService = cameraService;
+            _uiService = uiService;
         }
 
         public void Initialize()
         {
             _inputService.OnInput += HandleInput;
             _battleService.OnTargetAdded += HandleAttackInput;
+            _uiService.CreateUi(UiType.Navigation);
         }
 
         public void LateDispose()

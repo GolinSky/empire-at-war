@@ -1,13 +1,14 @@
 using DG.Tweening;
 using EmpireAtWar.Models.Navigation;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.ScriptUtils.Dotween;
+using Zenject;
 
 namespace EmpireAtWar.Views.NavigationUiView
 {
-    public class NavigationUiView:View<INavigationModelObserver>
+    public class NavigationUi:BaseUi<INavigationModelObserver>, IInitializable, ILateDisposable
     {
         [SerializeField] private Image tapImage;
         [SerializeField] private Image attackImage;
@@ -16,16 +17,16 @@ namespace EmpireAtWar.Views.NavigationUiView
         private Sequence _fadeSequence;
         private Sequence _fadeAttackSequence;
         
-        protected override void OnInitialize()
+        
+        public void Initialize()
         {
             Model.OnTapPositionChanged += UpdateTapPosition;
             Model.OnAttackPositionChanged += UpdateAttackPosition;
             tapImage.DOFade(0, 0);
             attackImage.DOFade(0, 0);
         }
-        
 
-        protected override void OnDispose()
+        public void LateDispose()
         {
             Model.OnTapPositionChanged -= UpdateTapPosition;
             Model.OnAttackPositionChanged -= UpdateAttackPosition;
