@@ -1,6 +1,7 @@
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.MiniMap;
+using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -9,9 +10,11 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Radar;
+using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Views;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;
@@ -34,6 +37,10 @@ public class SkirmishMainInstaller : MonoInstaller
         
         Container.BindInterfacesExt<UiService>();
 
+
+        Container.BindModel<ShipUiModel>(Repository);
+        Container.BindInterfacesNonLazyExt<ShipUiController>();
+        
         //todo: merge map model with minimap 
         Container.BindModel<MapModel>(Repository);
         Container.BindModel<MiniMapModel>(Repository);

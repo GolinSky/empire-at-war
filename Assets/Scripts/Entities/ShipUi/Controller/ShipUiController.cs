@@ -2,6 +2,7 @@
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using Zenject;
 
@@ -10,16 +11,19 @@ namespace EmpireAtWar.Controllers.ShipUi
     public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand
     {
         private readonly INavigationService _navigationService;
+        private readonly IUiService _uiService;
 
-        
-        public ShipUiController(ShipUiModel model, INavigationService navigationService) : base(model)
+
+        public ShipUiController(ShipUiModel model, INavigationService navigationService, IUiService uiService) : base(model)
         {
             _navigationService = navigationService;
+            _uiService = uiService;
         }
 
         public void Initialize()
         {
             _navigationService.OnTypeChanged += UpdateType;
+            _uiService.CreateUi(UiType.Ship);
         }
 
         public void LateDispose()

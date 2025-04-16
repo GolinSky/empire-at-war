@@ -1,26 +1,27 @@
 ﻿using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace EmpireAtWar.Views
 {
-    public class ShipUiView: View<IShipUiModelObserver, IShipUiCommand>
+    public class ShipUi: BaseUi<IShipUiModelObserver, IShipUiCommand>, IInitializable, ILateDisposable
     {
         [SerializeField] private Canvas canvas;
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private Transform rootTransform;
 
-        protected override void OnInitialize()
+        public void Initialize()
         {
             Model.OnSelectionChanged += HandleChangedSelection;
             disableSelectionButton.onClick.AddListener(CloseSelection);
         }
-        
-        protected override void OnDispose()
+
+        public void LateDispose()
         {
             Model.OnSelectionChanged -= HandleChangedSelection;
             disableSelectionButton.onClick.RemoveListener(CloseSelection);

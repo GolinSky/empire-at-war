@@ -10,5 +10,6 @@ namespace EmpireAtWar.Ui.Base
         Economy = 2,
         CoreGame = 3,
         MiniMap = 4,
+        Ship = 5,
     }
 }
