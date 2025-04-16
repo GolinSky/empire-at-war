@@ -5,6 +5,7 @@ using Zenject;
 
 namespace EmpireAtWar.SceneContext
 {
+    //todo: move binding to player and enemy subcontainer
     public class SkirmishFactoryInstaller:MonoInstaller
     {
         public override void InstallBindings()

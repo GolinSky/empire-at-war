@@ -8,5 +8,10 @@ namespace EmpireAtWar.Ui.Base
         Reinforcement = 0,
         Faction = 1,
         Economy = 2,
+        CoreGame = 3,
+        MiniMap = 4,
+        Ship = 5,
+        Navigation = 6,
+        Menu = 7,
     }
 }

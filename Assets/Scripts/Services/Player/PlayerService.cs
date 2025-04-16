@@ -15,7 +15,7 @@ namespace EmpireAtWar.Services.Player
     {
         private readonly SpaceStationViewFacade _spaceStationViewFacade;
         private readonly LazyInject<IMapModelObserver> _mapModel;
-        private readonly UiService _uiService;
+        private readonly IUiService _uiService;
 
         [Inject(Id = PlayerType.Player)]
         private FactionType FactionType { get; }
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.Player
         public PlayerService(
             SpaceStationViewFacade spaceStationViewFacade,
             LazyInject<IMapModelObserver> mapModel,
-            UiService uiService)
+            IUiService uiService)
         {
             _spaceStationViewFacade = spaceStationViewFacade;
             _mapModel = mapModel;
@@ -32,8 +32,7 @@ namespace EmpireAtWar.Services.Player
 
         public void Initialize()
         {
-            _uiService.CreateUi(UiType.Reinforcement);
-            _uiService.CreateUi(UiType.Faction);
+            // create ui for economy here as economy controller is used for both enemy and player 
             _uiService.CreateUi(UiType.Economy);
             
             _spaceStationViewFacade.Create(
@@ -41,7 +40,6 @@ namespace EmpireAtWar.Services.Player
                 FactionType,
                 _mapModel.Value.GetStationPosition(PlayerType.Player));
             
-
         }
     }
 }

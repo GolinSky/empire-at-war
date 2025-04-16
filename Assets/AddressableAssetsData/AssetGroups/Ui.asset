@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f28d0bab5d08794096e1d38ee2bc176
+    m_Address: MiniMapUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
     m_Address: SettingsPopupUi
     m_ReadOnly: 0
@@ -37,6 +42,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a89611b9093e21a4a8bcf6aee7005e07
     m_Address: FactionUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be1435167784ad440ae92fdff96a1daa
+    m_Address: MenuUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f5e48e2c22a9b469c1b29d0afd94d2
+    m_Address: CoreGameUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c67b3f91948d87045b48e6cc114d4ad1
+    m_Address: ShipUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f486db28b82d2d54b83c29608c2ac3b5
+    m_Address: NavigationUi
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

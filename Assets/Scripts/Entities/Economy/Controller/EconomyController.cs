@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -26,7 +28,7 @@ namespace EmpireAtWar.Controllers.Economy
         
         private float _commonIncome;
         public float Income => DEFAULT_INCOME;
-
+        
         public EconomyController(EconomyModel model) : base(model)
         {
             _incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);

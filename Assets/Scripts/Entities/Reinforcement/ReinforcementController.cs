@@ -9,6 +9,7 @@ using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.DefendPlatform;
 using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Reinforcement;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly IUiService _uiService;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -42,18 +44,21 @@ namespace EmpireAtWar.Controllers.Reinforcement
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade) : base(model)
+            DefendPlatformFacade defendPlatformFacade,
+            IUiService uiService) : base(model)
         {
             _inputService = inputService;
             _cameraService = cameraService;
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
+            _uiService = uiService;
         }
 
         public void Initialize()
         {
             _inputService.OnEndDrag += Interrupt;
+            _uiService.CreateUi(UiType.Reinforcement);
         }
         
         public void LateDispose()
