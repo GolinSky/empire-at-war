@@ -48,7 +48,7 @@ namespace EmpireAtWar
             switch (_playerType)
             {
                 case PlayerType.Player:
-                    Container.BindInterfacesExt<SelectionComponent>();
+                    Container.BindInterfacesExt<PlayerSelectionComponent>();
                     break;
                 case PlayerType.Opponent:
                     Container.BindInterfacesExt<EnemySelectionComponent>();

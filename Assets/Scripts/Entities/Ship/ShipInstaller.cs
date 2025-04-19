@@ -50,7 +50,7 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                 {
-                    Container.BindInterfacesExt<SelectionComponent>();
+                    Container.BindInterfacesExt<PlayerSelectionComponent>();
                     Container.BindInterfacesExt<PlayerShipCommand>();
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
                     Container.BindInterfacesExt<PlayerStateComponent>();

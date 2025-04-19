@@ -1,21 +1,22 @@
-﻿using EmpireAtWar.Services.NavigationService;
+﻿using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class SelectionFacade : PlaceholderFactory<IModel,IMovable, SelectionComponent>
+    public class SelectionFacade : PlaceholderFactory<IModel,IMovable, PlayerSelectionComponent>
     {
-        private readonly INavigationService _navigationService;
+        private readonly ISelectionService _selectionService;
 
-        public SelectionFacade(INavigationService navigationService)
+        public SelectionFacade(ISelectionService selectionService)
         {
-            _navigationService = navigationService;
+            _selectionService = selectionService;
         }
         
-        public override SelectionComponent Create(IModel model, IMovable movable)
+        public override PlayerSelectionComponent Create(IModel model, IMovable movable)
         {
-            return new SelectionComponent(model, _navigationService, movable);
+            return new PlayerSelectionComponent(model, _selectionService, movable);
         }
     }
 }

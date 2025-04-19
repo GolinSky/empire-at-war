@@ -5,7 +5,7 @@ namespace EmpireAtWar.ViewComponents.Selection
 {
     
     //todo: rename to view component
-    public class PlayerSelectionComponent:SelectionViewComponent
+    public class PlayerSelectionViewComponent:SelectionViewComponent
     {
         [SerializeField] private Canvas selectedCanvas;
 

@@ -35,12 +35,12 @@ namespace EmpireAtWar.Controllers.DefendPlatform
         
         public void Initialize()
         {
-            _selectionService.OnHitSelected += HandleSelected;
+            // _selectionService.OnHitSelected += HandleSelected;
         }
 
         public void LateDispose()
         {
-            _selectionService.OnHitSelected -= HandleSelected;
+            // _selectionService.OnHitSelected -= HandleSelected;
         }
         
         private void HandleSelected(RaycastHit raycastHit)

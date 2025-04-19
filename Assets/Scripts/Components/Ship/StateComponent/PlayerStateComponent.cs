@@ -53,14 +53,14 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
         public void Initialize()
         {
-            _selectionService.OnHitSelected += HandleSelected;
-            _inputService.OnInput += HandleInput;
+            // _selectionService.OnHitSelected += HandleSelected;
+            //_inputService.OnInput += HandleInput;
         }
 
         public void LateDispose()
         {
-            _selectionService.OnHitSelected -= HandleSelected;
-            _inputService.OnInput -= HandleInput;
+            // _selectionService.OnHitSelected -= HandleSelected;
+           // _inputService.OnInput -= HandleInput;
         }
         
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)

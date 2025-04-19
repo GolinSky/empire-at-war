@@ -46,13 +46,13 @@ namespace EmpireAtWar.Controllers.SpaceStation
         public void Initialize()
         {
             _radarModelObserver.OnHitDetected += HandleEnemy;
-            _selectionService.OnHitSelected += HandleSelected;
+            // _selectionService.OnHitSelected += HandleSelected;
         }
 
         public void LateDispose()
         {
             _radarModelObserver.OnHitDetected -= HandleEnemy;
-            _selectionService.OnHitSelected -= HandleSelected;
+            // _selectionService.OnHitSelected -= HandleSelected;
         }
         
         private void HandleSelected(RaycastHit raycastHit)

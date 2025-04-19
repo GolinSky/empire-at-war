@@ -1,36 +1,36 @@
-﻿using System;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Services.Camera;
+﻿using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.ViewComponents.Selection;
+using LightWeightFramework.Controller;
 using UnityEngine;
-using LightWeightFramework.Components.Service;
 using Zenject;
 
-namespace EmpireAtWar.Services.Battle
+namespace EmpireAtWar.Entities.Interaction
 {
-    public interface ISelectionService : IService
+    public class InteractionController: Controller<InteractionModel>, IInitializable, ILateDisposable
     {
-        event Action<RaycastHit> OnHitSelected;
-    }
-
-    public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable
-    {
+        private readonly IUiService _uiService;
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
-        public event Action<RaycastHit> OnHitSelected;
 
-        public SelectionService(IInputService inputService, ICameraService cameraService)
+        public InteractionController(
+            InteractionModel model,
+            IUiService uiService,
+            IInputService inputService,
+            ICameraService cameraService) : base(model)
         {
+            _uiService = uiService;
             _inputService = inputService;
             _cameraService = cameraService;
         }
-        
+
         public void Initialize()
         {
+            _uiService.CreateUi(UiType.Interaction);   
             _inputService.OnInput += HandleInput;
         }
-        
+
         public void LateDispose()
         {
             _inputService.OnInput -= HandleInput;
@@ -44,12 +44,11 @@ namespace EmpireAtWar.Services.Battle
 
             if(raycastHit.collider == null) return;
             
-            SelectionViewComponent selectionComponent = raycastHit.collider.GetComponent<SelectionViewComponent>();
+            ISelectableView selectableView = raycastHit.collider.GetComponent<ISelectableView>();
 
-            if (selectionComponent != null)
+            if (selectableView != null)
             {
-                OnHitSelected?.Invoke(raycastHit);
-                selectionComponent.OnSelected();
+                selectableView.OnSelected();
             }
         }
     }

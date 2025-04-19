@@ -10,7 +10,7 @@ namespace EmpireAtWar.SceneContext
     {
         public override void InstallBindings()
         {
-            Container.BindFactory<IModel, IMovable, SelectionComponent, SelectionFacade>()
+            Container.BindFactory<IModel, IMovable, PlayerSelectionComponent, SelectionFacade>()
                 .AsSingle();
         
             Container.BindFactory<IModel, EnemySelectionComponent, EnemySelectionFacade>()

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Commands.Menu;
+using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;

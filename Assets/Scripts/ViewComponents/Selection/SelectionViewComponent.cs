@@ -1,12 +1,18 @@
 using EmpireAtWar.Commands;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
-using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Selection
 {
-    public class SelectionViewComponent:ViewComponent
+
+    public interface ISelectableView
+    {
+        void OnSelected();
+    }
+    
+    public class SelectionViewComponent:ViewComponent<ISelectionModelObserver>, ISelectableView
     {
         [SerializeField] private SelectionType selectionType;
         

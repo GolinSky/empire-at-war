@@ -13,5 +13,6 @@ namespace EmpireAtWar.Ui.Base
         Ship = 5,
         Navigation = 6,
         Menu = 7,
+        Interaction = 8,
     }
 }

@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.NavigationService
     {
         IMovable Movable { get; }
         IModelObserver ModelObserver { get; }
+        
         void SetActive(bool isActive);
     }
 
@@ -15,6 +16,5 @@ namespace EmpireAtWar.Services.NavigationService
         bool CanMove { get; }
         void MoveToPosition(Vector2 screenPosition);
     }
-
   
 }

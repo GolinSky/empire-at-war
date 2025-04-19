@@ -1,32 +1,33 @@
 ﻿using EmpireAtWar.Commands;
 using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class SelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable
+    public class PlayerSelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable
     {
-        private readonly INavigationService _navigationService;
+        private readonly ISelectionService _selectionService;
 
         public IModelObserver ModelObserver { get; }
         public IMovable Movable { get; set; }
 
-        public SelectionComponent(IModel model, INavigationService navigationService, IMovable movable) : base(model)
+        public PlayerSelectionComponent(IModel model, ISelectionService selectionService, IMovable movable) : base(model)
         {
-            _navigationService = navigationService;
+            _selectionService = selectionService;
             Movable = movable;
             ModelObserver = model;
         }
 
         public void OnSelected(SelectionType selectionType)
         {
-            _navigationService.UpdateSelectable(this, selectionType);
+            _selectionService.UpdateSelectable(this, selectionType);
         }
 
         public void OnSkipSelection(SelectionType selectionType)
         {
-            _navigationService.RemoveSelectable(this);
+            _selectionService.UpdateSelectable(this, selectionType);
         }
 
         public void SetActive(bool isActive)

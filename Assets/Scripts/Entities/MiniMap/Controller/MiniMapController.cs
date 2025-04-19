@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.MiniMap;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
@@ -19,29 +20,29 @@ namespace EmpireAtWar.Controllers.MiniMap
         void MoveTo(Vector3 worldPoint);
     }
 
-    public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand, IInitializable, ILateDisposable
+    public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand, IInitializable, ILateDisposable, IObserver<ISelectionContext>
     {
         private readonly ICameraService _cameraService;
-        private readonly INavigationService _navigationService;
         private readonly IInputService _inputService;
         private readonly ITimerPoolWrapperService _timerPoolWrapperService;
         private readonly IUiService _uiService;
+        private readonly ISelectionService _selectionService;
         private CustomCoroutine _unblockCoroutine;
         
         public MiniMapController(
             MiniMapModel model,
             IMapModelObserver mapModel,
             ICameraService cameraService,
-            INavigationService navigationService,
             IInputService inputService,
             ITimerPoolWrapperService timerPoolWrapperService,
-            IUiService uiService) : base(model)
+            IUiService uiService,
+            ISelectionService selectionService) : base(model)
         {
             _cameraService = cameraService;
-            _navigationService = navigationService;
             _inputService = inputService;
             _timerPoolWrapperService = timerPoolWrapperService;
             _uiService = uiService;
+            _selectionService = selectionService;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(PlayerType.Player));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Controllers.MiniMap
     
         public void Initialize()
         {
-            _navigationService.OnTypeChanged += UpdateSelectionType;
+            _selectionService.AddObserver(this);
             _inputService.OnBlocked += UpdateBlockState;
             Model.AddMark(MarkType.Camera, _cameraService.CameraTransform);
             _uiService.CreateUi(UiType.MiniMap);
@@ -59,7 +60,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         
         public void LateDispose()
         {
-            _navigationService.OnTypeChanged -= UpdateSelectionType;
+            _selectionService.RemoveObserver(this);
             _inputService.OnBlocked -= UpdateBlockState;
         }
         
@@ -84,9 +85,9 @@ namespace EmpireAtWar.Controllers.MiniMap
             }
         }
         
-        private void UpdateSelectionType(SelectionType selectionType)
+        public void UpdateState(ISelectionContext context)
         {
-            Model.IsInteractive = selectionType != SelectionType.Base;
+            Model.IsInteractive = context.SelectionType != SelectionType.Base;
         }
     }
 }

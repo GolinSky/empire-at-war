@@ -8,7 +8,7 @@ namespace EmpireAtWar.Services.NavigationService
 {
     public interface INavigationService : IService
     {
-        event Action<SelectionType> OnTypeChanged;
+        // event Action<SelectionType> OnTypeChanged;
         SelectionType SelectionType { get; }
 
         ISelectable Selectable { get; }
@@ -18,9 +18,10 @@ namespace EmpireAtWar.Services.NavigationService
         void RemoveSelectable();
     }
 
+    [Obsolete]
     public class NavigationService : Service, INavigationService
     {
-        public event Action<SelectionType> OnTypeChanged;
+        // public event Action<SelectionType> OnTypeChanged;
 
         private readonly IInputService _inputService;
         private IMovable _movable;
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Services.NavigationService
             selectableObject.SetActive(true);
 
             SelectionType = selectionType;
-            OnTypeChanged?.Invoke(SelectionType);
+            // OnTypeChanged?.Invoke(SelectionType);
         }
 
         public void RemoveSelectable(ISelectable selectable)
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Services.NavigationService
             {
                 Selectable?.SetActive(false);
                 Selectable = null;
-                OnTypeChanged?.Invoke(SelectionType.None);
+                // OnTypeChanged?.Invoke(SelectionType.None);
             }
         }
 
@@ -68,7 +69,7 @@ namespace EmpireAtWar.Services.NavigationService
                 Selectable = null;
                 _movable = null;
                 SelectionType = SelectionType.None;
-                OnTypeChanged?.Invoke(SelectionType);
+                // OnTypeChanged?.Invoke(SelectionType);
             }
         }
     }

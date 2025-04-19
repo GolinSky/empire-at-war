@@ -46,7 +46,7 @@ namespace EmpireAtWar.SpaceStation
                 {
                     Container
                         .BindInterfacesExt<SpaceStationCommand>()
-                        .BindInterfacesExt<SelectionComponent>();
+                        .BindInterfacesExt<PlayerSelectionComponent>();
                     break;
                 }
                 case PlayerType.Opponent:
