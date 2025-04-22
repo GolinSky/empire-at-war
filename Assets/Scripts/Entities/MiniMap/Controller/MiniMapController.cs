@@ -20,7 +20,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         void MoveTo(Vector3 worldPoint);
     }
 
-    public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand, IInitializable, ILateDisposable, IObserver<ISelectionContext>
+    public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand, IInitializable, ILateDisposable, IObserver<ISelectionSubject>
     {
         private readonly ICameraService _cameraService;
         private readonly IInputService _inputService;
@@ -85,9 +85,12 @@ namespace EmpireAtWar.Controllers.MiniMap
             }
         }
         
-        public void UpdateState(ISelectionContext context)
+        public void UpdateState(ISelectionSubject subject)
         {
-            Model.IsInteractive = context.SelectionType != SelectionType.Base;
+            if (subject.UpdatedType == PlayerType.Player)
+            {
+                Model.IsInteractive = subject.PlayerSelectionContext.SelectionType != SelectionType.Base;
+            }
         }
     }
 }

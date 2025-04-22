@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
@@ -15,7 +16,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private AttackModelDependency attackModelDependency;
         private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => attackModelDependency.TurretDictionary;
 
-        private List<IHardPointView> _shipUnitViews;
+        private List<IHardPointModel> _targetHardPointModels;
+        private List<IHardPointModel> _mainTargetHardPointModels;
         private IProjectileModel _projectileModel;
         private Coroutine _mainTargetAttackFlow;
         private Coroutine _commonAttackFlow;
@@ -25,7 +27,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [Inject]
         private IWeaponCommand WeaponCommand { get; }
         
-        private List<IHardPointView> Targets => Model.Targets;
+        private List<IHardPointModel> Targets => Model.Targets; //todo: use observable list in weapon model
 
         protected override void OnInit()
         {
@@ -74,19 +76,43 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             if(Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0) return;
             
-            _mainTargetAttackFlow = StartCoroutine(AttackFlow(Model.MainUnitsTarget));
+            _mainTargetAttackFlow = StartCoroutine(MainTargetAttackFlow());
         }
 
+        private IEnumerator MainTargetAttackFlow()
+        {
+            while (!_isDead)
+            {
+                if (Model.MainUnitsTarget is { Count: > 0 })
+                {
+                    _mainTargetHardPointModels = GetShuffledHardPoint(Model.MainUnitsTarget.Where(x => !x.IsDestroyed).ToList());
+                    if (_mainTargetHardPointModels.Count > 0)
+                    {
+                        yield return AttackFlow(_mainTargetHardPointModels);
+                    }
+                    else
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                
+                }
+                else
+                {
+                    yield return new WaitUntil(()=> Model.MainUnitsTarget is { Count: > 0 });
+                }
+            }
+        }
+        
         private IEnumerator CommonAttackFlow()
         {
             while (!_isDead)
             {
                 if (Targets != null && Targets.Count > 0)
                 {
-                    _shipUnitViews = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
-                    if (_shipUnitViews.Count > 0)
+                    _targetHardPointModels = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
+                    if (_targetHardPointModels.Count > 0)
                     {
-                        yield return AttackFlow(_shipUnitViews);
+                        yield return AttackFlow(_targetHardPointModels);
                     }
                     else
                     {
@@ -101,7 +127,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
-        private IEnumerator AttackFlow(List<IHardPointView> hardPointViews)
+        private IEnumerator AttackFlow(List<IHardPointModel> hardPointViews)
         {
             foreach (var keyValue in TurretDictionary)
             {
@@ -112,7 +138,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         continue;
                     }
                     
-                    foreach (IHardPointView shipUnitView in hardPointViews)
+                    foreach (IHardPointModel shipUnitView in hardPointViews)
                     {
                         if(shipUnitView.IsDestroyed) continue;
                         
@@ -135,7 +161,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
       
         
-        private List<IHardPointView> GetShuffledHardPoint(List<IHardPointView> listToShuffle)
+        private List<IHardPointModel> GetShuffledHardPoint(List<IHardPointModel> listToShuffle)
         {
             for (int i = listToShuffle.Count - 1; i > 0; i--)
             {

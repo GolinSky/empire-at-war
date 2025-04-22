@@ -2,7 +2,6 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
-using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
@@ -12,7 +11,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
@@ -39,11 +37,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
         Container.BindInterfacesExt<UiService>();
-
-
-        Container.BindModel<NavigationModel>(Repository);
-        Container.BindInterfacesNonLazyExt<NavigationController>();
-
+        
 
         Container.BindModel<MenuModel>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();

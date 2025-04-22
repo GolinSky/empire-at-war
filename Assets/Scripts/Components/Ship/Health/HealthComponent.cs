@@ -12,7 +12,7 @@ namespace EmpireAtWar.Components.Ship.Health
     public interface IHealthComponent : IComponent
     {
         void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
-        bool Equal(IModelObserver modelObserver);
+        bool Equal(IHealthModelObserver modelObserver);
         bool Destroyed { get; }
     }
 
@@ -59,9 +59,9 @@ namespace EmpireAtWar.Components.Ship.Health
             Model.ApplyDamage(damage, weaponType, isMoving, shipUnitId);
         }
 
-        public bool Equal(IModelObserver modelObserver)
+        public bool Equal(IHealthModelObserver modelObserver)
         {
-            return _rootModel == modelObserver;
+            return Model == modelObserver;
         }
 
         public void Tick()

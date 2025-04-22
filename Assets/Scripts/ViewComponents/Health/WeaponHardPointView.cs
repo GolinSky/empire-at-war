@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -53,7 +54,7 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public float Attack(IHardPointView hardPointView)
+        public float Attack(IHardPointModel hardPointView)
         {
             BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);

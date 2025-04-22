@@ -10,7 +10,7 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Factions
 {
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
-        IBuildShipChain, IIncomeProvider, IObserver<ISelectionContext>
+        IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>
     {
         private const float DEFAULT_INCOME = 5f;
 
@@ -19,6 +19,7 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly IEconomyProvider _economyProvider;
         private readonly IUiService _uiService;
         private IChainHandler<UnitRequest> _nextChain;
+        private ISelectionContext _selectionContext;
         public float Income { get; private set; }
 
         public FactionController(
@@ -51,7 +52,10 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void CloseSelection()
         {
-            _selectionService.RemoveSelectable();
+            if(_selectionContext != null)
+            {
+                _selectionService.RemoveSelectable(_selectionContext.Selectable);
+            }
         }
 
         public void BuildUnit(UnitRequest unitRequest)
@@ -92,9 +96,13 @@ namespace EmpireAtWar.Controllers.Factions
             Model.UnitToBuild = unitRequest;
         }
 
-        public void UpdateState(ISelectionContext value)
+        public void UpdateState(ISelectionSubject selectionSubject)
         {
-            Model.SelectionType = value.SelectionType;// move it to selection component and reuse it 
+            if (selectionSubject.UpdatedType == PlayerType.Player)
+            {
+                _selectionContext = selectionSubject.PlayerSelectionContext;
+                Model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Model;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace EmpireAtWar.Services.NavigationService
         IModelObserver ModelObserver { get; }
         
         void SetActive(bool isActive);
+        
+        PlayerType PlayerType { get; }
     }
 
     public interface IMovable

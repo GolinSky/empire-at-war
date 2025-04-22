@@ -16,7 +16,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         private readonly IShipMoveModelObserver _moveModel;
         private readonly IWeaponModelObserver _weaponModel;
         private readonly IHealthModelObserver _targetHealth;
-        private IHardPointsProvider _mainTarget;
+        private IHealthModelObserver _mainTarget;
         private ITimer _moveTimer;
         private Vector3 TargetPosition => _mainTarget.Transform.position;
         
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             _moveTimer = TimerFactory.ConstructTimer(MOVE_TIMER_DELAY);
         }
 
-        public void SetData(IHardPointsProvider mainTarget)
+        public void SetData(IHealthModelObserver mainTarget)
         {
             _mainTarget = mainTarget;
             
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             UpdateMoveState();
             
             _weaponComponent.AddTarget(new AttackData(_mainTarget,
-                _componentHub.GetComponent(_mainTarget.ModelObserver),
+                _componentHub.GetComponent(_mainTarget),
                 HardPointType.Any), AttackType.MainTarget);
         }
 

@@ -1,30 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.ViewComponents.Health;
 
 namespace EmpireAtWar.Components.Ship.WeaponComponent
 {
     public class AttackData
     {
-        private readonly IHardPointsProvider _shipUnitsProvider;
+        private readonly IHealthModelObserver _shipUnitsProvider;
         public IHealthComponent HealthComponent { get; }
 
-        public bool IsDestroyed => HealthComponent == null || HealthComponent.Destroyed;
-        public List<IHardPointView> Units { get; private set; }
+        public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
+        public List<IHardPointModel> Units { get; private set; }
     
 
-        public AttackData(IHardPointsProvider shipUnitsProvider, IHealthComponent healthComponent, HardPointType hardPointType)
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthComponent healthComponent, HardPointType hardPointType)
         {
             _shipUnitsProvider = shipUnitsProvider;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
             HealthComponent = healthComponent;
         }
 
-        public bool Contains(IHardPointView hardPointView)
+        public bool Contains(IHardPointModel hardPointModel)
         {
-            return Units.Contains(hardPointView);
+            return Units.Contains(hardPointModel);
         }
 
         public void ApplyDamage(float damage, WeaponType weaponType, int id)

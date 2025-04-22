@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Commands.ShipUi;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.InputService;
@@ -12,16 +13,16 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
 {
-    public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand, IObserver<ISelectionContext>
+    public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand, IObserver<ISelectionSubject>
     {
-        private const float START_DELAY = 0.5f;
+        private const float START_DELAY = 0.1f;
         
         private readonly ISelectionService _selectionService;
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
-        private ISelectionContext _context;
-        private ITimer _startTimer;
+        private readonly ITimer _startTimer;
 
+        private ISelectionContext _playerSelectionContext;
 
         public ShipUiController(
             ShipUiModel model,
@@ -54,9 +55,10 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if (inputType == InputType.ShipInput && _context is { SelectionType: SelectionType.Ship } && _startTimer.IsComplete)
+            if (inputType == InputType.ShipInput && _playerSelectionContext is { SelectionType: SelectionType.Ship } && _startTimer.IsComplete)
             {
                 Model.TapPosition = touchPosition;
+                //todo: create plane map entity - use layers or add it as selectable
             }
             else
             {
@@ -81,27 +83,45 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public void CloseSelection()
         {
-            _selectionService.RemoveSelectable();
+            if (_playerSelectionContext != null)
+            {
+                _selectionService.RemoveSelectable(_playerSelectionContext.Selectable);
+            }
         }
 
         public void MoveToPosition()
         {
-            _context.Selectable?.Movable?.MoveToPosition(Model.TapPosition);
+            _playerSelectionContext.Selectable?.Movable?.MoveToPosition(Model.TapPosition);
         }
 
-        public void UpdateState(ISelectionContext context)
+        public void UpdateState(ISelectionSubject subject)
         {
-            _context = context;
-            if (context.SelectionType == SelectionType.Ship)
+            switch (subject.UpdatedType)
             {
-                _startTimer.StartTimer();
-                IShipModelObserver shipModelObserver = context.Selectable.ModelObserver.GetModelObserver<IShipModelObserver>();
-                if (shipModelObserver != null)
-                {
-                    Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);
-                }
+                case PlayerType.Player:
+                    _playerSelectionContext = subject.PlayerSelectionContext;
+                    if (_playerSelectionContext.SelectionType == SelectionType.Ship)
+                    {
+                        IShipModelObserver shipModelObserver = _playerSelectionContext.Selectable.ModelObserver
+                            .GetModelObserver<IShipModelObserver>();
+                        if (shipModelObserver != null)
+                        {
+                            Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);
+                        }
+                    }
+
+                    Model.UpdateSelection(_playerSelectionContext.SelectionType);
+                    break;
+                case PlayerType.Opponent:
+                    CloseGoToPositionUi();
+                    break;
+                case PlayerType.None:
+                    CloseGoToPositionUi();
+                    break;
+
             }
-            Model.UpdateSelection(context.SelectionType);
+            _startTimer.StartTimer();
+
         }
     }
 }

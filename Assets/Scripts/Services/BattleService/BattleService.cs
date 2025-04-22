@@ -1,22 +1,44 @@
-﻿using System;
-using LightWeightFramework.Model;
+﻿using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Battle;
 using LightWeightFramework.Components.Service;
+using Zenject;
 
 namespace EmpireAtWar.Services.BattleService
 {
     public interface IBattleService : IService
     {
-        event Action<IModel> OnTargetAdded; 
-        void NotifyAttack(IModel model);
     }
 
-    public class BattleService : Service, IBattleService
+    public class BattleService : Service, IBattleService, IObserver<ISelectionSubject>, IInitializable, ILateDisposable
     {
-        public event Action<IModel> OnTargetAdded;
+        private readonly ISelectionService _selectionService;
 
-        public void NotifyAttack(IModel model)
+        public BattleService(ISelectionService selectionService)
         {
-            OnTargetAdded?.Invoke(model);
+            _selectionService = selectionService;
+        }
+        
+        public void Initialize()
+        {
+            _selectionService.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _selectionService.RemoveObserver(this);
+        }
+
+        public void UpdateState(ISelectionSubject selectionSubject)
+        {
+            switch (selectionSubject.UpdatedType)
+            {
+                case PlayerType.Player:
+                    break;
+                case PlayerType.Opponent:
+                    break;
+                case PlayerType.None:
+                    break;
+            }
         }
     }
 }

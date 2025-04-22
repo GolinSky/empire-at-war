@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Models.SpaceStation;
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Controllers.SpaceStation
         private readonly IWeaponModelObserver _weaponModelObserver;
         
         private IRadarModelObserver _radarModelObserver;
-        private IHardPointsProvider _mainTarget;
+        private IHealthModelObserver _mainTarget;
         public SpaceStationController(
             SpaceStationModel model,
             IWeaponComponent weaponComponent,
@@ -55,35 +56,24 @@ namespace EmpireAtWar.Controllers.SpaceStation
             // _selectionService.OnHitSelected -= HandleSelected;
         }
         
-        private void HandleSelected(RaycastHit raycastHit)
-        {
-            if(!_selectionModelObserver.IsSelected) return;
-            
-            _mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();// make unit not depends on ship entity
-            if (_mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
-            {
-                _weaponComponent.AddTarget(new AttackData(_mainTarget,
-                    _componentHub.GetComponent(_mainTarget.ModelObserver),
-                    DEFAULT_TARGET_TYPE), AttackType.MainTarget);
-            }
-        }
+       
 
         private void HandleEnemy(RaycastHit[] raycastHit)
         {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), DEFAULT_TARGET_TYPE));
-                }
-            }
-
-            if (healthComponents.Count != 0)
-            {
-                _weaponComponent.AddTargets(healthComponents.ToArray());
-            }
+            // List<AttackData> healthComponents = new List<AttackData>();
+            // foreach (RaycastHit hit in raycastHit)
+            // {
+            //     IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
+            //     if (unitsProvider != null && unitsProvider.HasUnits)
+            //     {
+            //         healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), DEFAULT_TARGET_TYPE));
+            //     }
+            // }
+            //
+            // if (healthComponents.Count != 0)
+            // {
+            //     _weaponComponent.AddTargets(healthComponents.ToArray());
+            // }
         }
     }
 }

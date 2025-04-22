@@ -17,7 +17,6 @@ public class SkirmishServiceInstaller : MonoInstaller
     {
         Container.BindInstance(mainCamera);
         Container
-            .BindInterfacesExt<NavigationService>()
             .BindInterfacesExt<InputService>()
             .BindInterfacesExt<ShipService>()
             .BindInterfacesExt<CameraService>()

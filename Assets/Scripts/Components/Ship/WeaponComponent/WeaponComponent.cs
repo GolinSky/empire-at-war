@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.TimerPoolWrapperService;
@@ -70,7 +71,12 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
                 }
                 case AttackType.MainTarget:
                 {
+                    if (_mainAttackData != null)
+                    {
+                        _attackDataList.Remove(_mainAttackData);
+                    }
                     _mainAttackData = attackData;
+                    _attackDataList.Add(attackData);
                     Model.MainUnitsTarget = _mainAttackData.Units;
                     break;
                 }
@@ -87,7 +93,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
             return OptimalAttackRange > distance;
         }
 
-        public void ApplyDamage(IHardPointView unitView, WeaponType weaponType, float duration)
+        public void ApplyDamage(IHardPointModel unitView, WeaponType weaponType, float duration)
         {
             for (var i = 0; i < _attackDataList.Count; i++)
             {
@@ -177,6 +183,11 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         private void ResetMainTarget()
         {
+            if (_mainAttackData != null)
+            {
+                _attackDataList.Remove(_mainAttackData);
+            }
+
             _mainAttackData = null;
             Model.MainUnitsTarget = null;
         }

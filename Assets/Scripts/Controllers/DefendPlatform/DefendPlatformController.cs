@@ -45,14 +45,14 @@ namespace EmpireAtWar.Controllers.DefendPlatform
         
         private void HandleSelected(RaycastHit raycastHit)
         {
-            if(!_selectionModelObserver.IsSelected) return;
-            
-            IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
-            if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
-            {
-                _lockMainTargetState.SetData(mainTarget); 
-                _stateMachine.ChangeState(_lockMainTargetState);
-            }
+            // if(!_selectionModelObserver.IsSelected) return;
+            //
+            // IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
+            // if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
+            // {
+            //     _lockMainTargetState.SetData(mainTarget); 
+            //     _stateMachine.ChangeState(_lockMainTargetState);
+            // }
         }
 
         public void Tick()

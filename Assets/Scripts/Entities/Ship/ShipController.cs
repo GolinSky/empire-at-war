@@ -26,8 +26,6 @@ namespace EmpireAtWar.Ship
         public void Initialize()
         {
             _shipService.Add(this);
-           
-
         }
         
         public void LateInitialize()
@@ -46,7 +44,10 @@ namespace EmpireAtWar.Ship
         public void LateDispose()
         {
             _shipService.Remove(this);
-            _enginesUnitModel.OnShipUnitChanged -= HandleEnginesData;
+            if (_enginesUnitModel != null)
+            {
+                _enginesUnitModel.OnShipUnitChanged -= HandleEnginesData;
+            }
         }
         
         private void HandleEnginesData()
@@ -56,7 +57,5 @@ namespace EmpireAtWar.Ship
                 Model.ShipMoveModel.ApplyMoveCoefficient(Model.MinMoveCoefficient);
             }
         }
-
- 
     }
 }

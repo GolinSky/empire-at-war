@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
@@ -14,7 +15,7 @@ using Component = LightWeightFramework.Components.Components.Component;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class PlayerStateComponent : Component, IInitializable, ILateDisposable, ITickable
+    public class PlayerStateComponent : Component, IInitializable, ILateDisposable, ITickable, IObserver<ISelectionSubject>
     {
         private readonly ISelectionService _selectionService;
         private readonly IInputService _inputService;
@@ -55,10 +56,14 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         {
             // _selectionService.OnHitSelected += HandleSelected;
             //_inputService.OnInput += HandleInput;
+            
+            _selectionService.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _selectionService.RemoveObserver(this);
+
             // _selectionService.OnHitSelected -= HandleSelected;
            // _inputService.OnInput -= HandleInput;
         }
@@ -72,15 +77,21 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             _shipStateMachine.ChangeState(_moveToPointState);
         }
         
-        private void HandleSelected(RaycastHit raycastHit)
+
+        
+        public void UpdateState(ISelectionSubject selectionSubject)
         {
             if(!_selectionModelObserver.IsSelected) return;
-            
-            IHardPointsProvider mainTarget = raycastHit.collider.GetComponentInChildren<IHardPointsProvider>();
-            if (mainTarget is { PlayerType: PlayerType.Opponent, HasUnits: true })
+
+            if (selectionSubject.UpdatedType == PlayerType.Opponent && selectionSubject.EnemySelectionContext.HasSelectable)
             {
-                _shipLockMainTargetState.SetData(mainTarget); //  remove raycastHit.transform.position
-                _shipStateMachine.ChangeState(_shipLockMainTargetState);
+                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Selectable.ModelObserver
+                    .GetModelObserver<IHealthModelObserver>();
+                if (!healthModel.IsDestroyed && healthModel.HasUnits)
+                {
+                    _shipLockMainTargetState.SetData(healthModel); 
+                    _shipStateMachine.ChangeState(_shipLockMainTargetState);
+                }
             }
         }
 

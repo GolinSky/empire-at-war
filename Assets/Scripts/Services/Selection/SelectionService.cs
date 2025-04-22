@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
@@ -10,22 +10,26 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public interface ISelectionService : IService, INotifier<ISelectionContext>
+    public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
-        event Action<RaycastHit> OnHitSelected;
         void UpdateSelectable(ISelectable selectable, SelectionType selectionType);
-        void RemoveSelectable();
+        void RemoveSelectable(ISelectable selectable);
     }
 
-    public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable
+    public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable, ISelectionSubject
     {
-        public event Action<RaycastHit> OnHitSelected;
 
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
-        private readonly List<IObserver<ISelectionContext>> _observers = new List<IObserver<ISelectionContext>>();
+        private readonly List<IObserver<ISelectionSubject>> _observers = new List<IObserver<ISelectionSubject>>();
       
-        private readonly SelectionContext _selectionContext = new SelectionContext();
+        private readonly SelectionContext _playerSelectionContext = new SelectionContext();
+        private readonly SelectionContext _enemySelectionContext = new SelectionContext();
+
+
+        public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
+        public ISelectionContext EnemySelectionContext => _enemySelectionContext;
+        public PlayerType UpdatedType { get; private set; }
 
         public SelectionService(IInputService inputService, ICameraService cameraService)
         {
@@ -45,18 +49,35 @@ namespace EmpireAtWar.Services.Battle
         
         public void UpdateSelectable(ISelectable selectable, SelectionType selectionType)
         {
-            // switch on player type 
-            
-            if (_selectionContext.Selectable != null)
+            RemoveSelectable(selectable.PlayerType);
+            switch (selectable.PlayerType)
             {
-                RemoveSelectable();
+                case PlayerType.Player:
+                {
+                    UpdateContext(_playerSelectionContext);
+                    break;
+                }
+                case PlayerType.Opponent:
+                {
+                    UpdateContext(_enemySelectionContext);
+                    break;
+                }
             }
-          
-            UpdateSelectionContext(selectable, selectionType);
-            _selectionContext.SetActive(true);
-            NotifyObservers();
+            NotifyObservers(selectable.PlayerType);
+
+
+            void UpdateContext(SelectionContext selectionContext)
+            {
+                selectionContext.Update(selectable, selectionType);
+                selectionContext.SetSelectableState(true);
+            }
         }
-        
+
+        public void RemoveSelectable(ISelectable selectable)
+        {
+            RemoveSelectable(selectable.PlayerType);
+        }
+
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
             if(inputType != InputType.Selection) return;
@@ -72,37 +93,36 @@ namespace EmpireAtWar.Services.Battle
                 selectableView.OnSelected();
             }
         }
-
-        public void RemoveSelectable()
+        
+        private void RemoveSelectable(PlayerType playerType)
         {
-            _selectionContext.SetActive(false);
-            UpdateSelectionContext(null, SelectionType.None);
-            NotifyObservers();
-        }
-
-        private void UpdateSelectionContext(ISelectable selectable, SelectionType selectionType)
-        {
-            _selectionContext.SelectionType = selectionType;
-            if (selectable != null)
+            switch (playerType)
             {
-                _selectionContext.Selectable = selectable;
+                case PlayerType.Player:
+                    _playerSelectionContext.ResetCurrentSelectable();
+                    break;
+                case PlayerType.Opponent:
+                    _enemySelectionContext.ResetCurrentSelectable();
+                    break;
             }
+            NotifyObservers(playerType);
         }
-
-        private void NotifyObservers()
+        
+        private void NotifyObservers(PlayerType playerType)
         {
+            UpdatedType = playerType;
             for (var i = 0; i < _observers.Count; i++)
             {
-                _observers[i].UpdateState(_selectionContext);
+                _observers[i].UpdateState(this);
             }
         }
 
-        public void AddObserver(IObserver<ISelectionContext> observer)
+        public void AddObserver(IObserver<ISelectionSubject> observer)
         {
             _observers.Add(observer);
         }
 
-        public void RemoveObserver(IObserver<ISelectionContext> observer)
+        public void RemoveObserver(IObserver<ISelectionSubject> observer)
         {
             _observers.Remove(observer);
         }

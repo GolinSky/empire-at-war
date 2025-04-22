@@ -43,20 +43,20 @@ namespace EmpireAtWar.Patterns.StateMachine
         
         private void HandleEnemy(RaycastHit[] raycastHit)
         {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
-                }
-            }
-
-            if (healthComponents.Count != 0)
-            {
-                _weaponComponent.AddTargets(healthComponents.ToArray());
-            }
+            // List<AttackData> healthComponents = new List<AttackData>();
+            // foreach (RaycastHit hit in raycastHit)
+            // {
+            //     IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
+            //     if (unitsProvider != null && unitsProvider.HasUnits)
+            //     {
+            //         healthComponents.Add(new AttackData(unitsProvider, _componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
+            //     }
+            // }
+            //
+            // if (healthComponents.Count != 0)
+            // {
+            //     _weaponComponent.AddTargets(healthComponents.ToArray());
+            // }
         }
     }
 }

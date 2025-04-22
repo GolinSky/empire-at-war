@@ -13,7 +13,7 @@ namespace EmpireAtWar.SceneContext
             Container.BindFactory<IModel, IMovable, PlayerSelectionComponent, SelectionFacade>()
                 .AsSingle();
         
-            Container.BindFactory<IModel, EnemySelectionComponent, EnemySelectionFacade>()
+            Container.BindFactory<IModel, IMovable, EnemySelectionComponent, EnemySelectionFacade>()
                 .AsSingle();
         }
     }

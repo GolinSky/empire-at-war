@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -10,24 +9,24 @@ using EmpireAtWar.Views.ViewImpl;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.UI;
-using LightWeightFramework.Components.ViewComponents;
-using UnityEngine.Serialization;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public interface IHardPointsProvider
-    {
-        bool HasUnits { get; }
-        IHardPointView[] GetShipUnits(HardPointType hardPointType);
-        IModelObserver ModelObserver { get; }
-        PlayerType PlayerType { get; }
-        Transform Transform { get; }
-    }
+    
+    //todo: move it to health model 
+    // public interface IHardPointsProvider
+    // {
+    //     bool HasUnits { get; }
+    //     IHardPointView[] GetShipUnits(HardPointType hardPointType);
+    //     IModelObserver ModelObserver { get; }
+    //     PlayerType PlayerType { get; }
+    //     Transform Transform { get; }
+    // }
 
-    public class HealthViewComponent : ViewComponent<IHealthModelObserver>, IHardPointsProvider, ITickable
+    public class HealthViewComponent : ViewComponent<IHealthModelObserver>, ITickable
     {
         private static readonly Vector3 DefaultRotation = new(0, 180, 0);
         private const float TWEEN_DURATION = 0.1f;

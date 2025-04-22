@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Health;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -16,8 +17,8 @@ namespace EmpireAtWar.Models.Weapon
         IProjectileModel ProjectileModel { get; }
         
         float MaxAttackDistance { get; }
-        List<IHardPointView> Targets { get; }
-        List<IHardPointView> MainUnitsTarget { get; }
+        List<IHardPointModel> Targets { get; }
+        List<IHardPointModel> MainUnitsTarget { get; }
         float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
         void InjectDependency(AttackModelDependency attackModelDependency);
@@ -30,8 +31,8 @@ namespace EmpireAtWar.Models.Weapon
 
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
 
-        private List<IHardPointView> _shipUnitViews = new List<IHardPointView>();
-        private List<IHardPointView> _mainUnitsTarget;
+        private List<IHardPointModel> _shipUnitViews = new List<IHardPointModel>();
+        private List<IHardPointModel> _mainUnitsTarget;
 
 
         public Dictionary<WeaponType, int> WeaponDictionary { get; } = new Dictionary<WeaponType, int>();
@@ -40,9 +41,9 @@ namespace EmpireAtWar.Models.Weapon
 
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
-        List<IHardPointView> IWeaponModelObserver.Targets => _shipUnitViews;
+        List<IHardPointModel> IWeaponModelObserver.Targets => _shipUnitViews;
 
-        public List<IHardPointView> MainUnitsTarget
+        public List<IHardPointModel> MainUnitsTarget
         {
             get => _mainUnitsTarget;
             set
@@ -111,14 +112,14 @@ namespace EmpireAtWar.Models.Weapon
         }
 
 
-        public void AddShipUnits(IEnumerable<IHardPointView> units)
+        public void AddShipUnits(IEnumerable<IHardPointModel> units)
         {
             _shipUnitViews.AddRange(units);
         }
 
-        public void RemoveShipUnits(IEnumerable<IHardPointView> unitViews)
+        public void RemoveShipUnits(IEnumerable<IHardPointModel> unitViews)
         {
-            foreach (IHardPointView shipUnitView in unitViews)
+            foreach (IHardPointModel shipUnitView in unitViews)
             {
                 _shipUnitViews.Remove(shipUnitView);
             }
