@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Collections;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Weapon;
@@ -14,42 +16,41 @@ namespace EmpireAtWar.ViewComponents.Weapon
     public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>
     {
         [SerializeField] private AttackModelDependency attackModelDependency;
-        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => attackModelDependency.TurretDictionary;
+
+        private Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary =>
+            attackModelDependency.TurretDictionary;
 
         private List<IHardPointModel> _targetHardPointModels;
         private List<IHardPointModel> _mainTargetHardPointModels;
         private IProjectileModel _projectileModel;
         private Coroutine _mainTargetAttackFlow;
         private Coroutine _commonAttackFlow;
-        private Random _random = new Random();
         private bool _isDead;
-        
-        [Inject]
-        private IWeaponCommand WeaponCommand { get; }
-        
+
+        [Inject] private IWeaponCommand WeaponCommand { get; }
+
         private List<IHardPointModel> Targets => Model.Targets; //todo: use observable list in weapon model
+
+        private void OnEnable()
+        {
+            Model.OnMainUnitSwitched += HandleNewMainTarget;
+            _commonAttackFlow = StartCoroutine(AttackFlowLoop(() => Model.Targets));
+        }
 
         protected override void OnInit()
         {
             _projectileModel = Model.ProjectileModel;
             foreach (var keyValuePair in TurretDictionary)
             {
-                if(keyValuePair.Value == null) continue;
-                
+                if (keyValuePair.Value == null) continue;
+
                 float attackDistance = Model.GetAttackDistance(keyValuePair.Key);
                 foreach (WeaponHardPointView turretView in keyValuePair.Value)
                 {
-                    if(turretView == null) continue;
+                    if (turretView == null) continue;
                     turretView.SetData(_projectileModel.ProjectileData[keyValuePair.Key], attackDistance);
                 }
             }
-
-        }
-
-        private void OnEnable()
-        {
-            Model.OnMainUnitSwitched += HandleNewMainTarget;
-            _commonAttackFlow = StartCoroutine(CommonAttackFlow());
         }
 
         protected override void OnRelease()
@@ -62,7 +63,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 StopCoroutine(_mainTargetAttackFlow);
             }
-            if(_commonAttackFlow != null)
+
+            if (_commonAttackFlow != null)
             {
                 StopCoroutine(_commonAttackFlow);
             }
@@ -70,109 +72,72 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void HandleNewMainTarget()
         {
-            if(_isDead) return;
-            
-            if(_mainTargetAttackFlow != null) StopCoroutine(_mainTargetAttackFlow);
+            if (ShouldSkipMainTargetAttack()) return;
 
-            if(Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0) return;
-            
-            _mainTargetAttackFlow = StartCoroutine(MainTargetAttackFlow());
-        }
-
-        private IEnumerator MainTargetAttackFlow()
-        {
-            while (!_isDead)
-            {
-                if (Model.MainUnitsTarget is { Count: > 0 })
-                {
-                    _mainTargetHardPointModels = GetShuffledHardPoint(Model.MainUnitsTarget.Where(x => !x.IsDestroyed).ToList());
-                    if (_mainTargetHardPointModels.Count > 0)
-                    {
-                        yield return AttackFlow(_mainTargetHardPointModels);
-                    }
-                    else
-                    {
-                        yield return new WaitForEndOfFrame();
-                    }
-                
-                }
-                else
-                {
-                    yield return new WaitUntil(()=> Model.MainUnitsTarget is { Count: > 0 });
-                }
-            }
+            StopIfRunning(ref _mainTargetAttackFlow);
+            _mainTargetAttackFlow = StartCoroutine(AttackFlowLoop(() => Model.MainUnitsTarget));
         }
         
-        private IEnumerator CommonAttackFlow()
+        private IEnumerator AttackFlowLoop(Func<List<IHardPointModel>> targetProvider)
         {
-            while (!_isDead)
+            while (!IsDead())
             {
-                if (Targets != null && Targets.Count > 0)
+                var validTargets = GetValidHardPoints(targetProvider());
+
+                if (validTargets.Count > 0)
                 {
-                    _targetHardPointModels = GetShuffledHardPoint(Targets.Where(x => !x.IsDestroyed).ToList());
-                    if (_targetHardPointModels.Count > 0)
-                    {
-                        yield return AttackFlow(_targetHardPointModels);
-                    }
-                    else
-                    {
-                        yield return new WaitForEndOfFrame();
-                    }
-                
+                    yield return ExecuteAttackFlow(validTargets);
                 }
                 else
                 {
-                    yield return new WaitUntil(()=> Targets != null && Targets.Count > 0);
+                    yield return new WaitUntil(() => targetProvider()?.Any(x => !x.IsDestroyed) == true);
                 }
             }
         }
 
-        private IEnumerator AttackFlow(List<IHardPointModel> hardPointViews)
+        private List<IHardPointModel> GetValidHardPoints(List<IHardPointModel> rawTargets)
         {
-            foreach (var keyValue in TurretDictionary)
+            return rawTargets?.Where(x => !x.IsDestroyed).ToList().GetShuffledCollection() ?? new List<IHardPointModel>();
+        }
+
+        private IEnumerator ExecuteAttackFlow(List<IHardPointModel> hardPoints)
+        {
+            foreach (var kvp in TurretDictionary)
             {
-                foreach (WeaponHardPointView weaponHardPointView in keyValue.Value)
+                foreach (WeaponHardPointView turret in kvp.Value)
                 {
-                    if (weaponHardPointView.Destroyed || weaponHardPointView.IsBusy)
+                    if (turret.Destroyed || turret.IsBusy) continue;
+
+                    foreach (IHardPointModel target in hardPoints)
                     {
-                        continue;
-                    }
-                    
-                    foreach (IHardPointModel shipUnitView in hardPointViews)
-                    {
-                        if(shipUnitView.IsDestroyed) continue;
-                        
-                        if(!weaponHardPointView.CanAttack(shipUnitView.Position) || weaponHardPointView.Destroyed || weaponHardPointView.IsBusy) continue;
-                        
-                        float duration = weaponHardPointView.Attack(shipUnitView);
-                        WeaponCommand.ApplyDamage(shipUnitView, keyValue.Key, duration);
+                        if (target.IsDestroyed || !turret.CanAttack(target.Position)) continue;
+
+                        float attackDuration = turret.Attack(target);
+                        WeaponCommand.ApplyDamage(target, kvp.Key, attackDuration);
                         yield return new WaitForSeconds(Model.DelayBetweenAttack);
                     }
-                    
-                    bool allDestroyed = hardPointViews.All(x => x.IsDestroyed);
 
-                    if (allDestroyed)
-                    {
+                    if (hardPoints.All(x => x.IsDestroyed))
                         yield break;
-                    }
                 }
             }
         }
-
-      
         
-        private List<IHardPointModel> GetShuffledHardPoint(List<IHardPointModel> listToShuffle)
-        {
-            for (int i = listToShuffle.Count - 1; i > 0; i--)
-            {
-                var k = _random.Next(i + 1);
-                var value = listToShuffle[k];
-                listToShuffle[k] = listToShuffle[i];
-                listToShuffle[i] = value;
-            }
 
-            listToShuffle.Reverse();
-            return listToShuffle;
+        private bool IsDead() => _isDead;
+
+        private bool ShouldSkipMainTargetAttack()
+        {
+            return IsDead() || Model.MainUnitsTarget == null || Model.MainUnitsTarget.Count == 0;
+        }
+
+        private void StopIfRunning(ref Coroutine coroutine)
+        {
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null;
+            }
         }
     }
 }

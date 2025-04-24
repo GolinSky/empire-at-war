@@ -19,7 +19,6 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         void AddTargets(AttackData[] healthComponent);
         void AddTarget(AttackData healthComponent, AttackType attackType);
         bool HasEnoughRange(float distance);
-        float OptimalAttackRange { get; }
         void ResetTarget();
     }
 
@@ -27,21 +26,17 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     {
         private readonly ITimerPoolWrapperService _timerPoolWrapperService;
         private readonly ISimpleMoveModelObserver _simpleMoveModelObserver;
-        private readonly ITimer _attackTimer;
 
         private List<CustomCoroutine> _customCoroutines = new List<CustomCoroutine>();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private AttackData _mainAttackData = null;
         private float _endTimeTween;
 
-        public float OptimalAttackRange { get; }
 
         public WeaponComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
         {
             _timerPoolWrapperService = timerPoolWrapperService;
             _simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
-            _attackTimer = TimerFactory.ConstructTimer(3f);
-            OptimalAttackRange = Model.MaxAttackDistance * 0.5f;
         }
 
         public void AddTargets(AttackData[] attackDataArray)
@@ -90,7 +85,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         
         public bool HasEnoughRange(float distance)
         {
-            return OptimalAttackRange > distance;
+            return Model.OptimalAttackRange > distance;
         }
 
         public void ApplyDamage(IHardPointModel unitView, WeaponType weaponType, float duration)

@@ -6,6 +6,7 @@ using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
 
 namespace EmpireAtWar.Models.Weapon
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Models.Weapon
         float MaxAttackDistance { get; }
         List<IHardPointModel> Targets { get; }
         List<IHardPointModel> MainUnitsTarget { get; }
+        
         float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
         void InjectDependency(AttackModelDependency attackModelDependency);
@@ -27,6 +29,7 @@ namespace EmpireAtWar.Models.Weapon
     [Serializable]
     public class WeaponModel : InnerModel, IWeaponModelObserver
     {
+        private const float OPTIMAL_DISTANCE_MODIFIER = 0.5f;
         public event Action OnMainUnitSwitched;
 
         [field: SerializeField] public float DelayBetweenAttack { get; set; }
@@ -73,6 +76,7 @@ namespace EmpireAtWar.Models.Weapon
         }
 
         public int WeaponCount { get; private set; }
+        public float OptimalAttackRange => MaxAttackDistance * OPTIMAL_DISTANCE_MODIFIER;
 
         protected override void OnInit()
         {
