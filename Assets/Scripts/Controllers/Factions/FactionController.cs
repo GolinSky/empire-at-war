@@ -54,7 +54,7 @@ namespace EmpireAtWar.Controllers.Factions
         {
             if(_selectionContext != null)
             {
-                _selectionService.RemoveSelectable(_selectionContext.Selectable);
+                _selectionService.RemoveSelectable(_selectionContext);
             }
         }
 

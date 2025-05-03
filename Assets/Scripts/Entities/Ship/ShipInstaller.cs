@@ -5,9 +5,14 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.ModelMediator;
+using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
 namespace EmpireAtWar.Ship
@@ -39,6 +44,9 @@ namespace EmpireAtWar.Ship
         protected override void BindComponents()
         {
             base.BindComponents();
+
+            Container.BindEntity(SelectionType.Ship);
+            
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 .BindInterfacesExt<HealthComponent>()
@@ -51,9 +59,13 @@ namespace EmpireAtWar.Ship
                 case PlayerType.Player:
                 {
                     Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    Container.BindInterfacesExt<PlayerShipCommand>();
+                    Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
                     Container.BindInterfacesExt<PlayerStateComponent>();
+                    
+                    //entity commands
+                    Container.BindInterfacesExt<PlayerAttackShipCommand>();
+                    Container.BindInterfacesExt<SelectionCommand>();
 
                     break;
                 }
@@ -62,9 +74,20 @@ namespace EmpireAtWar.Ship
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     Container.BindInterfacesExt<EnemyShipCommand>();
                     Container.BindInterfacesExt<EnemyStateComponent>();
+                    
+                    //entity commands
+                    Container.BindInterfacesExt<EnemyAttackShipCommand>();
+                    Container.BindInterfacesExt<SelectionCommand>();
+
                     break;
                 }
             }
+        }
+
+        protected override void OnViewCreated()
+        {
+            base.OnViewCreated();
+            Container.Install<EntityInstaller>(new object[] { View });
         }
 
         protected override void OnModelCreated()

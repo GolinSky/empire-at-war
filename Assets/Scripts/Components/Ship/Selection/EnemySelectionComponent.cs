@@ -29,7 +29,7 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public void OnSelected(SelectionType selectionType)
         {
-            _selectionService.UpdateSelectable(this, selectionType);
+            //_selectionService.UpdateSelectable(this, selectionType);
         }
 
         public void OnSkipSelection(SelectionType selectionType)

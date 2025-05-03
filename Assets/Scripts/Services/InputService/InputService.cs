@@ -87,7 +87,6 @@ namespace EmpireAtWar.Services.InputService
                 // }
                 Vector2 delta = MapActions.TouchDelta.ReadValue<Vector2>();
 
-                Debug.Log($"delta: ({delta.x},{delta.y})");
                 if (!IsPointerOverUIObject() && delta == Vector2.zero)
                 {
                     InvokeInputEvent(InputType.ShipInput);

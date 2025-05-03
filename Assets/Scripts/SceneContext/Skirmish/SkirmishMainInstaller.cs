@@ -3,6 +3,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Controllers.ShipUi;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -31,6 +32,8 @@ public class SkirmishMainInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
+        Container.BindInterfacesExt<EntityMediator>();
+        
         
         //todo: use GameModelObserver.PlayerFactionType directly
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);

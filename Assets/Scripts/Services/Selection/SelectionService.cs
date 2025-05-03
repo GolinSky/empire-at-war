@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using EmpireAtWar.Commands;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
@@ -12,8 +16,8 @@ namespace EmpireAtWar.Services.Battle
 {
     public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
-        void UpdateSelectable(ISelectable selectable, SelectionType selectionType);
-        void RemoveSelectable(ISelectable selectable);
+       // void UpdateSelectable(ISelectable selectable, SelectionType selectionType);
+        void RemoveSelectable(ISelectionContext selectionContext);
     }
 
     public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable, ISelectionSubject
@@ -21,6 +25,7 @@ namespace EmpireAtWar.Services.Battle
 
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
+        private readonly IEntityMediator _entityMediator;
         private readonly List<IObserver<ISelectionSubject>> _observers = new List<IObserver<ISelectionSubject>>();
       
         private readonly SelectionContext _playerSelectionContext = new SelectionContext();
@@ -31,10 +36,11 @@ namespace EmpireAtWar.Services.Battle
         public ISelectionContext EnemySelectionContext => _enemySelectionContext;
         public PlayerType UpdatedType { get; private set; }
 
-        public SelectionService(IInputService inputService, ICameraService cameraService)
+        public SelectionService(IInputService inputService, ICameraService cameraService, IEntityMediator entityMediator)
         {
             _inputService = inputService;
             _cameraService = cameraService;
+            _entityMediator = entityMediator;
         }
         
         public void Initialize()
@@ -47,35 +53,35 @@ namespace EmpireAtWar.Services.Battle
             _inputService.OnInput -= HandleInput;
         }
         
-        public void UpdateSelectable(ISelectable selectable, SelectionType selectionType)
+        // public void UpdateSelectable(ISelectable selectable, SelectionType selectionType)
+        // {
+        //     RemoveSelectable(selectable.PlayerType);
+        //     switch (selectable.PlayerType)
+        //     {
+        //         case PlayerType.Player:
+        //         {
+        //             UpdateContext(_playerSelectionContext);
+        //             break;
+        //         }
+        //         case PlayerType.Opponent:
+        //         {
+        //             UpdateContext(_enemySelectionContext);
+        //             break;
+        //         }
+        //     }
+        //     NotifyObservers(selectable.PlayerType);
+        //
+        //
+        //     void UpdateContext(SelectionContext selectionContext)
+        //     {
+        //         selectionContext.Update(selectable, selectionType);
+        //         selectionContext.SetSelectableState(true);
+        //     }
+        // }
+
+        public void RemoveSelectable(ISelectionContext context)
         {
-            RemoveSelectable(selectable.PlayerType);
-            switch (selectable.PlayerType)
-            {
-                case PlayerType.Player:
-                {
-                    UpdateContext(_playerSelectionContext);
-                    break;
-                }
-                case PlayerType.Opponent:
-                {
-                    UpdateContext(_enemySelectionContext);
-                    break;
-                }
-            }
-            NotifyObservers(selectable.PlayerType);
-
-
-            void UpdateContext(SelectionContext selectionContext)
-            {
-                selectionContext.Update(selectable, selectionType);
-                selectionContext.SetSelectableState(true);
-            }
-        }
-
-        public void RemoveSelectable(ISelectable selectable)
-        {
-            RemoveSelectable(selectable.PlayerType);
+            RemoveSelectable(context.PlayerType);
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
@@ -85,12 +91,39 @@ namespace EmpireAtWar.Services.Battle
             RaycastHit raycastHit = _cameraService.ScreenPointToRay(touchPosition);
 
             if(raycastHit.collider == null) return;
-            
-            ISelectableView selectableView = raycastHit.collider.GetComponent<ISelectableView>();
 
-            if (selectableView != null)
+            IViewEntity viewEntity = raycastHit.collider.GetComponent<IViewEntity>();
+
+            if (viewEntity != null)
             {
-                selectableView.OnSelected();
+                IEntity entity = _entityMediator.GetEntity(viewEntity.Id);
+                if (entity.TryGetCommand(out IEntitySelectionCommand command))
+                {
+                    RemoveSelectable(viewEntity.PlayerType);
+
+                    switch (viewEntity.PlayerType)
+                    {
+                        case PlayerType.Player:
+                        {
+                            UpdateContext(_playerSelectionContext);
+                            break;
+                        }
+                        case PlayerType.Opponent:
+                        {
+                            UpdateContext(_enemySelectionContext);
+                            break;
+                        }
+                    }
+                }
+                NotifyObservers(viewEntity.PlayerType);
+
+                
+                void UpdateContext(SelectionContext selectionContext)
+                {
+                    selectionContext.Update(entity, command, command.SelectionType, viewEntity.PlayerType);
+                    selectionContext.SetSelectableState(true);
+                }
+                //viewEntity.Id
             }
         }
         
@@ -125,6 +158,11 @@ namespace EmpireAtWar.Services.Battle
         public void RemoveObserver(IObserver<ISelectionSubject> observer)
         {
             _observers.Remove(observer);
+        }
+
+        public void RemoveSelectable(IEntity selectable)
+        {
+            throw new NotImplementedException();
         }
     }
 }

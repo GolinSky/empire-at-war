@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Commands.ShipUi;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.Battle;
@@ -41,16 +42,16 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.AddObserver(this);
             _uiService.CreateUi(UiType.Ship);
             _inputService.OnInput += HandleInput;
-            _inputService.OnSwipe += CloseGoToPositionUi;
-            _inputService.OnZoom += CloseGoToPositionUi;
+            _inputService.OnSwipe += CloseMoveToPositionUi;
+            _inputService.OnZoom += CloseMoveToPositionUi;
         }
 
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
             _inputService.OnInput -= HandleInput;
-            _inputService.OnSwipe -= CloseGoToPositionUi;
-            _inputService.OnZoom -= CloseGoToPositionUi;
+            _inputService.OnSwipe -= CloseMoveToPositionUi;
+            _inputService.OnZoom -= CloseMoveToPositionUi;
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
@@ -62,36 +63,40 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
             else
             {
-                CloseGoToPositionUi();
+                CloseMoveToPositionUi();
             }
         }
 
-        private void CloseGoToPositionUi()
+        private void CloseMoveToPositionUi()
         {
             Model.SkipGoToPositionUi();
         }
         
-        private void CloseGoToPositionUi(float obj)
+        private void CloseMoveToPositionUi(float obj)
         {
-            CloseGoToPositionUi();
+            CloseMoveToPositionUi();
         }
 
-        private void CloseGoToPositionUi(Vector2 obj)
+        private void CloseMoveToPositionUi(Vector2 obj)
         {
-            CloseGoToPositionUi();
+            CloseMoveToPositionUi();
         }
 
         public void CloseSelection()
         {
             if (_playerSelectionContext != null)
             {
-                _selectionService.RemoveSelectable(_playerSelectionContext.Selectable);
+                _selectionService.RemoveSelectable(_playerSelectionContext);
             }
         }
 
         public void MoveToPosition()
         {
-            _playerSelectionContext.Selectable?.Movable?.MoveToPosition(Model.TapPosition);
+            // _playerSelectionContext.Selectable?.Movable?.MoveToPosition(Model.TapPosition);
+            if (_playerSelectionContext.Entity.TryGetCommand(out IMoveCommand moveCommand))
+            {
+                moveCommand.MoveTo(Model.TapPosition);
+            }
         }
 
         public void UpdateState(ISelectionSubject subject)
@@ -102,7 +107,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     _playerSelectionContext = subject.PlayerSelectionContext;
                     if (_playerSelectionContext.SelectionType == SelectionType.Ship)
                     {
-                        IShipModelObserver shipModelObserver = _playerSelectionContext.Selectable.ModelObserver
+                        IShipModelObserver shipModelObserver = _playerSelectionContext.Entity.Model
                             .GetModelObserver<IShipModelObserver>();
                         if (shipModelObserver != null)
                         {
@@ -113,10 +118,10 @@ namespace EmpireAtWar.Controllers.ShipUi
                     Model.UpdateSelection(_playerSelectionContext.SelectionType);
                     break;
                 case PlayerType.Opponent:
-                    CloseGoToPositionUi();
+                    CloseMoveToPositionUi();
                     break;
                 case PlayerType.None:
-                    CloseGoToPositionUi();
+                    CloseMoveToPositionUi();
                     break;
 
             }

@@ -4,10 +4,13 @@ using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.SpaceStation;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.ModelMediator;
+using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SpaceStation;
+using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.SpaceStation;
 using Zenject;
 
@@ -35,6 +38,7 @@ namespace EmpireAtWar.SpaceStation
             base.OnBindData();
             Container.BindEntity(_playerType);
             Container.BindEntity(_factionType);
+            Container.BindEntity(SelectionType.Base);
         }
 
         protected override void BindComponents()
@@ -58,6 +62,11 @@ namespace EmpireAtWar.SpaceStation
                 }
             }
             
+            //entity commands
+            Container.BindInterfacesExt<SelectionCommand>();
+
+            
+            
             Container
                 .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<RadarComponent>()
@@ -71,6 +80,12 @@ namespace EmpireAtWar.SpaceStation
         {
             base.OnModelCreated();
             _modelMediatorService.AddUnit(Container.Resolve<SpaceStationModel>());
+        }
+        
+        protected override void OnViewCreated()
+        {
+            base.OnViewCreated();
+            Container.Install<EntityInstaller>(new object[] { View });
         }
     }
 }

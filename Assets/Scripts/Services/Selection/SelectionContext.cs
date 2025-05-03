@@ -1,4 +1,6 @@
-﻿using EmpireAtWar.Models.Factions;
+﻿using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
 
 namespace EmpireAtWar.Services.Battle
@@ -12,30 +14,40 @@ namespace EmpireAtWar.Services.Battle
     
     public interface ISelectionContext
     {
-        ISelectable Selectable { get; }
+        IEntity Entity { get; }
+        IEntitySelectionCommand SelectionCommand { get; }
         SelectionType SelectionType { get; }
         bool HasSelectable { get; }
+        PlayerType PlayerType { get; }
     }
 
     public class SelectionContext: ISelectionContext
     {
-        public ISelectable Selectable { get; private set; }
+        public IEntity Entity { get; private set; }
+        public IEntitySelectionCommand SelectionCommand { get; private set; }
         public SelectionType SelectionType { get; private set; }
-        public bool HasSelectable => Selectable != null;
+        public bool HasSelectable => Entity != null;
+        public PlayerType PlayerType { get; private set; }
 
         public void ResetCurrentSelectable()
         {
             SetSelectableState(false);
-            Selectable = null;
+            Entity = null;
             SelectionType = SelectionType.None;
         }
         
-        public void SetSelectableState(bool isSelected) => Selectable?.SetActive(isSelected);
+        public void SetSelectableState(bool isSelected) => SelectionCommand?.Select(isSelected);
 
-        public void Update(ISelectable selectable, SelectionType selectionType)
+        public void Update(
+            IEntity entity,
+            IEntitySelectionCommand selectionCommand,
+            SelectionType selectionType,
+            PlayerType playerType)
         {
-            Selectable = selectable;
+            Entity = entity;
+            SelectionCommand = selectionCommand;
             SelectionType = selectionType;
+            PlayerType = playerType;
         }
     }
 

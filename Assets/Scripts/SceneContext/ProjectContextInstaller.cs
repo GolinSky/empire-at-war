@@ -3,6 +3,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Game;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
@@ -28,12 +29,13 @@ public class ProjectContextInstaller : MonoInstaller
             .BindFromNewScriptable<GameModel>(_repository);
 
         Container.BindModel<SceneModel>(_repository);
-        
+
         Container
             .BindInterfacesExt<TimerPoolWrapperService>()
             .BindInterfacesExt<GameController>()
             .BindInterfacesExt<SceneService>()
             .BindInterfacesExt<SettingsService>()
-            .BindInterfacesExt<AudioService>();
+            .BindInterfacesExt<AudioService>()
+            .BindInterfacesExt<UniqueIdGenerator>();
     }
 }

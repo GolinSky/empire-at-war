@@ -85,7 +85,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
             if (selectionSubject.UpdatedType == PlayerType.Opponent && selectionSubject.EnemySelectionContext.HasSelectable)
             {
-                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Selectable.ModelObserver
+                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.Model
                     .GetModelObserver<IHealthModelObserver>();
                 if (!healthModel.IsDestroyed && healthModel.HasUnits)
                 {
