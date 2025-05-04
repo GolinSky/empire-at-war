@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Ship
                     //entity commands
                     Container.BindInterfacesExt<PlayerAttackShipCommand>();
                     Container.BindInterfacesExt<SelectionCommand>();
+                    Container.BindInterfacesExt<ShipMovementCommand>();
 
                     break;
                 }

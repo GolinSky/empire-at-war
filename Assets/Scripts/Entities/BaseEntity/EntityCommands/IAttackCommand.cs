@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EmpireAtWar.Entities.BaseEntity.EntityCommands
+﻿namespace EmpireAtWar.Entities.BaseEntity.EntityCommands
 {
     public interface IAttackCommand: IEntityCommand
     {

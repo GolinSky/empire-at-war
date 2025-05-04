@@ -99,5 +99,11 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         {
             _shipStateMachine.Update();
         }
+
+        public void MoveTo(Vector2 screenPosition)
+        {
+            _moveToPointState.SetScreenCoordinates(screenPosition);
+            _shipStateMachine.ChangeState(_moveToPointState);
+        }
     }
 }
