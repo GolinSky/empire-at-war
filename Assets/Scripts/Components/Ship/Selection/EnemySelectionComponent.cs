@@ -8,7 +8,8 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class EnemySelectionComponent:BaseComponent<SelectionModel>, ISelectionCommand, ISelectable
+    
+    public class EnemySelectionComponent:BaseComponent<SelectionModel>, ISelectionCommand, ISelectable, ISelectionComponent
     {
         private readonly ISelectionService _selectionService;
       
@@ -39,7 +40,7 @@ namespace EmpireAtWar.Components.Ship.Selection
   
         public void SetActive(bool isActive)
         {
-            
+            // do nothing - bad code here
         }
 
     }

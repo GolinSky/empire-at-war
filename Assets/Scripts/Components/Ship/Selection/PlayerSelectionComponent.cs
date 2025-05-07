@@ -3,13 +3,18 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.ViewComponents.Health;
+using LightWeightFramework.Components.Components;
 using LightWeightFramework.Model;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public class PlayerSelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable
+    public interface ISelectionComponent: IComponent
+    {
+        void SetActive(bool isActive);
+    }
+    
+    public class PlayerSelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable, ISelectionComponent
     {
         private readonly ISelectionService _selectionService;
 
