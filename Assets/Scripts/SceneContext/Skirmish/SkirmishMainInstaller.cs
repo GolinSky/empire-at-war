@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
@@ -31,6 +32,9 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+
+        Container.BindInterfacesExt<AttackDataFactory>();
+        
         Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
         Container.BindInterfacesExt<EntityMediator>();
         

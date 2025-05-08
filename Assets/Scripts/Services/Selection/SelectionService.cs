@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using EmpireAtWar.Commands;
+﻿using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.ViewComponents.Selection;
 using UnityEngine;
 using LightWeightFramework.Components.Service;
 using Zenject;
@@ -52,32 +48,7 @@ namespace EmpireAtWar.Services.Battle
         {
             _inputService.OnInput -= HandleInput;
         }
-        
-        // public void UpdateSelectable(ISelectable selectable, SelectionType selectionType)
-        // {
-        //     RemoveSelectable(selectable.PlayerType);
-        //     switch (selectable.PlayerType)
-        //     {
-        //         case PlayerType.Player:
-        //         {
-        //             UpdateContext(_playerSelectionContext);
-        //             break;
-        //         }
-        //         case PlayerType.Opponent:
-        //         {
-        //             UpdateContext(_enemySelectionContext);
-        //             break;
-        //         }
-        //     }
-        //     NotifyObservers(selectable.PlayerType);
-        //
-        //
-        //     void UpdateContext(SelectionContext selectionContext)
-        //     {
-        //         selectionContext.Update(selectable, selectionType);
-        //         selectionContext.SetSelectableState(true);
-        //     }
-        // }
+  
 
         public void RemoveSelectable(ISelectionContext context)
         {
@@ -92,16 +63,14 @@ namespace EmpireAtWar.Services.Battle
 
             if(raycastHit.collider == null) return;
 
-            IViewEntity viewEntity = raycastHit.collider.GetComponent<IViewEntity>();
 
-            if (viewEntity != null)
+            if (_entityMediator.TryGetEntity(raycastHit, out IEntity entity))
             {
-                IEntity entity = _entityMediator.GetEntity(viewEntity.Id);
                 if (entity.TryGetCommand(out IEntitySelectionCommand command))
                 {
-                    RemoveSelectable(viewEntity.PlayerType);
+                    RemoveSelectable(entity.PlayerType);
 
-                    switch (viewEntity.PlayerType)
+                    switch (entity.PlayerType)
                     {
                         case PlayerType.Player:
                         {
@@ -115,12 +84,12 @@ namespace EmpireAtWar.Services.Battle
                         }
                     }
                 }
-                NotifyObservers(viewEntity.PlayerType);
+                NotifyObservers(entity.PlayerType);
 
                 
                 void UpdateContext(SelectionContext selectionContext)
                 {
-                    selectionContext.Update(entity, command, command.SelectionType, viewEntity.PlayerType);
+                    selectionContext.Update(entity, command, command.SelectionType, entity.PlayerType);
                     selectionContext.SetSelectableState(true);
                 }
                 //viewEntity.Id
@@ -159,10 +128,6 @@ namespace EmpireAtWar.Services.Battle
         {
             _observers.Remove(observer);
         }
-
-        public void RemoveSelectable(IEntity selectable)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

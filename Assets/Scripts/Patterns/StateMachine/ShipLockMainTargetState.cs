@@ -1,5 +1,7 @@
 ﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
@@ -11,37 +13,43 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class ShipLockMainTargetState:ShipIdleState
     {
+        private readonly IAttackDataFactory _attackDataFactory;
         private const float MOVE_TIMER_DELAY = 15f;
         
         private readonly IShipMoveModelObserver _moveModel;
         private readonly IWeaponModelObserver _weaponModel;
         private readonly IHealthModelObserver _targetHealth;
+        private readonly ITimer _moveTimer;
+
         private IHealthModelObserver _mainTarget;
-        private ITimer _moveTimer;
+        private IEntity _mainTargetEntity;
         private Vector3 TargetPosition => _mainTarget.Transform.position;
         
-        public ShipLockMainTargetState(ShipStateMachine stateMachine) : base(stateMachine)
+        public ShipLockMainTargetState(ShipStateMachine stateMachine, IAttackDataFactory attackDataFactory) : base(stateMachine)
         {
+            _attackDataFactory = attackDataFactory;
             _moveModel = _model.GetModelObserver<IShipMoveModelObserver>();
             _weaponModel = _model.GetModelObserver<IWeaponModelObserver>();
             _moveTimer = TimerFactory.ConstructTimer(MOVE_TIMER_DELAY);
         }
 
-        public void SetData(IHealthModelObserver mainTarget)
+        public void SetData(IEntity mainTarget)
         {
-            _mainTarget = mainTarget;
-            
+            _mainTargetEntity = mainTarget;
+            _mainTarget = _mainTargetEntity.Model.GetModelObserver<IHealthModelObserver>();
         }
 
         public override void Enter()
         {
             base.Enter();
-              
-            UpdateMoveState();
             
-            _weaponComponent.AddTarget(new AttackData(_mainTarget,
-                _componentHub.GetComponent(_mainTarget),
-                HardPointType.Any), AttackType.MainTarget);
+            if (_mainTargetEntity.TryGetCommand(out IHealthCommand healthCommand))
+            {
+                AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
+                _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
+                
+                UpdateMoveState();
+            }
         }
 
         private void UpdateMoveState()

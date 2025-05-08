@@ -1,4 +1,5 @@
-﻿using LightWeightFramework.Model;
+﻿using EmpireAtWar.Models.Factions;
+using LightWeightFramework.Model;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity
@@ -8,6 +9,8 @@ namespace EmpireAtWar.Entities.BaseEntity
         long Id { get; }
         bool TryGetCommand<TCommand>(out TCommand entityCommand) where TCommand : IEntityCommand;
         IModelObserver Model { get; }
+        
+        PlayerType PlayerType { get; }
     }
     
     public class Entity: IEntity, IInitializable, ILateDisposable
@@ -17,11 +20,13 @@ namespace EmpireAtWar.Entities.BaseEntity
         public long Id { get;  }
         
         public IModelObserver Model { get; }
+        public PlayerType PlayerType { get; }
 
-        public Entity(long id, IEntityCommand[] commands, IModelObserver modelObserver, IEntityMediator entityMediator)
+        public Entity(long id, IEntityCommand[] commands, IModelObserver modelObserver, IEntityMediator entityMediator, PlayerType playerType)
         {
             _commands = commands;
             _entityMediator = entityMediator;
+            PlayerType = playerType;
             Id = id;
             Model = modelObserver;
         }

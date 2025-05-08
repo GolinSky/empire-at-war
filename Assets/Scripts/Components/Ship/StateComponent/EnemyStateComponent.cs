@@ -23,18 +23,17 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IModel model,
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
-            IComponentHub componentHub,
-            IMapModelObserver mapModelObserver)
+            IMapModelObserver mapModelObserver,
+            IAttackDataFactory attackDataFactory)
         {
             _mapModelObserver = mapModelObserver;
             _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
                 weaponComponent,
-                componentHub,
                 model);
             
             _shipIdleState = new ShipIdleState(_shipStateMachine);
-            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine);
+            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine, attackDataFactory);
             _moveToPointState = new MoveToPointState(_shipStateMachine);
 
             _shipStateMachine.SetDefaultState(_shipIdleState);

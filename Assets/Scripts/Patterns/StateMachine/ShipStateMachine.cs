@@ -10,9 +10,8 @@ namespace EmpireAtWar.Patterns.StateMachine
         public ShipStateMachine(
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
-            IComponentHub componentHub,
             IModel model) 
-            : base(weaponComponent, componentHub, model)
+            : base(weaponComponent, model)
         {
             ShipMoveComponent = shipMoveComponent;
         }

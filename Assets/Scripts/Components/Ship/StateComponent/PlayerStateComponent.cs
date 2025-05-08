@@ -5,9 +5,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -31,9 +29,9 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IModel model,
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
-            IComponentHub componentHub,
             ISelectionService selectionService,
-            IInputService inputService)
+            IInputService inputService, 
+            IAttackDataFactory attackDataFactory)
         {
             _selectionService = selectionService;
             _inputService = inputService;
@@ -42,12 +40,11 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
                 weaponComponent,
-                componentHub,
                 model);
 
             _shipIdleState = new ShipIdleState(_shipStateMachine);
             _moveToPointState = new MoveToPointState(_shipStateMachine);
-            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine);
+            _shipLockMainTargetState = new ShipLockMainTargetState(_shipStateMachine, attackDataFactory);
             _shipStateMachine.SetDefaultState(_shipIdleState);
             _shipStateMachine.ChangeState(_shipIdleState);
         }
@@ -68,16 +65,6 @@ namespace EmpireAtWar.Components.Ship.AiComponent
            // _inputService.OnInput -= HandleInput;
         }
         
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
-        {
-            if (inputType != InputType.ShipInput) return;
-            if(!_selectionModelObserver.IsSelected) return;
-
-            _moveToPointState.SetScreenCoordinates(screenPosition);
-            _shipStateMachine.ChangeState(_moveToPointState);
-        }
-        
-
         
         public void UpdateState(ISelectionSubject selectionSubject)
         {
@@ -89,21 +76,21 @@ namespace EmpireAtWar.Components.Ship.AiComponent
                     .GetModelObserver<IHealthModelObserver>();
                 if (!healthModel.IsDestroyed && healthModel.HasUnits)
                 {
-                    _shipLockMainTargetState.SetData(healthModel); 
+                    _shipLockMainTargetState.SetData(selectionSubject.EnemySelectionContext.Entity); 
                     _shipStateMachine.ChangeState(_shipLockMainTargetState);
                 }
             }
+        }
+        
+        public void MoveTo(Vector2 screenPosition)
+        {
+            _moveToPointState.SetScreenCoordinates(screenPosition);
+            _shipStateMachine.ChangeState(_moveToPointState);
         }
 
         public void Tick()
         {
             _shipStateMachine.Update();
-        }
-
-        public void MoveTo(Vector2 screenPosition)
-        {
-            _moveToPointState.SetScreenCoordinates(screenPosition);
-            _shipStateMachine.ChangeState(_moveToPointState);
         }
     }
 }

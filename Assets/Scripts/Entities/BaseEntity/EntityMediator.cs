@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LightWeightFramework.Components.Service;
+using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
@@ -9,6 +10,8 @@ namespace EmpireAtWar.Entities.BaseEntity
         void AddEntity(IEntity entity);
         void RemoveEntity(IEntity entity);
         IEntity GetEntity(long entityId);
+        
+        bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
     }
 
     public class EntityMediator : Service, IEntityMediator
@@ -32,6 +35,19 @@ namespace EmpireAtWar.Entities.BaseEntity
                 return _entities[entityId];
             }
             throw new Exception("Not entity found with id: " + entityId);
+        }
+
+        public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
+        {
+            entity = null;
+            IViewEntity viewEntity = raycastHit.collider.GetComponent<IViewEntity>();
+            if (viewEntity != null)
+            {
+                entity = GetEntity(viewEntity.Id);
+                return entity != null;
+            }
+
+            return false;
         }
     }
 }

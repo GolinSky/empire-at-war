@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Weapon;
 
@@ -9,17 +10,17 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
     public class AttackData
     {
         private readonly IHealthModelObserver _shipUnitsProvider;
-        public IHealthComponent HealthComponent { get; }
+        private IHealthCommand HealthCommand { get; }
 
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
         public List<IHardPointModel> Units { get; private set; }
     
 
-        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthComponent healthComponent, HardPointType hardPointType)
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthCommand healthCommand, HardPointType hardPointType)
         {
             _shipUnitsProvider = shipUnitsProvider;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
-            HealthComponent = healthComponent;
+            HealthCommand = healthCommand;
         }
 
         public bool Contains(IHardPointModel hardPointModel)
@@ -29,7 +30,7 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
 
         public void ApplyDamage(float damage, WeaponType weaponType, int id)
         {
-            HealthComponent.ApplyDamage(damage, weaponType, id);
+            HealthCommand.ApplyDamage(damage, weaponType, id);
         }
 
         public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
@@ -48,9 +49,9 @@ namespace EmpireAtWar.Components.Ship.WeaponComponent
         
         public static bool operator ==(AttackData a, AttackData b)
         {
-            if (a?.HealthComponent == null || b?.HealthComponent == null) return false;
+            if (a?.HealthCommand == null || b?.HealthCommand == null) return false;
             
-            return a.HealthComponent.Equals(b.HealthComponent);
+            return a.HealthCommand.Equals(b.HealthCommand);
         }
 
         public static bool operator !=(AttackData a, AttackData b)

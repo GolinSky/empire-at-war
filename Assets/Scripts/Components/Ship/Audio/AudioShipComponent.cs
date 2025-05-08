@@ -1,11 +1,12 @@
-﻿using EmpireAtWar.Models.Audio;
+﻿using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Command;
 using LightWeightFramework.Model;
-using UnityEngine;
+using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
@@ -38,16 +39,19 @@ namespace EmpireAtWar.Components.Audio
 
         public void Initialize()
         {
-            _radarModelObserver.OnHitDetected += PlayAlarm;
+            // _radarModelObserver.OnHitDetected += PlayAlarm;
+            _radarModelObserver.Enemies.ItemAdded += PlayAlarm;
             PlayHyperSpaceClip();
         }
 
         public void LateDispose()
         {
-            _radarModelObserver.OnHitDetected -= PlayAlarm;
+            _radarModelObserver.Enemies.ItemAdded -= PlayAlarm;
+
+            // _radarModelObserver.OnHitDetected -= PlayAlarm;
         }
         
-        private void PlayAlarm(RaycastHit[] raycastHits)
+        private void PlayAlarm(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
         {
             if (_alarmTimer.IsComplete)
             {

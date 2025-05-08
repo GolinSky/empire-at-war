@@ -1,11 +1,8 @@
 ﻿using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Services.ComponentHub;
 using LightWeightFramework.Model;
 using UnityEngine;
-using Utilities.ScriptUtils.Math;
 using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.Patterns.StateMachine
@@ -16,7 +13,6 @@ namespace EmpireAtWar.Patterns.StateMachine
         private readonly ITimer _moveAroundTimer;
 
         protected readonly IModel _model;
-        protected readonly IComponentHub _componentHub;
         protected readonly IWeaponComponent _weaponComponent;
         protected readonly IShipMoveComponent _shipMoveComponent;
         protected readonly IHealthModelObserver _healthModelObserver;
@@ -26,7 +22,6 @@ namespace EmpireAtWar.Patterns.StateMachine
         public ShipIdleState(ShipStateMachine stateMachine) : base(stateMachine)
         {
             _model = stateMachine.Model;
-            _componentHub = stateMachine.ComponentHub;
             _weaponComponent = stateMachine.WeaponComponent;
             _shipMoveComponent = stateMachine.ShipMoveComponent;
             _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();

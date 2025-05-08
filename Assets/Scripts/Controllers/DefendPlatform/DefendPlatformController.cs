@@ -21,14 +21,17 @@ namespace EmpireAtWar.Controllers.DefendPlatform
         private readonly UnitIdleState _idleState;
         private readonly LockMainTargetState _lockMainTargetState;
         
-        public DefendPlatformController(DefendPlatformModel model, IWeaponComponent weaponComponent, IComponentHub componentHub, ISelectionService selectionService) : base(model)
+        public DefendPlatformController(
+            DefendPlatformModel model,
+            IWeaponComponent weaponComponent,
+            ISelectionService selectionService) : base(model)
         {
             _selectionService = selectionService;
             _selectionModelObserver = Model.GetModelObserver<ISelectionModelObserver>();
 
-            _stateMachine = new UnitStateMachine(weaponComponent, componentHub, Model);
+            _stateMachine = new UnitStateMachine(weaponComponent, Model);
             _idleState = new UnitIdleState(_stateMachine);
-            _lockMainTargetState = new LockMainTargetState(_stateMachine);
+            // _lockMainTargetState = new LockMainTargetState(_stateMachine);
             _stateMachine.SetDefaultState(_idleState);
             _stateMachine.ChangeState(_idleState);
         }

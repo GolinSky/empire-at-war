@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
 using LightWeightFramework.Model;
@@ -6,6 +7,7 @@ using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.ComponentHub
 {
+    [Obsolete]
     public interface IComponentHub
     {
         IHealthComponent GetComponent(IHealthModelObserver modelObserver);
@@ -13,6 +15,8 @@ namespace EmpireAtWar.Services.ComponentHub
         void Remove(IHealthComponent healthComponent);
         
     }
+    
+    [Obsolete]
     public class ComponentHub:Service, IComponentHub
     {
         private List<IHealthComponent> _healthComponents = new List<IHealthComponent>();

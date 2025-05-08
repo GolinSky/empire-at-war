@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
@@ -68,6 +69,7 @@ namespace EmpireAtWar.Ship
                     Container.BindInterfacesExt<PlayerAttackShipCommand>();
                     Container.BindInterfacesExt<SelectionCommand>();
                     Container.BindInterfacesExt<ShipMovementCommand>();
+                    Container.BindInterfacesExt<HealthCommand>();
 
                     break;
                 }
@@ -80,6 +82,7 @@ namespace EmpireAtWar.Ship
                     //entity commands
                     Container.BindInterfacesExt<EnemyAttackShipCommand>();
                     Container.BindInterfacesExt<SelectionCommand>();
+                    Container.BindInterfacesExt<HealthCommand>();
 
                     break;
                 }
