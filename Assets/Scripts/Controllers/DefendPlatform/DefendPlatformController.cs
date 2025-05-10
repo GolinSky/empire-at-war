@@ -4,7 +4,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Controller;
 using UnityEngine;

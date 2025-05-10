@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
+﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Services.ComponentHub;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.Rendering;

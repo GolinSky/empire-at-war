@@ -1,7 +1,6 @@
 ﻿using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.Services.ComponentHub;
 using LightWeightFramework.Model;
 using Utilities.ScriptUtils.Time;
 using LightWeightFramework.Components.Components;
@@ -19,7 +18,6 @@ namespace EmpireAtWar.Components.Ship.Health
     public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
     {
         private readonly ISimpleMoveModelObserver _simpleMoveModelObserver;
-        private readonly IComponentHub _componentHub;
         private readonly IModel _rootModel;
         private readonly ITimer _refreshShieldsTimer;
         
@@ -27,9 +25,8 @@ namespace EmpireAtWar.Components.Ship.Health
         
         public bool Destroyed => Model.IsDestroyed;
         
-        public HealthComponent(IModel model, IComponentHub componentHub) : base(model)
+        public HealthComponent(IModel model) : base(model)
         {
-            _componentHub = componentHub;
             _simpleMoveModelObserver = model.GetModelObserver<ISimpleMoveModelObserver>();
             _rootModel = model;
             _originShieldValue = Model.Shields;
@@ -39,18 +36,17 @@ namespace EmpireAtWar.Components.Ship.Health
         public void Initialize()
         {
             Model.OnDestroy += Destroy;
-            _componentHub.Add(this);
         }
 
         public void LateDispose()
         {
             Model.OnDestroy -= Destroy;
-            _componentHub.Remove(this);
+        
         }
 
         private void Destroy()
         {
-            _componentHub.Remove(this);
+        
         }
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)

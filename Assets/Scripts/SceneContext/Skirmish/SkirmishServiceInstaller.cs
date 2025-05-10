@@ -2,9 +2,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.BattleService;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.ComponentHub;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
@@ -21,7 +19,6 @@ public class SkirmishServiceInstaller : MonoInstaller
             .BindInterfacesExt<ShipService>()
             .BindInterfacesExt<CameraService>()
             .BindInterfacesExt<SelectionService>()
-            .BindInterfacesExt<ComponentHub>()
             .BindInterfacesExt<BattleService>();
 
     }
