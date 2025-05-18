@@ -2,14 +2,12 @@
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.SpaceStation;
 using Zenject;
 
 namespace EmpireAtWar.SpaceStation

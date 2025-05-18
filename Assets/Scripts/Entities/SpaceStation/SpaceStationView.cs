@@ -1,8 +1,6 @@
-using EmpireAtWar.Controllers.SpaceStation;
-using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Views.ViewImpl;
 
-namespace EmpireAtWar.Views.SpaceStation
+namespace EmpireAtWar.Entities.SpaceStation
 {
     public class SpaceStationView : View<ISpaceStationModelObserver, ISpaceStationCommand>
     {

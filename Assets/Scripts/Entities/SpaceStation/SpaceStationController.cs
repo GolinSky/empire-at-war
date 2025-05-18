@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.Battle;
 using LightWeightFramework.Command;
@@ -11,7 +10,7 @@ using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.SpaceStation
+namespace EmpireAtWar.Entities.SpaceStation
 {
     public interface ISpaceStationCommand:ICommand
     {

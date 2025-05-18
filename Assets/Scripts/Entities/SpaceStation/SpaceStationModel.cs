@@ -6,7 +6,7 @@ using EmpireAtWar.Ship;
 using LightWeightFramework.Model;
 using UnityEngine;
 
-namespace EmpireAtWar.Models.SpaceStation
+namespace EmpireAtWar.Entities.SpaceStation
 {
     public interface ISpaceStationModelObserver:IModelObserver, IUnitModelObserver
     {
