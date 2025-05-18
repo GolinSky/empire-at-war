@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.Reinforcement;
 using LightWeightFramework.Model;

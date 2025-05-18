@@ -2,9 +2,9 @@
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Patterns.Strategy
 {

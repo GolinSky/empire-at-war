@@ -1,9 +1,9 @@
 ﻿using System;
 using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
@@ -11,7 +11,6 @@ using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.DefendPlatform;
-using EmpireAtWar.Views.MiningFacility;
 using EmpireAtWar.Views.Reinforcement;
 using LightWeightFramework.Controller;
 using UnityEngine;

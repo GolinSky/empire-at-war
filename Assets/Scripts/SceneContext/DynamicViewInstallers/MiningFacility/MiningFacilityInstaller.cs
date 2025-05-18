@@ -1,14 +1,12 @@
 ﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Controllers.MiningFacility;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.MiningFacility;
 using Zenject;
 
 namespace EmpireAtWar.MiningFacility

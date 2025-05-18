@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.DefendPlatform;
-using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
 using LightWeightFramework.Model;

@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Models.MiningFacility
+﻿namespace EmpireAtWar.Entities.MiningFacility
 {
     public enum MiningFacilityType
     {

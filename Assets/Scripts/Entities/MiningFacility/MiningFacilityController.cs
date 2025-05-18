@@ -1,11 +1,10 @@
 ﻿using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.MiningFacility
+namespace EmpireAtWar.Entities.MiningFacility
 {
     public interface IMiningFacilityCommand : ICommand
     {

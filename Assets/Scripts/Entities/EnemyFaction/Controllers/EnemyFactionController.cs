@@ -2,13 +2,13 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.DefendPlatform;
-using EmpireAtWar.Views.MiningFacility;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;

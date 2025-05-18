@@ -2,12 +2,12 @@
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Ship;
-using UnityEngine;
 using LightWeightFramework.Model;
+using UnityEngine;
 
-namespace EmpireAtWar.Models.MiningFacility
+namespace EmpireAtWar.Entities.MiningFacility
 {
-    public interface IMiningFacilityModelObserver : IModelObserver, IUnitModelObserver
+    public interface IMiningFacilityModelObserver : IUnitModelObserver
     {
 
     }
