@@ -5,7 +5,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.InputService;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Zenject;
@@ -16,7 +15,6 @@ namespace EmpireAtWar.Components.Ship.AiComponent
     public class PlayerStateComponent : Component, IInitializable, ILateDisposable, ITickable, IObserver<ISelectionSubject>
     {
         private readonly ISelectionService _selectionService;
-        private readonly IInputService _inputService;
         private readonly ISelectionModelObserver _selectionModelObserver;
         private readonly ShipStateMachine _shipStateMachine;
 
@@ -30,11 +28,9 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
             ISelectionService selectionService,
-            IInputService inputService, 
             IAttackDataFactory attackDataFactory)
         {
             _selectionService = selectionService;
-            _inputService = inputService;
 
             _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             _shipStateMachine = new ShipStateMachine(
@@ -51,18 +47,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 
         public void Initialize()
         {
-            // _selectionService.OnHitSelected += HandleSelected;
-            //_inputService.OnInput += HandleInput;
-               
             _selectionService.AddObserver(this);
         }
 
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
-
-            // _selectionService.OnHitSelected -= HandleSelected;
-           // _inputService.OnInput -= HandleInput;
         }
         
         
