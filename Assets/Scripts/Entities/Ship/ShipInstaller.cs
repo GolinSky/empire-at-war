@@ -37,13 +37,13 @@ namespace EmpireAtWar.Ship
             base.OnBindData();
             Container.BindEntity(_playerType);
             Container.BindEntity(_shipType);
+            Container.BindEntity(SelectionType.Ship);
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
 
-            Container.BindEntity(SelectionType.Ship);
             
             Container
                 .BindInterfacesExt<ShipMoveComponent>()

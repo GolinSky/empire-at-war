@@ -31,7 +31,6 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-
         Container.BindInterfacesExt<AttackDataFactory>();
         
         Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();

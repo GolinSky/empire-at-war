@@ -56,8 +56,6 @@ namespace EmpireAtWar.SpaceStation
             
             //entity commands
             Container.BindInterfacesExt<SelectionCommand>();
-
-            
             
             Container
                 .BindInterfacesExt<HealthComponent>()

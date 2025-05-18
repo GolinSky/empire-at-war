@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
+using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.MiningFacility;
 using Zenject;
 
@@ -32,6 +33,7 @@ namespace EmpireAtWar.MiningFacility
             base.OnBindData();
             Container.BindEntity(_playerType);
             Container.BindEntity(_miningFacilityType);
+            Container.BindEntity(SelectionType.MiningFacility);
         }
 
         protected override void BindComponents()
