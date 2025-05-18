@@ -6,16 +6,21 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Services.Battle;
+using LightWeightFramework.Command;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.SpaceStation
 {
+    public interface ISpaceStationCommand:ICommand
+    {
+        
+    }
     /// <summary>
     ///  add state component
     /// </summary>
-    public class SpaceStationController : Controller<SpaceStationModel>, IInitializable, ILateDisposable
+    public class SpaceStationController : Controller<SpaceStationModel>, IInitializable, ILateDisposable, ISpaceStationCommand
     {
         private const HardPointType DEFAULT_TARGET_TYPE = HardPointType.Any;
         private readonly IWeaponComponent _weaponComponent;

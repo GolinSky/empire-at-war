@@ -9,21 +9,19 @@ using Zenject;
 namespace EmpireAtWar.Components.Ship.Selection
 {
     
-    public class EnemySelectionComponent:BaseComponent<SelectionModel>, ISelectionCommand, ISelectable, ISelectionComponent
+    public class EnemySelectionComponent:BaseComponent<SelectionModel>, ISelectionCommand, ISelectionComponent
     {
         private readonly ISelectionService _selectionService;
       
-        public IMovable Movable { get; }
         public IModelObserver ModelObserver { get; }
         
         [Inject]
         public PlayerType PlayerType { get; }
 
 
-        public EnemySelectionComponent(IModel model, IMovable movable, ISelectionService selectionService) : base(model)
+        public EnemySelectionComponent(IModel model, SelectionService selectionService) : base(model)
         {
             _selectionService = selectionService;
-            Movable = movable;
             ModelObserver = model;
         }
         

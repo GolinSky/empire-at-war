@@ -53,7 +53,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         {
             // _selectionService.OnHitSelected += HandleSelected;
             //_inputService.OnInput += HandleInput;
-            
+               
             _selectionService.AddObserver(this);
         }
 

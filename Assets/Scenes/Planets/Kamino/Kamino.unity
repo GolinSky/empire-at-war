@@ -1985,7 +1985,6 @@ MonoBehaviour:
   _scriptableObjectInstallers: []
   _monoInstallers:
   - {fileID: 5011543847992244371}
-  - {fileID: 8039728905792560787}
   - {fileID: 8039728905792560786}
   _installerPrefabs: []
   _autoRun: 1
@@ -2211,7 +2210,6 @@ GameObject:
   - component: {fileID: 611957808681216127}
   - component: {fileID: 5276054573720733372}
   - component: {fileID: 5011543847992244371}
-  - component: {fileID: 8039728905792560787}
   - component: {fileID: 8039728905792560786}
   m_Layer: 0
   m_Name: SceneContext
@@ -2526,18 +2524,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   locationService: {fileID: 1634151591}
---- !u!114 &8039728905792560787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6487998966299612929}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298ae98a69a94020be846117c43fd320, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8797581386183861239
 MonoBehaviour:
   m_ObjectHideFlags: 0

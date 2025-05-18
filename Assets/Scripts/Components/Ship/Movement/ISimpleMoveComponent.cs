@@ -1,9 +1,8 @@
-﻿using EmpireAtWar.Services.NavigationService;
-using LightWeightFramework.Components.Components;
+﻿using LightWeightFramework.Components.Components;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
-    public interface ISimpleMoveComponent:IComponent, IMovable
+    public interface ISimpleMoveComponent:IComponent
     {
         
     }

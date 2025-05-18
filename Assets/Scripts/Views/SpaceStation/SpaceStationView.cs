@@ -1,4 +1,4 @@
-using EmpireAtWar.Commands.SpaceStation;
+using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Views.ViewImpl;
 

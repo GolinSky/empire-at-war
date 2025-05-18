@@ -1,11 +1,9 @@
-﻿using EmpireAtWar.Commands.SpaceStation;
-using EmpireAtWar.Components.Ship.Health;
+﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.SpaceStation;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -20,15 +18,13 @@ namespace EmpireAtWar.SpaceStation
     {
         private FactionType _factionType;
         private PlayerType _playerType;
-        private IModelMediatorService _modelMediatorService;
 
         protected override string ViewPathPrefix => _factionType.ToString();
         
 
         [Inject]
-        public void Construct(IModelMediatorService modelMediatorService, FactionType factionType, PlayerType playerType)
+        public void Construct(FactionType factionType, PlayerType playerType)
         {
-            _modelMediatorService = modelMediatorService;
             _factionType = factionType;
             _playerType = playerType;
         }
@@ -48,16 +44,12 @@ namespace EmpireAtWar.SpaceStation
             {
                 case PlayerType.Player:
                 {
-                    Container
-                        .BindInterfacesExt<SpaceStationCommand>()
-                        .BindInterfacesExt<PlayerSelectionComponent>();
+                    Container.BindInterfacesExt<PlayerSelectionComponent>();
                     break;
                 }
                 case PlayerType.Opponent:
                 {
-                    Container
-                        .BindInterfacesExt<EnemySpaceStationCommand>()
-                        .BindInterfacesExt<EnemySelectionComponent>();
+                    Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
                 }
             }
@@ -75,12 +67,6 @@ namespace EmpireAtWar.SpaceStation
             Container.BindInterfacesNonLazyExt<SimpleMoveComponent>();
         }
         
-           
-        protected override void OnModelCreated()
-        {
-            base.OnModelCreated();
-            _modelMediatorService.AddUnit(Container.Resolve<SpaceStationModel>());
-        }
         
         protected override void OnViewCreated()
         {

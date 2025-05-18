@@ -14,22 +14,20 @@ namespace EmpireAtWar.Components.Ship.Selection
         void SetActive(bool isActive);
     }
     
-    public class PlayerSelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectable, ISelectionComponent
+    public class PlayerSelectionComponent : BaseComponent<SelectionModel>, ISelectionCommand, ISelectionComponent
     {
         private readonly ISelectionService _selectionService;
 
         public IModelObserver ModelObserver { get; }
-        public IMovable Movable { get; set; }
 
         
         [Inject]
         public PlayerType PlayerType { get; }
         
         
-        public PlayerSelectionComponent(IModel model, ISelectionService selectionService, IMovable movable) : base(model)
+        public PlayerSelectionComponent(IModel model, ISelectionService selectionService) : base(model)
         {
             _selectionService = selectionService;
-            Movable = movable;
             ModelObserver = model;
         }
 
