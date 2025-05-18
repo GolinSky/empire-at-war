@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
-    public interface IEntityMediator : IService
+    public interface IEntityLocator : IService
     {
         void AddEntity(IEntity entity);
         void RemoveEntity(IEntity entity);
@@ -14,7 +14,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
     }
 
-    public class EntityMediator : Service, IEntityMediator
+    public class EntityLocator : Service, IEntityLocator
     {
         private Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
         

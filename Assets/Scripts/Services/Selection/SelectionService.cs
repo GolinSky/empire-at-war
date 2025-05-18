@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Battle
 
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
-        private readonly IEntityMediator _entityMediator;
+        private readonly IEntityLocator _entityLocator;
         private readonly List<IObserver<ISelectionSubject>> _observers = new List<IObserver<ISelectionSubject>>();
       
         private readonly SelectionContext _playerSelectionContext = new SelectionContext();
@@ -32,11 +32,11 @@ namespace EmpireAtWar.Services.Battle
         public ISelectionContext EnemySelectionContext => _enemySelectionContext;
         public PlayerType UpdatedType { get; private set; }
 
-        public SelectionService(IInputService inputService, ICameraService cameraService, IEntityMediator entityMediator)
+        public SelectionService(IInputService inputService, ICameraService cameraService, IEntityLocator entityLocator)
         {
             _inputService = inputService;
             _cameraService = cameraService;
-            _entityMediator = entityMediator;
+            _entityLocator = entityLocator;
         }
         
         public void Initialize()
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Services.Battle
             if(raycastHit.collider == null) return;
 
 
-            if (_entityMediator.TryGetEntity(raycastHit, out IEntity entity))
+            if (_entityLocator.TryGetEntity(raycastHit, out IEntity entity))
             {
                 if (entity.TryGetCommand(out IEntitySelectionCommand command))
                 {

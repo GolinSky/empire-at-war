@@ -16,16 +16,16 @@ namespace EmpireAtWar.Entities.BaseEntity
     public class Entity: IEntity, IInitializable, ILateDisposable
     {
         private readonly IEntityCommand[] _commands;
-        private readonly IEntityMediator _entityMediator;
+        private readonly IEntityLocator _entityLocator;
         public long Id { get;  }
         
         public IModelObserver Model { get; }
         public PlayerType PlayerType { get; }
 
-        public Entity(long id, IEntityCommand[] commands, IModelObserver modelObserver, IEntityMediator entityMediator, PlayerType playerType)
+        public Entity(long id, IEntityCommand[] commands, IModelObserver modelObserver, IEntityLocator entityLocator, PlayerType playerType)
         {
             _commands = commands;
-            _entityMediator = entityMediator;
+            _entityLocator = entityLocator;
             PlayerType = playerType;
             Id = id;
             Model = modelObserver;
@@ -48,12 +48,12 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public void Initialize()
         {
-            _entityMediator.AddEntity(this);
+            _entityLocator.AddEntity(this);
         }
 
         public void LateDispose()
         {
-            _entityMediator.RemoveEntity(this);
+            _entityLocator.RemoveEntity(this);
         }
     }
 }

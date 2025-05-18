@@ -35,7 +35,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesExt<AttackDataFactory>();
         
         Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
-        Container.BindInterfacesExt<EntityMediator>();
+        Container.BindInterfacesExt<EntityLocator>();
         
         
         //todo: use GameModelObserver.PlayerFactionType directly
