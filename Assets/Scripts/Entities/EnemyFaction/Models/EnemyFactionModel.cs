@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 using LightWeightFramework.Model;

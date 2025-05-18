@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Models.DefendPlatform
+﻿namespace EmpireAtWar.Entities.DefendPlatform
 {
     public enum DefendPlatformType
     {

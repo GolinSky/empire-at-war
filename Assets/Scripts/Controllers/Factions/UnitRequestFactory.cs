@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Models.DefendPlatform;
+﻿using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Controllers.Factions

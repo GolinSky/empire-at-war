@@ -3,10 +3,10 @@ using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Ship;
-using UnityEngine;
 using LightWeightFramework.Model;
+using UnityEngine;
 
-namespace EmpireAtWar.Models.DefendPlatform
+namespace EmpireAtWar.Entities.DefendPlatform
 {
     public interface IDefendPlatformModelObserver : IUnitModelObserver
     {

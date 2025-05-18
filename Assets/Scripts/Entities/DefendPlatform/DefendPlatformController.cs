@@ -1,15 +1,12 @@
 ﻿using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Models.DefendPlatform;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.DefendPlatform
+namespace EmpireAtWar.Entities.DefendPlatform
 {
     public class DefendPlatformController : Controller<DefendPlatformModel>, IInitializable, ILateDisposable, ITickable
     {

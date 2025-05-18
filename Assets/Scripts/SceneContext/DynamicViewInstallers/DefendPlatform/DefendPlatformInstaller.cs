@@ -2,14 +2,12 @@
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Controllers.DefendPlatform;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.DefendPlatform;
 using UnityEngine;
 using Zenject;
 
