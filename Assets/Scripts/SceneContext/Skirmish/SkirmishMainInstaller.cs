@@ -5,7 +5,6 @@ using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
@@ -75,8 +74,6 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
 
-
-        Container.BindInterfacesExt<ModelMediatorService>();
     }
 
     private FactionType GetPlayerFactionType()

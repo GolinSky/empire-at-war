@@ -2,13 +2,12 @@
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Controllers.MiningFacility;
-using EmpireAtWar.Entities.ModelMediator;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiningFacility;
-using EmpireAtWar.Models.SpaceStation;
 using EmpireAtWar.Views.MiningFacility;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.MiningFacility
@@ -18,12 +17,10 @@ namespace EmpireAtWar.MiningFacility
     {
         private PlayerType _playerType;
         private MiningFacilityType _miningFacilityType;
-        private IModelMediatorService _modelMediatorService;
 
         [Inject]
-        public void Construct(IModelMediatorService modelMediatorService, PlayerType playerType, MiningFacilityType miningFacilityType)
+        public void Construct(PlayerType playerType, MiningFacilityType miningFacilityType)
         {
-            _modelMediatorService = modelMediatorService;
             _playerType = playerType;
             _miningFacilityType = miningFacilityType;
            // Debug.Log($"MiningFacilityInstaller: {StartPosition}");
@@ -54,12 +51,17 @@ namespace EmpireAtWar.MiningFacility
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
             }
+            
+            //entity commands
+            Container.BindInterfacesExt<SelectionCommand>();
+
         }
         
-        protected override void OnModelCreated()
+        protected override void OnViewCreated()
         {
-            base.OnModelCreated();
-            _modelMediatorService.AddUnit(Container.Resolve<MiningFacilityModel>());
+            base.OnViewCreated();
+            Container.Install<EntityInstaller>(new object[] { View });
         }
+
     }
 }

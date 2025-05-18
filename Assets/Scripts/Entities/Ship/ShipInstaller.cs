@@ -6,8 +6,6 @@ using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
-using EmpireAtWar.Entities.ModelMediator;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
@@ -23,15 +21,13 @@ namespace EmpireAtWar.Ship
     {
         private ShipType _shipType;
         private PlayerType _playerType;
-        private IModelMediatorService _modelMediatorService;
 
         protected override string ModelPathPrefix => _shipType.ToString();
         protected override string ViewPathPrefix => _shipType.ToString();
 
         [Inject]
-        public void Construct(IModelMediatorService modelMediatorService, ShipType shipType, PlayerType playerType)
+        public void Construct(ShipType shipType, PlayerType playerType)
         {
-            _modelMediatorService = modelMediatorService;
             _shipType = shipType;
             _playerType = playerType;
         }
@@ -93,12 +89,6 @@ namespace EmpireAtWar.Ship
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-        }
-
-        protected override void OnModelCreated()
-        {
-            base.OnModelCreated();
-            _modelMediatorService.AddUnit(Container.Resolve<ShipModel>());
         }
     }
 }
