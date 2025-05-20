@@ -39,10 +39,9 @@ namespace EmpireAtWar.MiningFacility
             base.BindComponents();
             Container
                 .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<SimpleMoveComponent>()// todo: make non lazy for enemy
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
-
+                .BindInterfacesExt<SimpleMoveComponent>() // todo: make non lazy for enemy
+                .BindInterfacesExt<RadarComponent>();
+            
             switch (_playerType)
             {
                 case PlayerType.Player:

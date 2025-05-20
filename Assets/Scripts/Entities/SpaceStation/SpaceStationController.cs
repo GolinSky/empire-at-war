@@ -7,7 +7,7 @@ namespace EmpireAtWar.Entities.SpaceStation
     {
         
     }
-    public class SpaceStationController : Controller<SpaceStationModel>
+    public class SpaceStationController : Controller<SpaceStationModel>, ISpaceStationCommand
     {
         public SpaceStationController(SpaceStationModel model) : base(model)
         {
