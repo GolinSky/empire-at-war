@@ -1,6 +1,6 @@
-﻿using EmpireAtWar.Models.Health;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Ship;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -17,14 +17,14 @@ namespace EmpireAtWar.Entities.MiningFacility
     {
         [field:SerializeField] public HealthModel HealthModel { get; private set; }
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
-        [field:SerializeField] public SimpleMoveModel SimpleMoveModel { get; private set; }
+        [field:SerializeField] public DefaultMoveModel DefaultMoveModel { get; private set; }
 
         [field:SerializeField] public float Income { get; private set; }
         
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModels(HealthModel, RadarModel, SimpleMoveModel);
+            AddInnerModels(HealthModel, RadarModel, DefaultMoveModel);
         }
     }
 }

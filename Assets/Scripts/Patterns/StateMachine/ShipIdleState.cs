@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         private readonly ITimer _moveAroundTimer;
 
         protected readonly IModel _model;
-        protected readonly IWeaponComponent _weaponComponent;
+        protected readonly IAttackComponent _attackComponent;
         protected readonly IShipMoveComponent _shipMoveComponent;
         protected readonly IHealthModelObserver _healthModelObserver;
         public new ShipStateMachine StateMachine { get; }
@@ -22,7 +22,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         public ShipIdleState(ShipStateMachine stateMachine) : base(stateMachine)
         {
             _model = stateMachine.Model;
-            _weaponComponent = stateMachine.WeaponComponent;
+            _attackComponent = stateMachine.AttackComponent;
             _shipMoveComponent = stateMachine.ShipMoveComponent;
             _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
             StateMachine = stateMachine;

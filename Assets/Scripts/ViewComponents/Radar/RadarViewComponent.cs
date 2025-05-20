@@ -1,6 +1,6 @@
 ﻿using System;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
 using Utilities.ScriptUtils.Layer;
 using LightWeightFramework.Components.ViewComponents;
 using UnityEngine;
@@ -11,13 +11,13 @@ namespace EmpireAtWar.ViewComponents.Radar
     {
         private IRadarModelObserver _radarModelObserver;
         private Vector3 _offset;
-        private ISimpleMoveModelObserver _moveModel;
+        private IDefaultMoveModelObserver _moveModel;
         private Vector3 _halfExtents;
         private Vector3 CenterCast => _moveModel.CurrentPosition - _offset;
 
         protected override void OnInit()
         {
-            _moveModel = ModelObserver.GetModelObserver<ISimpleMoveModelObserver>();
+            _moveModel = ModelObserver.GetModelObserver<IDefaultMoveModelObserver>();
 
             _radarModelObserver = ModelObserver.GetModelObserver<IRadarModelObserver>();
             int layer = _radarModelObserver.LayerMask.ToSingleLayer();

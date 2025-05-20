@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;

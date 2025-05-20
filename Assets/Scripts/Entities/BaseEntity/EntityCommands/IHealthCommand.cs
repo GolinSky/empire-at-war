@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.Weapon;
+﻿using EmpireAtWar.Components.AttackComponent;
 
 namespace EmpireAtWar.Entities.BaseEntity.EntityCommands
 {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Models.Weapon;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -28,8 +28,9 @@ namespace EmpireAtWar.Ship
         [Header("Health Model")]
         [SerializeField] private HealthModel healthModel;
 
+        [FormerlySerializedAs("weaponModel")]
         [Header("Weapon Model")] 
-        [SerializeField] private WeaponModel weaponModel;
+        [SerializeField] private AttackModel attackModel;
         
         [Header("Radar Model")] 
         [SerializeField] private RadarModel radarModel;
@@ -46,7 +47,7 @@ namespace EmpireAtWar.Ship
 
         public HealthModel HealthModel => healthModel;
 
-        public WeaponModel WeaponModel => weaponModel;
+        public AttackModel AttackModel => attackModel;
 
         public RadarModel RadarModel => radarModel;
 
@@ -54,7 +55,7 @@ namespace EmpireAtWar.Ship
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModels(shipMoveModel, healthModel, weaponModel, radarModel);
+            AddInnerModels(shipMoveModel, healthModel, attackModel, radarModel);
         }
     }
 }

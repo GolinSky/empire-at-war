@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Patterns.StateMachine
                     AttackData attackData = _attackDataFactory.ConstructData(_mainTarget);
                     new AttackData(_healthModel,
                         healthCommand, HardPointType.Any);
-                    _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
+                    _attackComponent.AddTarget(attackData, AttackType.MainTarget);
                 }
                 else
                 {

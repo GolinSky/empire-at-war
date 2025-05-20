@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
-using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;

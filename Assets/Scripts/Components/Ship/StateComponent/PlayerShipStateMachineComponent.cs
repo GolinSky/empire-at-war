@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         public PlayerShipStateMachineComponent(
             IModel model,
             IShipMoveComponent shipMoveComponent,
-            IWeaponComponent weaponComponent,
+            IAttackComponent attackComponent,
             ISelectionService selectionService,
             IAttackDataFactory attackDataFactory)
         {
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
             _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
-                weaponComponent,
+                attackComponent,
                 model);
 
             _shipIdleState = new ShipIdleState(_shipStateMachine);

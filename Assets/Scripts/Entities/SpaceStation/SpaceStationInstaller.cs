@@ -1,7 +1,8 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Radar;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
@@ -58,8 +59,8 @@ namespace EmpireAtWar.SpaceStation
             Container
                 .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<WeaponComponent>()
-                .BindInterfacesNonLazyExt<SimpleMoveComponent>()
+                .BindInterfacesExt<AttackComponent>()
+                .BindInterfacesNonLazyExt<DefaultMoveComponent>()
                 .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
             
             //entity commands

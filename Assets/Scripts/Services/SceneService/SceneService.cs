@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EmpireAtWar.Models.Planet;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using UnityEngine;
 using UnityEngine.SceneManagement;

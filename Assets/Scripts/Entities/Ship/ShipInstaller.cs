@@ -1,10 +1,10 @@
 ﻿using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Audio;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Ship
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<WeaponComponent>()
+                .BindInterfacesExt<AttackComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AudioShipComponent>();
             

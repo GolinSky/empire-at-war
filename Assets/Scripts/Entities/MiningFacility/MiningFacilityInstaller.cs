@@ -1,5 +1,6 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Radar;
+﻿using EmpireAtWar.Components.Movement;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
@@ -39,7 +40,7 @@ namespace EmpireAtWar.MiningFacility
             base.BindComponents();
             Container
                 .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<SimpleMoveComponent>() // todo: make non lazy for enemy
+                .BindInterfacesExt<DefaultMoveComponent>() // todo: make non lazy for enemy
                 .BindInterfacesExt<RadarComponent>();
             
             switch (_playerType)

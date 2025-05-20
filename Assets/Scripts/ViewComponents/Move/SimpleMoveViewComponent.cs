@@ -6,7 +6,7 @@ using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.ViewComponents.Move
 {
-    public class SimpleMoveViewComponent:ViewComponent<ISimpleMoveModelObserver>
+    public class SimpleMoveViewComponent:ViewComponent<IDefaultMoveModelObserver>
     {
         private Sequence _moveSequence;
 

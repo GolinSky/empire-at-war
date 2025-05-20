@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Weapon;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;

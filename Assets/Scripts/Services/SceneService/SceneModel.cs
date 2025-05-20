@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Models.Planet;
+using EmpireAtWar.Entities.Planet;
 using UnityEngine;
 using LightWeightFramework.Model;
 using UnityEngine.SceneManagement;

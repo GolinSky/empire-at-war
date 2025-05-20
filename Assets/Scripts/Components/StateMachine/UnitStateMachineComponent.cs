@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
@@ -22,14 +22,14 @@ namespace EmpireAtWar.Components.StateMachine
         
         public UnitStateMachineComponent(
             IModel model,
-            IWeaponComponent weaponComponent,
+            IAttackComponent attackComponent,
             ISelectionService selectionService,
             IAttackDataFactory attackDataFactory) 
         {
             _selectionService = selectionService;
             _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
 
-            _stateMachine = new UnitStateMachine(weaponComponent, model);
+            _stateMachine = new UnitStateMachine(attackComponent, model);
             _idleState = new UnitIdleState(_stateMachine);
             _lockMainTargetState = new LockMainTargetState(_stateMachine, attackDataFactory);
             _stateMachine.SetDefaultState(_idleState);

@@ -1,6 +1,6 @@
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Game;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.IdGeneration;

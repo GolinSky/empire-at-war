@@ -1,10 +1,9 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -17,7 +16,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         private const float MOVE_TIMER_DELAY = 15f;
         
         private readonly IShipMoveModelObserver _moveModel;
-        private readonly IWeaponModelObserver _weaponModel;
+        private readonly IAttackModelObserver _attackModel;
         private readonly IHealthModelObserver _targetHealth;
         private readonly ITimer _moveTimer;
 
@@ -29,7 +28,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         {
             _attackDataFactory = attackDataFactory;
             _moveModel = _model.GetModelObserver<IShipMoveModelObserver>();
-            _weaponModel = _model.GetModelObserver<IWeaponModelObserver>();
+            _attackModel = _model.GetModelObserver<IAttackModelObserver>();
             _moveTimer = TimerFactory.ConstructTimer(MOVE_TIMER_DELAY);
         }
 
@@ -46,7 +45,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             if (_mainTargetEntity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
-                _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
+                _attackComponent.AddTarget(attackData, AttackType.MainTarget);
                 
                 UpdateMoveState();
             }
@@ -56,7 +55,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         {
             float distance = Vector3.Distance(_moveModel.CurrentPosition, TargetPosition);
 
-            if (!_weaponComponent.HasEnoughRange(distance))
+            if (!_attackComponent.HasEnoughRange(distance))
             {
                 Vector3 positionToMove = Vector3.Lerp(_moveModel.CurrentPosition, TargetPosition, 0.5f);//todo move to SO
                 _shipMoveComponent.MoveToPosition(positionToMove);
@@ -72,7 +71,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             base.Update();
             if (!_mainTarget.HasUnits)
             {
-                _weaponComponent.ResetTarget();
+                _attackComponent.ResetTarget();
                 //shipMoveComponent.Reset();
                 StateMachine.ChangeToDefaultState();
                 return;

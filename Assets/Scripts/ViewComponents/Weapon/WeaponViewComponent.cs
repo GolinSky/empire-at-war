@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Collections;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
@@ -13,7 +12,7 @@ using Random = System.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class WeaponViewComponent : ViewComponent<IWeaponModelObserver>
+    public class WeaponViewComponent : ViewComponent<IAttackModelObserver>
     {
         [SerializeField] private AttackModelDependency attackModelDependency;
 
@@ -27,7 +26,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Coroutine _commonAttackFlow;
         private bool _isDead;
 
-        [Inject] private IWeaponCommand WeaponCommand { get; }
+        [Inject] private IAttackCommand AttackCommand { get; }
 
         private List<IHardPointModel> Targets => Model.Targets; //todo: use observable list in weapon model
 
@@ -113,7 +112,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                         if (target.IsDestroyed || !turret.CanAttack(target.Position)) continue;
 
                         float attackDuration = turret.Attack(target);
-                        WeaponCommand.ApplyDamage(target, kvp.Key, attackDuration);
+                        AttackCommand.ApplyDamage(target, kvp.Key, attackDuration);
                         yield return new WaitForSeconds(Model.DelayBetweenAttack);
                     }
 

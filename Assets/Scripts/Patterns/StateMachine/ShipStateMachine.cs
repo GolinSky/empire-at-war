@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Selection;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Patterns.StateMachine
@@ -8,9 +8,9 @@ namespace EmpireAtWar.Patterns.StateMachine
     {
         public ShipStateMachine(
             IShipMoveComponent shipMoveComponent,
-            IWeaponComponent weaponComponent,
+            IAttackComponent attackComponent,
             IModel model) 
-            : base(weaponComponent, model)
+            : base(attackComponent, model)
         {
             ShipMoveComponent = shipMoveComponent;
         }

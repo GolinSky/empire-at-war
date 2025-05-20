@@ -1,7 +1,8 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Radar;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -39,9 +40,9 @@ namespace EmpireAtWar
             base.BindComponents();
             Container
                 .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<SimpleMoveComponent>()
+                .BindInterfacesExt<DefaultMoveComponent>()
                 .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<WeaponComponent>()
+                .BindInterfacesExt<AttackComponent>()
                 .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
             
             switch (_playerType)

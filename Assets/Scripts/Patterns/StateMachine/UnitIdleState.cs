@@ -1,9 +1,9 @@
-﻿using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Radar;
 using LightWeightFramework.Model;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Patterns.StateMachine
     public class UnitIdleState:BaseState
     {
         protected readonly IModel _model;
-        protected readonly IWeaponComponent _weaponComponent;
+        protected readonly IAttackComponent _attackComponent;
         protected readonly IRadarModelObserver _radarModelObserver;
         protected readonly IHealthModelObserver _healthModelObserver;
         public new UnitStateMachine StateMachine { get; }
@@ -22,7 +22,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         {
             StateMachine = stateMachine;
             _model = stateMachine.Model;
-            _weaponComponent = stateMachine.WeaponComponent;
+            _attackComponent = stateMachine.AttackComponent;
             _radarModelObserver = _model.GetModelObserver<IRadarModelObserver>();
             _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
         }
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Patterns.StateMachine
             if (healthModel.HasUnits && newEntity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 AttackData attackData = new AttackData(healthModel, healthCommand, HardPointType.Any);
-                _weaponComponent.AddTarget(attackData, AttackType.Base);
+                _attackComponent.AddTarget(attackData, AttackType.Base);
             }
         }
         

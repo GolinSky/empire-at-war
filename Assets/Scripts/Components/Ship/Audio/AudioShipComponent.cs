@@ -1,7 +1,7 @@
-﻿using EmpireAtWar.Entities.BaseEntity;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Command;

@@ -1,7 +1,7 @@
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.Ship;
 using LightWeightFramework.Model;
 using UnityEngine;
@@ -16,13 +16,13 @@ namespace EmpireAtWar.Entities.SpaceStation
     {
         [field:SerializeField] public HealthModel HealthModel { get; private set; }
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
-        [field:SerializeField] public SimpleMoveModel SimpleMoveModel { get; private set; }
-        [field:SerializeField] public WeaponModel WeaponModel { get; private set; }
+        [field:SerializeField] public DefaultMoveModel DefaultMoveModel { get; private set; }
+        [field:SerializeField] public AttackModel AttackModel { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
-            AddInnerModels(HealthModel, RadarModel, SimpleMoveModel, WeaponModel);
+            AddInnerModels(HealthModel, RadarModel, DefaultMoveModel, AttackModel);
         }
     }
 }
