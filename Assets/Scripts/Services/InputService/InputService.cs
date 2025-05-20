@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Services.Camera;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using LightWeightFramework.Components.Service;
@@ -82,14 +81,20 @@ namespace EmpireAtWar.Services.InputService
             }
             else
             {
-                int touchCount = MapActions.TouchCount.ReadValue<int>();
-                Debug.Log($"touchCount:{touchCount}");
-                if (touchCount == 2)
+                // int touchCount = MapActions.TouchCount.ReadValue<int>();
+                // if (touchCount == 1)
+                // {
+                // }
+                Vector2 delta = MapActions.TouchDelta.ReadValue<Vector2>();
+
+                if (!IsPointerOverUIObject() && delta == Vector2.zero)
                 {
                     InvokeInputEvent(InputType.ShipInput);
                 }
+
             }
         }
+
         
         public void Tick()
         {
@@ -114,104 +119,28 @@ namespace EmpireAtWar.Services.InputService
                         {
                             InvokeInputEvent(InputType.Selection);
                             
-                            OnSwipe?.Invoke(Vector2.one*0.1f);
+                            OnSwipe?.Invoke(Vector2.one*0.1f);// what is that - remove this
 
                             return;
                         }
-
                         OnSwipe?.Invoke(direction);
                     }
                 }
-                
-            
             }
             
             if (MapActions.Scroll.IsPressed() || MapActions.Scroll.IsInProgress())
             {
                 float scrollValue = MapActions.Scroll.ReadValue<float>();
-                OnZoom.Invoke(scrollValue);
+                OnZoom?.Invoke(scrollValue);
             }
 
             if (MapActions.Zoom.IsPressed())
             {
                 float zoomValue = MapActions.Zoom.ReadValue<float>();
                 Debug.Log($"zoomValue:{zoomValue}");
-                OnZoom.Invoke(zoomValue);
+                OnZoom?.Invoke(zoomValue);
 
             }
-
-           
-            // if (Input.touchCount == 1)
-            // {
-            //     touch = Input.GetTouch(0);
-            //
-            //     if (isBlocked)
-            //     {
-            //         CurrentTouchPhase = touch.phase;
-            //
-            //         if (CurrentTouchPhase != TouchPhase.Moved && CurrentTouchPhase != TouchPhase.Stationary)
-            //         {
-            //             OnEndDrag?.Invoke(TouchPosition);
-            //         }
-            //         return;
-            //     }
-            //
-            //     for (var i = 0; i < Input.touches.Length; i++)
-            //     {
-            //         if (IsBlocked(Input.touches[i].fingerId))  return;
-            //     }
-            //  
-            //     CurrentTouchPhase = touch.phase;
-            //
-            //     switch (CurrentTouchPhase)
-            //     {
-            //         case TouchPhase.Began:
-            //         {
-            //             if (touch.tapCount > 1)
-            //             {
-            //                 InvokeInputEvent(InputType.ShipInput);
-            //             }
-            //             break;
-            //         }
-            //         case TouchPhase.Moved:
-            //             if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Stationary)
-            //             {
-            //                 InvokeInputEvent(InputType.CameraInput);
-            //             }
-            //             break;
-            //         case TouchPhase.Stationary:
-            //             break;
-            //         case TouchPhase.Ended:
-            //         {
-            //             if (touch.tapCount == 1 && lastTouchPhase != TouchPhase.Moved)
-            //             {
-            //                 InvokeInputEvent(InputType.Selection);
-            //             }
-            //             break;
-            //         }
-            //         case TouchPhase.Canceled:
-            //         {
-            //             break;
-            //         }
-            //     }
-            //     lastTouchPhase = CurrentTouchPhase;
-            // }
-            // else
-            // {
-            //     if (Input.touchCount == 2)
-            //     { 
-            //         OnDoubleInput?.Invoke(InputType.CameraInput, Input.GetTouch(0), Input.GetTouch(1));
-            //     }
-            // }
-            
-          //  Debug.Log($"Input.mouseScrollDelta:{Input.mouseScrollDelta}");
-            // float scrollAxis = Input.mouseScrollDelta.y;
-            // if (scrollAxis != 0)
-            // {
-            //     OnZoom?.Invoke(InputType.CameraInput, scrollAxis);
-            // }
-            //
-          
         }
        private void InvokeInputEvent(InputType inputType)
         {
@@ -223,8 +152,9 @@ namespace EmpireAtWar.Services.InputService
             _isBlocked = isBlocked;
             OnBlocked?.Invoke(isBlocked);
         }
-        
-        public  bool IsPointerOverUIObject()
+
+        //todo: move to utility 
+        private bool IsPointerOverUIObject()
         {
             PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
             eventDataCurrentPosition.position = TouchPosition;
@@ -241,9 +171,5 @@ namespace EmpireAtWar.Services.InputService
 
             return false;
         }
-        
-  
-
-
     }
 }

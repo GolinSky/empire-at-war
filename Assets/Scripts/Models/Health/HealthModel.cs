@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Extentions;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Weapon;
 using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
@@ -25,6 +27,12 @@ namespace EmpireAtWar.Models.Health
         FloatRange ShieldDangerStateRange { get; }
 
         void InjectDependency(HealthModelDependency healthModelDependency);
+        
+        
+        bool HasUnits { get; }
+        IHardPointModel[] GetShipUnits(HardPointType hardPointType);
+        PlayerType PlayerType { get; }
+        Transform Transform { get; }
     }
 
     [Serializable]
@@ -54,7 +62,6 @@ namespace EmpireAtWar.Models.Health
         [Inject]
         private DamageCalculationModel DamageCalculationModel { get; }
         
-   
         
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
@@ -62,6 +69,38 @@ namespace EmpireAtWar.Models.Health
         public float ShieldPercentage => Shields/ _shieldsBaseValue;
 
         public bool IsLostShieldGenerator { get; private set; }
+        
+        public bool HasUnits => HardPointModels.Any(x => !x.IsDestroyed);
+        
+        [Inject]
+        public PlayerType PlayerType { get; }
+        
+        [Inject(Id = EntityBindType.ViewTransform)]
+        public LazyInject<Transform> ViewTransform { get; }
+        
+        public Transform Transform => ViewTransform.Value;
+
+        
+        public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
+        {
+            var currentHardPoints = HardPointModels.Where(x => !x.IsDestroyed).ToArray();
+
+            if (currentHardPoints.Length == 0)
+            {
+                return null;
+            }
+            if (hardPointType == HardPointType.Any)
+            {
+                return currentHardPoints;
+            }
+
+            if (currentHardPoints.Any(x => x.HardPointType == hardPointType))
+            {
+                return currentHardPoints.Where(x => x.HardPointType == hardPointType).ToArray();
+            }
+
+            return currentHardPoints;
+        }
         
         
         public void InjectDependency(HealthModelDependency healthModelDependency)
@@ -105,7 +144,9 @@ namespace EmpireAtWar.Models.Health
                 }
             }
         }
-        
+
+    
+
         protected override void OnInit()
         {
             _shieldsBaseValue = Shields;

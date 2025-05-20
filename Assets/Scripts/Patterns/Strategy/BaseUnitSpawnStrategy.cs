@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Models.DefendPlatform;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 
 namespace EmpireAtWar.Patterns.Strategy
 {

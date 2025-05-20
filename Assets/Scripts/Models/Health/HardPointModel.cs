@@ -5,17 +5,20 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.Health
 {
-    public interface IShipUnitModel
+    public interface IHardPointModel
     {
         event Action OnShipUnitChanged;
         HardPointType HardPointType { get; }
 
         float HealthPercentage { get; }
         int Id { get; }
+        bool IsDestroyed { get; }
+        
+        Vector3 Position { get; }
     }
 
     [Serializable]
-    public class HardPointModel : IShipUnitModel
+    public class HardPointModel : IHardPointModel
     {
         [field: SerializeField] public int Id { get; private set; }
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
@@ -30,6 +33,7 @@ namespace EmpireAtWar.Models.Health
         public float Health => _health;
         
         public bool IsDestroyed => HealthPercentage <= 0f;
+        public Vector3 Position => _hardPointView.Position;
 
         public void SetHealth(float health)
         {

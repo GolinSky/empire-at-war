@@ -40,7 +40,7 @@ namespace EmpireAtWar.Views.SkirmishCamera
         {
             _moveSequence.KillIfExist();
             DOTween.Kill(transform);
-          
+            _moveSequence = DOTween.Sequence();
             if (useTweens)
             {
                 _moveSequence.Append(_cameraTransform.DOMove(position, Model.TweenSpeed).SetEase(moveEase));

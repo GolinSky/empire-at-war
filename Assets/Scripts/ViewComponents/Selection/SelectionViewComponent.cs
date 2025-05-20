@@ -1,29 +1,46 @@
-using EmpireAtWar.Commands;
+﻿using EmpireAtWar.Commands;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
-using LightWeightFramework.Components.ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents.Selection
 {
-    public class SelectionViewComponent:ViewComponent
+    public class SelectionViewComponent:ViewComponent<ISelectionModelObserver>, ISelectableView
     {
         [SerializeField] private SelectionType selectionType;
+        [SerializeField] private Canvas selectedCanvas;
+
+        private bool _canBeSelected = true;//todo: move it to view itself and reuse 
         
         [Inject]
-        private ISelectionCommand _selectionCommand;
+        private ISelectionCommand SelectionCommand { get; }
         
-        protected override void OnInit() {}
+        protected override void OnInit()
+        {
+            base.OnInit();
+            Model.OnSelected += HandleSelection;
+        }
 
         protected override void OnRelease()
         {
-            _selectionCommand?.OnSkipSelection(selectionType);
-            _selectionCommand = null;
+            SelectionCommand?.OnSkipSelection(selectionType);
+            Model.OnSelected -= HandleSelection;
+            HandleSelection(false);
+            _canBeSelected = false;
+        }
+
+        private void HandleSelection(bool isActive)
+        {
+            selectedCanvas.enabled = isActive;
         }
 
         public void OnSelected()
         {
-            _selectionCommand?.OnSelected(selectionType);
+            if (_canBeSelected)
+            {
+                SelectionCommand?.OnSelected(selectionType);
+            }
         }
     }
 }

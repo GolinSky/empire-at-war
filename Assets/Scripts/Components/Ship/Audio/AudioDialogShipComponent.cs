@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Movement;
@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 using AudioType = EmpireAtWar.Services.Audio.AudioType;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Components.Audio
             _shipMoveModelObserver.OnLookAt += PlayAttackClip;
             _shipMoveModelObserver.OnTargetPositionChanged += PlayMoveClip;
             _shipMoveModelObserver.OnStop += PlayDamageClip;
-            _radarModelObserver.OnHitDetected += PlayAlarmSights;
+            _radarModelObserver.Enemies.ItemAdded += PlayAlarmSights;
         }
 
         public void LateDispose()
@@ -53,10 +54,10 @@ namespace EmpireAtWar.Components.Audio
             _shipMoveModelObserver.OnLookAt -= PlayAttackClip;
             _shipMoveModelObserver.OnTargetPositionChanged -= PlayMoveClip;
             _shipMoveModelObserver.OnStop -= PlayDamageClip;
-            _radarModelObserver.OnHitDetected -= PlayAlarmSights;
+            _radarModelObserver.Enemies.ItemAdded -= PlayAlarmSights;
         }
 
-        private void PlayAlarmSights(RaycastHit[] raycastHits)
+        private void PlayAlarmSights(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
         {
             if (_isSelected)
             {

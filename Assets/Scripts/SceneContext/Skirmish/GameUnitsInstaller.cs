@@ -1,12 +1,10 @@
-﻿using EmpireAtWar.MiningFacility;
-using EmpireAtWar.Models.DefendPlatform;
+﻿using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.MiningFacility;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
 using EmpireAtWar.Ship;
 using EmpireAtWar.SpaceStation;
-using EmpireAtWar.Views.DefendPlatform;
-using EmpireAtWar.Views.MiningFacility;
-using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
 using Zenject;

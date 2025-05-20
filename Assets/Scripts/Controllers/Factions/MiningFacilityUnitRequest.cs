@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.MiningFacility;
+﻿using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Controllers.Factions
 {

@@ -2,7 +2,7 @@ using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using Zenject;
@@ -10,26 +10,27 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Factions
 {
     public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
-        IBuildShipChain, IIncomeProvider, ITickable
+        IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>
     {
         private const float DEFAULT_INCOME = 5f;
 
-        private readonly INavigationService _navigationService;
+        private readonly ISelectionService _selectionService;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
         private readonly IUiService _uiService;
         private IChainHandler<UnitRequest> _nextChain;
+        private ISelectionContext _selectionContext;
         public float Income { get; private set; }
 
         public FactionController(
             PlayerFactionModel model,
-            INavigationService navigationService,
+            ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyProvider economyProvider,
             IUiService uiService) : base(model)
         {
             Income = DEFAULT_INCOME;
-            _navigationService = navigationService;
+            _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
             _uiService = uiService;
@@ -38,26 +39,23 @@ namespace EmpireAtWar.Controllers.Factions
         public void Initialize()
         {
             _purchaseMediator.Value.Add(this);
-
-            _navigationService.OnTypeChanged += UpdateType;
+            _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
             _uiService.CreateUi(UiType.Faction);
         }
 
         public void LateDispose()
         {
-            _navigationService.OnTypeChanged -= UpdateType;
+            _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
-        }
-
-        private void UpdateType(SelectionType selectionType)
-        {
-            Model.SelectionType = selectionType;
         }
 
         public void CloseSelection()
         {
-            _navigationService.RemoveSelectable();
+            if(_selectionContext != null)
+            {
+                _selectionService.RemoveSelectable(_selectionContext);
+            }
         }
 
         public void BuildUnit(UnitRequest unitRequest)
@@ -98,9 +96,13 @@ namespace EmpireAtWar.Controllers.Factions
             Model.UnitToBuild = unitRequest;
         }
 
-        public void Tick()
+        public void UpdateState(ISelectionSubject selectionSubject)
         {
-            
+            if (selectionSubject.UpdatedType == PlayerType.Player)
+            {
+                _selectionContext = selectionSubject.PlayerSelectionContext;
+                Model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
+            }
         }
     }
 }

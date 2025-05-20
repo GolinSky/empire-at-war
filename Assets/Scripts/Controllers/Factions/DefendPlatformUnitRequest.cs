@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.DefendPlatform;
+﻿using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Controllers.Factions

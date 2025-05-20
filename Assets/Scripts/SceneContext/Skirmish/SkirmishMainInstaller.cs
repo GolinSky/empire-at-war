@@ -1,10 +1,10 @@
+using EmpireAtWar.Components.Ship.WeaponComponent;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
-using EmpireAtWar.Controllers.Navigation;
 using EmpireAtWar.Controllers.ShipUi;
-using EmpireAtWar.Entities.ModelMediator;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Game;
@@ -12,7 +12,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Models.Navigation;
 using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
@@ -32,18 +31,18 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.BindInterfacesExt<AttackDataFactory>();
+        
         Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
+        Container.BindInterfacesExt<EntityLocator>();
+        
         
         //todo: use GameModelObserver.PlayerFactionType directly
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
         Container.BindInterfacesExt<UiService>();
-
-
-        Container.BindModel<NavigationModel>(Repository);
-        Container.BindInterfacesNonLazyExt<NavigationController>();
-
+        
 
         Container.BindModel<MenuModel>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();
@@ -74,8 +73,6 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
 
-
-        Container.BindInterfacesExt<ModelMediatorService>();
     }
 
     private FactionType GetPlayerFactionType()

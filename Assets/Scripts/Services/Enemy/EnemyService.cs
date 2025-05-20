@@ -1,9 +1,9 @@
 ﻿using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.Strategy;
-using EmpireAtWar.Views.SpaceStation;
 using LightWeightFramework.Components.Service;
 using UnityEngine;
 using Zenject;

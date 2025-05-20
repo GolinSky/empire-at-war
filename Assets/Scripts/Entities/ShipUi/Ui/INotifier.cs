@@ -1,4 +1,6 @@
-﻿namespace EmpireAtWar
+﻿using EmpireAtWar.Controllers.MiniMap;
+
+namespace EmpireAtWar
 {
     public interface INotifier<TValue>
     {

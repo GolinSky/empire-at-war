@@ -5,9 +5,14 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Entities.ModelMediator;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Health;
+using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
+using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
 namespace EmpireAtWar.Ship
@@ -16,15 +21,13 @@ namespace EmpireAtWar.Ship
     {
         private ShipType _shipType;
         private PlayerType _playerType;
-        private IModelMediatorService _modelMediatorService;
 
         protected override string ModelPathPrefix => _shipType.ToString();
         protected override string ViewPathPrefix => _shipType.ToString();
 
         [Inject]
-        public void Construct(IModelMediatorService modelMediatorService, ShipType shipType, PlayerType playerType)
+        public void Construct(ShipType shipType, PlayerType playerType)
         {
-            _modelMediatorService = modelMediatorService;
             _shipType = shipType;
             _playerType = playerType;
         }
@@ -34,11 +37,14 @@ namespace EmpireAtWar.Ship
             base.OnBindData();
             Container.BindEntity(_playerType);
             Container.BindEntity(_shipType);
+            Container.BindEntity(SelectionType.Ship);
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
+
+            
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 .BindInterfacesExt<HealthComponent>()
@@ -50,10 +56,16 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                 {
-                    Container.BindInterfacesExt<SelectionComponent>();
-                    Container.BindInterfacesExt<PlayerShipCommand>();
+                    Container.BindInterfacesExt<PlayerSelectionComponent>();
+                    Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
-                    Container.BindInterfacesExt<PlayerStateComponent>();
+                    Container.BindInterfacesExt<PlayerShipStateMachineComponent>();
+                    
+                    //entity commands
+                    Container.BindInterfacesExt<PlayerAttackShipCommand>();
+                    Container.BindInterfacesExt<SelectionCommand>();
+                    Container.BindInterfacesExt<ShipMovementCommand>();
+                    Container.BindInterfacesExt<HealthCommand>();
 
                     break;
                 }
@@ -61,16 +73,22 @@ namespace EmpireAtWar.Ship
                 {
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     Container.BindInterfacesExt<EnemyShipCommand>();
-                    Container.BindInterfacesExt<EnemyStateComponent>();
+                    Container.BindInterfacesExt<EnemyShipStateComponent>();
+                    
+                    //entity commands
+                    Container.BindInterfacesExt<EnemyAttackShipCommand>();
+                    Container.BindInterfacesExt<SelectionCommand>();
+                    Container.BindInterfacesExt<HealthCommand>();
+
                     break;
                 }
             }
         }
 
-        protected override void OnModelCreated()
+        protected override void OnViewCreated()
         {
-            base.OnModelCreated();
-            _modelMediatorService.AddUnit(Container.Resolve<ShipModel>());
+            base.OnViewCreated();
+            Container.Install<EntityInstaller>(new object[] { View });
         }
     }
 }
