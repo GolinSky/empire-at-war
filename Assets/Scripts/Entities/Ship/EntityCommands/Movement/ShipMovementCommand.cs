@@ -6,15 +6,15 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands.Movement
 {
     public class ShipMovementCommand:  IMoveCommand
     {
-        private readonly PlayerStateComponent _playerStateComponent;
+        private readonly PlayerShipStateMachineComponent _playerShipStateMachineComponent;
 
-        public ShipMovementCommand(PlayerStateComponent playerStateComponent)
+        public ShipMovementCommand(PlayerShipStateMachineComponent playerShipStateMachineComponent)
         {
-            _playerStateComponent = playerStateComponent;
+            _playerShipStateMachineComponent = playerShipStateMachineComponent;
         }
         public void MoveTo(Vector2 screenPosition)
         {
-            _playerStateComponent.MoveTo(screenPosition);
+            _playerShipStateMachineComponent.MoveTo(screenPosition);
         }
     }
 }

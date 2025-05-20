@@ -59,7 +59,7 @@ namespace EmpireAtWar.Ship
                     Container.BindInterfacesExt<PlayerSelectionComponent>();
                     Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
-                    Container.BindInterfacesExt<PlayerStateComponent>();
+                    Container.BindInterfacesExt<PlayerShipStateMachineComponent>();
                     
                     //entity commands
                     Container.BindInterfacesExt<PlayerAttackShipCommand>();
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Ship
                 {
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     Container.BindInterfacesExt<EnemyShipCommand>();
-                    Container.BindInterfacesExt<EnemyStateComponent>();
+                    Container.BindInterfacesExt<EnemyShipStateComponent>();
                     
                     //entity commands
                     Container.BindInterfacesExt<EnemyAttackShipCommand>();

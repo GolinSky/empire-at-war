@@ -1,67 +1,78 @@
 ﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
-namespace EmpireAtWar.MiningFacility
+namespace EmpireAtWar.SpaceStation
 {
-    public class MiningFacilityInstaller : DynamicViewInstaller<MiningFacilityController, MiningFacilityModel,
-        MiningFacilityView>
+    public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationController, SpaceStationModel, SpaceStationView>
     {
+        private FactionType _factionType;
         private PlayerType _playerType;
-        private MiningFacilityType _miningFacilityType;
+
+        protected override string ViewPathPrefix => _factionType.ToString();
+        
 
         [Inject]
-        public void Construct(PlayerType playerType, MiningFacilityType miningFacilityType)
+        public void Construct(FactionType factionType, PlayerType playerType)
         {
+            _factionType = factionType;
             _playerType = playerType;
-            _miningFacilityType = miningFacilityType;
-           // Debug.Log($"MiningFacilityInstaller: {StartPosition}");
-
         }
 
         protected override void OnBindData()
         {
             base.OnBindData();
             Container.BindEntity(_playerType);
-            Container.BindEntity(_miningFacilityType);
-            Container.BindEntity(SelectionType.MiningFacility);
+            Container.BindEntity(_factionType);
+            Container.BindEntity(SelectionType.Base);
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            Container
-                .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<SimpleMoveComponent>()// todo: make non lazy for enemy
-                .BindInterfacesExt<RadarComponent>();
-
             switch (_playerType)
             {
                 case PlayerType.Player:
+                {
                     Container.BindInterfacesExt<PlayerSelectionComponent>();
                     break;
+                }
                 case PlayerType.Opponent:
+                {
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     break;
+                }
             }
+
+            
+            Container
+                .BindInterfacesExt<HealthComponent>()
+                .BindInterfacesExt<RadarComponent>()
+                .BindInterfacesExt<WeaponComponent>()
+                .BindInterfacesNonLazyExt<SimpleMoveComponent>()
+                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
             
             //entity commands
-            Container.BindInterfacesExt<SelectionCommand>();
-
+            Container
+                .BindInterfacesExt<SelectionCommand>()
+                .BindInterfacesExt<HealthCommand>();
         }
+        
         
         protected override void OnViewCreated()
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
         }
-
     }
 }

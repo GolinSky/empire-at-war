@@ -2,13 +2,14 @@
 using EmpireAtWar.Components.Ship.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar
@@ -23,8 +24,6 @@ namespace EmpireAtWar
         {
             _miningFacilityType = miningFacilityType;
             _playerType = playerType;
-            
-            Debug.Log($"DefendPlatformInstaller: {StartPosition}");
         }
 
         protected override void OnBindData()
@@ -42,7 +41,8 @@ namespace EmpireAtWar
                 .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<SimpleMoveComponent>()
                 .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<WeaponComponent>();
+                .BindInterfacesExt<WeaponComponent>()
+                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
             
             switch (_playerType)
             {
@@ -55,7 +55,9 @@ namespace EmpireAtWar
             }
             
             //entity commands
-            Container.BindInterfacesExt<SelectionCommand>();
+            Container
+                .BindInterfacesExt<SelectionCommand>()
+                .BindInterfacesExt<HealthCommand>();
         }
         
         protected override void OnViewCreated()

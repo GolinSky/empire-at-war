@@ -9,7 +9,7 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class EnemyStateComponent: Component, IInitializable, ILateDisposable, ITickable
+    public class EnemyShipStateComponent: Component, IInitializable, ILateDisposable, ITickable
     {
         private readonly IMapModelObserver _mapModelObserver;
         private readonly ShipStateMachine _shipStateMachine;
@@ -18,7 +18,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         private readonly ShipLockMainTargetState _shipLockMainTargetState;
         private readonly MoveToPointState _moveToPointState;
 
-        public EnemyStateComponent(
+        public EnemyShipStateComponent(
             IModel model,
             IShipMoveComponent shipMoveComponent,
             IWeaponComponent weaponComponent,
