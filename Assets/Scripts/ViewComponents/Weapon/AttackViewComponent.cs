@@ -8,11 +8,10 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
-using Random = System.Random;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class WeaponViewComponent : ViewComponent<IAttackModelObserver>
+    public class AttackViewComponent : ViewComponent<IAttackModelObserver>
     {
         [SerializeField] private AttackModelDependency attackModelDependency;
 

@@ -66,9 +66,9 @@ namespace EmpireAtWar.Editor.Ship
         public static void RefactorHardPoints()
         {
             Object selectionObject = Selection.objects.FirstOrDefault();
-            WeaponViewComponent weaponViewComponent = selectionObject.GetComponent<WeaponViewComponent>();
+            AttackViewComponent attackViewComponent = selectionObject.GetComponent<AttackViewComponent>();
 
-            List<TurretView> turretViews = weaponViewComponent.GetComponentsInChildren<TurretView>().ToList();
+            List<TurretView> turretViews = attackViewComponent.GetComponentsInChildren<TurretView>().ToList();
 
             AddressableRepository addressableRepository = new AddressableRepository();
 
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Editor.Ship
             foreach (TurretView turretView in turretViews)
             {
                 Object hardPointInstanceGO =
-                    PrefabUtility.InstantiatePrefab(weaponHardPointViewPrefab, weaponViewComponent.transform);
+                    PrefabUtility.InstantiatePrefab(weaponHardPointViewPrefab, attackViewComponent.transform);
                 WeaponHardPointView hardPointInstance = hardPointInstanceGO.GetComponent<WeaponHardPointView>();
 
                 hardPointInstance.transform.localPosition = turretView.transform.localPosition;
