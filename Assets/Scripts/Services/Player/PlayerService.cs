@@ -1,6 +1,6 @@
-﻿using EmpireAtWar.Entities.SpaceStation;
+﻿using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Map;
 using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Components.Service;
 using Zenject;

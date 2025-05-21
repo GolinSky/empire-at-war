@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
-using UnityEngine;
 using LightWeightFramework.Model;
+using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
 using Random = System.Random;
 
-namespace EmpireAtWar.Models.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public interface IAudioShipDialogModelObserver : IModelObserver
     {

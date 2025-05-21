@@ -1,6 +1,5 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
@@ -10,7 +9,7 @@ using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
-namespace EmpireAtWar.Components.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public interface IAudioShipComponent : ICommand
     {

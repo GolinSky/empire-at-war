@@ -1,11 +1,11 @@
 ﻿using System;
 using EmpireAtWar.Utils.Random;
-using UnityEngine;
 using LightWeightFramework.Model;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Zenject;
 
-namespace EmpireAtWar.Models.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public interface IAudioShipModelObserver : IModelObserver
     {

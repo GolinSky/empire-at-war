@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Utils.Random;
-using Utilities.ScriptUtils.EditorSerialization;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utilities.ScriptUtils.EditorSerialization;
 
-namespace EmpireAtWar.Models.Map
+namespace EmpireAtWar.Entities.Map
 {
     public interface IMapModelObserver:IModelObserver
     {

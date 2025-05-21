@@ -1,8 +1,8 @@
 ﻿using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.Strategy;
 using LightWeightFramework.Components.Service;
 using UnityEngine;

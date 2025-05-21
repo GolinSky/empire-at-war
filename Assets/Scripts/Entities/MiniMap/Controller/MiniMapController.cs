@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Map;
+﻿using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;

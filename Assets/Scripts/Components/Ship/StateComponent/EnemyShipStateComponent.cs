@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Map;
 using EmpireAtWar.Patterns.StateMachine;
 using LightWeightFramework.Components.Components;
 using LightWeightFramework.Model;

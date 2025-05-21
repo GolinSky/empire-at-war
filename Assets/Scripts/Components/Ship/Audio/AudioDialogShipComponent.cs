@@ -1,6 +1,5 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
@@ -12,7 +11,7 @@ using Utilities.ScriptUtils.Time;
 using Zenject;
 using AudioType = EmpireAtWar.Services.Audio.AudioType;
 
-namespace EmpireAtWar.Components.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IInitializable,
         ILateDisposable

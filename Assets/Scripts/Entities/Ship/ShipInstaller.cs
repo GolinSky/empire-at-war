@@ -1,8 +1,8 @@
 ﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Audio;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.AiComponent;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
