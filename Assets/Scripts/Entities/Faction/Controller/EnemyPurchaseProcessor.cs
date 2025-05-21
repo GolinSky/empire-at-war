@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public sealed class EnemyPurchaseProcessor : BasePurchaseMediator,IEnemyPurchaseProcessor
+    public sealed class EnemyPurchaseProcessor : BasePurchaseProcessor,IEnemyPurchaseProcessor
     {
         public EnemyPurchaseProcessor(
                 IPurchaseChain purchaseChain,

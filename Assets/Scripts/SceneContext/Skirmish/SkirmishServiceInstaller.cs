@@ -7,19 +7,22 @@ using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
 
-public class SkirmishServiceInstaller : MonoInstaller
+namespace EmpireAtWar.SceneContext.Skirmish
 {
-    [SerializeField] private Camera mainCamera;
-
-    public override void InstallBindings()
+    public class SkirmishServiceInstaller : MonoInstaller
     {
-        Container.BindInstance(mainCamera);
-        Container
-            .BindInterfacesExt<InputService>()
-            .BindInterfacesExt<ShipService>()
-            .BindInterfacesExt<CameraService>()
-            .BindInterfacesExt<SelectionService>()
-            .BindInterfacesExt<BattleService>();
+        [SerializeField] private Camera mainCamera;
 
+        public override void InstallBindings()
+        {
+            Container.BindInstance(mainCamera);
+            Container
+                .BindInterfacesExt<InputService>()
+                .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<CameraService>()
+                .BindInterfacesExt<SelectionService>()
+                .BindInterfacesExt<BattleService>();
+
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly IUiService _uiService;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
+        
         public float Income { get; private set; }
 
         public FactionController(

@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.Controllers.Factions
 {
-    public abstract class BasePurchaseMediator: IChainHandler<UnitRequest>
+    public abstract class BasePurchaseProcessor: IChainHandler<UnitRequest>
     {
         protected IChainHandler<UnitRequest> _next;
         

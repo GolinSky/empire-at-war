@@ -1,11 +1,10 @@
 using DG.Tweening;
 using EmpireAtWar.Commands.Camera;
-using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using Utilities.ScriptUtils.Dotween;
 
-namespace EmpireAtWar.Views.SkirmishCamera
+namespace EmpireAtWar.Entities.SkirmishCamera
 {
     public class CoreCameraView : View<ICoreCameraModelObserver, ICameraCommand>
     {

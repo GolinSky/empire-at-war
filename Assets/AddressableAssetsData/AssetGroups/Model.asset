@@ -95,11 +95,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6227c36cf093ee14d846e82b50de15f1
-    m_Address: TerrainModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 691bb38511b36a64894408d57d5744b9
     m_Address: ArquitensShipModel
     m_ReadOnly: 0

@@ -1,13 +1,12 @@
 using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using LightWeightFramework.Controller;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.SkirmishCamera
+namespace EmpireAtWar.Entities.SkirmishCamera
 {
     public class CoreCameraController : Controller<CoreCameraModel>, IInitializable, ILateDisposable, ICameraCommand
     {

@@ -1,9 +1,10 @@
 using System;
+using EmpireAtWar.Models.SkirmishCamera;
 using LightWeightFramework.Model;
-using Utilities.ScriptUtils.Math;
 using UnityEngine;
+using Utilities.ScriptUtils.Math;
 
-namespace EmpireAtWar.Models.SkirmishCamera
+namespace EmpireAtWar.Entities.SkirmishCamera
 {
     public interface ICoreCameraModelObserver: IModelObserver
     {
