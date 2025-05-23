@@ -21,6 +21,7 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Button exitButton;
         [SerializeField] private Transform shipUnitParent;
         [SerializeField] private BuildPipelineView pipelineView;
+        [SerializeField] private Button triggerUiButton;
 
         private Dictionary<string, UnitRequest> _unitRequests = new Dictionary<string, UnitRequest>();
         private List<UnitRequest> _buildingUnits = new List<UnitRequest>();
@@ -59,6 +60,7 @@ namespace EmpireAtWar.Views.Factions
             Model.OnUnitBuild += BuildUnit;
             exitButton.onClick.AddListener(ExitUi);
             pipelineView.OnFinishSequence += HandleEndOfBuilding;
+            triggerUiButton.onClick.AddListener(Command.ChangeSelection);
         }
         
         public void LateDispose()
@@ -68,6 +70,7 @@ namespace EmpireAtWar.Views.Factions
             Model.OnUnitBuild -= BuildUnit;
             exitButton.onClick.RemoveListener(ExitUi);
             pipelineView.OnFinishSequence -= HandleEndOfBuilding;
+            triggerUiButton.onClick.RemoveListener(Command.ChangeSelection);
         }
 
         private void AddUi(UnitRequest unitRequest)

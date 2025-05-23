@@ -3,6 +3,7 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Controller;
 using Zenject;
@@ -49,6 +50,11 @@ namespace EmpireAtWar.Controllers.Factions
         {
             _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
+        }
+
+        public void ChangeSelection()
+        {
+            Model.SelectionType =  Model.SelectionType == SelectionType.Base ? SelectionType.None : SelectionType.Base ;
         }
 
         public void CloseSelection()

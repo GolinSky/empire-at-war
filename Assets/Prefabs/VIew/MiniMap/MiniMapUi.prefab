@@ -460,6 +460,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3894093650467998914}
     m_Modifications:
+    - target: {fileID: 1798597305766079938, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798597305766079938, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798597305766079938, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1798597305766079938, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 64.00002
+      objectReference: {fileID: 0}
     - target: {fileID: 7099030781851492664, guid: 57cd1730449ca1e4c9fb600c72b2561a,
         type: 3}
       propertyPath: m_Pivot.x
@@ -564,6 +584,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TriggerButtonCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8005658864222490741, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8005658864222490741, guid: 57cd1730449ca1e4c9fb600c72b2561a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

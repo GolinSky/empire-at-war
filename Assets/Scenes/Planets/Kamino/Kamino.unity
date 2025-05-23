@@ -2056,11 +2056,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FpsUi
       objectReference: {fileID: 0}
-    - target: {fileID: 6616380349938749460, guid: 953cf1b9158bd8740acf4a01005bc922,
-        type: 3}
-      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
-      value: 1801810542
-      objectReference: {fileID: 0}
     - target: {fileID: 8834900319507924357, guid: 953cf1b9158bd8740acf4a01005bc922,
         type: 3}
       propertyPath: m_Pivot.x
