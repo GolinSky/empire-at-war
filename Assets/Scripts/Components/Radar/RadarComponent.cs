@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Movement;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;

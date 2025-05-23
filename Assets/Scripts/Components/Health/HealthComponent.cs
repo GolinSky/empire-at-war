@@ -1,6 +1,6 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Movement;
 using LightWeightFramework.Model;
 using Utilities.ScriptUtils.Time;
 using LightWeightFramework.Components.Components;

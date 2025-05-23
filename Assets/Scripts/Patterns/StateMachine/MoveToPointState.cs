@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.Movement;
+﻿using EmpireAtWar.Components.Ship.Movement;
 using UnityEngine;
 
 namespace EmpireAtWar.Patterns.StateMachine

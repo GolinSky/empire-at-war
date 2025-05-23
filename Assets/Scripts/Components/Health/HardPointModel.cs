@@ -7,7 +7,7 @@ namespace EmpireAtWar.Models.Health
 {
     public interface IHardPointModel
     {
-        event Action OnShipUnitChanged;
+        event Action OnHardPointHealthChanged;
         HardPointType HardPointType { get; }
 
         float HealthPercentage { get; }
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Models.Health
         private float _health;
         private HardPointView _hardPointView;
 
-        public event Action OnShipUnitChanged;
+        public event Action OnHardPointHealthChanged;
         public float HealthPercentage { get; private set; } = 1f;
 
         public float Health => _health;
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Models.Health
         {
             _health -= damage;
             HealthPercentage = _health / _originHealth;
-            OnShipUnitChanged?.Invoke();
+            OnHardPointHealthChanged?.Invoke();
             _hardPointView.UpdateData(HealthPercentage);
         }
 

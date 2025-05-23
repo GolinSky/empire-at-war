@@ -45,6 +45,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void Update()
         {
+            //todo: fix this 
             if (_isAttacking)
             {
                 if (_attackTimer.IsComplete)

@@ -1,6 +1,6 @@
 ﻿using System;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Models.Movement;
 using Utilities.ScriptUtils.Layer;
 using LightWeightFramework.Components.ViewComponents;
 using UnityEngine;

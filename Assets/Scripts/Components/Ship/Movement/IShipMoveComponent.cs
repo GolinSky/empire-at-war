@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Components.Movement;
 using UnityEngine;
 
-namespace EmpireAtWar.Components.Ship.Selection
+namespace EmpireAtWar.Components.Ship.Movement
 {
     public interface IShipMoveComponent:IDefaultMoveComponent
     {

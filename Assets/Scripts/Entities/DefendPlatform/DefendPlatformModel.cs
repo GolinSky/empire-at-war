@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Ship;
 using LightWeightFramework.Model;
 using UnityEngine;

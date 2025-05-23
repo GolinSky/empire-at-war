@@ -1,15 +1,16 @@
 ﻿using System;
+using EmpireAtWar.Components.Movement;
+using EmpireAtWar.Models;
 using EmpireAtWar.Models.Factions;
 using Unity.Mathematics;
 using UnityEngine;
 using Zenject;
 
-namespace EmpireAtWar.Models.Movement
+namespace EmpireAtWar.Components.Ship.Movement
 {
     public interface IShipMoveModelObserver:IDefaultMoveModelObserver
     {
         event Action OnStop;
-        event Action<Vector3> OnLookAt;
         Vector3 HyperSpacePosition { get; }
         float RotationSpeed { get; }
         float HyperSpaceSpeed { get; }
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Models.Movement
         float BodyRotationMaxAngle { get; }
         Vector3 JumpPosition { get; }
         Quaternion StartRotation { get; }
+        IObservableProperty<Vector3> LookAtTargetObserver { get; }
     }
     
     [Serializable]
@@ -24,7 +26,6 @@ namespace EmpireAtWar.Models.Movement
     {
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         public event Action OnStop;
-        public event Action<Vector3> OnLookAt;
         
         [field: SerializeField] public float RotationSpeed { get; private set; }
         [field: SerializeField] public float MinRotationDuration { get; private set; }
@@ -42,10 +43,10 @@ namespace EmpireAtWar.Models.Movement
         [Inject]
         private PlayerType PlayerType { get; }
 
-        public Vector3 LookAtTarget
-        {
-            set => OnLookAt?.Invoke(value);
-        }
+        public ObservableProperty<Vector3> LookAtTarget { get; } = new ObservableProperty<Vector3>();
+        IObservableProperty<Vector3> IShipMoveModelObserver.LookAtTargetObserver => LookAtTarget;
+
+
         public void ApplyMoveCoefficient(float coefficient)
         {
             _speedCoefficient = coefficient;

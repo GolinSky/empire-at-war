@@ -2,7 +2,7 @@
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using EmpireAtWar.Commands.Move;
-using EmpireAtWar.Models.Movement;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.ViewComponents;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
@@ -37,16 +37,16 @@ namespace EmpireAtWar.Move
             transform.position = Model.JumpPosition;
             HyperSpaceJump(Model.HyperSpacePosition);
 
-            Model.OnTargetPositionChanged += UpdateTargetPosition;
+            Model.TargetPositionObserver.OnChanged += UpdateTargetPosition;
             Model.OnStop += StopAllMovement;
-            Model.OnLookAt += LookAt;
+            Model.LookAtTargetObserver.OnChanged += LookAt;
         }
 
         protected override void OnRelease()
         {
-            Model.OnTargetPositionChanged -= UpdateTargetPosition;
+            Model.TargetPositionObserver.OnChanged -= UpdateTargetPosition;
             Model.OnStop -= StopAllMovement;
-            Model.OnLookAt -= LookAt;
+            Model.LookAtTargetObserver.OnChanged -= LookAt;
             FallDown();
         }
 
@@ -59,15 +59,19 @@ namespace EmpireAtWar.Move
             float rotationDuration =
                 Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed,
                     Model.MinRotationDuration);
-            _bodyRotationSequence.KillIfExist();
 
+            if (rotationDuration < 1f)
+            {
+                Debug.Log($"rotationDuration:{rotationDuration}");
+            }
             _moveSequence.Append(
                 transform.DORotate(
                         targetRotation,
                         rotationDuration,
                         rotationMode)
                     .SetEase(lookAtEase));
-            _moveSequence.Join(GetRotationSequence(targetPosition, rotationDuration));
+            _moveSequence.Join(bodyTransform.DOLocalRotate(GetRotation(targetPosition), rotationDuration).SetEase(lookAtEase));
+
             _moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BODY_ROTATION_DEFAULT_DURATION)
                 .SetEase(lookAtEase));
         }
@@ -106,15 +110,6 @@ namespace EmpireAtWar.Move
             _moveSequence = DOTween.Sequence();
             _moveSequence.Append(transform.DOMove(point, Model.HyperSpaceSpeed)
                 .SetEase(hyperSpaceEase));
-            _moveSequence.OnComplete(OnHyperJumpFinish);
-        }
-
-        private void OnHyperJumpFinish()
-        {
-            if (Model.IsTargetPositionWasSet)
-            {
-                UpdateTargetPosition(Model.TargetPosition);
-            }
         }
 
         private void UpdateTargetPosition(Vector3 targetPosition)
@@ -152,7 +147,7 @@ namespace EmpireAtWar.Move
                         10)
                     .SetLookAt(0.01f)
                     .SetOptions(AxisConstraint.Y, AxisConstraint.X | AxisConstraint.Z)
-                    .OnWaypointChange(HandleWaypoints)
+                    //.OnWaypointChange(HandleWaypoints)
                     .SetEase(moveEase));
 
             _bodyRotationSequence.KillIfExist();
@@ -176,6 +171,13 @@ namespace EmpireAtWar.Move
             float modifier = -IsRightFromTarget(targetPosition);
             Vector3 targetRotation = Vector3.forward * Model.BodyRotationMaxAngle * modifier;
             return bodyTransform.DOLocalRotate(targetRotation, duration).SetEase(lookAtEase);
+        }
+        
+        
+        private Vector3 GetRotation(Vector3 targetPosition)
+        {
+            float modifier = -IsRightFromTarget(targetPosition);
+            return Vector3.forward * Model.BodyRotationMaxAngle * modifier;
         }
 
         private float IsRightFromTarget(Vector3 targetPosition)

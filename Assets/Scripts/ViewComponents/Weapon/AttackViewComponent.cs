@@ -100,22 +100,26 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private IEnumerator ExecuteAttackFlow(List<IHardPointModel> hardPoints)
         {
+            // Track remaining targets to avoid repeatedly checking destroyed ones
+            var remainingTargets = new HashSet<IHardPointModel>(hardPoints.Where(hp => !hp.IsDestroyed));
+
             foreach (var kvp in TurretDictionary)
             {
                 foreach (WeaponHardPointView turret in kvp.Value)
                 {
                     if (turret.Destroyed || turret.IsBusy) continue;
 
-                    foreach (IHardPointModel target in hardPoints)
-                    {
-                        if (target.IsDestroyed || !turret.CanAttack(target.Position)) continue;
+                    IHardPointModel target = remainingTargets
+                        .FirstOrDefault(t =>!t.IsDestroyed && turret.CanAttack(t.Position));
 
-                        float attackDuration = turret.Attack(target);
-                        AttackCommand.ApplyDamage(target, kvp.Key, attackDuration);
-                        yield return new WaitForSeconds(Model.DelayBetweenAttack);
-                    }
+                    if (target == null) continue;
 
-                    if (hardPoints.All(x => x.IsDestroyed))
+                    float attackDuration = turret.Attack(target);
+                    AttackCommand.ApplyDamage(target, kvp.Key, attackDuration);
+
+                    yield return new WaitForSeconds(Model.DelayBetweenAttack);
+
+                    if (remainingTargets.Count == 0)
                         yield break;
                 }
             }

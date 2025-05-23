@@ -1,5 +1,4 @@
-﻿using EmpireAtWar.Models.Movement;
-using LightWeightFramework.Model;
+﻿using LightWeightFramework.Model;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Movement
@@ -10,7 +9,7 @@ namespace EmpireAtWar.Components.Movement
         
         public DefaultMoveComponent(IModel model, Vector3 startPosition) : base(model)
         {
-            Model.TargetPosition = startPosition;
+            Model.TargetPosition.Value = startPosition;
         }
         
         public void MoveToPosition(Vector2 screenPosition) {}

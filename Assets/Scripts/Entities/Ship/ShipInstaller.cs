@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands;
@@ -59,7 +60,7 @@ namespace EmpireAtWar.Ship
                     Container.BindInterfacesExt<PlayerSelectionComponent>();
                     Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
-                    Container.BindInterfacesExt<PlayerShipStateMachineComponent>();
+                    Container.BindInterfacesExt<PlayerShipStateMachine>();
                     
                     //entity commands
                     Container.BindInterfacesExt<PlayerAttackShipCommand>();
@@ -73,7 +74,7 @@ namespace EmpireAtWar.Ship
                 {
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     Container.BindInterfacesExt<EnemyShipCommand>();
-                    Container.BindInterfacesExt<EnemyShipStateComponent>();
+                    Container.BindInterfacesExt<EnemyShipStateMachine>();
                     
                     //entity commands
                     Container.BindInterfacesExt<EnemyAttackShipCommand>();

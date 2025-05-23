@@ -37,7 +37,7 @@ namespace EmpireAtWar.Ship
                     _enginesUnitModel = shipUnitModel;
                 }
             }
-            _enginesUnitModel.OnShipUnitChanged += HandleEnginesData;
+            _enginesUnitModel.OnHardPointHealthChanged += HandleEnginesData;
 
         }
         
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Ship
             _shipService.Remove(this);
             if (_enginesUnitModel != null)
             {
-                _enginesUnitModel.OnShipUnitChanged -= HandleEnginesData;
+                _enginesUnitModel.OnHardPointHealthChanged -= HandleEnginesData;
             }
         }
         

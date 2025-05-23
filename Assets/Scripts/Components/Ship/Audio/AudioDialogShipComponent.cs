@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Movement;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using LightWeightFramework.Model;
@@ -16,7 +16,7 @@ namespace EmpireAtWar.Components.Ship.Audio
     public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IInitializable,
         ILateDisposable
     {
-        private const float MIN_ALARM_DELAY = 30;
+        private const float MIN_ALARM_DELAY = 30f;
         private const float MAX_ALARM_DELAY = 60f;
         
         private readonly IAudioService _audioService;
@@ -41,8 +41,8 @@ namespace EmpireAtWar.Components.Ship.Audio
         public void Initialize()
         {
             _selectionModelObserver.OnSelected += PlaySelectionClip;
-            _shipMoveModelObserver.OnLookAt += PlayAttackClip;
-            _shipMoveModelObserver.OnTargetPositionChanged += PlayMoveClip;
+            _shipMoveModelObserver.LookAtTargetObserver.OnChanged += PlayAttackClip;
+            _shipMoveModelObserver.TargetPositionObserver.OnChanged += PlayMoveClip;
             _shipMoveModelObserver.OnStop += PlayDamageClip;
             _radarModelObserver.Enemies.ItemAdded += PlayAlarmSights;
         }
@@ -50,8 +50,8 @@ namespace EmpireAtWar.Components.Ship.Audio
         public void LateDispose()
         {
             _selectionModelObserver.OnSelected -= PlaySelectionClip;
-            _shipMoveModelObserver.OnLookAt -= PlayAttackClip;
-            _shipMoveModelObserver.OnTargetPositionChanged -= PlayMoveClip;
+            _shipMoveModelObserver.LookAtTargetObserver.OnChanged -= PlayAttackClip;
+            _shipMoveModelObserver.TargetPositionObserver.OnChanged -= PlayMoveClip;
             _shipMoveModelObserver.OnStop -= PlayDamageClip;
             _radarModelObserver.Enemies.ItemAdded -= PlayAlarmSights;
         }

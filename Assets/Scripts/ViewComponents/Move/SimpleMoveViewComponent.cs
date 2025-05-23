@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
-using EmpireAtWar.Models.Movement;
-using LightWeightFramework.Components.ViewComponents;
+using EmpireAtWar.Components.Movement;
 using UnityEngine;
 using Utilities.ScriptUtils.Dotween;
 
@@ -15,7 +14,6 @@ namespace EmpireAtWar.ViewComponents.Move
             base.OnInit();
             transform.position = Model.StartPosition;
         }
-
 
         protected override void OnRelease()
         {
@@ -33,12 +31,7 @@ namespace EmpireAtWar.ViewComponents.Move
             _moveSequence.Join(transform.DOLocalRotate(
                 Model.FallDownRotation.Value,
                 Model.FallDownDuration));
-            _moveSequence.AppendCallback(DestroyView);
         }
-
-        private void DestroyView()
-        {
-            Destroy(View.Transform.parent.gameObject);
-        }
+        
     }
 }

@@ -43,6 +43,7 @@ namespace EmpireAtWar.Models.Health
         public event Action OnValueChanged;
         public event Action OnDestroy;
         
+        
         [SerializeField] 
         [Range(0f, 1f)]
         private float dexterity;//why this is private
@@ -113,33 +114,42 @@ namespace EmpireAtWar.Models.Health
                 HardPointModels[i].SetData(_healthModelDependency.ShipUnits[i]);
             }
 
-            float mainSystemCount = HardPointModels.Count(x=> x.HardPointType == HardPointType.Engines || x.HardPointType == HardPointType.ShieldGenerator);
+            float totalCount = HardPointModels.Length;
 
-            if (mainSystemCount == 0)
+            if (totalCount == 0)
+                return; // No hardpoints to assign health to
+
+            float mainSystemCount = HardPointModels.Count(x =>
+                x.HardPointType == HardPointType.Engines || x.HardPointType == HardPointType.ShieldGenerator);
+
+            if (mainSystemCount == 0 || mainSystemCount == totalCount)
             {
-                float health = Armor / HardPointModels.Length;
-                foreach (HardPointModel shipUnitModel in HardPointModels)
+                // All are weapons or all are main systems — distribute equally
+                float healthPerUnit = Armor / totalCount;
+                foreach (HardPointModel model in HardPointModels)
                 {
-                    shipUnitModel.SetHealth(health);
+                    model.SetHealth(healthPerUnit);
                 }
             }
             else
             {
+                // Mixed hardpoints
+                float weaponCount = totalCount - mainSystemCount;
                 float weaponHealth = Armor * WEAPON_SYSTEM_COEFFICIENT;
-                float weaponHealthPerUnit = weaponHealth / (HardPointModels.Length - mainSystemCount);
                 float mainSystemHealth = Armor - weaponHealth;
-                float mainSystemHealthPerUnit = mainSystemHealth / mainSystemCount;// assert 0 division
-                
-                foreach (HardPointModel shipUnitModel in HardPointModels)
+
+                float weaponHealthPerUnit = weaponCount > 0 ? weaponHealth / weaponCount : 0f;
+                float mainSystemHealthPerUnit = mainSystemCount > 0 ? mainSystemHealth / mainSystemCount : 0f;
+
+                foreach (HardPointModel model in HardPointModels)
                 {
-                    if (shipUnitModel.HardPointType == HardPointType.Engines ||
-                        shipUnitModel.HardPointType == HardPointType.ShieldGenerator)
+                    if (model.HardPointType == HardPointType.Engines || model.HardPointType == HardPointType.ShieldGenerator)
                     {
-                        shipUnitModel.SetHealth(mainSystemHealthPerUnit);
+                        model.SetHealth(mainSystemHealthPerUnit);
                     }
                     else
                     {
-                        shipUnitModel.SetHealth(weaponHealthPerUnit);
+                        model.SetHealth(weaponHealthPerUnit);
                     }
                 }
             }

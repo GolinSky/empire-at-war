@@ -1,9 +1,9 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Movement;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;

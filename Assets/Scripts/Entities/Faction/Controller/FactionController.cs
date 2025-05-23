@@ -67,7 +67,7 @@ namespace EmpireAtWar.Controllers.Factions
                     Model.CurrentLevel++;
                     Income = DEFAULT_INCOME * Model.CurrentLevel;
                     _economyProvider.RecalculateIncome(this);
-                    break;
+                    return;
             }
 
             if (_nextChain != null)
