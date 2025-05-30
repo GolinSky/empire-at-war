@@ -249,7 +249,7 @@ MonoBehaviour:
   moveEase: 35
   hyperSpaceEase: 32
   lineRenderer: {fileID: 5068235251056262396}
-  bodyTransform: {fileID: 0}
+  bodyTransform: {fileID: 6911527422113049242}
 --- !u!114 &5562210321709151128
 MonoBehaviour:
   m_ObjectHideFlags: 0
