@@ -24,9 +24,13 @@ namespace EmpireAtWar.Views.ViewImpl
                 viewComponent.SetView(this);
                 viewComponent.Init();
             }
-            foreach (ModelDependency modelDependency in ModelDependencies)
+
+            if (ModelDependencies != null)
             {
-                modelDependency.Initialize(this);
+                foreach (ModelDependency modelDependency in ModelDependencies)
+                {
+                    modelDependency.Initialize(this);
+                }
             }
         }
 
@@ -37,10 +41,15 @@ namespace EmpireAtWar.Views.ViewImpl
             {
                 viewComponent.Dispose();
             }
-            foreach (ModelDependency modelDependency in ModelDependencies)
+
+            if (ModelDependencies != null)
             {
-                modelDependency.Release();
+                foreach (ModelDependency modelDependency in ModelDependencies)
+                {
+                    modelDependency.Release();
+                }
             }
+          
         }
 
         public void Release()
