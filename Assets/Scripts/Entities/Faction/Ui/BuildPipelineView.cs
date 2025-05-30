@@ -36,15 +36,13 @@ namespace EmpireAtWar.Views.Factions
                 pipelineView.AddCount();
                 return pipelineView.TimeLeft;
             }
-            else
-            {
-                PipelineView freePipeline = pipelineViews
-                    .FirstOrDefault(x => !x.IsBusy);
+
+            PipelineView freePipeline = pipelineViews
+                .FirstOrDefault(x => !x.IsBusy);
                 
-                SetUpPipeline(freePipeline);
-                _workingPipelines.Add(id, freePipeline);
-                return fillTime;
-            }
+            SetUpPipeline(freePipeline);
+            _workingPipelines.Add(id, freePipeline);
+            return fillTime;
 
             void SetUpPipeline(PipelineView view)
             {
