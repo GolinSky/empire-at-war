@@ -196,6 +196,9 @@ LineRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -377,7 +380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6938287046187391919
 Transform:
   m_ObjectHideFlags: 0
@@ -5134,6 +5137,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5207,7 +5213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3978048286422837578
 Transform:
   m_ObjectHideFlags: 0
@@ -9964,6 +9970,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10121,7 +10130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1816819630352309859
 Transform:
   m_ObjectHideFlags: 0
@@ -14878,6 +14887,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -15152,6 +15164,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -15794,52 +15809,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[0]
+      propertyPath: 'shipUnitViewArray.Array.data[0]'
       value: 
       objectReference: {fileID: 5242897595597171810}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[1]
+      propertyPath: 'shipUnitViewArray.Array.data[1]'
       value: 
       objectReference: {fileID: 7258418188646328008}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[2]
+      propertyPath: 'shipUnitViewArray.Array.data[2]'
       value: 
       objectReference: {fileID: 3854033994161667754}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[3]
+      propertyPath: 'shipUnitViewArray.Array.data[3]'
       value: 
       objectReference: {fileID: 4772148314960195881}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[4]
+      propertyPath: 'shipUnitViewArray.Array.data[4]'
       value: 
       objectReference: {fileID: 4276695649427471237}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[5]
+      propertyPath: 'shipUnitViewArray.Array.data[5]'
       value: 
       objectReference: {fileID: 1345248204800110707}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[6]
+      propertyPath: 'shipUnitViewArray.Array.data[6]'
       value: 
       objectReference: {fileID: 6411720674404516733}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[7]
+      propertyPath: 'shipUnitViewArray.Array.data[7]'
       value: 
       objectReference: {fileID: 3407299230071023220}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[8]
+      propertyPath: 'shipUnitViewArray.Array.data[8]'
       value: 
       objectReference: {fileID: 746876643857132625}
     - target: {fileID: 6993838301850367445, guid: 35c8d89f211482848a0438585d8d9afd,
         type: 3}
-      propertyPath: shipUnitViewArray.Array.data[9]
+      propertyPath: 'shipUnitViewArray.Array.data[9]'
       value: 
       objectReference: {fileID: 656960128395284562}
     - target: {fileID: 7346841586871110867, guid: 35c8d89f211482848a0438585d8d9afd,
@@ -16186,7 +16201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -562029390912876055, guid: bf7a8fa108400824bb3f02f05b94d38a,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 3dda1ce42d3c20e47902b8cbe2dd8c06, type: 2}
     - target: {fileID: 919132149155446097, guid: bf7a8fa108400824bb3f02f05b94d38a,

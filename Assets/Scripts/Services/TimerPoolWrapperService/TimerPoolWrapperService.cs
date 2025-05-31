@@ -13,21 +13,21 @@ namespace EmpireAtWar.Services.TimerPoolWrapperService
     
     public class TimerPoolWrapperService: Service, ITimerPoolWrapperService, ITickable
     {
-        private readonly TimerPoolService timerPoolService;
+        private readonly TimerPoolService _timerPoolService;
 
         public TimerPoolWrapperService()
         {
-            timerPoolService = new TimerPoolService();
+            _timerPoolService = new TimerPoolService();
         }
         public CustomCoroutine Invoke(Action action, float delay)
         {
-            return timerPoolService.Invoke(action, delay);
+            return _timerPoolService.Invoke(action, delay);
         }
         
 
         public void Tick()
         {
-            timerPoolService.Update();
+            _timerPoolService.Update();
         }
     }
 }

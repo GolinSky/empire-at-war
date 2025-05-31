@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Audio;
+﻿using EmpireAtWar.Components.Ship.Audio;
+using EmpireAtWar.Models.Audio;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Audio

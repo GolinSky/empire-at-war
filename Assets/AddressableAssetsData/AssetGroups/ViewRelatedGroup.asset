@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: ViewRelatedGroup
   m_EditorClassIdentifier: 
   m_GroupName: ViewRelatedGroup
-  m_Data:
-    m_SerializedData: []
   m_GUID: 2b4fe54194f72934d8803c259adc365b
   m_SerializeEntries:
   - m_GUID: 17a65e70ac12d8e4b839ac0bd03f953b

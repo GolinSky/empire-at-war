@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
-using EmpireAtWar.Models.Game;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -24,41 +24,41 @@ namespace EmpireAtWar.Services.Audio
         private const float SOUND_DELAY = 2f;
         private const string SOURCE_PATH = "MusicSource";
         private const string DIALOG_SOURCE_PATH = "AudioDialogSource";
-        private readonly ISceneService sceneService;
-        private readonly IGameModelObserver gameModelObserver;
-        private readonly MusicAudioModel musicAudioModel;
-        private readonly AudioSource backgroundSource;
-        private readonly AudioSource dialogSource;
-        private readonly Random random;
-        private readonly ITimer timer;
-        private List<AudioClip> clips;
-        private bool isMusicPlaying;
-        private float lastTimePlayAlarm;
-        private float lastTimePlaySfx;
+        private readonly ISceneService _sceneService;
+        private readonly IGameModelObserver _gameModelObserver;
+        private readonly MusicAudioModel _musicAudioModel;
+        private readonly AudioSource _backgroundSource;
+        private readonly AudioSource _dialogSource;
+        private readonly Random _random;
+        private readonly ITimer _timer;
+        private List<AudioClip> _clips;
+        private bool _isMusicPlaying;
+        private float _lastTimePlayAlarm;
+        private float _lastTimePlaySfx;
         
        
         public AudioService(ISceneService sceneService, IRepository repository, IGameModelObserver gameModelObserver)
         {
-            this.sceneService = sceneService;
-            this.gameModelObserver = gameModelObserver;
-            timer = TimerFactory.ConstructTimer();
-            musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
-            backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SOURCE_PATH));
-            dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
-            Object.DontDestroyOnLoad(backgroundSource);
-            Object.DontDestroyOnLoad(dialogSource);
-            random = new Random();
+            _sceneService = sceneService;
+            _gameModelObserver = gameModelObserver;
+            _timer = TimerFactory.ConstructTimer();
+            _musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
+            _backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SOURCE_PATH));
+            _dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
+            Object.DontDestroyOnLoad(_backgroundSource);
+            Object.DontDestroyOnLoad(_dialogSource);
+            _random = new Random();
         }
         
         public void Initialize()
         {
-            OnSceneLoad(sceneService.TargetScene);
-            sceneService.OnSceneActivation += OnSceneLoad;
+            OnSceneLoad(_sceneService.TargetScene);
+            _sceneService.OnSceneActivation += OnSceneLoad;
         }
         
         public void LateDispose()
         {
-            sceneService.OnSceneActivation -= OnSceneLoad;
+            _sceneService.OnSceneActivation -= OnSceneLoad;
         }
         
         private void OnSceneLoad(SceneType sceneType)
@@ -70,49 +70,49 @@ namespace EmpireAtWar.Services.Audio
 
         private void PlayMusic(SceneType sceneType)
         {
-            clips = musicAudioModel.GetMusicList(sceneType, gameModelObserver.PlayerFactionType);
+            _clips = _musicAudioModel.GetMusicList(sceneType, _gameModelObserver.PlayerFactionType);
             PlayMusicInternal();
         }
 
         private void PlayMusicInternal()
         {
-            if(clips == null || clips.Count == 0) return;
-            int randomIndex = random.Next(clips.Count);
-            AudioClip audioClip = clips.ElementAt(randomIndex);
-            backgroundSource.clip = audioClip;
-            backgroundSource.Play();
-            timer.ChangeDelay(audioClip.length);
-            timer.StartTimer();
-            isMusicPlaying = true;
+            if(_clips == null || _clips.Count == 0) return;
+            int randomIndex = _random.Next(_clips.Count);
+            AudioClip audioClip = _clips.ElementAt(randomIndex);
+            _backgroundSource.clip = audioClip;
+            _backgroundSource.Play();
+            _timer.ChangeDelay(audioClip.length);
+            _timer.StartTimer();
+            _isMusicPlaying = true;
         }
 
         public void Tick()
         {
-            if(!isMusicPlaying) return;
+            if(!_isMusicPlaying) return;
 
-            if (timer.IsComplete)
+            if (_timer.IsComplete)
             {
-                isMusicPlaying = false;
+                _isMusicPlaying = false;
                 PlayMusicInternal();
-                timer.StartTimer();
+                _timer.StartTimer();
             }
         }
 
         public void PlayOneShot(AudioClip audioClip, AudioType audioType)
         {
-            if(lastTimePlaySfx + SOUND_DELAY > Time.time) return;
-            lastTimePlaySfx = Time.time;
-            dialogSource.PlayOneShot(audioClip);
+            if(_lastTimePlaySfx + SOUND_DELAY > Time.time) return;
+            _lastTimePlaySfx = Time.time;
+            _dialogSource.PlayOneShot(audioClip);
         }
 
         public bool CanPlayAlarm()
         {
-            return lastTimePlayAlarm + SOUND_DELAY < Time.time;
+            return _lastTimePlayAlarm + SOUND_DELAY < Time.time;
         }
 
         public void RegisterAlarmPlaying()
         {
-            lastTimePlayAlarm = Time.time;
+            _lastTimePlayAlarm = Time.time;
         }
     }
 }

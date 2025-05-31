@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Models.Planet;
+using EmpireAtWar.Entities.Planet;
 using UnityEngine;
 using LightWeightFramework.Model;
 using UnityEngine.SceneManagement;
@@ -18,9 +18,9 @@ namespace EmpireAtWar.Services.SceneService
         private const SceneType LOADING_SCENE_TYPE = SceneType.Loading;
         
         [SerializeField] private DictionaryWrapper<SceneType, SceneReference> scenesWrapper;
-        private Dictionary<SceneType, SceneReference> sceneDictionary => scenesWrapper.Dictionary;
+        private Dictionary<SceneType, SceneReference> SceneDictionary => scenesWrapper.Dictionary;
         
-        private readonly Dictionary<PlanetType, SceneType> planetScenes = new Dictionary<PlanetType, SceneType>
+        private readonly Dictionary<PlanetType, SceneType> _planetScenes = new Dictionary<PlanetType, SceneType>
         {
             {  PlanetType.Coruscant, SceneType.Coruscant },
             {  PlanetType.Kamino, SceneType.Kamino }
@@ -28,9 +28,9 @@ namespace EmpireAtWar.Services.SceneService
 
         public SceneReference GetScene(SceneType sceneType)
         {
-            if (sceneDictionary.ContainsKey(sceneType))
+            if (SceneDictionary.ContainsKey(sceneType))
             {
-                return sceneDictionary[sceneType];
+                return SceneDictionary[sceneType];
             }
 
             return null;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Services.SceneService
         
         public SceneReference GetScene(PlanetType planetType)
         {
-            if (!planetScenes.TryGetValue(planetType, out SceneType sceneType))
+            if (!_planetScenes.TryGetValue(planetType, out SceneType sceneType))
             {
                 Debug.LogError($"No scene type for {planetType}");
             }
@@ -69,7 +69,7 @@ namespace EmpireAtWar.Services.SceneService
 
         private SceneType GetSceneType(string path)
         {
-            foreach (var keyValuePair in sceneDictionary)
+            foreach (var keyValuePair in SceneDictionary)
             {
                 if (keyValuePair.Value.ScenePath == path)
                 {

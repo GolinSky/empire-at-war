@@ -1,15 +1,15 @@
-﻿using EmpireAtWar.Models.Audio;
-using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Command;
 using LightWeightFramework.Model;
-using UnityEngine;
+using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
-namespace EmpireAtWar.Components.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public interface IAudioShipComponent : ICommand
     {
@@ -21,49 +21,52 @@ namespace EmpireAtWar.Components.Audio
         private const float HYPER_SPACE_TIME_PERCENTAGE = 0.8f;
         
         
-        private readonly ITimerPoolWrapperService timerPoolWrapperService;
-        private readonly IAudioService audioService;
-        private readonly IShipMoveModelObserver shipMoveModelObserver;
-        private readonly IRadarModelObserver radarModelObserver;
-        private readonly ITimer alarmTimer;
+        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly IAudioService _audioService;
+        private readonly IShipMoveModelObserver _shipMoveModelObserver;
+        private readonly IRadarModelObserver _radarModelObserver;
+        private readonly ITimer _alarmTimer;
         
         public AudioShipComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService, IAudioService audioService) : base(model)
         {
-            this.timerPoolWrapperService = timerPoolWrapperService;
-            this.audioService = audioService;
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
-            alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
+            _timerPoolWrapperService = timerPoolWrapperService;
+            _audioService = audioService;
+            _shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            _radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
+            _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
         }
 
         public void Initialize()
         {
-            radarModelObserver.OnHitDetected += PlayAlarm;
+            // _radarModelObserver.OnHitDetected += PlayAlarm;
+            _radarModelObserver.Enemies.ItemAdded += PlayAlarm;
             PlayHyperSpaceClip();
         }
 
         public void LateDispose()
         {
-            radarModelObserver.OnHitDetected -= PlayAlarm;
+            _radarModelObserver.Enemies.ItemAdded -= PlayAlarm;
+
+            // _radarModelObserver.OnHitDetected -= PlayAlarm;
         }
         
-        private void PlayAlarm(RaycastHit[] raycastHits)
+        private void PlayAlarm(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
         {
-            if (alarmTimer.IsComplete)
+            if (_alarmTimer.IsComplete)
             {
-                if (audioService.CanPlayAlarm())
+                if (_audioService.CanPlayAlarm())
                 {
-                    alarmTimer.StartTimer();
+                    _alarmTimer.StartTimer();
                     Model.PlayAlarm();
-                    audioService.RegisterAlarmPlaying();
+                    _audioService.RegisterAlarmPlaying();
                 }
             }
         }
         
         private void PlayHyperSpaceClip()
         {
-            timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
-                shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
+            _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
+                _shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
         }
     }
 }

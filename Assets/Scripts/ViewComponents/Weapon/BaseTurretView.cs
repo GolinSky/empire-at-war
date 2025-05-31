@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Models.Weapon;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -9,7 +10,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         protected readonly ITimer _attackTimer = TimerFactory.ConstructTimer();
         protected readonly ITimer _delayTimer = TimerFactory.ConstructTimer();
-        protected IHardPointView _hardPointView;
+        protected IHardPointModel _hardPointView;
         protected ProjectileData _projectileData;
         
         public virtual bool IsBusy => !_delayTimer.IsComplete;
@@ -19,7 +20,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             _projectileData = projectileData;
         }
-        public abstract void Attack(IHardPointView hardPointView, float duration);
+        public abstract void Attack(IHardPointModel hardPointModel, float duration);
         public virtual void SetParent(Transform parent){}
         public virtual void ResetParent(){}
     }

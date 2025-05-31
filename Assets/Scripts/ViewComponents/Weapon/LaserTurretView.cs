@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.ViewComponents.Health;
+﻿using EmpireAtWar.Models.Health;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using VolumetricLines;
 
@@ -15,11 +16,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
 
 
-        public override void Attack(IHardPointView hardPointView, float duration)
+        public override void Attack(IHardPointModel hardPointModel, float duration)
         {
-            _hardPointView = hardPointView;
+            _hardPointView = hardPointModel;
            
-            _targetPosition.z = Vector3.Distance(hardPointView.Position, transform.position);
+            _targetPosition.z = Vector3.Distance(hardPointModel.Position, transform.position);
             volumetricLineBehavior.SetStartAndEndPoints(Vector3.zero, _targetPosition);
 
 
@@ -44,6 +45,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void Update()
         {
+            //todo: fix this 
             if (_isAttacking)
             {
                 if (_attackTimer.IsComplete)

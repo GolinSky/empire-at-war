@@ -6,15 +6,15 @@ namespace EmpireAtWar
 {
     public class ModelDependencyInstaller:Installer
     {
-        private readonly View view;
+        private readonly View _view;
 
         public ModelDependencyInstaller(View view)
         {
-            this.view = view;
+            _view = view;
         }
         public override void InstallBindings()
         {
-            ModelDependency[] viewModels = view.ModelDependencies;
+            ModelDependency[] viewModels = _view.ModelDependencies;
             foreach (ModelDependency viewModel in viewModels)
             {
                 Container.Inject(viewModel);

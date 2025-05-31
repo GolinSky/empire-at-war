@@ -1,20 +1,17 @@
-﻿using EmpireAtWar.Components.Ship.WeaponComponent;
-using EmpireAtWar.Services.ComponentHub;
+﻿using EmpireAtWar.Components.AttackComponent;
 using LightWeightFramework.Model;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
     public class UnitStateMachine : StateMachine 
     {
-        public UnitStateMachine(IWeaponComponent weaponComponent, IComponentHub componentHub, IModel model)
+        public UnitStateMachine(IAttackComponent attackComponent, IModel model)
         {
-            WeaponComponent = weaponComponent;
-            ComponentHub = componentHub;
+            AttackComponent = attackComponent;
             Model = model;
         }
 
         public IModel Model { get; }
-        public IComponentHub ComponentHub { get; }
-        public IWeaponComponent WeaponComponent { get; }
+        public IAttackComponent AttackComponent { get; }
     }
 }

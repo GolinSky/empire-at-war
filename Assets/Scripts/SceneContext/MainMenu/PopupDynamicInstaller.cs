@@ -8,20 +8,20 @@ namespace EmpireAtWar
 {
     public class PopupDynamicInstaller : Installer
     {
-        private readonly IRepository repository;
-        private readonly PopupType popupType;
+        private readonly IRepository _repository;
+        private readonly PopupType _popupType;
 
         public PopupDynamicInstaller(IRepository repository, PopupType popupType)
         {
-            this.repository = repository;
-            this.popupType = popupType;
+            _repository = repository;
+            _popupType = popupType;
         }
     
         public override void InstallBindings()
         {
             Container
                 .BindInterfacesAndSelfTo<PopupUi>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>($"{popupType}{(nameof(PopupUi))}"))
+                .FromComponentInNewPrefab(_repository.Load<GameObject>($"{_popupType}{(nameof(PopupUi))}"))
                 .AsSingle();
         }
     }

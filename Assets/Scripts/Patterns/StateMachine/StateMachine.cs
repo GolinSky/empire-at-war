@@ -4,7 +4,7 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public abstract class StateMachine
     {
-        private BaseState defaultState;
+        private BaseState _defaultState;
         public BaseState CurrentState { get; private set; }
 
         public void ChangeState(BaseState baseState)
@@ -16,15 +16,15 @@ namespace EmpireAtWar.Patterns.StateMachine
         
         public void SetDefaultState(BaseState defaultState)
         {
-            this.defaultState = defaultState;
+            _defaultState = defaultState;
         }
 
         public void ChangeToDefaultState()
         {
             Debug.Log("STATE:ChangeToDefaultState");
-            if (defaultState != null)
+            if (_defaultState != null)
             {
-                ChangeState(defaultState);
+                ChangeState(_defaultState);
             }
         }
 

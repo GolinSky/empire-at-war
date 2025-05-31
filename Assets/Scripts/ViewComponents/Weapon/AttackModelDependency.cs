@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using EmpireAtWar.Models.Weapon;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    public class AttackModelDependency: ModelDependency<IWeaponModelObserver>
+    public class AttackModelDependency: ModelDependency<IAttackModelObserver>
     {
         [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
 

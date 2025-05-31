@@ -1,7 +1,7 @@
 ﻿using System;
 using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Planet;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

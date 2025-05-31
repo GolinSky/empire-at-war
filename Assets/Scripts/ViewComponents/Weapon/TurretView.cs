@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Weapon;
-using EmpireAtWar.ViewComponents.Health;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Models.Health;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
 
@@ -34,13 +34,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.loop = false;
         }
 
-        public override void Attack(IHardPointView hardPointView, float duration)
+        public override void Attack(IHardPointModel hardPointModel, float duration)
         {
             var mainModule = vfx.main;
     
             mainModule.startLifetime = duration;
 
-            _lookPosition = hardPointView.Position;
+            _lookPosition = hardPointModel.Position;
             vfx.Emit(1);
             vfx.Play();
             

@@ -13,16 +13,16 @@ namespace EmpireAtWar.Ship
 
     public class ShipService : Service, IShipService
     {
-        private List<IShipEntity> shipEntities = new List<IShipEntity>(); 
+        private List<IShipEntity> _shipEntities = new List<IShipEntity>(); 
 
         public void Add(IShipEntity entity)
         {
-            shipEntities.Add(entity);
+            _shipEntities.Add(entity);
         }
 
         public void Remove(IShipEntity entity)
         {
-            shipEntities.Remove(entity);
+            _shipEntities.Remove(entity);
         }
 
         // public IShipEntity GetShipEntity(ISelectable selectable)
