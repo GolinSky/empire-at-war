@@ -6,18 +6,18 @@ namespace EmpireAtWar
 {
     public class MonoComponentInstaller:Installer
     {
-        private readonly Transform transform;
+        private readonly Transform _transform;
 
         public MonoComponentInstaller(Transform transform)
         {
-            this.transform = transform;
+            _transform = transform;
         }
         public override void InstallBindings()
         {
             Container
                 .Bind<Transform>()
                 .WithId(EntityBindType.ViewTransform)
-                .FromMethod(() => transform)
+                .FromMethod(() => _transform)
                 .NonLazy();
 
         }

@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Ui
+  m_EditorClassIdentifier: 
+  m_GroupName: Ui
+  m_GUID: d65a788370bd4fd458defeede90be2c1
+  m_SerializeEntries:
+  - m_GUID: 036dc1095929d7d4fa18c87931bf9cfd
+    m_Address: SkirmishGameSetUpPopupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d9fbb3039acbce4cb3a081d4f92e7e1
+    m_Address: ReinforcementUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44c88130ec726cf479ff760e55f8d98d
+    m_Address: EconomyUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f28d0bab5d08794096e1d38ee2bc176
+    m_Address: MiniMapUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ccd7e58fab50c945bd09b3337b5b68c
+    m_Address: SettingsPopupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a89611b9093e21a4a8bcf6aee7005e07
+    m_Address: FactionUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be1435167784ad440ae92fdff96a1daa
+    m_Address: MenuUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f5e48e2c22a9b469c1b29d0afd94d2
+    m_Address: CoreGameUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c67b3f91948d87045b48e6cc114d4ad1
+    m_Address: ShipUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a890233ca86ea0a44aa058fbd77aa8eb, type: 2}
+    - {fileID: 11400000, guid: 2da18f26ec21d734db7cf229f66485c4, type: 2}

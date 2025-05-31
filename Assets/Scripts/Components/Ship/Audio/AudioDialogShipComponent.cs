@@ -1,109 +1,109 @@
-﻿using System.Threading;
-using EmpireAtWar.Models.Audio;
+﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Movement;
-using EmpireAtWar.Models.Radar;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 using AudioType = EmpireAtWar.Services.Audio.AudioType;
 
-namespace EmpireAtWar.Components.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
     public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IInitializable,
         ILateDisposable
     {
-        private const float MinAlarmDelay = 30;
-        private const float MaxAlarmDelay = 60f;
+        private const float MIN_ALARM_DELAY = 30f;
+        private const float MAX_ALARM_DELAY = 60f;
         
-        private readonly IAudioService audioService;
-        private readonly PlayerType playerType;
-        private readonly IShipMoveModelObserver shipMoveModelObserver;
-        private readonly ISelectionModelObserver selectionModelObserver;
-        private readonly IRadarModelObserver radarModelObserver;
-        private readonly ITimer alarmRadarTimer;
-        private bool isSelected;
+        private readonly IAudioService _audioService;
+        private readonly PlayerType _playerType;
+        private readonly IShipMoveModelObserver _shipMoveModelObserver;
+        private readonly ISelectionModelObserver _selectionModelObserver;
+        private readonly IRadarModelObserver _radarModelObserver;
+        private readonly ITimer _alarmRadarTimer;
+        private bool _isSelected;
 
         public AudioDialogShipComponent(IModel model, IAudioService audioService, PlayerType playerType) : base(model)
         {
-            this.audioService = audioService;
-            this.playerType = playerType;
-            shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
-            alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MinAlarmDelay, MaxAlarmDelay));
-            alarmRadarTimer.StartTimer();
+            _audioService = audioService;
+            _playerType = playerType;
+            _shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
+            _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
+            _radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
+            _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));
+            _alarmRadarTimer.StartTimer();
         }
         
         public void Initialize()
         {
-            selectionModelObserver.OnSelected += PlaySelectionClip;
-            shipMoveModelObserver.OnLookAt += PlayAttackClip;
-            shipMoveModelObserver.OnTargetPositionChanged += PlayMoveClip;
-            shipMoveModelObserver.OnStop += PlayDamageClip;
-            radarModelObserver.OnHitDetected += PlayAlarmSights;
+            _selectionModelObserver.OnSelected += PlaySelectionClip;
+            _shipMoveModelObserver.LookAtTargetObserver.OnChanged += PlayAttackClip;
+            _shipMoveModelObserver.TargetPositionObserver.OnChanged += PlayMoveClip;
+            _shipMoveModelObserver.OnStop += PlayDamageClip;
+            _radarModelObserver.Enemies.ItemAdded += PlayAlarmSights;
         }
 
         public void LateDispose()
         {
-            selectionModelObserver.OnSelected -= PlaySelectionClip;
-            shipMoveModelObserver.OnLookAt -= PlayAttackClip;
-            shipMoveModelObserver.OnTargetPositionChanged -= PlayMoveClip;
-            shipMoveModelObserver.OnStop -= PlayDamageClip;
-            radarModelObserver.OnHitDetected -= PlayAlarmSights;
+            _selectionModelObserver.OnSelected -= PlaySelectionClip;
+            _shipMoveModelObserver.LookAtTargetObserver.OnChanged -= PlayAttackClip;
+            _shipMoveModelObserver.TargetPositionObserver.OnChanged -= PlayMoveClip;
+            _shipMoveModelObserver.OnStop -= PlayDamageClip;
+            _radarModelObserver.Enemies.ItemAdded -= PlayAlarmSights;
         }
 
-        private void PlayAlarmSights(RaycastHit[] raycastHits)
+        private void PlayAlarmSights(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
         {
-            if (isSelected)
+            if (_isSelected)
             {
-                if (alarmRadarTimer.IsComplete)
+                if (_alarmRadarTimer.IsComplete)
                 {
-                    alarmRadarTimer.StartTimer();
-                    Play(Model.GetAlarmSightsClip(playerType));
+                    _alarmRadarTimer.StartTimer();
+                    Play(Model.GetAlarmSightsClip(_playerType));
                 }
             }
         }
 
         private void PlayDamageClip()
         {
-            if (isSelected)
+            if (_isSelected)
             {
-                Play(Model.GetDamageClip(playerType));
+                Play(Model.GetDamageClip(_playerType));
             }
         }
 
         private void PlayMoveClip(Vector3 obj)
         {
-            if (isSelected)
+            if (_isSelected)
             {
-                Play(Model.GetMoveClip(playerType));
+                Play(Model.GetMoveClip(_playerType));
             }
         }
         
         private void PlayAttackClip(Vector3 vector3)
         {
-            if (isSelected)
+            if (_isSelected)
             {
-                Play(Model.GetAttackClip(playerType));
+                Play(Model.GetAttackClip(_playerType));
             }
         }
         
         private void PlaySelectionClip(bool isSelected)
         {
-            this.isSelected = isSelected;
+            _isSelected = isSelected;
             if (isSelected)
             {
-                Play(Model.GetDialogClip(playerType));
+                Play(Model.GetDialogClip(_playerType));
             }
         }
 
         private void Play(AudioClip audioClip)
         {
-            audioService.PlayOneShot(audioClip, AudioType.Dialog);
+            _audioService.PlayOneShot(audioClip, AudioType.Dialog);
         }
     }
 }

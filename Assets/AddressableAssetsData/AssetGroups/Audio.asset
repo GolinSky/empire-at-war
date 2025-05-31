@@ -13,17 +13,25 @@ MonoBehaviour:
   m_Name: Audio
   m_EditorClassIdentifier: 
   m_GroupName: Audio
-  m_Data:
-    m_SerializedData: []
   m_GUID: 755137ef93843ef4f8032c8dc9cd87c5
   m_SerializeEntries:
-  - m_GUID: d105f3706327c274db845257a59e3bdf
-    m_Address: SHIP_ALARM
+  - m_GUID: 13f17b0e7ab1cb347808b6e4561b6563
+    m_Address: mixkit-cinematic-impact-thunder-1286
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 13f17b0e7ab1cb347808b6e4561b6563
-    m_Address: mixkit-cinematic-impact-thunder-1286
+  - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
+    m_Address: MusicSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6d31e1dc51bf845b60d21e62b7e673
+    m_Address: AudioDialogSource
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d105f3706327c274db845257a59e3bdf
+    m_Address: SHIP_ALARM
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

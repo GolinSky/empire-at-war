@@ -1,61 +1,53 @@
-﻿using System.Collections.Generic;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.WeaponComponent;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Radar;
-using EmpireAtWar.Services.ComponentHub;
-using EmpireAtWar.ViewComponents.Health;
 using LightWeightFramework.Model;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
     public class UnitIdleState:BaseState
     {
-        protected readonly IModel model;
-        protected readonly IComponentHub componentHub;
-        protected readonly IWeaponComponent weaponComponent;
-        protected readonly IRadarModelObserver radarModelObserver;
-        protected readonly IHealthModelObserver healthModelObserver;
+        protected readonly IModel _model;
+        protected readonly IAttackComponent _attackComponent;
+        protected readonly IRadarModelObserver _radarModelObserver;
+        protected readonly IHealthModelObserver _healthModelObserver;
         public new UnitStateMachine StateMachine { get; }
         
         public UnitIdleState(UnitStateMachine stateMachine) : base(stateMachine)
         {
             StateMachine = stateMachine;
-            model = stateMachine.Model;
-            componentHub = stateMachine.ComponentHub;
-            weaponComponent = stateMachine.WeaponComponent;
-            radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
-            healthModelObserver = model.GetModelObserver<IHealthModelObserver>();
+            _model = stateMachine.Model;
+            _attackComponent = stateMachine.AttackComponent;
+            _radarModelObserver = _model.GetModelObserver<IRadarModelObserver>();
+            _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
         }
         
         public override void Enter()
         {
             base.Enter();
-            radarModelObserver.OnHitDetected += HandleEnemy;
+            _radarModelObserver.Enemies.ItemAdded += HandleNewEnemy;
         }
 
         public override void Exit()
         {
             base.Exit();
-            radarModelObserver.OnHitDetected -= HandleEnemy;
+            _radarModelObserver.Enemies.ItemAdded += HandleNewEnemy;
         }
         
-        private void HandleEnemy(RaycastHit[] raycastHit)
+        private void HandleNewEnemy(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> e)
         {
-            List<AttackData> healthComponents = new List<AttackData>();
-            foreach (RaycastHit hit in raycastHit)
-            {
-                IHardPointsProvider unitsProvider = hit.collider.GetComponentInChildren<IHardPointsProvider>();
-                if (unitsProvider != null && unitsProvider.HasUnits)
-                {
-                    healthComponents.Add(new AttackData(unitsProvider, componentHub.GetComponent(unitsProvider.ModelObserver), HardPointType.Any));
-                }
-            }
+            IEntity newEntity = e.item;
 
-            if (healthComponents.Count != 0)
+            var healthModel = newEntity.Model.GetModelObserver<IHealthModelObserver>();
+            if (healthModel.HasUnits && newEntity.TryGetCommand(out IHealthCommand healthCommand))
             {
-                weaponComponent.AddTargets(healthComponents.ToArray());
+                AttackData attackData = new AttackData(healthModel, healthCommand, HardPointType.Any);
+                _attackComponent.AddTarget(attackData, AttackType.Base);
             }
         }
     }

@@ -1,21 +1,19 @@
 ﻿using DG.Tweening;
-using EmpireAtWar.Models.Movement;
-using LightWeightFramework.Components.ViewComponents;
+using EmpireAtWar.Components.Movement;
 using UnityEngine;
 using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.ViewComponents.Move
 {
-    public class SimpleMoveViewComponent:ViewComponent<ISimpleMoveModelObserver>
+    public class SimpleMoveViewComponent:ViewComponent<IDefaultMoveModelObserver>
     {
-        private Sequence moveSequence;
+        private Sequence _moveSequence;
 
         protected override void OnInit()
         {
             base.OnInit();
             transform.position = Model.StartPosition;
         }
-
 
         protected override void OnRelease()
         {
@@ -27,18 +25,13 @@ namespace EmpireAtWar.ViewComponents.Move
         {
             Vector3 point = transform.position - Model.FallDownDirection;
 
-            moveSequence.KillIfExist();
-            moveSequence = DOTween.Sequence();
-            moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
-            moveSequence.Join(transform.DOLocalRotate(
+            _moveSequence.KillIfExist();
+            _moveSequence = DOTween.Sequence();
+            _moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
+            _moveSequence.Join(transform.DOLocalRotate(
                 Model.FallDownRotation.Value,
                 Model.FallDownDuration));
-            moveSequence.AppendCallback(DestroyView);
         }
-
-        private void DestroyView()
-        {
-            Destroy(View.Transform.parent.gameObject);
-        }
+        
     }
 }

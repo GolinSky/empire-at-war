@@ -5,6 +5,9 @@ EditorUserSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 4
   m_ConfigSettings:
+    GraphicsSettingsInspector_UserSettings:
+      value: 18134705175a055722080a3115371d4a0d55006876786860616b0471b8b07a68ffab74f9ee2a3a30300cea1a11320d0beb1a0c25f7060f494b4cc80018eb09361fc211cb1f862d19c51d19dcc413d6ade0d8ddfcddf9f4d9d29195fcfde6ebeae6f0a9c9afa6f8c5b89ff7a1aacececac4eba4d7c9d28bda
+      flags: 0
     RecentlyUsedSceneGuid-0:
       value: 5706035051530f5f0e580e23427a59444e4f417c742b70677d7f4d63e1e1636f
       flags: 0
@@ -15,25 +18,25 @@ EditorUserSettings:
       value: 0700040006025a5f085c0d2744760f444f164a7b282d20632f7e4d30b2b8606f
       flags: 0
     RecentlyUsedSceneGuid-3:
-      value: 500556575d530c0f5858587313260e4417164a78752970667c2d1830e1b4316c
-      flags: 0
-    RecentlyUsedSceneGuid-4:
-      value: 530256525004500f5b5a5a7347745b44101549732d7c73607f781b63e4e3606e
-      flags: 0
-    RecentlyUsedSceneGuid-5:
-      value: 0155575352050f0b085f5c2141275e44124f197f742d7e327d2d4560bab63068
-      flags: 0
-    RecentlyUsedSceneGuid-6:
       value: 06570d505d050d0f5c0a0d7616255a4417161d7d7c707e34292d4a64bbb46d6f
       flags: 0
-    RecentlyUsedSceneGuid-7:
+    RecentlyUsedSceneGuid-4:
       value: 51060604040d0d0b090a0f7449735e444f154c2c7e2b276275714560bab7366e
       flags: 0
-    RecentlyUsedSceneGuid-8:
+    RecentlyUsedSceneGuid-5:
       value: 0255045604060b5d5b0a5f214526064415151b7f7f2971347d2d4e60b5e13739
       flags: 0
-    RecentlyUsedSceneGuid-9:
+    RecentlyUsedSceneGuid-6:
       value: 56530651500008030b0a0a2048275c4445164f79287f20317a7f4d6bb1b26739
+      flags: 0
+    RecentlyUsedSceneGuid-7:
+      value: 0155575352050f0b085f5c2141275e44124f197f742d7e327d2d4560bab63068
+      flags: 0
+    RecentlyUsedSceneGuid-8:
+      value: 500556575d530c0f5858587313260e4417164a78752970667c2d1830e1b4316c
+      flags: 0
+    RecentlyUsedSceneGuid-9:
+      value: 530256525004500f5b5a5a7347745b44101549732d7c73607f781b63e4e3606e
       flags: 0
     UnityRemoteCompression:
       value: 29617121
@@ -43,6 +46,9 @@ EditorUserSettings:
       flags: 0
     UnityRemoteResolution:
       value: 275e4308165c135e
+      flags: 0
+    lightmappingBakingProfile:
+      value: 51
       flags: 0
     vcSharedLogLevel:
       value: 0d5e400f0650
@@ -63,3 +69,4 @@ EditorUserSettings:
   m_VCAllowAsyncUpdate: 1
   m_VCScanLocalPackagesOnConnect: 1
   m_ArtifactGarbageCollection: 1
+  m_CompressAssetsOnImport: 1

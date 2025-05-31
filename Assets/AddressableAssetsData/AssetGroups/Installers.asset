@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Installers
+  m_EditorClassIdentifier: 
+  m_GroupName: Installers
+  m_GUID: 6fb2ca6d5bc2e0f429cf54bc19d92fe2
+  m_SerializeEntries:
+  - m_GUID: b68ebe0d40d378f4c936e357035d799d
+    m_Address: MiningFacilityInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6751126098e6404ab308cdd43135bc6
+    m_Address: ShipInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1015cfc037add141aca99418c39b590
+    m_Address: DefendPlatformInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc14dab4bd7163a4988425df3c77fd90
+    m_Address: SpaceStationInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 33ed29a6246de974bbe05ce778714088, type: 2}
+    - {fileID: 11400000, guid: c334521bb71a7214bb8dc22a0927d37a, type: 2}

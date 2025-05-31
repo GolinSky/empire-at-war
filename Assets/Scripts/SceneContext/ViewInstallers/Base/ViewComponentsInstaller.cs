@@ -6,16 +6,16 @@ namespace EmpireAtWar
 {
     public class ViewComponentsInstaller : Installer
     {
-       private readonly View view;
+       private readonly View _view;
 
        public ViewComponentsInstaller(View view)
        {
-           this.view = view;
+           _view = view;
        }
        
         public override void InstallBindings()
         {
-            foreach (ViewComponent component in view.ViewComponents)
+            foreach (ViewComponent component in _view.ViewComponents)
             {
                 Container.Inject(component);
                 Container

@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Planet;
+﻿using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Models.Factions;
 using LightWeightFramework.Command;
 
 namespace EmpireAtWar.Commands.Game

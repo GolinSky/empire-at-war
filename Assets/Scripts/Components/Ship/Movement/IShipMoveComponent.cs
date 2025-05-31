@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using EmpireAtWar.Components.Movement;
+using UnityEngine;
 
-namespace EmpireAtWar.Components.Ship.Selection
+namespace EmpireAtWar.Components.Ship.Movement
 {
-    public interface IShipMoveComponent:ISimpleMoveComponent
+    public interface IShipMoveComponent:IDefaultMoveComponent
     {
         float MoveAround();
         Vector3 CalculateLookDirection(Vector3 targetPosition);

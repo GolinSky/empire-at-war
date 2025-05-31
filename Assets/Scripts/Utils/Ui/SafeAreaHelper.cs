@@ -6,19 +6,19 @@ namespace EmpireAtWar
     public class SafeAreaHelper : MonoBehaviour
     {
         public bool forceUpdate;
-        private RectTransform rectTransform;
-        private Rect lastSafeArea;
+        private RectTransform _rectTransform;
+        private Rect _lastSafeArea;
 
         private void Awake()
         {
-            rectTransform = GetComponent<RectTransform>();
+            _rectTransform = GetComponent<RectTransform>();
         }
 
         private void Update()
         {
-            if (lastSafeArea != Screen.safeArea)
+            if (_lastSafeArea != Screen.safeArea)
             {
-                lastSafeArea = Screen.safeArea;
+                _lastSafeArea = Screen.safeArea;
                 RefreshWithDelay();
             }
 
@@ -35,14 +35,14 @@ namespace EmpireAtWar
         }
         private void Refresh()
         {
-            var anchorMin = lastSafeArea.position;
-            var anchorMax = lastSafeArea.position + lastSafeArea.size;
+            var anchorMin = _lastSafeArea.position;
+            var anchorMax = _lastSafeArea.position + _lastSafeArea.size;
             anchorMin.x /= Screen.width;
             anchorMin.y /= Screen.height;
             anchorMax.x /= Screen.width;
             anchorMax.y /= Screen.height;
-            rectTransform.anchorMin = anchorMin;
-            rectTransform.anchorMax = anchorMax;
+            _rectTransform.anchorMin = anchorMin;
+            _rectTransform.anchorMax = anchorMax;
         }
     }
 }

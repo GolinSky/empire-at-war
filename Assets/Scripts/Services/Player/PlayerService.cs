@@ -1,6 +1,7 @@
-﻿using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Map;
-using EmpireAtWar.Views.SpaceStation;
+﻿using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Components.Service;
 using Zenject;
 
@@ -12,28 +13,33 @@ namespace EmpireAtWar.Services.Player
 
     public class PlayerService : Service, IInitializable, IPlayerService
     {
-        private readonly SpaceStationViewFacade spaceStationViewFacade;
-        private readonly LazyInject<IMapModelObserver> mapModel;
+        private readonly SpaceStationViewFacade _spaceStationViewFacade;
+        private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IUiService _uiService;
 
         [Inject(Id = PlayerType.Player)]
         private FactionType FactionType { get; }
         
         public PlayerService(
             SpaceStationViewFacade spaceStationViewFacade,
-            LazyInject<IMapModelObserver> mapModel)
+            LazyInject<IMapModelObserver> mapModel,
+            IUiService uiService)
         {
-            this.spaceStationViewFacade = spaceStationViewFacade;
-            this.mapModel = mapModel;
+            _spaceStationViewFacade = spaceStationViewFacade;
+            _mapModel = mapModel;
+            _uiService = uiService;
         }
 
         public void Initialize()
         {
-            spaceStationViewFacade.Create(
+            // create ui for economy here as economy controller is used for both enemy and player 
+            _uiService.CreateUi(UiType.Economy);
+            
+            _spaceStationViewFacade.Create(
                 PlayerType.Player,
                 FactionType,
-                mapModel.Value.GetStationPosition(PlayerType.Player));
+                _mapModel.Value.GetStationPosition(PlayerType.Player));
             
-
         }
     }
 }
