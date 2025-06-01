@@ -1,0 +1,112 @@
+# Blender 3.6.22 MTL File: 'sketchfablowpolystardestroyer.blend'
+# www.blender.org
+
+newmtl Mat_Bottom_Hull_Detail
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Bottom_Hull_Detail_Roughness.png
+map_Ke textures/Mat_Bottom_Hull_Detail_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Bottom_Hull_Detail_Normal_OpenGL.png
+
+newmtl Mat_Engine_Block
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Engine_Block_Roughness.png
+map_Ke textures/smallengine luminance.png
+map_Bump -bm 1.000000 textures/Mat_Engine_Block_Normal_OpenGL.png
+
+newmtl Mat_Head_Neck_Final
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Head_Neck_Final_Roughness.png
+map_Ke textures/Mat_Head_Neck_Final_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Head_Neck_Final_Normal_OpenGL.png
+
+newmtl Mat_Lower_Deck
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Lower_Deck_Roughness.png
+map_Ke textures/Mat_Lower_Deck_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Lower_Deck_Normal_OpenGL.png
+
+newmtl Mat_Lower_Hull_Bottom
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Lower_Hull_Bottom_Roughness.png
+map_Bump -bm 1.000000 textures/Mat_Lower_Hull_Bottom_Normal_OpenGL.png
+
+newmtl Mat_Top_Deck_Final
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Top_Deck_Final_Roughness.png
+map_Ke textures/Mat_Top_Deck_Final_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Top_Deck_Final_Normal_OpenGL.png
+
+newmtl Mat_Top_Hull_Detail
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Top_Hull_Detail_Roughness.png
+map_Ke textures/Mat_Top_Hull_Detail_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Top_Hull_Detail_Normal_OpenGL.png
+
+newmtl Mat_Top_Hull_Final
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Top_Hull_Final_Roughness.png
+map_Bump -bm 1.000000 textures/Mat_Top_Hull_Final_Normal_OpenGL.png
+
+newmtl Mat_Trench_Side
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/Mat_Trench_Side_Roughness.png
+map_Ke textures/Mat_Trench_Side_Emissive.png
+map_Bump -bm 1.000000 textures/Mat_Trench_Side_Normal_OpenGL.png
+
+newmtl mat_destruct
+Ka 1.000000 1.000000 1.000000
+Kd 0.700000 0.700000 0.700000
+Ks 1.000000 1.000000 1.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ns textures/destructables/mat_destruct_Roughness.png
+map_Ke textures/destructables Emissive.png
+map_Bump -bm 1.000000 textures/destructables/mat_destruct_Normal_OpenGL.png
