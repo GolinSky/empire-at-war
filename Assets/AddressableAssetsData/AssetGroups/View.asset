@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6bf908313ebc194bbd84a33f6988828
+    m_Address: LucrehulkShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
     m_Address: SeparatistSpaceStationView
     m_ReadOnly: 0
