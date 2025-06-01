@@ -11,6 +11,7 @@ namespace EmpireAtWar.Models.Factions
         Providence = 100,
         Recusant = 101,
         Munificent = 102,
+        Lucrehulk = 103,
         
     }
 }

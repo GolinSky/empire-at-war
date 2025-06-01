@@ -81,6 +81,16 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 16fe756bf7147cb4bba0f9f818d06a81,
               type: 3}
+        - key: 103
+          value:
+            <Name>k__BackingField: Lucrehulk
+            <MaxCount>k__BackingField: 40
+            <AvailableLevel>k__BackingField: 5
+            <Price>k__BackingField: 3500
+            <BuildTime>k__BackingField: 10
+            <UnitCapacity>k__BackingField: 5
+            <Icon>k__BackingField: {fileID: 21300000, guid: e073c0b9e9255614285e8c33c4fd909f,
+              type: 3}
   miningFactionsData:
     keyValue:
     - key: 0

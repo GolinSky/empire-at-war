@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d4f8dcc8b8133b44802863fc6a27f01
+    m_Address: LucrehulkShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f8acb09e989fe54fbb45ed7510ec287
     m_Address: WeaponDamageModel
     m_ReadOnly: 0
