@@ -12,7 +12,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 {
     public class EnemyShipStateMachine: Component, IInitializable, ILateDisposable, ITickable
     {
-        private const float DELAY_TIME = 0.5f;
+        private const float DELAY_TIME = 5f;
         private readonly IMapModelObserver _mapModelObserver;
         private readonly CoroutineService _coroutineService;
         private readonly ShipStateMachine _shipStateMachine;
