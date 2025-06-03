@@ -1,9 +1,9 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Services.CoroutineService;
 using LightWeightFramework.Components.Components;
 using LightWeightFramework.Model;
 using Zenject;
@@ -12,7 +12,9 @@ namespace EmpireAtWar.Components.Ship.AiComponent
 {
     public class EnemyShipStateMachine: Component, IInitializable, ILateDisposable, ITickable
     {
+        private const float DELAY_TIME = 0.5f;
         private readonly IMapModelObserver _mapModelObserver;
+        private readonly CoroutineService _coroutineService;
         private readonly ShipStateMachine _shipStateMachine;
 
         private readonly ShipIdleState _shipIdleState;
@@ -24,9 +26,11 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IShipMoveComponent shipMoveComponent,
             IAttackComponent attackComponent,
             IMapModelObserver mapModelObserver,
-            IAttackDataFactory attackDataFactory)
+            IAttackDataFactory attackDataFactory,
+            CoroutineService coroutineService)
         {
             _mapModelObserver = mapModelObserver;
+            _coroutineService = coroutineService;
             _shipStateMachine = new ShipStateMachine(
                 shipMoveComponent, 
                 attackComponent,
@@ -41,8 +45,12 @@ namespace EmpireAtWar.Components.Ship.AiComponent
         }
         public void Initialize()
         {
-            _moveToPointState.SetWorldCoordinates(_mapModelObserver.GetStationPosition(PlayerType.Player));
-            _shipStateMachine.ChangeState(_moveToPointState);
+            _coroutineService.InvokeWithDelay((() =>
+            {
+                _moveToPointState.SetWorldCoordinates(_mapModelObserver.GetStationPosition(PlayerType.Player));
+                _shipStateMachine.ChangeState(_moveToPointState);
+            }), DELAY_TIME);
+
         }
 
         public void LateDispose()

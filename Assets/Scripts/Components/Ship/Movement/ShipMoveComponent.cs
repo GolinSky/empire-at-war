@@ -2,6 +2,7 @@
 using EmpireAtWar.Services.Camera;
 using LightWeightFramework.Model;
 using UnityEngine;
+using Utilities.ScriptUtils.Math;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -28,9 +29,17 @@ namespace EmpireAtWar.Components.Ship.Movement
         
         public void MoveToPosition(Vector2 screenPosition)
         {
-            Model.TargetPosition.Value = GetWorldCoordinate(screenPosition);
+            Vector3 newPosition = GetWorldCoordinate(screenPosition);
+            SetTargetPosition(newPosition);
         }
 
+        private void SetTargetPosition(Vector3 newPosition)
+        {
+            if (!newPosition.IsEqual(Model.TargetPosition.Value))
+            {
+                Model.TargetPosition.Value = newPosition;
+            }
+        }
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
             Vector3 point = _cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
@@ -42,7 +51,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float MoveAround()
         {
             Vector3 backPosition = Model.CurrentPosition - Model.ViewTransform.Value.forward * Random.Range(30, 50f) + Model.ViewTransform.Value.right * Random.Range(-30, 30);
-            Model.TargetPosition.Value = backPosition;
+            SetTargetPosition(backPosition);
+
             return Vector3.Distance(backPosition, Model.CurrentPosition) / Model.Speed;
         }
 
@@ -55,7 +65,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void MoveToPosition(Vector3 targetPosition)
         {
             targetPosition.y = Model.Height;
-            Model.TargetPosition.Value = targetPosition;
+            SetTargetPosition(targetPosition);
         }
 
         public void MoveToPositionOnScreen(Vector2 targetPosition)
