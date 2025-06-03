@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb50a327af597349b048b7adb2ba905, type: 3}
+  m_Name: StarDestroyer1ShipModel
+  m_EditorClassIdentifier: 
+  models:
+  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
+  - {fileID: 11400000, guid: 3c3e6847e2f3d68408516d8339afde3f, type: 2}
+  - {fileID: 11400000, guid: 7a4bfb5f7b726044ab56858e9a73e245, type: 2}
+  shipMoveModel:
+    speed: 0.8
+    <Height>k__BackingField: 0
+    <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
+    <FallDownRotation>k__BackingField:
+      x:
+        <Min>k__BackingField: -90
+        <Max>k__BackingField: 90
+      y:
+        <Min>k__BackingField: -10
+        <Max>k__BackingField: 10
+      z:
+        <Min>k__BackingField: -360
+        <Max>k__BackingField: 360
+    <FallDownDuration>k__BackingField: 180
+    <CanMove>k__BackingField: 1
+    <RotationSpeed>k__BackingField: 1
+    <MinRotationDuration>k__BackingField: 15
+    <HyperSpaceSpeed>k__BackingField: 2
+    <BodyRotationMaxAngle>k__BackingField: 15
+  healthModel:
+    dexterity: 0.1
+    <Armor>k__BackingField: 100000
+    <Shields>k__BackingField: 60000
+    <ShieldRegenerateValue>k__BackingField: 5000
+    <ShieldRegenerateDelay>k__BackingField: 10
+    <ShieldDangerStateRange>k__BackingField:
+      <Min>k__BackingField: 0.2
+      <Max>k__BackingField: 0.4
+  attackModel:
+    <DelayBetweenAttack>k__BackingField: 0.5
+  radarModel:
+    <Range>k__BackingField: 60
+    <Delay>k__BackingField: 5
+    <Distance>k__BackingField: 200
+  <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
+    type: 3}
+  <MinMoveCoefficient>k__BackingField: 0.5

@@ -58,7 +58,7 @@ namespace EmpireAtWar.Move
             Vector3 targetRotation = Quaternion.LookRotation(targetPosition - CurrentPosition).eulerAngles;
             float rotationDuration =
                 Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed,
-                    Model.MinRotationDuration);
+                    Model.MinRotationDuration);// todo: rebuild this 
 
             if (rotationDuration < 1f)
             {
