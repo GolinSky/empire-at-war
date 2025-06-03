@@ -3,6 +3,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
@@ -23,7 +24,6 @@ namespace EmpireAtWar.Move
         [SerializeField] private Transform bodyTransform;
 
         private Sequence _moveSequence;
-        private Sequence _bodyRotationSequence;
         private Vector3[] _waypoints;
         private float _duration;
 
@@ -52,33 +52,47 @@ namespace EmpireAtWar.Move
 
         private void LookAt(Vector3 targetPosition)
         {
-            _moveSequence.KillIfExist();
+            _moveSequence.KillExt();
             _moveSequence = DOTween.Sequence();
+
+            // Flatten target Y to current level
             targetPosition.y = CurrentPosition.y;
-            Vector3 targetRotation = Quaternion.LookRotation(targetPosition - CurrentPosition).eulerAngles;
-            float rotationDuration =
-                Mathf.Min(Mathf.Abs(targetRotation.y - transform.rotation.eulerAngles.y) / Model.RotationSpeed,
-                    Model.MinRotationDuration);// todo: rebuild this 
 
-            if (rotationDuration < 1f)
-            {
-                Debug.Log($"rotationDuration:{rotationDuration}");
-            }
+            // Calculate world rotation
+            Quaternion desiredRotation = Quaternion.LookRotation(targetPosition - CurrentPosition);
+            float angle = Quaternion.Angle(transform.rotation, desiredRotation);
+
+            float safeSpeed = Mathf.Max(Model.RotationSpeed, 0.01f);
+            float rotationDuration = Mathf.Clamp(angle / safeSpeed, Model.MinRotationDuration, Model.MaxRotationDuration);
+
+            // World rotation (Y-axis)
+            _moveSequence.Append(transform.DORotateQuaternion(desiredRotation, rotationDuration).SetEase(lookAtEase));
+
+            // Local Z-only rotation for body
+            float targetZ = GetZRotationOnly(targetPosition); // You'll define this
+            Vector3 startEuler = bodyTransform.localEulerAngles;
+            Vector3 bodyTargetEuler = new Vector3(startEuler.x, startEuler.y, targetZ);
+
+            _moveSequence.Join(
+                bodyTransform.DOLocalRotate(bodyTargetEuler, rotationDuration).SetEase(lookAtEase)
+            );
+
             _moveSequence.Append(
-                transform.DORotate(
-                        targetRotation,
-                        rotationDuration,
-                        rotationMode)
-                    .SetEase(lookAtEase));
-            _moveSequence.Join(bodyTransform.DOLocalRotate(GetRotation(targetPosition), rotationDuration).SetEase(lookAtEase));
-
-            _moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BODY_ROTATION_DEFAULT_DURATION)
-                .SetEase(lookAtEase));
+                bodyTransform.DOLocalRotate(new Vector3(startEuler.x, startEuler.y, 0f), BODY_ROTATION_DEFAULT_DURATION)
+                    .SetEase(lookAtEase)
+            );
+        }
+        
+        private float GetZRotationOnly(Vector3 targetPosition)
+        {
+            Vector3 toTarget = targetPosition - CurrentPosition;
+            float direction = Vector3.SignedAngle(transform.forward, toTarget, Vector3.up);
+            return Mathf.Clamp(-direction * 0.2f, -15f, 15f); // lean effect
         }
 
         private void StopAllMovement()
         {
-            _moveSequence.KillIfExist();
+            _moveSequence.KillExt();
         }
 
         private void FallDown()
@@ -91,15 +105,8 @@ namespace EmpireAtWar.Move
             _moveSequence.Join(transform.DOLocalRotate(
                 Model.FallDownRotation.Value,
                 Model.FallDownDuration));
-            _moveSequence.AppendCallback(DestroyView);
         }
-
-        private void DestroyView()
-        {
-            //- use command
-            //todo: invoke move model that fall flow is finished 
-            //Destroy(View.Transform.parent.gameObject);
-        }
+        
 
         private void HyperSpaceJump(Vector3 point)
         {
@@ -116,10 +123,10 @@ namespace EmpireAtWar.Move
         {
             targetPosition.y = CurrentPosition.y;
 
-            _moveSequence.KillIfExist();
-
-            var distance = Vector3.Distance(CurrentPosition, targetPosition);
+            _moveSequence.KillExt();
             _moveSequence = DOTween.Sequence();
+            
+            var distance = Vector3.Distance(CurrentPosition, targetPosition);
 
             Vector3 p1 = CurrentPosition + (transform.forward * distance) * IsBehindTarget(targetPosition);
             Vector3 p2 = CurrentPosition + ((IsRightFromTarget(targetPosition) * transform.right) * distance) *
@@ -138,48 +145,51 @@ namespace EmpireAtWar.Move
             }
 
             _duration = curvedDistance / Model.Speed;
+
             _moveSequence.Append(
-                transform.DOPath
-                    (_waypoints,
+                
+                transform.DOPath(_waypoints,
                         _duration,
                         PathType.CatmullRom,
                         PathMode.Full3D,
                         10)
+                    .SetOptions(false, AxisConstraint.Y, AxisConstraint.X)
                     .SetLookAt(0.01f)
-                    .SetOptions(AxisConstraint.Y, AxisConstraint.X | AxisConstraint.Z)
-                    //.OnWaypointChange(HandleWaypoints)
                     .SetEase(moveEase));
+      
+           
+            // RotateAlongPath(_waypoints, _duration);
 
-            _bodyRotationSequence.KillIfExist();
-            _moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BODY_ROTATION_DEFAULT_DURATION)
-                .SetEase(lookAtEase));
+            // _moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BODY_ROTATION_DEFAULT_DURATION)
+            //     .SetEase(lookAtEase));
             // _moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
         }
 
-        private void HandleWaypoints(int index)
-        {
-            if (bodyTransform == null) return;
 
-            _bodyRotationSequence.KillIfExist();
-            _bodyRotationSequence = DOTween.Sequence();
-            _bodyRotationSequence.Append(GetRotationSequence(_waypoints[index], _duration / _waypoints.Length));
-        }
 
-        private TweenerCore<Quaternion, Vector3, QuaternionOptions> GetRotationSequence(Vector3 targetPosition,
-            float duration)
-        {
-            float modifier = -IsRightFromTarget(targetPosition);
-            Vector3 targetRotation = Vector3.forward * Model.BodyRotationMaxAngle * modifier;
-            return bodyTransform.DOLocalRotate(targetRotation, duration).SetEase(lookAtEase);
-        }
+
+        // private void RotateAlongPath(Vector3[] waypoints, float duration)
+        // {
+        //     DOVirtual.Float(0, 1, duration, t =>
+        //     {
+        //         // Estimate current position along path
+        //         float pathPos = t * (waypoints.Length - 1);
+        //         int index = Mathf.FloorToInt(pathPos);
+        //         int nextIndex = Mathf.Min(index + 1, waypoints.Length - 1);
+        //
+        //         Vector3 from = waypoints[index];
+        //         Vector3 to = waypoints[nextIndex];
+        //         Vector3 dir = (to - from).normalized;
+        //         dir.y = 0;
+        //
+        //         if (dir.sqrMagnitude > 0.0001f)
+        //         {
+        //             Quaternion lookRot = Quaternion.LookRotation(dir);
+        //             transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 1f); // smooth
+        //         }
+        //     });
+        // }
         
-        
-        private Vector3 GetRotation(Vector3 targetPosition)
-        {
-            float modifier = -IsRightFromTarget(targetPosition);
-            return Vector3.forward * Model.BodyRotationMaxAngle * modifier;
-        }
-
         private float IsRightFromTarget(Vector3 targetPosition)
         {
             Vector3 positionRelative = transform.InverseTransformPoint(targetPosition);

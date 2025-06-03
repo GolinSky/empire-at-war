@@ -1,41 +1,50 @@
-using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Components.Repository;
+using UnityEngine;
 using Zenject;
 
-public class ProjectContextInstaller : MonoInstaller
+namespace EmpireAtWar.SceneContext
 {
-    private IRepository _repository;
-    public override void InstallBindings()
+    public class ProjectContextInstaller : MonoInstaller
     {
-        Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
-        Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
-
-
-        Container.BindInterfacesExt<AddressableRepository>();
+        [SerializeField] private CoroutineService coroutineService;
         
-        _repository = Container.Resolve<IRepository>();
+        private IRepository _repository;
+    
+        public override void InstallBindings()
+        {
+            Container.BindEntity(coroutineService);
+            
+            Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
+            Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
+
+
+            Container.BindInterfacesExt<AddressableRepository>();
         
-        ModelDependencyBuilder
-            .ConstructBuilder(Container)
-            .BindFromNewScriptable<GameModel>(_repository);
+            _repository = Container.Resolve<IRepository>();
+        
+            ModelDependencyBuilder
+                .ConstructBuilder(Container)
+                .BindFromNewScriptable<GameModel>(_repository); //todo: change it
 
-        Container.BindModel<SceneModel>(_repository);
+            Container.BindModel<SceneModel>(_repository);
 
-        Container
-            .BindInterfacesExt<TimerPoolWrapperService>()
-            .BindInterfacesExt<GameController>()
-            .BindInterfacesExt<SceneService>()
-            .BindInterfacesExt<SettingsService>()
-            .BindInterfacesExt<AudioService>()
-            .BindInterfacesExt<UniqueIdGenerator>();
+            Container
+                .BindInterfacesExt<TimerPoolWrapperService>()
+                .BindInterfacesExt<GameController>()
+                .BindInterfacesExt<SceneService>()
+                .BindInterfacesExt<SettingsService>()
+                .BindInterfacesExt<AudioService>()
+                .BindInterfacesExt<UniqueIdGenerator>();
+        }
     }
 }
