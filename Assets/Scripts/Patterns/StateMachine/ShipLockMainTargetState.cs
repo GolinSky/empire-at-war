@@ -23,7 +23,8 @@ namespace EmpireAtWar.Patterns.StateMachine
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private Vector3 TargetPosition => _mainTarget.Transform.position;
-        
+
+
         public ShipLockMainTargetState(ShipStateMachine stateMachine, IAttackDataFactory attackDataFactory) : base(stateMachine)
         {
             _attackDataFactory = attackDataFactory;
@@ -99,6 +100,11 @@ namespace EmpireAtWar.Patterns.StateMachine
         protected override void HandleHealth()
         {
             //regroup but near to main target
+        }
+
+        public bool IsTheSameTarget(IEntity entity)
+        {
+            return _mainTarget != null && _mainTargetEntity.Id == entity.Id;
         }
     }
 }

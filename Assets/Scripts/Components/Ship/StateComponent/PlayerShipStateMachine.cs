@@ -65,7 +65,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             {
                 IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.Model
                     .GetModelObserver<IHealthModelObserver>();
-                if (!healthModel.IsDestroyed && healthModel.HasUnits)
+                if (!healthModel.IsDestroyed && healthModel.HasUnits && !_shipLockMainTargetState.IsTheSameTarget(selectionSubject.EnemySelectionContext.Entity))
                 {
                     _shipLockMainTargetState.SetData(selectionSubject.EnemySelectionContext.Entity); 
                     _shipStateMachine.ChangeState(_shipLockMainTargetState);

@@ -54,4 +54,4 @@ MonoBehaviour:
         type: 3}
   <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
     type: 3}
-  <MaxUnitCapacity>k__BackingField: 20
+  <MaxUnitCapacity>k__BackingField: 60
