@@ -14,7 +14,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         Vector3 HyperSpacePosition { get; }
         float RotationSpeed { get; }
         float HyperSpaceSpeed { get; }
-        float MinRotationDuration { get;  }
+        float MinRotationDuration { get; }
+        float MaxRotationDuration { get; }
         float BodyRotationMaxAngle { get; }
         Vector3 JumpPosition { get; }
         Quaternion StartRotation { get; }
@@ -27,12 +28,15 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         public event Action OnStop;
         
+        [Header("Speed - degrees per second")]
         [field: SerializeField] public float RotationSpeed { get; private set; }
-        [field: SerializeField] public float MinRotationDuration { get; private set; }
+        // [field: SerializeField] public float MinRotationDuration { get; private set; }
+        // [field: SerializeField] public float MaxRotationDuration { get; private set; }
         [field: SerializeField] public float HyperSpaceSpeed { get; private set; }
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         public Vector3 JumpPosition => HyperSpacePosition - (PlayerType == PlayerType.Player ? Vector3.right : Vector3.left )  * OFFSET_HYPERSPACE_JUMP;
 
+        
         public Quaternion StartRotation => PlayerType == PlayerType.Player
             ? quaternion.identity
             : Quaternion.Euler(new Vector3(0, -180f, 0));
@@ -42,6 +46,10 @@ namespace EmpireAtWar.Components.Ship.Movement
    
         [Inject]
         private PlayerType PlayerType { get; }
+
+
+        public float MinRotationDuration => 5f;
+        public float MaxRotationDuration => 25f;
 
         public ObservableProperty<Vector3> LookAtTarget { get; } = new ObservableProperty<Vector3>();
         IObservableProperty<Vector3> IShipMoveModelObserver.LookAtTargetObserver => LookAtTarget;
