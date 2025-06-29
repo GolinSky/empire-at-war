@@ -68,6 +68,16 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 6
             <Icon>k__BackingField: {fileID: 21300000, guid: 1930ae3e03e02e045a6158c91e50b9f7,
               type: 3}
+        - key: 5
+          value:
+            <Name>k__BackingField: Heavy Dreadnought
+            <MaxCount>k__BackingField: 20
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 3200
+            <BuildTime>k__BackingField: 5
+            <UnitCapacity>k__BackingField: 4
+            <Icon>k__BackingField: {fileID: 21300000, guid: 0edc1baa30ab2a84c8ef002bea1375a9,
+              type: 3}
     - key: 1
       value:
         keyValue:
