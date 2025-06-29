@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cb1f21f695b6b6429325e7fed3cf62f
+    m_Address: HeavyDreadnoughtShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
     m_Address: ShipUiModel
     m_ReadOnly: 0

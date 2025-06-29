@@ -12,6 +12,8 @@ namespace EmpireAtWar.ViewComponents.Health
         void SetId(int id);
         HardPointType HardPointType { get; }
         int Id { get; }
+        
+        GameObject GameObject { get; }
     }
     public class HardPointView : MonoBehaviour, IHardPointView, INotifier<float>, IHardPointProvider
     {
@@ -19,6 +21,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private const float MAX_HEALTH = 1f;
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
+        public GameObject GameObject => gameObject;
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
         private ParticleSystem _explosionVfx;
