@@ -171,7 +171,7 @@ namespace EmpireAtWar.Models.Health
             
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
-
+            
             HardPointModel hardPointModel = HardPointModels[shipUnitId];
       
 
