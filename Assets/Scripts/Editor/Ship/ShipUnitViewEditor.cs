@@ -47,7 +47,7 @@ namespace EmpireAtWar.Editor.Ship
             IHardPointProvider[] shipUnits = selectionObject.GetComponentsInChildren<IHardPointProvider>();
             AddressableRepository addressableRepository = new AddressableRepository();
 
-            ShipModel shipModel = addressableRepository.Load<ShipModel>($"{shipType}ShipModel");
+            // ShipModel shipModel = addressableRepository.Load<ShipModel>($"{shipType}ShipModel");
 
             
             int counter = 0;
@@ -55,10 +55,9 @@ namespace EmpireAtWar.Editor.Ship
             {
                 unitProvider.SetId(counter);
                 counter++;
+                EditorUtility.SetDirty(unitProvider.GameObject);
             }
-            shipModel.HealthModel.SetHardPoints(shipUnits);
-            EditorUtility.SetDirty(shipModel);
-            AssetDatabase.SaveAssetIfDirty(shipModel);
+            EditorUtility.SetDirty(selectionObject);
             
         }
         

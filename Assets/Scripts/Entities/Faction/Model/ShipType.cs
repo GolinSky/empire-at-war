@@ -8,6 +8,7 @@ namespace EmpireAtWar.Models.Factions
         Arquitens = 2,
         StarDestroyer1 = 3,
         StarDestroyer2 = 4,
+        HeavyDreadnought = 5,
         
         //separatist
         Providence = 100,
