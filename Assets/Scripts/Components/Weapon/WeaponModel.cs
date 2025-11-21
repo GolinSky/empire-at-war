@@ -1,12 +1,19 @@
-﻿using EmpireAtWar.Mvc;
+﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponModel: PureModel
+    public class WeaponModel: PureModel, IWeaponContext
     {
-        public WeaponModel(IWeaponContext weaponContext)
+        private IProjectileModel _projectileModel;
+
+        public float DelayBetweenAttack { get; }
+
+        
+        public WeaponModel(IWeaponContext weaponContext, IProjectileModel projectileModel)
         {
-            
+            _projectileModel = projectileModel;
+            DelayBetweenAttack = weaponContext.DelayBetweenAttack;
         }
     }
 }
