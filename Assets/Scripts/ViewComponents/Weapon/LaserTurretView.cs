@@ -18,7 +18,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public override void Attack(IHardPointModel hardPointModel, float duration)
         {
-            _hardPointView = hardPointModel;
+            _hardPointModel = hardPointModel;
            
             _targetPosition.z = Vector3.Distance(hardPointModel.Position, transform.position);
             volumetricLineBehavior.SetStartAndEndPoints(Vector3.zero, _targetPosition);
@@ -57,8 +57,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 }
                 else
                 {
-                    transform.LookAt(_hardPointView.Position);
-                    _targetPosition.z = Vector3.Distance(_hardPointView.Position, transform.position);
+                    transform.LookAt(_hardPointModel.Position);
+                    _targetPosition.z = Vector3.Distance(_hardPointModel.Position, transform.position);
                     volumetricLineBehavior.SetStartAndEndPoints(Vector3.zero, _targetPosition);
                 }
             }

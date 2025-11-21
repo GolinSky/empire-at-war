@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using LightWeightFramework.Components.Components;
 using LightWeightFramework.Model;
@@ -22,18 +24,18 @@ namespace EmpireAtWar.Components.AttackComponent
 
     public class AttackComponent : BaseComponent<AttackModel>, IAttackComponent, IAttackCommand, ILateTickable, ILateDisposable, IDisposable
     {
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly ICoroutineService _coroutineService;
         private readonly IDefaultMoveModelObserver _defaultMoveModelObserver;
 
-        private List<CustomCoroutine> _customCoroutines = new List<CustomCoroutine>();
+        private List<Coroutine> _coroutines = new List<Coroutine>();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private AttackData _mainAttackData = null;
         private float _endTimeTween;
 
 
-        public AttackComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService) : base(model)
+        public AttackComponent(IModel model, ICoroutineService coroutineService) : base(model)
         {
-            _timerPoolWrapperService = timerPoolWrapperService;
+            _coroutineService = coroutineService;
             _defaultMoveModelObserver = model.GetModelObserver<IDefaultMoveModelObserver>();
         }
 
@@ -93,31 +95,31 @@ namespace EmpireAtWar.Components.AttackComponent
                 if (_attackDataList[i].Contains(unitView))
                 {
                     AttackData attackData = _attackDataList[i];
-                    CustomCoroutine customCoroutine = _timerPoolWrapperService.Invoke(
-                        ()=>
-                        {   
-                            if(!_attackDataList.Contains(attackData)) return;
+                    Coroutine coroutine = null;
+                    coroutine = _coroutineService.InvokeWithDelay(() =>
+                    {
+                        if(!_attackDataList.Contains(attackData)) return;
                             
-                            if(unitView == null) return;// todo: fix bug when loading main menu
+                        if(unitView == null) return;// todo: fix bug when loading main menu
                             
-                            ApplyDamageInternal(
-                                attackData,
-                                weaponType,
-                                unitView.Id,
-                                GetDistance(unitView.Position));
-                        },
-                        duration);
-                    _customCoroutines.Add(customCoroutine);
-                    customCoroutine.OnFinished += DeleteFromCollection;
+                        ApplyDamageInternal(
+                            attackData,
+                            weaponType,
+                            unitView.Id,
+                            GetDistance(unitView.Position));
+                        DeleteFromCollection(coroutine);
+                    }, duration);
+
+                    _coroutines.Add(coroutine);
+
                     break;
                 }
             }
         }
 
-        private void DeleteFromCollection(CustomCoroutine customCoroutine)
+        private void DeleteFromCollection(Coroutine customCoroutine)
         {
-            customCoroutine.OnFinished -= DeleteFromCollection;
-            _customCoroutines.Remove(customCoroutine);
+            _coroutines.Remove(customCoroutine);
         }
 
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
@@ -192,11 +194,14 @@ namespace EmpireAtWar.Components.AttackComponent
                 RemoveAttackData(_attackDataList[i]);
             }
             _attackDataList.Clear();
-            if (_customCoroutines.Count > 0)
+            if (_coroutines.Count > 0)
             {
-                for (var i = 0; i < _customCoroutines.Count; i++)
+                for (var i = 0; i < _coroutines.Count; i++)
                 {
-                    _customCoroutines[i].Release();
+                    if (_coroutines[i] != null)
+                    {
+                        _coroutineService.StopCustomCoroutine(_coroutines[i]);
+                    }
                 }
             }
         }
@@ -205,5 +210,9 @@ namespace EmpireAtWar.Components.AttackComponent
         {
             // TODO release managed resources here
         }
+
+
+
+    
     }
 }

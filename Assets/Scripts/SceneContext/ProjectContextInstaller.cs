@@ -22,7 +22,12 @@ namespace EmpireAtWar.SceneContext
     
         public override void InstallBindings()
         {
-            Container.BindEntity(coroutineService);
+            Container
+                .Bind<ICoroutineService>()
+                .To<CoroutineService>()
+                .FromInstance(coroutineService)
+                .AsSingle();
+            
             
             Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
             Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later

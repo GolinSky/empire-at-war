@@ -8,6 +8,7 @@ using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -63,6 +64,8 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindModel<ProjectileModel>(Repository)
             .BindModel<LayerModel>(Repository)
             .BindModel<DamageCalculationModel>(Repository);
+
+        Container.BindScriptableObject<ShipsData>(Repository);
 
         Container
             .BindInterfacesExt<UnitRequestFactory>();

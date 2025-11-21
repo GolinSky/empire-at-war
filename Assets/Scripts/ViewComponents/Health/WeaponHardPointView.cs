@@ -14,6 +14,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private const string TURRET_PATH = "Projectile";
         private const string DOUBLE_TURRET_PATH = "DualProjectile";
         private const string LASER_TURRET_PATH = "LaserProjectile";
+        private const string TORPEDO_TURRET_PATH = "TorpedoProjectile";
         
         private const int MAX_ATTACKING_TURRETS = 1;
         
@@ -23,6 +24,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private ProjectileData _projectileData;
 
         private float _maxAttackDistance;
+        protected IAttackCommand AttackCommand { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
         
@@ -34,8 +36,9 @@ namespace EmpireAtWar.ViewComponents.Health
             yAxisRange.SetValue(floatRange);
         }
         
-        public void SetData(ProjectileData projectileData, float maxAttackDistance)
+        public void SetData(ProjectileData projectileData, float maxAttackDistance, IAttackCommand attackCommand)
         {
+            AttackCommand = attackCommand;
             _maxAttackDistance = maxAttackDistance;
             _projectileData = projectileData;
         }
@@ -54,7 +57,7 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public float Attack(IHardPointModel hardPointView)
+        public virtual void Attack(IHardPointModel hardPointView, WeaponType weaponType)
         {
             BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);
@@ -63,10 +66,10 @@ namespace EmpireAtWar.ViewComponents.Health
 
             turretView.Attack(hardPointView, duration);
             turretView.ResetParent();
-            return duration;
+            AttackCommand.ApplyDamage(hardPointView, weaponType, duration);
         }
 
-        private BaseTurretView GetTurret()
+        protected BaseTurretView GetTurret()
         {
             BaseTurretView turret = null;
             foreach (BaseTurretView turretView in _turrets)
@@ -92,6 +95,7 @@ namespace EmpireAtWar.ViewComponents.Health
                         turretPath = LASER_TURRET_PATH;
                         break;
                     case TurretType.Torpedo:
+                        turretPath = TORPEDO_TURRET_PATH;
                         break;
                     case TurretType.Rocket:
                         break;

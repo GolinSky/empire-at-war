@@ -51,7 +51,18 @@ namespace EmpireAtWar.Extentions
             return container;
         }
         
-       
+        public static DiContainer BindScriptableObject<T>(
+            this DiContainer container,
+            IRepository repository,
+            string path = null)
+            where T: ScriptableObject
+        {
+            container
+                .BindInterfacesAndSelfTo<T>()
+                .FromNewScriptableObject(repository.Load<T>(path ?? ConstructName<T>()))
+                .AsSingle();
+            return container;
+        }
 
       
         public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
