@@ -81,3 +81,9 @@ MonoBehaviour:
         <Size>k__BackingField: {x: 1, y: 1, z: 1}
         <TurretType>k__BackingField: 2
         <Delay>k__BackingField: 5
+    - key: 6
+      value:
+        <Color>k__BackingField: {r: 0.39716092, g: 0.8718848, b: 0.990566, a: 1}
+        <Size>k__BackingField: {x: 1, y: 1, z: 1}
+        <TurretType>k__BackingField: 4
+        <Delay>k__BackingField: 5

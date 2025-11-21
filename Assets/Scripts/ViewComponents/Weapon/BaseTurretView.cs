@@ -10,7 +10,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         protected readonly ITimer _attackTimer = TimerFactory.ConstructTimer();
         protected readonly ITimer _delayTimer = TimerFactory.ConstructTimer();
-        protected IHardPointModel _hardPointView;
+        protected IHardPointModel _hardPointModel;
         protected ProjectileData _projectileData;
         
         public virtual bool IsBusy => !_delayTimer.IsComplete;

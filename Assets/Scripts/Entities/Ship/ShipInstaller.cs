@@ -6,7 +6,10 @@ using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
@@ -18,20 +21,23 @@ using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
+    public sealed class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
+        private string shipDataPath;
 
         protected override string ModelPathPrefix => _shipType.ToString();
         protected override string ViewPathPrefix => _shipType.ToString();
 
         [Inject]
-        public void Construct(ShipType shipType, PlayerType playerType)
+        public void Construct(ShipType shipType, PlayerType playerType, ShipsData shipsData)
         {
             _shipType = shipType;
             _playerType = playerType;
+            shipDataPath = shipsData.GetShipDataPath(shipType);
         }
+        
 
         protected override void OnBindData()
         {
@@ -39,13 +45,23 @@ namespace EmpireAtWar.Ship
             Container.BindEntity(_playerType);
             Container.BindEntity(_shipType);
             Container.BindEntity(SelectionType.Ship);
+
+            switch (_playerType)
+            {
+                case PlayerType.Player:
+                {
+                    Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+                    Container.BindInterfacesExt<WeaponModel>();
+                    break;
+                }
+                case PlayerType.Opponent:
+                    break;
+            }
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-
-            
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 .BindInterfacesExt<HealthComponent>()
@@ -90,6 +106,12 @@ namespace EmpireAtWar.Ship
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
+            
+            //debug code - until I apply changes to mvc package
+            Container
+                .BindInterfacesAndSelfTo<WeaponComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
     {
         private const float DELAY_TIME = 5f;
         private readonly IMapModelObserver _mapModelObserver;
-        private readonly CoroutineService _coroutineService;
+        private readonly ICoroutineService _coroutineService;
         private readonly ShipStateMachine _shipStateMachine;
 
         private readonly ShipIdleState _shipIdleState;
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Ship.AiComponent
             IAttackComponent attackComponent,
             IMapModelObserver mapModelObserver,
             IAttackDataFactory attackDataFactory,
-            CoroutineService coroutineService)
+            ICoroutineService coroutineService)
         {
             _mapModelObserver = mapModelObserver;
             _coroutineService = coroutineService;

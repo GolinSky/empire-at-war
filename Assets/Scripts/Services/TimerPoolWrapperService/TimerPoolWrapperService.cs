@@ -6,6 +6,7 @@ using Zenject;
 
 namespace EmpireAtWar.Services.TimerPoolWrapperService
 {
+    [Obsolete]
     public interface ITimerPoolWrapperService:IService
     {
         CustomCoroutine Invoke(Action action, float delay);
