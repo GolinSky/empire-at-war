@@ -51,7 +51,7 @@ namespace EmpireAtWar.Ship
                 case PlayerType.Player:
                 {
                     Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
-                    Container.BindInterfacesExt<WeaponModel>();
+                    Container.Bind<WeaponModel>().AsSingle();
                     break;
                 }
                 case PlayerType.Opponent:
