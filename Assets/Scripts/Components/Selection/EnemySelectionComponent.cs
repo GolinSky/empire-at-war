@@ -1,4 +1,5 @@
 ﻿using EmpireAtWar.Commands;
+using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Battle;
@@ -41,5 +42,9 @@ namespace EmpireAtWar.Components.Ship.Selection
             // do nothing - bad code here
         }
 
+        public void SetMediator(IUnitMediator mediator)
+        {
+            
+        }
     }
 }

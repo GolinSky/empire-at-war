@@ -2,7 +2,7 @@
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
-    public abstract class BaseState
+    public abstract class BaseState:IBaseState
     {
         public virtual StateMachine StateMachine { get; }
 
@@ -22,5 +22,14 @@ namespace EmpireAtWar.Patterns.StateMachine
         {
             Debug.Log($"STATE:{GetType().Name} Exit state");
         }
+    }
+    
+    public interface IBaseState
+    {
+        void Enter();
+
+        void Update();
+
+        void Exit();
     }
 }

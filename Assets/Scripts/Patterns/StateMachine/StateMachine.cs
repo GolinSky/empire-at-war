@@ -4,17 +4,17 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public abstract class StateMachine
     {
-        private BaseState _defaultState;
-        public BaseState CurrentState { get; private set; }
+        private IBaseState _defaultState;
+        public IBaseState CurrentState { get; private set; }
 
-        public void ChangeState(BaseState baseState)
+        public void ChangeState(IBaseState baseState)
         {
             CurrentState?.Exit();
             CurrentState = baseState;
             CurrentState.Enter();
         }
         
-        public void SetDefaultState(BaseState defaultState)
+        public void SetDefaultState(IBaseState defaultState)
         {
             _defaultState = defaultState;
         }

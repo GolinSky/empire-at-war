@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Mediator;
+using LightWeightFramework.Components.Components;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -8,7 +10,11 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Radar
 {
-    public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable
+    public interface IRadarComponent : IComponent, IUnitComponent
+    {
+        
+    }
+    public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable, IRadarComponent
     {
         private const int HIT_LIMIT = 5;
         private const float OFFSET_DISTANCE = 100f;
@@ -22,6 +28,7 @@ namespace EmpireAtWar.Components.Radar
         private int _hitAmount;
 
         private RaycastHit[] _raycastHits = new RaycastHit[HIT_LIMIT];
+        private IUnitMediator _unitMediator;
         private Vector3 CenterCast => _moveModel.CurrentPosition - _offset;
         public RadarComponent(IModel model, IEntityLocator entityLocator) : base(model)
         {
@@ -58,6 +65,10 @@ namespace EmpireAtWar.Components.Radar
                             if (!Model.Enemies.Contains(entity))
                             {
                                 Model.Enemies.Add(entity);
+                                if (_unitMediator != null)
+                                {
+                                    _unitMediator.HandleNewEnemy(entity);
+                                }
                             }
                         }
                     }
@@ -66,6 +77,11 @@ namespace EmpireAtWar.Components.Radar
                 }
                 _timer.StartTimer();
             }
+        }
+
+        public void SetMediator(IUnitMediator unitMediator)
+        {
+            _unitMediator = unitMediator;
         }
     }
 }

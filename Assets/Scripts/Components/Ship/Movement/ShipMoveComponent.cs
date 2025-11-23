@@ -12,6 +12,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private readonly ICameraService _cameraService;
         private Vector3 _startPosition;
         public bool CanMove => Model.CanMove;
+        public bool IsMoving => Model.IsMoving;
 
         
         public ShipMoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
@@ -67,6 +68,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             targetPosition.y = Model.Height;
             SetTargetPosition(targetPosition);
         }
+        
 
         public void MoveToPositionOnScreen(Vector2 targetPosition)
         {
@@ -76,6 +78,16 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void LookAtTarget(Vector3 targetPosition)
         {
             Model.LookAtTarget.Value = targetPosition;
+        }
+
+        public float GetRange(Vector3 targetPosition)
+        {
+            return Vector3.Distance(Model.CurrentPosition, targetPosition);
+        }
+
+        public void Stop()
+        {
+            Model.Stop();
         }
     }
 }

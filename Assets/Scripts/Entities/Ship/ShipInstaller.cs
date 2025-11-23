@@ -14,6 +14,8 @@ using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
@@ -73,15 +75,19 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                 {
+                    Container.BindInterfacesExt<PlayerShipMediator>();
+                    Container.BindInterfacesExt<AttackTargetState>();
+                        
+                        
                     Container.BindInterfacesExt<PlayerSelectionComponent>();
                     Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                     Container.BindInterfacesExt<AudioDialogShipComponent>();
-                    Container.BindInterfacesExt<PlayerShipStateMachine>();
+                  //  Container.BindInterfacesExt<PlayerShipStateMachine>();
                     
                     //entity commands
                     Container.BindInterfacesExt<PlayerAttackShipCommand>();
                     Container.BindInterfacesExt<SelectionCommand>();
-                    Container.BindInterfacesExt<ShipMovementCommand>();
+                  //  Container.BindInterfacesExt<ShipMovementCommand>();
                     Container.BindInterfacesExt<HealthCommand>();
 
                     break;
