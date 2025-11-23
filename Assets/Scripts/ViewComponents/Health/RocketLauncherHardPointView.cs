@@ -7,7 +7,7 @@ namespace EmpireAtWar.ViewComponents.Health
 {
     public class RocketLauncherHardPointView:WeaponHardPointView
     {
-        public override void Attack(IHardPointModel hardPointView, WeaponType weaponType)
+        public override void Attack(IHardPointModel hardPointView)
         {
             BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);

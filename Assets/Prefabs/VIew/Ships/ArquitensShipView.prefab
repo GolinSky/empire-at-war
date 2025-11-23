@@ -61,7 +61,6 @@ GameObject:
   - component: {fileID: 7253867186579442715}
   - component: {fileID: 9181149355859393031}
   - component: {fileID: 6315336776095066647}
-  - component: {fileID: 6712721419419433985}
   m_Layer: 0
   m_Name: ArquitensShipView
   m_TagString: Untagged
@@ -287,18 +286,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &6712721419419433985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1211217585912450137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
 --- !u!1 &2680237971148536703
 GameObject:
   m_ObjectHideFlags: 0
@@ -10062,6 +10049,7 @@ GameObject:
   - component: {fileID: 6281127937994382257}
   - component: {fileID: 7492724889174075485}
   - component: {fileID: 8520408547467628363}
+  - component: {fileID: 4447771180580767399}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -10135,6 +10123,28 @@ MonoBehaviour:
     - key: 12
       value:
       - {fileID: 3692208482303791201}
+--- !u!114 &4447771180580767399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4458211970139031957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
+  hardPoints:
+  - {fileID: 5242897595597171810}
+  - {fileID: 7258418188646328008}
+  - {fileID: 3854033994161667754}
+  - {fileID: 4772148314960195881}
+  - {fileID: 4276695649427471237}
+  - {fileID: 1345248204800110707}
+  - {fileID: 6411720674404516733}
+  - {fileID: 3407299230071023220}
+  - {fileID: 3692208482303791201}
 --- !u!1 &4928364280652792643
 GameObject:
   m_ObjectHideFlags: 0
@@ -15242,6 +15252,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: weaponType
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 200
       objectReference: {fileID: 0}
@@ -15338,6 +15353,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: weaponType
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 150
       objectReference: {fileID: 0}
@@ -15432,6 +15452,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
@@ -15518,6 +15543,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
@@ -15604,6 +15634,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
@@ -15967,6 +16002,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: weaponType
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 200
       objectReference: {fileID: 0}
@@ -16061,6 +16101,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
@@ -16276,6 +16321,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
@@ -16448,6 +16498,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6281127937994382257}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: weaponType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
