@@ -55,7 +55,7 @@ namespace EmpireAtWar.Components.AttackComponent
                 {
                     foreach (AttackData data in _attackDataList)
                     {
-                        if (attackData == data)
+                        if (attackData.SameSource(data))
                         {
                             return;
                         }
