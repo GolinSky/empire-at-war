@@ -139,10 +139,10 @@ namespace EmpireAtWar.Move
             _waypoints = PathCalculationUtils.GetWayPointsOfBezierPath(CurrentPosition, p1, p2, targetPosition);
 
             float curvedDistance = 0;
-            //lineRenderer.positionCount = _waypoints.Length;
+            lineRenderer.positionCount = _waypoints.Length;
             for (var i = 0; i < _waypoints.Length; i++)
             {
-               // lineRenderer.SetPosition(i, _waypoints[i]);
+                lineRenderer.SetPosition(i, _waypoints[i]);
 
                 if (i == _waypoints.Length - 1) break;
                 curvedDistance += Vector3.Distance(_waypoints[i], _waypoints[i + 1]);

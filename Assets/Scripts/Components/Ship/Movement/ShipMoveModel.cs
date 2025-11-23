@@ -60,5 +60,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             _speedCoefficient = coefficient;
             OnStop?.Invoke();
         }
+
+        public void Stop()
+        {
+            OnStop?.Invoke();
+        }
     }
 }

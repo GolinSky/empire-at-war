@@ -16,6 +16,7 @@ namespace EmpireAtWar.Components.Weapon
         void AddTarget(AttackData attackData, AttackType attackType);
         bool HasEnoughRange(float distance);
         void ResetTarget();
+        float AttackDistance { get; }
     }
     
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, ITickable
@@ -25,6 +26,8 @@ namespace EmpireAtWar.Components.Weapon
         private List<AttackData> _attackDataList = new List<AttackData>();
         private AttackData _mainAttackData = null;
         
+        public float AttackDistance => Model.OptimalAttackRange;
+
         public void AddTarget(AttackData attackData, AttackType attackType)
         {
             switch (attackType)
@@ -52,6 +55,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _mainAttackData = null;
         }
+
 
         public void Tick()
         {

@@ -10,5 +10,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         void MoveToPosition(Vector3 targetPosition);
         void MoveToPositionOnScreen(Vector2 targetPosition);
         void LookAtTarget(Vector3 targetPosition);
+        float GetRange(Vector3 targetPosition);
+        void Stop();
+        bool IsMoving { get; }
     }
 }
