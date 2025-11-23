@@ -115,7 +115,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     if (target == null) continue;
 
                     
-                    turret.Attack(target, kvp.Key);
+                    turret.Attack(target);
                     // AttackCommand.ApplyDamage(target, kvp.Key, attackDuration);
 
                     yield return new WaitForSeconds(Model.DelayBetweenAttack);

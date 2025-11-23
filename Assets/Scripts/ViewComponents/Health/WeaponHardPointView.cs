@@ -19,7 +19,8 @@ namespace EmpireAtWar.ViewComponents.Health
         private const int MAX_ATTACKING_TURRETS = 1;
         
         [SerializeField] private FloatRange yAxisRange;
-
+        [SerializeField] protected WeaponType weaponType;
+        
         private List<BaseTurretView> _turrets = new List<BaseTurretView>();
         private ProjectileData _projectileData;
 
@@ -57,7 +58,7 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public virtual void Attack(IHardPointModel hardPointView, WeaponType weaponType)
+        public virtual void Attack(IHardPointModel hardPointView)
         {
             BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);

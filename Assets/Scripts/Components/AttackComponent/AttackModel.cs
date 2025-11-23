@@ -61,7 +61,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
                 foreach (WeaponType weaponType in WeaponDictionary.Keys)
                 {
-                    float distance = WeaponDamageModel.DamageDictionary[weaponType].Distance;
+                    float distance = WeaponDamageModel.GetDamageModel(weaponType).Distance;
                     if (distance > maxDistance)
                     {
                         maxDistance = distance;
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Components.AttackComponent
             List<WeaponType> filter = new List<WeaponType>();
             foreach (WeaponType weaponType in WeaponDictionary.Keys)
             {
-                float damageDistance = WeaponDamageModel.DamageDictionary[weaponType].Distance;
+                float damageDistance = WeaponDamageModel.GetDamageModel(weaponType).Distance;
                 if (damageDistance >= distance)
                 {
                     filter.Add(weaponType);
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public float GetAttackDistance(WeaponType weaponType)
         {
-            return WeaponDamageModel.DamageDictionary[weaponType].Distance;
+            return WeaponDamageModel.GetDamageModel(weaponType).Distance;
         }
 
         public void InjectDependency(AttackModelDependency attackModelDependency)
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Components.AttackComponent
         
         public float GetDamage(WeaponType weaponType, float distance)
         {
-            return WeaponDamageModel.DamageDictionary[weaponType].GetDamage(distance);
+            return WeaponDamageModel.GetDamageModel(weaponType).GetDamage(distance);
         }
     }
 }
