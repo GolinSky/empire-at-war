@@ -7,7 +7,7 @@ namespace EmpireAtWar.Components.AttackComponent
 {
     public interface IProjectileModel:IModelObserver
     {
-        Dictionary<WeaponType, ProjectileData> ProjectileData { get; }
+        ProjectileData GetData(WeaponType weaponType);
     }
     
     [CreateAssetMenu(fileName = "ProjectileModel", menuName = "Model/Weapon/ProjectileModel")]
@@ -15,6 +15,11 @@ namespace EmpireAtWar.Components.AttackComponent
     {
         [SerializeField] private DictionaryWrapper<WeaponType, ProjectileData> projectileData;
 
-        public Dictionary<WeaponType, ProjectileData> ProjectileData => projectileData.Dictionary;
+        private Dictionary<WeaponType, ProjectileData> ProjectileData => projectileData.Dictionary;
+
+        public ProjectileData GetData(WeaponType weaponType)
+        {
+            return ProjectileData[weaponType];
+        }
     }
 }

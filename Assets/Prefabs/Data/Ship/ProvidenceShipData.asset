@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
   m_Name: ProvidenceShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
-  <DelayBetweenAttack>k__BackingField: 1
+  <DelayBetweenAttack>k__BackingField: 0.1
