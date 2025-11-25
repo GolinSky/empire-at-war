@@ -152,5 +152,13 @@ namespace EmpireAtWar.ViewComponents.Health
                 Destroyed = true;
             }
         }
+
+#if UNITY_EDITOR
+        public void SetWeaponType(WeaponType weaponType)
+        {
+            WeaponType = weaponType;
+        }    
+#endif
+  
     }
 }

@@ -86,5 +86,27 @@ namespace EmpireAtWar.Editor.Ship
                 
             }
         }
+        
+        [MenuItem("Custom/Ships/Refactor Hard Point 2")]
+        public static void RefactorHardPoints2()
+        {
+            Object selectionObject = Selection.objects.FirstOrDefault();
+            AttackModelDependency attackViewComponent = selectionObject.GetComponent<AttackModelDependency>();
+
+
+            foreach (var keyValuePair in attackViewComponent.TurretDictionary)
+            {
+                foreach (WeaponHardPointView weaponHardPointView in keyValuePair.Value)
+                {
+                    weaponHardPointView.SetWeaponType(keyValuePair.Key);
+                    EditorUtility.SetDirty(weaponHardPointView);
+                    EditorUtility.SetDirty(weaponHardPointView.gameObject);
+                }
+            }
+          
+            EditorUtility.SetDirty(selectionObject);
+            EditorUtility.SetDirty(attackViewComponent.transform.root.gameObject);
+
+        }
     }
 }
