@@ -62,6 +62,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -83,6 +85,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -192,8 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 706652349149587787}
-  - component: {fileID: 2486682522759332522}
-  - component: {fileID: 3299720970982699053}
+  - component: {fileID: 4579757355373799432}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -219,7 +221,7 @@ Transform:
   - {fileID: 4786229498459700977}
   m_Father: {fileID: 7774986028091077499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2486682522759332522
+--- !u!114 &4579757355373799432
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,31 +230,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5635362079335147080}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b045f6750f94b268b7959acb7653a21, type: 3}
+  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  attackModelDependency: {fileID: 3299720970982699053}
---- !u!114 &3299720970982699053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5635362079335147080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8421c4df5c08434b81adb8fc222a9dd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turretDictionary:
-    keyValue:
-    - key: 5
-      value:
-      - {fileID: 600897578550753641}
-    - key: 8
-      value:
-      - {fileID: 4063173650901525246}
-      - {fileID: 7249564750223754445}
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
+  hardPoints:
+  - {fileID: 600897578550753641}
+  - {fileID: 4063173650901525246}
+  - {fileID: 7249564750223754445}
 --- !u!1 &5651266934280829786
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,11 +298,9 @@ MonoBehaviour:
   - {fileID: 4111640471473534973}
   - {fileID: 4787134241071208547}
   - {fileID: 1493051825352287952}
-  - {fileID: 2486682522759332522}
   - {fileID: 7507112065780464587}
   <ModelDependencies>k__BackingField:
   - {fileID: 3634003794240908284}
-  - {fileID: 3299720970982699053}
 --- !u!65 &2999904143128528648
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -405,6 +387,8 @@ LineRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -426,6 +410,7 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -666,6 +651,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 706652349149587787}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
@@ -1006,6 +996,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 706652349149587787}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
@@ -1591,6 +1586,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 706652349149587787}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField

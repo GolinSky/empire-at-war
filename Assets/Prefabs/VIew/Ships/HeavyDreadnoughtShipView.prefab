@@ -9840,8 +9840,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7301681201815730211}
-  - component: {fileID: 2173158487723245624}
-  - component: {fileID: 3930438435140112572}
+  - component: {fileID: 7846338986896844509}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -9870,7 +9869,7 @@ Transform:
   - {fileID: 1588705776390584007}
   m_Father: {fileID: 7927530280735218728}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2173158487723245624
+--- !u!114 &7846338986896844509
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9879,36 +9878,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2794548451051823694}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b045f6750f94b268b7959acb7653a21, type: 3}
+  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  attackModelDependency: {fileID: 3930438435140112572}
---- !u!114 &3930438435140112572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2794548451051823694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8421c4df5c08434b81adb8fc222a9dd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turretDictionary:
-    keyValue:
-    - key: 11
-      value:
-      - {fileID: 4559992297672358850}
-      - {fileID: 3088172430391426635}
-    - key: 3
-      value:
-      - {fileID: 582809301386512952}
-      - {fileID: 7971835631136078103}
-    - key: 2
-      value:
-      - {fileID: 9126710486577760537}
-      - {fileID: 3529570424234396923}
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
+  hardPoints:
+  - {fileID: 4559992297672358850}
+  - {fileID: 3088172430391426635}
+  - {fileID: 582809301386512952}
+  - {fileID: 7971835631136078103}
+  - {fileID: 9126710486577760537}
+  - {fileID: 3529570424234396923}
 --- !u!1 &3268541866267094489
 GameObject:
   m_ObjectHideFlags: 0
@@ -9970,7 +9949,6 @@ GameObject:
   - component: {fileID: 917628811802804639}
   - component: {fileID: 6167998220805005332}
   - component: {fileID: 2456312369971648946}
-  - component: {fileID: 4952457003806699729}
   m_Layer: 0
   m_Name: HeavyDreadnoughtShipView
   m_TagString: Untagged
@@ -10019,11 +9997,9 @@ MonoBehaviour:
   - {fileID: 5437954584505989880}
   - {fileID: 2394197359828065930}
   - {fileID: 917628811802804639}
-  - {fileID: 2173158487723245624}
   - {fileID: 7143086164548781069}
   <ModelDependencies>k__BackingField:
   - {fileID: 7356357392326215802}
-  - {fileID: 3930438435140112572}
 --- !u!114 &5437954584505989880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10199,18 +10175,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &4952457003806699729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3352503884825458372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
 --- !u!1 &5074541331356145376
 GameObject:
   m_ObjectHideFlags: 0
@@ -20434,6 +20398,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 200
       objectReference: {fileID: 0}
@@ -20541,6 +20510,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 5
       objectReference: {fileID: 0}
@@ -20636,6 +20610,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7301681201815730211}
     m_Modifications:
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
@@ -20823,6 +20802,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -21495,6 +21479,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 200
       objectReference: {fileID: 0}
@@ -21598,6 +21587,11 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
