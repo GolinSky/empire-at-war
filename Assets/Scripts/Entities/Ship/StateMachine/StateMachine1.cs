@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void ExitState()
         {
             CurrentState?.Exit();
+            CurrentState = null;
         }
    
 

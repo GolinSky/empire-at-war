@@ -22,7 +22,7 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: 'Venator '
             <MaxCount>k__BackingField: 30
-            <AvailableLevel>k__BackingField: 5
+            <AvailableLevel>k__BackingField: 1
             <Price>k__BackingField: 3000
             <BuildTime>k__BackingField: 10
             <UnitCapacity>k__BackingField: 5

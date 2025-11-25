@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -11,37 +13,37 @@ namespace EmpireAtWar.ViewComponents.Health
 {
     public class WeaponHardPointView : HardPointView
     {
+        // move to factory
         private const string TURRET_PATH = "Projectile";
         private const string DOUBLE_TURRET_PATH = "DualProjectile";
         private const string LASER_TURRET_PATH = "LaserProjectile";
         private const string TORPEDO_TURRET_PATH = "TorpedoProjectile";
         
-        private const int MAX_ATTACKING_TURRETS = 1;
-        
         [SerializeField] private FloatRange yAxisRange;
-        [SerializeField] protected WeaponType weaponType;
+        [field:SerializeField] public WeaponType WeaponType { get; private set; }
         
         private List<BaseTurretView> _turrets = new List<BaseTurretView>();
         private ProjectileData _projectileData;
+        private Coroutine _attackCoroutine;
 
         private float _maxAttackDistance;
-        protected IAttackCommand AttackCommand { get; private set; }
+        protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
-        public bool IsBusy => _turrets.Count(x => x.IsBusy) >= MAX_ATTACKING_TURRETS;
-        
+        public bool IsBusy => _turrets.Any(x => x.IsBusy) || _attackCoroutine != null;
 
-        
+
 
         public void SetData(FloatRange floatRange)
         {
             yAxisRange.SetValue(floatRange);
         }
         
-        public void SetData(ProjectileData projectileData, float maxAttackDistance, IAttackCommand attackCommand)
+        public void SetData(ProjectileData projectileData, float maxAttackDistance, IWeaponPresenter weaponPresenter)
         {
-            AttackCommand = attackCommand;
+            WeaponPresenter = weaponPresenter;
             _maxAttackDistance = maxAttackDistance;
             _projectileData = projectileData;
+           
         }
 
         public bool CanAttack(Vector3 targetPosition)
@@ -49,6 +51,7 @@ namespace EmpireAtWar.ViewComponents.Health
             float distance = Vector3.Distance(targetPosition, transform.position);
             if (distance > _maxAttackDistance) return false;
             
+
             Vector3 direction = targetPosition - transform.position;
 
             Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -58,16 +61,33 @@ namespace EmpireAtWar.ViewComponents.Health
             return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
         }
 
-        public virtual void Attack(IHardPointModel hardPointView)
+        public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
-            BaseTurretView turretView = GetTurret();
-            turretView.SetParent(transform);
-            float distance = Vector3.Distance(hardPointView.Position, transform.position);
-            float duration = distance / turretView.Speed;
+            if (_attackCoroutine != null)
+            {
+                Debug.LogError($"_attackCoroutine is not null on {gameObject.name}");
+            }
+            _attackCoroutine = StartCoroutine(AttackCoroutine(attackData, hardPointModel));
 
-            turretView.Attack(hardPointView, duration);
-            turretView.ResetParent();
-            AttackCommand.ApplyDamage(hardPointView, weaponType, duration);
+        }
+
+        private IEnumerator AttackCoroutine(AttackData attackData, IHardPointModel hardPointModel)
+        {
+            for (int i = 0; i < _projectileData.ShotsPerSalvo; i++)
+            {
+                BaseTurretView turretView = GetTurret();
+                turretView.SetParent(transform);
+                float distance = Vector3.Distance(hardPointModel.Position, transform.position);
+                float duration = distance / turretView.Speed;
+
+                turretView.Attack(hardPointModel, duration);
+                turretView.ResetParent();
+                WeaponPresenter.ApplyDamage(attackData, hardPointModel, WeaponType, duration);
+                yield return new WaitForSeconds(_projectileData.DelayBetweenShots);
+            }
+
+            _attackCoroutine = null;
+
         }
 
         protected BaseTurretView GetTurret()

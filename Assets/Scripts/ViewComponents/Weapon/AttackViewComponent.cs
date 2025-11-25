@@ -46,7 +46,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 foreach (WeaponHardPointView turretView in keyValuePair.Value)
                 {
                     if (turretView == null) continue;
-                    turretView.SetData(_projectileModel.ProjectileData[keyValuePair.Key], attackDistance, AttackCommand);
+                    //turretView.SetData(_projectileModel.GetData(keyValuePair.Key), attackDistance, AttackCommand);
                 }
             }
         }
@@ -115,7 +115,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     if (target == null) continue;
 
                     
-                    turret.Attack(target);
+                    //turret.Attack(target);
                     // AttackCommand.ApplyDamage(target, kvp.Key, attackDuration);
 
                     yield return new WaitForSeconds(Model.DelayBetweenAttack);

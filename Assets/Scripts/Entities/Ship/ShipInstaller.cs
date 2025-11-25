@@ -48,17 +48,20 @@ namespace EmpireAtWar.Ship
             Container.BindEntity(_shipType);
             Container.BindEntity(SelectionType.Ship);
 
-            switch (_playerType)
-            {
-                case PlayerType.Player:
-                {
-                    Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
-                    Container.Bind<WeaponModel>().AsSingle();
-                    break;
-                }
-                case PlayerType.Opponent:
-                    break;
-            }
+            
+            Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+            Container.Bind<WeaponModel>().AsSingle();
+            // switch (_playerType)
+            // {
+            //     case PlayerType.Player:
+            //     {
+            //         Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+            //         Container.Bind<WeaponModel>().AsSingle();
+            //         break;
+            //     }
+            //     case PlayerType.Opponent:
+            //         break;
+            // }
         }
 
         protected override void BindComponents()
@@ -96,8 +99,9 @@ namespace EmpireAtWar.Ship
                 {
                     Container.BindInterfacesExt<EnemySelectionComponent>();
                     Container.BindInterfacesExt<EnemyShipCommand>();
-                    Container.BindInterfacesExt<EnemyShipStateMachine>();
-                    
+                    // Container.BindInterfacesExt<EnemyShipStateMachine>();
+                    Container.BindInterfacesExt<EnemyShipMediator>();
+
                     //entity commands
                     Container.BindInterfacesExt<EnemyAttackShipCommand>();
                     Container.BindInterfacesExt<SelectionCommand>();

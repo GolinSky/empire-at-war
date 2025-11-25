@@ -137,7 +137,6 @@ namespace EmpireAtWar.Services.InputService
             if (MapActions.Zoom.IsPressed())
             {
                 float zoomValue = MapActions.Zoom.ReadValue<float>();
-                Debug.Log($"zoomValue:{zoomValue}");
                 OnZoom?.Invoke(zoomValue);
 
             }
