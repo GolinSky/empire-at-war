@@ -1,18 +1,14 @@
 ﻿using EmpireAtWar.Commands.Ship;
-using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.StateMachine;
@@ -51,17 +47,6 @@ namespace EmpireAtWar.Ship
             
             Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
             Container.Bind<WeaponModel>().AsSingle();
-            // switch (_playerType)
-            // {
-            //     case PlayerType.Player:
-            //     {
-            //         Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
-            //         Container.Bind<WeaponModel>().AsSingle();
-            //         break;
-            //     }
-            //     case PlayerType.Opponent:
-            //         break;
-            // }
         }
 
         protected override void BindComponents()
@@ -70,7 +55,7 @@ namespace EmpireAtWar.Ship
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<AttackComponent>()
+                //.BindInterfacesExt<AttackComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AudioShipComponent>();
             

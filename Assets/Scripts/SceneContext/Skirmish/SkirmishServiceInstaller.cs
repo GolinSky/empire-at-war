@@ -22,7 +22,6 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesExt<CameraService>()
                 .BindInterfacesExt<SelectionService>()
                 .BindInterfacesExt<BattleService>();
-
         }
     }
 }
