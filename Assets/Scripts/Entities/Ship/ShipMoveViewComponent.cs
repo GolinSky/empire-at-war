@@ -1,6 +1,4 @@
 ﻿using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Utils;
@@ -159,40 +157,10 @@ namespace EmpireAtWar.Move
                         10)
                     .SetOptions(false, AxisConstraint.Y, AxisConstraint.X)
                     .SetLookAt(0.01f)
-                    .SetEase(moveEase));
+                    .SetEase(Ease.Linear));
       
-           
-            // RotateAlongPath(_waypoints, _duration);
-
-            // _moveSequence.Append(bodyTransform.DOLocalRotate(Vector3.zero, BODY_ROTATION_DEFAULT_DURATION)
-            //     .SetEase(lookAtEase));
-            // _moveSequence.AppendCallback(() => lineRenderer.positionCount = 0);
+            
         }
-
-
-
-
-        // private void RotateAlongPath(Vector3[] waypoints, float duration)
-        // {
-        //     DOVirtual.Float(0, 1, duration, t =>
-        //     {
-        //         // Estimate current position along path
-        //         float pathPos = t * (waypoints.Length - 1);
-        //         int index = Mathf.FloorToInt(pathPos);
-        //         int nextIndex = Mathf.Min(index + 1, waypoints.Length - 1);
-        //
-        //         Vector3 from = waypoints[index];
-        //         Vector3 to = waypoints[nextIndex];
-        //         Vector3 dir = (to - from).normalized;
-        //         dir.y = 0;
-        //
-        //         if (dir.sqrMagnitude > 0.0001f)
-        //         {
-        //             Quaternion lookRot = Quaternion.LookRotation(dir);
-        //             transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 1f); // smooth
-        //         }
-        //     });
-        // }
         
         private float IsRightFromTarget(Vector3 targetPosition)
         {
