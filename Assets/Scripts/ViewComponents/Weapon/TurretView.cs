@@ -10,6 +10,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         [SerializeField] private ParticleSystem vfx;
         [SerializeField] private FloatRange yAxisRange;
 
+        private Transform target;
         private INotifier<float> _notifier;
        
         private Vector3 _lookPosition = Vector3.zero;
@@ -43,6 +44,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.startLifetime = duration;
 
             _lookPosition = hardPointModel.Position;
+            transform.LookAt(_lookPosition);
+            target = hardPointModel.Transform;
             vfx.Emit(1);
             vfx.Play();
             
@@ -57,7 +60,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void Update()
         {
-            transform.LookAt(_lookPosition);
+            if (IsBusy)
+            {
+                if (target != null)
+                {
+                    transform.LookAt(target);
+                }
+            }
+            ///transform.LookAt(_lookPosition);
         }
 
         public override void SetParent(Transform parent)
