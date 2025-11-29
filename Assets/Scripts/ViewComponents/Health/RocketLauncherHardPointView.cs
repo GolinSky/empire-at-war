@@ -11,10 +11,9 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             BaseTurretView turretView = GetTurret();
             turretView.SetParent(transform);
-            float distance = Vector3.Distance(hardPointView.Position, transform.position);
-            float duration = distance / turretView.Speed;
+ 
 
-            turretView.Attack(hardPointView, duration);
+            turretView.Attack(hardPointView, out var duration);
             turretView.ResetParent();
             WeaponPresenter.ApplyDamage(attackData, hardPointView, WeaponType, duration);
         }

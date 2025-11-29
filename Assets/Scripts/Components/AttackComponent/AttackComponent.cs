@@ -22,6 +22,7 @@ namespace EmpireAtWar.Components.AttackComponent
         void ResetTarget();
     }
 
+    [Obsolete]
     public class AttackComponent : BaseComponent<AttackModel>, IAttackComponent, IAttackCommand, ILateTickable, ILateDisposable, IDisposable
     {
         private readonly ICoroutineService _coroutineService;

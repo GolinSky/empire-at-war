@@ -14,9 +14,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
        
         private Vector3 _lookPosition = Vector3.zero;
         
-        public override bool IsBusy => !_delayTimer.IsComplete;
+        public override bool IsBusy => !_busyTimer.IsComplete;
 
-        public override float Speed => vfx.main.startSpeed.constant;
+        public float Speed => vfx.main.startSpeed.constant;
         
         public FloatRange YAxisRange => yAxisRange;
         
@@ -34,8 +34,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
             mainModule.loop = false;
         }
 
-        public override void Attack(IHardPointModel hardPointModel, float duration)
+        public override void Attack(IHardPointModel hardPointModel, out float duration)
         {
+            float distance = Vector3.Distance(hardPointModel.Position, transform.position);
+            duration = distance / Speed;
             var mainModule = vfx.main;
     
             mainModule.startLifetime = duration;
@@ -48,7 +50,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 .ChangeDelay(duration)
                 .StartTimer();
             
-            _delayTimer
+            _busyTimer
                 .ChangeDelay(_projectileData.Delay + duration)
                 .StartTimer();
         }
