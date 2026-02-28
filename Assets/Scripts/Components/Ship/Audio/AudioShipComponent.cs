@@ -66,7 +66,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         private void PlayHyperSpaceClip()
         {
             _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
-                _shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
+                _shipMoveModelObserver.HyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
         }
     }
 }

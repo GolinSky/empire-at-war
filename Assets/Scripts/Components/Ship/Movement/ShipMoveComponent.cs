@@ -13,8 +13,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         private readonly Vector3 _startPosition;
         public bool CanMove => Model.CanMove;
         public bool IsMoving => Model.IsMoving;
+        public IShipMoveModelObserver ModelObserver => Model;
 
-        
+
         public ShipMoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
         {
             _cameraService = cameraService;

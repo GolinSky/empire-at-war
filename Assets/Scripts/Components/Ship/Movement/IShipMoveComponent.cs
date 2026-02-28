@@ -13,5 +13,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         float GetRange(Vector3 targetPosition);
         void Stop();
         bool IsMoving { get; }
+        IShipMoveModelObserver ModelObserver { get; }
     }
 }

@@ -33,7 +33,7 @@ MonoBehaviour:
     <FallDownDuration>k__BackingField: 180
     <CanMove>k__BackingField: 1
     <RotationSpeed>k__BackingField: 90
-    <HyperSpaceSpeed>k__BackingField: 2
+    <HyperSpaceDuration>k__BackingField: 3
     <BodyRotationMaxAngle>k__BackingField: 30
   healthModel:
     dexterity: 0.8

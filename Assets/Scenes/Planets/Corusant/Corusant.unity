@@ -873,6 +873,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: VolumetricNebulaSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 4652256709362399242, guid: 1faf8ec36eb59db47af7e5712fd7c5d2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6576961906216945618, guid: 1faf8ec36eb59db47af7e5712fd7c5d2,
         type: 3}
       propertyPath: m_LocalScale.x
