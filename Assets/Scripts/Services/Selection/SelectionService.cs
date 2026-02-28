@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Battle
             if(inputType != InputType.Selection) return;
             
             RaycastHit raycastHit = _cameraService.ScreenPointToRay(touchPosition);
-
+            
             if(raycastHit.collider == null) return;
 
 

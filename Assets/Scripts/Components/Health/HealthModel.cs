@@ -33,6 +33,7 @@ namespace EmpireAtWar.Models.Health
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
         PlayerType PlayerType { get; }
         Transform Transform { get; }
+        bool HasShields { get; }
     }
 
     [Serializable]

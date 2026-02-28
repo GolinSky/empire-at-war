@@ -19,14 +19,14 @@ namespace EmpireAtWar.Entities.Ship.Mediator
     {
         void SetMediator(IUnitMediator mediator);
     }
-    
+
     public interface IUnitMediator
     {
         void HandleNewEnemy(IEntity entity);
         void OnSelect(bool isActive);
     }
-    
-    public class PlayerShipMediator: ITickable, IMoveCommand, IUnitMediator, IInitializable, ILateDisposable, IObserver<ISelectionSubject>
+
+    public class PlayerShipMediator : ITickable, IMoveCommand, IUnitMediator, IInitializable, ILateDisposable, IObserver<ISelectionSubject>
     {
         private readonly IWeaponComponent _weaponComponent;
         private readonly IHealthComponent _healthComponent;
@@ -37,6 +37,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly AttackTargetState _attackTargetState;
 
         private readonly StateMachine1 _stateMachine;
+        private readonly ShipAIBrain _shipAIBrain;
         private bool _isSelected;
 
         public PlayerShipMediator(
@@ -46,7 +47,9 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IRadarComponent radarComponent,
             ISelectionService selectionService,
             ISelectionComponent selectionComponent,
-            AttackTargetState attackTargetState)
+            AttackTargetState attackTargetState,
+            StateMachine1 stateMachine,
+            ShipAIBrain shipAIBrain)
         {
             _selectionService = selectionService;
             _selectionComponent = selectionComponent;
@@ -55,11 +58,12 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
             _radarComponent = radarComponent;
-            _stateMachine = new StateMachine1();
+            _stateMachine = stateMachine;
+            _shipAIBrain = shipAIBrain;
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
         }
-        
+
         public void Initialize()
         {
             _selectionService.AddObserver(this);
@@ -69,14 +73,14 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         {
             _selectionService.RemoveObserver(this);
         }
-        
+
         public void Tick()
         {
-            _stateMachine.Update();
         }
 
         public void MoveTo(Vector2 screenPosition)
         {
+            _shipAIBrain.Enable(false);
             _stateMachine.ExitState();
             _shipMoveComponent.MoveToPositionOnScreen(screenPosition);
             // _moveToPointState.SetScreenCoordinates(screenPosition);
@@ -100,16 +104,17 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         public void UpdateState(ISelectionSubject selectionSubject)
         {
-            if(!_isSelected) return;
+            if (!_isSelected) return;
 
             if (selectionSubject.UpdatedType == PlayerType.Opponent && selectionSubject.EnemySelectionContext.HasSelectable)
             {
                 IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.Model
                     .GetModelObserver<IHealthModelObserver>();
-                
+
                 if (!healthModel.IsDestroyed && healthModel.HasUnits && !_attackTargetState.IsTheSameTarget(selectionSubject.EnemySelectionContext.Entity))
                 {
-                    _attackTargetState.SetData(selectionSubject.EnemySelectionContext.Entity); 
+                    _shipAIBrain.Enable(false);
+                    _attackTargetState.SetData(selectionSubject.EnemySelectionContext.Entity);
                     _stateMachine.SetState(_attackTargetState);
                 }
             }
