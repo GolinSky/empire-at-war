@@ -15,10 +15,10 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Ship.Mediator
 {
-    public class EnemyShipMediator: ITickable, IUnitMediator, IInitializable, ILateDisposable
+    public class EnemyShipMediator : ITickable, IUnitMediator, IInitializable, ILateDisposable
     {
         private const float DELAY_TIME = 1f;
-        
+
         private readonly IWeaponComponent _weaponComponent;
         private readonly IHealthComponent _healthComponent;
         private readonly IShipMoveComponent _shipMoveComponent;
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly ICoroutineService _coroutineService;
         private readonly IMapModelObserver _mapModelObserver;
 
-        private readonly StateMachine1 _stateMachine;
+        private readonly ShipAIBrain _shipAIBrain;
         private bool _isSelected;
 
         public EnemyShipMediator(
@@ -35,9 +35,10 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IHealthComponent healthComponent,
             IShipMoveComponent shipMoveComponent,
             IRadarComponent radarComponent,
-            
+
             ICoroutineService coroutineService,
-            IMapModelObserver mapModelObserver)
+            IMapModelObserver mapModelObserver,
+            ShipAIBrain shipAIBrain)
         {
             _coroutineService = coroutineService;
             _mapModelObserver = mapModelObserver;
@@ -45,29 +46,24 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
             _radarComponent = radarComponent;
-            _stateMachine = new StateMachine1();
+            _shipAIBrain = shipAIBrain;
             _radarComponent.SetMediator(this);
         }
-        
+
         public void Initialize()
         {
-            _coroutineService.InvokeWithDelay((() =>
-            {
-                _stateMachine.ExitState();
-                _shipMoveComponent.MoveToPosition(_mapModelObserver.GetStationPosition(PlayerType.Player));
-            }), DELAY_TIME);
+            _shipAIBrain.Enable(true);
         }
 
         public void LateDispose()
         {
 
         }
-        
+
         public void Tick()
         {
-            _stateMachine.Update();
         }
-        
+
         public void HandleNewEnemy(IEntity entity)
         {
             var healthModel = entity.Model.GetModelObserver<IHealthModelObserver>();

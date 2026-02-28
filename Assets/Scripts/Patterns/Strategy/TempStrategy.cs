@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Controllers.Factions;
+﻿using System.Collections.Generic;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
@@ -22,6 +23,11 @@ namespace EmpireAtWar.Patterns.Strategy
         public override void Start()
         {
            // BuildDefends();
+        //   FactionModel.ShipFactionData.TryGetValue(ShipType.Providence, out FactionData factionData);
+           // BuildUnit(new KeyValuePair<ShipType, FactionData>(ShipType.Providence, factionData));
+           // BuildUnit(new KeyValuePair<ShipType, FactionData>(ShipType.Providence, factionData));
+           // BuildUnit(new KeyValuePair<ShipType, FactionData>(ShipType.Providence, factionData));
+           // BuildUnit(new KeyValuePair<ShipType, FactionData>(ShipType.Providence, factionData));
         }
         
         public override void Stop() {}
@@ -82,7 +88,7 @@ namespace EmpireAtWar.Patterns.Strategy
 
         public override void Update()
         {
-            //return;
+       
             if (_decisionTimer.IsComplete)
             {
                 TryLevelUp();

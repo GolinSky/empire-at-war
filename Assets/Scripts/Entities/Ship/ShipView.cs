@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Ship
 {
-    public class ShipView : View<IShipModelObserver, IShipCommand>
+    public class ShipView : View<IShipModelObserver>
     {
         public event Action<ShipType> OnRelease;
         

@@ -13,6 +13,7 @@ namespace EmpireAtWar.Components.Ship.Health
         void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
         bool Equal(IHealthModelObserver modelObserver);
         bool Destroyed { get; }
+        IHealthModelObserver HealthModelObserver { get; }
     }
 
     public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private float _originShieldValue;
         
         public bool Destroyed => Model.IsDestroyed;
+        public IHealthModelObserver HealthModelObserver => Model;
         
         public HealthComponent(IModel model) : base(model)
         {
@@ -66,7 +68,7 @@ namespace EmpireAtWar.Components.Ship.Health
                 if (_refreshShieldsTimer.IsComplete)
                 {
                     _refreshShieldsTimer.StartTimer();
-                    Model.RegenerateShields(Model.ShieldRegenerateValue);
+                    //Model.RegenerateShields(Model.ShieldRegenerateValue);
                 }
             }
         }

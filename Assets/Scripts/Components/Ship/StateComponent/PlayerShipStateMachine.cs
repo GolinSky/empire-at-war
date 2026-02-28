@@ -1,6 +1,5 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;

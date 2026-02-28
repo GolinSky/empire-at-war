@@ -35,7 +35,7 @@ namespace EmpireAtWar.Ship
             _playerType = playerType;
             shipDataPath = shipsData.GetShipDataPath(shipType);
         }
-        
+
 
         protected override void OnBindData()
         {
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Ship
             Container.BindEntity(_shipType);
             Container.BindEntity(SelectionType.Ship);
 
-            
+
             Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
             Container.Bind<WeaponModel>().AsSingle();
         }
@@ -58,42 +58,47 @@ namespace EmpireAtWar.Ship
                 //.BindInterfacesExt<AttackComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AudioShipComponent>();
-            
+
+            Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PatrolState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
+
             switch (_playerType)
             {
                 case PlayerType.Player:
-                {
-                    Container.BindInterfacesExt<PlayerShipMediator>();
-                    Container.BindInterfacesExt<AttackTargetState>();
-                        
-                        
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
-                    Container.BindInterfacesExt<AudioDialogShipComponent>();
-                  //  Container.BindInterfacesExt<PlayerShipStateMachine>();
-                    
-                    //entity commands
-                    Container.BindInterfacesExt<PlayerAttackShipCommand>();
-                    Container.BindInterfacesExt<SelectionCommand>();
-                  //  Container.BindInterfacesExt<ShipMovementCommand>();
-                    Container.BindInterfacesExt<HealthCommand>();
+                    {
+                        Container.BindInterfacesExt<PlayerShipMediator>();
 
-                    break;
-                }
+
+                        Container.BindInterfacesExt<PlayerSelectionComponent>();
+                        Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
+                        Container.BindInterfacesExt<AudioDialogShipComponent>();
+                        //  Container.BindInterfacesExt<PlayerShipStateMachine>();
+
+                        //entity commands
+                        Container.BindInterfacesExt<PlayerAttackShipCommand>();
+                        Container.BindInterfacesExt<SelectionCommand>();
+                        //  Container.BindInterfacesExt<ShipMovementCommand>();
+                        Container.BindInterfacesExt<HealthCommand>();
+
+                        break;
+                    }
                 case PlayerType.Opponent:
-                {
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    Container.BindInterfacesExt<EnemyShipCommand>();
-                    // Container.BindInterfacesExt<EnemyShipStateMachine>();
-                    Container.BindInterfacesExt<EnemyShipMediator>();
+                    {
+                        Container.BindInterfacesExt<EnemySelectionComponent>();
+                        Container.BindInterfacesExt<EnemyShipCommand>();
+                        // Container.BindInterfacesExt<EnemyShipStateMachine>();
+                        Container.BindInterfacesExt<EnemyShipMediator>();
 
-                    //entity commands
-                    Container.BindInterfacesExt<EnemyAttackShipCommand>();
-                    Container.BindInterfacesExt<SelectionCommand>();
-                    Container.BindInterfacesExt<HealthCommand>();
+                        //entity commands
+                        Container.BindInterfacesExt<EnemyAttackShipCommand>();
+                        Container.BindInterfacesExt<SelectionCommand>();
+                        Container.BindInterfacesExt<HealthCommand>();
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -101,7 +106,7 @@ namespace EmpireAtWar.Ship
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-            
+
             //debug code - until I apply changes to mvc package
             Container
                 .BindInterfacesAndSelfTo<WeaponComponent>()
