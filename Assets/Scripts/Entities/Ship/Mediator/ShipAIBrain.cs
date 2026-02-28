@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 {
     public class ShipAIBrain : ITickable
     {
+        private const float DECISION_INTERVAL = 1f;
+
         private readonly StateMachine1 _stateMachine;
         private readonly IHealthModelObserver _healthModel;
         private readonly IRadarComponent _radarComponent;
@@ -24,8 +26,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly PlayerType _playerType;
 
         private float _decisionTimer = 0f;
-        private const float DECISION_INTERVAL = 1f;
-        private bool _isEnabled = true;
+        private bool _isEnabled = false;
 
         public ShipAIBrain(
             StateMachine1 stateMachine,
@@ -54,9 +55,9 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         public void Tick()
         {
-            _stateMachine.Update();
-
             if (!_isEnabled) return;
+            
+            _stateMachine.Update();
 
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer > 0) return;

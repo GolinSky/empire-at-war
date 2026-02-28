@@ -52,7 +52,11 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         public void Initialize()
         {
-            _shipAIBrain.Enable(true);
+            _coroutineService.InvokeWithDelay(() =>
+            {
+                _shipAIBrain.Enable(true);
+            }, 11f);
+
         }
 
         public void LateDispose()

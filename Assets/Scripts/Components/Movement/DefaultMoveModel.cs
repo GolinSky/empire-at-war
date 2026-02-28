@@ -26,14 +26,14 @@ namespace EmpireAtWar.Components.Movement
     public class DefaultMoveModel : InnerModel, IDefaultMoveModelObserver
     {
         [SerializeField] public float speed;
-        
+
         private Vector3 _position;
         protected float _speedCoefficient = 1;
 
         [field: SerializeField] public float Height { get; private set; }
         [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
         [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
-        
+
         [field: SerializeField] public float FallDownDuration { get; private set; }
         [field: SerializeField] public bool CanMove { get; private set; } = true;
 
@@ -44,13 +44,13 @@ namespace EmpireAtWar.Components.Movement
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
         public float Speed => speed * _speedCoefficient;
-        
+
         [Inject]
         public Vector3 StartPosition { get; }
-        
+
         public ObservableProperty<Vector3> TargetPosition { get; } = new ObservableProperty<Vector3>();
-        public bool IsMoving => !CurrentPosition.IsEqual(TargetPosition.Value);
-        
+        public bool IsMoving => TargetPosition.HasValue && !CurrentPosition.IsEqual(TargetPosition.Value);
+
         IObservableProperty<Vector3> IDefaultMoveModelObserver.TargetPositionObserver => TargetPosition;
     }
 }

@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.CoroutineService;
 using UnityEngine;
 using Zenject;
 
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         private readonly StateMachine1 _stateMachine;
         private readonly ShipAIBrain _shipAIBrain;
+        private readonly ICoroutineService _coroutineService;
         private bool _isSelected;
 
         public PlayerShipMediator(
@@ -49,7 +51,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             ISelectionComponent selectionComponent,
             AttackTargetState attackTargetState,
             StateMachine1 stateMachine,
-            ShipAIBrain shipAIBrain)
+            ShipAIBrain shipAIBrain,
+            ICoroutineService coroutineService)
         {
             _selectionService = selectionService;
             _selectionComponent = selectionComponent;
@@ -60,6 +63,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _radarComponent = radarComponent;
             _stateMachine = stateMachine;
             _shipAIBrain = shipAIBrain;
+            _coroutineService = coroutineService;
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
         }
@@ -67,6 +71,11 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         public void Initialize()
         {
             _selectionService.AddObserver(this);
+            
+            _coroutineService.InvokeWithDelay(() =>
+            {
+               // _shipAIBrain.Enable(true);
+            }, 11f);
         }
 
         public void LateDispose()

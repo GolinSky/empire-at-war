@@ -24,6 +24,7 @@ namespace EmpireAtWar.Move
         private Sequence _moveSequence;
         private Vector3[] _waypoints;
         private float _duration;
+        private bool _canMove;
 
         [Inject] private IMoveCommand MoveCommand { get; }
         
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Move
         {
             transform.rotation = Model.StartRotation;
             transform.position = Model.JumpPosition;
+            _canMove = false;
             HyperSpaceJump(Model.HyperSpacePosition);
 
             Model.TargetPositionObserver.OnChanged += UpdateTargetPosition;
@@ -118,6 +120,7 @@ namespace EmpireAtWar.Move
             _moveSequence.OnComplete((() =>
             {
                 Debug.Log("Hyper Space Jump Complete");
+                _canMove = true;
             }));
         }
 

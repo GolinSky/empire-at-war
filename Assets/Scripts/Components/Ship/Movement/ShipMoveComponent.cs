@@ -10,7 +10,7 @@ namespace EmpireAtWar.Components.Ship.Movement
     public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, IInitializable
     {
         private readonly ICameraService _cameraService;
-        private Vector3 _startPosition;
+        private readonly Vector3 _startPosition;
         public bool CanMove => Model.CanMove;
         public bool IsMoving => Model.IsMoving;
 
@@ -68,7 +68,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             targetPosition.y = Model.Height;
             SetTargetPosition(targetPosition);
         }
-        
 
         public void MoveToPositionOnScreen(Vector2 targetPosition)
         {
