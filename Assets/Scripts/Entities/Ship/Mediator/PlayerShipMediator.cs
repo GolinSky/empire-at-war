@@ -74,8 +74,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             
             _coroutineService.InvokeWithDelay(() =>
             {
-               // _shipAIBrain.Enable(true);
-            }, 11f);
+                _shipAIBrain.Enable(true);
+            }, _shipMoveComponent.ModelObserver.HyperSpaceDuration * 2);
         }
 
         public void LateDispose()

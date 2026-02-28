@@ -115,7 +115,7 @@ namespace EmpireAtWar.Move
             transform.rotation = Quaternion.LookRotation(lookDirection);
             _moveSequence.KillIfExist();
             _moveSequence = DOTween.Sequence();
-            _moveSequence.Append(transform.DOMove(point, Model.HyperSpaceSpeed)
+            _moveSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration)
                 .SetEase(hyperSpaceEase));
             _moveSequence.OnComplete((() =>
             {

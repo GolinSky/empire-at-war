@@ -13,7 +13,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         event Action OnStop;
         Vector3 HyperSpacePosition { get; }
         float RotationSpeed { get; }
-        float HyperSpaceSpeed { get; }
+        float HyperSpaceDuration { get; }
         float MinRotationDuration { get; }
         float MaxRotationDuration { get; }
         float BodyRotationMaxAngle { get; }
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         [field: SerializeField] public float RotationSpeed { get; private set; }
         // [field: SerializeField] public float MinRotationDuration { get; private set; }
         // [field: SerializeField] public float MaxRotationDuration { get; private set; }
-        [field: SerializeField] public float HyperSpaceSpeed { get; private set; }
+        [field: SerializeField] public float HyperSpaceDuration { get; private set; }
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         public Vector3 JumpPosition => HyperSpacePosition - (PlayerType == PlayerType.Player ? Vector3.right : Vector3.left )  * OFFSET_HYPERSPACE_JUMP;
 
