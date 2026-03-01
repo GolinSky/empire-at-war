@@ -1,8 +1,10 @@
 ﻿using EmpireAtWar.Commands.Move;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using LightWeightFramework.Model;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
+using ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -11,24 +13,38 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private readonly ICameraService _cameraService;
         private readonly Vector3 _startPosition;
+        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly PlayerType _playerType;
         public bool CanMove => Model.CanMove;
         public bool IsMoving => Model.IsMoving;
         public IShipMoveModelObserver ModelObserver => Model;
 
 
-        public ShipMoveComponent(IModel model, ICameraService cameraService, Vector3 startPosition) : base(model)
+        public ShipMoveComponent(
+            IModel model,
+            ICameraService cameraService,
+            Vector3 startPosition,
+            FogOfWarSystem fogOfWarSystem,
+            PlayerType playerType) : base(model)
         {
             _cameraService = cameraService;
             startPosition.y = Model.Height;
             _startPosition = startPosition;
+            _fogOfWarSystem = fogOfWarSystem;
+            _playerType = playerType;
             // Model.TargetPosition = startPosition;
         }
-        
+
         public void Initialize()
         {
             Model.HyperSpacePosition = _startPosition;
+
+            if (_playerType == PlayerType.Player)
+            {
+                _fogOfWarSystem.RegisterVisionSource(Model.ViewTransform.Value, 80f);
+            }
         }
-        
+
         public void MoveToPosition(Vector2 screenPosition)
         {
             Vector3 newPosition = GetWorldCoordinate(screenPosition);

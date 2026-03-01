@@ -30,9 +30,9 @@ namespace EmpireAtWar.MiningFacility
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_miningFacilityType);
-            Container.BindEntity(SelectionType.MiningFacility);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_miningFacilityType);
+            Container.BindEntityExt(SelectionType.MiningFacility);
         }
 
         protected override void BindComponents()
