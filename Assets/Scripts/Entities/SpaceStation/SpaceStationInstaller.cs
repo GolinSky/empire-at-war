@@ -33,9 +33,9 @@ namespace EmpireAtWar.SpaceStation
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_factionType);
-            Container.BindEntity(SelectionType.Base);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_factionType);
+            Container.BindEntityExt(SelectionType.Base);
         }
 
         protected override void BindComponents()

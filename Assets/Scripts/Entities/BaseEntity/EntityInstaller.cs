@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.BaseEntity
             Container.BindInterfacesNonLazyExt<Entity>();
             Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_view.gameObject).AsSingle().NonLazy();
 
-            Container.BindEntity(_uniqueIdGenerator.GenerateUniqueId());
+            Container.BindEntityExt(_uniqueIdGenerator.GenerateUniqueId());
         }
     }
 }

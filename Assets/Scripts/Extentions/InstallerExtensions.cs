@@ -65,7 +65,7 @@ namespace EmpireAtWar.Extentions
         }
 
       
-        public static ConcreteIdArgConditionCopyNonLazyBinder BindEntity<TEntity>(this DiContainer container, TEntity entity)
+        public static ConcreteIdArgConditionCopyNonLazyBinder BindEntityExt<TEntity>(this DiContainer container, TEntity entity)
         {
             var binder =  container
                 .BindInstance(@entity)

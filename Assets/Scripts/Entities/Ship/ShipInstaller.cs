@@ -40,9 +40,9 @@ namespace EmpireAtWar.Ship
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_shipType);
-            Container.BindEntity(SelectionType.Ship);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_shipType);
+            Container.BindEntityExt(SelectionType.Ship);
 
 
             Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);

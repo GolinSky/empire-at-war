@@ -30,9 +30,9 @@ namespace EmpireAtWar
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_miningFacilityType);
-            Container.BindEntity(SelectionType.DefendPlatform);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_miningFacilityType);
+            Container.BindEntityExt(SelectionType.DefendPlatform);
         }
 
         protected override void BindComponents()

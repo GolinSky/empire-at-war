@@ -19,13 +19,14 @@ using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Ui.Base;
 using LightWeightFramework.Components.Repository;
 using UnityEngine;
+using ViewComponents;
 using Zenject;
 using LocationService = EmpireAtWar.Services.Location.LocationService;
 
 public class SkirmishMainInstaller : MonoInstaller
 {
     [SerializeField] private LocationService locationService;
-    
+    [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IRepository Repository { get; }
 
@@ -74,6 +75,8 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindFactory<UiType, Transform, BaseUi, UiFacade>()
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
+
+        Container.BindEntityExt(fogOfWarSystem);
 
     }
 

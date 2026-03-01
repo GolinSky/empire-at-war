@@ -80,7 +80,7 @@ namespace EmpireAtWar
 
         protected void BindData()// BindParameters
         {
-            Container.BindEntity(StartPosition);
+            Container.BindEntityExt(StartPosition);
             OnBindData();
         }
         protected virtual void OnBindData() {}
