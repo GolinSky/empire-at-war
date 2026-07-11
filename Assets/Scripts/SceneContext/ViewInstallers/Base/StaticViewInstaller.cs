@@ -1,8 +1,6 @@
-﻿using EmpireAtWar.Extentions;
+using EmpireAtWar.Extentions;
 using EmpireAtWar.Views.ViewImpl;
-using LightWeightFramework.Components.Repository;
-using LightWeightFramework.Controller;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

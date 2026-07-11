@@ -1,9 +1,9 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Utilities.ScriptUtils.Time;
-using LightWeightFramework.Components.Components;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Health

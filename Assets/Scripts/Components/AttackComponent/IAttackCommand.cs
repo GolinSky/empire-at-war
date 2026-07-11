@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Health;
-using LightWeightFramework.Command;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.AttackComponent
 {

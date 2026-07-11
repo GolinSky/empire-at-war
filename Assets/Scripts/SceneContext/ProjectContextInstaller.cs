@@ -8,7 +8,7 @@ using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.TimerPoolWrapperService;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

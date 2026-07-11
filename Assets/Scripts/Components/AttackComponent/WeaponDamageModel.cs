@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 

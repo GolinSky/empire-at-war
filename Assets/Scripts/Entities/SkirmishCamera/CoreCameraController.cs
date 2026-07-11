@@ -2,7 +2,7 @@ using EmpireAtWar.Commands.Camera;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

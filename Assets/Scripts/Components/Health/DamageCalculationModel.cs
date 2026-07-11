@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using EmpireAtWar.Components.AttackComponent;
 using Utilities.ScriptUtils.EditorSerialization;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

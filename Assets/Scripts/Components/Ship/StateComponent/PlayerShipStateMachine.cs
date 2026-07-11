@@ -1,18 +1,17 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
-using Component = LightWeightFramework.Components.Components.Component;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class PlayerShipStateMachine : Component, IInitializable, ILateDisposable, ITickable, IObserver<ISelectionSubject>
+    public class PlayerShipStateMachine : FrameworkComponent, IInitializable, ILateDisposable, ITickable, IObserver<ISelectionSubject>
     {
         private readonly ISelectionService _selectionService;
         private readonly ISelectionModelObserver _selectionModelObserver;

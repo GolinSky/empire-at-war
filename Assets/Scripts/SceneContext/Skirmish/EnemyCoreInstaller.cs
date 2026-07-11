@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -7,7 +7,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.Enemy;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

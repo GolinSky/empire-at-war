@@ -17,13 +17,6 @@
       },
       "hash": "11836003a5e2ffcb7715ecec7e1fbb9d9cdb5bb8"
     },
-    "com.light-weight-framework": {
-      "version": "https://github.com/GolinSky/LightWeightFramework.git?path=/Assets/LightWeightFramework",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "1ff5c0442e034d1ae20511132e4569563ebbb4d9"
-    },
     "com.script-utils.dotween": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween",
       "depth": 0,

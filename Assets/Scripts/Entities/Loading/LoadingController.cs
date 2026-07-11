@@ -1,6 +1,6 @@
-﻿using EmpireAtWar.Models.Loading;
+using EmpireAtWar.Models.Loading;
 using EmpireAtWar.Services.SceneService;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Loading

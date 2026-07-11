@@ -1,10 +1,10 @@
-﻿using EmpireAtWar.Commands;
+using EmpireAtWar.Commands;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection

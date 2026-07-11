@@ -1,6 +1,6 @@
-﻿using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Game

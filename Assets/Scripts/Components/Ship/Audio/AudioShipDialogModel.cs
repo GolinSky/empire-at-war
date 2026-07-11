@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;

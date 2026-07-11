@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.MiniMap;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

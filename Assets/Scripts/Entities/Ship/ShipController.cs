@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Initialiaze;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Ship

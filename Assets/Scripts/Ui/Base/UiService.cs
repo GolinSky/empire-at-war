@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Services.Location;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Services.Location;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Ui.Base
 {

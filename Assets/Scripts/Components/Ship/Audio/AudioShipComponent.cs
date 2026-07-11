@@ -1,10 +1,10 @@
-﻿using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
-using LightWeightFramework.Command;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;

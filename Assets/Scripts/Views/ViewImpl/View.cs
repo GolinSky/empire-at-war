@@ -1,10 +1,8 @@
 using EmpireAtWar.ViewComponents;
-using LightWeightFramework.Model;
-using LightWeightFramework.Components;
-using LightWeightFramework.Command;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
-using ViewComponent = LightWeightFramework.Components.ViewComponents.ViewComponent;
+using ViewComponent = EmpireAtWar.Mvc.ViewComponent;
 
 namespace EmpireAtWar.Views.ViewImpl
 {

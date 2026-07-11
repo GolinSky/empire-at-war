@@ -1,10 +1,11 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
 

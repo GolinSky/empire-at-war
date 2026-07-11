@@ -1,16 +1,15 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.CoroutineService;
-using LightWeightFramework.Components.Components;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.AiComponent
 {
-    public class EnemyShipStateMachine: Component, IInitializable, ILateDisposable, ITickable
+    public class EnemyShipStateMachine: FrameworkComponent, IInitializable, ILateDisposable, ITickable
     {
         private const float DELAY_TIME = 5f;
         private readonly IMapModelObserver _mapModelObserver;

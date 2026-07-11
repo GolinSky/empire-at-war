@@ -1,6 +1,6 @@
-﻿using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Battle;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Services.BattleService

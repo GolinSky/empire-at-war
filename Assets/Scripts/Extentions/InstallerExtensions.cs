@@ -1,6 +1,5 @@
 using System;
-using LightWeightFramework.Model;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

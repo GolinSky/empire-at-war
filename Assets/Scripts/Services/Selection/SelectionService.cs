@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using UnityEngine;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using Zenject;
 
 namespace EmpireAtWar.Services.Battle

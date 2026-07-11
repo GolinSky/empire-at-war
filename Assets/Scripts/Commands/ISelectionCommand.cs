@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Services.NavigationService;
-using LightWeightFramework.Command;
+using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Commands
 {

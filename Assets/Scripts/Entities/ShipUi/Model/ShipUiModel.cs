@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using EmpireAtWar.Models.Factions;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Services.NavigationService;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.Serialization;
 

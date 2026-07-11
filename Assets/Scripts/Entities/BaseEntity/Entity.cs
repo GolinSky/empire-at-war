@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.ViewComponents.Health;
-using LightWeightFramework.Components.Components;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Utilities.ScriptUtils.Time;

@@ -1,6 +1,6 @@
 using System;
 using EmpireAtWar.Models.SkirmishCamera;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 

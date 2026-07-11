@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
@@ -7,7 +7,7 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Views.Reinforcement;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Reinforcement

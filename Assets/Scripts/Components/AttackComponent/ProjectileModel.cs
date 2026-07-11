@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using LightWeightFramework.Model;
+using System.Collections.Generic;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 
