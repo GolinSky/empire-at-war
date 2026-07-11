@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Commands.Camera;
 using UnityEngine;
+using System;
 using LightWeightFramework.Components.Service;
 
 namespace EmpireAtWar.Services.Camera
@@ -46,12 +47,17 @@ namespace EmpireAtWar.Services.Camera
 
         public void MoveTo(Vector3 worldPoint)
         {
+            if (_cameraCommand == null)
+            {
+                throw new InvalidOperationException("A camera command must be registered before moving the camera.");
+            }
+
             _cameraCommand.MoveTo(worldPoint);
         }
 
         public void AddCommand(ICameraCommand cameraCommand)
         {
-            _cameraCommand = cameraCommand;
+            _cameraCommand = cameraCommand ?? throw new ArgumentNullException(nameof(cameraCommand));
         }
 
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
