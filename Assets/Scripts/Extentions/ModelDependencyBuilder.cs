@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Components.Repository;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Extentions

@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using UnityEngine;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Economy
 {

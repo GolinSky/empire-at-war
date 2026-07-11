@@ -1,9 +1,9 @@
-﻿using System.Linq;
+using System.Linq;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
-using LightWeightFramework.Components.Components;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;

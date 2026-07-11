@@ -1,8 +1,8 @@
-﻿using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.SceneService;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Game
 {

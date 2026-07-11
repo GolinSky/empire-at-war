@@ -4,7 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;

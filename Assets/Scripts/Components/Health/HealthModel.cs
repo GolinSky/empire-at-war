@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
@@ -6,7 +6,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 using Zenject;

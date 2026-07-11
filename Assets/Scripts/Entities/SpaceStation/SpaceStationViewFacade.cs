@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

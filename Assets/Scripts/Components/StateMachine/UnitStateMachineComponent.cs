@@ -1,16 +1,15 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using LightWeightFramework.Components.Components;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.StateMachine
 {
-    public class UnitStateMachineComponent: Component, IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
+    public class UnitStateMachineComponent: FrameworkComponent, IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
     {
         private readonly ISelectionService _selectionService;
         private readonly ISelectionModelObserver _selectionModelObserver;

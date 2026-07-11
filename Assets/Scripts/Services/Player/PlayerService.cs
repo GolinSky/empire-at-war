@@ -1,8 +1,8 @@
-﻿using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Services.Player

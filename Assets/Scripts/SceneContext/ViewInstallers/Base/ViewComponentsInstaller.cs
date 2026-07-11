@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Views.ViewImpl;
-using LightWeightFramework.Components.ViewComponents;
+using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar

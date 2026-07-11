@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Repository
 {

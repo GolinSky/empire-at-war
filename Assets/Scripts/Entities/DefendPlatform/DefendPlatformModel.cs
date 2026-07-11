@@ -1,9 +1,9 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Ship;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.DefendPlatform

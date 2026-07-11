@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using LightWeightFramework.Components.Service;
+using System.Collections.Generic;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Ship
 {

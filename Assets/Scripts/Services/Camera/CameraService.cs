@@ -1,7 +1,7 @@
-﻿using EmpireAtWar.Commands.Camera;
+using EmpireAtWar.Commands.Camera;
 using UnityEngine;
 using System;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Camera
 {

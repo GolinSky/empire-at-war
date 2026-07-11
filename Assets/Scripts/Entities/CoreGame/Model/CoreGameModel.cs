@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using EmpireAtWar.Commands.Game;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.SkirmishGame

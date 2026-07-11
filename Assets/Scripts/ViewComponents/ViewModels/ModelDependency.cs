@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Views.ViewImpl;
-using LightWeightFramework.Model;
+using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents

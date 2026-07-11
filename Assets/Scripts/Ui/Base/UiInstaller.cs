@@ -1,5 +1,5 @@
-﻿using System;
-using LightWeightFramework.Components.Repository;
+using System;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;

@@ -1,5 +1,5 @@
-﻿using System;
-using LightWeightFramework.Components.Service;
+using System;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.IdGeneration
 {

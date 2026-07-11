@@ -1,4 +1,4 @@
-﻿using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Radar

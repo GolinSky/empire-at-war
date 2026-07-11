@@ -1,5 +1,5 @@
-﻿using System;
-using LightWeightFramework.Model;
+using System;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Selection

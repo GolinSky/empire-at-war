@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Views.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

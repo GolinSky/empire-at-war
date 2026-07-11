@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using UnityEngine;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.InputService
 {

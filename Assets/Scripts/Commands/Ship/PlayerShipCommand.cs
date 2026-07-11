@@ -1,5 +1,5 @@
 using EmpireAtWar.Ship;
-using LightWeightFramework.Command;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Commands.Ship
 {

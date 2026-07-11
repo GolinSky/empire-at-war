@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models;
 using EmpireAtWar.Utils.Random;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 using Zenject;

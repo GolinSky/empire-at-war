@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Zenject;

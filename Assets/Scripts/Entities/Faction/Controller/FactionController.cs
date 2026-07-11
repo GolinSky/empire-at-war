@@ -5,7 +5,7 @@ using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ui.Base;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.Factions

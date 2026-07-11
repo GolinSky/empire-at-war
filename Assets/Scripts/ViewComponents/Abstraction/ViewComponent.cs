@@ -1,9 +1,9 @@
-﻿using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.ViewComponents
 {
-    public abstract class ViewComponent: LightWeightFramework.Components.ViewComponents.ViewComponent
+    public abstract class ViewComponent: EmpireAtWar.Mvc.ViewComponent
     {
         [Inject]
         private IModelObserver InjectedModelObserver { get; }

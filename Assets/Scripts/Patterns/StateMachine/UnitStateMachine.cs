@@ -1,5 +1,5 @@
-﻿using EmpireAtWar.Components.AttackComponent;
-using LightWeightFramework.Model;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 

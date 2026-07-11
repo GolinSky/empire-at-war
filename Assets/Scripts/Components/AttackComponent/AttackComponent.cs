@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +6,7 @@ using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
-using LightWeightFramework.Components.Components;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;

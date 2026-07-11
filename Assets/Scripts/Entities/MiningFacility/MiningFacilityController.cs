@@ -1,7 +1,6 @@
-﻿using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Command;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Entities.MiningFacility

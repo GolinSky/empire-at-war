@@ -17,7 +17,7 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Ui.Base;
-using LightWeightFramework.Components.Repository;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
