@@ -15,9 +15,8 @@ namespace EmpireAtWar.Views.MiniMap
     {
         Vector2 GetPosition(Vector3 worldPos);
     }
-    public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerMoveHandler, IPointerEnterHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
+    public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
     {
-        private const float DELTA_OFFSET = 0.5f;
         private const float HIGHLIGHT_DURATION = 1f;
         private const float HIGHLIGHT_MAP_ALPHA = 0.1f;
         private const float HIGHLIGHT_MARK_ALPHA = 1f;
@@ -97,34 +96,51 @@ namespace EmpireAtWar.Views.MiniMap
             return miniMapPos;
         }
         
-        public void OnPointerMove(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData eventData)
         {
-            if(!_isInteractable) return;
-            if(Model.IsInputBlocked) return;
-            
-            if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position))
+            if (eventData.button != PointerEventData.InputButton.Left)
             {
-                mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
-                DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
+                return;
+            }
+
+            MoveCamera(eventData);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            MoveCamera(eventData);
+        }
+
+        private void MoveCamera(PointerEventData eventData)
+        {
+            if (!_isInteractable || Model.IsInputBlocked) return;
+
+            UnityEngine.Camera eventCamera = eventData.pressEventCamera;
+            if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position, eventCamera))
+            {
                 return;
             }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 miniMapRectTransform,
                 eventData.position,
-                null,
+                eventCamera,
                 out Vector2 localPoint);
 
-            Vector2 percentage;
-            percentage.x = localPoint.x / MiniMapRect.width + DELTA_OFFSET;
-            percentage.y = localPoint.y / MiniMapRect.height + DELTA_OFFSET;
+            float x = Mathf.InverseLerp(MiniMapRect.xMin, MiniMapRect.xMax, localPoint.x);
+            float y = Mathf.InverseLerp(MiniMapRect.yMin, MiniMapRect.yMax, localPoint.y);
 
             Vector3 worldPoint = new Vector3
             {
-                x = Mathf.Lerp(_mapRange.Min.x, _mapRange.Max.x, Mathf.Abs(percentage.x)),
-                z = Mathf.Lerp(_mapRange.Min.y, _mapRange.Max.y, Mathf.Abs(percentage.y))  
+                x = Mathf.Lerp(_mapRange.Min.x, _mapRange.Max.x, x),
+                z = Mathf.Lerp(_mapRange.Min.y, _mapRange.Max.y, y)
             };
-            
+
             Command.MoveTo(worldPoint);
         }
 
@@ -135,6 +151,14 @@ namespace EmpireAtWar.Views.MiniMap
 
             DoFade(HIGHLIGHT_MARK_ALPHA, HIGHLIGHT_DURATION);
             mapImage.DOFade(HIGHLIGHT_MAP_ALPHA, HIGHLIGHT_DURATION);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_isInteractable) return;
+
+            mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
+            DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }
 
 

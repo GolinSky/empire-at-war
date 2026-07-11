@@ -12,9 +12,6 @@ namespace EmpireAtWar.Entities.SkirmishCamera
     {
         private readonly ICameraService _cameraService;
         private readonly IInputService _inputService;
-        private Vector3 _translateDirection;
-        private Vector3 _cameraPosition;
-        private bool _moved;
         [Inject(Id = EntityBindType.ViewTransform)]
         private Transform Transform { get; }
 
@@ -32,7 +29,6 @@ namespace EmpireAtWar.Entities.SkirmishCamera
 
         public void Initialize()
         {
-            _inputService.OnInput += HandleInput;
             _inputService.OnSwipe += OnSwipe;
             _inputService.OnZoom += ZoomCamera;
         }
@@ -40,7 +36,6 @@ namespace EmpireAtWar.Entities.SkirmishCamera
 
         public void LateDispose()
         {
-            _inputService.OnInput -= HandleInput;
             _inputService.OnSwipe -= OnSwipe;
             _inputService.OnZoom -= ZoomCamera;
         }
@@ -54,26 +49,6 @@ namespace EmpireAtWar.Entities.SkirmishCamera
             Model.CameraPositionUsingTween = ClampPosition(move+Position);
         }
         
-        private void ZoomCamera(InputType inputType, Touch firstTouch, Touch secondTouch)
-        {
-            if (inputType != InputType.CameraInput) return;
-
-            Vector2 touchZeroPrevPos = firstTouch.position - firstTouch.deltaPosition;
-            Vector2 touchOnePrevPos = secondTouch.position - secondTouch.deltaPosition;
-
-            float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-            float touchDeltaMag = (firstTouch.position - secondTouch.position).magnitude;
-
-            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
-
-            Vector3 newPos = _cameraService.CameraPosition - _cameraService.CameraForward * deltaMagnitudeDiff * Model.ZoomSpeed * Time.unscaledDeltaTime;
-            if(Model.ZoomRange.IsInRange(newPos.y))
-            {
-                newPos.y = Model.ZoomRange.Clamp(newPos.y);
-                Model.CameraPosition = ClampPosition(newPos);
-            }
-        }
-        
         private void ZoomCamera(float scrollDelta)
         {
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
@@ -85,29 +60,19 @@ namespace EmpireAtWar.Entities.SkirmishCamera
             }
         }
 
-
-        private void HandleInput(InputType inputType, TouchPhase phase, Vector2 screenPosition)
-        {
-            if (inputType != InputType.CameraInput) return;
-
-            switch (phase)
-            {
-                case TouchPhase.Moved:
-                {
-                    Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-                    Vector3 move = new Vector3(-touchDeltaPosition.x, 0, -touchDeltaPosition.y) * Model.PanSpeed * Time.unscaledDeltaTime;
-                    Model.CameraPositionUsingTween = ClampPosition(move+Position);
-                    break;
-                }
-            }
-        }
-
         public void MoveTo(Vector3 worldPoint)
         {
-            double b = Position.y * Mathf.Sin(Transform.rotation.eulerAngles.x); 
-            worldPoint.z += (float)b;
-            worldPoint.y = Position.y;
-            Model.CameraPositionUsingTween = ClampPosition(worldPoint);
+            Vector3 forward = Transform.forward;
+            Vector3 targetCameraPosition = worldPoint;
+
+            if (Mathf.Abs(forward.y) > Mathf.Epsilon)
+            {
+                float distanceToTargetPlane = (worldPoint.y - Position.y) / forward.y;
+                targetCameraPosition = worldPoint - forward * distanceToTargetPlane;
+            }
+
+            targetCameraPosition.y = Position.y;
+            Model.CameraPositionUsingTween = ClampPosition(targetCameraPosition);
         }
         
 
