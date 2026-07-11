@@ -1,25 +1,56 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Repository.Data;
 
 namespace EmpireAtWar.Repository
 {
-    public class AddressableRepository:IRepository
+    public class AddressableRepository : IRepository
     {
+        private const string MappingDataKey = nameof(AssetMappingData);
+        private AssetMappingData _mappingData;
+        private bool _mappingLoadAttempted;
+
         public TSource Load<TSource>(string key) where TSource : Object
         {
-            return Addressables.LoadAssetAsync<TSource>(key).WaitForCompletion();
+            return Addressables.LoadAssetAsync<TSource>(ResolveKey(key)).WaitForCompletion();
         }
 
         public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
         {
-            return Addressables.LoadAssetAsync<GameObject>(key).WaitForCompletion().GetComponent<TComponent>();
+            GameObject prefab = LoadPrefab(key);
+            return prefab != null ? prefab.GetComponent<TComponent>() : null;
         }
         
         
         public GameObject LoadPrefab(string key)
         {
-            return Addressables.LoadAssetAsync<GameObject>(key).WaitForCompletion();
+            return Addressables.LoadAssetAsync<GameObject>(ResolveKey(key)).WaitForCompletion();
+        }
+
+        private string ResolveKey(string key)
+        {
+            if (key == MappingDataKey)
+                return key;
+
+            AssetMappingData mappingData = GetMappingData();
+            return mappingData != null ? mappingData.GetAssetKey(key) : key;
+        }
+
+        private AssetMappingData GetMappingData()
+        {
+            if (_mappingLoadAttempted)
+                return _mappingData;
+
+            _mappingLoadAttempted = true;
+            _mappingData = Addressables
+                .LoadAssetAsync<AssetMappingData>(MappingDataKey)
+                .WaitForCompletion();
+
+            if (_mappingData == null)
+                Debug.LogWarning($"[{nameof(AddressableRepository)}] {MappingDataKey} was not found. Falling back to the requested Addressables keys.");
+
+            return _mappingData;
         }
     }
 }
