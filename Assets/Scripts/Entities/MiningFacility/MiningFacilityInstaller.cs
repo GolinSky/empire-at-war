@@ -33,6 +33,8 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(_playerType);
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.MiningFacility);
+            Container.BindInterfacesTo<EntityComponentData>()
+                .FromInstance(Repository.Load<MiningFacilityModel>(nameof(MiningFacilityModel)).ComponentData);
         }
 
         protected override void BindComponents()

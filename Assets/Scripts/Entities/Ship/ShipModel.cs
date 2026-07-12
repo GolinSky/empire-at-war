@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
@@ -13,13 +12,14 @@ namespace EmpireAtWar.Ship
 {
     public interface IShipModelObserver : IUnitModelObserver
     {
-        ParticleSystem DeathExplosionVfx { get; }
         ShipType ShipType { get; }
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
     public class ShipModel : Model, IShipModelObserver
     {
+        [Inject] public ShipType ShipType { get; }
+
         [FormerlySerializedAs("shipShipMoveModel")]
         [FormerlySerializedAs("moveModel")]
         [Header("Move Model")]
@@ -34,23 +34,6 @@ namespace EmpireAtWar.Ship
         
         [Header("Radar Model")] 
         [SerializeField] private RadarModel radarModel;
-
-        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
-        
-        [field:SerializeField] public float MinMoveCoefficient { get; private set; }
-
-        
-        [Inject]
-        public ShipType ShipType { get; }
-
-        public ShipMoveModel ShipMoveModel => shipMoveModel;
-
-        public HealthModel HealthModel => healthModel;
-
-        public AttackModel AttackModel => attackModel;
-
-        public RadarModel RadarModel => radarModel;
-
 
         protected override void Awake()
         {

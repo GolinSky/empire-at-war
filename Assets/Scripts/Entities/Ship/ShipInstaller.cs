@@ -19,7 +19,7 @@ using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public sealed class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
+    public sealed class ShipInstaller : DynamicViewInstaller<Ship, ShipModel, Ship>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
@@ -27,6 +27,7 @@ namespace EmpireAtWar.Ship
 
         protected override string ModelPathPrefix => _shipType.ToString();
         protected override string ViewPathPrefix => _shipType.ToString();
+        protected override string ViewPathPostfix => "View";
 
         [Inject]
         public void Construct(ShipType shipType, PlayerType playerType, ShipsData shipsData)
@@ -100,6 +101,10 @@ namespace EmpireAtWar.Ship
                         break;
                     }
             }
+        }
+
+        protected override void BindController()
+        {
         }
 
         protected override void OnViewCreated()

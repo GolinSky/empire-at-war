@@ -8,6 +8,7 @@ using EmpireAtWar.SpaceStation;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
@@ -18,7 +19,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         public override void InstallBindings()
         {
             Container
-                .BindFactory<PlayerType, ShipType, Vector3, ShipView, ShipFacadeFactory>()
+                .BindFactory<PlayerType, ShipType, Vector3, ShipEntity, ShipFacadeFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
                 .NonLazy();

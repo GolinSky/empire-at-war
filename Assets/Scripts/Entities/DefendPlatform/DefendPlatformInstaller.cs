@@ -33,6 +33,8 @@ namespace EmpireAtWar
             Container.BindEntityExt(_playerType);
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.DefendPlatform);
+            Container.BindInterfacesTo<EntityComponentData>()
+                .FromInstance(Repository.Load<DefendPlatformModel>(nameof(DefendPlatformModel)).ComponentData);
         }
 
         protected override void BindComponents()
