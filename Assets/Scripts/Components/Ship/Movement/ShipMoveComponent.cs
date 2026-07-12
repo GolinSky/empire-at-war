@@ -76,6 +76,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Initialize()
         {
+            lineRenderer.enabled = false;
             Model.HyperSpacePosition = _startPosition;
 
             transform.rotation = Model.StartRotation;
@@ -170,6 +171,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void ApplyMoveCoefficient(float coefficient)
         {
             Model.ApplyMoveCoefficient(coefficient);
+        }
+
+        public void HandleSelection(bool isSelected)
+        {
+            lineRenderer.enabled = isSelected;
         }
 
         private Vector3 CurrentViewPosition => transform.position;
