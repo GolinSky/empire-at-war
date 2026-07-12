@@ -23,6 +23,7 @@ namespace EmpireAtWar.SceneContext
             Container.Install<GameUnitsInstaller>();
             
             Container.BindInterfacesExt<EnemyService>();
+            Container.BindInterfacesExt<EnemyUnitCommander>();
             
             Container.BindInterfacesExt<EnemyPurchaseProcessor>();
             

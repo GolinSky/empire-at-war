@@ -27,6 +27,9 @@ namespace EmpireAtWar.Ship
     public interface IShipEntity
     {
         IShipModelObserver ModelObserver { get; }
+        PlayerType PlayerType { get; }
+
+        void AssignAttackTarget(IEntity target);
     }
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
@@ -41,12 +44,14 @@ namespace EmpireAtWar.Ship
         private ISelectionComponent _selectionComponent;
         private ISelectionService _selectionService;
         private AttackTargetState _attackTargetState;
+        private IdleState _idleState;
         private StateMachine1 _stateMachine;
         private ShipAIBrain _shipAIBrain;
         private ICoroutineService _coroutineService;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
+        private PlayerType _playerType;
         private bool _isSelected;
         private bool _isReleased;
 
@@ -58,6 +63,7 @@ namespace EmpireAtWar.Ship
         public event Action<ShipType> OnRelease;
 
         public string Id => GetType().Name;
+        public PlayerType PlayerType => _playerType;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
@@ -69,8 +75,10 @@ namespace EmpireAtWar.Ship
             ISelectionComponent selectionComponent,
             ISelectionService selectionService,
             AttackTargetState attackTargetState,
+            IdleState idleState,
             StateMachine1 stateMachine,
             ShipAIBrain shipAIBrain,
+            PlayerType playerType,
             ICoroutineService coroutineService,
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
@@ -83,8 +91,10 @@ namespace EmpireAtWar.Ship
             _selectionComponent = selectionComponent;
             _selectionService = selectionService;
             _attackTargetState = attackTargetState;
+            _idleState = idleState;
             _stateMachine = stateMachine;
             _shipAIBrain = shipAIBrain;
+            _playerType = playerType;
             _coroutineService = coroutineService;
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
@@ -98,6 +108,7 @@ namespace EmpireAtWar.Ship
 
         public void Initialize()
         {
+            _stateMachine.SetState(_idleState);
             ShipService.Add(this);
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
@@ -111,9 +122,12 @@ namespace EmpireAtWar.Ship
                 _shipMoveComponent.Stopped += _audioDialogShipComponent.HandleStopped;
             }
 
-            _coroutineService.InvokeWithDelay(
-                () => _shipAIBrain.Enable(true),
-                _shipMoveComponent.HyperSpaceDuration * 2);
+            if (_playerType == PlayerType.Opponent)
+            {
+                _coroutineService.InvokeWithDelay(
+                    () => _shipAIBrain.Enable(true),
+                    _shipMoveComponent.HyperSpaceDuration * 2);
+            }
 
             SynchronizeComponents();
         }
@@ -137,7 +151,16 @@ namespace EmpireAtWar.Ship
 
         public void Tick()
         {
+            _stateMachine.Update();
             SynchronizeComponents();
+        }
+
+        public void AssignAttackTarget(IEntity target)
+        {
+            if (_playerType == PlayerType.Opponent)
+            {
+                _shipAIBrain.AssignAttackTarget(target);
+            }
         }
 
         public void LateDispose()

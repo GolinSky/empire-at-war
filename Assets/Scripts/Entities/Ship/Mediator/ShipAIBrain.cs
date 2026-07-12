@@ -1,14 +1,12 @@
 using System.Linq;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.StateMachine;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
 using Zenject;
-using PatrolState = EmpireAtWar.Entities.Ship.StateMachine.PatrolState;
 
 namespace EmpireAtWar.Entities.Ship.Mediator
 {
@@ -20,32 +18,27 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly IHealthModelObserver _healthModel;
         private readonly IRadarComponent _radarComponent;
         private readonly AttackTargetState _attackTargetState;
-        private readonly PatrolState _patrolState;
+        private readonly IdleState _idleState;
         private readonly FleeState _fleeState;
-        private readonly IWeaponComponent _weaponComponent;
-        private readonly PlayerType _playerType;
 
         private float _decisionTimer = 0f;
         private bool _isEnabled = false;
+        private IEntity _assignedTarget;
 
         public ShipAIBrain(
             StateMachine1 stateMachine,
-           IHealthComponent healthComponent,
+            IHealthComponent healthComponent,
             IRadarComponent radarComponent,
             AttackTargetState attackTargetState,
-            PatrolState patrolState,
-            FleeState fleeState,
-            IWeaponComponent weaponComponent,
-            PlayerType playerType)
+            IdleState idleState,
+            FleeState fleeState)
         {
             _stateMachine = stateMachine;
             _healthModel = healthComponent.HealthModelObserver;
             _radarComponent = radarComponent;
             _attackTargetState = attackTargetState;
-            _patrolState = patrolState;
+            _idleState = idleState;
             _fleeState = fleeState;
-            _weaponComponent = weaponComponent;
-            _playerType = playerType;
         }
 
         public void Enable(bool isEnabled)
@@ -53,11 +46,14 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _isEnabled = isEnabled;
         }
 
+        public void AssignAttackTarget(IEntity target)
+        {
+            _assignedTarget = target;
+        }
+
         public void Tick()
         {
             if (!_isEnabled) return;
-            
-            _stateMachine.Update();
 
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer > 0) return;
@@ -80,37 +76,41 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             // Clean up radar enemies
             for (int i = _radarComponent.Enemies.Count - 1; i >= 0; i--)
             {
-                var targetHealth = _radarComponent.Enemies[i].Model.GetModelObserver<IHealthModelObserver>();
-                if (targetHealth.IsDestroyed)
+                var radarEnemyHealth = _radarComponent.Enemies[i].Model.GetModelObserver<IHealthModelObserver>();
+                if (radarEnemyHealth.IsDestroyed)
                 {
                     _radarComponent.Enemies.RemoveAt(i);
                 }
             }
 
-            // 2. Enemy detection
             var enemies = _radarComponent.Enemies.Where(e => !e.Model.GetModelObserver<IHealthModelObserver>().IsDestroyed).ToList();
 
-            if (enemies.Count > 2) // "a lot of enemies - run"
+            if (enemies.Count > 2)
             {
                 SetState(_fleeState);
                 return;
             }
 
-            if (enemies.Count > 0)
+            if (_assignedTarget == null)
             {
-                // "if one enemy or weak - attack and moving to enemy target if its runs away"
-                var target = enemies.First();
-                if (!_attackTargetState.IsTheSameTarget(target))
-                {
-                    _attackTargetState.SetData(target);
-                }
-
-                SetState(_attackTargetState);
+                SetState(_idleState);
                 return;
             }
 
-            // If no threats and no targets, Patrol
-            SetState(_patrolState);
+            IHealthModelObserver targetHealth = _assignedTarget.Model.GetModelObserver<IHealthModelObserver>();
+            if (targetHealth.IsDestroyed || !targetHealth.HasUnits)
+            {
+                _assignedTarget = null;
+                SetState(_idleState);
+                return;
+            }
+
+            if (!_attackTargetState.IsTheSameTarget(_assignedTarget))
+            {
+                _attackTargetState.SetData(_assignedTarget);
+            }
+
+            SetState(_attackTargetState);
         }
 
         private void SetState(IBaseState state)
