@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using Zenject;
 
@@ -12,13 +13,15 @@ namespace EmpireAtWar.Entities.MiningFacility
     {
     }
 
-    public class MiningFacility : View<IMiningFacilityModelObserver>, IController, IMiningFacilityCommand,
-        IIncomeProvider
+    public class MiningFacility : MonoBehaviour, IController, IMiningFacilityCommand, IIncomeProvider,
+        IInitializable, ILateDisposable, IEntityLifecycle
     {
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
+        private IReadOnlyList<IMonoComponent> _monoComponents;
+        private bool _isReleased;
 
         [Inject] private MiningFacilityModel RootModel { get; }
 
@@ -30,12 +33,14 @@ namespace EmpireAtWar.Entities.MiningFacility
             IEconomyProvider economyProvider,
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
-            Vector3 startPosition)
+            Vector3 startPosition,
+            List<IMonoComponent> monoComponents)
         {
             _economyProvider = economyProvider;
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
             _startPosition = startPosition;
+            _monoComponents = monoComponents;
         }
 
         public IModel GetModel()
@@ -43,7 +48,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             return RootModel;
         }
 
-        protected override void OnInitialize()
+        public void Initialize()
         {
             transform.position = _startPosition;
             _healthComponent.SetMovementState(false);
@@ -52,8 +57,24 @@ namespace EmpireAtWar.Entities.MiningFacility
             _economyProvider.AddProvider(this);
         }
 
-        protected override void OnDispose()
+        public void LateDispose()
         {
+            Release();
+        }
+
+        public void Release()
+        {
+            if (_isReleased)
+            {
+                return;
+            }
+
+            _isReleased = true;
+            foreach (IMonoComponent component in _monoComponents)
+            {
+                component.Release();
+            }
+
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);
         }

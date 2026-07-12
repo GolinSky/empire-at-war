@@ -16,10 +16,12 @@ using Zenject;
 
 namespace EmpireAtWar
 {
-    public class DefendPlatformInstaller : DynamicViewInstaller<DefendPlatformController, DefendPlatformModel, DefendPlatformView>
+    public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformModel>
     {
         private PlayerType _playerType;
         private DefendPlatformType _miningFacilityType;
+
+        protected override string PrefabPathPostfix => "View";
 
         [Inject]
         public void Constructor(DefendPlatformType miningFacilityType, PlayerType playerType)
@@ -50,20 +52,21 @@ namespace EmpireAtWar
                 .FromComponentsInHierarchy()
                 .AsCached();
 
-            Container
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<AttackComponent>()
-                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
-            
-            switch (_playerType)
-            {
-                case PlayerType.Player:
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    break;
-                case PlayerType.Opponent:
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    break;
-            }
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SimpleMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<AttackComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<UnitStateMachineComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
             
             //entity commands
             Container
@@ -71,10 +74,10 @@ namespace EmpireAtWar
                 .BindInterfacesExt<HealthCommand>();
         }
         
-        protected override void OnViewCreated()
+        protected override void OnEntityCreated()
         {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

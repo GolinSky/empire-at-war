@@ -4,5 +4,5 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatformFacade:PlaceholderFactory<PlayerType,DefendPlatformType,Vector3,DefendPlatformView>{}
+    public class DefendPlatformFacade:PlaceholderFactory<PlayerType,DefendPlatformType,Vector3,DefendPlatform>{}
 }

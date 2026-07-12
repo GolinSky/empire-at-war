@@ -13,7 +13,7 @@ namespace EmpireAtWar.Services.Player
 
     public class PlayerService : Service, IInitializable, IPlayerService
     {
-        private readonly SpaceStationViewFacade _spaceStationViewFacade;
+        private readonly SpaceStationFacade _spaceStationViewFacade;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IUiService _uiService;
 
@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Player
         private FactionType FactionType { get; }
         
         public PlayerService(
-            SpaceStationViewFacade spaceStationViewFacade,
+            SpaceStationFacade spaceStationViewFacade,
             LazyInject<IMapModelObserver> mapModel,
             IUiService uiService)
         {

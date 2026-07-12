@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
 
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.AttackComponent
         
         float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
-        void InjectDependency(AttackModelDependency attackModelDependency);
+        void InjectDependency(IReadOnlyDictionary<WeaponType, List<WeaponHardPointView>> turretDictionary);
     }
 
     [Serializable]
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
-        List<IHardPointModel> IAttackModelObserver.Targets => _shipUnitViews;
+        public List<IHardPointModel> Targets => _shipUnitViews;
 
         public List<IHardPointModel> MainUnitsTarget
         {
@@ -110,9 +110,9 @@ namespace EmpireAtWar.Components.AttackComponent
             return WeaponDamageModel.GetDamageModel(weaponType).Distance;
         }
 
-        public void InjectDependency(AttackModelDependency attackModelDependency)
+        public void InjectDependency(IReadOnlyDictionary<WeaponType, List<WeaponHardPointView>> turretDictionary)
         {
-            foreach (var keyValuePair in attackModelDependency.TurretDictionary)
+            foreach (var keyValuePair in turretDictionary)
             {
                 WeaponDictionary.Add(keyValuePair.Key, keyValuePair.Value.Count);
             }

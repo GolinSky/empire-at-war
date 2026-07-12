@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Collections;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
+using Utilities.ScriptUtils.EditorSerialization;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
@@ -22,21 +25,39 @@ namespace EmpireAtWar.Components.AttackComponent
     }
 
     [Obsolete]
-    public class AttackComponent : BaseComponent<AttackModel>, IAttackComponent, IAttackCommand, ILateTickable, ILateDisposable, IDisposable
+    public class AttackComponent : MonoComponent<AttackModel>, IAttackComponent, IAttackCommand, IInitializable,
+        ILateTickable, ILateDisposable, IDisposable
     {
-        private readonly ICoroutineService _coroutineService;
-        private readonly IDefaultMoveModelObserver _defaultMoveModelObserver;
+        [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
+
+        private ICoroutineService _coroutineService;
+        private IDefaultMoveModelObserver _defaultMoveModelObserver;
 
         private List<Coroutine> _coroutines = new List<Coroutine>();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private AttackData _mainAttackData = null;
         private float _endTimeTween;
+        private Coroutine _mainTargetAttackFlow;
+        private Coroutine _commonAttackFlow;
+        private bool _isDead;
+        private bool _isInitialized;
 
+        public Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
 
-        public AttackComponent(IModel model, ICoroutineService coroutineService) : base(model)
+        [Inject]
+        private void Construct(IModel model, ICoroutineService coroutineService)
         {
+            SetModel(model.GetModel<AttackModel>());
             _coroutineService = coroutineService;
             _defaultMoveModelObserver = model.GetModelObserver<IDefaultMoveModelObserver>();
+        }
+
+        public void Initialize()
+        {
+            Model.InjectDependency(TurretDictionary);
+            Model.OnMainUnitSwitched += HandleNewMainTarget;
+            _isInitialized = true;
+            StartAttackFlows();
         }
 
         public void AddTargets(AttackData[] attackDataArray)
@@ -189,6 +210,21 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public void LateDispose()
         {
+            Release();
+        }
+
+        public override void Release()
+        {
+            if (_isDead)
+            {
+                return;
+            }
+
+            _isDead = true;
+            Model.OnMainUnitSwitched -= HandleNewMainTarget;
+            StopIfRunning(ref _mainTargetAttackFlow);
+            StopIfRunning(ref _commonAttackFlow);
+
             for (var i = 0; i < _attackDataList.Count; i++)
             {
                 RemoveAttackData(_attackDataList[i]);
@@ -208,7 +244,97 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public void Dispose()
         {
-            // TODO release managed resources here
+            Release();
+        }
+
+        private void HandleNewMainTarget()
+        {
+            if (_isDead || !isActiveAndEnabled || Model.MainUnitsTarget == null ||
+                Model.MainUnitsTarget.Count == 0)
+            {
+                return;
+            }
+
+            StopIfRunning(ref _mainTargetAttackFlow);
+            _mainTargetAttackFlow = StartCoroutine(AttackFlowLoop(() => Model.MainUnitsTarget));
+        }
+
+        private void OnEnable()
+        {
+            if (_isInitialized)
+            {
+                StartAttackFlows();
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (!_isInitialized || _isDead)
+            {
+                return;
+            }
+
+            StopIfRunning(ref _mainTargetAttackFlow);
+            StopIfRunning(ref _commonAttackFlow);
+        }
+
+        private void StartAttackFlows()
+        {
+            if (!isActiveAndEnabled || _commonAttackFlow != null)
+            {
+                return;
+            }
+
+            _commonAttackFlow = StartCoroutine(AttackFlowLoop(() => Model.Targets));
+            HandleNewMainTarget();
+        }
+
+        private IEnumerator AttackFlowLoop(Func<List<IHardPointModel>> targetProvider)
+        {
+            while (!_isDead)
+            {
+                List<IHardPointModel> validTargets = targetProvider()?
+                    .Where(x => !x.IsDestroyed)
+                    .ToList()
+                    .GetShuffledCollection() ?? new List<IHardPointModel>();
+
+                if (validTargets.Count == 0)
+                {
+                    yield return new WaitUntil(() => targetProvider()?.Any(x => !x.IsDestroyed) == true);
+                    continue;
+                }
+
+                foreach (KeyValuePair<WeaponType, List<WeaponHardPointView>> pair in TurretDictionary)
+                {
+                    foreach (WeaponHardPointView turret in pair.Value)
+                    {
+                        if (turret.Destroyed || turret.IsBusy)
+                        {
+                            continue;
+                        }
+
+                        IHardPointModel target = validTargets.FirstOrDefault(
+                            candidate => !candidate.IsDestroyed && turret.CanAttack(candidate.Position));
+                        if (target == null)
+                        {
+                            continue;
+                        }
+
+                        yield return new WaitForSeconds(Model.DelayBetweenAttack);
+                    }
+                }
+            }
+        }
+
+        private void StopIfRunning(ref Coroutine coroutine)
+        {
+            if (coroutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(coroutine);
+            coroutine = null;
         }
 
 

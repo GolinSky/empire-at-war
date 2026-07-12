@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private IUnitSpawnStrategy _currentStrategy;
         private Vector3 _stationPosition;
         private SpaceStationEntity _spaceStation;
-        private readonly SpaceStationViewFacade _spaceStationViewFacade;
+        private readonly SpaceStationFacade _spaceStationViewFacade;
         private readonly EnemyPurchaseProcessor _enemyPurchaseProcessor;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IUnitRequestFactory _unitRequestFactory;
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
-            SpaceStationViewFacade spaceStationViewFacade,
+            SpaceStationFacade spaceStationViewFacade,
             EnemyPurchaseProcessor enemyPurchaseProcessor, 
             IUnitRequestFactory unitRequestFactory,
             EnemyFactionModel enemyFactionModel)

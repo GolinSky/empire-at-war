@@ -9,17 +9,19 @@ using Zenject;
 
 namespace EmpireAtWar.Components.StateMachine
 {
-    public class UnitStateMachineComponent: FrameworkComponent, IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
+    public class UnitStateMachineComponent: MonoComponent<PureModel>, IObserver<ISelectionSubject>, IInitializable,
+        ILateDisposable, ITickable, IComponent
     {
-        private readonly ISelectionService _selectionService;
-        private readonly ISelectionModelObserver _selectionModelObserver;
+        private ISelectionService _selectionService;
+        private ISelectionModelObserver _selectionModelObserver;
 
-        private readonly UnitStateMachine _stateMachine;
-        private readonly UnitIdleState _idleState;
-        private readonly LockMainTargetState _lockMainTargetState;
+        private UnitStateMachine _stateMachine;
+        private UnitIdleState _idleState;
+        private LockMainTargetState _lockMainTargetState;
         
         
-        public UnitStateMachineComponent(
+        [Inject]
+        private void Construct(
             IModel model,
             IAttackComponent attackComponent,
             ISelectionService selectionService,
@@ -42,6 +44,11 @@ namespace EmpireAtWar.Components.StateMachine
         }
 
         public void LateDispose()
+        {
+            Release();
+        }
+
+        public override void Release()
         {
             _selectionService.RemoveObserver(this);
         }

@@ -16,13 +16,12 @@ using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.MiningFacility
 {
-    public class MiningFacilityInstaller : DynamicViewInstaller<MiningFacilityEntity, MiningFacilityModel,
-        MiningFacilityEntity>
+    public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityModel>
     {
         private PlayerType _playerType;
         private MiningFacilityType _miningFacilityType;
 
-        protected override string ViewPathPostfix => "View";
+        protected override string PrefabPathPostfix => "View";
 
         [Inject]
         public void Construct(PlayerType playerType, MiningFacilityType miningFacilityType)
@@ -53,17 +52,15 @@ namespace EmpireAtWar.MiningFacility
                 .FromComponentsInHierarchy()
                 .AsCached();
 
-            Container.BindInterfacesExt<RadarComponent>();
-            
-            switch (_playerType)
-            {
-                case PlayerType.Player:
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    break;
-                case PlayerType.Opponent:
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    break;
-            }
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SimpleMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
             
             //entity commands
             Container
@@ -72,14 +69,10 @@ namespace EmpireAtWar.MiningFacility
 
         }
         
-        protected override void OnViewCreated()
+        protected override void OnEntityCreated()
         {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
-        }
-
-        protected override void BindController()
-        {
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
 
     }

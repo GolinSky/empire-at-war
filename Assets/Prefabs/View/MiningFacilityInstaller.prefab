@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   _scriptableObjectInstallers: []
   _monoInstallers:
   - {fileID: 6357934977312310002}
@@ -61,7 +61,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d9904cfbccc479d8f66f85787883791, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bindViewComponents: 1
-  bindMonoComponent: 1
+  m_Name:
+  m_EditorClassIdentifier:

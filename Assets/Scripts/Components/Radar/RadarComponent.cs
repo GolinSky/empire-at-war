@@ -2,6 +2,7 @@ using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
+using Utilities.ScriptUtils.Layer;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -15,15 +16,15 @@ namespace EmpireAtWar.Components.Radar
         ObservableList<IEntity> Enemies { get; }
         void SetPosition(Vector3 position);
     }
-    public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable, IRadarComponent
+    public class RadarComponent : MonoComponent<RadarModel>, IInitializable, IFixedTickable, IRadarComponent
     {
         private const int HIT_LIMIT = 5;
         private const float OFFSET_DISTANCE = 100f;
 
-        private readonly IEntityLocator _entityLocator;
-        private readonly ITimer _timer;
-        private readonly Vector3 _offset;
-        private readonly Vector3 _halfExtents;
+        private IEntityLocator _entityLocator;
+        private ITimer _timer;
+        private Vector3 _offset;
+        private Vector3 _halfExtents;
 
         private int _hitAmount;
 
@@ -32,13 +33,26 @@ namespace EmpireAtWar.Components.Radar
         private Vector3 _position;
         public ObservableList<IEntity> Enemies => Model.Enemies;
         private Vector3 CenterCast => _position - _offset;
-        public RadarComponent(IModel model, IEntityLocator entityLocator) : base(model)
+        [Inject]
+        private void Construct(IModel model, IEntityLocator entityLocator)
         {
+            SetModel(model.GetModel<RadarModel>());
             _entityLocator = entityLocator;
+        }
+
+        public void Initialize()
+        {
             _offset = Vector3.up * OFFSET_DISTANCE;
             _halfExtents = Vector3.one * Model.Range;
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
+
+            int layer = Model.LayerMask.ToSingleLayer();
+            gameObject.layer = layer;
+            foreach (Transform child in gameObject.GetComponentsInChildren<Transform>())
+            {
+                child.gameObject.layer = layer;
+            }
         }
 
         public void SetPosition(Vector3 position)
@@ -88,6 +102,17 @@ namespace EmpireAtWar.Components.Radar
         public void SetMediator(IUnitMediator unitMediator)
         {
             _unitMediator = unitMediator;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(CenterCast, _halfExtents * 2f);
+            }
+#endif
         }
     }
 }

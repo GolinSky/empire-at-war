@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
@@ -17,7 +18,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.Initialiaze;
-using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -29,8 +29,9 @@ namespace EmpireAtWar.Ship
         IShipModelObserver ModelObserver { get; }
     }
 
-    public class Ship : View<IShipModelObserver>, IController, IShipEntity, ILateIInitializable,
-        ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator, IObserver<ISelectionSubject>
+    public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
+        ILateDisposable, ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator,
+        IObserver<ISelectionSubject>, IEntityLifecycle
     {
         private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
@@ -45,7 +46,9 @@ namespace EmpireAtWar.Ship
         private ICoroutineService _coroutineService;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
+        private IReadOnlyList<IMonoComponent> _monoComponents;
         private bool _isSelected;
+        private bool _isReleased;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -55,7 +58,7 @@ namespace EmpireAtWar.Ship
         public event Action<ShipType> OnRelease;
 
         public string Id => GetType().Name;
-        IShipModelObserver IShipEntity.ModelObserver => Model;
+        IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
         private void Construct(
@@ -70,7 +73,8 @@ namespace EmpireAtWar.Ship
             ShipAIBrain shipAIBrain,
             ICoroutineService coroutineService,
             IAudioShipComponent audioShipComponent,
-            [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent)
+            [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
+            List<IMonoComponent> monoComponents)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -84,6 +88,7 @@ namespace EmpireAtWar.Ship
             _coroutineService = coroutineService;
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
+            _monoComponents = monoComponents;
         }
 
         public IModel GetModel()
@@ -91,7 +96,7 @@ namespace EmpireAtWar.Ship
             return RootModel;
         }
 
-        protected override void OnInitialize()
+        public void Initialize()
         {
             ShipService.Add(this);
             _radarComponent.SetMediator(this);
@@ -135,8 +140,24 @@ namespace EmpireAtWar.Ship
             SynchronizeComponents();
         }
 
-        protected override void OnDispose()
+        public void LateDispose()
         {
+            Release();
+        }
+
+        public void Release()
+        {
+            if (_isReleased)
+            {
+                return;
+            }
+
+            _isReleased = true;
+            foreach (IMonoComponent component in _monoComponents)
+            {
+                component.Release();
+            }
+
             ShipService.Remove(this);
             _selectionService.RemoveObserver(this);
 
