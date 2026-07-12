@@ -8,7 +8,7 @@ using AudioType = EmpireAtWar.Services.Audio.AudioType;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioDialogShipComponent
+    public interface IAudioDialogShipComponent : IComponent
     {
         void HandleEnemyDetected();
         void HandleStopped();
@@ -17,19 +17,21 @@ namespace EmpireAtWar.Components.Ship.Audio
         void HandleSelection(bool isSelected);
     }
 
-    public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IAudioDialogShipComponent, IInitializable,
+    public class AudioDialogShipComponent: MonoComponent<AudioShipDialogModel>, IAudioDialogShipComponent, IInitializable,
         ILateDisposable
     {
         private const float MIN_ALARM_DELAY = 30f;
         private const float MAX_ALARM_DELAY = 60f;
         
-        private readonly IAudioService _audioService;
-        private readonly PlayerType _playerType;
-        private readonly ITimer _alarmRadarTimer;
+        private IAudioService _audioService;
+        private PlayerType _playerType;
+        private ITimer _alarmRadarTimer;
         private bool _isSelected;
 
-        public AudioDialogShipComponent(IModel model, IAudioService audioService, PlayerType playerType) : base(model)
+        [Inject]
+        private void Construct(IModel model, IAudioService audioService, PlayerType playerType)
         {
+            SetModel(model.GetModel<AudioShipDialogModel>());
             _audioService = audioService;
             _playerType = playerType;
             _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));

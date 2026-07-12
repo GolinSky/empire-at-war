@@ -3,8 +3,13 @@ using Zenject;
 
 namespace EmpireAtWar.Mvc
 {
-    public abstract class MonoComponent<TModel>: MonoBehaviour
-        where TModel : PureModel
+    public interface IMonoComponent
+    {
+        void Release();
+    }
+
+    public abstract class MonoComponent<TModel>: MonoBehaviour, IMonoComponent
+        where TModel : class
     {
         public string Id { get; }// remove this
         protected TModel Model { get; private set; }
@@ -18,6 +23,10 @@ namespace EmpireAtWar.Mvc
         protected void SetModel(TModel model)
         {
             Model = model;
+        }
+
+        public virtual void Release()
+        {
         }
     }
 }

@@ -1,29 +1,36 @@
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Mvc;
+using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipComponent : ICommand
+    public interface IAudioShipComponent : IComponent, ICommand
     {
         void PlayHyperSpace(float hyperSpaceDuration);
         void HandleEnemyDetected();
     }
 
-    public class AudioShipComponent : BaseComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
+    public class AudioShipComponent : MonoComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
         ILateDisposable
     {
         private const float HYPER_SPACE_TIME_PERCENTAGE = 0.8f;
+
+        [SerializeField] private AudioSource source;
+
+        private ITimerPoolWrapperService _timerPoolWrapperService;
+        private IAudioService _audioService;
+        private ITimer _alarmTimer;
         
-        
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
-        private readonly IAudioService _audioService;
-        private readonly ITimer _alarmTimer;
-        
-        public AudioShipComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService, IAudioService audioService) : base(model)
+        [Inject]
+        private void Construct(
+            IModel model,
+            ITimerPoolWrapperService timerPoolWrapperService,
+            IAudioService audioService)
         {
+            SetModel(model.GetModel<AudioShipModel>());
             _timerPoolWrapperService = timerPoolWrapperService;
             _audioService = audioService;
             _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
@@ -31,10 +38,18 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public void Initialize()
         {
+            Model.OnOneShotPlayed += PlayOneShot;
+            PlayLoop(Model.AmbientClip);
         }
 
         public void LateDispose()
         {
+            Release();
+        }
+
+        public override void Release()
+        {
+            Model.OnOneShotPlayed -= PlayOneShot;
         }
         
         public void HandleEnemyDetected()
@@ -54,6 +69,19 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
                 hyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
+        }
+
+        private void PlayOneShot(AudioClip clip)
+        {
+            source.PlayOneShot(clip);
+        }
+
+        private void PlayLoop(AudioClip clip)
+        {
+            source.Stop();
+            source.clip = clip;
+            source.loop = true;
+            source.Play(0);
         }
     }
 }

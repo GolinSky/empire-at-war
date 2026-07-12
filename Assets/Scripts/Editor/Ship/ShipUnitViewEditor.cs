@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Ship;
@@ -66,7 +67,7 @@ namespace EmpireAtWar.Editor.Ship
         public static void RefactorHardPoints()
         {
             Object selectionObject = Selection.objects.FirstOrDefault();
-            AttackViewComponent attackViewComponent = selectionObject.GetComponent<AttackViewComponent>();
+            AttackComponent attackViewComponent = selectionObject.GetComponent<AttackComponent>();
 
             List<TurretView> turretViews = attackViewComponent.GetComponentsInChildren<TurretView>().ToList();
 
@@ -92,7 +93,7 @@ namespace EmpireAtWar.Editor.Ship
         public static void RefactorHardPoints2()
         {
             Object selectionObject = Selection.objects.FirstOrDefault();
-            AttackModelDependency attackViewComponent = selectionObject.GetComponent<AttackModelDependency>();
+            AttackComponent attackViewComponent = selectionObject.GetComponent<AttackComponent>();
 
 
             foreach (var keyValuePair in attackViewComponent.TurretDictionary)

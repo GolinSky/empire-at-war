@@ -20,15 +20,15 @@ using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public sealed class ShipInstaller : DynamicViewInstaller<Ship, ShipModel, Ship>
+    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipModel>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
         private string shipDataPath;
 
         protected override string ModelPathPrefix => _shipType.ToString();
-        protected override string ViewPathPrefix => _shipType.ToString();
-        protected override string ViewPathPostfix => "View";
+        protected override string PrefabPathPrefix => _shipType.ToString();
+        protected override string PrefabPathPostfix => "View";
 
         [Inject]
         public void Construct(ShipType shipType, PlayerType playerType, ShipsData shipsData)
@@ -68,11 +68,18 @@ namespace EmpireAtWar.Ship
                 .FromComponentsInHierarchy()
                 .AsCached();
 
-            Container
-                .BindInterfacesExt<ShipMoveComponent>()
-                //.BindInterfacesExt<AttackComponent>()
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<AudioShipComponent>();
+            Container.BindInterfacesAndSelfTo<ShipMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<AudioShipComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
 
             Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
@@ -84,9 +91,10 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                     {
-                        Container.BindInterfacesExt<PlayerSelectionComponent>();
                         Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
-                        Container.BindInterfacesExt<AudioDialogShipComponent>();
+                        Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
+                            .FromComponentsInHierarchy()
+                            .AsCached();
                         //  Container.BindInterfacesExt<PlayerShipStateMachine>();
 
                         //entity commands
@@ -99,7 +107,6 @@ namespace EmpireAtWar.Ship
                     }
                 case PlayerType.Opponent:
                     {
-                        Container.BindInterfacesExt<EnemySelectionComponent>();
                         Container.BindInterfacesExt<EnemyShipCommand>();
                         // Container.BindInterfacesExt<EnemyShipStateMachine>();
                         //entity commands
@@ -112,14 +119,10 @@ namespace EmpireAtWar.Ship
             }
         }
 
-        protected override void BindController()
+        protected override void OnEntityCreated()
         {
-        }
-
-        protected override void OnViewCreated()
-        {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

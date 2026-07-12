@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4177201223040096885}
-  - component: {fileID: 6586639590789171522}
   - component: {fileID: 1036296686938437969}
+  - component: {fileID: 3929895870231269468}
+  - component: {fileID: 4387206434606540536}
   m_Layer: 0
   m_Name: AudioViewComponent
   m_TagString: Untagged
@@ -33,19 +34,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6586639590789171522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7913764548911320896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45dcd8dd30e2476abedf0d8e36d1a581, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: {fileID: 1036296686938437969}
 --- !u!82 &1036296686938437969
 AudioSource:
   m_ObjectHideFlags: 0
@@ -58,6 +46,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: e118c1010075e5e4f8338d3298c20b50,
     type: 2}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -152,3 +141,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3929895870231269468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7913764548911320896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc88d67b11ac4163aa0ea4cd65296dce, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioShipComponent
+  source: {fileID: 1036296686938437969}
+--- !u!114 &4387206434606540536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7913764548911320896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent

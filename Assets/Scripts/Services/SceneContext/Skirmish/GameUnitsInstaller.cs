@@ -27,7 +27,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .NonLazy();
     
             Container
-                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationViewFacade>()
+                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationFacade>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
                 .NonLazy();
@@ -39,7 +39,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .NonLazy();
             
             Container
-                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatformView, DefendPlatformFacade>()
+                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFacade>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();
