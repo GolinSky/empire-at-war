@@ -59,7 +59,6 @@ namespace EmpireAtWar.SpaceStation
 
             
             Container
-                .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AttackComponent>()
                 .BindInterfacesNonLazyExt<DefaultMoveComponent>()
@@ -76,6 +75,10 @@ namespace EmpireAtWar.SpaceStation
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
         }
     }
 }
