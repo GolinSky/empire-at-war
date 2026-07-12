@@ -1,5 +1,4 @@
 using System.Linq;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
@@ -14,6 +13,7 @@ namespace EmpireAtWar.Components.Radar
     public interface IRadarComponent : IComponent, IUnitComponent
     {
         ObservableList<IEntity> Enemies { get; }
+        void SetPosition(Vector3 position);
     }
     public class RadarComponent : BaseComponent<RadarModel>, IFixedTickable, IRadarComponent
     {
@@ -21,7 +21,6 @@ namespace EmpireAtWar.Components.Radar
         private const float OFFSET_DISTANCE = 100f;
 
         private readonly IEntityLocator _entityLocator;
-        private readonly IDefaultMoveModelObserver _moveModel;
         private readonly ITimer _timer;
         private readonly Vector3 _offset;
         private readonly Vector3 _halfExtents;
@@ -30,8 +29,9 @@ namespace EmpireAtWar.Components.Radar
 
         private RaycastHit[] _raycastHits = new RaycastHit[HIT_LIMIT];
         private IUnitMediator _unitMediator;
+        private Vector3 _position;
         public ObservableList<IEntity> Enemies => Model.Enemies;
-        private Vector3 CenterCast => _moveModel.CurrentPosition - _offset;
+        private Vector3 CenterCast => _position - _offset;
         public RadarComponent(IModel model, IEntityLocator entityLocator) : base(model)
         {
             _entityLocator = entityLocator;
@@ -39,7 +39,11 @@ namespace EmpireAtWar.Components.Radar
             _halfExtents = Vector3.one * Model.Range;
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
-            _moveModel = model.GetModelObserver<IDefaultMoveModelObserver>();
+        }
+
+        public void SetPosition(Vector3 position)
+        {
+            _position = position;
         }
 
         public void FixedTick()

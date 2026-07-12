@@ -1,20 +1,23 @@
-using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Mvc;
-using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 using AudioType = EmpireAtWar.Services.Audio.AudioType;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IInitializable,
+    public interface IAudioDialogShipComponent
+    {
+        void HandleEnemyDetected();
+        void HandleStopped();
+        void HandleMove(Vector3 position);
+        void HandleAttack(Vector3 target);
+        void HandleSelection(bool isSelected);
+    }
+
+    public class AudioDialogShipComponent: BaseComponent<AudioShipDialogModel>, IAudioDialogShipComponent, IInitializable,
         ILateDisposable
     {
         private const float MIN_ALARM_DELAY = 30f;
@@ -22,9 +25,6 @@ namespace EmpireAtWar.Components.Ship.Audio
         
         private readonly IAudioService _audioService;
         private readonly PlayerType _playerType;
-        private readonly IShipMoveModelObserver _shipMoveModelObserver;
-        private readonly ISelectionModelObserver _selectionModelObserver;
-        private readonly IRadarModelObserver _radarModelObserver;
         private readonly ITimer _alarmRadarTimer;
         private bool _isSelected;
 
@@ -32,32 +32,19 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             _audioService = audioService;
             _playerType = playerType;
-            _shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
-            _radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));
             _alarmRadarTimer.StartTimer();
         }
         
         public void Initialize()
         {
-            _selectionModelObserver.OnSelected += PlaySelectionClip;
-            _shipMoveModelObserver.LookAtTargetObserver.OnChanged += PlayAttackClip;
-            _shipMoveModelObserver.TargetPositionObserver.OnChanged += PlayMoveClip;
-            _shipMoveModelObserver.OnStop += PlayDamageClip;
-            _radarModelObserver.Enemies.ItemAdded += PlayAlarmSights;
         }
 
         public void LateDispose()
         {
-            _selectionModelObserver.OnSelected -= PlaySelectionClip;
-            _shipMoveModelObserver.LookAtTargetObserver.OnChanged -= PlayAttackClip;
-            _shipMoveModelObserver.TargetPositionObserver.OnChanged -= PlayMoveClip;
-            _shipMoveModelObserver.OnStop -= PlayDamageClip;
-            _radarModelObserver.Enemies.ItemAdded -= PlayAlarmSights;
         }
 
-        private void PlayAlarmSights(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
+        public void HandleEnemyDetected()
         {
             if (_isSelected)
             {
@@ -69,7 +56,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
 
-        private void PlayDamageClip()
+        public void HandleStopped()
         {
             if (_isSelected)
             {
@@ -77,7 +64,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
 
-        private void PlayMoveClip(Vector3 obj)
+        public void HandleMove(Vector3 position)
         {
             if (_isSelected)
             {
@@ -85,7 +72,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
         
-        private void PlayAttackClip(Vector3 vector3)
+        public void HandleAttack(Vector3 target)
         {
             if (_isSelected)
             {
@@ -93,7 +80,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
         
-        private void PlaySelectionClip(bool isSelected)
+        public void HandleSelection(bool isSelected)
         {
             _isSelected = isSelected;
             if (isSelected)
