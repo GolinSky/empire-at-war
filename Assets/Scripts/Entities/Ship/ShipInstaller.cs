@@ -55,7 +55,6 @@ namespace EmpireAtWar.Ship
             base.BindComponents();
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
-                .BindInterfacesExt<HealthComponent>()
                 //.BindInterfacesExt<AttackComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AudioShipComponent>();
@@ -115,6 +114,11 @@ namespace EmpireAtWar.Ship
             //debug code - until I apply changes to mvc package
             Container
                 .BindInterfacesAndSelfTo<WeaponComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
         }

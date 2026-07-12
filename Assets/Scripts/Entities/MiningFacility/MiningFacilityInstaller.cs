@@ -41,7 +41,6 @@ namespace EmpireAtWar.MiningFacility
         {
             base.BindComponents();
             Container
-                .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<DefaultMoveComponent>() // todo: make non lazy for enemy
                 .BindInterfacesExt<RadarComponent>();
             
@@ -66,6 +65,10 @@ namespace EmpireAtWar.MiningFacility
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
         }
 
     }

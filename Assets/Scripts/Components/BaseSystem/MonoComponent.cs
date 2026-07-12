@@ -10,7 +10,12 @@ namespace EmpireAtWar.Mvc
         protected TModel Model { get; private set; }
 
         [Inject]
-        private void InjectDependencies(TModel model)
+        private void InjectDependencies([InjectOptional] TModel model)
+        {
+            Model = model;
+        }
+
+        protected void SetModel(TModel model)
         {
             Model = model;
         }

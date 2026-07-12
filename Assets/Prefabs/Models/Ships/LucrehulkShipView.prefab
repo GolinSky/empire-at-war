@@ -139,7 +139,6 @@ MonoBehaviour:
   - {fileID: 2683634828922504671}
   - {fileID: 3029357619791015878}
   <ModelDependencies>k__BackingField:
-  - {fileID: 1735520177104728176}
 --- !u!114 &8608218505009085427
 MonoBehaviour:
   m_ObjectHideFlags: 0

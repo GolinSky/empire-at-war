@@ -41,7 +41,6 @@ namespace EmpireAtWar
         {
             base.BindComponents();
             Container
-                .BindInterfacesExt<HealthComponent>()
                 .BindInterfacesExt<DefaultMoveComponent>()
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AttackComponent>()
@@ -67,6 +66,10 @@ namespace EmpireAtWar
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
         }
     }
 }

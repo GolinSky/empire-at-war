@@ -300,7 +300,6 @@ MonoBehaviour:
   - {fileID: 1493051825352287952}
   - {fileID: 7507112065780464587}
   <ModelDependencies>k__BackingField:
-  - {fileID: 3634003794240908284}
 --- !u!65 &2999904143128528648
 BoxCollider:
   m_ObjectHideFlags: 0

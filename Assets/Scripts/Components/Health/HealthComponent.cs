@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Health;
+using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Health
@@ -16,27 +18,30 @@ namespace EmpireAtWar.Components.Ship.Health
         IHealthModelObserver HealthModelObserver { get; }
     }
 
-    public class HealthComponent : BaseComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
+    public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable, IHealthComponent, ITickable
     {
-        private readonly IDefaultMoveModelObserver _defaultMoveModelObserver;
-        private readonly IModel _rootModel;
-        private readonly ITimer _refreshShieldsTimer;
+        [field:SerializeField] public List<HardPointView> ShipUnits { get; set; }
+
+        private IDefaultMoveModelObserver _defaultMoveModelObserver;
+        private ITimer _refreshShieldsTimer;
         
         private float _originShieldValue;
         
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => Model;
         
-        public HealthComponent(IModel model) : base(model)
+        [Inject]
+        private void Construct(IModel model)
         {
+            SetModel(model.GetModel<HealthModel>());
             _defaultMoveModelObserver = model.GetModelObserver<IDefaultMoveModelObserver>();
-            _rootModel = model;
-            _originShieldValue = Model.Shields;
-            _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
         }
 
         public void Initialize()
         {
+            Model.InjectDependency(ShipUnits);
+            _originShieldValue = Model.Shields;
+            _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
             Model.OnDestroy += Destroy;
         }
 

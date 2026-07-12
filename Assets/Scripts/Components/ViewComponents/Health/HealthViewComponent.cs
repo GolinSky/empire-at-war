@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Views.ViewImpl;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -36,7 +37,8 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private Image armorFillImage;
         [SerializeField] private ShieldView shieldView;
         
-        [SerializeField] private HealthModelDependency healthModelDependency; 
+        [FormerlySerializedAs("healthModelDependency")]
+        [SerializeField] private HealthComponent healthComponent;
         [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
         [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
         
@@ -54,7 +56,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public bool HasUnits => ShipUnits.Any(x => !x.IsDestroyed);
         
-        private List<HardPointView> ShipUnits => healthModelDependency.ShipUnits;
+        private List<HardPointView> ShipUnits => healthComponent.ShipUnits;
 
 
         protected override void OnInit()
