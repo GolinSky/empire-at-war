@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using Zenject;
 
@@ -23,7 +22,6 @@ namespace EmpireAtWar.Extentions
                 .AsSingle()
                 .OnInstantiated((context, o) =>
                 {
-                    HandleModel<TModel>(context, o);
                     onCompleted?.Invoke();
                 });
             return Container;
@@ -41,19 +39,9 @@ namespace EmpireAtWar.Extentions
                 .WithConcreteId(id)
                 .OnInstantiated((context, o) =>
                 {
-                    HandleModel<TModel>(context, o);
                     onCompleted?.Invoke();
                 });
             return Container;
-        }
-         
-        private void HandleModel<TModel>(InjectContext context, object @object)
-        {
-            Model model = (Model)@object;
-            foreach (IModel currentModel in model.CurrentModels)
-            {
-                context.Container.Inject(currentModel);
-            }
         }
         
         public static ModelDependencyBuilder ConstructBuilder(DiContainer container)

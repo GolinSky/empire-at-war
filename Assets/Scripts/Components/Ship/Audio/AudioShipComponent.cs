@@ -26,11 +26,11 @@ namespace EmpireAtWar.Components.Ship.Audio
         
         [Inject]
         private void Construct(
-            IModel model,
+            AudioShipModel model,
             ITimerPoolWrapperService timerPoolWrapperService,
             IAudioService audioService)
         {
-            SetModel(model.GetModel<AudioShipModel>());
+            SetModel(model);
             _timerPoolWrapperService = timerPoolWrapperService;
             _audioService = audioService;
             _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);

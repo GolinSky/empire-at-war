@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
@@ -41,14 +42,22 @@ namespace EmpireAtWar.SpaceStation
             Container.BindEntityExt(SelectionType.Base);
             Container.BindInterfacesTo<EntityComponentData>()
                 .FromInstance(Repository.Load<SpaceStationModel>(nameof(SpaceStationModel)).ComponentData);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            Container.Bind<HealthModel>()
-                .FromMethod(_ => Container.Resolve<SpaceStationModel>().GetModel<HealthModel>())
-                .AsCached();
+            SpaceStationModel model = Container.Resolve<SpaceStationModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.DefaultMoveModel);
+            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container
                 .BindInterfacesAndSelfTo<HealthComponent>()

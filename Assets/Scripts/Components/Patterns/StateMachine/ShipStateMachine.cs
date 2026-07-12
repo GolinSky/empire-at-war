@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Mvc;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Patterns.StateMachine
 {
@@ -10,12 +10,19 @@ namespace EmpireAtWar.Patterns.StateMachine
         public ShipStateMachine(
             IShipMoveComponent shipMoveComponent,
             IAttackComponent attackComponent,
-            IModel model) 
-            : base(attackComponent, model)
+            IRadarModelObserver radarModel,
+            IHealthModelObserver healthModel,
+            IShipMoveModelObserver moveModel,
+            IAttackModelObserver attackModel)
+            : base(attackComponent, radarModel, healthModel)
         {
             ShipMoveComponent = shipMoveComponent;
+            MoveModel = moveModel;
+            AttackModel = attackModel;
         }
         
         public IShipMoveComponent ShipMoveComponent { get; }
+        public IShipMoveModelObserver MoveModel { get; }
+        public IAttackModelObserver AttackModel { get; }
     }
 }

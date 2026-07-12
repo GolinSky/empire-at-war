@@ -212,7 +212,7 @@ namespace EmpireAtWar.Ship
 
         public void HandleNewEnemy(IEntity entity)
         {
-            IHealthModelObserver healthModel = entity.Model.GetModelObserver<IHealthModelObserver>();
+            IHealthModelObserver healthModel = entity.HealthModel;
             if (healthModel.HasUnits && entity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 _weaponComponent.AddTarget(
@@ -240,7 +240,7 @@ namespace EmpireAtWar.Ship
             }
 
             IEntity entity = selectionSubject.EnemySelectionContext.Entity;
-            IHealthModelObserver healthModel = entity.Model.GetModelObserver<IHealthModelObserver>();
+            IHealthModelObserver healthModel = entity.HealthModel;
             if (!healthModel.IsDestroyed && healthModel.HasUnits && !_attackTargetState.IsTheSameTarget(entity))
             {
                 _shipAIBrain.Enable(false);

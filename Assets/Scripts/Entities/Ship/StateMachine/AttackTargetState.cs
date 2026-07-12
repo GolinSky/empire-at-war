@@ -34,7 +34,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void SetData(IEntity mainTarget)
         {
             _mainTargetEntity = mainTarget;
-            _mainTarget = _mainTargetEntity.Model.GetModelObserver<IHealthModelObserver>();
+            _mainTarget = _mainTargetEntity.HealthModel;
         }
         
         public bool IsTheSameTarget(IEntity entity)

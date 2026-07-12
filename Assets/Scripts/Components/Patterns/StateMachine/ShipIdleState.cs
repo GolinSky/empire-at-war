@@ -2,7 +2,6 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 
@@ -13,7 +12,6 @@ namespace EmpireAtWar.Patterns.StateMachine
         private const float MOVE_AROUND_DURATION = 10f;
         private readonly ITimer _moveAroundTimer;
 
-        protected readonly IModel _model;
         protected readonly IAttackComponent _attackComponent;
         protected readonly IShipMoveComponent _shipMoveComponent;
         protected readonly IHealthModelObserver _healthModelObserver;
@@ -22,10 +20,9 @@ namespace EmpireAtWar.Patterns.StateMachine
         
         public ShipIdleState(ShipStateMachine stateMachine) : base(stateMachine)
         {
-            _model = stateMachine.Model;
             _attackComponent = stateMachine.AttackComponent;
             _shipMoveComponent = stateMachine.ShipMoveComponent;
-            _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
+            _healthModelObserver = stateMachine.HealthModel;
             StateMachine = stateMachine;
             _moveAroundTimer = TimerFactory.ConstructTimer(MOVE_AROUND_DURATION);
         }

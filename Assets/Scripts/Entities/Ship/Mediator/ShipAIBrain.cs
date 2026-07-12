@@ -76,14 +76,14 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             // Clean up radar enemies
             for (int i = _radarComponent.Enemies.Count - 1; i >= 0; i--)
             {
-                var radarEnemyHealth = _radarComponent.Enemies[i].Model.GetModelObserver<IHealthModelObserver>();
+                var radarEnemyHealth = _radarComponent.Enemies[i].HealthModel;
                 if (radarEnemyHealth.IsDestroyed)
                 {
                     _radarComponent.Enemies.RemoveAt(i);
                 }
             }
 
-            var enemies = _radarComponent.Enemies.Where(e => !e.Model.GetModelObserver<IHealthModelObserver>().IsDestroyed).ToList();
+            var enemies = _radarComponent.Enemies.Where(e => !e.HealthModel.IsDestroyed).ToList();
 
             if (enemies.Count > 2)
             {
@@ -97,7 +97,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 return;
             }
 
-            IHealthModelObserver targetHealth = _assignedTarget.Model.GetModelObserver<IHealthModelObserver>();
+            IHealthModelObserver targetHealth = _assignedTarget.HealthModel;
             if (targetHealth.IsDestroyed || !targetHealth.HasUnits)
             {
                 _assignedTarget = null;

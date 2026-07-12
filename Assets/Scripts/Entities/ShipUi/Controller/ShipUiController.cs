@@ -107,8 +107,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     _playerSelectionContext = subject.PlayerSelectionContext;
                     if (_playerSelectionContext.SelectionType == SelectionType.Ship)
                     {
-                        IShipModelObserver shipModelObserver = _playerSelectionContext.Entity.Model
-                            .GetModelObserver<IShipModelObserver>();
+                        IShipModelObserver shipModelObserver = _playerSelectionContext.Entity.Model as IShipModelObserver;
                         if (shipModelObserver != null)
                         {
                             Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);

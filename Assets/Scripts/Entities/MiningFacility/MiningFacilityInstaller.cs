@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
@@ -38,14 +39,20 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(SelectionType.MiningFacility);
             Container.BindInterfacesTo<EntityComponentData>()
                 .FromInstance(Repository.Load<MiningFacilityModel>(nameof(MiningFacilityModel)).ComponentData);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            Container.Bind<HealthModel>()
-                .FromMethod(_ => Container.Resolve<MiningFacilityModel>().GetModel<HealthModel>())
-                .AsCached();
+            MiningFacilityModel model = Container.Resolve<MiningFacilityModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.DefaultMoveModel);
+            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container
                 .BindInterfacesAndSelfTo<HealthComponent>()

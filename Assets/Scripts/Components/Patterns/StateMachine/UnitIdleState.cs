@@ -4,7 +4,6 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,7 +12,6 @@ namespace EmpireAtWar.Patterns.StateMachine
 {
     public class UnitIdleState:BaseState
     {
-        protected readonly IModel _model;
         protected readonly IAttackComponent _attackComponent;
         protected readonly IRadarModelObserver _radarModelObserver;
         protected readonly IHealthModelObserver _healthModelObserver;
@@ -22,10 +20,9 @@ namespace EmpireAtWar.Patterns.StateMachine
         public UnitIdleState(UnitStateMachine stateMachine) : base(stateMachine)
         {
             StateMachine = stateMachine;
-            _model = stateMachine.Model;
             _attackComponent = stateMachine.AttackComponent;
-            _radarModelObserver = _model.GetModelObserver<IRadarModelObserver>();
-            _healthModelObserver = _model.GetModelObserver<IHealthModelObserver>();
+            _radarModelObserver = stateMachine.RadarModel;
+            _healthModelObserver = stateMachine.HealthModel;
         }
         
         public override void Enter()
@@ -44,7 +41,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         {
             IEntity newEntity = e.item;
 
-            var healthModel = newEntity.Model.GetModelObserver<IHealthModelObserver>();
+            var healthModel = newEntity.HealthModel;
             if (healthModel.HasUnits && newEntity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 AttackData attackData = new AttackData(healthModel, healthCommand, HardPointType.Any);

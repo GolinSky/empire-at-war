@@ -1,4 +1,6 @@
 ﻿using EmpireAtWar.Commands.Ship;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
@@ -15,6 +17,7 @@ using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
@@ -48,15 +51,38 @@ namespace EmpireAtWar.Ship
 
 
             Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
+            Container.Bind<AudioShipModel>()
+                .FromNewScriptableObject(Repository.Load<AudioShipModel>(nameof(AudioShipModel)))
+                .AsSingle();
+            Container.Bind<IAudioShipModelObserver>().To<AudioShipModel>().FromResolve();
+            Container.Bind<ILateDisposable>().To<AudioShipModel>().FromResolve();
+
+            if (_playerType == PlayerType.Player)
+            {
+                Container.Bind<AudioShipDialogModel>()
+                    .FromNewScriptableObject(Repository.Load<AudioShipDialogModel>(nameof(AudioShipDialogModel)))
+                    .AsSingle();
+                Container.Bind<IAudioShipDialogModelObserver>().To<AudioShipDialogModel>().FromResolve();
+            }
+
             Container.Bind<WeaponModel>().AsSingle();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            Container.Bind<HealthModel>()
-                .FromMethod(_ => Container.Resolve<ShipModel>().GetModel<HealthModel>())
-                .AsCached();
+            ShipModel model = Container.Resolve<ShipModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.ShipMoveModel);
+            Container.Bind<IShipMoveModelObserver>().To<ShipMoveModel>().FromResolve();
+            Container.Bind<IDefaultMoveModelObserver>().To<ShipMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container
                 .BindInterfacesAndSelfTo<WeaponComponent>()

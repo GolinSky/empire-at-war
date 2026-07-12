@@ -12,9 +12,9 @@ namespace EmpireAtWar.Components.Movement
         private Sequence _moveSequence;
 
         [Inject]
-        private void Construct(IModel model)
+        private void Construct(DefaultMoveModel model)
         {
-            SetModel(model.GetModel<DefaultMoveModel>());
+            SetModel(model);
         }
 
         public void Initialize()

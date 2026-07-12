@@ -34,9 +34,9 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies => Model.Enemies;
         private Vector3 CenterCast => _position - _offset;
         [Inject]
-        private void Construct(IModel model, IEntityLocator entityLocator)
+        private void Construct(RadarModel model, IEntityLocator entityLocator)
         {
-            SetModel(model.GetModel<RadarModel>());
+            SetModel(model);
             _entityLocator = entityLocator;
         }
 

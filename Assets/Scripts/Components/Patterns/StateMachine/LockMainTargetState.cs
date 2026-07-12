@@ -21,7 +21,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         public void SetData(IEntity mainTarget)
         {
             _mainTarget = mainTarget;
-            _healthModel = _mainTarget.Model.GetModelObserver<IHealthModelObserver>();
+            _healthModel = _mainTarget.HealthModel;
         }
 
         public override void Enter()

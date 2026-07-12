@@ -28,15 +28,15 @@ namespace EmpireAtWar.Patterns.StateMachine
         public ShipLockMainTargetState(ShipStateMachine stateMachine, IAttackDataFactory attackDataFactory) : base(stateMachine)
         {
             _attackDataFactory = attackDataFactory;
-            _moveModel = _model.GetModelObserver<IShipMoveModelObserver>();
-            _attackModel = _model.GetModelObserver<IAttackModelObserver>();
+            _moveModel = stateMachine.MoveModel;
+            _attackModel = stateMachine.AttackModel;
             _moveTimer = TimerFactory.ConstructTimer(MOVE_TIMER_DELAY);
         }
 
         public void SetData(IEntity mainTarget)
         {
             _mainTargetEntity = mainTarget;
-            _mainTarget = _mainTargetEntity.Model.GetModelObserver<IHealthModelObserver>();
+            _mainTarget = _mainTargetEntity.HealthModel;
         }
 
         public override void Enter()

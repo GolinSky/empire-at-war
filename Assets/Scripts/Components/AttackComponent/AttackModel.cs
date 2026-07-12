@@ -29,7 +29,7 @@ namespace EmpireAtWar.Components.AttackComponent
     }
 
     [Serializable]
-    public class AttackModel : InnerModel, IAttackModelObserver
+    public class AttackModel : PureModel, IAttackModelObserver
     {
         private const float OPTIMAL_DISTANCE_MODIFIER = 0.5f;
         public event Action OnMainUnitSwitched;
@@ -81,15 +81,6 @@ namespace EmpireAtWar.Components.AttackComponent
         public int WeaponCount { get; private set; }
         public float OptimalAttackRange => MaxAttackDistance * OPTIMAL_DISTANCE_MODIFIER;
 
-        protected override void OnInit()
-        {
-            base.OnInit();
-            foreach (KeyValuePair<WeaponType, int> keyValuePair in WeaponDictionary)
-            {
-                WeaponCount += keyValuePair.Value;
-            }
-        }
-
         public List<WeaponType> Filter(float distance)
         {
             List<WeaponType> filter = new List<WeaponType>();
@@ -112,9 +103,11 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public void InjectDependency(IReadOnlyDictionary<WeaponType, List<WeaponHardPointView>> turretDictionary)
         {
+            WeaponCount = 0;
             foreach (var keyValuePair in turretDictionary)
             {
                 WeaponDictionary.Add(keyValuePair.Key, keyValuePair.Value.Count);
+                WeaponCount += keyValuePair.Value.Count;
             }
         }
 

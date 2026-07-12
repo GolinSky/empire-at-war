@@ -20,25 +20,24 @@ namespace EmpireAtWar.Ship
     {
         [Inject] public ShipType ShipType { get; }
 
-        [FormerlySerializedAs("shipShipMoveModel")]
-        [FormerlySerializedAs("moveModel")]
+        [field: FormerlySerializedAs("shipShipMoveModel")]
+        [field: FormerlySerializedAs("moveModel")]
+        [field: FormerlySerializedAs("shipMoveModel")]
         [Header("Move Model")]
-        [SerializeField] private ShipMoveModel shipMoveModel;
+        [field: SerializeField] public ShipMoveModel ShipMoveModel { get; private set; }
         
         [Header("Health Model")]
-        [SerializeField] private HealthModel healthModel;
+        [field: FormerlySerializedAs("healthModel")]
+        [field: SerializeField] public HealthModel HealthModel { get; private set; }
+        IHealthModelObserver IUnitModelObserver.HealthModel => HealthModel;
 
-        [FormerlySerializedAs("weaponModel")]
+        [field: FormerlySerializedAs("weaponModel")]
+        [field: FormerlySerializedAs("attackModel")]
         [Header("Weapon Model")] 
-        [SerializeField] private AttackModel attackModel;
+        [field: SerializeField] public AttackModel AttackModel { get; private set; }
         
-        [Header("Radar Model")] 
-        [SerializeField] private RadarModel radarModel;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            AddInnerModels(shipMoveModel, healthModel, attackModel, radarModel);
-        }
+        [Header("Radar Model")]
+        [field: FormerlySerializedAs("radarModel")]
+        [field: SerializeField] public RadarModel RadarModel { get; private set; }
     }
 }

@@ -29,9 +29,9 @@ namespace EmpireAtWar.Components.Ship.Audio
         private bool _isSelected;
 
         [Inject]
-        private void Construct(IModel model, IAudioService audioService, PlayerType playerType)
+        private void Construct(AudioShipDialogModel model, IAudioService audioService, PlayerType playerType)
         {
-            SetModel(model.GetModel<AudioShipDialogModel>());
+            SetModel(model);
             _audioService = audioService;
             _playerType = playerType;
             _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));

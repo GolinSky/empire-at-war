@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 
 namespace EmpireAtWar.Models.Selection
 {
@@ -10,8 +9,7 @@ namespace EmpireAtWar.Models.Selection
         bool IsSelected { get; }
     }
 
-    [CreateAssetMenu(fileName = "SelectionModel", menuName = "Model/SelectionModel")]
-    public class SelectionModel : Model, ISelectionModelObserver
+    public class SelectionModel : PureModel, ISelectionModelObserver
     {
         public event Action<bool> OnSelected;
         private bool _isSelected;
