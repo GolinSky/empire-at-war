@@ -3,13 +3,13 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Components
 {
     public class BaseComponent<TModel> : FrameworkComponent
-        where TModel : IModel
+        where TModel : IModelObserver
     {
         protected TModel Model { get; private set; }
 
-        public BaseComponent(IModel model)
+        public BaseComponent(TModel model)
         {
-            Model = model.GetModel<TModel>();
+            Model = model;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace EmpireAtWar.Models.Health
     }
 
     [Serializable]
-    public class HealthModel:InnerModel, IHealthModelObserver, IHealthState
+    public class HealthModel : PureModel, IHealthModelObserver, IHealthState
     {
         private const float WEAPON_SYSTEM_COEFFICIENT = 0.8f;
         private const int MAIN_SYSTEM_AMOUNT = 2; 
@@ -163,11 +163,6 @@ namespace EmpireAtWar.Models.Health
 
     
 
-        protected override void OnInit()
-        {
-            _shieldsBaseValue = Shields;
-        }
-        
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
         {
             if(IsDestroyed) return;

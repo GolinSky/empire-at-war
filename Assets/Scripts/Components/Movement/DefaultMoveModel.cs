@@ -33,7 +33,7 @@ namespace EmpireAtWar.Components.Movement
     }
 
     [Serializable]
-    public class DefaultMoveModel : InnerModel, IDefaultMoveModelObserver
+    public class DefaultMoveModel : PureModel, IDefaultMoveModelObserver
     {
         protected float _speedCoefficient = 1;
 

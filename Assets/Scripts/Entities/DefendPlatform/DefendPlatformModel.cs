@@ -22,12 +22,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
         [field:SerializeField] public DefaultMoveModel DefaultMoveModel { get; private set; }
         [field:SerializeField] public AttackModel AttackModel { get; private set; }
-
-        
-        protected override void Awake()
-        {
-            base.Awake();
-            AddInnerModels(HealthModel, RadarModel, DefaultMoveModel, AttackModel);
-        }
+        IHealthModelObserver IUnitModelObserver.HealthModel => HealthModel;
     }
 }

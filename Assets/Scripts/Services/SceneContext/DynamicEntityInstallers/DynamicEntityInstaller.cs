@@ -53,6 +53,12 @@ namespace EmpireAtWar
         {
         }
 
+        protected void BindBuffer<TBuffer>(TBuffer buffer) where TBuffer : class
+        {
+            Container.QueueForInject(buffer);
+            Container.Bind<TBuffer>().FromInstance(buffer).AsSingle();
+        }
+
         private void BindData()
         {
             Container.BindEntityExt(StartPosition);

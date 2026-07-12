@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.Radar
     }
 
     [Serializable]
-    public class RadarModel : InnerModel, IRadarModelObserver
+    public class RadarModel : PureModel, IRadarModelObserver
     {
         // public event Action<RaycastHit[]> OnHitDetected;
         

@@ -59,13 +59,13 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         [Inject]
         private void Construct(
-            IModel model,
+            ShipMoveModel model,
             ICameraService cameraService,
             Vector3 startPosition,
             FogOfWarSystem fogOfWarSystem,
             PlayerType playerType)
         {
-            SetModel(model.GetModel<ShipMoveModel>());
+            SetModel(model);
             _cameraService = cameraService;
             startPosition.y = Model.Height;
             _startPosition = startPosition;

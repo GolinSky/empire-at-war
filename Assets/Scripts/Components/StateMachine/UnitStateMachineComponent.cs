@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
@@ -22,15 +23,17 @@ namespace EmpireAtWar.Components.StateMachine
         
         [Inject]
         private void Construct(
-            IModel model,
             IAttackComponent attackComponent,
+            IRadarModelObserver radarModel,
+            IHealthModelObserver healthModel,
+            ISelectionModelObserver selectionModelObserver,
             ISelectionService selectionService,
             IAttackDataFactory attackDataFactory) 
         {
             _selectionService = selectionService;
-            _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
+            _selectionModelObserver = selectionModelObserver;
 
-            _stateMachine = new UnitStateMachine(attackComponent, model);
+            _stateMachine = new UnitStateMachine(attackComponent, radarModel, healthModel);
             _idleState = new UnitIdleState(_stateMachine);
             _lockMainTargetState = new LockMainTargetState(_stateMachine, attackDataFactory);
             _stateMachine.SetDefaultState(_idleState);
@@ -65,8 +68,7 @@ namespace EmpireAtWar.Components.StateMachine
 
             if (selectionSubject.UpdatedType == PlayerType.Opponent && selectionSubject.EnemySelectionContext.HasSelectable)
             {
-                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.Model
-                    .GetModelObserver<IHealthModelObserver>();
+                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.HealthModel;
                 if (!healthModel.IsDestroyed && healthModel.HasUnits)
                 {
                     _lockMainTargetState.SetData(selectionSubject.EnemySelectionContext.Entity); 

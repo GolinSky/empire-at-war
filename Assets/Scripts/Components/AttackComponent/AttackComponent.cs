@@ -45,11 +45,14 @@ namespace EmpireAtWar.Components.AttackComponent
         public Dictionary<WeaponType, List<WeaponHardPointView>> TurretDictionary => turretDictionary.Dictionary;
 
         [Inject]
-        private void Construct(IModel model, ICoroutineService coroutineService)
+        private void Construct(
+            AttackModel model,
+            IDefaultMoveModelObserver defaultMoveModelObserver,
+            ICoroutineService coroutineService)
         {
-            SetModel(model.GetModel<AttackModel>());
+            SetModel(model);
             _coroutineService = coroutineService;
-            _defaultMoveModelObserver = model.GetModelObserver<IDefaultMoveModelObserver>();
+            _defaultMoveModelObserver = defaultMoveModelObserver;
         }
 
         public void Initialize()

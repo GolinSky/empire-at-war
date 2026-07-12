@@ -10,7 +10,7 @@ namespace EmpireAtWar.Patterns.StateMachine
         private bool _useScreenCoordinates;
         public MoveToPointState(ShipStateMachine stateMachine) : base(stateMachine)
         {
-            _shipMoveModelObserver = _model.GetModelObserver<IShipMoveModelObserver>();
+            _shipMoveModelObserver = stateMachine.MoveModel;
         }
         
         public override void Enter()

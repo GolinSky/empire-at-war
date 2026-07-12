@@ -25,9 +25,9 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         [Inject] private PlayerType PlayerType { get; }
         [Inject]
-        private void Construct(IModel model)
+        private void Construct(SelectionModel model)
         {
-            SetModel(model.GetModel<SelectionModel>());
+            SetModel(model);
         }
 
         public void Initialize()

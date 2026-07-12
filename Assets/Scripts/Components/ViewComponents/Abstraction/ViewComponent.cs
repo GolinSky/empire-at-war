@@ -11,7 +11,7 @@ namespace EmpireAtWar.ViewComponents
         public override IModelObserver ModelObserver => InjectedModelObserver;
     }
 
-    public class ViewComponent<TModel> : ViewComponent where TModel : IModelObserver
+    public class ViewComponent<TModel> : ViewComponent where TModel : class, IModelObserver
     {
         private  TModel _model;
 
@@ -21,7 +21,7 @@ namespace EmpireAtWar.ViewComponents
             {
                 if (_model == null)
                 {
-                    _model = ModelObserver.GetModelObserver<TModel>();
+                    _model = ModelObserver as TModel;
                 }
                 return _model;
             }

@@ -21,7 +21,7 @@ namespace EmpireAtWar.ViewComponents
     /// <summary>
     /// Monobehaviour class for view model - store data and injected dependencies into model
     /// </summary>
-    public abstract class ModelDependency<TModel> : ModelDependency where TModel : IModelObserver
+    public abstract class ModelDependency<TModel> : ModelDependency where TModel : class, IModelObserver
     {
         protected TModel Model { get; private set; }
 
@@ -29,7 +29,7 @@ namespace EmpireAtWar.ViewComponents
         public sealed override void Initialize(View view)
         {
             base.Initialize(view);
-            Model = View.ModelObserver.GetModelObserver<TModel>();
+            Model = View.ModelObserver as TModel;
             OnInit();
         }
 

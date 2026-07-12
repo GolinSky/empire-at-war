@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
@@ -38,14 +39,22 @@ namespace EmpireAtWar
             Container.BindEntityExt(SelectionType.DefendPlatform);
             Container.BindInterfacesTo<EntityComponentData>()
                 .FromInstance(Repository.Load<DefendPlatformModel>(nameof(DefendPlatformModel)).ComponentData);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            Container.Bind<HealthModel>()
-                .FromMethod(_ => Container.Resolve<DefendPlatformModel>().GetModel<HealthModel>())
-                .AsCached();
+            DefendPlatformModel model = Container.Resolve<DefendPlatformModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.DefaultMoveModel);
+            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container
                 .BindInterfacesAndSelfTo<HealthComponent>()
