@@ -83,6 +83,7 @@ namespace EmpireAtWar.Ship
 
             Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PatrolState>().AsSingle();
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
