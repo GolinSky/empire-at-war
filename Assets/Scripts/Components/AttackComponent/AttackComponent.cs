@@ -323,6 +323,8 @@ namespace EmpireAtWar.Components.AttackComponent
                         yield return new WaitForSeconds(Model.DelayBetweenAttack);
                     }
                 }
+
+                yield return null;
             }
         }
 
