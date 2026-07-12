@@ -17,6 +17,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         float GetRange(Vector3 targetPosition);
         void Stop();
         void ApplyMoveCoefficient(float coefficient);
+        void HandleSelection(bool isSelected);
         float HyperSpaceDuration { get; }
         event System.Action<Vector3> TargetPositionChanged;
         event System.Action<Vector3> LookAtTargetChanged;

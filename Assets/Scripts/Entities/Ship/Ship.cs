@@ -227,6 +227,7 @@ namespace EmpireAtWar.Ship
         public void OnSelect(bool isActive)
         {
             _isSelected = isActive;
+            _shipMoveComponent.HandleSelection(isActive);
             _audioDialogShipComponent?.HandleSelection(isActive);
         }
 
