@@ -9,6 +9,16 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Movement
 {
+    public interface IDefaultMoveData
+    {
+        float Speed { get; }
+        float Height { get; }
+        Vector3 FallDownDirection { get; }
+        RandomVector3 FallDownRotation { get; }
+        float FallDownDuration { get; }
+        bool CanMove { get; }
+    }
+
     public interface IDefaultMoveModelObserver : IModelObserver
     {
         IObservableProperty<Vector3> TargetPositionObserver { get; }
@@ -25,25 +35,20 @@ namespace EmpireAtWar.Components.Movement
     [Serializable]
     public class DefaultMoveModel : InnerModel, IDefaultMoveModelObserver
     {
-        [SerializeField] public float speed;
-
-        private Vector3 _position;
         protected float _speedCoefficient = 1;
 
-        [field: SerializeField] public float Height { get; private set; }
-        [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
-        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
-
-        [field: SerializeField] public float FallDownDuration { get; private set; }
-        [field: SerializeField] public bool CanMove { get; private set; } = true;
-
-
+        [Inject] protected IDefaultMoveData Data { get; }
 
         [Inject(Id = EntityBindType.ViewTransform)]
         public LazyInject<Transform> ViewTransform { get; }
 
         public Vector3 CurrentPosition => ViewTransform.Value.position;
-        public float Speed => speed * _speedCoefficient;
+        public float Speed => Data.Speed * _speedCoefficient;
+        public float Height => Data.Height;
+        public Vector3 FallDownDirection => Data.FallDownDirection;
+        public RandomVector3 FallDownRotation => Data.FallDownRotation;
+        public float FallDownDuration => Data.FallDownDuration;
+        public bool CanMove => Data.CanMove;
 
         [Inject]
         public Vector3 StartPosition { get; }

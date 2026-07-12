@@ -9,6 +9,13 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Radar
 {
+    public interface IRadarData
+    {
+        float Range { get; }
+        float Delay { get; }
+        float Distance { get; }
+    }
+
     public interface IRadarModelObserver : IModelObserver
     {
         // event Action<RaycastHit[]> OnHitDetected; 
@@ -25,9 +32,11 @@ namespace EmpireAtWar.Components.Radar
         
         private ObservableList<IEntity> _enemies = new ObservableList<IEntity>();
         
-        [field: SerializeField] public float Range { get; private set; }
-        [field: SerializeField] public float Delay { get; private set; }
-        [field: SerializeField] public float Distance { get; private set; }
+        [Inject] private IRadarData Data { get; }
+
+        public float Range => Data.Range;
+        public float Delay => Data.Delay;
+        public float Distance => Data.Distance;
 
         
         public ObservableList<IEntity> Enemies => _enemies;

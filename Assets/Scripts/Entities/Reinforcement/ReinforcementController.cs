@@ -15,6 +15,7 @@ using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 
 namespace EmpireAtWar.Controllers.Reinforcement
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Controllers.Reinforcement
                 {
                     case SpawnType.Ship:
                     {
-                        ShipView ship = _shipFacadeFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
+                        ShipEntity ship = _shipFacadeFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
                         ship.OnRelease += HandleShipDestroying;
                         Model.AddUnitCapacity(_currentShipType); 
                         break;

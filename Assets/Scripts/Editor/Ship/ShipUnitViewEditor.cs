@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Editor.Ship
 {
@@ -26,7 +27,7 @@ namespace EmpireAtWar.Editor.Ship
             
             foreach (string shipName in shipNames)
             {
-                ShipView view = addressableRepository.LoadComponent<ShipView>($"{shipName}{nameof(ShipView)}");
+                ShipEntity view = addressableRepository.LoadComponent<ShipEntity>($"{shipName}ShipView");
                 ShipModel model = addressableRepository.Load<ShipModel>($"{shipName}{nameof(ShipModel)}");
                 
             }

@@ -14,21 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
-  <HealthModel>k__BackingField:
-    dexterity: 0
-    <Armor>k__BackingField: 100000
-    <Shields>k__BackingField: 300000
-    <ShieldRegenerateValue>k__BackingField: 10000
-    <ShieldRegenerateDelay>k__BackingField: 30
-    <ShieldDangerStateRange>k__BackingField:
-      <Min>k__BackingField: 0
-      <Max>k__BackingField: 0
-  <RadarModel>k__BackingField:
-    <Range>k__BackingField: 80
-    <Delay>k__BackingField: 10
-    <Distance>k__BackingField: 100
-  <DefaultMoveModel>k__BackingField:
-    speed: 0
+  <ComponentData>k__BackingField:
+    <Speed>k__BackingField: 0
     <Height>k__BackingField: 0
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
@@ -43,5 +30,19 @@ MonoBehaviour:
         <Max>k__BackingField: 360
     <FallDownDuration>k__BackingField: 180
     <CanMove>k__BackingField: 0
-  <AttackModel>k__BackingField:
+    <Armor>k__BackingField: 100000
+    <Dexterity>k__BackingField: 0
+    <Shields>k__BackingField: 300000
+    <ShieldRegenerateValue>k__BackingField: 10000
+    <ShieldRegenerateDelay>k__BackingField: 30
+    <ShieldDangerStateRange>k__BackingField:
+      <Min>k__BackingField: 0
+      <Max>k__BackingField: 0
     <DelayBetweenAttack>k__BackingField: 0.5
+    <Range>k__BackingField: 80
+    <Delay>k__BackingField: 10
+    <Distance>k__BackingField: 100
+  <HealthModel>k__BackingField: {}
+  <RadarModel>k__BackingField: {}
+  <DefaultMoveModel>k__BackingField: {}
+  <AttackModel>k__BackingField: {}

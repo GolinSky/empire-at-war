@@ -36,6 +36,8 @@ namespace EmpireAtWar.SpaceStation
             Container.BindEntityExt(_playerType);
             Container.BindEntityExt(_factionType);
             Container.BindEntityExt(SelectionType.Base);
+            Container.BindInterfacesTo<EntityComponentData>()
+                .FromInstance(Repository.Load<SpaceStationModel>(nameof(SpaceStationModel)).ComponentData);
         }
 
         protected override void BindComponents()

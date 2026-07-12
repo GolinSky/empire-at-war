@@ -8,7 +8,7 @@ using View = EmpireAtWar.Views.ViewImpl.View;
 namespace EmpireAtWar
 {
     public abstract class DynamicViewInstaller<TController, TModel, TView> : MonoInstaller
-        where TController : Controller<TModel>
+        where TController : class, IController
         where TModel : Model
         where TView: View
     {

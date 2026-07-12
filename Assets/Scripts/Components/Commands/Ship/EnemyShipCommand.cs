@@ -3,10 +3,10 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Commands.Ship
 {
-    public class EnemyShipCommand : Command<ShipController> , IShipCommand
+    public class EnemyShipCommand : Command<EmpireAtWar.Ship.Ship> , IShipCommand
     {
         public EnemyShipCommand(
-            ShipController controller) : base(controller)
+            EmpireAtWar.Ship.Ship ship) : base(ship)
         {
 
         }

@@ -8,6 +8,11 @@ using Zenject;
 
 namespace EmpireAtWar.Components.AttackComponent
 {
+    public interface IAttackData
+    {
+        float DelayBetweenAttack { get; }
+    }
+
     public interface IAttackModelObserver : IModelObserver
     {
         event Action OnMainUnitSwitched;
@@ -29,7 +34,8 @@ namespace EmpireAtWar.Components.AttackComponent
         private const float OPTIMAL_DISTANCE_MODIFIER = 0.5f;
         public event Action OnMainUnitSwitched;
 
-        [field: SerializeField] public float DelayBetweenAttack { get; set; }
+        [Inject] private IAttackData Data { get; }
+        public float DelayBetweenAttack => Data.DelayBetweenAttack;
 
         private List<IHardPointModel> _shipUnitViews = new List<IHardPointModel>();
         private List<IHardPointModel> _mainUnitsTarget;

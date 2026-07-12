@@ -6,9 +6,9 @@ namespace EmpireAtWar.Commands.Ship
     public interface IShipCommand:ICommand
     {
     }
-    public class PlayerShipCommand: Command<ShipController>, IShipCommand
+    public class PlayerShipCommand: Command<EmpireAtWar.Ship.Ship>, IShipCommand
     {
-        public PlayerShipCommand(ShipController controller) : base(controller)
+        public PlayerShipCommand(EmpireAtWar.Ship.Ship ship) : base(ship)
         {
     
         }
