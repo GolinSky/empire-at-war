@@ -9,6 +9,8 @@ using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using ShipEntity = EmpireAtWar.Ship.Ship;
+using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
@@ -25,13 +27,13 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .NonLazy();
     
             Container
-                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationView, SpaceStationViewFacade>()
+                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationViewFacade>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityView, MiningFacilityFacade>()
+                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, MiningFacilityFacade>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
                 .NonLazy();

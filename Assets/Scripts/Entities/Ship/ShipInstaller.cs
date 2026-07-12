@@ -14,6 +14,7 @@ using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
@@ -53,6 +54,20 @@ namespace EmpireAtWar.Ship
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.Bind<HealthModel>()
+                .FromMethod(_ => Container.Resolve<ShipModel>().GetModel<HealthModel>())
+                .AsCached();
+
+            Container
+                .BindInterfacesAndSelfTo<WeaponComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
             Container
                 .BindInterfacesExt<ShipMoveComponent>()
                 //.BindInterfacesExt<AttackComponent>()
@@ -69,9 +84,6 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                     {
-                        Container.BindInterfacesExt<PlayerShipMediator>();
-
-
                         Container.BindInterfacesExt<PlayerSelectionComponent>();
                         Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
                         Container.BindInterfacesExt<AudioDialogShipComponent>();
@@ -90,8 +102,6 @@ namespace EmpireAtWar.Ship
                         Container.BindInterfacesExt<EnemySelectionComponent>();
                         Container.BindInterfacesExt<EnemyShipCommand>();
                         // Container.BindInterfacesExt<EnemyShipStateMachine>();
-                        Container.BindInterfacesExt<EnemyShipMediator>();
-
                         //entity commands
                         Container.BindInterfacesExt<EnemyAttackShipCommand>();
                         Container.BindInterfacesExt<SelectionCommand>();
@@ -110,17 +120,6 @@ namespace EmpireAtWar.Ship
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-
-            //debug code - until I apply changes to mvc package
-            Container
-                .BindInterfacesAndSelfTo<WeaponComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-
-            Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
         }
     }
 }

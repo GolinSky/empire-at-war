@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
@@ -40,8 +41,16 @@ namespace EmpireAtWar
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.Bind<HealthModel>()
+                .FromMethod(_ => Container.Resolve<DefendPlatformModel>().GetModel<HealthModel>())
+                .AsCached();
+
             Container
-                .BindInterfacesExt<DefaultMoveComponent>()
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AttackComponent>()
                 .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
@@ -66,10 +75,6 @@ namespace EmpireAtWar
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-            Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
         }
     }
 }

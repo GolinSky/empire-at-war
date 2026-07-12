@@ -9,16 +9,20 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
+using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.MiningFacility
 {
-    public class MiningFacilityInstaller : DynamicViewInstaller<MiningFacilityController, MiningFacilityModel,
-        MiningFacilityView>
+    public class MiningFacilityInstaller : DynamicViewInstaller<MiningFacilityEntity, MiningFacilityModel,
+        MiningFacilityEntity>
     {
         private PlayerType _playerType;
         private MiningFacilityType _miningFacilityType;
+
+        protected override string ViewPathPostfix => "View";
 
         [Inject]
         public void Construct(PlayerType playerType, MiningFacilityType miningFacilityType)
@@ -40,9 +44,16 @@ namespace EmpireAtWar.MiningFacility
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.Bind<HealthModel>()
+                .FromMethod(_ => Container.Resolve<MiningFacilityModel>().GetModel<HealthModel>())
+                .AsCached();
+
             Container
-                .BindInterfacesExt<DefaultMoveComponent>() // todo: make non lazy for enemy
-                .BindInterfacesExt<RadarComponent>();
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container.BindInterfacesExt<RadarComponent>();
             
             switch (_playerType)
             {
@@ -65,10 +76,10 @@ namespace EmpireAtWar.MiningFacility
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-            Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+        }
+
+        protected override void BindController()
+        {
         }
 
     }

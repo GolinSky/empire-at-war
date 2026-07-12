@@ -10,17 +10,20 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SpaceStation
 {
-    public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationController, SpaceStationModel, SpaceStationView>
+    public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationEntity, SpaceStationModel, SpaceStationEntity>
     {
         private FactionType _factionType;
         private PlayerType _playerType;
 
         protected override string ViewPathPrefix => _factionType.ToString();
+        protected override string ViewPathPostfix => "View";
         
 
         [Inject]
@@ -43,6 +46,15 @@ namespace EmpireAtWar.SpaceStation
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.Bind<HealthModel>()
+                .FromMethod(_ => Container.Resolve<SpaceStationModel>().GetModel<HealthModel>())
+                .AsCached();
+
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
             switch (_playerType)
             {
                 case PlayerType.Player:
@@ -61,7 +73,6 @@ namespace EmpireAtWar.SpaceStation
             Container
                 .BindInterfacesExt<RadarComponent>()
                 .BindInterfacesExt<AttackComponent>()
-                .BindInterfacesNonLazyExt<DefaultMoveComponent>()
                 .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
             
             //entity commands
@@ -75,10 +86,10 @@ namespace EmpireAtWar.SpaceStation
         {
             base.OnViewCreated();
             Container.Install<EntityInstaller>(new object[] { View });
-            Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+        }
+
+        protected override void BindController()
+        {
         }
     }
 }

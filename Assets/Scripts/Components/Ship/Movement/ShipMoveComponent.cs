@@ -1,4 +1,3 @@
-using EmpireAtWar.Commands.Move;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Mvc;
@@ -9,15 +8,35 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
-    public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IMoveCommand, IInitializable
+    public class ShipMoveComponent : BaseComponent<ShipMoveModel>, IShipMoveComponent, IInitializable
     {
         private readonly ICameraService _cameraService;
         private readonly Vector3 _startPosition;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly PlayerType _playerType;
         public bool CanMove => Model.CanMove;
+        public Vector3 CurrentPosition => Model.CurrentPosition;
+        public Transform ViewTransform => Model.ViewTransform.Value;
         public bool IsMoving => Model.IsMoving;
-        public IShipMoveModelObserver ModelObserver => Model;
+        public float HyperSpaceDuration => Model.HyperSpaceDuration;
+
+        public event System.Action<Vector3> TargetPositionChanged
+        {
+            add => Model.TargetPosition.OnChanged += value;
+            remove => Model.TargetPosition.OnChanged -= value;
+        }
+
+        public event System.Action<Vector3> LookAtTargetChanged
+        {
+            add => Model.LookAtTarget.OnChanged += value;
+            remove => Model.LookAtTarget.OnChanged -= value;
+        }
+
+        public event System.Action Stopped
+        {
+            add => Model.OnStop += value;
+            remove => Model.OnStop -= value;
+        }
 
 
         public ShipMoveComponent(
@@ -104,6 +123,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Stop()
         {
             Model.Stop();
+        }
+
+        public void ApplyMoveCoefficient(float coefficient)
+        {
+            Model.ApplyMoveCoefficient(coefficient);
         }
     }
 }

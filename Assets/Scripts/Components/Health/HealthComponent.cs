@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
@@ -14,6 +13,7 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
         bool Equal(IHealthModelObserver modelObserver);
+        void SetMovementState(bool isMoving);
         bool Destroyed { get; }
         IHealthModelObserver HealthModelObserver { get; }
     }
@@ -22,19 +22,18 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         [field:SerializeField] public List<HardPointView> ShipUnits { get; set; }
 
-        private IDefaultMoveModelObserver _defaultMoveModelObserver;
         private ITimer _refreshShieldsTimer;
+        private bool _isMoving;
         
         private float _originShieldValue;
         
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => Model;
-        
+
         [Inject]
-        private void Construct(IModel model)
+        private void Construct(HealthModel model)
         {
-            SetModel(model.GetModel<HealthModel>());
-            _defaultMoveModelObserver = model.GetModelObserver<IDefaultMoveModelObserver>();
+            SetModel(model);
         }
 
         public void Initialize()
@@ -57,8 +56,12 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
         {
-            bool isMoving = _defaultMoveModelObserver is { IsMoving: true };
-            Model.ApplyDamage(damage, weaponType, isMoving, shipUnitId);
+            Model.ApplyDamage(damage, weaponType, _isMoving, shipUnitId);
+        }
+
+        public void SetMovementState(bool isMoving)
+        {
+            _isMoving = isMoving;
         }
 
         public bool Equal(IHealthModelObserver modelObserver)

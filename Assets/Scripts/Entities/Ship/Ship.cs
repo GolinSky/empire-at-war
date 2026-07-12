@@ -1,14 +1,26 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
 using Zenject;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Ship
 {
@@ -17,9 +29,23 @@ namespace EmpireAtWar.Ship
         IShipModelObserver ModelObserver { get; }
     }
 
-    public class Ship : View<IShipModelObserver>, IController, IShipEntity, ILateIInitializable
+    public class Ship : View<IShipModelObserver>, IController, IShipEntity, ILateIInitializable,
+        ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator, IObserver<ISelectionSubject>
     {
         private HardPointModel _enginesUnitModel;
+        private IHealthComponent _healthComponent;
+        private IShipMoveComponent _shipMoveComponent;
+        private IRadarComponent _radarComponent;
+        private IWeaponComponent _weaponComponent;
+        private ISelectionComponent _selectionComponent;
+        private ISelectionService _selectionService;
+        private AttackTargetState _attackTargetState;
+        private StateMachine1 _stateMachine;
+        private ShipAIBrain _shipAIBrain;
+        private ICoroutineService _coroutineService;
+        private IAudioShipComponent _audioShipComponent;
+        private IAudioDialogShipComponent _audioDialogShipComponent;
+        private bool _isSelected;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -31,6 +57,35 @@ namespace EmpireAtWar.Ship
         public string Id => GetType().Name;
         IShipModelObserver IShipEntity.ModelObserver => Model;
 
+        [Inject]
+        private void Construct(
+            IHealthComponent healthComponent,
+            IShipMoveComponent shipMoveComponent,
+            IRadarComponent radarComponent,
+            IWeaponComponent weaponComponent,
+            ISelectionComponent selectionComponent,
+            ISelectionService selectionService,
+            AttackTargetState attackTargetState,
+            StateMachine1 stateMachine,
+            ShipAIBrain shipAIBrain,
+            ICoroutineService coroutineService,
+            IAudioShipComponent audioShipComponent,
+            [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent)
+        {
+            _healthComponent = healthComponent;
+            _shipMoveComponent = shipMoveComponent;
+            _radarComponent = radarComponent;
+            _weaponComponent = weaponComponent;
+            _selectionComponent = selectionComponent;
+            _selectionService = selectionService;
+            _attackTargetState = attackTargetState;
+            _stateMachine = stateMachine;
+            _shipAIBrain = shipAIBrain;
+            _coroutineService = coroutineService;
+            _audioShipComponent = audioShipComponent;
+            _audioDialogShipComponent = audioDialogShipComponent;
+        }
+
         public IModel GetModel()
         {
             return RootModel;
@@ -39,12 +94,28 @@ namespace EmpireAtWar.Ship
         protected override void OnInitialize()
         {
             ShipService.Add(this);
+            _radarComponent.SetMediator(this);
+            _selectionComponent.SetMediator(this);
+            _selectionService.AddObserver(this);
+            _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
+
+            if (_audioDialogShipComponent != null)
+            {
+                _shipMoveComponent.TargetPositionChanged += _audioDialogShipComponent.HandleMove;
+                _shipMoveComponent.LookAtTargetChanged += _audioDialogShipComponent.HandleAttack;
+                _shipMoveComponent.Stopped += _audioDialogShipComponent.HandleStopped;
+            }
+
+            _coroutineService.InvokeWithDelay(
+                () => _shipAIBrain.Enable(true),
+                _shipMoveComponent.HyperSpaceDuration * 2);
+
+            SynchronizeComponents();
         }
 
         public void LateInitialize()
         {
-            HealthModel healthModel = RootModel.GetModel<HealthModel>();
-            foreach (HardPointModel hardPointModel in healthModel.HardPointModels)
+            foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
             {
                 if (hardPointModel.HardPointType == HardPointType.Engines)
                 {
@@ -59,9 +130,22 @@ namespace EmpireAtWar.Ship
             }
         }
 
+        public void Tick()
+        {
+            SynchronizeComponents();
+        }
+
         protected override void OnDispose()
         {
             ShipService.Remove(this);
+            _selectionService.RemoveObserver(this);
+
+            if (_audioDialogShipComponent != null)
+            {
+                _shipMoveComponent.TargetPositionChanged -= _audioDialogShipComponent.HandleMove;
+                _shipMoveComponent.LookAtTargetChanged -= _audioDialogShipComponent.HandleAttack;
+                _shipMoveComponent.Stopped -= _audioDialogShipComponent.HandleStopped;
+            }
 
             if (_enginesUnitModel != null)
             {
@@ -75,11 +159,62 @@ namespace EmpireAtWar.Ship
             }
         }
 
+        public void MoveTo(Vector2 screenPosition)
+        {
+            _shipAIBrain.Enable(false);
+            _stateMachine.ExitState();
+            _shipMoveComponent.MoveToPositionOnScreen(screenPosition);
+        }
+
+        public void HandleNewEnemy(IEntity entity)
+        {
+            IHealthModelObserver healthModel = entity.Model.GetModelObserver<IHealthModelObserver>();
+            if (healthModel.HasUnits && entity.TryGetCommand(out IHealthCommand healthCommand))
+            {
+                _weaponComponent.AddTarget(
+                    new AttackData(healthModel, healthCommand, HardPointType.Any),
+                    AttackType.Base);
+            }
+
+            _audioShipComponent.HandleEnemyDetected();
+            _audioDialogShipComponent?.HandleEnemyDetected();
+        }
+
+        public void OnSelect(bool isActive)
+        {
+            _isSelected = isActive;
+            _audioDialogShipComponent?.HandleSelection(isActive);
+        }
+
+        public void UpdateState(ISelectionSubject selectionSubject)
+        {
+            if (!_isSelected || selectionSubject.UpdatedType != PlayerType.Opponent ||
+                !selectionSubject.EnemySelectionContext.HasSelectable)
+            {
+                return;
+            }
+
+            IEntity entity = selectionSubject.EnemySelectionContext.Entity;
+            IHealthModelObserver healthModel = entity.Model.GetModelObserver<IHealthModelObserver>();
+            if (!healthModel.IsDestroyed && healthModel.HasUnits && !_attackTargetState.IsTheSameTarget(entity))
+            {
+                _shipAIBrain.Enable(false);
+                _attackTargetState.SetData(entity);
+                _stateMachine.SetState(_attackTargetState);
+            }
+        }
+
+        private void SynchronizeComponents()
+        {
+            _healthComponent.SetMovementState(_shipMoveComponent.IsMoving);
+            _radarComponent.SetPosition(_shipMoveComponent.CurrentPosition);
+        }
+
         private void HandleEnginesData()
         {
             if (_enginesUnitModel.IsDestroyed)
             {
-                RootModel.GetModel<ShipMoveModel>().ApplyMoveCoefficient(Data.MinMoveCoefficient);
+                _shipMoveComponent.ApplyMoveCoefficient(Data.MinMoveCoefficient);
             }
         }
     }

@@ -5,7 +5,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public class SpaceStationViewFacade:PlaceholderFactory<PlayerType, FactionType, Vector3, SpaceStationView>
+    public class SpaceStationViewFacade:PlaceholderFactory<PlayerType, FactionType, Vector3, SpaceStation>
     {
         private readonly DiContainer _container;
         private readonly IRepository _repository;
