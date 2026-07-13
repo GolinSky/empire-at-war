@@ -21,11 +21,10 @@ using EmpireAtWar.Mvc;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
-using LocationService = EmpireAtWar.Services.Location.LocationService;
 
 public class SkirmishMainInstaller : MonoInstaller
 {
-    [SerializeField] private LocationService locationService;
+    [SerializeField] private UiService _uiService;
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IRepository Repository { get; }
@@ -33,8 +32,13 @@ public class SkirmishMainInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.BindInterfacesExt<AttackDataFactory>();
-        
-        Container.BindInterfacesAndSelfTo<LocationService>().FromInstance(locationService).AsSingle();
+
+        Container.BindInterfacesAndSelfTo<UiService>().FromInstance(_uiService).AsSingle();
+        Container
+            .BindFactory<UiType, Transform, BaseUi, UiFacade>()
+            .FromSubContainerResolve()
+            .ByNewGameObjectInstaller<UiInstaller>();
+
         Container.BindInterfacesExt<EntityLocator>();
         
         
@@ -42,9 +46,6 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
-        Container.BindInterfacesExt<UiService>();
-        
-
         Container.BindModel<MenuModel>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();
         
@@ -70,11 +71,6 @@ public class SkirmishMainInstaller : MonoInstaller
 
         Container
             .BindInterfacesExt<UnitRequestFactory>();
-
-        Container
-            .BindFactory<UiType, Transform, BaseUi, UiFacade>()
-            .FromSubContainerResolve()
-            .ByNewGameObjectInstaller<UiInstaller>();
 
         Container.BindEntityExt(fogOfWarSystem);
 

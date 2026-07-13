@@ -1,28 +1,36 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.Visitor;
+using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Views.ViewImpl;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.ScriptUtils.Dotween;
-using Zenject;
 
 namespace EmpireAtWar.Views.Reinforcement
 {
-    public interface IReinforcementVisitor:IVisitor<ISpawnShipUi>
+    public interface IReinforcementVisitor : IVisitor<ISpawnShipUi>
     {
         void OnRelease(ISpawnShipUi spawnShipUi);
     }
-    public class ReinforcementUi:BaseUi<IReinforcementModelObserver, IReinforcementCommand>, IReinforcementVisitor, IInitializable, ILateDisposable
+
+    public interface IReinforcementUi
     {
-        private const string UNIT_CAPACITY_TEXT = "Reinforcement: ";
-        
+        void SetModel(IReinforcementModelObserver model);
+        void SetPresenter(IReinforcementPresenter presenter);
+        void SetData(ReinforcementData data);
+        void Initialize();
+        void Dispose();
+    }
+
+    public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor
+    {
+        private const string UNIT_CAPACITY_TEXT = "Reinforcement";
+
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private Button switchButton;
         [SerializeField] private Button closeButton;
@@ -30,34 +38,71 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private Image signalImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
 
-        private Dictionary<string, ISpawnShipUi> _spawnUnitUiDictionary = new Dictionary<string, ISpawnShipUi>();
-        private ISpawnShipUi _currenSpawnUnitUi;
+        private readonly Dictionary<string, ISpawnShipUi> _spawnUnitUiDictionary = new();
+
+        private IReinforcementModelObserver _model;
+        private IReinforcementPresenter _presenter;
+        private ReinforcementData _data;
+        private ISpawnShipUi _currentSpawnUnitUi;
         private Sequence _fadeSequence;
         private Color _originColor;
-        
+        private bool _isInitialized;
+
+        public void SetModel(IReinforcementModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetPresenter(IReinforcementPresenter presenter)
+        {
+            _presenter = presenter;
+        }
+
+        public void SetData(ReinforcementData data)
+        {
+            _data = data;
+        }
+
         public void Initialize()
         {
+            if (_model == null || _presenter == null || _data == null)
+            {
+                throw new InvalidOperationException("Reinforcement UI dependencies must be set before initialization.");
+            }
+
             _originColor = signalImage.color;
-            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{Model.MaxUnitCapacity}";
-            
+            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{_model.MaxUnitCapacity}";
+
             switchButton.onClick.AddListener(ActivateCanvas);
             closeButton.onClick.AddListener(DisableCanvas);
 
-            Model.OnSpawnUnit += HandleSpawning;
-            Model.OnReinforcementAdded += AddUi;
-            Model.OnCapacityChanged += UpdateCapacityData;
+            _model.OnSpawnUnit += HandleSpawning;
+            _model.OnReinforcementAdded += AddUi;
+            _model.OnCapacityChanged += UpdateCapacityData;
+            _isInitialized = true;
         }
 
-        public void LateDispose()
+        public void Dispose()
         {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             switchButton.onClick.RemoveListener(ActivateCanvas);
             closeButton.onClick.RemoveListener(DisableCanvas);
-            
-            Model.OnSpawnUnit -= HandleSpawning;
-            Model.OnReinforcementAdded -= AddUi;
-            Model.OnCapacityChanged -= UpdateCapacityData;
+
+            _model.OnSpawnUnit -= HandleSpawning;
+            _model.OnReinforcementAdded -= AddUi;
+            _model.OnCapacityChanged -= UpdateCapacityData;
+            _isInitialized = false;
         }
-        
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
+
         private void AddUi(string key, FactionData factionData)
         {
             if (_spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
@@ -66,17 +111,18 @@ namespace EmpireAtWar.Views.Reinforcement
             }
             else
             {
-                ISpawnShipUi spawnShipUi = Instantiate(Model.ReinforcementButton, spawnTransform);
+                ISpawnShipUi spawnShipUi = Instantiate(_data.ReinforcementButton, spawnTransform);
                 spawnShipUi.Init(this, key, factionData);
                 _spawnUnitUiDictionary.Add(key, spawnShipUi);
+
                 if (Enum.TryParse(key, out ShipType result))
                 {
-                    ActiveShipUnitUi(result, spawnShipUi);
+                    ActivateShipUnitUi(result, spawnShipUi);
                 }
             }
+
             PlayTweens();
         }
-        
 
         private void PlayTweens()
         {
@@ -84,6 +130,7 @@ namespace EmpireAtWar.Views.Reinforcement
             {
                 _fadeSequence.Append(signalImage.DOColor(_originColor, 0.1f));
             }
+
             _fadeSequence = DOTween.Sequence();
             _fadeSequence.Append(signalImage.DOColor(Color.green, 1f));
             _fadeSequence.Append(signalImage.DOColor(_originColor, 1f));
@@ -91,32 +138,32 @@ namespace EmpireAtWar.Views.Reinforcement
 
         private void UpdateCapacityData(int capacity)
         {
-            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: {Model.CurrentUnitCapacity}/{Model.MaxUnitCapacity}";
-            
-            foreach (KeyValuePair<string, ISpawnShipUi> keyValuePair in _spawnUnitUiDictionary)
+            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: {capacity}/{_model.MaxUnitCapacity}";
+
+            foreach (KeyValuePair<string, ISpawnShipUi> entry in _spawnUnitUiDictionary)
             {
-                if (Enum.TryParse(keyValuePair.Key, out ShipType result))
+                if (Enum.TryParse(entry.Key, out ShipType result))
                 {
-                    ActiveShipUnitUi(result, keyValuePair.Value);
+                    ActivateShipUnitUi(result, entry.Value);
                 }
             }
         }
-        
+
         private void HandleSpawning(bool success)
         {
             if (success)
             {
-                _currenSpawnUnitUi.DecreaseUnitCount();
+                _currentSpawnUnitUi.DecreaseUnitCount();
             }
 
             ActivateCanvas();
         }
-        
+
         private void ActivateCanvas()
         {
             panelCanvas.enabled = !panelCanvas.enabled;
         }
-        
+
         private void DisableCanvas()
         {
             panelCanvas.enabled = false;
@@ -124,12 +171,14 @@ namespace EmpireAtWar.Views.Reinforcement
 
         public void Handle(ISpawnShipUi spawnShipUi)
         {
-            if(Model.IsTrySpawning) return;
+            if (_model.IsTrySpawning)
+            {
+                return;
+            }
 
             DisableCanvas();
-            _currenSpawnUnitUi = spawnShipUi;
-
-            Command.TrySpawnReinforcement(spawnShipUi.UnitType);
+            _currentSpawnUnitUi = spawnShipUi;
+            _presenter.TrySpawnReinforcement(spawnShipUi.UnitType);
         }
 
         public void OnRelease(ISpawnShipUi spawnShipUi)
@@ -137,11 +186,9 @@ namespace EmpireAtWar.Views.Reinforcement
             _spawnUnitUiDictionary.Remove(spawnShipUi.UnitType);
         }
 
-        private void ActiveShipUnitUi(ShipType shipType, ISpawnShipUi shipUnitUi)
+        private void ActivateShipUnitUi(ShipType shipType, ISpawnShipUi shipUnitUi)
         {
-            shipUnitUi.Activate(Model.CanSpawnUnit(shipType));
+            shipUnitUi.Activate(_model.CanSpawnUnit(shipType));
         }
-
-
     }
 }

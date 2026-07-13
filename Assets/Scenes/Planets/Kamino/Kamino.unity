@@ -1130,30 +1130,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1634151592}
-  - component: {fileID: 1634151591}
+  - component: {fileID: 1634151593}
   m_Layer: 0
-  m_Name: LocationService
+  m_Name: UiService
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1634151591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634151590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 229d99a7e4e743838eacdfcbddd6e92d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  locations:
-    keyValue:
-    - key: 0
-      value: {fileID: 762852566}
 --- !u!4 &1634151592
 Transform:
   m_ObjectHideFlags: 0
@@ -1169,6 +1153,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1634151593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634151590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ccae3c657b4069b0221af6df0a1a6e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Ui.Base.UiService
+  _location: {fileID: 762852566}
 --- !u!1 &1816399774
 GameObject:
   m_ObjectHideFlags: 0
@@ -7562,7 +7559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b074f090551fd4e91049aa54dc0991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationService: {fileID: 1634151591}
+  _uiService: {fileID: 1634151593}
 --- !u!114 &8797581386183861239
 MonoBehaviour:
   m_ObjectHideFlags: 0

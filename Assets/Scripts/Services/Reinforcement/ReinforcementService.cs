@@ -1,34 +1,37 @@
 using System;
-using EmpireAtWar.Commands.Reinforcement;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Reinforcement;
-using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
+using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 
-
-namespace EmpireAtWar.Controllers.Reinforcement
+namespace EmpireAtWar.Services.Reinforcement
 {
-    public class ReinforcementController : Controller<ReinforcementModel>, IReinforcementCommand, ITickable,
-        IInitializable, ILateDisposable, IReinforcementChain
+    public interface IReinforcementService
     {
-        private readonly InputService _inputService;
+        void TrySpawnReinforcement(string id);
+    }
+
+    public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
+        ILateDisposable, IReinforcementChain
+    {
+        private readonly ReinforcementModel _model;
+        private readonly ReinforcementData _data;
+        private readonly InputServiceImpl _inputService;
         private readonly ICameraService _cameraService;
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
-        private readonly IUiService _uiService;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -37,29 +40,29 @@ namespace EmpireAtWar.Controllers.Reinforcement
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
 
-        public ReinforcementController(
+        public ReinforcementService(
             ReinforcementModel model,
-            InputService inputService,
+            ReinforcementData data,
+            InputServiceImpl inputService,
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade,
-            IUiService uiService) : base(model)
+            DefendPlatformFacade defendPlatformFacade)
         {
+            _model = model;
+            _data = data;
             _inputService = inputService;
             _cameraService = cameraService;
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
-            _uiService = uiService;
         }
 
         public void Initialize()
         {
             _inputService.OnEndDrag += Interrupt;
-            _uiService.CreateUi(UiType.Reinforcement);
         }
-        
+
         public void LateDispose()
         {
             _inputService.OnEndDrag -= Interrupt;
@@ -67,48 +70,56 @@ namespace EmpireAtWar.Controllers.Reinforcement
 
         private void Interrupt(Vector2 screenPosition)
         {
-            if (!Model.IsTrySpawning) return;
+            if (!_model.IsTrySpawning)
+            {
+                return;
+            }
 
-            Model.IsTrySpawning = false;
+            _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
             bool canSpawn = _spawnReinforcement.CanSpawn;
-            
+
             if (canSpawn)
             {
-                switch (_currentSpawnType)
-                {
-                    case SpawnType.Ship:
-                    {
-                        ShipEntity ship = _shipFacadeFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
-                        ship.OnRelease += HandleShipDestroying;
-                        Model.AddUnitCapacity(_currentShipType); 
-                        break;
-                    }
-                    case SpawnType.MiningFacility:
-                    {
-                        _miningFacilityFacade.Create(PlayerType.Player, _currentFacilityType, spawnPosition);
-                        break;
-                    }
-                    case SpawnType.DefendPlatform:
-                    {
-                        _defendPlatformFacade.Create(PlayerType.Player, _currentPlatformType, spawnPosition);
-                        break;
-                    }
-                }
+                SpawnReinforcement(spawnPosition);
             }
+
             _spawnReinforcement.Destroy();
             _inputService.Block(false);
-            Model.InvokeSpawnShipEvent(canSpawn);
+            _model.InvokeSpawnShipEvent(canSpawn);
+        }
+
+        private void SpawnReinforcement(Vector3 spawnPosition)
+        {
+            switch (_currentSpawnType)
+            {
+                case SpawnType.Ship:
+                    ShipEntity ship = _shipFacadeFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
+                    ship.OnRelease += HandleShipDestroying;
+                    _model.AddUnitCapacity(_currentShipType);
+                    break;
+                case SpawnType.MiningFacility:
+                    _miningFacilityFacade.Create(PlayerType.Player, _currentFacilityType, spawnPosition);
+                    break;
+                case SpawnType.DefendPlatform:
+                    _defendPlatformFacade.Create(PlayerType.Player, _currentPlatformType, spawnPosition);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void HandleShipDestroying(ShipType shipType)
         {
-            Model.RemoveUnitCapacity(shipType);
+            _model.RemoveUnitCapacity(shipType);
         }
-        
+
         public void Tick()
         {
-            if (!Model.IsTrySpawning) return;
+            if (!_model.IsTrySpawning)
+            {
+                return;
+            }
 
             Vector3 position = _cameraService.GetWorldPoint(_inputService.TouchPosition, _spawnReinforcement.Position);
             position.y = 0;
@@ -126,55 +137,59 @@ namespace EmpireAtWar.Controllers.Reinforcement
             switch (request)
             {
                 case ShipUnitRequest shipUnitRequest:
-                    Model.UpdateShipData(shipUnitRequest);
-                    Model.AddReinforcement(shipUnitRequest);
+                    _model.UpdateShipData(shipUnitRequest);
+                    _model.AddReinforcement(shipUnitRequest);
                     break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
-                    Model.AddReinforcement(miningFacilityUnitRequest);
+                    _model.AddReinforcement(miningFacilityUnitRequest);
                     break;
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
-                    Model.AddReinforcement(defendPlatformUnitRequest);
+                    _model.AddReinforcement(defendPlatformUnitRequest);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));
             }
-          
-            if (_nextChain != null)
-            {
-                _nextChain.Handle(request);
-            }
+
+            _nextChain?.Handle(request);
         }
 
         public void TrySpawnReinforcement(string id)
         {
             if (Enum.TryParse(id, out ShipType shipType))
             {
-                if (Model.CanSpawnUnit(shipType))
-                {
-                    StartSpawnSequence(SpawnType.Ship);
-                    _currentShipType = shipType;
-                    _spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(shipType));
-                }
+                TrySpawnShip(shipType);
             }
             else if (Enum.TryParse(id, out MiningFacilityType facilityType))
             {
                 StartSpawnSequence(SpawnType.MiningFacility);
                 _currentFacilityType = facilityType;
-                _spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(facilityType));
+                _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(facilityType));
             }
-            else if(Enum.TryParse(id, out DefendPlatformType defendPlatformType))
+            else if (Enum.TryParse(id, out DefendPlatformType defendPlatformType))
             {
                 StartSpawnSequence(SpawnType.DefendPlatform);
                 _currentPlatformType = defendPlatformType;
-                _spawnReinforcement = Object.Instantiate(Model.GetSpawnPrefab(defendPlatformType));
+                _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(defendPlatformType));
             }
+        }
+
+        private void TrySpawnShip(ShipType shipType)
+        {
+            if (!_model.CanSpawnUnit(shipType))
+            {
+                return;
+            }
+
+            StartSpawnSequence(SpawnType.Ship);
+            _currentShipType = shipType;
+            _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(shipType));
         }
 
         private void StartSpawnSequence(SpawnType spawnType)
         {
             _currentSpawnType = spawnType;
             _inputService.Block(true);
-            Model.IsTrySpawning = true;
+            _model.IsTrySpawning = true;
         }
     }
 }

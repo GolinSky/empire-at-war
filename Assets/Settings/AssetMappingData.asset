@@ -112,9 +112,9 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ReinforcementModel
+    - key: ReinforcementData
       value:
-        m_AssetGUID: 3495db65815525b40b2a6feb53aef27e
+        m_AssetGUID: 1c157dade5de42e4081ffe3ef1dd634f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
