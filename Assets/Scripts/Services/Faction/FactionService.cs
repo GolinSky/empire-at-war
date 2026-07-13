@@ -1,16 +1,24 @@
-using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.Factions
+namespace EmpireAtWar.Services.Factions
 {
-    public class FactionController : Controller<PlayerFactionModel>, IInitializable, ILateDisposable, IFactionCommand,
+    public interface IFactionService
+    {
+        void ChangeSelection();
+        void CloseSelection();
+        void BuildUnit(UnitRequest unitRequest);
+        void TryPurchaseUnit(UnitRequest unitRequest);
+        void RevertBuilding(UnitRequest unitRequest);
+    }
+
+    public class FactionService : Service, IFactionService, IInitializable, ILateDisposable,
         IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>
     {
         private const float DEFAULT_INCOME = 5f;
@@ -18,24 +26,23 @@ namespace EmpireAtWar.Controllers.Factions
         private readonly ISelectionService _selectionService;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
-        private readonly IUiService _uiService;
+        private readonly PlayerFactionModel _model;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
         
         public float Income { get; private set; }
 
-        public FactionController(
+        public FactionService(
             PlayerFactionModel model,
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
-            IEconomyProvider economyProvider,
-            IUiService uiService) : base(model)
+            IEconomyProvider economyProvider)
         {
+            _model = model;
             Income = DEFAULT_INCOME;
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
-            _uiService = uiService;
         }
 
         public void Initialize()
@@ -43,7 +50,6 @@ namespace EmpireAtWar.Controllers.Factions
             _purchaseMediator.Value.Add(this);
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
-            _uiService.CreateUi(UiType.Faction);
         }
 
         public void LateDispose()
@@ -54,7 +60,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void ChangeSelection()
         {
-            Model.SelectionType =  Model.SelectionType == SelectionType.Base ? SelectionType.None : SelectionType.Base ;
+            _model.SelectionType = _model.SelectionType == SelectionType.Base ? SelectionType.None : SelectionType.Base;
         }
 
         public void CloseSelection()
@@ -67,11 +73,13 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void BuildUnit(UnitRequest unitRequest)
         {
+            _model.CompleteUnit(unitRequest);
+
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
-                    Model.CurrentLevel++;
-                    Income = DEFAULT_INCOME * Model.CurrentLevel;
+                    _model.CurrentLevel++;
+                    Income = DEFAULT_INCOME * _model.CurrentLevel;
                     _economyProvider.RecalculateIncome(this);
                     return;
             }
@@ -84,12 +92,18 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
+            if (!_model.CanQueueUnit(unitRequest))
+            {
+                return;
+            }
+
             _purchaseMediator.Value.Handle(unitRequest);
         }
 
         public void RevertBuilding(UnitRequest unitRequest)
         {
             _purchaseMediator.Value.RevertFlow(unitRequest);
+            _model.CompleteUnit(unitRequest);
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
@@ -100,7 +114,7 @@ namespace EmpireAtWar.Controllers.Factions
 
         public void Handle(UnitRequest unitRequest)
         {
-            Model.UnitToBuild = unitRequest;
+            _model.QueueUnit(unitRequest);
         }
 
         public void UpdateState(ISelectionSubject selectionSubject)
@@ -108,7 +122,7 @@ namespace EmpireAtWar.Controllers.Factions
             if (selectionSubject.UpdatedType == PlayerType.Player)
             {
                 _selectionContext = selectionSubject.PlayerSelectionContext;
-                Model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
+                _model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
             }
         }
     }

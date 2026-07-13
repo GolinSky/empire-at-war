@@ -4,9 +4,11 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Mvc;
 using Zenject;
@@ -27,8 +29,10 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<ReinforcementService>();
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
-            Container.BindModel<PlayerFactionModel>(Repository);
-            Container.BindInterfacesNonLazyExt<FactionController>();
+            Container.BindScriptableObject<PlayerFactionData>(Repository);
+            Container.BindInterfacesAndSelfTo<PlayerFactionModel>().AsSingle();
+            Container.BindInterfacesNonLazyExt<FactionService>();
+            Container.BindInterfacesNonLazyExt<FactionUiController>();
             
             Container.BindModel<EconomyModel>(Repository);
             Container.BindInterfacesNonLazyExt<EconomyController>();

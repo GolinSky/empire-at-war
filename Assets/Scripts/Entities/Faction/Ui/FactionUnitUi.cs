@@ -37,7 +37,7 @@ namespace EmpireAtWar.Views.Factions
 
         private void HandleClick()
         {
-            _factionView.BuyUnit(_unitRequest, FactionData);
+            _factionView.BuyUnit(_unitRequest);
         }
 
         public void SetActive(bool isActive)
