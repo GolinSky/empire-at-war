@@ -1,29 +1,27 @@
-using EmpireAtWar.Services.Location;
-using EmpireAtWar.Mvc;
+using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Ui.Base
 {
     public interface IUiService
     {
-        void CreateUi(UiType uiType);
+        BaseUi CreateUi(UiType uiType);
     }
     
-    public class UiService: Service, IUiService
+    public class UiService: MonoBehaviour, IUiService
     {
-        private const LocationType DEFAULT_LOCATION_TYPE = LocationType.UiCanvas;
-        
-        private readonly ILocationService _locationService;
-        private readonly UiFacade _uiFacade;
+        [SerializeField] private Transform _location;
+        private UiFacade _uiFacade;
 
-        public UiService(ILocationService locationService, UiFacade uiFacade)
+        [Inject]
+        public void Constructor(UiFacade uiFacade)
         {
-            _locationService = locationService;
             _uiFacade = uiFacade;
-        }        
+        }
         
-        public void CreateUi(UiType uiType)
+        public BaseUi CreateUi(UiType uiType)
         {
-            _uiFacade.Create(uiType, _locationService.GetLocation(DEFAULT_LOCATION_TYPE));
+            return _uiFacade.Create(uiType, _location);
         }
     }
 }

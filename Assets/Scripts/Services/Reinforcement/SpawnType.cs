@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Controllers.Reinforcement
+namespace EmpireAtWar.Services.Reinforcement
 {
     public enum SpawnType
     {

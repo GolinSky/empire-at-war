@@ -1,5 +1,5 @@
 ﻿using EmpireAtWar.Controllers.Economy;
-using EmpireAtWar.Controllers.Reinforcement;
+using EmpireAtWar.Services.Reinforcement;
 
 namespace EmpireAtWar.Controllers.Factions
 {

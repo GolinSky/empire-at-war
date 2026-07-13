@@ -1,15 +1,14 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Controllers.Reinforcement;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.Player;
-using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar
@@ -23,8 +22,10 @@ namespace EmpireAtWar
         {
             Container.Install<GameUnitsInstaller>();
             
-            Container.BindModel<ReinforcementModel>(Repository);
-            Container.BindInterfacesNonLazyExt<ReinforcementController>();
+            Container.BindScriptableObject<ReinforcementData>(Repository);
+            Container.BindInterfacesAndSelfTo<ReinforcementModel>().AsSingle();
+            Container.BindInterfacesNonLazyExt<ReinforcementService>();
+            Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
             Container.BindModel<PlayerFactionModel>(Repository);
             Container.BindInterfacesNonLazyExt<FactionController>();
@@ -33,14 +34,6 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<EconomyController>();
             
             Container.BindInterfacesExt<PlayerService>();
-          
-            //rebind scene context binding here to be able to inject current subcontainer dependency to BaseUi impl instances
-            Container
-                .BindFactory<UiType, Transform, BaseUi, UiFacade>()
-                .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<UiInstaller>();
-            
-            Container.BindInterfacesExt<UiService>();
 
             Container.BindInterfacesExt<PurchaseProcessor>();
         }
