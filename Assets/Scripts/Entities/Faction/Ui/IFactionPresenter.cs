@@ -1,9 +1,8 @@
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Mvc;
 
-namespace EmpireAtWar.Commands.Faction
+namespace EmpireAtWar.Presenters.Factions
 {
-    public interface IFactionCommand:ICommand
+    public interface IFactionPresenter
     {
         void ChangeSelection();
         void CloseSelection();
