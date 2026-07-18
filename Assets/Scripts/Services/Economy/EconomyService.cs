@@ -1,39 +1,35 @@
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
-namespace EmpireAtWar.Controllers.Economy
+namespace EmpireAtWar.Services.Economy
 {
-    public interface IEconomyProvider
-    {
-        void AddProvider(IIncomeProvider incomeProvider);
-        void RemoveProvider(IIncomeProvider incomeProvider);
-        void RecalculateIncome(IIncomeProvider incomeProvider);
-    }
-
-    public class EconomyController : Controller<EconomyModel>, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
+    public class EconomyService : Service, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
     {
         private const float DEFAULT_INCOME = 1f;
 
+        private readonly EconomyModel _model;
         private readonly ITimer _incomeTimer;
+        private readonly List<IIncomeProvider> _incomeProviders = new();
+
         private IChainHandler<UnitRequest> _nextChain;
-        private List<IIncomeProvider> _incomeProviders = new List<IIncomeProvider>();
-        
         private float _commonIncome;
+
         public float Income => DEFAULT_INCOME;
-        
-        public EconomyController(EconomyModel model) : base(model)
+
+        public EconomyService(EconomyModel model, EconomyData data)
         {
-            _incomeTimer = TimerFactory.ConstructTimer(model.IncomeDelay);
-            Model.Money = Model.StartMoneyAmount;
+            _model = model;
+            _incomeTimer = TimerFactory.ConstructTimer(data.IncomeDelay);
         }
+
         public void Initialize()
         {
             AddProvider(this);
@@ -44,20 +40,10 @@ namespace EmpireAtWar.Controllers.Economy
             if (_incomeTimer.IsComplete)
             {
                 _incomeTimer.StartTimer();
-                Model.Money += _commonIncome;
+                _model.AddMoney(_commonIncome);
             }
         }
-        
-        private bool TryBuyUnit(float price)
-        {
-            if (Model.Money > price)
-            {
-                Model.Money -= price;
-                return true;
-            }
-            return false;
-        }
-        
+
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
         {
             _nextChain = chainHandler;
@@ -66,18 +52,15 @@ namespace EmpireAtWar.Controllers.Economy
 
         public void Handle(UnitRequest unitRequest)
         {
-            if (TryBuyUnit(unitRequest.FactionData.Price))
+            if (_model.TrySpend(unitRequest.FactionData.Price))
             {
-                if (_nextChain != null)
-                {
-                    _nextChain.Handle(unitRequest);
-                }
+                _nextChain?.Handle(unitRequest);
             }
         }
 
         public void Revert(UnitRequest unitRequest)
         {
-            Model.Money += unitRequest.FactionData.Price;
+            _model.AddMoney(unitRequest.FactionData.Price);
         }
 
         public void AddProvider(IIncomeProvider incomeProvider)

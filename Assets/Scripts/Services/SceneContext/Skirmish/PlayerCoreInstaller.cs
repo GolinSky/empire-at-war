@@ -1,12 +1,13 @@
-using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
+using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Reinforcement;
@@ -34,8 +35,10 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
             
-            Container.BindModel<EconomyModel>(Repository);
-            Container.BindInterfacesNonLazyExt<EconomyController>();
+            Container.BindScriptableObject<EconomyData>(Repository);
+            Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
+            Container.BindInterfacesNonLazyExt<EconomyService>();
+            Container.BindInterfacesNonLazyExt<EconomyUiController>();
             
             Container.BindInterfacesExt<PlayerService>();
 

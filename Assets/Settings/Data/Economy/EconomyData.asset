@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3842da2340446eeaba48a006252438c, type: 3}
-  m_Name: EconomyModel
-  m_EditorClassIdentifier: 
-  models: []
+  m_Script: {fileID: 11500000, guid: 720c94f511aacf04986486bfc7c52324, type: 3}
+  m_Name: EconomyData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Economy.EconomyData
   <IncomeDelay>k__BackingField: 1
   <StartMoneyAmount>k__BackingField: 15000
