@@ -6,9 +6,9 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.SceneContext.Skirmish;
+using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext
@@ -30,11 +30,9 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemyFactionController>();
             
             
-            ModelDependencyBuilder
-                .ConstructBuilder(Container)
-                .BindFromNewScriptable<EconomyModel>(Repository, PlayerType.Opponent);
-
-            Container.BindInterfacesNonLazyExt<EconomyController>();
+            Container.BindScriptableObject<EconomyData>(Repository);
+            Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
+            Container.BindInterfacesNonLazyExt<EconomyService>();
 
             
             SceneContext.Container

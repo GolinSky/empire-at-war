@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Economy
@@ -10,24 +9,39 @@ namespace EmpireAtWar.Models.Economy
         float Money { get; }
     }
 
-    [CreateAssetMenu(fileName = "EconomyModel", menuName = "Model/EconomyModel")]
-    public class EconomyModel : Model, IEconomyModelObserver
+    public class EconomyModel : PureModel, IEconomyModelObserver
     {
         public event Action<float> OnMoneyChanged;
 
-        [field: SerializeField] public float IncomeDelay { get; private set; }
-        [field: SerializeField] public float StartMoneyAmount { get; private set; }
-        
         private float _money;
-        
-        public float Money
+
+        public EconomyModel(EconomyData data)
         {
-            get => _money;
-            set
+            _money = data.StartMoneyAmount;
+        }
+
+        public float Money => _money;
+
+        public void AddMoney(float amount)
+        {
+            SetMoney(_money + amount);
+        }
+
+        public bool TrySpend(float amount)
+        {
+            if (_money <= amount)
             {
-                _money = value;
-                OnMoneyChanged?.Invoke(_money);
+                return false;
             }
+
+            SetMoney(_money - amount);
+            return true;
+        }
+
+        private void SetMoney(float value)
+        {
+            _money = value;
+            OnMoneyChanged?.Invoke(_money);
         }
     }
 }

@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 187f1cf1c603ee8408343a2b1c03b426
+    m_Address: EconomyData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1c157dade5de42e4081ffe3ef1dd634f
     m_Address: ReinforcementData
     m_ReadOnly: 0
@@ -127,11 +132,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
     m_Address: AudioShipDialogModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7b34d2700a80663478c172116a6b9ec4
-    m_Address: EconomyModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
