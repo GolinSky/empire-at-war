@@ -1,120 +1,174 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
 using UnityEngine;
-using EmpireAtWar.Mvc;
-using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using Zenject;
 
 namespace EmpireAtWar.Services.Battle
 {
     public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
-       // void UpdateSelectable(ISelectable selectable, SelectionType selectionType);
         void RemoveSelectable(ISelectionContext selectionContext);
     }
 
-    public class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable, ISelectionSubject
+    public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
+        ISelectionSubject
     {
-
         private readonly IInputService _inputService;
-        private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
-        private readonly List<IObserver<ISelectionSubject>> _observers = new List<IObserver<ISelectionSubject>>();
-      
-        private readonly SelectionContext _playerSelectionContext = new SelectionContext();
-        private readonly SelectionContext _enemySelectionContext = new SelectionContext();
-
+        private readonly ISelectionQuery _selectionQuery;
+        private readonly IMarqueeSelectionPresenter _marqueeSelectionPresenter;
+        private readonly List<IObserver<ISelectionSubject>> _observers =
+            new List<IObserver<ISelectionSubject>>();
+        private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
+        private readonly SelectionContext _playerSelectionContext = new SelectionContext(PlayerType.Player);
+        private readonly SelectionContext _enemySelectionContext = new SelectionContext(PlayerType.Opponent);
+        private long? _lastTappedEntityId;
 
         public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
         public ISelectionContext EnemySelectionContext => _enemySelectionContext;
         public PlayerType UpdatedType { get; private set; }
 
-        public SelectionService(IInputService inputService, ICameraService cameraService, IEntityLocator entityLocator)
+        public SelectionService(
+            IInputService inputService,
+            IEntityLocator entityLocator,
+            ISelectionQuery selectionQuery,
+            IMarqueeSelectionPresenter marqueeSelectionPresenter)
         {
             _inputService = inputService;
-            _cameraService = cameraService;
             _entityLocator = entityLocator;
+            _selectionQuery = selectionQuery;
+            _marqueeSelectionPresenter = marqueeSelectionPresenter;
         }
-        
+
         public void Initialize()
         {
             _inputService.OnInput += HandleInput;
+            _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
+            _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
         public void LateDispose()
         {
             _inputService.OnInput -= HandleInput;
+            _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
+            _entityLocator.EntityRemoved -= HandleEntityRemoved;
+            _playerSelectionContext.ResetCurrentSelectable();
+            _enemySelectionContext.ResetCurrentSelectable();
         }
-  
 
         public void RemoveSelectable(ISelectionContext context)
         {
-            RemoveSelectable(context.PlayerType);
+            if (context == null)
+            {
+                return;
+            }
+
+            ClearSelection(context.PlayerType);
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if(inputType != InputType.Selection) return;
-            
-            RaycastHit raycastHit = _cameraService.ScreenPointToRay(touchPosition);
-            
-            if(raycastHit.collider == null) return;
-
-
-            if (_entityLocator.TryGetEntity(raycastHit, out IEntity entity))
+            if (inputType != InputType.Selection)
             {
-                if (entity.TryGetCommand(out IEntitySelectionCommand command))
-                {
-                    RemoveSelectable(entity.PlayerType);
+                return;
+            }
 
-                    switch (entity.PlayerType)
-                    {
-                        case PlayerType.Player:
-                        {
-                            UpdateContext(_playerSelectionContext);
-                            break;
-                        }
-                        case PlayerType.Opponent:
-                        {
-                            UpdateContext(_enemySelectionContext);
-                            break;
-                        }
-                    }
-                }
+            if (!_selectionQuery.TryFindAt(touchPosition, out SelectionEntry selection))
+            {
+                _lastTappedEntityId = null;
+                return;
+            }
+
+            bool isRepeatedTap = _lastTappedEntityId == selection.Entity.Id;
+            _lastTappedEntityId = selection.Entity.Id;
+            if (isRepeatedTap &&
+                selection.Entity.PlayerType == PlayerType.Player &&
+                _inputService.TapCount >= 2 &&
+                TryCollectSameShipType(selection))
+            {
+                SetSelection(selection.Entity.PlayerType, _selectionBuffer);
+                return;
+            }
+
+            _selectionBuffer.Clear();
+            _selectionBuffer.Add(selection);
+            SetSelection(selection.Entity.PlayerType, _selectionBuffer);
+        }
+
+        private bool TryCollectSameShipType(SelectionEntry selection)
+        {
+            _selectionBuffer.Clear();
+            _selectionQuery.CollectSameShipType(selection, _selectionBuffer);
+            return _selectionBuffer.Count > 0;
+        }
+
+        private void HandleMarqueeCompleted(MarqueeRectangle rectangle)
+        {
+            _lastTappedEntityId = null;
+            _selectionBuffer.Clear();
+            _selectionQuery.CollectInside(rectangle, _selectionBuffer);
+            SetSelection(PlayerType.Player, _selectionBuffer);
+        }
+
+        private void SetSelection(PlayerType playerType, IReadOnlyList<SelectionEntry> selection)
+        {
+            SelectionContext context = GetContext(playerType);
+            if (context == null)
+            {
+                return;
+            }
+
+            context.Replace(selection);
+            NotifyObservers(playerType);
+        }
+
+        private void ClearSelection(PlayerType playerType)
+        {
+            SelectionContext context = GetContext(playerType);
+            if (context == null)
+            {
+                return;
+            }
+
+            context.ResetCurrentSelectable();
+            NotifyObservers(playerType);
+        }
+
+        private void HandleEntityRemoved(EmpireAtWar.Entities.BaseEntity.IEntity entity)
+        {
+            if (_lastTappedEntityId == entity.Id)
+            {
+                _lastTappedEntityId = null;
+            }
+
+            SelectionContext context = GetContext(entity.PlayerType);
+            if (context != null && context.Remove(entity))
+            {
                 NotifyObservers(entity.PlayerType);
-
-                
-                void UpdateContext(SelectionContext selectionContext)
-                {
-                    selectionContext.Update(entity, command, command.SelectionType, entity.PlayerType);
-                    selectionContext.SetSelectableState(true);
-                }
-                //viewEntity.Id
             }
         }
-        
-        private void RemoveSelectable(PlayerType playerType)
+
+        private SelectionContext GetContext(PlayerType playerType)
         {
             switch (playerType)
             {
                 case PlayerType.Player:
-                    _playerSelectionContext.ResetCurrentSelectable();
-                    break;
+                    return _playerSelectionContext;
                 case PlayerType.Opponent:
-                    _enemySelectionContext.ResetCurrentSelectable();
-                    break;
+                    return _enemySelectionContext;
+                default:
+                    return null;
             }
-            NotifyObservers(playerType);
         }
-        
+
         private void NotifyObservers(PlayerType playerType)
         {
             UpdatedType = playerType;
-            for (var i = 0; i < _observers.Count; i++)
+            for (int i = 0; i < _observers.Count; i++)
             {
                 _observers[i].UpdateState(this);
             }
@@ -122,13 +176,15 @@ namespace EmpireAtWar.Services.Battle
 
         public void AddObserver(IObserver<ISelectionSubject> observer)
         {
-            _observers.Add(observer);
+            if (!_observers.Contains(observer))
+            {
+                _observers.Add(observer);
+            }
         }
 
         public void RemoveObserver(IObserver<ISelectionSubject> observer)
         {
             _observers.Remove(observer);
         }
-        
     }
 }

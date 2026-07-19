@@ -16,6 +16,9 @@ namespace EmpireAtWar.Services.InputService
         private const float MAX_SWIPE_DELTA = 10f;
 
         public event Action<Vector2> OnSwipe;
+        public event Action<Vector2> OnPrimaryDragStarted;
+        public event Action<Vector2> OnPrimaryDragChanged;
+        public event Action<Vector2> OnPrimaryDragEnded;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -28,6 +31,7 @@ namespace EmpireAtWar.Services.InputService
         private bool _isPointerPressed;
         private bool _pressStartedOverUi;
         private bool _hasDragged;
+        private bool _isMousePointer;
         private Vector2 _pressPosition;
         private Vector2 _previousPosition;
         private float _previousMagnitude;
@@ -35,6 +39,7 @@ namespace EmpireAtWar.Services.InputService
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
+        public int TapCount => Mathf.Max(1, MapActions.TouchCount.ReadValue<int>());
 
         public InputService()
         {
@@ -68,15 +73,12 @@ namespace EmpireAtWar.Services.InputService
         {
             _isPointerPressed = true;
             _hasDragged = false;
+            _isMousePointer = callbackContext.control.device is Mouse;
             _pressPosition = TouchPosition;
             _previousPosition = _pressPosition;
             _pressStartedOverUi = IsPointerOverUIObject(_pressPosition);
             CurrentTouchPhase = TouchPhase.Began;
 
-            if (!_isBlocked && !_pressStartedOverUi)
-            {
-                InvokeInputEvent(InputType.Selection);
-            }
         }
 
         private void OnPointerReleased(InputAction.CallbackContext callbackContext)
@@ -84,18 +86,33 @@ namespace EmpireAtWar.Services.InputService
             Vector2 releasePosition = TouchPosition;
             CurrentTouchPhase = TouchPhase.Ended;
 
+            if (!_isBlocked && _isPointerPressed && !_pressStartedOverUi &&
+                TryStartDrag(releasePosition) && _isMousePointer)
+            {
+                OnPrimaryDragChanged?.Invoke(releasePosition);
+            }
+
             if (_isBlocked)
             {
                 OnEndDrag?.Invoke(releasePosition);
             }
-            else if (_isPointerPressed && !_pressStartedOverUi && !_hasDragged)
+            else if (_isPointerPressed && !_pressStartedOverUi)
             {
-                InvokeInputEvent(InputType.ShipInput);
+                if (_hasDragged && _isMousePointer)
+                {
+                    OnPrimaryDragEnded?.Invoke(releasePosition);
+                }
+                else if (!_hasDragged)
+                {
+                    InvokeInputEvent(InputType.Selection);
+                    InvokeInputEvent(InputType.ShipInput);
+                }
             }
 
             _isPointerPressed = false;
             _hasDragged = false;
             _pressStartedOverUi = false;
+            _isMousePointer = false;
             _previousMagnitude = 0f;
         }
 
@@ -156,10 +173,7 @@ namespace EmpireAtWar.Services.InputService
             Vector2 delta = currentPosition - _previousPosition;
             _previousPosition = currentPosition;
 
-            if (!_hasDragged)
-            {
-                _hasDragged = Vector2.Distance(_pressPosition, currentPosition) >= DRAG_THRESHOLD;
-            }
+            TryStartDrag(currentPosition);
 
             if (!_hasDragged || delta.sqrMagnitude <= Mathf.Epsilon)
             {
@@ -167,15 +181,38 @@ namespace EmpireAtWar.Services.InputService
             }
 
             CurrentTouchPhase = TouchPhase.Moved;
-            Vector2 direction = new Vector2(
-                Mathf.Clamp(delta.x, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA),
-                Mathf.Clamp(delta.y, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA));
-            OnSwipe?.Invoke(direction);
+            if (_isMousePointer)
+            {
+                OnPrimaryDragChanged?.Invoke(currentPosition);
+            }
+            else
+            {
+                Vector2 direction = new Vector2(
+                    Mathf.Clamp(delta.x, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA),
+                    Mathf.Clamp(delta.y, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA));
+                OnSwipe?.Invoke(direction);
+            }
         }
 
         private void InvokeInputEvent(InputType inputType)
         {
             OnInput?.Invoke(inputType, CurrentTouchPhase, TouchPosition);
+        }
+
+        private bool TryStartDrag(Vector2 currentPosition)
+        {
+            if (_hasDragged || Vector2.Distance(_pressPosition, currentPosition) < DRAG_THRESHOLD)
+            {
+                return false;
+            }
+
+            _hasDragged = true;
+            if (_isMousePointer)
+            {
+                OnPrimaryDragStarted?.Invoke(_pressPosition);
+            }
+
+            return true;
         }
 
         public void Block(bool isBlocked)

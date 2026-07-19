@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.BattleService;
@@ -19,6 +20,15 @@ namespace EmpireAtWar.SceneContext.Skirmish
             
             Container.BindScriptableObject<CameraData>(Repository);
             Container.BindScriptableObject<SharedSelectionData>(Repository);
+            Container.Bind<MarqueeSelectionModel>().AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<MarqueeSelectionView>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<MarqueeSelectionPresenter>()
+                .AsSingle()
+                .NonLazy();
             Container
                 .BindInterfacesAndSelfTo<CameraService>()
                 .FromComponentInHierarchy()
@@ -27,6 +37,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<SelectionQuery>()
                 .BindInterfacesExt<SelectionService>()
                 .BindInterfacesExt<BattleService>();
         }

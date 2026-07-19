@@ -10,8 +10,14 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
 {
+    public interface ISelectionPositionProvider
+    {
+        Vector3 WorldPosition { get; }
+    }
+
     public interface ISelectionComponent : IComponent, IUnitComponent
     {
+        Vector3 WorldPosition { get; }
         void SetActive(bool isActive);
     }
 
@@ -27,6 +33,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         private SharedSelectionData _sharedSelectionData;
 
         [Inject] private PlayerType PlayerType { get; }
+        public Vector3 WorldPosition => transform.position;
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
         {

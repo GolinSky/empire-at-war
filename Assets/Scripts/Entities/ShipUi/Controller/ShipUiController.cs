@@ -92,10 +92,17 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public void MoveToPosition()
         {
-            // _playerSelectionContext.Selectable?.Movable?.MoveToPosition(Model.TapPosition);
-            if (_playerSelectionContext.Entity.TryGetCommand(out IMoveCommand moveCommand))
+            if (_playerSelectionContext == null)
             {
-                moveCommand.MoveTo(Model.TapPosition);
+                return;
+            }
+
+            for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
+            {
+                if (_playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand moveCommand))
+                {
+                    moveCommand.MoveTo(Model.TapPosition);
+                }
             }
         }
 
