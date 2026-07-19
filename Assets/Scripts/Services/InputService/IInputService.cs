@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.InputService
     public interface IInputService:IService
     {
         event Action<Vector2> OnSwipe; 
+        event Action OnLeftMousePressed;
         event Action<bool> OnBlocked;
         event Action<InputType,TouchPhase, Vector2> OnInput;
         

@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.InputService
         private const float MAX_SWIPE_DELTA = 10f;
 
         public event Action<Vector2> OnSwipe;
+        public event Action OnLeftMousePressed;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -72,6 +73,11 @@ namespace EmpireAtWar.Services.InputService
             _previousPosition = _pressPosition;
             _pressStartedOverUi = IsPointerOverUIObject(_pressPosition);
             CurrentTouchPhase = TouchPhase.Began;
+
+            if (callbackContext.control.device is Mouse)
+            {
+                OnLeftMousePressed?.Invoke();
+            }
 
             if (!_isBlocked && !_pressStartedOverUi)
             {
