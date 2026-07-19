@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
@@ -6,7 +7,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 using Zenject;
@@ -26,17 +27,18 @@ namespace EmpireAtWar.Models.Health
         bool IsLostShieldGenerator { get; }
         FloatRange ShieldDangerStateRange { get; }
 
-        void InjectDependency(HealthModelDependency healthModelDependency);
+        void InjectDependency(List<HardPointView> shipUnits);
         
         
         bool HasUnits { get; }
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
         PlayerType PlayerType { get; }
         Transform Transform { get; }
+        bool HasShields { get; }
     }
 
     [Serializable]
-    public class HealthModel:InnerModel, IHealthModelObserver, IHealthData
+    public class HealthModel : PureModel, IHealthModelObserver, IHealthState
     {
         private const float WEAPON_SYSTEM_COEFFICIENT = 0.8f;
         private const int MAIN_SYSTEM_AMOUNT = 2; 
@@ -44,18 +46,14 @@ namespace EmpireAtWar.Models.Health
         public event Action OnDestroy;
         
         
-        [SerializeField] 
-        [Range(0f, 1f)]
-        private float dexterity;//why this is private
         protected float _shieldsBaseValue;
-        private HealthModelDependency _healthModelDependency;
+        private IHealthData _data;
 
-        [field:SerializeField] public float Armor { get; private set; }
-        [field:SerializeField] public float Shields { get; private set; }
-        
-        [field:SerializeField] public float ShieldRegenerateValue { get; private set; }
-        [field:SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [field:SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
+        public float Armor { get; private set; }
+        public float Shields { get; private set; }
+        public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
+        public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
+        public FloatRange ShieldDangerStateRange => _data.ShieldDangerStateRange;
      
 
         public HardPointModel[] HardPointModels { get; private set; }
@@ -66,7 +64,7 @@ namespace EmpireAtWar.Models.Health
         
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
-        public float Dexterity => dexterity;
+        public float Dexterity => _data.Dexterity;
         public float ShieldPercentage => Shields/ _shieldsBaseValue;
 
         public bool IsLostShieldGenerator { get; private set; }
@@ -80,6 +78,15 @@ namespace EmpireAtWar.Models.Health
         public LazyInject<Transform> ViewTransform { get; }
         
         public Transform Transform => ViewTransform.Value;
+
+        [Inject]
+        private void Construct(IHealthData data)
+        {
+            _data = data;
+            Armor = data.Armor;
+            Shields = data.Shields;
+            _shieldsBaseValue = Shields;
+        }
 
         
         public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
@@ -104,14 +111,13 @@ namespace EmpireAtWar.Models.Health
         }
         
         
-        public void InjectDependency(HealthModelDependency healthModelDependency)
+        public void InjectDependency(List<HardPointView> shipUnits)
         {
-            _healthModelDependency = healthModelDependency;
-            HardPointModels = new HardPointModel[_healthModelDependency.ShipUnits.Count];
-            for (var i = 0; i < _healthModelDependency.ShipUnits.Count; i++)
+            HardPointModels = new HardPointModel[shipUnits.Count];
+            for (var i = 0; i < shipUnits.Count; i++)
             {
                 HardPointModels[i] = new HardPointModel(); // Initialize each element
-                HardPointModels[i].SetData(_healthModelDependency.ShipUnits[i]);
+                HardPointModels[i].SetData(shipUnits[i]);
             }
 
             float totalCount = HardPointModels.Length;
@@ -157,11 +163,6 @@ namespace EmpireAtWar.Models.Health
 
     
 
-        protected override void OnInit()
-        {
-            _shieldsBaseValue = Shields;
-        }
-        
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
         {
             if(IsDestroyed) return;

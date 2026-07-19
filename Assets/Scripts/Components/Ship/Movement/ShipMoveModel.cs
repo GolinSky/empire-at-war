@@ -8,12 +8,21 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
+    public interface IShipMoveData : IDefaultMoveData
+    {
+        float RotationSpeed { get; }
+        float HyperSpaceDuration { get; }
+        float MinRotationDuration { get; }
+        float MaxRotationDuration { get; }
+        float BodyRotationMaxAngle { get; }
+    }
+
     public interface IShipMoveModelObserver:IDefaultMoveModelObserver
     {
         event Action OnStop;
         Vector3 HyperSpacePosition { get; }
         float RotationSpeed { get; }
-        float HyperSpaceSpeed { get; }
+        float HyperSpaceDuration { get; }
         float MinRotationDuration { get; }
         float MaxRotationDuration { get; }
         float BodyRotationMaxAngle { get; }
@@ -28,12 +37,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         public event Action OnStop;
         
-        [Header("Speed - degrees per second")]
-        [field: SerializeField] public float RotationSpeed { get; private set; }
-        // [field: SerializeField] public float MinRotationDuration { get; private set; }
-        // [field: SerializeField] public float MaxRotationDuration { get; private set; }
-        [field: SerializeField] public float HyperSpaceSpeed { get; private set; }
-        [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
+        [Inject] private IShipMoveData ShipMoveData { get; }
+
+        public float RotationSpeed => ShipMoveData.RotationSpeed;
+        public float HyperSpaceDuration => ShipMoveData.HyperSpaceDuration;
+        public float BodyRotationMaxAngle => ShipMoveData.BodyRotationMaxAngle;
         public Vector3 JumpPosition => HyperSpacePosition - (PlayerType == PlayerType.Player ? Vector3.right : Vector3.left )  * OFFSET_HYPERSPACE_JUMP;
 
         
@@ -48,8 +56,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private PlayerType PlayerType { get; }
 
 
-        public float MinRotationDuration => 5f;
-        public float MaxRotationDuration => 25f;
+        public float MinRotationDuration => ShipMoveData.MinRotationDuration;
+        public float MaxRotationDuration => ShipMoveData.MaxRotationDuration;
 
         public ObservableProperty<Vector3> LookAtTarget { get; } = new ObservableProperty<Vector3>();
         IObservableProperty<Vector3> IShipMoveModelObserver.LookAtTargetObserver => LookAtTarget;
@@ -58,6 +66,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void ApplyMoveCoefficient(float coefficient)
         {
             _speedCoefficient = coefficient;
+            OnStop?.Invoke();
+        }
+
+        public void Stop()
+        {
             OnStop?.Invoke();
         }
     }

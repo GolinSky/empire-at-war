@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Ship;
@@ -10,6 +11,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Editor.Ship
 {
@@ -26,7 +28,7 @@ namespace EmpireAtWar.Editor.Ship
             
             foreach (string shipName in shipNames)
             {
-                ShipView view = addressableRepository.LoadComponent<ShipView>($"{shipName}{nameof(ShipView)}");
+                ShipEntity view = addressableRepository.LoadComponent<ShipEntity>($"{shipName}ShipView");
                 ShipModel model = addressableRepository.Load<ShipModel>($"{shipName}{nameof(ShipModel)}");
                 
             }
@@ -65,7 +67,7 @@ namespace EmpireAtWar.Editor.Ship
         public static void RefactorHardPoints()
         {
             Object selectionObject = Selection.objects.FirstOrDefault();
-            AttackViewComponent attackViewComponent = selectionObject.GetComponent<AttackViewComponent>();
+            AttackComponent attackViewComponent = selectionObject.GetComponent<AttackComponent>();
 
             List<TurretView> turretViews = attackViewComponent.GetComponentsInChildren<TurretView>().ToList();
 
@@ -85,6 +87,28 @@ namespace EmpireAtWar.Editor.Ship
                 hardPointInstanceGO.name = turretView.gameObject.name;
                 
             }
+        }
+        
+        [MenuItem("Custom/Ships/Refactor Hard Point 2")]
+        public static void RefactorHardPoints2()
+        {
+            Object selectionObject = Selection.objects.FirstOrDefault();
+            AttackComponent attackViewComponent = selectionObject.GetComponent<AttackComponent>();
+
+
+            foreach (var keyValuePair in attackViewComponent.TurretDictionary)
+            {
+                foreach (WeaponHardPointView weaponHardPointView in keyValuePair.Value)
+                {
+                    weaponHardPointView.SetWeaponType(keyValuePair.Key);
+                    EditorUtility.SetDirty(weaponHardPointView);
+                    EditorUtility.SetDirty(weaponHardPointView.gameObject);
+                }
+            }
+          
+            EditorUtility.SetDirty(selectionObject);
+            EditorUtility.SetDirty(attackViewComponent.transform.root.gameObject);
+
         }
     }
 }

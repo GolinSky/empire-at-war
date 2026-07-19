@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EmpireAtWar.Commands.PopupCommands;
 using EmpireAtWar.Ui.Popups;
 using UnityEngine;
-using LightWeightFramework.Command;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Popup
 {

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.MiniMap;
 using UnityEngine;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Models.MiniMap

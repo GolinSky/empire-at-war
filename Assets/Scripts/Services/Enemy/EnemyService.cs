@@ -1,12 +1,13 @@
-﻿using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.Strategy;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -19,8 +20,8 @@ namespace EmpireAtWar.Services.Enemy
         
         private IUnitSpawnStrategy _currentStrategy;
         private Vector3 _stationPosition;
-        private SpaceStationView _spaceStationView;
-        private readonly SpaceStationViewFacade _spaceStationViewFacade;
+        private SpaceStationEntity _spaceStation;
+        private readonly SpaceStationFacade _spaceStationViewFacade;
         private readonly EnemyPurchaseProcessor _enemyPurchaseProcessor;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IUnitRequestFactory _unitRequestFactory;
@@ -31,7 +32,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
-            SpaceStationViewFacade spaceStationViewFacade,
+            SpaceStationFacade spaceStationViewFacade,
             EnemyPurchaseProcessor enemyPurchaseProcessor, 
             IUnitRequestFactory unitRequestFactory,
             EnemyFactionModel enemyFactionModel)
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             SetStrategy(UnitSpawnStrategyType.LevelUpFast);
             _stationPosition = _mapModel.Value.GetStationPosition(PlayerType.Opponent);
-            _spaceStationView = _spaceStationViewFacade.Create(PlayerType.Opponent, FactionType,  _stationPosition);
+            _spaceStation = _spaceStationViewFacade.Create(PlayerType.Opponent, FactionType, _stationPosition);
         }
         
         public void Tick()

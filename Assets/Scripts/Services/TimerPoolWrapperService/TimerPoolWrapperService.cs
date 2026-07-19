@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Utilities.ScriptUtils.Time;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Services.TimerPoolWrapperService
 {
+    [Obsolete]
     public interface ITimerPoolWrapperService:IService
     {
         CustomCoroutine Invoke(Action action, float delay);

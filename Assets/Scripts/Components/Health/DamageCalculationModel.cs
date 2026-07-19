@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using EmpireAtWar.Components.AttackComponent;
 using Utilities.ScriptUtils.EditorSerialization;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,9 +13,9 @@ namespace EmpireAtWar.Models.Health
     {
         [SerializeField] private DictionaryWrapper<WeaponType, DamageModel> damageWrapper;
         
-        public DamageData GetDamage(WeaponType weaponType, IHealthData healthData, bool isMoving, float damage)
+        public DamageData GetDamage(WeaponType weaponType, IHealthState healthState, bool isMoving, float damage)
         {
-            return damageWrapper.Dictionary[weaponType].GetDamage(healthData,isMoving, damage);
+            return damageWrapper.Dictionary[weaponType].GetDamage(healthState,isMoving, damage);
         }
     }
 
@@ -35,29 +35,29 @@ namespace EmpireAtWar.Models.Health
         
         private float DexterityCoefficient => Random.Range(MIN_DEXTERITY_COEFFICIENT, MAX_DEXTERITY_COEFFICIENT);
         
-        public DamageData GetDamage(IHealthData healthData, bool isMoving, float damage)
+        public DamageData GetDamage(IHealthState healthState, bool isMoving, float damage)
         {
             float damageOnShield = 0f;
             float damageOnArmor = 0f;
             
-            if (healthData.HasShields)
+            if (healthState.HasShields)
             {
-                damageOnShield = GetCalculatedDamage(healthData, isMoving, damage);
+                damageOnShield = GetCalculatedDamage(healthState, isMoving, damage);
 
-                if (healthData.Shields > damageOnShield)
+                if (healthState.Shields > damageOnShield)
                 {
                     damageOnArmor = damageOnShield * shieldPenetrationCoefficient;
                 }
                 else
                 {
-                    damageOnArmor = healthData.Shields;
+                    damageOnArmor = healthState.Shields;
                 }
                 
                 damageOnShield -= damageOnArmor;
             }
             else
             {
-                damageOnArmor = GetCalculatedDamage(healthData, isMoving, damage);
+                damageOnArmor = GetCalculatedDamage(healthState, isMoving, damage);
             }
 
             Debug.Assert(damageOnShield >= 0, $"{nameof(damageOnShield)} cannot be smaller than 0.");
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Models.Health
             return new DamageData(damageOnShield, damageOnArmor);
         }
 
-        private float GetCalculatedDamage(IHealthData healthData, bool isMoving, float damage)
+        private float GetCalculatedDamage(IHealthState healthState, bool isMoving, float damage)
         {
             float calculatedDamage = damage;
             
@@ -74,11 +74,11 @@ namespace EmpireAtWar.Models.Health
 
             if (isMoving)
             {
-                calculatedDamage -= (calculatedDamage*DexterityCoefficient) * healthData.Dexterity; 
+                calculatedDamage -= (calculatedDamage*DexterityCoefficient) * healthState.Dexterity;
             }
           
             
-            calculatedDamage *= healthData.HasShields
+            calculatedDamage *= healthState.HasShields
                 ? damageOnShieldCoefficient 
                 : damageOnArmorCoefficient;
             return calculatedDamage;

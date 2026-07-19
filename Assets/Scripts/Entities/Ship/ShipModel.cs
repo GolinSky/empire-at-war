@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
@@ -13,49 +12,32 @@ namespace EmpireAtWar.Ship
 {
     public interface IShipModelObserver : IUnitModelObserver
     {
-        ParticleSystem DeathExplosionVfx { get; }
         ShipType ShipType { get; }
     }
 
     [CreateAssetMenu(fileName = "ShipModel", menuName = "Model/ShipModel")]
     public class ShipModel : Model, IShipModelObserver
     {
-        [FormerlySerializedAs("shipShipMoveModel")]
-        [FormerlySerializedAs("moveModel")]
+        [Inject] public ShipType ShipType { get; }
+
+        [field: FormerlySerializedAs("shipShipMoveModel")]
+        [field: FormerlySerializedAs("moveModel")]
+        [field: FormerlySerializedAs("shipMoveModel")]
         [Header("Move Model")]
-        [SerializeField] private ShipMoveModel shipMoveModel;
+        [field: SerializeField] public ShipMoveModel ShipMoveModel { get; private set; }
         
         [Header("Health Model")]
-        [SerializeField] private HealthModel healthModel;
+        [field: FormerlySerializedAs("healthModel")]
+        [field: SerializeField] public HealthModel HealthModel { get; private set; }
+        IHealthModelObserver IUnitModelObserver.HealthModel => HealthModel;
 
-        [FormerlySerializedAs("weaponModel")]
+        [field: FormerlySerializedAs("weaponModel")]
+        [field: FormerlySerializedAs("attackModel")]
         [Header("Weapon Model")] 
-        [SerializeField] private AttackModel attackModel;
+        [field: SerializeField] public AttackModel AttackModel { get; private set; }
         
-        [Header("Radar Model")] 
-        [SerializeField] private RadarModel radarModel;
-
-        [field:SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
-        
-        [field:SerializeField] public float MinMoveCoefficient { get; private set; }
-
-        
-        [Inject]
-        public ShipType ShipType { get; }
-
-        public ShipMoveModel ShipMoveModel => shipMoveModel;
-
-        public HealthModel HealthModel => healthModel;
-
-        public AttackModel AttackModel => attackModel;
-
-        public RadarModel RadarModel => radarModel;
-
-
-        protected override void Awake()
-        {
-            base.Awake();
-            AddInnerModels(shipMoveModel, healthModel, attackModel, radarModel);
-        }
+        [Header("Radar Model")]
+        [field: FormerlySerializedAs("radarModel")]
+        [field: SerializeField] public RadarModel RadarModel { get; private set; }
     }
 }

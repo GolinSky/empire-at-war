@@ -1,35 +1,39 @@
-﻿using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.Battle;
-using LightWeightFramework.Components.Components;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Components.StateMachine
 {
-    public class UnitStateMachineComponent: Component, IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
+    public class UnitStateMachineComponent: MonoComponent<PureModel>, IObserver<ISelectionSubject>, IInitializable,
+        ILateDisposable, ITickable, IComponent
     {
-        private readonly ISelectionService _selectionService;
-        private readonly ISelectionModelObserver _selectionModelObserver;
+        private ISelectionService _selectionService;
+        private ISelectionModelObserver _selectionModelObserver;
 
-        private readonly UnitStateMachine _stateMachine;
-        private readonly UnitIdleState _idleState;
-        private readonly LockMainTargetState _lockMainTargetState;
+        private UnitStateMachine _stateMachine;
+        private UnitIdleState _idleState;
+        private LockMainTargetState _lockMainTargetState;
         
         
-        public UnitStateMachineComponent(
-            IModel model,
+        [Inject]
+        private void Construct(
             IAttackComponent attackComponent,
+            IRadarModelObserver radarModel,
+            IHealthModelObserver healthModel,
+            ISelectionModelObserver selectionModelObserver,
             ISelectionService selectionService,
             IAttackDataFactory attackDataFactory) 
         {
             _selectionService = selectionService;
-            _selectionModelObserver = model.GetModelObserver<ISelectionModelObserver>();
+            _selectionModelObserver = selectionModelObserver;
 
-            _stateMachine = new UnitStateMachine(attackComponent, model);
+            _stateMachine = new UnitStateMachine(attackComponent, radarModel, healthModel);
             _idleState = new UnitIdleState(_stateMachine);
             _lockMainTargetState = new LockMainTargetState(_stateMachine, attackDataFactory);
             _stateMachine.SetDefaultState(_idleState);
@@ -43,6 +47,11 @@ namespace EmpireAtWar.Components.StateMachine
         }
 
         public void LateDispose()
+        {
+            Release();
+        }
+
+        public override void Release()
         {
             _selectionService.RemoveObserver(this);
         }
@@ -59,8 +68,7 @@ namespace EmpireAtWar.Components.StateMachine
 
             if (selectionSubject.UpdatedType == PlayerType.Opponent && selectionSubject.EnemySelectionContext.HasSelectable)
             {
-                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.Model
-                    .GetModelObserver<IHealthModelObserver>();
+                IHealthModelObserver healthModel = selectionSubject.EnemySelectionContext.Entity.HealthModel;
                 if (!healthModel.IsDestroyed && healthModel.HasUnits)
                 {
                     _lockMainTargetState.SetData(selectionSubject.EnemySelectionContext.Entity); 

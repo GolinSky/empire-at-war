@@ -1,27 +1,27 @@
 ﻿using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.IdGeneration;
-using EmpireAtWar.Views.ViewImpl;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
     public class EntityInstaller: Installer
     {
-        private readonly View _view;
+        private readonly Component _entity;
         private readonly IUniqueIdGenerator _uniqueIdGenerator;
 
-        public EntityInstaller(View view,  IUniqueIdGenerator uniqueIdGenerator)
+        public EntityInstaller(Component entity, IUniqueIdGenerator uniqueIdGenerator)
         {
-            _view = view;
+            _entity = entity;
             _uniqueIdGenerator = uniqueIdGenerator;
         }
         
         public override void InstallBindings()
         {
             Container.BindInterfacesNonLazyExt<Entity>();
-            Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_view.gameObject).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_entity.gameObject).AsSingle().NonLazy();
 
-            Container.BindEntity(_uniqueIdGenerator.GenerateUniqueId());
+            Container.BindEntityExt(_uniqueIdGenerator.GenerateUniqueId());
         }
     }
 }

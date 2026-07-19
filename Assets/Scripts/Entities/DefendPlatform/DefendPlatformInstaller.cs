@@ -10,15 +10,19 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
 namespace EmpireAtWar
 {
-    public class DefendPlatformInstaller : DynamicViewInstaller<DefendPlatformController, DefendPlatformModel, DefendPlatformView>
+    public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformModel>
     {
         private PlayerType _playerType;
         private DefendPlatformType _miningFacilityType;
+
+        protected override string PrefabPathPostfix => "View";
 
         [Inject]
         public void Constructor(DefendPlatformType miningFacilityType, PlayerType playerType)
@@ -30,30 +34,48 @@ namespace EmpireAtWar
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_miningFacilityType);
-            Container.BindEntity(SelectionType.DefendPlatform);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_miningFacilityType);
+            Container.BindEntityExt(SelectionType.DefendPlatform);
+            Container.BindInterfacesTo<EntityComponentData>()
+                .FromInstance(Repository.Load<DefendPlatformModel>(nameof(DefendPlatformModel)).ComponentData);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
+            DefendPlatformModel model = Container.Resolve<DefendPlatformModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.DefaultMoveModel);
+            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
+
             Container
-                .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<DefaultMoveComponent>()
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<AttackComponent>()
-                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
-            
-            switch (_playerType)
-            {
-                case PlayerType.Player:
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    break;
-                case PlayerType.Opponent:
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    break;
-            }
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SimpleMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<AttackComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<UnitStateMachineComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
             
             //entity commands
             Container
@@ -61,10 +83,10 @@ namespace EmpireAtWar
                 .BindInterfacesExt<HealthCommand>();
         }
         
-        protected override void OnViewCreated()
+        protected override void OnEntityCreated()
         {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

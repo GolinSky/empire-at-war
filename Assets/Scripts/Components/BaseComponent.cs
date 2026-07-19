@@ -1,16 +1,15 @@
-﻿using LightWeightFramework.Model;
-using LightWeightFramework.Components.Components;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components
 {
-    public class BaseComponent<TModel> : Component
-        where TModel : IModel
+    public class BaseComponent<TModel> : FrameworkComponent
+        where TModel : IModelObserver
     {
         protected TModel Model { get; private set; }
 
-        public BaseComponent(IModel model)
+        public BaseComponent(TModel model)
         {
-            Model = model.GetModel<TModel>();
+            Model = model;
         }
     }
 }

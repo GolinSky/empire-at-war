@@ -13,7 +13,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
         public List<IHardPointModel> Units { get; private set; }
-    
+        
 
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthCommand healthCommand, HardPointType hardPointType)
         {
@@ -46,16 +46,7 @@ namespace EmpireAtWar.Components.AttackComponent
             }
         }
         
-        public static bool operator ==(AttackData a, AttackData b)
-        {
-            if (a?.HealthCommand == null || b?.HealthCommand == null) return false;
-            
-            return a.HealthCommand.Equals(b.HealthCommand);
-        }
-
-        public static bool operator !=(AttackData a, AttackData b)
-        {
-            return !(a == b);
-        }
+        public bool SameSource(AttackData other) =>
+            HealthCommand != null && HealthCommand == other?.HealthCommand;
     }
 }

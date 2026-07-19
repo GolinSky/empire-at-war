@@ -1,21 +1,31 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using EmpireAtWar.Commands.Faction;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Factions
 {
     public interface IFactionView
     {
-        void BuyUnit(UnitRequest shipUnitRequest, FactionData factionData);
+        void BuyUnit(UnitRequest unitRequest);
     }
-    public class FactionUi : BaseUi<IPlayerFactionModelObserver, IFactionCommand>, IFactionView, IInitializable, ILateDisposable
+
+    public interface IFactionUi
+    {
+        void SetModel(IPlayerFactionModelObserver model);
+        void SetPresenter(IFactionPresenter presenter);
+        void SetData(PlayerFactionData data);
+        void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
+        void Initialize();
+        void Dispose();
+    }
+
+    public class FactionUi : BaseUi, IFactionUi, IFactionView
     {
         [SerializeField] private Canvas controlCanvas;
         [SerializeField] private Button exitButton;
@@ -23,62 +33,104 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private BuildPipelineView pipelineView;
         [SerializeField] private Button triggerUiButton;
 
-        private Dictionary<string, UnitRequest> _unitRequests = new Dictionary<string, UnitRequest>();
-        private List<UnitRequest> _buildingUnits = new List<UnitRequest>();
-        private List<FactionUnitUi> _factionUnitsUi = new List<FactionUnitUi>();
+        private readonly Dictionary<string, UnitRequest> _unitRequests = new();
+        private readonly List<FactionUnitUi> _factionUnitsUi = new();
 
         private FactionUnitUi _levelFactionUnitUi;
         private UnitRequest _currentLevelUnitRequest;
+        private IPlayerFactionModelObserver _model;
+        private IFactionPresenter _presenter;
+        private PlayerFactionData _data;
+        private IUnitRequestFactory _unitRequestFactory;
+        private bool _isInitialized;
 
-        [Inject]
-        private IUnitRequestFactory UnitRequestFactory { get; }
-        
-        
+        public void SetModel(IPlayerFactionModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetPresenter(IFactionPresenter presenter)
+        {
+            _presenter = presenter;
+        }
+
+        public void SetData(PlayerFactionData data)
+        {
+            _data = data;
+        }
+
+        public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
+        {
+            _unitRequestFactory = unitRequestFactory;
+        }
+
         public void Initialize()
         {
-            pipelineView.Init();
-            HandleSelectionChanged(Model.SelectionType);
-            foreach (var data in Model.ShipFactionData)
+            if (_model == null || _presenter == null || _data == null || _unitRequestFactory == null)
             {
-                AddUi(UnitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                throw new InvalidOperationException("Faction UI dependencies must be set before initialization.");
+            }
+
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            pipelineView.Init();
+            HandleSelectionChanged(_model.SelectionType);
+            foreach (var data in _data.GetShipFactionData(_model.FactionType))
+            {
+                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
             }
 
             _currentLevelUnitRequest = ConstructLevelUnitRequest();
             
-            foreach (var data in Model.MiningFactions)
+            foreach (var data in _data.GetMiningFactionData())
             {
-                AddUi(UnitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
             }
             
-            foreach (var data in Model.DefendPlatforms)
+            foreach (var data in _data.GetDefendPlatformData())
             {
-                AddUi(UnitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
             }
             
-            Model.OnSelectionTypeChanged += HandleSelectionChanged;
-            Model.OnLevelUpgraded += UpdateUnits;
-            Model.OnUnitBuild += BuildUnit;
+            _model.OnSelectionTypeChanged += HandleSelectionChanged;
+            _model.OnLevelUpgraded += UpdateUnits;
+            _model.OnUnitBuild += BuildUnit;
             exitButton.onClick.AddListener(ExitUi);
             pipelineView.OnFinishSequence += HandleEndOfBuilding;
-            triggerUiButton.onClick.AddListener(Command.ChangeSelection);
+            triggerUiButton.onClick.AddListener(_presenter.ChangeSelection);
+            _isInitialized = true;
         }
         
-        public void LateDispose()
+        public void Dispose()
         {
-            Model.OnSelectionTypeChanged -= HandleSelectionChanged;
-            Model.OnLevelUpgraded -= UpdateUnits;
-            Model.OnUnitBuild -= BuildUnit;
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            _model.OnSelectionTypeChanged -= HandleSelectionChanged;
+            _model.OnLevelUpgraded -= UpdateUnits;
+            _model.OnUnitBuild -= BuildUnit;
             exitButton.onClick.RemoveListener(ExitUi);
             pipelineView.OnFinishSequence -= HandleEndOfBuilding;
-            triggerUiButton.onClick.RemoveListener(Command.ChangeSelection);
+            triggerUiButton.onClick.RemoveListener(_presenter.ChangeSelection);
+            _isInitialized = false;
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
         }
 
         private void AddUi(UnitRequest unitRequest)
         {
-            FactionUnitUi unitUi = Instantiate(Model.ShipUnit, shipUnitParent);
+            FactionUnitUi unitUi = Instantiate(_data.FactionUnit, shipUnitParent);
             unitUi.SetData(unitRequest.FactionData,this, unitRequest);
             _factionUnitsUi.Add(unitUi);
-            if (unitRequest.FactionData.AvailableLevel > Model.CurrentLevel)
+            if (unitRequest.FactionData.AvailableLevel > _model.CurrentLevel)
             {
                 unitUi.SetActive(false);
             }
@@ -87,11 +139,11 @@ namespace EmpireAtWar.Views.Factions
         
         private UnitRequest ConstructLevelUnitRequest()// refactor
         {
-            FactionData levelData = Model.GetCurrentLevelFactionData();
+            FactionData levelData = _model.GetCurrentLevelFactionData();
             if (levelData != null)
             {
-                _levelFactionUnitUi = Instantiate(Model.ShipUnit, shipUnitParent);
-                LevelUnitRequest levelUnitRequest = UnitRequestFactory.ConstructUnitRequest(levelData, Model.CurrentLevel);
+                _levelFactionUnitUi = Instantiate(_data.FactionUnit, shipUnitParent);
+                LevelUnitRequest levelUnitRequest = _unitRequestFactory.ConstructUnitRequest(levelData, _model.CurrentLevel);
                 _levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
                 _unitRequests.Add(levelUnitRequest.Id, levelUnitRequest);
                 return levelUnitRequest;
@@ -106,13 +158,12 @@ namespace EmpireAtWar.Views.Factions
 
             if (!isSuccess)
             {
-                Command.RevertBuilding(unitRequest);
+                _presenter.RevertBuilding(unitRequest);
             }
             else
             {
-                Command.BuildUnit(unitRequest);
+                _presenter.BuildUnit(unitRequest);
             }
-            _buildingUnits.Remove(unitRequest);
         }
         
         private void UpdateUnits(int level)
@@ -133,12 +184,11 @@ namespace EmpireAtWar.Views.Factions
 
         private void ExitUi()
         {
-            Command.CloseSelection();
+            _presenter.CloseSelection();
         }
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            _buildingUnits.Add(unitRequest);
             pipelineView.AddPipeline(unitRequest.Id, unitRequest.FactionData.Icon, unitRequest.FactionData.BuildTime);
         }
 
@@ -147,13 +197,9 @@ namespace EmpireAtWar.Views.Factions
             controlCanvas.enabled = selectionType == SelectionType.Base;
         }
 
-        public void BuyUnit(UnitRequest shipUnitRequest, FactionData factionData)
+        public void BuyUnit(UnitRequest unitRequest)
         {
-            int amount = _buildingUnits.Count(x => x.Id.Equals(shipUnitRequest.Id));
-            if (factionData.MaxCount > amount)
-            {
-                Command.TryPurchaseUnit(shipUnitRequest);
-            }
+            _presenter.TryPurchaseUnit(unitRequest);
         }
     }
 }

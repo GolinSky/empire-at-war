@@ -16,12 +16,7 @@ MonoBehaviour:
   m_GUID: 4706a5ce86ede7844a3997ad47225138
   m_SerializeEntries:
   - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
-    m_Address: CoreCameraModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 010d166b46b84614e81cdae3086ff99f
-    m_Address: PlayerFactionModel
+    m_Address: CameraData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -37,6 +32,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
     m_Address: EnemyFactionModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17ab4ced609e6054986bf57e44a51fc4
+    m_Address: PlayerFactionData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 187f1cf1c603ee8408343a2b1c03b426
+    m_Address: EconomyData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c157dade5de42e4081ffe3ef1dd634f
+    m_Address: ReinforcementData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -65,11 +75,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3495db65815525b40b2a6feb53aef27e
-    m_Address: ReinforcementModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38bf9d71cf198ee4c95db7c57cba6be8
     m_Address: MiniMapModel
     m_ReadOnly: 0
@@ -77,6 +82,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ba22e215b4787a44ae118a021f83b79
     m_Address: AcclamatorShipModel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c3e6847e2f3d68408516d8339afde3f
+    m_Address: AudioShipModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -122,11 +132,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
     m_Address: AudioShipDialogModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7b34d2700a80663478c172116a6b9ec4
-    m_Address: EconomyModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -177,11 +182,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fbbdc831ce20cd7438fbdb30070fa53c
     m_Address: PlanetModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fe9263937c08b0640bccd82aea55b9d7
-    m_Address: MenuUiModel
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
