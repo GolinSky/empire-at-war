@@ -4,22 +4,26 @@ using EmpireAtWar.Services.BattleService;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
-using UnityEngine;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
     public class SkirmishServiceInstaller : MonoInstaller
     {
-        [SerializeField] private Camera mainCamera;
+        [Inject] private IRepository Repository { get; }
 
         public override void InstallBindings()
         {
-            Container.BindInstance(mainCamera);
+            Container.BindScriptableObject<CameraData>(Repository);
+            Container
+                .BindInterfacesAndSelfTo<CameraService>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
             Container
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
-                .BindInterfacesExt<CameraService>()
                 .BindInterfacesExt<SelectionService>()
                 .BindInterfacesExt<BattleService>();
         }

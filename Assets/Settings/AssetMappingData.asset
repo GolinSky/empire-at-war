@@ -42,7 +42,7 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: CoreCameraModel
+    - key: CameraData
       value:
         m_AssetGUID: 00950a10d67c69d4da71b07eb2ce392c
         m_SubObjectName: 
