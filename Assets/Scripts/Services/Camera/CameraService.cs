@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Camera
     {
         [SerializeField] private Ease _moveEase = Ease.OutExpo;
 
-        private readonly Plane _plane = new();
+        private Plane _plane = new();
         private UnityEngine.Camera _camera;
         private CameraData _cameraData;
         private IInputService _inputService;
