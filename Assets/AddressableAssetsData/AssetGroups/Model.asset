@@ -185,11 +185,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fe9263937c08b0640bccd82aea55b9d7
-    m_Address: MenuUiModel
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fecf936004296974b821296b00f2065f
     m_Address: VenatorShipModel
     m_ReadOnly: 0

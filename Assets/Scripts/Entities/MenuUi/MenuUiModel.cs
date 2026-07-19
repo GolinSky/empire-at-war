@@ -1,5 +1,4 @@
 using EmpireAtWar.Mvc;
-using UnityEngine;
 
 namespace EmpireAtWar.Entities.MenuUi
 {
@@ -7,8 +6,7 @@ namespace EmpireAtWar.Entities.MenuUi
     {
     }
 
-    [CreateAssetMenu(fileName = "MenuUiModel", menuName = "Model/MenuUiModel")]
-    public class MenuUiModel : Model, IMenuUiModel
+    public class MenuUiModel : PureModel, IMenuUiModel
     {
         
     }
