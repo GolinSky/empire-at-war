@@ -29,6 +29,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private PlayerType _playerType;
         private Sequence _moveSequence;
         private Vector3[] _waypoints;
+        private Vector3? _pendingTargetPosition;
         private float _duration;
         private bool _canMove;
 
@@ -216,6 +217,12 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void StopAllMovement()
         {
+            if (!_canMove)
+            {
+                _pendingTargetPosition = null;
+                return;
+            }
+
             _moveSequence.KillExt();
         }
 
@@ -237,11 +244,26 @@ namespace EmpireAtWar.Components.Ship.Movement
             _moveSequence.KillIfExist();
             _moveSequence = DOTween.Sequence();
             _moveSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration).SetEase(hyperSpaceEase));
-            _moveSequence.OnComplete(() => _canMove = true);
+            _moveSequence.OnComplete(() =>
+            {
+                _canMove = true;
+                if (_pendingTargetPosition.HasValue)
+                {
+                    Vector3 targetPosition = _pendingTargetPosition.Value;
+                    _pendingTargetPosition = null;
+                    UpdateTargetPosition(targetPosition);
+                }
+            });
         }
 
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
+            if (!_canMove)
+            {
+                _pendingTargetPosition = targetPosition;
+                return;
+            }
+
             targetPosition.y = CurrentViewPosition.y;
             _moveSequence.KillExt();
             _moveSequence = DOTween.Sequence();
