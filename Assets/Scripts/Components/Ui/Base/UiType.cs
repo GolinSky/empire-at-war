@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace EmpireAtWar.Ui.Base
 {
@@ -14,5 +14,6 @@ namespace EmpireAtWar.Ui.Base
         // Navigation = 6, //deleted
         Menu = 7,
         Interaction = 8,
+        MainMenu = 9,
     }
 }
