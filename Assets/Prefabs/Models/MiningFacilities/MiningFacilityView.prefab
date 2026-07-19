@@ -42,8 +42,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
 --- !u!1 &1295155889020873871
@@ -209,8 +209,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
@@ -323,8 +323,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1b0635126764df796ba6194d27372a0, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5361972980452052922
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,8 +380,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 1, b: 0.5475056, a: 1}
   m_RaycastTarget: 1
@@ -450,8 +450,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7736a4b6e18a4f55a05515a6e56b92cc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &8153750395777210056
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -483,10 +483,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionType: 4
   selectedCanvas: {fileID: 5046249200607630712}
+  selectedImage: {fileID: 8296138266701259631}
 --- !u!114 &6175106514994132088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,7 +498,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 036f62d612164b9d8fe1a6824537a043, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Radar.RadarComponent
 --- !u!114 &3170239808062987882
 MonoBehaviour:
@@ -509,7 +510,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 335f300fe63bb6243adef6a5993e6a5f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Movement.SimpleMoveComponent
 --- !u!1001 &1584723210409687961
 PrefabInstance:
@@ -681,8 +682,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4031913295256495532 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2452819790775524917, guid: 35c8d89f211482848a0438585d8d9afd,
@@ -699,8 +700,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   <ShipUnits>k__BackingField:
   - {fileID: 1754627770004611748}
   healthCanvas: {fileID: 1491331698114282153}
@@ -729,5 +730,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 

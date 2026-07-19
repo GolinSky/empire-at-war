@@ -5,6 +5,7 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Selection
@@ -19,20 +20,24 @@ namespace EmpireAtWar.Components.Ship.Selection
     {
         [SerializeField] private SelectionType selectionType;
         [SerializeField] private Canvas selectedCanvas;
+        [SerializeField] private Image selectedImage;
 
         private IUnitMediator _mediator;
         private bool _canBeSelected = true;
+        private SharedSelectionData _sharedSelectionData;
 
         [Inject] private PlayerType PlayerType { get; }
         [Inject]
-        private void Construct(SelectionModel model)
+        private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
         {
+            _sharedSelectionData = sharedSelectionData;
             SetModel(model);
         }
 
         public void Initialize()
         {
             Model.OnSelected += HandleSelection;
+            selectedImage.sprite = _sharedSelectionData.SelectionSprite;
         }
 
         public void LateDispose()

@@ -588,3 +588,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: SharedSelectionData
+      value:
+        m_AssetGUID: 209cdf7d0c12070418008f2c5a98c38e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
