@@ -1,7 +1,7 @@
-using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Services.Enemy
@@ -9,92 +9,60 @@ namespace EmpireAtWar.Services.Enemy
     public class EnemyUnitCommander : IInitializable, ILateDisposable
     {
         private readonly IShipService _shipService;
-        private readonly IEntityLocator _entityLocator;
-        private IEntity _mainTarget;
+        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
 
-        public EnemyUnitCommander(IShipService shipService, IEntityLocator entityLocator)
+        public EnemyUnitCommander(
+            IShipService shipService,
+            IReinforcementZonesSystem reinforcementZonesSystem)
         {
             _shipService = shipService;
-            _entityLocator = entityLocator;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
         }
 
         public void Initialize()
         {
             _shipService.ShipAdded += HandleShipAdded;
-            _entityLocator.EntityAdded += HandleEntityAdded;
-            _entityLocator.EntityRemoved += HandleEntityRemoved;
-
-            FindMainTarget();
-            IssueAttackOrders();
+            _reinforcementZonesSystem.OwnershipChanged += IssueCaptureOrders;
+            IssueCaptureOrders();
         }
 
         public void LateDispose()
         {
             _shipService.ShipAdded -= HandleShipAdded;
-            _entityLocator.EntityAdded -= HandleEntityAdded;
-            _entityLocator.EntityRemoved -= HandleEntityRemoved;
+            _reinforcementZonesSystem.OwnershipChanged -= IssueCaptureOrders;
         }
 
         private void HandleShipAdded(IShipEntity ship)
         {
-            if (_mainTarget != null && ship.PlayerType == PlayerType.Opponent)
+            if (ship.PlayerType == PlayerType.Opponent)
             {
-                ship.AssignAttackTarget(_mainTarget);
+                AssignCaptureOrder(ship);
             }
         }
 
-        private void HandleEntityAdded(IEntity entity)
+        private void IssueCaptureOrders()
         {
-            if (_mainTarget == null && IsPlayerSpaceStation(entity))
-            {
-                _mainTarget = entity;
-                IssueAttackOrders();
-            }
-        }
-
-        private void HandleEntityRemoved(IEntity entity)
-        {
-            if (_mainTarget != entity)
-            {
-                return;
-            }
-
-            _mainTarget = null;
-            FindMainTarget();
-            IssueAttackOrders();
-        }
-
-        private void FindMainTarget()
-        {
-            foreach (IEntity entity in _entityLocator.Entities)
-            {
-                if (IsPlayerSpaceStation(entity))
-                {
-                    _mainTarget = entity;
-                    return;
-                }
-            }
-        }
-
-        private void IssueAttackOrders()
-        {
-            if (_mainTarget == null)
-            {
-                return;
-            }
-
             foreach (IShipEntity ship in _shipService.Ships)
             {
                 if (ship.PlayerType == PlayerType.Opponent)
                 {
-                    ship.AssignAttackTarget(_mainTarget);
+                    AssignCaptureOrder(ship);
                 }
             }
         }
 
-        private static bool IsPlayerSpaceStation(IEntity entity)
+        private void AssignCaptureOrder(IShipEntity ship)
         {
-            return entity.PlayerType == PlayerType.Player && entity.Model is ISpaceStationModelObserver;
+            if (_reinforcementZonesSystem.TryGetCaptureTarget(
+                    PlayerType.Opponent,
+                    ship.WorldPosition,
+                    out Vector3 target))
+            {
+                ship.AssignMoveTarget(target);
+                return;
+            }
+
+            ship.HoldPosition();
         }
     }
 }

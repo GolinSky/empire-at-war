@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -47,7 +49,8 @@ namespace EmpireAtWar.Services.Reinforcement
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade)
+            DefendPlatformFacade defendPlatformFacade,
+            IReinforcementZonesSystem reinforcementZonesSystem)
         {
             _model = model;
             _data = data;
@@ -56,6 +59,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
         }
 
         public void Initialize()
@@ -77,7 +81,8 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
-            bool canSpawn = _spawnReinforcement.CanSpawn;
+            bool canSpawn = _spawnReinforcement.CanSpawn &&
+                            _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, spawnPosition);
 
             if (canSpawn)
             {
@@ -124,6 +129,8 @@ namespace EmpireAtWar.Services.Reinforcement
             Vector3 position = _cameraService.GetWorldPoint(_inputService.TouchPosition, _spawnReinforcement.Position);
             position.y = 0;
             _spawnReinforcement.UpdatePosition(position);
+            _spawnReinforcement.SetZoneValidity(
+                _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position));
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
