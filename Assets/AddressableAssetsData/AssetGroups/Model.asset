@@ -16,7 +16,7 @@ MonoBehaviour:
   m_GUID: 4706a5ce86ede7844a3997ad47225138
   m_SerializeEntries:
   - m_GUID: 00950a10d67c69d4da71b07eb2ce392c
-    m_Address: CoreCameraModel
+    m_Address: CameraData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
