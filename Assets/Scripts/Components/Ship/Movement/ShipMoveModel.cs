@@ -42,7 +42,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float RotationSpeed => ShipMoveData.RotationSpeed;
         public float HyperSpaceDuration => ShipMoveData.HyperSpaceDuration;
         public float BodyRotationMaxAngle => ShipMoveData.BodyRotationMaxAngle;
-        public Vector3 JumpPosition => HyperSpacePosition - (PlayerType == PlayerType.Player ? Vector3.right : Vector3.left )  * OFFSET_HYPERSPACE_JUMP;
+        public Vector3 JumpPosition => PlayerType == PlayerType.Opponent
+            ? HyperSpacePosition
+            : HyperSpacePosition - Vector3.right * OFFSET_HYPERSPACE_JUMP;
 
         
         public Quaternion StartRotation => PlayerType == PlayerType.Player
