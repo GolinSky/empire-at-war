@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.BattleService;
@@ -15,7 +16,9 @@ namespace EmpireAtWar.SceneContext.Skirmish
 
         public override void InstallBindings()
         {
+            
             Container.BindScriptableObject<CameraData>(Repository);
+            Container.BindScriptableObject<SharedSelectionData>(Repository);
             Container
                 .BindInterfacesAndSelfTo<CameraService>()
                 .FromComponentInHierarchy()
