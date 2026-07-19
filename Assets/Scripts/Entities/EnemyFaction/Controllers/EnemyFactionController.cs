@@ -3,16 +3,15 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.TimerPoolWrapperService;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
@@ -22,8 +21,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const float DEFAULT_INCOME = 5f;
 
         private readonly ShipFacadeFactory _shipFacadeFactory;
-        private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IEconomyProvider _economyProvider;
+        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
 
 
         private IChainHandler<UnitRequest> _nextChain;
@@ -41,15 +40,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,
             ITimerPoolWrapperService timerPoolWrapperService, 
-            LazyInject<IMapModelObserver> mapModel,
-            IEconomyProvider economyProvider) : base(model)
+            IEconomyProvider economyProvider,
+            IReinforcementZonesSystem reinforcementZonesSystem) : base(model)
         {
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
             _timerPoolWrapperService = timerPoolWrapperService;
-            _mapModel = mapModel;
             _economyProvider = economyProvider;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
         }
         
 
@@ -102,15 +101,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         
         private Vector3 GenerateShipCoordinates()
         {
-            Vector3 minRange = _mapModel.Value.SizeRange.Min;
-            Vector3 maxRange = _mapModel.Value.SizeRange.Max;
-            Random.InitState((int)DateTime.Now.Ticks);
+            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(PlayerType, out Vector3 position))
+            {
+                return position;
+            }
 
-            Vector3 vector3 = new Vector3(Random.Range(minRange.x, maxRange.x), 
-                0f,
-                Random.Range(minRange.y, maxRange.y));
-         //   Debug.Log($"GenerateShipCoordinates:{vector3}");
-            return vector3;
+            throw new InvalidOperationException("The enemy has no owned reinforcement zone available for spawning.");
         }
 
         public void Initialize()

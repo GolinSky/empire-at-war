@@ -28,8 +28,11 @@ namespace EmpireAtWar.Ship
     {
         IShipModelObserver ModelObserver { get; }
         PlayerType PlayerType { get; }
+        Vector3 WorldPosition { get; }
 
         void AssignAttackTarget(IEntity target);
+        void AssignMoveTarget(Vector3 target);
+        void HoldPosition();
     }
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
@@ -162,6 +165,26 @@ namespace EmpireAtWar.Ship
             {
                 _shipAIBrain.AssignAttackTarget(target);
             }
+        }
+
+        public void AssignMoveTarget(Vector3 target)
+        {
+            if (_playerType == PlayerType.Opponent)
+            {
+                MoveTo(target);
+            }
+        }
+
+        public void HoldPosition()
+        {
+            if (_playerType != PlayerType.Opponent)
+            {
+                return;
+            }
+
+            _shipAIBrain.Enable(false);
+            _stateMachine.ExitState();
+            _shipMoveComponent.Stop();
         }
 
         public void LateDispose()

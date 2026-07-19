@@ -16,6 +16,7 @@ using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -31,6 +32,10 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
+            .FromComponentInHierarchy()
+            .AsSingle();
+
         Container.BindInterfacesExt<AttackDataFactory>();
 
         Container.BindInterfacesAndSelfTo<UiService>().FromInstance(_uiService).AsSingle();
