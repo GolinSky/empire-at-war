@@ -51,15 +51,17 @@ namespace EmpireAtWar.Services.Camera
 
         public void Initialize()
         {
+            _inputService.OnLeftMousePressed += StopMovement;
             _inputService.OnSwipe += OnSwipe;
             _inputService.OnZoom += ZoomCamera;
         }
 
         public void LateDispose()
         {
+            _inputService.OnLeftMousePressed -= StopMovement;
             _inputService.OnSwipe -= OnSwipe;
             _inputService.OnZoom -= ZoomCamera;
-            _moveTween?.Kill();
+            StopMovement();
         }
 
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
@@ -109,6 +111,12 @@ namespace EmpireAtWar.Services.Camera
             Vector3 worldDirection = new(direction.x, 0, direction.y);
             Vector3 move = -worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move), true);
+        }
+
+        private void StopMovement()
+        {
+            _moveTween?.Kill();
+            _moveTween = null;
         }
 
         private void ZoomCamera(float scrollDelta)
