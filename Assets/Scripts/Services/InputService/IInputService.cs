@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.InputService
     public interface IInputService:IService
     {
         event Action<Vector2> OnSwipe; 
+        event Action<Vector2> OnCameraMove;
         event Action OnLeftMousePressed;
         event Action<Vector2> OnPrimaryDragStarted;
         event Action<Vector2> OnPrimaryDragChanged;

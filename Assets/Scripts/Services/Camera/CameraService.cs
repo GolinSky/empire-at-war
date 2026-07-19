@@ -53,6 +53,7 @@ namespace EmpireAtWar.Services.Camera
         {
             _inputService.OnLeftMousePressed += StopMovement;
             _inputService.OnSwipe += OnSwipe;
+            _inputService.OnCameraMove += OnCameraMove;
             _inputService.OnZoom += ZoomCamera;
         }
 
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Services.Camera
         {
             _inputService.OnLeftMousePressed -= StopMovement;
             _inputService.OnSwipe -= OnSwipe;
+            _inputService.OnCameraMove -= OnCameraMove;
             _inputService.OnZoom -= ZoomCamera;
             StopMovement();
         }
@@ -111,6 +113,13 @@ namespace EmpireAtWar.Services.Camera
             Vector3 worldDirection = new(direction.x, 0, direction.y);
             Vector3 move = -worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move), true);
+        }
+
+        private void OnCameraMove(Vector2 direction)
+        {
+            Vector3 worldDirection = new(direction.x, 0f, direction.y);
+            Vector3 move = worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
+            SetPosition(ClampPosition(CameraPosition + move), false);
         }
 
         private void StopMovement()
