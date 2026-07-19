@@ -12,9 +12,9 @@ namespace EmpireAtWar.Views.Reinforcement
         private List<Material> _meshMaterials = new List<Material>();
         private Color _canBeSpawnedColor;
         private Color _blockedColor = Color.red;
-        private bool _isInsideOwnedZone;
+        private bool _isPlacementValid;
 
-        public bool CanSpawn => _triggeredCollider.Count == 0 && _isInsideOwnedZone;
+        public bool CanSpawn => _triggeredCollider.Count == 0 && _isPlacementValid;
         public Vector3 Position => transform.position;
 
         private void Awake()
@@ -39,9 +39,9 @@ namespace EmpireAtWar.Views.Reinforcement
             transform.position = position;
         }
 
-        public void SetZoneValidity(bool isInsideOwnedZone)
+        public void SetPlacementValidity(bool isPlacementValid)
         {
-            _isInsideOwnedZone = isInsideOwnedZone;
+            _isPlacementValid = isPlacementValid;
             UpdateColor();
         }
 
