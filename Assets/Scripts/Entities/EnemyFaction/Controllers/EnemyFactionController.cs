@@ -3,8 +3,10 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -23,6 +25,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly IEconomyProvider _economyProvider;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly LazyInject<IMapModelObserver> _mapModel;
 
 
         private IChainHandler<UnitRequest> _nextChain;
@@ -41,7 +44,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             DefendPlatformFacade defendPlatformFacade,
             ITimerPoolWrapperService timerPoolWrapperService, 
             IEconomyProvider economyProvider,
-            IReinforcementZonesSystem reinforcementZonesSystem) : base(model)
+            IReinforcementZonesSystem reinforcementZonesSystem,
+            LazyInject<IMapModelObserver> mapModel) : base(model)
         {
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
@@ -49,6 +53,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _timerPoolWrapperService = timerPoolWrapperService;
             _economyProvider = economyProvider;
             _reinforcementZonesSystem = reinforcementZonesSystem;
+            _mapModel = mapModel;
         }
         
 
@@ -80,7 +85,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 {
                     _timerPoolWrapperService.Invoke(() =>
                         {
-                            _miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateShipCoordinates());
+                            _miningFacilityFacade.Create(PlayerType, miningFacilityUnitRequest.Key, GenerateMapCoordinates());
                         },
                         miningFacilityUnitRequest.FactionData.BuildTime);
                     break;
@@ -89,7 +94,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 {
                     _timerPoolWrapperService.Invoke(() =>
                         {
-                            _defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateShipCoordinates());
+                            _defendPlatformFacade.Create(PlayerType, defendPlatformUnitRequest.Key, GenerateMapCoordinates());
                         },
                         defendPlatformUnitRequest.FactionData.BuildTime);
                     break;
@@ -107,6 +112,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             throw new InvalidOperationException("The enemy has no owned reinforcement zone available for spawning.");
+        }
+
+        private Vector3 GenerateMapCoordinates()
+        {
+            Vector2Range sizeRange = _mapModel.Value.SizeRange;
+            return new Vector3(
+                UnityEngine.Random.Range(sizeRange.Min.x, sizeRange.Max.x),
+                0f,
+                UnityEngine.Random.Range(sizeRange.Min.y, sizeRange.Max.y));
         }
 
         public void Initialize()
