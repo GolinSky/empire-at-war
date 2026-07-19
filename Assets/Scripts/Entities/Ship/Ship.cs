@@ -64,6 +64,7 @@ namespace EmpireAtWar.Ship
 
         public string Id => GetType().Name;
         public PlayerType PlayerType => _playerType;
+        public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
@@ -208,6 +209,13 @@ namespace EmpireAtWar.Ship
             _shipAIBrain.Enable(false);
             _stateMachine.ExitState();
             _shipMoveComponent.MoveToPositionOnScreen(screenPosition);
+        }
+
+        public void MoveTo(Vector3 worldPosition)
+        {
+            _shipAIBrain.Enable(false);
+            _stateMachine.ExitState();
+            _shipMoveComponent.MoveToPosition(worldPosition);
         }
 
         public void HandleNewEnemy(IEntity entity)

@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.InputService
         private const float MAX_SWIPE_DELTA = 10f;
 
         public event Action<Vector2> OnSwipe;
+        public event Action<Vector2> OnCameraMove;
         public event Action<Vector2> OnPrimaryDragStarted;
         public event Action<Vector2> OnPrimaryDragChanged;
         public event Action<Vector2> OnPrimaryDragEnded;
@@ -159,6 +160,28 @@ namespace EmpireAtWar.Services.InputService
 
         public void Tick()
         {
+            if (!_isBlocked)
+            {
+                Vector2 cameraMove = MapActions.CameraMove.ReadValue<Vector2>();
+                if (MapActions.CameraDrag.IsPressed())
+                {
+                    Vector2 dragDelta = MapActions.TouchDelta.ReadValue<Vector2>();
+                    Vector2 direction = new Vector2(
+                        Mathf.Clamp(dragDelta.x, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA),
+                        Mathf.Clamp(dragDelta.y, -MAX_SWIPE_DELTA, MAX_SWIPE_DELTA));
+
+                    if (direction.sqrMagnitude > Mathf.Epsilon)
+                    {
+                        OnSwipe?.Invoke(direction);
+                    }
+                }
+
+                if (cameraMove.sqrMagnitude > Mathf.Epsilon)
+                {
+                    OnCameraMove?.Invoke(cameraMove);
+                }
+            }
+
             if (!_isBlocked && MapActions.Zoom.IsPressed())
             {
                 OnZoom?.Invoke(MapActions.Zoom.ReadValue<float>());

@@ -10,6 +10,8 @@ namespace EmpireAtWar.Commands.Ship
     }
     public class PlayerShipCommand: Command<EmpireAtWar.Ship.Ship>, IShipCommand, IMoveCommand
     {
+        public Vector3 WorldPosition => Controller.WorldPosition;
+
         public PlayerShipCommand(EmpireAtWar.Ship.Ship ship) : base(ship)
         {
         }
@@ -17,6 +19,11 @@ namespace EmpireAtWar.Commands.Ship
         public void MoveTo(Vector2 screenPosition)
         {
             Controller.MoveTo(screenPosition);
+        }
+
+        public void MoveTo(Vector3 worldPosition)
+        {
+            Controller.MoveTo(worldPosition);
         }
     }
 }
