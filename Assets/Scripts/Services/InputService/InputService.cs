@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.InputService
         public event Action<Vector2> OnPrimaryDragStarted;
         public event Action<Vector2> OnPrimaryDragChanged;
         public event Action<Vector2> OnPrimaryDragEnded;
+        public event Action OnLeftMousePressed;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -79,6 +80,15 @@ namespace EmpireAtWar.Services.InputService
             _pressStartedOverUi = IsPointerOverUIObject(_pressPosition);
             CurrentTouchPhase = TouchPhase.Began;
 
+            if (callbackContext.control.device is Mouse)
+            {
+                OnLeftMousePressed?.Invoke();
+            }
+
+            if (!_isBlocked && !_pressStartedOverUi)
+            {
+                InvokeInputEvent(InputType.Selection);
+            }
         }
 
         private void OnPointerReleased(InputAction.CallbackContext callbackContext)

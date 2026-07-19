@@ -273,13 +273,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MenuUiModel
-      value:
-        m_AssetGUID: fe9263937c08b0640bccd82aea55b9d7
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: VenatorShipModel
       value:
         m_AssetGUID: fecf936004296974b821296b00f2065f
@@ -591,6 +584,13 @@ MonoBehaviour:
     - key: SharedSelectionData
       value:
         m_AssetGUID: 209cdf7d0c12070418008f2c5a98c38e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MainMenuUi
+      value:
+        m_AssetGUID: f343dde1580f9c449aa91a6c5d650dff
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
