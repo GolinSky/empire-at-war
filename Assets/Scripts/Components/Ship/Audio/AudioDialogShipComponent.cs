@@ -29,8 +29,17 @@ namespace EmpireAtWar.Components.Ship.Audio
         private bool _isSelected;
 
         [Inject]
-        private void Construct(AudioShipDialogModel model, IAudioService audioService, PlayerType playerType)
+        private void Construct(
+            [InjectOptional] AudioShipDialogModel model,
+            IAudioService audioService,
+            PlayerType playerType)
         {
+            if (model == null)
+            {
+                enabled = false;
+                return;
+            }
+
             SetModel(model);
             _audioService = audioService;
             _playerType = playerType;
