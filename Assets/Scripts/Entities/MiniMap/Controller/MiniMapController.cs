@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Battle;
@@ -7,8 +7,7 @@ using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Ui.Base;
-using LightWeightFramework.Command;
-using LightWeightFramework.Controller;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;

@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Views.Factions;
-using LightWeightFramework.Model;
-using UnityEngine;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Models.Factions
@@ -17,27 +13,31 @@ namespace EmpireAtWar.Models.Factions
         event Action<int> OnLevelUpgraded;
         event Action<SelectionType> OnSelectionTypeChanged;
 
-        FactionUnitUi ShipUnit { get; }
         SelectionType SelectionType { get; }
-        Dictionary<ShipType, FactionData> ShipFactionData { get; }
-        Dictionary<MiningFacilityType, FactionData> MiningFactions { get; }
-        Dictionary<DefendPlatformType, FactionData> DefendPlatforms { get; }
+        FactionType FactionType { get; }
         FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
     }
 
-    [CreateAssetMenu(fileName = "FactionModel", menuName = "Model/FactionModel")]
-    public class PlayerFactionModel : Model, IPlayerFactionModelObserver
+    public class PlayerFactionModel : PureModel, IPlayerFactionModelObserver
     {
         public event Action<UnitRequest> OnUnitBuild;
         public event Action<int> OnLevelUpgraded;
         public event Action<SelectionType> OnSelectionTypeChanged;
-        
-        [SerializeField] private FactionsModel factionsModel;
-        [field: SerializeField] public FactionUnitUi ShipUnit { get; private set; }
+
+        private readonly PlayerFactionData _data;
+        private readonly List<UnitRequest> _buildingUnits = new();
 
         private SelectionType _selectionType;
         private int _currentLevel = 1;
+
+        public PlayerFactionModel(
+            PlayerFactionData data,
+            [Inject(Id = PlayerType.Player)] FactionType factionType)
+        {
+            _data = data;
+            FactionType = factionType;
+        }
         
         public SelectionType SelectionType
         {
@@ -49,17 +49,7 @@ namespace EmpireAtWar.Models.Factions
             }
         }
 
-        [Inject(Id = PlayerType.Player)] 
         public FactionType FactionType { get; }
-        
-        public UnitRequest UnitToBuild
-        {
-            set => OnUnitBuild?.Invoke(value);
-        }
-
-        public Dictionary<MiningFacilityType, FactionData> MiningFactions => factionsModel.MiningFactionsData;
-        public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => factionsModel.DefendPlatformDictionary;
-        public Dictionary<ShipType, FactionData> ShipFactionData => factionsModel.GetShipFactionData(FactionType);
         
         public int CurrentLevel
         {
@@ -73,7 +63,32 @@ namespace EmpireAtWar.Models.Factions
 
         public FactionData GetCurrentLevelFactionData()
         {
-            return factionsModel.GetLevelFactionData(CurrentLevel);
+            return _data.GetLevelFactionData(CurrentLevel);
+        }
+
+        public bool CanQueueUnit(UnitRequest unitRequest)
+        {
+            int queuedCount = 0;
+            foreach (UnitRequest request in _buildingUnits)
+            {
+                if (request.Id == unitRequest.Id)
+                {
+                    queuedCount++;
+                }
+            }
+
+            return queuedCount < unitRequest.FactionData.MaxCount;
+        }
+
+        public void QueueUnit(UnitRequest unitRequest)
+        {
+            _buildingUnits.Add(unitRequest);
+            OnUnitBuild?.Invoke(unitRequest);
+        }
+
+        public void CompleteUnit(UnitRequest unitRequest)
+        {
+            _buildingUnits.Remove(unitRequest);
         }
     }
 }

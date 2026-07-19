@@ -1,12 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
     public interface IEntityLocator : IService
     {
+        event Action<IEntity> EntityAdded;
+        event Action<IEntity> EntityRemoved;
+
+        IReadOnlyCollection<IEntity> Entities { get; }
+
         void AddEntity(IEntity entity);
         void RemoveEntity(IEntity entity);
         IEntity GetEntity(long entityId);
@@ -16,16 +21,25 @@ namespace EmpireAtWar.Entities.BaseEntity
 
     public class EntityLocator : Service, IEntityLocator
     {
-        private Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
+        private readonly Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
+
+        public event Action<IEntity> EntityAdded;
+        public event Action<IEntity> EntityRemoved;
+
+        public IReadOnlyCollection<IEntity> Entities => _entities.Values;
         
         public void AddEntity(IEntity entity)
         {
             _entities.Add(entity.Id, entity);
+            EntityAdded?.Invoke(entity);
         }
 
         public void RemoveEntity(IEntity entity)
         {
-            _entities.Remove(entity.Id);
+            if (_entities.Remove(entity.Id))
+            {
+                EntityRemoved?.Invoke(entity);
+            }
         }
 
         public IEntity GetEntity(long entityId)

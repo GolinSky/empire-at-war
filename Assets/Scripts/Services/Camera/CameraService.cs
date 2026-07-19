@@ -1,6 +1,8 @@
-﻿using EmpireAtWar.Commands.Camera;
+using DG.Tweening;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.InputService;
 using UnityEngine;
-using LightWeightFramework.Components.Service;
+using Zenject;
 
 namespace EmpireAtWar.Services.Camera
 {
@@ -15,25 +17,55 @@ namespace EmpireAtWar.Services.Camera
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
         Vector2 WorldToScreenPoint(Vector3 position);
         void MoveTo(Vector3 worldPoint);
-        void AddCommand(ICameraCommand cameraCommand);
     }
 
-    public class CameraService : Service, ICameraService
+    [RequireComponent(typeof(UnityEngine.Camera))]
+    public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable
     {
-        private  ICameraCommand _cameraCommand;
-        private readonly UnityEngine.Camera _camera;
-        private Plane _plane = new Plane();
+        [SerializeField] private Ease _moveEase = Ease.OutExpo;
 
-        public Vector3 CameraPosition => _camera.transform.position;
-        public Transform CameraTransform => _camera.transform;
-        public Vector3 CameraForward => _camera.transform.forward;
+        private Plane _plane = new();
+        private UnityEngine.Camera _camera;
+        private CameraData _cameraData;
+        private IInputService _inputService;
+        private Tween _moveTween;
+
+        public string Id => nameof(CameraService);
+
+        public Vector3 CameraPosition => transform.position;
+        public Transform CameraTransform => transform;
+        public Vector3 CameraForward => transform.forward;
         public float FieldOfView => _camera.fieldOfView;
 
-        public CameraService(UnityEngine.Camera camera)
+        [Inject]
+        public void Constructor(CameraData cameraData, IInputService inputService)
         {
-            _camera = camera;
+            _cameraData = cameraData;
+            _inputService = inputService;
         }
-        
+
+        private void Awake()
+        {
+            _camera = GetComponent<UnityEngine.Camera>();
+        }
+
+        public void Initialize()
+        {
+            _inputService.OnLeftMousePressed += StopMovement;
+            _inputService.OnSwipe += OnSwipe;
+            _inputService.OnCameraMove += OnCameraMove;
+            _inputService.OnZoom += ZoomCamera;
+        }
+
+        public void LateDispose()
+        {
+            _inputService.OnLeftMousePressed -= StopMovement;
+            _inputService.OnSwipe -= OnSwipe;
+            _inputService.OnCameraMove -= OnCameraMove;
+            _inputService.OnZoom -= ZoomCamera;
+            StopMovement();
+        }
+
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
         {
             return _camera.WorldToViewportPoint(currentPosition);
@@ -44,35 +76,99 @@ namespace EmpireAtWar.Services.Camera
             return _camera.WorldToScreenPoint(position);
         }
 
-        public void MoveTo(Vector3 worldPoint)
-        {
-            _cameraCommand.MoveTo(worldPoint);
-        }
-
-        public void AddCommand(ICameraCommand cameraCommand)
-        {
-            _cameraCommand = cameraCommand;
-        }
-
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
-        {           
+        {
             Ray ray = _camera.ScreenPointToRay(screenPoint);
-            _plane.SetNormalAndPosition(Vector3.up, Vector3.up*position.y);
-            
+            _plane.SetNormalAndPosition(Vector3.up, Vector3.up * position.y);
+
             if (_plane.Raycast(ray, out float distance))
-            {
                 return ray.GetPoint(distance);
-            }
+
             return ScreenPointToRay(screenPoint).point;
         }
-        
-        public RaycastHit ScreenPointToRay(Vector2 screenPoint)
-        {  
-            Ray ray = _camera.ScreenPointToRay(screenPoint);
 
+        public RaycastHit ScreenPointToRay(Vector2 screenPoint)
+        {
+            Ray ray = _camera.ScreenPointToRay(screenPoint);
             Physics.Raycast(ray, out RaycastHit hit);
-            
             return hit;
+        }
+
+        public void MoveTo(Vector3 worldPoint)
+        {
+            Vector3 targetCameraPosition = worldPoint;
+
+            if (Mathf.Abs(CameraForward.y) > Mathf.Epsilon)
+            {
+                float distanceToTargetPlane = (worldPoint.y - CameraPosition.y) / CameraForward.y;
+                targetCameraPosition = worldPoint - CameraForward * distanceToTargetPlane;
+            }
+
+            targetCameraPosition.y = CameraPosition.y;
+            SetPosition(ClampPosition(targetCameraPosition), true);
+        }
+
+        private void OnSwipe(Vector2 direction)
+        {
+            Vector3 worldDirection = new(direction.x, 0, direction.y);
+            Vector3 move = -worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
+            SetPosition(ClampPosition(CameraPosition + move), true);
+        }
+
+        private void OnCameraMove(Vector2 direction)
+        {
+            Vector3 worldDirection = new(direction.x, 0f, direction.y);
+            Vector3 move = worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
+            SetPosition(ClampPosition(CameraPosition + move), false);
+        }
+
+        private void StopMovement()
+        {
+            _moveTween?.Kill();
+            _moveTween = null;
+        }
+
+        private void ZoomCamera(float scrollDelta)
+        {
+            scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
+            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * _cameraData.ZoomSpeed * Time.unscaledDeltaTime;
+
+            if (!_cameraData.ZoomRange.IsInRange(newPosition.y))
+                return;
+
+            newPosition.y = _cameraData.ZoomRange.Clamp(newPosition.y);
+            SetPosition(ClampPosition(newPosition), false);
+        }
+
+        private Vector3 ClampPosition(Vector3 position)
+        {
+            float heightPercentage = Mathf.InverseLerp(
+                _cameraData.ZoomRange.Min,
+                _cameraData.ZoomRange.Max,
+                CameraPosition.y);
+            float xMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.x, _cameraData.MaxMoveRangeY.Min.x, heightPercentage);
+            float xMax = Mathf.Lerp(_cameraData.MinMoveRangeX.Max.x, _cameraData.MaxMoveRangeY.Max.x, heightPercentage);
+            float zMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.y, _cameraData.MaxMoveRangeY.Min.y, heightPercentage);
+            float zMax = Mathf.Lerp(_cameraData.MinMoveRangeX.Max.y, _cameraData.MaxMoveRangeY.Max.y, heightPercentage);
+
+            position.x = Mathf.Clamp(position.x, xMin, xMax);
+            position.z = Mathf.Clamp(position.z, zMin, zMax);
+            return position;
+        }
+
+        private void SetPosition(Vector3 position, bool useTween)
+        {
+            _moveTween?.Kill();
+
+            if (useTween)
+            {
+                _moveTween = transform
+                    .DOMove(position, _cameraData.TweenSpeed)
+                    .SetEase(_moveEase);
+                return;
+            }
+
+            transform.position = position;
         }
     }
 }

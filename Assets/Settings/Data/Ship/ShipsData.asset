@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90fcfcd144f44795ad7a414aee900ed4, type: 3}
+  m_Name: ShipsData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipsData
+  shipsData:
+    keyValue:
+    - key: 0
+      value:
+        m_AssetGUID: a5b5a5e33bc0650428444f9d2024ee89
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 1
+      value:
+        m_AssetGUID: 94fb1f4b8f76e8a45baec9d3df1e378a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 2
+      value:
+        m_AssetGUID: fdb74f16281b4c34fba74f894d93e9fb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 3
+      value:
+        m_AssetGUID: 3d6ced770e54a9e409ab435c0e52ec58
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 4
+      value:
+        m_AssetGUID: 2ced7bd7afed0b240873462f8f4fcd41
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 5
+      value:
+        m_AssetGUID: bf1bd8f61bce0b64cb1933fe98113261
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 100
+      value:
+        m_AssetGUID: c9d78c908e581c248ac64c752a1a64c0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 101
+      value:
+        m_AssetGUID: 5098f4ce0a8a47d48ba69455dc83af79
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 102
+      value:
+        m_AssetGUID: 2f1adfeeeb291814aa6cf57198365aab
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 103
+      value:
+        m_AssetGUID: fa1b7a3f8755ca44daa1dee47df3a693
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

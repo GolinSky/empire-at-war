@@ -10,17 +10,21 @@ using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SpaceStation
 {
-    public class SpaceStationInstaller : DynamicViewInstaller<SpaceStationController, SpaceStationModel, SpaceStationView>
+    public class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationModel>
     {
         private FactionType _factionType;
         private PlayerType _playerType;
 
-        protected override string ViewPathPrefix => _factionType.ToString();
+        protected override string PrefabPathPrefix => _factionType.ToString();
+        protected override string PrefabPathPostfix => "View";
         
 
         [Inject]
@@ -33,35 +37,48 @@ namespace EmpireAtWar.SpaceStation
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_factionType);
-            Container.BindEntity(SelectionType.Base);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_factionType);
+            Container.BindEntityExt(SelectionType.Base);
+            Container.BindInterfacesTo<EntityComponentData>()
+                .FromInstance(Repository.Load<SpaceStationModel>(nameof(SpaceStationModel)).ComponentData);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
-            switch (_playerType)
-            {
-                case PlayerType.Player:
-                {
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    break;
-                }
-                case PlayerType.Opponent:
-                {
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    break;
-                }
-            }
+            SpaceStationModel model = Container.Resolve<SpaceStationModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.DefaultMoveModel);
+            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
-            
             Container
-                .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<AttackComponent>()
-                .BindInterfacesNonLazyExt<DefaultMoveComponent>()
-                .BindInterfacesNonLazyExt<UnitStateMachineComponent>();
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SimpleMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<AttackComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<UnitStateMachineComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
             
             //entity commands
             Container
@@ -70,10 +87,10 @@ namespace EmpireAtWar.SpaceStation
         }
         
         
-        protected override void OnViewCreated()
+        protected override void OnEntityCreated()
         {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

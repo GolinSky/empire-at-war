@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
-using LightWeightFramework.Components.Repository;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using Zenject;
 using Random = System.Random;
 

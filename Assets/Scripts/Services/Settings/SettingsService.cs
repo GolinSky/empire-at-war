@@ -1,6 +1,6 @@
-﻿using LightWeightFramework.Command;
+using EmpireAtWar.Mvc;
 using UnityEngine;
-using LightWeightFramework.Components.Service;
+using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Services.Settings

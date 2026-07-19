@@ -48,3 +48,10 @@ sysinfo.txt
 /.idea/.idea.star-soccer-slim-game/.idea/*
 UserSettings/Layouts/default-2022.dwlt
 UserSettings/Layouts/CurrentMaximizeLayout.dwlt
+# Ignore all contents of graphify-out
+graphify-out/**
+# Do not ignore subdirectories in graphify-out so they can be searched
+!graphify-out/**/
+# Do not ignore markdown files
+!graphify-out/**/*.md
+

@@ -1,0 +1,45 @@
+using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Selection.Marquee;
+using EmpireAtWar.Extentions;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.BattleService;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Ship;
+using EmpireAtWar.Mvc;
+using Zenject;
+
+namespace EmpireAtWar.SceneContext.Skirmish
+{
+    public class SkirmishServiceInstaller : MonoInstaller
+    {
+        [Inject] private IRepository Repository { get; }
+
+        public override void InstallBindings()
+        {
+            
+            Container.BindScriptableObject<CameraData>(Repository);
+            Container.BindScriptableObject<SharedSelectionData>(Repository);
+            Container.Bind<MarqueeSelectionModel>().AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<MarqueeSelectionView>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<MarqueeSelectionPresenter>()
+                .AsSingle()
+                .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<CameraService>()
+                .FromComponentInHierarchy()
+                .AsSingle();
+
+            Container
+                .BindInterfacesExt<InputService>()
+                .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<SelectionQuery>()
+                .BindInterfacesExt<SelectionService>()
+                .BindInterfacesExt<BattleService>();
+        }
+    }
+}

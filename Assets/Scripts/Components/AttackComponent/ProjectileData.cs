@@ -10,6 +10,8 @@ namespace EmpireAtWar.Components.AttackComponent
         [field:SerializeField] public Vector3 Size { get; private set; }
         [field:SerializeField] public TurretType TurretType { get; private set; }
         [field:SerializeField] public float Delay { get; private set; }
+        [field:SerializeField] public float ShotsPerSalvo { get; private set; }
+        [field: SerializeField] public float DelayBetweenShots { get; private set; }
     }
 
     public enum TurretType

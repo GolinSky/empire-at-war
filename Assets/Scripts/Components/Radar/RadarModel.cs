@@ -1,13 +1,21 @@
-﻿using System;
+using System;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Zenject;
 
 namespace EmpireAtWar.Components.Radar
 {
+    public interface IRadarData
+    {
+        float Range { get; }
+        float Delay { get; }
+        float Distance { get; }
+    }
+
     public interface IRadarModelObserver : IModelObserver
     {
         // event Action<RaycastHit[]> OnHitDetected; 
@@ -18,15 +26,17 @@ namespace EmpireAtWar.Components.Radar
     }
 
     [Serializable]
-    public class RadarModel : InnerModel, IRadarModelObserver
+    public class RadarModel : PureModel, IRadarModelObserver
     {
         // public event Action<RaycastHit[]> OnHitDetected;
         
         private ObservableList<IEntity> _enemies = new ObservableList<IEntity>();
         
-        [field: SerializeField] public float Range { get; private set; }
-        [field: SerializeField] public float Delay { get; private set; }
-        [field: SerializeField] public float Distance { get; private set; }
+        [Inject] private IRadarData Data { get; }
+
+        public float Range => Data.Range;
+        public float Delay => Data.Delay;
+        public float Distance => Data.Distance;
 
         
         public ObservableList<IEntity> Enemies => _enemies;

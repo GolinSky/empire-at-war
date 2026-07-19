@@ -1,13 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.ViewComponents.Weapon;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Components.AttackComponent
 {
+    public interface IAttackData
+    {
+        float DelayBetweenAttack { get; }
+    }
+
     public interface IAttackModelObserver : IModelObserver
     {
         event Action OnMainUnitSwitched;
@@ -20,16 +25,17 @@ namespace EmpireAtWar.Components.AttackComponent
         
         float DelayBetweenAttack { get; }
         float GetAttackDistance(WeaponType weaponType);
-        void InjectDependency(AttackModelDependency attackModelDependency);
+        void InjectDependency(IReadOnlyDictionary<WeaponType, List<WeaponHardPointView>> turretDictionary);
     }
 
     [Serializable]
-    public class AttackModel : InnerModel, IAttackModelObserver
+    public class AttackModel : PureModel, IAttackModelObserver
     {
         private const float OPTIMAL_DISTANCE_MODIFIER = 0.5f;
         public event Action OnMainUnitSwitched;
 
-        [field: SerializeField] public float DelayBetweenAttack { get; set; }
+        [Inject] private IAttackData Data { get; }
+        public float DelayBetweenAttack => Data.DelayBetweenAttack;
 
         private List<IHardPointModel> _shipUnitViews = new List<IHardPointModel>();
         private List<IHardPointModel> _mainUnitsTarget;
@@ -41,7 +47,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Inject] private WeaponDamageModel WeaponDamageModel { get; }
 
-        List<IHardPointModel> IAttackModelObserver.Targets => _shipUnitViews;
+        public List<IHardPointModel> Targets => _shipUnitViews;
 
         public List<IHardPointModel> MainUnitsTarget
         {
@@ -61,7 +67,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
                 foreach (WeaponType weaponType in WeaponDictionary.Keys)
                 {
-                    float distance = WeaponDamageModel.DamageDictionary[weaponType].Distance;
+                    float distance = WeaponDamageModel.GetDamageModel(weaponType).Distance;
                     if (distance > maxDistance)
                     {
                         maxDistance = distance;
@@ -75,21 +81,12 @@ namespace EmpireAtWar.Components.AttackComponent
         public int WeaponCount { get; private set; }
         public float OptimalAttackRange => MaxAttackDistance * OPTIMAL_DISTANCE_MODIFIER;
 
-        protected override void OnInit()
-        {
-            base.OnInit();
-            foreach (KeyValuePair<WeaponType, int> keyValuePair in WeaponDictionary)
-            {
-                WeaponCount += keyValuePair.Value;
-            }
-        }
-
         public List<WeaponType> Filter(float distance)
         {
             List<WeaponType> filter = new List<WeaponType>();
             foreach (WeaponType weaponType in WeaponDictionary.Keys)
             {
-                float damageDistance = WeaponDamageModel.DamageDictionary[weaponType].Distance;
+                float damageDistance = WeaponDamageModel.GetDamageModel(weaponType).Distance;
                 if (damageDistance >= distance)
                 {
                     filter.Add(weaponType);
@@ -101,14 +98,16 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public float GetAttackDistance(WeaponType weaponType)
         {
-            return WeaponDamageModel.DamageDictionary[weaponType].Distance;
+            return WeaponDamageModel.GetDamageModel(weaponType).Distance;
         }
 
-        public void InjectDependency(AttackModelDependency attackModelDependency)
+        public void InjectDependency(IReadOnlyDictionary<WeaponType, List<WeaponHardPointView>> turretDictionary)
         {
-            foreach (var keyValuePair in attackModelDependency.TurretDictionary)
+            WeaponCount = 0;
+            foreach (var keyValuePair in turretDictionary)
             {
                 WeaponDictionary.Add(keyValuePair.Key, keyValuePair.Value.Count);
+                WeaponCount += keyValuePair.Value.Count;
             }
         }
 
@@ -129,7 +128,7 @@ namespace EmpireAtWar.Components.AttackComponent
         
         public float GetDamage(WeaponType weaponType, float distance)
         {
-            return WeaponDamageModel.DamageDictionary[weaponType].GetDamage(distance);
+            return WeaponDamageModel.GetDamageModel(weaponType).GetDamage(distance);
         }
     }
 }

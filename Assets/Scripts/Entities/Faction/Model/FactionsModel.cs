@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using Utilities.ScriptUtils.EditorSerialization;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Factions

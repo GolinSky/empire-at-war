@@ -15,6 +15,7 @@ namespace EmpireAtWar.Models.Health
         bool IsDestroyed { get; }
         
         Vector3 Position { get; }
+        Transform Transform { get; }
     }
 
     [Serializable]
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Models.Health
         
         public bool IsDestroyed => HealthPercentage <= 0f;
         public Vector3 Position => _hardPointView.Position;
+        public Transform Transform => _hardPointView.Transform;
 
         public void SetHealth(float health)
         {

@@ -1,95 +1,155 @@
 ﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.AiComponent;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Movement;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public class ShipInstaller : DynamicViewInstaller<ShipController, ShipModel, ShipView>
+    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipModel>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
+        private string shipDataPath;
 
         protected override string ModelPathPrefix => _shipType.ToString();
-        protected override string ViewPathPrefix => _shipType.ToString();
+        protected override string PrefabPathPrefix => _shipType.ToString();
+        protected override string PrefabPathPostfix => "View";
 
         [Inject]
-        public void Construct(ShipType shipType, PlayerType playerType)
+        public void Construct(ShipType shipType, PlayerType playerType, ShipsData shipsData)
         {
             _shipType = shipType;
             _playerType = playerType;
+            shipDataPath = shipsData.GetShipDataPath(shipType);
         }
+
 
         protected override void OnBindData()
         {
             base.OnBindData();
-            Container.BindEntity(_playerType);
-            Container.BindEntity(_shipType);
-            Container.BindEntity(SelectionType.Ship);
+            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_shipType);
+            Container.BindEntityExt(SelectionType.Ship);
+
+
+            Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+            Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
+            Container.Bind<AudioShipModel>()
+                .FromNewScriptableObject(Repository.Load<AudioShipModel>(nameof(AudioShipModel)))
+                .AsSingle();
+            Container.Bind<IAudioShipModelObserver>().To<AudioShipModel>().FromResolve();
+            Container.Bind<ILateDisposable>().To<AudioShipModel>().FromResolve();
+
+            if (_playerType == PlayerType.Player)
+            {
+                Container.Bind<AudioShipDialogModel>()
+                    .FromNewScriptableObject(Repository.Load<AudioShipDialogModel>(nameof(AudioShipDialogModel)))
+                    .AsSingle();
+                Container.Bind<IAudioShipDialogModelObserver>().To<AudioShipDialogModel>().FromResolve();
+            }
+
+            Container.Bind<WeaponModel>().AsSingle();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
+            ShipModel model = Container.Resolve<ShipModel>();
+            BindBuffer(model.HealthModel);
+            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            BindBuffer(model.ShipMoveModel);
+            Container.Bind<IShipMoveModelObserver>().To<ShipMoveModel>().FromResolve();
+            Container.Bind<IDefaultMoveModelObserver>().To<ShipMoveModel>().FromResolve();
+            BindBuffer(model.AttackModel);
+            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            BindBuffer(model.RadarModel);
+            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
-            
             Container
-                .BindInterfacesExt<ShipMoveComponent>()
-                .BindInterfacesExt<HealthComponent>()
-                .BindInterfacesExt<AttackComponent>()
-                .BindInterfacesExt<RadarComponent>()
-                .BindInterfacesExt<AudioShipComponent>();
-            
+                .BindInterfacesAndSelfTo<WeaponComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container
+                .BindInterfacesAndSelfTo<HealthComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container.BindInterfacesAndSelfTo<ShipMoveComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<RadarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<AudioShipComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.BindInterfacesAndSelfTo<SelectionComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+
+            Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PatrolState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
+
             switch (_playerType)
             {
                 case PlayerType.Player:
-                {
-                    Container.BindInterfacesExt<PlayerSelectionComponent>();
-                    Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
-                    Container.BindInterfacesExt<AudioDialogShipComponent>();
-                    Container.BindInterfacesExt<PlayerShipStateMachine>();
-                    
-                    //entity commands
-                    Container.BindInterfacesExt<PlayerAttackShipCommand>();
-                    Container.BindInterfacesExt<SelectionCommand>();
-                    Container.BindInterfacesExt<ShipMovementCommand>();
-                    Container.BindInterfacesExt<HealthCommand>();
+                    {
+                        Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
+                        Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
+                            .FromComponentsInHierarchy()
+                            .AsCached();
+                        //  Container.BindInterfacesExt<PlayerShipStateMachine>();
 
-                    break;
-                }
+                        //entity commands
+                        Container.BindInterfacesExt<PlayerAttackShipCommand>();
+                        Container.BindInterfacesExt<SelectionCommand>();
+                        //  Container.BindInterfacesExt<ShipMovementCommand>();
+                        Container.BindInterfacesExt<HealthCommand>();
+
+                        break;
+                    }
                 case PlayerType.Opponent:
-                {
-                    Container.BindInterfacesExt<EnemySelectionComponent>();
-                    Container.BindInterfacesExt<EnemyShipCommand>();
-                    Container.BindInterfacesExt<EnemyShipStateMachine>();
-                    
-                    //entity commands
-                    Container.BindInterfacesExt<EnemyAttackShipCommand>();
-                    Container.BindInterfacesExt<SelectionCommand>();
-                    Container.BindInterfacesExt<HealthCommand>();
+                    {
+                        Container.BindInterfacesExt<EnemyShipCommand>();
+                        // Container.BindInterfacesExt<EnemyShipStateMachine>();
+                        //entity commands
+                        Container.BindInterfacesExt<EnemyAttackShipCommand>();
+                        Container.BindInterfacesExt<SelectionCommand>();
+                        Container.BindInterfacesExt<HealthCommand>();
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
-        protected override void OnViewCreated()
+        protected override void OnEntityCreated()
         {
-            base.OnViewCreated();
-            Container.Install<EntityInstaller>(new object[] { View });
+            base.OnEntityCreated();
+            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

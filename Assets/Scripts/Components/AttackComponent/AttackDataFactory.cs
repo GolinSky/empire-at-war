@@ -16,7 +16,7 @@ namespace EmpireAtWar.Components.AttackComponent
             if (entity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 AttackData attackData = new AttackData(
-                    entity.Model.GetModelObserver<IHealthModelObserver>(),
+                    entity.HealthModel,
                     healthCommand,
                     hardPointType);
                 return attackData;

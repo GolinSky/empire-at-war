@@ -1,5 +1,7 @@
-﻿using EmpireAtWar.Models.Factions;
-using LightWeightFramework.Model;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Ship;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity
@@ -9,6 +11,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         long Id { get; }
         bool TryGetCommand<TCommand>(out TCommand entityCommand) where TCommand : IEntityCommand;
         IModelObserver Model { get; }
+        IHealthModelObserver HealthModel { get; }
         
         PlayerType PlayerType { get; }
     }
@@ -20,15 +23,23 @@ namespace EmpireAtWar.Entities.BaseEntity
         public long Id { get;  }
         
         public IModelObserver Model { get; }
+        public IHealthModelObserver HealthModel { get; }
         public PlayerType PlayerType { get; }
 
-        public Entity(long id, IEntityCommand[] commands, IModelObserver modelObserver, IEntityLocator entityLocator, PlayerType playerType)
+        public Entity(
+            long id,
+            IEntityCommand[] commands,
+            IUnitModelObserver modelObserver,
+            IHealthModelObserver healthModel,
+            IEntityLocator entityLocator,
+            PlayerType playerType)
         {
             _commands = commands;
             _entityLocator = entityLocator;
             PlayerType = playerType;
             Id = id;
             Model = modelObserver;
+            HealthModel = healthModel;
         }
         
         public bool TryGetCommand<TCommand>(out TCommand destinationCommand) where TCommand : IEntityCommand

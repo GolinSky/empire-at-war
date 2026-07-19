@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using LightWeightFramework.Model;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.EditorSerialization;
 
@@ -12,7 +12,13 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private DictionaryWrapper<WeaponType, DamageModel> damageDictionary;
 
 
-        public Dictionary<WeaponType, DamageModel> DamageDictionary => damageDictionary.Dictionary;
+        private Dictionary<WeaponType, DamageModel> DamageDictionary => damageDictionary.Dictionary;
+        
+        
+        public DamageModel GetDamageModel(WeaponType weaponType)
+        {
+            return DamageDictionary[weaponType];
+        }
     }
 
     [Serializable]

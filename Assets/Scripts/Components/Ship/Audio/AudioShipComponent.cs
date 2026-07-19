@@ -1,56 +1,58 @@
-﻿using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.TimerPoolWrapperService;
-using LightWeightFramework.Command;
-using LightWeightFramework.Model;
-using UnityEngine.Rendering;
+using EmpireAtWar.Mvc;
+using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipComponent : ICommand
+    public interface IAudioShipComponent : IComponent, ICommand
     {
+        void PlayHyperSpace(float hyperSpaceDuration);
+        void HandleEnemyDetected();
     }
 
-    public class AudioShipComponent : BaseComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
+    public class AudioShipComponent : MonoComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
         ILateDisposable
     {
         private const float HYPER_SPACE_TIME_PERCENTAGE = 0.8f;
+
+        [SerializeField] private AudioSource source;
+
+        private ITimerPoolWrapperService _timerPoolWrapperService;
+        private IAudioService _audioService;
+        private ITimer _alarmTimer;
         
-        
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
-        private readonly IAudioService _audioService;
-        private readonly IShipMoveModelObserver _shipMoveModelObserver;
-        private readonly IRadarModelObserver _radarModelObserver;
-        private readonly ITimer _alarmTimer;
-        
-        public AudioShipComponent(IModel model, ITimerPoolWrapperService timerPoolWrapperService, IAudioService audioService) : base(model)
+        [Inject]
+        private void Construct(
+            AudioShipModel model,
+            ITimerPoolWrapperService timerPoolWrapperService,
+            IAudioService audioService)
         {
+            SetModel(model);
             _timerPoolWrapperService = timerPoolWrapperService;
             _audioService = audioService;
-            _shipMoveModelObserver = model.GetModelObserver<IShipMoveModelObserver>();
-            _radarModelObserver = model.GetModelObserver<IRadarModelObserver>();
             _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
         }
 
         public void Initialize()
         {
-            // _radarModelObserver.OnHitDetected += PlayAlarm;
-            _radarModelObserver.Enemies.ItemAdded += PlayAlarm;
-            PlayHyperSpaceClip();
+            Model.OnOneShotPlayed += PlayOneShot;
+            PlayLoop(Model.AmbientClip);
         }
 
         public void LateDispose()
         {
-            _radarModelObserver.Enemies.ItemAdded -= PlayAlarm;
+            Release();
+        }
 
-            // _radarModelObserver.OnHitDetected -= PlayAlarm;
+        public override void Release()
+        {
+            Model.OnOneShotPlayed -= PlayOneShot;
         }
         
-        private void PlayAlarm(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> listChangedEventArgs)
+        public void HandleEnemyDetected()
         {
             if (_alarmTimer.IsComplete)
             {
@@ -63,10 +65,23 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
         
-        private void PlayHyperSpaceClip()
+        public void PlayHyperSpace(float hyperSpaceDuration)
         {
             _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
-                _shipMoveModelObserver.HyperSpaceSpeed * HYPER_SPACE_TIME_PERCENTAGE);
+                hyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
+        }
+
+        private void PlayOneShot(AudioClip clip)
+        {
+            source.PlayOneShot(clip);
+        }
+
+        private void PlayLoop(AudioClip clip)
+        {
+            source.Stop();
+            source.clip = clip;
+            source.loop = true;
+            source.Play(0);
         }
     }
 }
