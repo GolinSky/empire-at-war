@@ -1,0 +1,24 @@
+# EditorConfig configuration for Empire At War C# project
+
+root = true
+
+[*.cs]
+# Core C# formatting
+indent_style = space
+indent_size = 4
+tab_width = 4
+end_of_line = crlf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Naming rule for constant fields: ALL_UPPER with underscore separators (UPPER_SNAKE_CASE)
+dotnet_naming_rule.constant_fields_should_be_upper_snake_case.severity = warning
+dotnet_naming_rule.constant_fields_should_be_upper_snake_case.symbols = constant_fields_symbols
+dotnet_naming_rule.constant_fields_should_be_upper_snake_case.style = upper_snake_case_style
+
+dotnet_naming_symbols.constant_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.constant_fields_symbols.required_modifiers = const
+
+dotnet_naming_style.upper_snake_case_style.capitalization = all_upper
+dotnet_naming_style.upper_snake_case_style.word_separator = _

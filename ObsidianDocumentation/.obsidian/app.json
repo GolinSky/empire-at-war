@@ -1,0 +1,10 @@
+{
+  "legacyEditor": false,
+  "livePreview": true,
+  "strictLineBreaks": false,
+  "showLineNumber": true,
+  "autoPairBrackets": true,
+  "autoPairMarkdown": true,
+  "attachmentFolderPath": "Attachments",
+  "useMarkdownLinks": true
+}

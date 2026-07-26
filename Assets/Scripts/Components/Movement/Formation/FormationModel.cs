@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 
 namespace EmpireAtWar.Components.Movement.Formation
 {
@@ -42,6 +43,31 @@ namespace EmpireAtWar.Components.Movement.Formation
             return new FormationPoint(
                 targetCenter.X + position.X - center.X,
                 targetCenter.Z + position.Z - center.Z);
+        }
+
+        public static FormationPoint CalculateGridDestination(
+            int index,
+            int count,
+            FormationPoint targetCenter,
+            float spacing)
+        {
+            if (index < 0 || index >= count || count <= 0)
+            {
+                return targetCenter;
+            }
+
+            int columns = (int)Math.Ceiling(Math.Sqrt(count));
+            int rows = (count + columns - 1) / columns;
+            int row = index / columns;
+            int rowStart = row * columns;
+            int itemsInRow = Math.Min(columns, count - rowStart);
+            int column = index - rowStart;
+
+            float xOffset = (column - (itemsInRow - 1) * 0.5f) * spacing;
+            float zOffset = (row - (rows - 1) * 0.5f) * spacing;
+            return new FormationPoint(
+                targetCenter.X + xOffset,
+                targetCenter.Z + zOffset);
         }
     }
 }
