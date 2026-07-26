@@ -80,6 +80,7 @@ Use patterns only when their complexity is justified:
 
 - Use PascalCase for types, methods, properties, and public members.
 - Use `_camelCase` for private fields.
+- **Constant Field Naming Style:** All `const` fields MUST use `UPPER_SNAKE_CASE` (e.g. `const string PREFAB_FOLDER = "...";`, `const float TWEEN_DURATION = 0.1f;` — all uppercase with underscores between words). Never use `PascalCase` or `camelCase` for `const` fields.
 - **Explicit Component Binding:** Avoid using `GetComponent`, `GetComponentsInChildren`, `GetComponentInParent`, `Find`, or `FindObjectOfType`. Use explicit `[SerializeField]` fields assigned through the Inspector or explicit dependency injection instead of implicit component searching.
 - **Avoid Silent Null References (Fail-Fast Principle):** Never swallow null references, return silent dummy fallbacks, or mask missing mandatory dependencies using null-conditional operators (`?.`). Throw explicit exceptions (e.g. `ArgumentNullException`, `InvalidOperationException`) or use assertions immediately during initialization (`Awake` / constructor) to fail fast when required references or dependencies are null.
 - Resolve and cache Unity references during initialization, such as `Awake` or `Start`, or inject them explicitly.

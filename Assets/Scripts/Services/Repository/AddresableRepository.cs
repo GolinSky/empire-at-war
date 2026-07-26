@@ -7,7 +7,7 @@ namespace EmpireAtWar.Repository
 {
     public class AddressableRepository : IRepository
     {
-        private const string MappingDataKey = nameof(AssetMappingData);
+        private const string MAPPING_DATA_KEY = nameof(AssetMappingData);
         private AssetMappingData _mappingData;
         private bool _mappingLoadAttempted;
 
@@ -30,7 +30,7 @@ namespace EmpireAtWar.Repository
 
         private string ResolveKey(string key)
         {
-            if (key == MappingDataKey)
+            if (key == MAPPING_DATA_KEY)
                 return key;
 
             AssetMappingData mappingData = GetMappingData();
@@ -44,11 +44,11 @@ namespace EmpireAtWar.Repository
 
             _mappingLoadAttempted = true;
             _mappingData = Addressables
-                .LoadAssetAsync<AssetMappingData>(MappingDataKey)
+                .LoadAssetAsync<AssetMappingData>(MAPPING_DATA_KEY)
                 .WaitForCompletion();
 
             if (_mappingData == null)
-                Debug.LogWarning($"[{nameof(AddressableRepository)}] {MappingDataKey} was not found. Falling back to the requested Addressables keys.");
+                Debug.LogWarning($"[{nameof(AddressableRepository)}] {MAPPING_DATA_KEY} was not found. Falling back to the requested Addressables keys.");
 
             return _mappingData;
         }
