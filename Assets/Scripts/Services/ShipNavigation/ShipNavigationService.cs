@@ -59,11 +59,12 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     public sealed class ShipNavigationService : Service, IShipNavigationService
     {
-        private const float TRAFFIC_SAFETY_DELAY = 0.5f;
-
-        private readonly Dictionary<IShipNavigationAgent, Reservation> _reservations =
-            new Dictionary<IShipNavigationAgent, Reservation>();
+        private readonly Dictionary<IShipNavigationAgent, ShipTrafficReservation>
+            _reservations =
+                new Dictionary<IShipNavigationAgent, ShipTrafficReservation>();
         private readonly List<RadarContact> _contacts = new List<RadarContact>();
+        private readonly ShipTrafficScheduler _trafficScheduler =
+            new ShipTrafficScheduler();
 
         public void Register(IShipNavigationAgent agent)
         {
@@ -141,14 +142,21 @@ namespace EmpireAtWar.Services.ShipNavigation
                 route.Length / Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
             float turnDuration = ShipRotationKinematics.CalculateTurnDuration(
                 Quaternion.LookRotation(
-                    forward.sqrMagnitude > Mathf.Epsilon ? forward : Vector3.forward,
+                    forward.sqrMagnitude > Mathf.Epsilon
+                        ? forward
+                        : Vector3.forward,
                     Vector3.up),
                 route.InitialTangent,
                 Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
-            float trafficDelay = CalculateTrafficDelay(
-                agent,
+            Vector3[] trafficTrajectory = _trafficScheduler.CreateTrajectory(
                 route,
-                heightTolerance);
+                agent.NavigationRadius);
+            float trafficDelay = _trafficScheduler.CalculateDelay(
+                agent,
+                trafficTrajectory,
+                movementDuration,
+                heightTolerance,
+                _reservations);
             float waitDuration = Mathf.Max(turnDuration, trafficDelay);
             ShipNavigationPlan plan = new ShipNavigationPlan(
                 destination,
@@ -156,12 +164,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                 route,
                 waitDuration,
                 movementDuration);
-            _reservations[agent] = new Reservation(
+            _reservations[agent] = new ShipTrafficReservation(
                 destination,
-                route.Samples,
+                trafficTrajectory,
                 agent.NavigationHeight,
                 agent.NavigationRadius,
-                plan.TotalDuration);
+                agent.NavigationSpeed,
+                waitDuration,
+                movementDuration);
             return plan;
         }
 
@@ -171,39 +181,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 _reservations[agent] = default;
             }
-        }
-
-        private float CalculateTrafficDelay(
-            IShipNavigationAgent planningAgent,
-            ShipBezierRoute route,
-            float heightTolerance)
-        {
-            float delay = 0f;
-            foreach (KeyValuePair<IShipNavigationAgent, Reservation> pair
-                     in _reservations)
-            {
-                if (ReferenceEquals(pair.Key, planningAgent) ||
-                    !pair.Value.HasTrajectory ||
-                    Mathf.Abs(pair.Value.Height - planningAgent.NavigationHeight) >
-                    heightTolerance)
-                {
-                    continue;
-                }
-
-                float safeDistance =
-                    pair.Value.Radius + planningAgent.NavigationRadius;
-                if (RoutesConflict(
-                        route.Samples,
-                        pair.Value.Trajectory,
-                        safeDistance))
-                {
-                    delay = Mathf.Max(
-                        delay,
-                        pair.Value.TotalDuration + TRAFFIC_SAFETY_DELAY);
-                }
-            }
-
-            return delay;
         }
 
         private void BuildSharedContacts(
@@ -219,7 +196,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
             }
 
-            foreach (KeyValuePair<IShipNavigationAgent, Reservation> pair
+            foreach (KeyValuePair<IShipNavigationAgent, ShipTrafficReservation> pair
                      in _reservations)
             {
                 IShipNavigationAgent other = pair.Key;
@@ -240,115 +217,6 @@ namespace EmpireAtWar.Services.ShipNavigation
                         true));
                 }
             }
-        }
-
-        private static bool RoutesConflict(
-            IReadOnlyList<Vector3> first,
-            IReadOnlyList<Vector3> second,
-            float safeDistance)
-        {
-            float safeDistanceSquared = safeDistance * safeDistance;
-            for (int firstIndex = 1; firstIndex < first.Count; firstIndex++)
-            {
-                Vector2 firstStart = ToPlanar(first[firstIndex - 1]);
-                Vector2 firstEnd = ToPlanar(first[firstIndex]);
-                for (int secondIndex = 1; secondIndex < second.Count; secondIndex++)
-                {
-                    Vector2 secondStart = ToPlanar(second[secondIndex - 1]);
-                    Vector2 secondEnd = ToPlanar(second[secondIndex]);
-                    if (SegmentDistanceSquared(
-                            firstStart,
-                            firstEnd,
-                            secondStart,
-                            secondEnd) < safeDistanceSquared)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private static float SegmentDistanceSquared(
-            Vector2 firstStart,
-            Vector2 firstEnd,
-            Vector2 secondStart,
-            Vector2 secondEnd)
-        {
-            Vector2 firstDirection = firstEnd - firstStart;
-            Vector2 secondDirection = secondEnd - secondStart;
-            Vector2 startDelta = secondStart - firstStart;
-            float denominator = Cross(firstDirection, secondDirection);
-            if (Mathf.Abs(denominator) > Mathf.Epsilon)
-            {
-                float firstParameter =
-                    Cross(startDelta, secondDirection) / denominator;
-                float secondParameter =
-                    Cross(startDelta, firstDirection) / denominator;
-                if (firstParameter >= 0f && firstParameter <= 1f &&
-                    secondParameter >= 0f && secondParameter <= 1f)
-                {
-                    return 0f;
-                }
-            }
-
-            return Mathf.Min(
-                PointSegmentDistanceSquared(firstStart, secondStart, secondEnd),
-                PointSegmentDistanceSquared(firstEnd, secondStart, secondEnd),
-                PointSegmentDistanceSquared(secondStart, firstStart, firstEnd),
-                PointSegmentDistanceSquared(secondEnd, firstStart, firstEnd));
-        }
-
-        private static float PointSegmentDistanceSquared(
-            Vector2 point,
-            Vector2 start,
-            Vector2 end)
-        {
-            Vector2 segment = end - start;
-            float lengthSquared = segment.sqrMagnitude;
-            if (lengthSquared <= Mathf.Epsilon)
-            {
-                return (point - start).sqrMagnitude;
-            }
-
-            float parameter = Mathf.Clamp01(
-                Vector2.Dot(point - start, segment) / lengthSquared);
-            return (point - (start + segment * parameter)).sqrMagnitude;
-        }
-
-        private static float Cross(Vector2 first, Vector2 second)
-        {
-            return first.x * second.y - first.y * second.x;
-        }
-
-        private static Vector2 ToPlanar(Vector3 point)
-        {
-            return new Vector2(point.x, point.z);
-        }
-
-        private readonly struct Reservation
-        {
-            public Reservation(
-                Vector3 destination,
-                Vector3[] trajectory,
-                float height,
-                float radius,
-                float totalDuration)
-            {
-                Destination = destination;
-                Trajectory = trajectory;
-                Height = height;
-                Radius = radius;
-                TotalDuration = totalDuration;
-            }
-
-            public Vector3 Destination { get; }
-            public Vector3[] Trajectory { get; }
-            public float Height { get; }
-            public float Radius { get; }
-            public float TotalDuration { get; }
-            public bool HasTrajectory => Trajectory != null && Trajectory.Length > 0;
         }
     }
 }
