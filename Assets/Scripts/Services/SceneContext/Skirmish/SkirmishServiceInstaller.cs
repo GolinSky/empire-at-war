@@ -7,6 +7,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.ShipNavigation;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext.Skirmish
@@ -37,6 +38,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<ShipNavigationService>()
                 .BindInterfacesExt<SelectionQuery>()
                 .BindInterfacesExt<SelectionService>()
                 .BindInterfacesExt<BattleService>();

@@ -42,16 +42,22 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies => _enemies;
         
         [Inject]
-        private PlayerType PlayerType { get; }
+        private PlayerType PlayerTypeValue { get; }
         
         [Inject] 
         private LayerModel LayerModel { get; }
 
         public LayerMask LayerMask =>
-            PlayerType == PlayerType.Player ? LayerModel.PlayerLayerMask : LayerModel.EnemyLayerMask;
+            PlayerTypeValue == EmpireAtWar.Models.Factions.PlayerType.Player
+                ? LayerModel.PlayerLayerMask
+                : LayerModel.EnemyLayerMask;
         
         public LayerMask EnemyLayerMask =>
-            PlayerType != PlayerType.Player ? LayerModel.PlayerLayerMask : LayerModel.EnemyLayerMask;
+            PlayerTypeValue != EmpireAtWar.Models.Factions.PlayerType.Player
+                ? LayerModel.PlayerLayerMask
+                : LayerModel.EnemyLayerMask;
+
+        public PlayerType PlayerType => PlayerTypeValue;
 
 
         // public void AddHit(RaycastHit[] raycastHits)

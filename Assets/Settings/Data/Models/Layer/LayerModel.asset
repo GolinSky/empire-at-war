@@ -19,3 +19,9 @@ MonoBehaviour:
   <EnemyLayerMask>k__BackingField:
     serializedVersion: 2
     m_Bits: 128
+  <ObstacleLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 512
+  <DeadLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1024

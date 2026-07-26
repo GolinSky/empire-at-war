@@ -20,7 +20,7 @@ namespace EmpireAtWar.Services.Camera
     }
 
     [RequireComponent(typeof(UnityEngine.Camera))]
-    public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable
+    public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable
     {
         [SerializeField] private Ease _moveEase = Ease.OutExpo;
 
@@ -29,6 +29,8 @@ namespace EmpireAtWar.Services.Camera
         private CameraData _cameraData;
         private IInputService _inputService;
         private Tween _moveTween;
+        private Vector2 _keyboardInput;
+        private Vector2 _keyboardVelocity;
 
         public string Id => nameof(CameraService);
 
@@ -117,8 +119,29 @@ namespace EmpireAtWar.Services.Camera
 
         private void OnCameraMove(Vector2 direction)
         {
-            Vector3 worldDirection = new(direction.x, 0f, direction.y);
-            Vector3 move = worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
+            StopMovement();
+            _keyboardInput = direction;
+        }
+
+        public void Tick()
+        {
+            _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
+                _keyboardVelocity,
+                _keyboardInput,
+                _cameraData.PanSpeed,
+                _cameraData.PanAcceleration,
+                _cameraData.PanDeceleration,
+                Time.unscaledDeltaTime);
+            if (_keyboardVelocity.sqrMagnitude <= Mathf.Epsilon)
+            {
+                _keyboardVelocity = Vector2.zero;
+                return;
+            }
+
+            Vector3 move = new Vector3(
+                _keyboardVelocity.x,
+                0f,
+                _keyboardVelocity.y) * Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move), false);
         }
 
