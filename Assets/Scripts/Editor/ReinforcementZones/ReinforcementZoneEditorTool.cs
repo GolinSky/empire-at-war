@@ -12,15 +12,15 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Editor.ReinforcementZones
 {
-    public static class ReinforcementZoneSceneSetup
+    public static class ReinforcementZoneEditorTool
     {
-        private const float ZoneRadius = 45f;
-        private const string PrefabFolder = "Assets/Prefabs/View/ReinforcementZones";
-        private const string PrefabPath = PrefabFolder + "/ReinforcementZone.prefab";
-        private const string CoruscantPrefabPath = PrefabFolder + "/CoruscantReinforcementZones.prefab";
-        private const string KaminoPrefabPath = PrefabFolder + "/KaminoReinforcementZones.prefab";
-        private const string MaterialFolder = "Assets/Art/Materials/ReinforcementZones";
-        private const string MaterialPath = MaterialFolder + "/ReinforcementZone.mat";
+        private const float ZONE_RADIUS = 45f;
+        private const string PREFAB_FOLDER = "Assets/Prefabs/View/ReinforcementZones";
+        private const string PREFAB_PATH = PREFAB_FOLDER + "/ReinforcementZone.prefab";
+        private const string CORUSCANT_PREFAB_PATH = PREFAB_FOLDER + "/CoruscantReinforcementZones.prefab";
+        private const string KAMINO_PREFAB_PATH = PREFAB_FOLDER + "/KaminoReinforcementZones.prefab";
+        private const string MATERIAL_FOLDER = "Assets/Art/Materials/ReinforcementZones";
+        private const string MATERIAL_PATH = MATERIAL_FOLDER + "/ReinforcementZone.mat";
 
         [MenuItem("Tools/Empire At War/Reinforcement Zones/Setup Active Map")]
         public static void SetupActiveMap()
@@ -128,9 +128,9 @@ namespace EmpireAtWar.Editor.ReinforcementZones
         {
             return sceneName switch
             {
-                "Corusant" => CoruscantPrefabPath,
-                "Coruscant" => CoruscantPrefabPath,
-                "Kamino" => KaminoPrefabPath,
+                "Corusant" => CORUSCANT_PREFAB_PATH,
+                "Coruscant" => CORUSCANT_PREFAB_PATH,
+                "Kamino" => KAMINO_PREFAB_PATH,
                 _ => throw new System.InvalidOperationException(
                     $"No reinforcement-zone prefab is configured for scene '{sceneName}'.")
             };
@@ -138,8 +138,8 @@ namespace EmpireAtWar.Editor.ReinforcementZones
 
         private static GameObject GetOrCreatePrefab(Material material)
         {
-            EnsureFolder(PrefabFolder);
-            GameObject existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+            EnsureFolder(PREFAB_FOLDER);
+            GameObject existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH);
             if (existingPrefab != null)
             {
                 return existingPrefab;
@@ -149,7 +149,7 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.name = "SphereRenderer";
             sphere.transform.SetParent(root.transform, false);
-            sphere.transform.localScale = new Vector3(ZoneRadius * 2f, 0.2f, ZoneRadius * 2f);
+            sphere.transform.localScale = new Vector3(ZONE_RADIUS * 2f, 0.2f, ZONE_RADIUS * 2f);
             Object.DestroyImmediate(sphere.GetComponent<SphereCollider>());
 
             MeshRenderer sphereRenderer = sphere.GetComponent<MeshRenderer>();
@@ -160,14 +160,14 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             Canvas canvas = CreateWorldCanvas(root.transform, out Image progress, out TMP_Text status);
             ReinforcementZoneView view = root.AddComponent<ReinforcementZoneView>();
             SerializedObject serializedView = new SerializedObject(view);
-            serializedView.FindProperty("_radius").floatValue = ZoneRadius;
+            serializedView.FindProperty("_radius").floatValue = ZONE_RADIUS;
             serializedView.FindProperty("_sphereRenderer").objectReferenceValue = sphereRenderer;
             serializedView.FindProperty("_captureCanvas").objectReferenceValue = canvas;
             serializedView.FindProperty("_captureProgress").objectReferenceValue = progress;
             serializedView.FindProperty("_statusText").objectReferenceValue = status;
             serializedView.ApplyModifiedPropertiesWithoutUndo();
 
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PREFAB_PATH);
             Object.DestroyImmediate(root);
             return prefab;
         }
@@ -228,8 +228,8 @@ namespace EmpireAtWar.Editor.ReinforcementZones
 
         private static Material GetOrCreateMaterial()
         {
-            EnsureFolder(MaterialFolder);
-            Material material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
+            EnsureFolder(MATERIAL_FOLDER);
+            Material material = AssetDatabase.LoadAssetAtPath<Material>(MATERIAL_PATH);
             if (material != null)
             {
                 return material;
@@ -252,7 +252,7 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             material.SetFloat("_ZWrite", 0f);
             material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             material.SetColor("_BaseColor", new Color(0.7f, 0.7f, 0.7f, 0.25f));
-            AssetDatabase.CreateAsset(material, MaterialPath);
+            AssetDatabase.CreateAsset(material, MATERIAL_PATH);
             return material;
         }
 
