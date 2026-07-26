@@ -8,6 +8,8 @@ namespace EmpireAtWar.Components.Radar
     {
         [field: SerializeField] public LayerMask PlayerLayerMask { get; private set; }
         [field: SerializeField] public LayerMask EnemyLayerMask { get; private set; }
+        [field: SerializeField] public LayerMask ObstacleLayerMask { get; private set; }
+        [field: SerializeField] public LayerMask DeadLayerMask { get; private set; }
         
     }
 }

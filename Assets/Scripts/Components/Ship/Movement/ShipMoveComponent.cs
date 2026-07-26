@@ -8,13 +8,19 @@ using Utilities.ScriptUtils.Dotween;
 using Utilities.ScriptUtils.Math;
 using ViewComponents;
 using Zenject;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Services.ShipNavigation;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent, IInitializable,
-        ILateDisposable
+        ILateDisposable, IShipNavigationAgent
     {
         private const float BODY_ROTATION_DEFAULT_DURATION = 1f;
+        private const float AVOIDANCE_CLEARANCE = 8f;
+        private const float HEIGHT_TOLERANCE = 0.5f;
 
         [SerializeField] private RotateMode rotationMode = RotateMode.Fast;
         [SerializeField] private Ease lookAtEase;
@@ -27,11 +33,22 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _startPosition;
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
-        private Sequence _moveSequence;
+        private Sequence _translationSequence;
+        private Sequence _rotationSequence;
         private Vector3[] _waypoints;
         private Vector3? _pendingTargetPosition;
         private float _duration;
         private bool _canMove;
+        private bool _isSelected;
+        private IMapModelObserver _mapModel;
+        private Vector3? _activeDetour;
+        private IShipNavigationService _shipNavigationService;
+        private bool _isApplyingNavigationDestination;
+        private readonly List<RadarContact> _obstacleContacts = new List<RadarContact>();
+
+        public Vector3 NavigationPosition => CurrentViewPosition;
+        public float NavigationHeight => Model.Height;
+        public float NavigationRadius => AVOIDANCE_CLEARANCE;
 
         public bool CanMove => Model.CanMove;
         public Vector3 CurrentPosition => Model.CurrentPosition;
@@ -64,7 +81,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             ICameraService cameraService,
             Vector3 startPosition,
             FogOfWarSystem fogOfWarSystem,
-            PlayerType playerType)
+            PlayerType playerType,
+            IMapModelObserver mapModel,
+            IShipNavigationService shipNavigationService)
         {
             SetModel(model);
             _cameraService = cameraService;
@@ -72,12 +91,15 @@ namespace EmpireAtWar.Components.Ship.Movement
             _startPosition = startPosition;
             _fogOfWarSystem = fogOfWarSystem;
             _playerType = playerType;
+            _mapModel = mapModel;
+            _shipNavigationService = shipNavigationService;
             // Model.TargetPosition = startPosition;
         }
 
         public void Initialize()
         {
             lineRenderer.enabled = false;
+            _shipNavigationService.Register(this);
             Model.HyperSpacePosition = _startPosition;
 
             transform.rotation = Model.StartRotation;
@@ -105,6 +127,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             Model.TargetPosition.OnChanged -= UpdateTargetPosition;
             Model.OnStop -= StopAllMovement;
             Model.LookAtTarget.OnChanged -= LookAt;
+            _shipNavigationService.Unregister(this);
             FallDown();
         }
 
@@ -116,6 +139,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void SetTargetPosition(Vector3 newPosition)
         {
+            newPosition.y = Model.Height;
+            newPosition = ShipAvoidancePlanner.ClampToMap(
+                newPosition,
+                _mapModel.SizeRange,
+                AVOIDANCE_CLEARANCE);
             if (!newPosition.IsEqual(Model.TargetPosition.Value))
             {
                 Model.TargetPosition.Value = newPosition;
@@ -176,15 +204,16 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void HandleSelection(bool isSelected)
         {
-            lineRenderer.enabled = isSelected;
+            _isSelected = isSelected;
+            lineRenderer.enabled = isSelected && Model.IsMoving && lineRenderer.positionCount > 1;
         }
 
         private Vector3 CurrentViewPosition => transform.position;
 
         private void LookAt(Vector3 targetPosition)
         {
-            _moveSequence.KillExt();
-            _moveSequence = DOTween.Sequence();
+            _rotationSequence.KillExt();
+            _rotationSequence = DOTween.Sequence();
 
             targetPosition.y = CurrentViewPosition.y;
             Quaternion desiredRotation = Quaternion.LookRotation(targetPosition - CurrentViewPosition);
@@ -195,14 +224,14 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.MinRotationDuration,
                 Model.MaxRotationDuration);
 
-            _moveSequence.Append(transform.DORotateQuaternion(desiredRotation, rotationDuration).SetEase(lookAtEase));
+            _rotationSequence.Append(transform.DORotateQuaternion(desiredRotation, rotationDuration).SetEase(lookAtEase));
 
             float targetZ = GetZRotationOnly(targetPosition);
             Vector3 startEuler = bodyTransform.localEulerAngles;
             Vector3 bodyTargetEuler = new(startEuler.x, startEuler.y, targetZ);
 
-            _moveSequence.Join(bodyTransform.DOLocalRotate(bodyTargetEuler, rotationDuration).SetEase(lookAtEase));
-            _moveSequence.Append(bodyTransform.DOLocalRotate(
+            _rotationSequence.Join(bodyTransform.DOLocalRotate(bodyTargetEuler, rotationDuration).SetEase(lookAtEase));
+            _rotationSequence.Append(bodyTransform.DOLocalRotate(
                     new Vector3(startEuler.x, startEuler.y, 0f),
                     BODY_ROTATION_DEFAULT_DURATION)
                 .SetEase(lookAtEase));
@@ -223,17 +252,22 @@ namespace EmpireAtWar.Components.Ship.Movement
                 return;
             }
 
-            _moveSequence.KillExt();
+            _translationSequence.KillExt();
+            _activeDetour = null;
+            _shipNavigationService.ClearPlan(this);
+            ClearRoute();
         }
 
         private void FallDown()
         {
             Vector3 point = CurrentViewPosition - Model.FallDownDirection;
 
-            _moveSequence.KillIfExist();
-            _moveSequence = DOTween.Sequence();
-            _moveSequence.Append(transform.DOMove(point, Model.FallDownDuration));
-            _moveSequence.Join(transform.DOLocalRotate(Model.FallDownRotation.Value, Model.FallDownDuration));
+            _translationSequence.KillIfExist();
+            _rotationSequence.KillIfExist();
+            _translationSequence = DOTween.Sequence();
+            _translationSequence.Append(transform.DOMove(point, Model.FallDownDuration));
+            _translationSequence.Join(transform.DOLocalRotate(Model.FallDownRotation.Value, Model.FallDownDuration));
+            ClearRoute();
         }
 
         private void HyperSpaceJump(Vector3 point)
@@ -241,10 +275,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector3 lookDirection = point - CurrentViewPosition;
 
             transform.rotation = Quaternion.LookRotation(lookDirection);
-            _moveSequence.KillIfExist();
-            _moveSequence = DOTween.Sequence();
-            _moveSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration).SetEase(hyperSpaceEase));
-            _moveSequence.OnComplete(() =>
+            _translationSequence.KillIfExist();
+            _translationSequence = DOTween.Sequence();
+            _translationSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration).SetEase(hyperSpaceEase));
+            _translationSequence.OnComplete(() =>
             {
                 _canMove = true;
                 if (_pendingTargetPosition.HasValue)
@@ -258,6 +292,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
+            if (_isApplyingNavigationDestination)
+            {
+                return;
+            }
+
             if (!_canMove)
             {
                 _pendingTargetPosition = targetPosition;
@@ -265,19 +304,95 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             targetPosition.y = CurrentViewPosition.y;
-            _moveSequence.KillExt();
-            _moveSequence = DOTween.Sequence();
+            ApplyNavigationPlan(targetPosition, System.Array.Empty<RadarContact>());
+        }
 
-            float distance = Vector3.Distance(CurrentViewPosition, targetPosition);
-            Vector3 p1 = CurrentViewPosition + transform.forward * distance * IsBehindTarget(targetPosition);
-            Vector3 p2 = CurrentViewPosition + IsRightFromTarget(targetPosition) * transform.right * distance *
-                IsBehindTarget(targetPosition);
+        public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
+        {
+            if (!_canMove || !Model.IsMoving || contacts == null || contacts.Count == 0)
+            {
+                return;
+            }
 
-            _waypoints = PathCalculationUtils.GetWayPointsOfBezierPath(
+            _obstacleContacts.Clear();
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                if (!contacts[i].IsShip)
+                {
+                    _obstacleContacts.Add(contacts[i]);
+                }
+            }
+
+            if (_obstacleContacts.Count == 0)
+            {
+                return;
+            }
+
+            if (_activeDetour.HasValue)
+            {
+                if (Vector3.Distance(CurrentViewPosition, _activeDetour.Value) >
+                    AVOIDANCE_CLEARANCE * 1.5f)
+                {
+                    return;
+                }
+
+                _activeDetour = null;
+            }
+
+            Vector3 destination = Model.TargetPosition.Value;
+            bool occupiedDestination = ShipAvoidancePlanner.TryResolveDestination(
+                destination,
                 CurrentViewPosition,
-                p1,
-                p2,
-                targetPosition);
+                _obstacleContacts,
+                Model.Height,
+                HEIGHT_TOLERANCE,
+                AVOIDANCE_CLEARANCE,
+                _mapModel.SizeRange,
+                out _);
+            bool obstructedRoute = ShipAvoidancePlanner.TryCalculateDetour(
+                CurrentViewPosition,
+                destination,
+                _obstacleContacts,
+                Model.Height,
+                HEIGHT_TOLERANCE,
+                AVOIDANCE_CLEARANCE,
+                _mapModel.SizeRange,
+                out _);
+            if (occupiedDestination || obstructedRoute)
+            {
+                ApplyNavigationPlan(destination, _obstacleContacts);
+            }
+        }
+
+        private void ApplyNavigationPlan(
+            Vector3 requestedDestination,
+            IReadOnlyList<RadarContact> obstacleContacts)
+        {
+            ShipNavigationPlan plan = _shipNavigationService.Plan(
+                this,
+                transform.forward,
+                requestedDestination,
+                obstacleContacts,
+                HEIGHT_TOLERANCE,
+                AVOIDANCE_CLEARANCE,
+                _mapModel.SizeRange);
+            if (!plan.Destination.IsEqual(Model.TargetPosition.Value))
+            {
+                _isApplyingNavigationDestination = true;
+                Model.TargetPosition.Value = plan.Destination;
+                _isApplyingNavigationDestination = false;
+            }
+
+            StartPath(plan);
+        }
+
+        private void StartPath(ShipNavigationPlan plan)
+        {
+            _translationSequence.KillExt();
+            _translationSequence = DOTween.Sequence();
+
+            _activeDetour = plan.Detour;
+            _waypoints = plan.Trajectory;
 
             float curvedDistance = 0f;
             lineRenderer.positionCount = _waypoints.Length;
@@ -291,7 +406,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _duration = curvedDistance / Model.Speed;
-            _moveSequence.Append(transform.DOPath(
+            lineRenderer.enabled = _isSelected && _waypoints.Length > 1;
+            _translationSequence.Append(transform.DOPath(
                     _waypoints,
                     _duration,
                     PathType.CatmullRom,
@@ -300,18 +416,46 @@ namespace EmpireAtWar.Components.Ship.Movement
                 .SetOptions(false, AxisConstraint.Y, AxisConstraint.X)
                 .SetLookAt(0.01f)
                 .SetEase(Ease.Linear));
+            _translationSequence.OnUpdate(UpdateRouteVisual);
+            _translationSequence.OnComplete(() =>
+            {
+                _activeDetour = null;
+                _shipNavigationService.ClearPlan(this);
+                ClearRoute();
+            });
         }
 
-        private float IsRightFromTarget(Vector3 targetPosition)
+        private void UpdateRouteVisual()
         {
-            Vector3 positionRelative = transform.InverseTransformPoint(targetPosition);
-            return positionRelative.x > 0 ? 1f : -1f;
+            if (!_isSelected || _waypoints == null || _waypoints.Length < 2)
+            {
+                return;
+            }
+
+            int nextIndex = _waypoints.Length - 1;
+            for (int i = 1; i < _waypoints.Length; i++)
+            {
+                if (Vector3.Distance(CurrentViewPosition, _waypoints[i]) > AVOIDANCE_CLEARANCE)
+                {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            int count = _waypoints.Length - nextIndex + 1;
+            lineRenderer.positionCount = count;
+            lineRenderer.SetPosition(0, CurrentViewPosition);
+            for (int i = 1; i < count; i++)
+            {
+                lineRenderer.SetPosition(i, _waypoints[nextIndex + i - 1]);
+            }
         }
 
-        private float IsBehindTarget(Vector3 targetPosition)
+        private void ClearRoute()
         {
-            Vector3 positionRelative = transform.InverseTransformPoint(targetPosition);
-            return positionRelative.z > 0 ? 0.2f : 1f;
+            lineRenderer.positionCount = 0;
+            lineRenderer.enabled = false;
         }
+
     }
 }

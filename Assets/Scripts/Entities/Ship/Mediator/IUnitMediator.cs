@@ -1,4 +1,6 @@
 using EmpireAtWar.Entities.BaseEntity;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Radar;
 
 namespace EmpireAtWar.Entities.Ship.Mediator
 {
@@ -10,6 +12,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
     public interface IUnitMediator
     {
         void HandleNewEnemy(IEntity entity);
+        void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
         void OnSelect(bool isActive);
     }
 }
