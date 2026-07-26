@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.8, g: 0.84, b: 0.95, a: 1}
   m_AmbientEquatorColor: {r: 0.58, g: 0.62, b: 0.72, a: 1}
   m_AmbientGroundColor: {r: 0.36, g: 0.4, b: 0.5, a: 1}
-  m_AmbientIntensity: 1.5
+  m_AmbientIntensity: 0.75
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: d8c0d4010f9416945912d97b9e581cf6, type: 2}
@@ -637,22 +637,22 @@ PrefabInstance:
     - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9848078
+      value: 0.8923991
       objectReference: {fileID: 0}
     - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.17364816
+      value: 0.36964384
       objectReference: {fileID: 0}
     - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.23911761
       objectReference: {fileID: 0}
     - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.09904577
       objectReference: {fileID: 0}
     - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
@@ -696,6 +696,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
+      propertyPath: m_Shadows.m_Bias
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
       propertyPath: m_BounceIntensity
       value: 1
       objectReference: {fileID: 0}
@@ -713,6 +718,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_UseColorTemperature
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Shadows.m_NormalBias
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7514464866233457774, guid: f9b88e1558e005345ab0924c13d05e8f,
         type: 3}
