@@ -49,13 +49,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: PlayerFactionData
-      value:
-        m_AssetGUID: 17ab4ced609e6054986bf57e44a51fc4
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MusicAudioModel
       value:
         m_AssetGUID: 023f129b8c45cdc45a5710abd9de1183
@@ -73,6 +66,27 @@ MonoBehaviour:
     - key: EnemyFactionModel
       value:
         m_AssetGUID: 101b5ddd7be8a4245b61329bea6fba64
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: PlayerFactionData
+      value:
+        m_AssetGUID: 17ab4ced609e6054986bf57e44a51fc4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: EconomyData
+      value:
+        m_AssetGUID: 187f1cf1c603ee8408343a2b1c03b426
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ReinforcementData
+      value:
+        m_AssetGUID: 1c157dade5de42e4081ffe3ef1dd634f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -112,13 +126,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ReinforcementData
-      value:
-        m_AssetGUID: 1c157dade5de42e4081ffe3ef1dd634f
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MiniMapModel
       value:
         m_AssetGUID: 38bf9d71cf198ee4c95db7c57cba6be8
@@ -129,6 +136,13 @@ MonoBehaviour:
     - key: AcclamatorShipModel
       value:
         m_AssetGUID: 3ba22e215b4787a44ae118a021f83b79
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AudioShipModel
+      value:
+        m_AssetGUID: 3c3e6847e2f3d68408516d8339afde3f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -192,13 +206,6 @@ MonoBehaviour:
     - key: AudioShipDialogModel
       value:
         m_AssetGUID: 7a4bfb5f7b726044ab56858e9a73e245
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: EconomyData
-      value:
-        m_AssetGUID: 187f1cf1c603ee8408343a2b1c03b426
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -339,6 +346,13 @@ MonoBehaviour:
     - key: SHIP_ALARM
       value:
         m_AssetGUID: d105f3706327c274db845257a59e3bdf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: SharedSelectionData
+      value:
+        m_AssetGUID: 209cdf7d0c12070418008f2c5a98c38e
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -581,16 +595,16 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: SharedSelectionData
+    - key: MainMenuUi
       value:
-        m_AssetGUID: 209cdf7d0c12070418008f2c5a98c38e
+        m_AssetGUID: f343dde1580f9c449aa91a6c5d650dff
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MainMenuUi
+    - key: UiService
       value:
-        m_AssetGUID: f343dde1580f9c449aa91a6c5d650dff
+        m_AssetGUID: fda96606ab8b445f2a625b69cff84380
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

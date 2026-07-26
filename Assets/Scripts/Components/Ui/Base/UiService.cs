@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -8,20 +9,23 @@ namespace EmpireAtWar.Ui.Base
         BaseUi CreateUi(UiType uiType);
     }
     
-    public class UiService: MonoBehaviour, IUiService
+    [RequireComponent(typeof(Canvas))]
+    public class UiService : MonoBehaviour, IUiService
     {
-        [SerializeField] private Transform _location;
         private UiFacade _uiFacade;
 
         [Inject]
         public void Constructor(UiFacade uiFacade)
         {
-            _uiFacade = uiFacade;
+            _uiFacade = uiFacade ?? throw new ArgumentNullException(nameof(uiFacade));
         }
         
         public BaseUi CreateUi(UiType uiType)
         {
-            return _uiFacade.Create(uiType, _location);
+            if (_uiFacade == null)
+                throw new InvalidOperationException($"{nameof(UiService)} has not been initialized.");
+
+            return _uiFacade.Create(uiType, transform);
         }
     }
 }

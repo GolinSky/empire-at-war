@@ -28,7 +28,6 @@ using Zenject;
 
 public class SkirmishMainInstaller : MonoInstaller
 {
-    [SerializeField] private UiService _uiService;
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [Inject] private IGameModelObserver GameModelObserver { get; }
@@ -45,7 +44,11 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<BattleVictoryModel>().AsSingle();
         Container.BindInterfacesExt<BattleVictoryService>();
 
-        Container.BindInterfacesAndSelfTo<UiService>().FromInstance(_uiService).AsSingle();
+        Container
+            .BindInterfacesAndSelfTo<UiService>()
+            .FromComponentInNewPrefab(Repository.LoadPrefab(nameof(UiService)))
+            .AsSingle()
+            .NonLazy();
         Container
             .BindFactory<UiType, Transform, BaseUi, UiFacade>()
             .FromSubContainerResolve()
