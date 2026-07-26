@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -102,7 +103,7 @@ namespace EmpireAtWar.Tests.Movement
                 new Vector3(8f, 0f, -80f),
                 0f,
                 0.25f,
-                10f,
+                9.09f,
                 30f);
             _service.Register(horizontal);
             _service.Register(vertical);
@@ -116,6 +117,88 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(verticalPlan.WaitDuration, Is.GreaterThan(0f));
         }
 
+        [Test]
+        public void Plan_ObstacleDetourDoesNotWaitForPreviousShipsWholeRoute()
+        {
+            FakeAgent centerShip = new FakeAgent(
+                new Vector3(-60f, 0f, 0f),
+                0f,
+                4f,
+                10f,
+                30f);
+            FakeAgent upperShip = new FakeAgent(
+                new Vector3(-60f, 0f, 10f),
+                0f,
+                4f,
+                10f,
+                30f);
+            RadarContact[] obstacle =
+            {
+                new RadarContact(Vector3.zero, 10f, false)
+            };
+            _service.Register(centerShip);
+            _service.Register(upperShip);
+
+            ShipNavigationPlan firstPlan = Plan(
+                centerShip,
+                new Vector3(60f, 0f, 0f),
+                Vector3.right,
+                obstacle);
+            ShipNavigationPlan secondPlan = Plan(
+                upperShip,
+                new Vector3(60f, 0f, 10f),
+                Vector3.right,
+                obstacle);
+
+            Assert.That(firstPlan.Detour.HasValue, Is.True);
+            Assert.That(secondPlan.Detour.HasValue, Is.True);
+            Assert.That(secondPlan.WaitDuration, Is.GreaterThan(0f));
+            Assert.That(
+                secondPlan.WaitDuration,
+                Is.LessThan(firstPlan.MovementDuration * 0.5f));
+        }
+
+        [Test]
+        public void Plan_MultiShipObstacleCommandStartsFleetBeforeFirstShipArrives()
+        {
+            const int SHIP_COUNT = 6;
+            RadarContact[] obstacle =
+            {
+                new RadarContact(Vector3.zero, 10f, false)
+            };
+            FakeAgent[] ships = new FakeAgent[SHIP_COUNT];
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                ships[i] = new FakeAgent(
+                    new Vector3(-60f, 0f, i * 2f),
+                    0f,
+                    4f,
+                    10f,
+                    30f);
+                _service.Register(ships[i]);
+            }
+
+            float firstMovementDuration = 0f;
+            float maximumWait = 0f;
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                ShipNavigationPlan plan = Plan(
+                    ships[i],
+                    new Vector3(60f, 0f, i * 2f),
+                    Vector3.right,
+                    obstacle);
+                if (i == 0)
+                {
+                    firstMovementDuration = plan.MovementDuration;
+                }
+
+                Assert.That(plan.MovementDuration, Is.GreaterThan(0f));
+                maximumWait = Mathf.Max(maximumWait, plan.WaitDuration);
+            }
+
+            Assert.That(maximumWait, Is.LessThan(firstMovementDuration));
+        }
+
         private ShipNavigationPlan Plan(FakeAgent agent, Vector3 destination)
         {
             return Plan(agent, destination, Vector3.right);
@@ -126,11 +209,24 @@ namespace EmpireAtWar.Tests.Movement
             Vector3 destination,
             Vector3 forward)
         {
+            return Plan(
+                agent,
+                destination,
+                forward,
+                System.Array.Empty<RadarContact>());
+        }
+
+        private ShipNavigationPlan Plan(
+            FakeAgent agent,
+            Vector3 destination,
+            Vector3 forward,
+            IReadOnlyList<RadarContact> contacts)
+        {
             return _service.Plan(
                 agent,
                 forward,
                 destination,
-                System.Array.Empty<RadarContact>(),
+                contacts,
                 0.5f,
                 agent.NavigationRadius,
                 _mapRange);
