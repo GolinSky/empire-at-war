@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -17,6 +18,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private bool _isReleased;
 
         [Inject] private DefendPlatformModel RootModel { get; }
+
+        public event Action OnRelease;
 
         public string Id => GetType().Name;
 
@@ -63,6 +66,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 component.Release();
             }
+
+            OnRelease?.Invoke();
         }
 
         private void SynchronizeComponents()

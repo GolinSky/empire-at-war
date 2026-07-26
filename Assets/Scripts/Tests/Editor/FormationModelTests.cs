@@ -34,5 +34,19 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(center.X, Is.Zero);
             Assert.That(center.Z, Is.Zero);
         }
+
+        [Test]
+        public void CalculateGridDestination_AssignsDistinctCenteredSlots()
+        {
+            FormationPoint target = new FormationPoint(100f, 200f);
+
+            FormationPoint first = FormationModel.CalculateGridDestination(0, 4, target, 12f);
+            FormationPoint fourth = FormationModel.CalculateGridDestination(3, 4, target, 12f);
+
+            Assert.That(first.X, Is.EqualTo(94f));
+            Assert.That(first.Z, Is.EqualTo(194f));
+            Assert.That(fourth.X, Is.EqualTo(106f));
+            Assert.That(fourth.Z, Is.EqualTo(206f));
+        }
     }
 }

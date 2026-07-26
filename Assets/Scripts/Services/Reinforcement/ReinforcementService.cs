@@ -205,7 +205,8 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             return _currentSpawnType == SpawnType.Ship
                 ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
-                : !_fogOfWarSystem.IsHidden(position);
+                : !_fogOfWarSystem.IsHidden(position) &&
+                  !_reinforcementZonesSystem.IsPositionInAnyZone(position);
         }
     }
 }

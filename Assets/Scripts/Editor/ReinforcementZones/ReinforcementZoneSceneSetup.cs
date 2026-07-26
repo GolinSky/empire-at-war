@@ -142,7 +142,9 @@ namespace EmpireAtWar.Editor.ReinforcementZones
 
             Canvas canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
-            canvas.sortingOrder = 10;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 100;
+            canvasObject.GetComponent<CanvasScaler>().dynamicPixelsPerUnit = 10f;
 
             Image background = CreateImage("ProgressBackground", canvasTransform, new Color(0f, 0f, 0f, 0.75f));
             SetRect(background.rectTransform, new Vector2(0.05f, 0.1f), new Vector2(0.95f, 0.42f));

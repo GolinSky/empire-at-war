@@ -17,6 +17,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         IEntity GetEntity(long entityId);
         
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
+        bool TryGetEntity(Collider collider, out IEntity entity);
     }
 
     public class EntityLocator : Service, IEntityLocator
@@ -53,15 +54,14 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
         {
-            entity = null;
-            IViewEntity viewEntity = raycastHit.collider.GetComponent<IViewEntity>();
-            if (viewEntity != null)
-            {
-                entity = GetEntity(viewEntity.Id);
-                return entity != null;
-            }
+            return TryGetEntity(raycastHit.collider, out entity);
+        }
 
-            return false;
+        public bool TryGetEntity(Collider collider, out IEntity entity)
+        {
+            entity = null;
+            IViewEntity viewEntity = collider.GetComponentInParent<IViewEntity>();
+            return viewEntity != null && _entities.TryGetValue(viewEntity.Id, out entity);
         }
     }
 }

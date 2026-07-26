@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Health;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly StateMachine1 _stateMachine;
         private readonly IHealthModelObserver _healthModel;
         private readonly IRadarComponent _radarComponent;
+        private readonly IShipMoveComponent _shipMoveComponent;
         private readonly AttackTargetState _attackTargetState;
         private readonly IdleState _idleState;
         private readonly FleeState _fleeState;
@@ -29,6 +31,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             StateMachine1 stateMachine,
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
+            IShipMoveComponent shipMoveComponent,
             AttackTargetState attackTargetState,
             IdleState idleState,
             FleeState fleeState)
@@ -36,6 +39,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _stateMachine = stateMachine;
             _healthModel = healthComponent.HealthModelObserver;
             _radarComponent = radarComponent;
+            _shipMoveComponent = shipMoveComponent;
             _attackTargetState = attackTargetState;
             _idleState = idleState;
             _fleeState = fleeState;
@@ -93,6 +97,11 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
             if (_assignedTarget == null)
             {
+                if (_shipMoveComponent.IsMoving)
+                {
+                    return;
+                }
+
                 SetState(_idleState);
                 return;
             }
