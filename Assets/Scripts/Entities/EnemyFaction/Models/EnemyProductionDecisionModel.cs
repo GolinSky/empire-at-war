@@ -16,6 +16,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
+            int miningFacilityCount,
+            bool hasMiningOption,
             bool canBuildShip,
             bool canBuildMining,
             bool canBuildDefense,
@@ -23,6 +25,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
+            MiningFacilityCount = miningFacilityCount;
+            HasMiningOption = hasMiningOption;
             CanBuildShip = canBuildShip;
             CanBuildMining = canBuildMining;
             CanBuildDefense = canBuildDefense;
@@ -31,6 +35,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public EnemyStrategicState StrategicState { get; }
         public EnemyAiDifficulty Difficulty { get; }
+        public int MiningFacilityCount { get; }
+        public bool HasMiningOption { get; }
         public bool CanBuildShip { get; }
         public bool CanBuildMining { get; }
         public bool CanBuildDefense { get; }
@@ -41,6 +47,22 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)
         {
+            if (snapshot.MiningFacilityCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
+            }
+
+            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
+            bool needsEconomicFoundation =
+                snapshot.MiningFacilityCount < profile.MinimumMiningFacilities &&
+                snapshot.HasMiningOption;
+            if (needsEconomicFoundation)
+            {
+                return snapshot.CanBuildMining
+                    ? EnemyProductionCategory.Mining
+                    : EnemyProductionCategory.None;
+            }
+
             if (snapshot.StrategicState == EnemyStrategicState.DefendBase &&
                 snapshot.Difficulty >= EnemyAiDifficulty.Hard &&
                 snapshot.CanBuildDefense)

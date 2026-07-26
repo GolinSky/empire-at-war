@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyAiStateProvider _stateProvider;
         private readonly IGameModelObserver _gameModel;
         private readonly EnemyProductionDecisionModel _decisionModel;
+        private readonly EnemyUnitLimitModel _unitLimitModel;
 
         private float _decisionTimer;
 
@@ -32,7 +33,8 @@ namespace EmpireAtWar.Services.Enemy
             IEconomyModelObserver economyModel,
             IEnemyAiStateProvider stateProvider,
             IGameModelObserver gameModel,
-            EnemyProductionDecisionModel decisionModel)
+            EnemyProductionDecisionModel decisionModel,
+            EnemyUnitLimitModel unitLimitModel)
         {
             _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
             _purchaseProcessor = purchaseProcessor ?? throw new ArgumentNullException(nameof(purchaseProcessor));
@@ -41,6 +43,7 @@ namespace EmpireAtWar.Services.Enemy
             _stateProvider = stateProvider ?? throw new ArgumentNullException(nameof(stateProvider));
             _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
             _decisionModel = decisionModel ?? throw new ArgumentNullException(nameof(decisionModel));
+            _unitLimitModel = unitLimitModel ?? throw new ArgumentNullException(nameof(unitLimitModel));
         }
 
         public void Start()
@@ -56,20 +59,23 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
-            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_gameModel.EnemyDifficulty);
+            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(
+                _gameModel.EnemyDifficulty);
             _decisionTimer = Mathf.Max(
                 MINIMUM_PRODUCTION_INTERVAL,
                 profile.DecisionInterval * 2f);
-            EvaluateProduction();
+            EvaluateProduction(profile);
         }
 
-        private void EvaluateProduction()
+        private void EvaluateProduction(EnemyAiDifficultyProfile profile)
         {
             bool canBuildShip = TrySelectShip(out KeyValuePair<ShipType, FactionData> ship);
-            bool canBuildMining = TrySelectCheapest(
-                _factionModel.MiningFactions,
+            int miningFacilityCount = CountReservedMiningFacilities();
+            bool hasMiningOption = TrySelectMiningFacility(
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
-            bool canBuildDefense = TrySelectCheapest(
+            bool canBuildMining = hasMiningOption &&
+                mining.Value.Price <= _economyModel.Money;
+            bool canBuildDefense = TrySelectCheapestAffordable(
                 _factionModel.DefendPlatforms,
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
@@ -79,6 +85,8 @@ namespace EmpireAtWar.Services.Enemy
                 new EnemyProductionSnapshot(
                     _stateProvider.CurrentState,
                     _gameModel.EnemyDifficulty,
+                    miningFacilityCount,
+                    hasMiningOption,
                     canBuildShip,
                     canBuildMining,
                     canBuildDefense,
@@ -100,13 +108,64 @@ namespace EmpireAtWar.Services.Enemy
 
             if (request == null)
             {
+                if (miningFacilityCount < profile.MinimumMiningFacilities &&
+                    hasMiningOption)
+                {
+                    Debug.Log(
+                        $"[EnemyAI:Production] SavingForMining=true, " +
+                        $"Mining={miningFacilityCount}/{profile.MinimumMiningFacilities}, " +
+                        $"Cost={mining.Value.Price}, Money={_economyModel.Money}");
+                }
+
                 return;
             }
 
             Debug.Log(
                 $"[EnemyAI:Production] State={_stateProvider.CurrentState}, " +
-                $"Category={category}, Cost={request.FactionData.Price}, Money={_economyModel.Money}");
+                $"Category={category}, Mining={miningFacilityCount}/" +
+                $"{profile.MinimumMiningFacilities}, Cost={request.FactionData.Price}, " +
+                $"Money={_economyModel.Money}");
             _purchaseProcessor.Handle(request);
+        }
+
+        private int CountReservedMiningFacilities()
+        {
+            int count = 0;
+            foreach (KeyValuePair<MiningFacilityType, FactionData> option
+                     in _factionModel.MiningFactions)
+            {
+                count += _unitLimitModel.GetReservedCount<MiningFacilityUnitRequest>(
+                    option.Key.ToString());
+            }
+
+            return count;
+        }
+
+        private bool TrySelectMiningFacility(
+            out KeyValuePair<MiningFacilityType, FactionData> selected)
+        {
+            selected = default;
+            bool found = false;
+            foreach (KeyValuePair<MiningFacilityType, FactionData> option
+                     in _factionModel.MiningFactions)
+            {
+                int reservedCount =
+                    _unitLimitModel.GetReservedCount<MiningFacilityUnitRequest>(
+                        option.Key.ToString());
+                if (option.Value.AvailableLevel > _factionModel.CurrentLevel ||
+                    reservedCount >= option.Value.MaxCount)
+                {
+                    continue;
+                }
+
+                if (!found || option.Value.Price < selected.Value.Price)
+                {
+                    selected = option;
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
         private bool TrySelectShip(out KeyValuePair<ShipType, FactionData> selected)
@@ -114,7 +173,8 @@ namespace EmpireAtWar.Services.Enemy
             selected = default;
             bool found = false;
             bool preferExpensive = _gameModel.EnemyDifficulty >= EnemyAiDifficulty.Hard;
-            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            foreach (KeyValuePair<ShipType, FactionData> option
+                     in _factionModel.ShipFactionData)
             {
                 if (!IsAffordableAndAvailable(option.Value))
                 {
@@ -133,7 +193,19 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
-        private bool TrySelectCheapest<TKey>(
+        private bool TrySelectCheapestAffordable<TKey>(
+            IReadOnlyDictionary<TKey, FactionData> options,
+            out KeyValuePair<TKey, FactionData> selected)
+        {
+            if (!TrySelectCheapestAvailable(options, out selected))
+            {
+                return false;
+            }
+
+            return selected.Value.Price <= _economyModel.Money;
+        }
+
+        private bool TrySelectCheapestAvailable<TKey>(
             IReadOnlyDictionary<TKey, FactionData> options,
             out KeyValuePair<TKey, FactionData> selected)
         {
@@ -141,7 +213,7 @@ namespace EmpireAtWar.Services.Enemy
             bool found = false;
             foreach (KeyValuePair<TKey, FactionData> option in options)
             {
-                if (!IsAffordableAndAvailable(option.Value))
+                if (option.Value.AvailableLevel > _factionModel.CurrentLevel)
                 {
                     continue;
                 }

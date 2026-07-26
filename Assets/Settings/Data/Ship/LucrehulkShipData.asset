@@ -32,9 +32,8 @@ MonoBehaviour:
   <CanMove>k__BackingField: 1
   <RotationSpeed>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 3
-  <MinRotationDuration>k__BackingField: 5
-  <MaxRotationDuration>k__BackingField: 25
   <BodyRotationMaxAngle>k__BackingField: 10
+  <NavigationRadius>k__BackingField: 28
   <Armor>k__BackingField: 150000
   <Dexterity>k__BackingField: 0
   <Shields>k__BackingField: 10000

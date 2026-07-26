@@ -9,13 +9,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float requiredAttackRatio,
             float committedFleetRatio,
             float retreatShieldThreshold,
-            int outnumberedRetreatCount)
+            int outnumberedRetreatCount,
+            int minimumMiningFacilities)
         {
             DecisionInterval = decisionInterval;
             RequiredAttackRatio = requiredAttackRatio;
             CommittedFleetRatio = committedFleetRatio;
             RetreatShieldThreshold = retreatShieldThreshold;
             OutnumberedRetreatCount = outnumberedRetreatCount;
+            MinimumMiningFacilities = minimumMiningFacilities;
         }
 
         public float DecisionInterval { get; }
@@ -23,15 +25,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public float CommittedFleetRatio { get; }
         public float RetreatShieldThreshold { get; }
         public int OutnumberedRetreatCount { get; }
+        public int MinimumMiningFacilities { get; }
 
         public static EnemyAiDifficultyProfile Get(EnemyAiDifficulty difficulty)
         {
             return difficulty switch
             {
-                EnemyAiDifficulty.Easy => new EnemyAiDifficultyProfile(4f, 1.6f, 0.5f, 0.35f, 2),
-                EnemyAiDifficulty.Medium => new EnemyAiDifficultyProfile(2.5f, 1.25f, 0.65f, 0.25f, 3),
-                EnemyAiDifficulty.Hard => new EnemyAiDifficultyProfile(1.25f, 1f, 0.8f, 0.18f, 4),
-                EnemyAiDifficulty.UltraHard => new EnemyAiDifficultyProfile(0.5f, 0.75f, 1f, 0.1f, 6),
+                EnemyAiDifficulty.Easy =>
+                    new EnemyAiDifficultyProfile(4f, 1.6f, 0.5f, 0.35f, 2, 1),
+                EnemyAiDifficulty.Medium =>
+                    new EnemyAiDifficultyProfile(2.5f, 1.25f, 0.65f, 0.25f, 3, 1),
+                EnemyAiDifficulty.Hard =>
+                    new EnemyAiDifficultyProfile(1.25f, 1f, 0.8f, 0.18f, 4, 2),
+                EnemyAiDifficulty.UltraHard =>
+                    new EnemyAiDifficultyProfile(0.5f, 0.75f, 1f, 0.1f, 6, 3),
                 _ => throw new ArgumentOutOfRangeException(nameof(difficulty))
             };
         }
