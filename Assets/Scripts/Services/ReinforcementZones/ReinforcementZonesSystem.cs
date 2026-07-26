@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IInitializable, ITickable
     {
         [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
+        [SerializeField] private ReinforcementZoneView[] _zoneViews = Array.Empty<ReinforcementZoneView>();
 
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private IShipService _shipService;
@@ -41,9 +42,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void Initialize()
         {
             _zones.Clear();
-            ReinforcementZoneView[] views = GetComponentsInChildren<ReinforcementZoneView>(true);
-            foreach (ReinforcementZoneView view in views)
+            foreach (ReinforcementZoneView view in _zoneViews)
             {
+                if (view == null)
+                {
+                    Debug.LogError("ReinforcementZonesSystem has an unassigned zone view.", this);
+                    continue;
+                }
+
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
                     view.StartingOwner,
                     view.IsCapturable,
@@ -54,7 +60,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
             if (_zones.Count == 0)
             {
-                Debug.LogError("ReinforcementZonesSystem requires at least one ReinforcementZoneView child.", this);
+                Debug.LogError("ReinforcementZonesSystem requires at least one explicitly assigned zone view.", this);
             }
         }
 

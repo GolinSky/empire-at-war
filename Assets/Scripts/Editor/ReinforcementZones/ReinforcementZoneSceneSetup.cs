@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Views.ReinforcementZones;
@@ -16,6 +17,8 @@ namespace EmpireAtWar.Editor.ReinforcementZones
         private const float ZoneRadius = 45f;
         private const string PrefabFolder = "Assets/Prefabs/View/ReinforcementZones";
         private const string PrefabPath = PrefabFolder + "/ReinforcementZone.prefab";
+        private const string CoruscantPrefabPath = PrefabFolder + "/CoruscantReinforcementZones.prefab";
+        private const string KaminoPrefabPath = PrefabFolder + "/KaminoReinforcementZones.prefab";
         private const string MaterialFolder = "Assets/Art/Materials/ReinforcementZones";
         private const string MaterialPath = MaterialFolder + "/ReinforcementZone.mat";
 
@@ -28,19 +31,29 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             GameObject zonesRoot = GetOrCreateZonesRoot(scene);
 
             RemoveExistingZones(zonesRoot.transform);
-            CreateZone(prefab, zonesRoot.transform, "PlayerDefaultZone", new Vector3(-180f, 0f, 170f),
-                PlayerType.Player, false);
-            CreateZone(prefab, zonesRoot.transform, "EnemyDefaultZone", new Vector3(160f, 0f, -170f),
-                PlayerType.Opponent, false);
-            CreateZone(prefab, zonesRoot.transform, "CaptureZoneNorthWest", new Vector3(-65f, 0f, 45f),
-                PlayerType.None, true);
-            CreateZone(prefab, zonesRoot.transform, "CaptureZoneSouthEast", new Vector3(55f, 0f, -55f),
-                PlayerType.None, true);
+            List<ReinforcementZoneView> views = new List<ReinforcementZoneView>
+            {
+                CreateZone(prefab, zonesRoot.transform, "PlayerDefaultZone", new Vector3(-180f, 0f, 170f),
+                    PlayerType.Player, false),
+                CreateZone(prefab, zonesRoot.transform, "EnemyDefaultZone", new Vector3(160f, 0f, -170f),
+                    PlayerType.Opponent, false),
+                CreateZone(prefab, zonesRoot.transform, "CaptureZoneNorthWest", new Vector3(-65f, 0f, 45f),
+                    PlayerType.None, true),
+                CreateZone(prefab, zonesRoot.transform, "CaptureZoneSouthEast", new Vector3(55f, 0f, -55f),
+                    PlayerType.None, true)
+            };
+            AssignZoneViews(zonesRoot.GetComponent<ReinforcementZonesSystem>(), views);
+
+            string mapPrefabPath = GetMapPrefabPath(scene.name);
+            PrefabUtility.SaveAsPrefabAssetAndConnect(
+                zonesRoot,
+                mapPrefabPath,
+                InteractionMode.AutomatedAction);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             Selection.activeGameObject = zonesRoot;
-            Debug.Log($"Reinforcement zones configured in {scene.path}.");
+            Debug.Log($"Reinforcement zones configured in {scene.path} with {mapPrefabPath}.");
         }
 
         private static GameObject GetOrCreateZonesRoot(Scene scene)
@@ -76,7 +89,7 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             }
         }
 
-        private static void CreateZone(
+        private static ReinforcementZoneView CreateZone(
             GameObject prefab,
             Transform parent,
             string name,
@@ -93,6 +106,34 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             serializedView.FindProperty("_startingOwner").enumValueIndex = (int)startingOwner - 1;
             serializedView.FindProperty("_isCapturable").boolValue = isCapturable;
             serializedView.ApplyModifiedPropertiesWithoutUndo();
+            return view;
+        }
+
+        private static void AssignZoneViews(
+            ReinforcementZonesSystem system,
+            IReadOnlyList<ReinforcementZoneView> views)
+        {
+            SerializedObject serializedSystem = new SerializedObject(system);
+            SerializedProperty zoneViews = serializedSystem.FindProperty("_zoneViews");
+            zoneViews.arraySize = views.Count;
+            for (int i = 0; i < views.Count; i++)
+            {
+                zoneViews.GetArrayElementAtIndex(i).objectReferenceValue = views[i];
+            }
+
+            serializedSystem.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static string GetMapPrefabPath(string sceneName)
+        {
+            return sceneName switch
+            {
+                "Corusant" => CoruscantPrefabPath,
+                "Coruscant" => CoruscantPrefabPath,
+                "Kamino" => KaminoPrefabPath,
+                _ => throw new System.InvalidOperationException(
+                    $"No reinforcement-zone prefab is configured for scene '{sceneName}'.")
+            };
         }
 
         private static GameObject GetOrCreatePrefab(Material material)

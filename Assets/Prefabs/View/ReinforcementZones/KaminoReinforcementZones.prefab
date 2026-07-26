@@ -1,0 +1,420 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6713421740154873124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5294020370488307543}
+  - component: {fileID: 7777215310397020546}
+  m_Layer: 0
+  m_Name: KaminoReinforcementZones
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5294020370488307543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6713421740154873124}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7856297845482721538}
+  - {fileID: 4397590006509803312}
+  - {fileID: 2250923379264737862}
+  - {fileID: 3975261437798870967}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7777215310397020546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6713421740154873124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d007328b9f42124c80cc52a55266491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ReinforcementZones.ReinforcementZonesSystem
+  _spawnEdgePadding: 3
+  _zoneViews:
+  - {fileID: 2224506878029224135}
+  - {fileID: 5683336792990899957}
+  - {fileID: 7846614837344869251}
+  - {fileID: 4968265659658872434}
+--- !u!1001 &16423499611422781
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5294020370488307543}
+    m_Modifications:
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -170
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: _isCapturable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: _startingOwner
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965980898740266392, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemyDefaultZone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cded744fa9497254487c67b9a5708579, type: 3}
+--- !u!4 &4397590006509803312 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 16423499611422781}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5683336792990899957 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 16423499611422781}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
+--- !u!1001 &727277382160005306
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5294020370488307543}
+    m_Modifications:
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965980898740266392, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_Name
+      value: CaptureZoneSouthEast
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cded744fa9497254487c67b9a5708579, type: 3}
+--- !u!4 &3975261437798870967 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 727277382160005306}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4968265659658872434 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 727277382160005306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
+--- !u!1001 &2450480712075150667
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5294020370488307543}
+    m_Modifications:
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965980898740266392, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_Name
+      value: CaptureZoneNorthWest
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cded744fa9497254487c67b9a5708579, type: 3}
+--- !u!4 &2250923379264737862 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 2450480712075150667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7846614837344869251 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 2450480712075150667}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
+--- !u!1001 &5780955742000891407
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5294020370488307543}
+    m_Modifications:
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: _isCapturable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: _startingOwner
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965980898740266392, guid: cded744fa9497254487c67b9a5708579,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerDefaultZone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cded744fa9497254487c67b9a5708579, type: 3}
+--- !u!114 &2224506878029224135 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 5780955742000891407}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
+--- !u!4 &7856297845482721538 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
+    type: 3}
+  m_PrefabInstance: {fileID: 5780955742000891407}
+  m_PrefabAsset: {fileID: 0}
