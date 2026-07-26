@@ -139,7 +139,6 @@ GameObject:
   - component: {fileID: 160162170}
   - component: {fileID: 160162169}
   - component: {fileID: 160162171}
-  - component: {fileID: 160162173}
   - component: {fileID: 160162172}
   m_Layer: 0
   m_Name: SceneContext
@@ -221,20 +220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2736c763463961b4db8f6aec3c4fd1a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.MainMenuInstaller
-  uiService: {fileID: 160162173}
---- !u!114 &160162173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 160162167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80ccae3c657b4069b0221af6df0a1a6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Ui.Base.UiService
-  _location: {fileID: 0}
 --- !u!1 &464421236
 GameObject:
   m_ObjectHideFlags: 0
