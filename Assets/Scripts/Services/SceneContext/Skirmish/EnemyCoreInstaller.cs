@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
@@ -24,6 +25,8 @@ namespace EmpireAtWar.SceneContext
             
             Container.BindInterfacesExt<EnemyService>();
             Container.BindInterfacesExt<EnemyUnitCommander>();
+            Container.Bind<EnemyUnitLimitModel>().AsSingle();
+            Container.BindScriptableObject<ReinforcementData>(Repository);
             
             Container.BindInterfacesExt<EnemyPurchaseProcessor>();
             

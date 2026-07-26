@@ -172,6 +172,7 @@ namespace EmpireAtWar.Ship
             if (_playerType == PlayerType.Opponent)
             {
                 MoveTo(target);
+                _shipAIBrain.Enable(true);
             }
         }
 
@@ -249,6 +250,11 @@ namespace EmpireAtWar.Ship
                 _weaponComponent.AddTarget(
                     new AttackData(healthModel, healthCommand, HardPointType.Any),
                     AttackType.Base);
+
+                if (_playerType == PlayerType.Opponent)
+                {
+                    _shipAIBrain.AssignAttackTarget(entity);
+                }
             }
 
             _audioShipComponent.HandleEnemyDetected();

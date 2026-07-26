@@ -17,6 +17,7 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class SkirmishMainInstaller : MonoInstaller
 {
     [SerializeField] private UiService _uiService;
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
+    [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IRepository Repository { get; }
 
@@ -35,6 +37,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
             .FromComponentInHierarchy()
             .AsSingle();
+        Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
 
         Container.BindInterfacesExt<AttackDataFactory>();
 

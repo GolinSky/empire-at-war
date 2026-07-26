@@ -9,7 +9,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Tick_UncontestedEnemyPresence_CapturesAfterDuration()
         {
-            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f);
+            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
 
             bool changedEarly = model.Tick(9f, 0, 1);
             bool changedAtDuration = model.Tick(1f, 0, 1);
@@ -20,9 +20,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Tick_ContestedZone_PausesCaptureProgress()
+        public void Tick_EqualFleets_PausesCaptureProgress()
         {
-            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f);
+            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
             model.Tick(5f, 1, 0);
 
             model.Tick(4f, 1, 1);
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Tick_CapturingFleetLeaves_ResetsCaptureProgress()
         {
-            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f);
+            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
             model.Tick(5f, 1, 0);
 
             model.Tick(1f, 0, 0);
@@ -47,12 +47,36 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Tick_LockedDefaultZone_NeverChangesOwner()
         {
-            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.Player, false, 1f);
+            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.Player, false, 1f, 1f);
 
             bool changed = model.Tick(100f, 0, 10);
 
             Assert.That(changed, Is.False);
             Assert.That(model.Owner, Is.EqualTo(PlayerType.Player));
+        }
+
+        [Test]
+        public void Tick_UnequalFleets_CapturesUsingNetShipAdvantage()
+        {
+            ReinforcementZoneModel model = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
+
+            bool changed = model.Tick(10f, 5, 4);
+
+            Assert.That(changed, Is.True);
+            Assert.That(model.Owner, Is.EqualTo(PlayerType.Player));
+        }
+
+        [Test]
+        public void Tick_LargerNetFleet_CapturesFaster()
+        {
+            ReinforcementZoneModel oneShip = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
+            ReinforcementZoneModel fiveShips = new ReinforcementZoneModel(PlayerType.None, true, 10f, 1f);
+
+            oneShip.Tick(1f, 1, 0);
+            fiveShips.Tick(1f, 5, 0);
+
+            Assert.That(oneShip.CaptureProgress, Is.EqualTo(0.1f).Within(0.001f));
+            Assert.That(fiveShips.CaptureProgress, Is.EqualTo(0.5f).Within(0.001f));
         }
     }
 }

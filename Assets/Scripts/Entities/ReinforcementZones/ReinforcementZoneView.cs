@@ -42,6 +42,16 @@ namespace EmpireAtWar.Views.ReinforcementZones
         private void Awake()
         {
             _propertyBlock = new MaterialPropertyBlock();
+            if (_captureCanvas != null)
+            {
+                _captureCanvas.overrideSorting = true;
+                _captureCanvas.sortingOrder = 100;
+                CanvasScaler scaler = _captureCanvas.GetComponent<CanvasScaler>();
+                if (scaler != null)
+                {
+                    scaler.dynamicPixelsPerUnit = 10f;
+                }
+            }
         }
 
         public void Render(PlayerType owner, PlayerType capturingPlayer, float captureProgress, bool isContested)
@@ -57,13 +67,15 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
             if (_captureProgress != null)
             {
-                _captureProgress.fillAmount = captureProgress;
-                _captureProgress.color = GetColor(capturingPlayer, isContested);
+                _captureProgress.fillAmount = Mathf.Clamp01(captureProgress);
+                Color progressColor = GetColor(capturingPlayer, isContested);
+                progressColor.a = 0.95f;
+                _captureProgress.color = progressColor;
             }
 
             if (_statusText != null)
             {
-                _statusText.text = GetStatus(owner, capturingPlayer, isContested);
+                _statusText.text = GetStatus(owner, capturingPlayer, captureProgress, isContested);
             }
 
             if (_captureCanvas != null)
@@ -97,7 +109,11 @@ namespace EmpireAtWar.Views.ReinforcementZones
             };
         }
 
-        private static string GetStatus(PlayerType owner, PlayerType capturingPlayer, bool isContested)
+        private static string GetStatus(
+            PlayerType owner,
+            PlayerType capturingPlayer,
+            float captureProgress,
+            bool isContested)
         {
             if (isContested)
             {
@@ -106,7 +122,10 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
             if (capturingPlayer != PlayerType.None)
             {
-                return capturingPlayer == PlayerType.Player ? "PLAYER CAPTURING" : "ENEMY CAPTURING";
+                int percent = Mathf.RoundToInt(Mathf.Clamp01(captureProgress) * 100f);
+                return capturingPlayer == PlayerType.Player
+                    ? $"PLAYER CAPTURING {percent}%"
+                    : $"ENEMY CAPTURING {percent}%";
             }
 
             return owner switch

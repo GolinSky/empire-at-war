@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
     {
         event Action OwnershipChanged;
 
+        bool IsPositionInAnyZone(Vector3 position);
         bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position);
         bool TryGetRandomSpawnPosition(PlayerType playerType, out Vector3 position);
         bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position);
@@ -26,13 +27,15 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private IShipService _shipService;
+        private ReinforcementZoneData _data;
 
         public event Action OwnershipChanged;
 
         [Inject]
-        private void Construct(IShipService shipService)
+        private void Construct(IShipService shipService, ReinforcementZoneData data)
         {
             _shipService = shipService;
+            _data = data;
         }
 
         public void Initialize()
@@ -44,7 +47,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
                     view.StartingOwner,
                     view.IsCapturable,
-                    view.CaptureDuration);
+                    view.CaptureDuration,
+                    _data.CaptureSpeedPerNetShip);
                 _zones.Add(new ReinforcementZonePresenter(model, view));
             }
 
@@ -90,6 +94,19 @@ namespace EmpireAtWar.Services.ReinforcementZones
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 if (zone.Owner == playerType && zone.Contains(position))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsPositionInAnyZone(Vector3 position)
+        {
+            foreach (ReinforcementZonePresenter zone in _zones)
+            {
+                if (zone.Contains(position))
                 {
                     return true;
                 }

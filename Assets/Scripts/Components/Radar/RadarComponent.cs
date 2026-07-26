@@ -1,4 +1,5 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
@@ -18,21 +19,18 @@ namespace EmpireAtWar.Components.Radar
     }
     public class RadarComponent : MonoComponent<RadarModel>, IInitializable, IFixedTickable, IRadarComponent
     {
-        private const int HIT_LIMIT = 5;
-        private const float OFFSET_DISTANCE = 100f;
+        private const int INITIAL_HIT_LIMIT = 64;
+        private const int MAX_HIT_LIMIT = 2048;
 
         private IEntityLocator _entityLocator;
         private ITimer _timer;
-        private Vector3 _offset;
         private Vector3 _halfExtents;
 
-        private int _hitAmount;
-
-        private RaycastHit[] _raycastHits = new RaycastHit[HIT_LIMIT];
+        private Collider[] _overlapHits = new Collider[INITIAL_HIT_LIMIT];
+        private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
         private IUnitMediator _unitMediator;
         private Vector3 _position;
         public ObservableList<IEntity> Enemies => Model.Enemies;
-        private Vector3 CenterCast => _position - _offset;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator)
         {
@@ -42,8 +40,7 @@ namespace EmpireAtWar.Components.Radar
 
         public void Initialize()
         {
-            _offset = Vector3.up * OFFSET_DISTANCE;
-            _halfExtents = Vector3.one * Model.Range;
+            _halfExtents = new Vector3(Model.Range, Model.Distance * 0.5f, Model.Range);
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
 
@@ -64,38 +61,58 @@ namespace EmpireAtWar.Components.Radar
         {
             if (_timer.IsComplete)
             {
-                _hitAmount = Physics.BoxCastNonAlloc(
-                    CenterCast,
-                    _halfExtents,
-                    Vector3.up,
-                    _raycastHits,
-                    Quaternion.identity,
-                    Model.Distance + _offset.y, //todo : fix this
-                    Model.EnemyLayerMask);// todo: use player type instead maybe
-
-
-                if (_raycastHits != null && _raycastHits.Length != 0 && _hitAmount != 0)
+                int hitAmount = GetOverlapHits();
+                _detectedEnemies.Clear();
+                for (int i = 0; i < hitAmount; i++)
                 {
-                    _raycastHits = _raycastHits.Take(_hitAmount).ToArray();
-
-                    for (var i = 0; i < _raycastHits.Length; i++)
+                    if (_entityLocator.TryGetEntity(_overlapHits[i], out IEntity entity) &&
+                        !entity.HealthModel.IsDestroyed)
                     {
-                        if (_entityLocator.TryGetEntity(_raycastHits[i], out IEntity entity))
-                        {
-                            if (!Model.Enemies.Contains(entity))
-                            {
-                                Model.Enemies.Add(entity);
-                                if (_unitMediator != null)
-                                {
-                                    _unitMediator.HandleNewEnemy(entity);
-                                }
-                            }
-                        }
+                        _detectedEnemies.Add(entity);
+                    }
+                }
+
+                for (int i = Model.Enemies.Count - 1; i >= 0; i--)
+                {
+                    if (!_detectedEnemies.Contains(Model.Enemies[i]))
+                    {
+                        Model.Enemies.RemoveAt(i);
+                    }
+                }
+
+                foreach (IEntity entity in _detectedEnemies)
+                {
+                    if (Model.Enemies.Contains(entity))
+                    {
+                        continue;
                     }
 
-                    //Model.AddHit(_raycastHits.Take(_hitAmount).ToArray());
+                    Model.Enemies.Add(entity);
+                    _unitMediator?.HandleNewEnemy(entity);
                 }
+
                 _timer.StartTimer();
+            }
+        }
+
+        private int GetOverlapHits()
+        {
+            while (true)
+            {
+                int hitAmount = Physics.OverlapBoxNonAlloc(
+                    _position,
+                    _halfExtents,
+                    _overlapHits,
+                    Quaternion.identity,
+                    Model.EnemyLayerMask,
+                    QueryTriggerInteraction.Collide);
+                if (hitAmount < _overlapHits.Length || _overlapHits.Length >= MAX_HIT_LIMIT)
+                {
+                    return hitAmount;
+                }
+
+                int newSize = Math.Min(_overlapHits.Length * 2, MAX_HIT_LIMIT);
+                Array.Resize(ref _overlapHits, newSize);
             }
         }
 
@@ -110,7 +127,7 @@ namespace EmpireAtWar.Components.Radar
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(CenterCast, _halfExtents * 2f);
+                Gizmos.DrawWireCube(_position, _halfExtents * 2f);
             }
 #endif
         }
