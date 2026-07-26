@@ -1,5 +1,6 @@
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MenuUi;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 
@@ -7,12 +8,15 @@ namespace EmpireAtWar
 {
     public class MainMenuInstaller : MonoInstaller
     {
-        [SerializeField] private UiService uiService;
+        [Inject] private IRepository Repository { get; }
 
         public override void InstallBindings()
         {
-            // Bind UI Service
-            Container.BindInterfacesAndSelfTo<UiService>().FromInstance(uiService).AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<UiService>()
+                .FromComponentInNewPrefab(Repository.LoadPrefab(nameof(UiService)))
+                .AsSingle()
+                .NonLazy();
             Container
                 .BindFactory<UiType, Transform, BaseUi, UiFacade>()
                 .FromSubContainerResolve()
