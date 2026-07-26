@@ -10,6 +10,7 @@ Welcome to the **Empire At War** project vault!
 - [[SELECTION_SYSTEM|SELECTION_SYSTEM.md]] - Selection System Architecture & Usage
 - [[GRAPHIFY_GUIDE|GRAPHIFY_GUIDE.md]] - Knowledge Graph & Graphify Guide
 - [[README|README.md]] - Project Overview & Setup Guide
+- [[Docs/TODOs|TODOs.md]] - Project Architecture & Refactoring Backlog
 
 ---
 
@@ -36,3 +37,10 @@ This vault is connected to AI Coding Assistants (**Antigravity** and **Codex**) 
 - **Plugin:** `obsidian-local-rest-api`
 - **Port:** `https://127.0.0.1:27124/`
 - **MCP Server Name:** `obsidian`
+
+---
+
+## 📋 Project TODOs
+
+- [ ] **Fix UI Service**: Move UI creation, UI Service dependencies, and rendering orchestration out of gameplay services into UI prefabs / presenters (`<Feature>UiController` / `<Feature>Ui`), strictly adhering to [[UI_REFACTORING_PLAYBOOK|UI_REFACTORING_PLAYBOOK.md]].
+
