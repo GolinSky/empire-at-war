@@ -207,7 +207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b074f090551fd4e91049aa54dc0991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiService: {fileID: 0}
   fogOfWarSystem: {fileID: 3633680370215819205}
 --- !u!1001 &5873742713520836447
 PrefabInstance:
