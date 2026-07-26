@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs.md",
+                "file": "Rules/AGENTS.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "TODOs"
+              "title": "AGENTS"
             }
           }
         ]
@@ -185,9 +185,26 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
-    "SELECTION_SYSTEM.md",
-    "PROJECT_ORGANIZATION.md",
+    "Rules/README.md",
+    "Rules/AGENTS.md",
+    "Artifacts/Walkthrough.md",
+    "Artifacts/Implementation_Plan.md",
+    "00_Home.md",
+    "Artifacts",
+    "Rules",
+    "Architecture/GRAPHIFY_GUIDE.md",
+    "Architecture/SELECTION_SYSTEM.md",
+    "Architecture/UI_REFACTORING_PLAYBOOK.md",
+    "Architecture/PROJECT_ORGANIZATION.md",
+    "Architecture",
+    "TODOs/UI_Service_Refactoring.md",
+    "TODOs/TODOs.md",
+    "TODOs",
     "AGENTS.md",
-    "00_Home.md"
+    "GRAPHIFY_GUIDE.md",
+    "PROJECT_ORGANIZATION.md",
+    "README.md",
+    "SELECTION_SYSTEM.md",
+    "TODOs.md"
   ]
 }

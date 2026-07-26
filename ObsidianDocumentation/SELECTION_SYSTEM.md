@@ -1,3 +1,0 @@
-![[../SELECTION_SYSTEM.md]]
-
-See root file: [[../SELECTION_SYSTEM.md|SELECTION_SYSTEM.md]]
