@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor
 {
     public static class AssetMappingContextMenu
     {
-        private const string MappingDataPath = "Assets/Settings/AssetMappingData.asset";
+        private const string MAPPING_DATA_PATH = "Assets/Settings/AssetMappingData.asset";
 
         [MenuItem("Assets/Add to Asset Mapping", false, 20)]
         private static void AddToAssetMapping()
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Editor
                 return;
             }
 
-            string mappingGuid = AssetDatabase.AssetPathToGUID(MappingDataPath);
+            string mappingGuid = AssetDatabase.AssetPathToGUID(MAPPING_DATA_PATH);
             foreach (AddressableAssetGroup group in settings.groups)
             {
                 if (group == null)
@@ -113,16 +113,16 @@ namespace EmpireAtWar.Editor
 
         private static AssetMappingData GetOrCreateMappingData()
         {
-            AssetMappingData mappingData = AssetDatabase.LoadAssetAtPath<AssetMappingData>(MappingDataPath);
+            AssetMappingData mappingData = AssetDatabase.LoadAssetAtPath<AssetMappingData>(MAPPING_DATA_PATH);
             if (mappingData != null)
                 return mappingData;
 
-            string folder = System.IO.Path.GetDirectoryName(MappingDataPath)?.Replace('\\', '/');
+            string folder = System.IO.Path.GetDirectoryName(MAPPING_DATA_PATH)?.Replace('\\', '/');
             if (!AssetDatabase.IsValidFolder(folder))
                 AssetDatabase.CreateFolder("Assets", "Settings");
 
             mappingData = ScriptableObject.CreateInstance<AssetMappingData>();
-            AssetDatabase.CreateAsset(mappingData, MappingDataPath);
+            AssetDatabase.CreateAsset(mappingData, MAPPING_DATA_PATH);
             return mappingData;
         }
 

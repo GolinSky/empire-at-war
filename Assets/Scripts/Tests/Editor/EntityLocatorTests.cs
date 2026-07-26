@@ -12,15 +12,15 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void TryGetEntity_ResolvesViewEntityFromChildCollider()
         {
-            const long id = 42;
+            const long ID = 42;
             GameObject root = new GameObject("Entity");
             ViewEntity viewEntity = root.AddComponent<ViewEntity>();
-            SetViewEntityId(viewEntity, id);
+            SetViewEntityId(viewEntity, ID);
             GameObject child = new GameObject("ChildCollider");
             child.transform.SetParent(root.transform);
             BoxCollider collider = child.AddComponent<BoxCollider>();
             EntityLocator locator = new EntityLocator();
-            FakeEntity expected = new FakeEntity(id);
+            FakeEntity expected = new FakeEntity(ID);
             locator.AddEntity(expected);
 
             bool found = locator.TryGetEntity(collider, out IEntity actual);

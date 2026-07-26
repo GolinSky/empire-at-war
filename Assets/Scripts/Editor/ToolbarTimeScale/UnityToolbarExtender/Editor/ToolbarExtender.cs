@@ -44,17 +44,17 @@ namespace UnityToolbarExtender
 		}
 
 #if UNITY_2019_3_OR_NEWER
-		public const float space = 8;
+		public const float SPACE = 8;
 #else
-		public const float space = 10;
+		public const float SPACE = 10;
 #endif
-		public const float largeSpace = 20;
-		public const float buttonWidth = 32;
-		public const float dropdownWidth = 80;
+		public const float LARGE_SPACE = 20;
+		public const float BUTTON_WIDTH = 32;
+		public const float DROPDOWN_WIDTH = 80;
 #if UNITY_2019_1_OR_NEWER
-		public const float playPauseStopWidth = 140;
+		public const float PLAY_PAUSE_STOP_WIDTH = 140;
 #else
-		public const float playPauseStopWidth = 100;
+		public const float PLAY_PAUSE_STOP_WIDTH = 100;
 #endif
 
 		static void OnGUI()
@@ -70,15 +70,15 @@ namespace UnityToolbarExtender
 			var screenWidth = EditorGUIUtility.currentViewWidth;
 
 			// Following calculations match code reflected from Toolbar.OldOnGUI()
-			float playButtonsPosition = Mathf.RoundToInt ((screenWidth - playPauseStopWidth) / 2);
+			float playButtonsPosition = Mathf.RoundToInt ((screenWidth - PLAY_PAUSE_STOP_WIDTH) / 2);
 
 			Rect leftRect = new Rect(0, 0, screenWidth, Screen.height);
-			leftRect.xMin += space; // Spacing left
-			leftRect.xMin += buttonWidth * m_toolCount; // Tool buttons
+			leftRect.xMin += SPACE; // Spacing left
+			leftRect.xMin += BUTTON_WIDTH * m_toolCount; // Tool buttons
 #if UNITY_2019_3_OR_NEWER
-			leftRect.xMin += space; // Spacing between tools and pivot
+			leftRect.xMin += SPACE; // Spacing between tools and pivot
 #else
-			leftRect.xMin += largeSpace; // Spacing between tools and pivot
+			leftRect.xMin += LARGE_SPACE; // Spacing between tools and pivot
 #endif
 			leftRect.xMin += 64 * 2; // Pivot buttons
 			leftRect.xMax = playButtonsPosition;
@@ -87,26 +87,26 @@ namespace UnityToolbarExtender
 			rightRect.xMin = playButtonsPosition;
 			rightRect.xMin += m_commandStyle.fixedWidth * 3; // Play buttons
 			rightRect.xMax = screenWidth;
-			rightRect.xMax -= space; // Spacing right
-			rightRect.xMax -= dropdownWidth; // Layout
-			rightRect.xMax -= space; // Spacing between layout and layers
-			rightRect.xMax -= dropdownWidth; // Layers
+			rightRect.xMax -= SPACE; // Spacing right
+			rightRect.xMax -= DROPDOWN_WIDTH; // Layout
+			rightRect.xMax -= SPACE; // Spacing between layout and layers
+			rightRect.xMax -= DROPDOWN_WIDTH; // Layers
 #if UNITY_2019_3_OR_NEWER
-			rightRect.xMax -= space; // Spacing between layers and account
+			rightRect.xMax -= SPACE; // Spacing between layers and account
 #else
-			rightRect.xMax -= largeSpace; // Spacing between layers and account
+			rightRect.xMax -= LARGE_SPACE; // Spacing between layers and account
 #endif
-			rightRect.xMax -= dropdownWidth; // Account
-			rightRect.xMax -= space; // Spacing between account and cloud
-			rightRect.xMax -= buttonWidth; // Cloud
-			rightRect.xMax -= space; // Spacing between cloud and collab
+			rightRect.xMax -= DROPDOWN_WIDTH; // Account
+			rightRect.xMax -= SPACE; // Spacing between account and cloud
+			rightRect.xMax -= BUTTON_WIDTH; // Cloud
+			rightRect.xMax -= SPACE; // Spacing between cloud and collab
 			rightRect.xMax -= 78; // Colab
 
 			// Add spacing around existing controls
-			leftRect.xMin += space;
-			leftRect.xMax -= space;
-			rightRect.xMin += space;
-			rightRect.xMax -= space;
+			leftRect.xMin += SPACE;
+			leftRect.xMax -= SPACE;
+			rightRect.xMin += SPACE;
+			rightRect.xMax -= SPACE;
 
 			// Add top and bottom margins
 #if UNITY_2019_3_OR_NEWER
