@@ -1,4 +1,6 @@
+using System;
 using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.SceneService;
@@ -15,11 +17,25 @@ namespace EmpireAtWar.Entities.Game
             _sceneService = sceneService;
         }
         
-        public void StartGame(FactionType playerFactionType, FactionType enemyFactionType, PlanetType planetType)
+        public void StartGame(
+            FactionType playerFactionType,
+            FactionType enemyFactionType,
+            PlanetType planetType,
+            BattleVictoryCondition victoryCondition,
+            EnemyAiDifficulty enemyDifficulty,
+            float startingMoney)
         {
+            if (startingMoney <= 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startingMoney), "Starting money must be greater than zero.");
+            }
+
             Model.EnemyFactionType = enemyFactionType;
             Model.PlayerFactionType = playerFactionType;
             Model.PlanetType = planetType;
+            Model.VictoryCondition = victoryCondition;
+            Model.EnemyDifficulty = enemyDifficulty;
+            Model.StartingMoney = startingMoney;
             Model.GameMode = GameMode.Skirmish;
             _sceneService.LoadSceneByPlanetType(planetType);
         }

@@ -1,9 +1,7 @@
-using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Patterns.Strategy;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
@@ -18,14 +16,11 @@ namespace EmpireAtWar.Services.Enemy
     public class EnemyService : Service, IInitializable, IEnemyService, ITickable
     {
         
-        private IUnitSpawnStrategy _currentStrategy;
         private Vector3 _stationPosition;
         private SpaceStationEntity _spaceStation;
         private readonly SpaceStationFacade _spaceStationViewFacade;
-        private readonly EnemyPurchaseProcessor _enemyPurchaseProcessor;
         private readonly LazyInject<IMapModelObserver> _mapModel;
-        private readonly IUnitRequestFactory _unitRequestFactory;
-        private readonly EnemyFactionModel _enemyFactionModel;
+        private readonly EnemyProductionStrategy _productionStrategy;
 
         [Inject(Id = PlayerType.Opponent)]
         public FactionType FactionType { get; }
@@ -33,39 +28,23 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
             SpaceStationFacade spaceStationViewFacade,
-            EnemyPurchaseProcessor enemyPurchaseProcessor, 
-            IUnitRequestFactory unitRequestFactory,
-            EnemyFactionModel enemyFactionModel)
+            EnemyProductionStrategy productionStrategy)
         {
             _mapModel = mapModel;
             _spaceStationViewFacade = spaceStationViewFacade;
-            _enemyPurchaseProcessor = enemyPurchaseProcessor;
-            _unitRequestFactory = unitRequestFactory;
-            _enemyFactionModel = enemyFactionModel;
+            _productionStrategy = productionStrategy;
         }
         
         public void Initialize()
         {
-            SetStrategy(UnitSpawnStrategyType.LevelUpFast);
             _stationPosition = _mapModel.Value.GetStationPosition(PlayerType.Opponent);
             _spaceStation = _spaceStationViewFacade.Create(PlayerType.Opponent, FactionType, _stationPosition);
+            _productionStrategy.Start();
         }
         
         public void Tick()
         {
-            _currentStrategy?.Update();
-        }
-        
-        
-        public void SetStrategy(UnitSpawnStrategyType strategyType)
-        {
-            if (_currentStrategy != null)
-            {
-                _currentStrategy.Stop();
-            }
-            //todo: refactor this - get rid of new - use factory
-            _currentStrategy = new TempStrategy(_enemyFactionModel, _enemyPurchaseProcessor, _unitRequestFactory);
-            _currentStrategy.Start();
+            _productionStrategy.Tick(Time.deltaTime);
         }
     }
 }
