@@ -1,0 +1,13 @@
+Library/
+Temp/
+obj/
+Logs/
+ProjectSettings/
+UserSettings/
+Assets/
+Packages/
+.git/
+graphify-out/
+*.meta
+*.csproj
+*.sln

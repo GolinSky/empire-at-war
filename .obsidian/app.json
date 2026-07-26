@@ -6,5 +6,20 @@
   "autoPairBrackets": true,
   "autoPairMarkdown": true,
   "attachmentFolderPath": "Docs/Attachments",
-  "useMarkdownLinks": true
+  "useMarkdownLinks": true,
+  "userIgnoreFilters": [
+    "Library/**",
+    "Temp/**",
+    "obj/**",
+    "Logs/**",
+    "ProjectSettings/**",
+    "UserSettings/**",
+    "Assets/**",
+    "Packages/**",
+    ".git/**",
+    "graphify-out/**",
+    "**/*.meta",
+    "**/*.csproj",
+    "**/*.sln"
+  ]
 }
