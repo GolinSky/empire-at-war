@@ -1,0 +1,25 @@
+{
+  "legacyEditor": false,
+  "livePreview": true,
+  "strictLineBreaks": false,
+  "showLineNumber": true,
+  "autoPairBrackets": true,
+  "autoPairMarkdown": true,
+  "attachmentFolderPath": "Docs/Attachments",
+  "useMarkdownLinks": true,
+  "userIgnoreFilters": [
+    "Library/**",
+    "Temp/**",
+    "obj/**",
+    "Logs/**",
+    "ProjectSettings/**",
+    "UserSettings/**",
+    "Assets/**",
+    "Packages/**",
+    ".git/**",
+    "graphify-out/**",
+    "**/*.meta",
+    "**/*.csproj",
+    "**/*.sln"
+  ]
+}

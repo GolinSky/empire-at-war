@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38416746a73f483b99f0e04e49328262, type: 3}
   m_Name: FactionsModel
   m_EditorClassIdentifier: 
-  models: []
   factionDataWrapper:
     keyValue:
     - key: 0
@@ -95,7 +94,7 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: Recusant
             <MaxCount>k__BackingField: 30
-            <AvailableLevel>k__BackingField: 4
+            <AvailableLevel>k__BackingField: 3
             <Price>k__BackingField: 2000
             <BuildTime>k__BackingField: 15
             <UnitCapacity>k__BackingField: 4
@@ -105,7 +104,7 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: Munificent
             <MaxCount>k__BackingField: 40
-            <AvailableLevel>k__BackingField: 3
+            <AvailableLevel>k__BackingField: 1
             <Price>k__BackingField: 1500
             <BuildTime>k__BackingField: 10
             <UnitCapacity>k__BackingField: 3
@@ -115,7 +114,7 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: Lucrehulk
             <MaxCount>k__BackingField: 40
-            <AvailableLevel>k__BackingField: 5
+            <AvailableLevel>k__BackingField: 4
             <Price>k__BackingField: 3500
             <BuildTime>k__BackingField: 10
             <UnitCapacity>k__BackingField: 5

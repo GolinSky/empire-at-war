@@ -44,7 +44,7 @@ namespace EmpireAtWar.SceneContext
             Container.BindModel<SceneModel>(_repository);
 
             Container
-                .BindInterfacesExt<TimerPoolWrapperService>()
+                .BindInterfacesNonLazyExt<TimerPoolWrapperService>()
                 .BindInterfacesExt<GameController>()
                 .BindInterfacesExt<SceneService>()
                 .BindInterfacesExt<SettingsService>()

@@ -7,9 +7,11 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
+using ViewComponents;
 using Zenject;
 using Object = UnityEngine.Object;
 using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
@@ -32,6 +34,8 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly FogOfWarSystem _fogOfWarSystem;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -47,7 +51,9 @@ namespace EmpireAtWar.Services.Reinforcement
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade)
+            DefendPlatformFacade defendPlatformFacade,
+            IReinforcementZonesSystem reinforcementZonesSystem,
+            FogOfWarSystem fogOfWarSystem)
         {
             _model = model;
             _data = data;
@@ -56,6 +62,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _fogOfWarSystem = fogOfWarSystem;
         }
 
         public void Initialize()
@@ -77,7 +85,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
-            bool canSpawn = _spawnReinforcement.CanSpawn;
+            bool canSpawn = _spawnReinforcement.CanSpawn && IsPlacementValid(spawnPosition);
 
             if (canSpawn)
             {
@@ -124,6 +132,7 @@ namespace EmpireAtWar.Services.Reinforcement
             Vector3 position = _cameraService.GetWorldPoint(_inputService.TouchPosition, _spawnReinforcement.Position);
             position.y = 0;
             _spawnReinforcement.UpdatePosition(position);
+            _spawnReinforcement.SetPlacementValidity(IsPlacementValid(position));
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
@@ -190,6 +199,14 @@ namespace EmpireAtWar.Services.Reinforcement
             _currentSpawnType = spawnType;
             _inputService.Block(true);
             _model.IsTrySpawning = true;
+        }
+
+        private bool IsPlacementValid(Vector3 position)
+        {
+            return _currentSpawnType == SpawnType.Ship
+                ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
+                : !_fogOfWarSystem.IsHidden(position) &&
+                  !_reinforcementZonesSystem.IsPositionInAnyZone(position);
         }
     }
 }

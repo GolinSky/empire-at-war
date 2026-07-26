@@ -214,15 +214,15 @@ namespace EmpireAtWar
 			EditorGUI.BeginProperty(position, label, property);
 			position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-			const float buildSettingsWidth = 20f;
-			const float padding = 2f;
+			const float BUILD_SETTINGS_WIDTH = 20f;
+			const float PADDING = 2f;
 
 			Rect assetPos = position;
-			assetPos.width -= buildSettingsWidth + padding;
+			assetPos.width -= BUILD_SETTINGS_WIDTH + PADDING;
 
 			Rect buildSettingsPos = position;
-			buildSettingsPos.x += position.width - buildSettingsWidth + padding;
-			buildSettingsPos.width = buildSettingsWidth;
+			buildSettingsPos.x += position.width - BUILD_SETTINGS_WIDTH + PADDING;
+			buildSettingsPos.width = BUILD_SETTINGS_WIDTH;
 
 			var sceneAssetProperty = property.FindPropertyRelative("m_SceneAsset");
 			bool hadReference = sceneAssetProperty.objectReferenceValue != null;

@@ -64,7 +64,7 @@ Before implementing a new feature, provide a brief class diagram or a concise re
 - **Single Responsibility:** Views handle UI and effects; Presenters handle flow; Models handle data and rules.
 - **Dependency Inversion:** Presenters depend on interfaces such as `IWeaponView`, not concrete View implementations.
 - **High Cohesion:** Keep code belonging to one system, such as Inventory, together in its own namespace and appropriate project folders.
-- **Explicit Dependencies:** Use constructor injection for pure C# classes. Use `[SerializeField]` for Unity View references assigned through the Inspector.
+- **Explicit Dependencies:** Use constructor injection for pure C# classes. Use explicit `[SerializeField]` fields assigned through the Inspector for Unity references. Avoid using `GetComponent`, `GetComponentsInChildren`, `GetComponentInParent`, or related Unity lookup APIs because they create implicit, hidden dependencies.
 - Avoid god objects and oversized manager classes. Prefer focused services and ScriptableObjects for global configuration or shared data.
 - If a class exceeds 200 lines, evaluate and suggest a focused refactor; do not refactor outside the requested scope without approval.
 
@@ -76,11 +76,13 @@ Use patterns only when their complexity is justified:
 - **Observer:** Model-to-Presenter communication through C# events or `System.Action`; use asynchronous primitives such as UniTask only when the workflow is genuinely asynchronous. Do not use `UnityEvent` in Models.
 - **Factory:** Entity, prefab, or VFX creation when instantiation details should be encapsulated.
 
-## 8. Unity Constraints
+## 8. Unity Constraints & Error Handling
 
 - Use PascalCase for types, methods, properties, and public members.
 - Use `_camelCase` for private fields.
-- Never call `Find`, `FindObjectOfType`, or repeated `GetComponent` operations in `Update` or other hot paths.
+- **Constant Field Naming Style:** All `const` fields MUST use `UPPER_SNAKE_CASE` (e.g. `const string PREFAB_FOLDER = "...";`, `const float TWEEN_DURATION = 0.1f;` — all uppercase with underscores between words). Never use `PascalCase` or `camelCase` for `const` fields.
+- **Explicit Component Binding:** Avoid using `GetComponent`, `GetComponentsInChildren`, `GetComponentInParent`, `Find`, or `FindObjectOfType`. Use explicit `[SerializeField]` fields assigned through the Inspector or explicit dependency injection instead of implicit component searching.
+- **Avoid Silent Null References (Fail-Fast Principle):** Never swallow null references, return silent dummy fallbacks, or mask missing mandatory dependencies using null-conditional operators (`?.`). Throw explicit exceptions (e.g. `ArgumentNullException`, `InvalidOperationException`) or use assertions immediately during initialization (`Awake` / constructor) to fail fast when required references or dependencies are null.
 - Resolve and cache Unity references during initialization, such as `Awake` or `Start`, or inject them explicitly.
 - Use ScriptableObjects for shared configuration and data containers when appropriate.
 - Respect Unity asset metadata: move or rename assets through Unity-aware tooling so their `.meta` files and references remain valid.

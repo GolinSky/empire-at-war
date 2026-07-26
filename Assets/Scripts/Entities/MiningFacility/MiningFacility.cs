@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -24,6 +25,8 @@ namespace EmpireAtWar.Entities.MiningFacility
         private bool _isReleased;
 
         [Inject] private MiningFacilityModel RootModel { get; }
+
+        public event Action OnRelease;
 
         public string Id => GetType().Name;
         public float Income => RootModel.Income;
@@ -77,6 +80,7 @@ namespace EmpireAtWar.Entities.MiningFacility
 
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);
+            OnRelease?.Invoke();
         }
 
         private void HandleDestroy()

@@ -12,11 +12,12 @@ namespace EmpireAtWar.Views.Reinforcement
         private List<Material> _meshMaterials = new List<Material>();
         private Color _canBeSpawnedColor;
         private Color _blockedColor = Color.red;
+        private bool _isPlacementValid;
 
-        public bool CanSpawn => _triggeredCollider.Count == 0;
+        public bool CanSpawn => _triggeredCollider.Count == 0 && _isPlacementValid;
         public Vector3 Position => transform.position;
 
-        private void Start()
+        private void Awake()
         {
             _meshRendererList = GetComponentsInChildren<MeshRenderer>();
             for (var i = 0; i < _meshRendererList.Length; i++)
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 _meshMaterials.Add(_meshRendererList[i].material);
             }
             _canBeSpawnedColor = _meshMaterials[0].color;
+            UpdateColor();
         }
 
         public void Destroy()
@@ -37,15 +39,18 @@ namespace EmpireAtWar.Views.Reinforcement
             transform.position = position;
         }
 
+        public void SetPlacementValidity(bool isPlacementValid)
+        {
+            _isPlacementValid = isPlacementValid;
+            UpdateColor();
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            for (var i = 0; i < _meshMaterials.Count; i++)
-            {
-                _meshMaterials[i].color = _blockedColor;
-            }
-            
             if(!_triggeredCollider.Contains(other))
                 _triggeredCollider.Add(other);
+
+            UpdateColor();
         }
 
         private void OnTriggerExit(Collider other)
@@ -53,12 +58,15 @@ namespace EmpireAtWar.Views.Reinforcement
             if(_triggeredCollider.Contains(other))
                 _triggeredCollider.Remove(other);
             
-            if (_triggeredCollider.Count == 0)
+            UpdateColor();
+        }
+
+        private void UpdateColor()
+        {
+            Color color = CanSpawn ? _canBeSpawnedColor : _blockedColor;
+            for (var i = 0; i < _meshMaterials.Count; i++)
             {
-                for (var i = 0; i < _meshMaterials.Count; i++)
-                {
-                    _meshMaterials[i].color = _canBeSpawnedColor;
-                }
+                _meshMaterials[i].color = color;
             }
         }
     }
