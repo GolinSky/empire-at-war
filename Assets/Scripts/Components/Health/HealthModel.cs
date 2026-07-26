@@ -207,10 +207,6 @@ namespace EmpireAtWar.Models.Health
                 }
             }
 
-            if (damageLeft > 0)
-            {
-                Debug.LogError("Not intended behaviour -> Damage left: " + damageLeft);
-            }
         }
 
         private float ApplyDamageOnShipUnit(HardPointModel hardPointModel, float damage)

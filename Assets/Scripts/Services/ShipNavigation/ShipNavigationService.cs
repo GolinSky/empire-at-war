@@ -24,13 +24,15 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3? detour,
             ShipBezierRoute route,
             float waitDuration,
-            float movementDuration)
+            float movementDuration,
+            int trafficConflictChecks)
         {
             Destination = destination;
             Detour = detour;
             Route = route ?? throw new ArgumentNullException(nameof(route));
             WaitDuration = waitDuration;
             MovementDuration = movementDuration;
+            TrafficConflictChecks = trafficConflictChecks;
         }
 
         public Vector3 Destination { get; }
@@ -39,6 +41,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public Vector3[] Trajectory => Route.Samples;
         public float WaitDuration { get; }
         public float MovementDuration { get; }
+        public int TrafficConflictChecks { get; }
         public float TotalDuration => WaitDuration + MovementDuration;
     }
 
@@ -148,7 +151,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     Vector3.up),
                 route.InitialTangent,
                 Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
-            Vector3[] trafficTrajectory = _trafficScheduler.CreateTrajectory(
+            ShipTrafficPath trafficTrajectory = _trafficScheduler.CreateTrajectory(
                 route,
                 agent.NavigationRadius);
             float trafficDelay = _trafficScheduler.CalculateDelay(
@@ -163,7 +166,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 detour,
                 route,
                 waitDuration,
-                movementDuration);
+                movementDuration,
+                _trafficScheduler.LastExactConflictCheckCount);
             _reservations[agent] = new ShipTrafficReservation(
                 destination,
                 trafficTrajectory,

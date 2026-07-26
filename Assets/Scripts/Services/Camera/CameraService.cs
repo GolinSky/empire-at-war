@@ -53,9 +53,10 @@ namespace EmpireAtWar.Services.Camera
 
         public void Initialize()
         {
+            _keyboardInput = Vector2.zero;
+            _keyboardVelocity = Vector2.zero;
             _inputService.OnLeftMousePressed += StopMovement;
             _inputService.OnSwipe += OnSwipe;
-            _inputService.OnCameraMove += OnCameraMove;
             _inputService.OnZoom += ZoomCamera;
         }
 
@@ -63,8 +64,9 @@ namespace EmpireAtWar.Services.Camera
         {
             _inputService.OnLeftMousePressed -= StopMovement;
             _inputService.OnSwipe -= OnSwipe;
-            _inputService.OnCameraMove -= OnCameraMove;
             _inputService.OnZoom -= ZoomCamera;
+            _keyboardInput = Vector2.zero;
+            _keyboardVelocity = Vector2.zero;
             StopMovement();
         }
 
@@ -117,14 +119,16 @@ namespace EmpireAtWar.Services.Camera
             SetPosition(ClampPosition(CameraPosition + move), true);
         }
 
-        private void OnCameraMove(Vector2 direction)
-        {
-            StopMovement();
-            _keyboardInput = direction;
-        }
-
         public void Tick()
         {
+            Vector2 currentInput = _inputService.CameraMove;
+            if (currentInput.sqrMagnitude > Mathf.Epsilon &&
+                _keyboardInput.sqrMagnitude <= Mathf.Epsilon)
+            {
+                StopMovement();
+            }
+
+            _keyboardInput = currentInput;
             _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
                 _keyboardVelocity,
                 _keyboardInput,

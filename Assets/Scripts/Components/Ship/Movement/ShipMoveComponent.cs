@@ -44,6 +44,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isApplyingNavigationDestination;
         private readonly List<RadarContact> _obstacleContacts = new List<RadarContact>();
         private Quaternion _bodyRestRotation;
+        private bool _isReleased;
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -100,6 +101,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Initialize()
         {
+            _isReleased = false;
             lineRenderer.enabled = false;
             _bodyRestRotation = bodyTransform.localRotation;
             _shipNavigationService.Register(this);
@@ -127,6 +129,12 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public override void Release()
         {
+            if (_isReleased)
+            {
+                return;
+            }
+
+            _isReleased = true;
             Model.TargetPosition.OnChanged -= UpdateTargetPosition;
             Model.OnStop -= StopAllMovement;
             Model.LookAtTarget.OnChanged -= LookAt;
@@ -334,7 +342,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
         {
-            if (!_canMove || !Model.IsMoving || contacts == null || contacts.Count == 0)
+            if (_isReleased || !_canMove || !Model.IsMoving ||
+                contacts == null || contacts.Count == 0)
             {
                 return;
             }
@@ -404,7 +413,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                     $"[ShipNavigation] Ship={name}, " +
                     $"Detour={plan.Detour.HasValue}, Wait={plan.WaitDuration:F2}s, " +
                     $"Move={plan.MovementDuration:F2}s, Radius={NavigationRadius:F1}, " +
-                    $"Speed={NavigationSpeed:F1}, TurnSpeed={NavigationRotationSpeed:F1}",
+                    $"Speed={NavigationSpeed:F1}, TurnSpeed={NavigationRotationSpeed:F1}, " +
+                    $"TrafficChecks={plan.TrafficConflictChecks}",
                     this);
             }
 
