@@ -35,6 +35,7 @@ namespace EmpireAtWar.Services.Battle
             RaycastHit raycastHit = _cameraService.ScreenPointToRay(screenPosition);
             if (raycastHit.collider != null &&
                 _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&
+                !entity.HealthModel.IsDestroyed &&
                 entity.TryGetCommand(out IEntitySelectionCommand command))
             {
                 selection = new SelectionEntry(entity, command);
@@ -56,6 +57,7 @@ namespace EmpireAtWar.Services.Battle
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (entity.Id == selected.Entity.Id ||
+                    entity.HealthModel.IsDestroyed ||
                     entity.PlayerType != selected.Entity.PlayerType ||
                     !(entity.Model is IShipModelObserver ship) ||
                     ship.ShipType != selectedShip.ShipType ||
@@ -76,6 +78,7 @@ namespace EmpireAtWar.Services.Battle
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (entity.PlayerType != PlayerType.Player ||
+                    entity.HealthModel.IsDestroyed ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {

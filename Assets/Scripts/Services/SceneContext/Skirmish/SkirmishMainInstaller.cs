@@ -17,6 +17,7 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
@@ -74,6 +75,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindModel<ProjectileModel>(Repository)
             .BindModel<LayerModel>(Repository)
             .BindModel<DamageCalculationModel>(Repository);
+        Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
         Container.BindScriptableObject<ShipsData>(Repository);
 

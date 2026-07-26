@@ -46,11 +46,11 @@ namespace EmpireAtWar.Views
             Command.CloseSelection();
         }
         
-        private void HandleChangedSelection(SelectionType selectionType)
+        private void HandleChangedSelection(bool hasMovableSelection)
         {
-            canvas.enabled = selectionType == SelectionType.Ship;
-            shipIconImage.enabled = selectionType == SelectionType.Ship;
-            if (selectionType == SelectionType.Ship)
+            canvas.enabled = hasMovableSelection;
+            shipIconImage.enabled = hasMovableSelection && Model.ShipIcon != null;
+            if (shipIconImage.enabled)
             {
                 shipIconImage.sprite = Model.ShipIcon;
             }

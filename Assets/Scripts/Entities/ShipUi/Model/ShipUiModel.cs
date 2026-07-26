@@ -10,7 +10,7 @@ namespace EmpireAtWar.Models.ShipUi
 {
     public interface IShipUiModelObserver:IModelObserver
     {
-        event Action<SelectionType> OnSelectionChanged;
+        event Action<bool> OnSelectionChanged;
         event Action<Vector2> OnTapPositionChanged;
         event Action OnSkipGoToPositionUi;
         Sprite ShipIcon { get; }
@@ -21,7 +21,7 @@ namespace EmpireAtWar.Models.ShipUi
     {
         public event Action<Vector2> OnTapPositionChanged;
         public event Action OnSkipGoToPositionUi;
-        public event Action<SelectionType> OnSelectionChanged;
+        public event Action<bool> OnSelectionChanged;
         
         private Vector2 _tapPosition;
 
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Models.ShipUi
             get => _tapPosition;
         }
 
-        public void UpdateSelection(SelectionType selectionType) => OnSelectionChanged?.Invoke(selectionType);
+        public void UpdateSelection(bool hasMovableSelection) => OnSelectionChanged?.Invoke(hasMovableSelection);
 
         public Sprite GetShipIcon(ShipType shipType)
         {

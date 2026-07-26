@@ -1,6 +1,8 @@
 ﻿using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Radar;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
@@ -18,6 +20,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         void Stop();
         void ApplyMoveCoefficient(float coefficient);
         void HandleSelection(bool isSelected);
+        void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
         float HyperSpaceDuration { get; }
         event System.Action<Vector3> TargetPositionChanged;
         event System.Action<Vector3> LookAtTargetChanged;

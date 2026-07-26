@@ -66,7 +66,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if (inputType == InputType.ShipInput && _playerSelectionContext is { SelectionType: SelectionType.Ship } && _startTimer.IsComplete)
+            if (inputType == InputType.ShipInput && HasMovableSelection() && _startTimer.IsComplete)
             {
                 Model.TapPosition = touchPosition;
                 //todo: create plane map entity - use layers or add it as selectable
@@ -111,7 +111,8 @@ namespace EmpireAtWar.Controllers.ShipUi
             _formationPositions.Clear();
             for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
             {
-                if (_playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand moveCommand))
+                if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
+                    _playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand moveCommand))
                 {
                     _moveCommands.Add(moveCommand);
                     _formationPositions.Add(new FormationPoint(
@@ -165,7 +166,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                         }
                     }
 
-                    Model.UpdateSelection(_playerSelectionContext.SelectionType);
+                    Model.UpdateSelection(HasMovableSelection());
                     break;
                 case PlayerType.Opponent:
                     CloseMoveToPositionUi();
@@ -177,6 +178,25 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
             _startTimer.StartTimer();
 
+        }
+
+        private bool HasMovableSelection()
+        {
+            if (_playerSelectionContext == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
+            {
+                if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
+                    _playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand _))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
