@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
-using Utilities.ScriptUtils.Layer;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
+using EmpireAtWar.Services.Layer;
 using Zenject;
 
 namespace EmpireAtWar.Components.Radar
@@ -28,14 +28,17 @@ namespace EmpireAtWar.Components.Radar
 
         private Collider[] _overlapHits = new Collider[INITIAL_HIT_LIMIT];
         private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
+        private readonly List<RadarContact> _contacts = new List<RadarContact>();
         private IUnitMediator _unitMediator;
+        private ILayerService _layerService;
         private Vector3 _position;
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
-        private void Construct(RadarModel model, IEntityLocator entityLocator)
+        private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService)
         {
             SetModel(model);
             _entityLocator = entityLocator;
+            _layerService = layerService;
         }
 
         public void Initialize()
@@ -44,12 +47,10 @@ namespace EmpireAtWar.Components.Radar
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
 
-            int layer = Model.LayerMask.ToSingleLayer();
-            gameObject.layer = layer;
-            foreach (Transform child in gameObject.GetComponentsInChildren<Transform>())
-            {
-                child.gameObject.layer = layer;
-            }
+            LayerKey layerKey = Model.PlayerType == EmpireAtWar.Models.Factions.PlayerType.Player
+                ? LayerKey.Player
+                : LayerKey.Enemy;
+            _layerService.Apply(gameObject, layerKey, true);
         }
 
         public void SetPosition(Vector3 position)
@@ -63,12 +64,35 @@ namespace EmpireAtWar.Components.Radar
             {
                 int hitAmount = GetOverlapHits();
                 _detectedEnemies.Clear();
+                _contacts.Clear();
                 for (int i = 0; i < hitAmount; i++)
                 {
+                    Collider hit = _overlapHits[i];
+                    if (hit.transform == transform || hit.transform.IsChildOf(transform))
+                    {
+                        continue;
+                    }
+
                     if (_entityLocator.TryGetEntity(_overlapHits[i], out IEntity entity) &&
                         !entity.HealthModel.IsDestroyed)
                     {
-                        _detectedEnemies.Add(entity);
+                        if (entity.PlayerType != Model.PlayerType)
+                        {
+                            _detectedEnemies.Add(entity);
+                        }
+                        Bounds bounds = hit.bounds;
+                        _contacts.Add(new RadarContact(
+                            bounds.center,
+                            Mathf.Max(bounds.extents.x, bounds.extents.z),
+                            true));
+                    }
+                    else if (_layerService.IsInLayer(hit.gameObject, LayerKey.Obstacle))
+                    {
+                        Bounds bounds = hit.bounds;
+                        _contacts.Add(new RadarContact(
+                            bounds.center,
+                            Mathf.Max(bounds.extents.x, bounds.extents.z),
+                            false));
                     }
                 }
 
@@ -91,6 +115,7 @@ namespace EmpireAtWar.Components.Radar
                     _unitMediator?.HandleNewEnemy(entity);
                 }
 
+                _unitMediator?.HandleRadarContacts(_contacts);
                 _timer.StartTimer();
             }
         }
@@ -104,7 +129,7 @@ namespace EmpireAtWar.Components.Radar
                     _halfExtents,
                     _overlapHits,
                     Quaternion.identity,
-                    Model.EnemyLayerMask,
+                    _layerService.GetMask(LayerKey.Player, LayerKey.Enemy, LayerKey.Obstacle),
                     QueryTriggerInteraction.Collide);
                 if (hitAmount < _overlapHits.Length || _overlapHits.Length >= MAX_HIT_LIMIT)
                 {

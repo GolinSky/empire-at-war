@@ -21,6 +21,7 @@ using EmpireAtWar.Services.Initialiaze;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Services.Layer;
 
 namespace EmpireAtWar.Ship
 {
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Ship
         private PlayerType _playerType;
         private bool _isSelected;
         private bool _isReleased;
+        private ILayerService _layerService;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -86,7 +88,8 @@ namespace EmpireAtWar.Ship
             ICoroutineService coroutineService,
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
-            List<IMonoComponent> monoComponents)
+            List<IMonoComponent> monoComponents,
+            ILayerService layerService)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -103,6 +106,7 @@ namespace EmpireAtWar.Ship
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
             _monoComponents = monoComponents;
+            _layerService = layerService;
         }
 
         public IModel GetModel()
@@ -201,6 +205,7 @@ namespace EmpireAtWar.Ship
             }
 
             _isReleased = true;
+            _layerService.Apply(gameObject, LayerKey.Dead, true);
             foreach (IMonoComponent component in _monoComponents)
             {
                 component.Release();
@@ -259,6 +264,11 @@ namespace EmpireAtWar.Ship
 
             _audioShipComponent.HandleEnemyDetected();
             _audioDialogShipComponent?.HandleEnemyDetected();
+        }
+
+        public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
+        {
+            _shipMoveComponent.HandleRadarContacts(contacts);
         }
 
         public void OnSelect(bool isActive)

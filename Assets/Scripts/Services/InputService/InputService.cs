@@ -57,6 +57,8 @@ namespace EmpireAtWar.Services.InputService
             MapActions.PrimaryContact.canceled += OnPointerReleased;
             MapActions.SecondaryPosition.performed += OnSecondaryTouchPerformed;
             MapActions.Scroll.performed += OnScrollPerformed;
+            MapActions.CameraMove.performed += OnCameraMoveChanged;
+            MapActions.CameraMove.canceled += OnCameraMoveChanged;
         }
 
         public void Dispose()
@@ -65,6 +67,8 @@ namespace EmpireAtWar.Services.InputService
             MapActions.PrimaryContact.canceled -= OnPointerReleased;
             MapActions.SecondaryPosition.performed -= OnSecondaryTouchPerformed;
             MapActions.Scroll.performed -= OnScrollPerformed;
+            MapActions.CameraMove.performed -= OnCameraMoveChanged;
+            MapActions.CameraMove.canceled -= OnCameraMoveChanged;
 
             _inputComponentGenerated.Disable();
             _inputComponentGenerated.Dispose();
@@ -158,11 +162,21 @@ namespace EmpireAtWar.Services.InputService
             }
         }
 
+        private void OnCameraMoveChanged(InputAction.CallbackContext callbackContext)
+        {
+            if (_isBlocked)
+            {
+                OnCameraMove?.Invoke(Vector2.zero);
+                return;
+            }
+
+            OnCameraMove?.Invoke(callbackContext.ReadValue<Vector2>());
+        }
+
         public void Tick()
         {
             if (!_isBlocked)
             {
-                Vector2 cameraMove = MapActions.CameraMove.ReadValue<Vector2>();
                 if (MapActions.CameraDrag.IsPressed())
                 {
                     Vector2 dragDelta = MapActions.TouchDelta.ReadValue<Vector2>();
@@ -174,11 +188,6 @@ namespace EmpireAtWar.Services.InputService
                     {
                         OnSwipe?.Invoke(direction);
                     }
-                }
-
-                if (cameraMove.sqrMagnitude > Mathf.Epsilon)
-                {
-                    OnCameraMove?.Invoke(cameraMove);
                 }
             }
 
@@ -251,6 +260,10 @@ namespace EmpireAtWar.Services.InputService
         public void Block(bool isBlocked)
         {
             _isBlocked = isBlocked;
+            if (isBlocked)
+            {
+                OnCameraMove?.Invoke(Vector2.zero);
+            }
             OnBlocked?.Invoke(isBlocked);
         }
 
