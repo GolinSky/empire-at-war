@@ -41,6 +41,9 @@ namespace EmpireAtWar.Services.InputService
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
+        public Vector2 CameraMove => _isBlocked
+            ? Vector2.zero
+            : MapActions.CameraMove.ReadValue<Vector2>();
         public int TapCount => Mathf.Max(1, MapActions.TouchCount.ReadValue<int>());
 
         public InputService()

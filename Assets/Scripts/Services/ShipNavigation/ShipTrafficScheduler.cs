@@ -14,7 +14,9 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly List<TrafficConflict> _conflicts =
             new List<TrafficConflict>();
 
-        public Vector3[] CreateTrajectory(
+        public int LastExactConflictCheckCount { get; private set; }
+
+        public ShipTrafficPath CreateTrajectory(
             ShipBezierRoute route,
             float navigationRadius)
         {
@@ -31,18 +33,19 @@ namespace EmpireAtWar.Services.ShipNavigation
                     out _);
             }
 
-            return trajectory;
+            return new ShipTrafficPath(trajectory);
         }
 
         public float CalculateDelay(
             IShipNavigationAgent planningAgent,
-            IReadOnlyList<Vector3> trajectory,
+            ShipTrafficPath trajectory,
             float movementDuration,
             float heightTolerance,
             IReadOnlyDictionary<IShipNavigationAgent, ShipTrafficReservation>
                 reservations)
         {
             _conflicts.Clear();
+            LastExactConflictCheckCount = 0;
             foreach (KeyValuePair<IShipNavigationAgent, ShipTrafficReservation> pair
                      in reservations)
             {
@@ -65,6 +68,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                             reservation.Speed),
                         Mathf.Epsilon) +
                     TRAFFIC_SAFETY_DELAY;
+                if (!trajectory.Bounds.Overlaps(
+                        reservation.Path.Bounds,
+                        safeDistance))
+                {
+                    continue;
+                }
+
                 CollectConflicts(
                     trajectory,
                     movementDuration,
@@ -112,26 +122,38 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         private void CollectConflicts(
-            IReadOnlyList<Vector3> planningTrajectory,
+            ShipTrafficPath planningTrajectory,
             float planningMovementDuration,
             ShipTrafficReservation reservation,
             float safeDistance,
             float safeTime)
         {
             float safeDistanceSquared = safeDistance * safeDistance;
-            for (int planningIndex = 1;
-                 planningIndex < planningTrajectory.Count;
+            for (int planningIndex = 0;
+                 planningIndex < planningTrajectory.Segments.Length;
                  planningIndex++)
             {
-                for (int reservedIndex = 1;
-                     reservedIndex < reservation.Trajectory.Length;
+                ShipTrafficSegment planningSegment =
+                    planningTrajectory.Segments[planningIndex];
+                for (int reservedIndex = 0;
+                     reservedIndex < reservation.Path.Segments.Length;
                      reservedIndex++)
                 {
+                    ShipTrafficSegment reservedSegment =
+                        reservation.Path.Segments[reservedIndex];
+                    if (!planningSegment.Bounds.Overlaps(
+                            reservedSegment.Bounds,
+                            safeDistance))
+                    {
+                        continue;
+                    }
+
+                    LastExactConflictCheckCount++;
                     if (!ShipTrafficConflictDetector.TryGetSegmentConflict(
-                            planningTrajectory[planningIndex - 1],
-                            planningTrajectory[planningIndex],
-                            reservation.Trajectory[reservedIndex - 1],
-                            reservation.Trajectory[reservedIndex],
+                            planningSegment.Start,
+                            planningSegment.End,
+                            reservedSegment.Start,
+                            reservedSegment.End,
                             safeDistanceSquared,
                             out float planningParameter,
                             out float reservedParameter))
@@ -140,11 +162,11 @@ namespace EmpireAtWar.Services.ShipNavigation
                     }
 
                     float planningProgress =
-                        (planningIndex - 1 + planningParameter) /
-                        (planningTrajectory.Count - 1f);
+                        (planningIndex + planningParameter) /
+                        planningTrajectory.Segments.Length;
                     float reservedProgress =
-                        (reservedIndex - 1 + reservedParameter) /
-                        (reservation.Trajectory.Length - 1f);
+                        (reservedIndex + reservedParameter) /
+                        reservation.Path.Segments.Length;
                     _conflicts.Add(new TrafficConflict(
                         planningProgress * planningMovementDuration,
                         reservation.WaitDuration +
@@ -170,35 +192,5 @@ namespace EmpireAtWar.Services.ShipNavigation
             public float ReservedTime { get; }
             public float SafeTime { get; }
         }
-    }
-
-    internal readonly struct ShipTrafficReservation
-    {
-        public ShipTrafficReservation(
-            Vector3 destination,
-            Vector3[] trajectory,
-            float height,
-            float radius,
-            float speed,
-            float waitDuration,
-            float movementDuration)
-        {
-            Destination = destination;
-            Trajectory = trajectory;
-            Height = height;
-            Radius = radius;
-            Speed = speed;
-            WaitDuration = waitDuration;
-            MovementDuration = movementDuration;
-        }
-
-        public Vector3 Destination { get; }
-        public Vector3[] Trajectory { get; }
-        public float Height { get; }
-        public float Radius { get; }
-        public float Speed { get; }
-        public float WaitDuration { get; }
-        public float MovementDuration { get; }
-        public bool HasTrajectory => Trajectory != null && Trajectory.Length > 0;
     }
 }

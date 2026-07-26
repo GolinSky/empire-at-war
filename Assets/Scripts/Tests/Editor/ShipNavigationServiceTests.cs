@@ -199,6 +199,36 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(maximumWait, Is.LessThan(firstMovementDuration));
         }
 
+        [Test]
+        public void Plan_MultiShipCommandPrunesMostSegmentComparisons()
+        {
+            const int SHIP_COUNT = 20;
+            ShipNavigationPlan lastPlan = default;
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                FakeAgent ship = new FakeAgent(
+                    new Vector3(-60f, 0f, i * 2f),
+                    0f,
+                    4f,
+                    10f,
+                    30f);
+                _service.Register(ship);
+                lastPlan = Plan(
+                    ship,
+                    new Vector3(60f, 0f, i * 2f),
+                    Vector3.right);
+            }
+
+            int segmentCount = lastPlan.Trajectory.Length - 1;
+            int naiveComparisonCount =
+                segmentCount * segmentCount * (SHIP_COUNT - 1);
+
+            Assert.That(lastPlan.TrafficConflictChecks, Is.GreaterThan(0));
+            Assert.That(
+                lastPlan.TrafficConflictChecks,
+                Is.LessThan(naiveComparisonCount / 2));
+        }
+
         private ShipNavigationPlan Plan(FakeAgent agent, Vector3 destination)
         {
             return Plan(agent, destination, Vector3.right);
