@@ -62,12 +62,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     public sealed class ShipNavigationService : Service, IShipNavigationService
     {
-        private readonly Dictionary<IShipNavigationAgent, ShipTrafficReservation>
-            _reservations =
-                new Dictionary<IShipNavigationAgent, ShipTrafficReservation>();
-        private readonly List<RadarContact> _contacts = new List<RadarContact>();
-        private readonly ShipTrafficScheduler _trafficScheduler =
-            new ShipTrafficScheduler();
+        private readonly HashSet<IShipNavigationAgent> _agents =
+            new HashSet<IShipNavigationAgent>();
 
         public void Register(IShipNavigationAgent agent)
         {
@@ -76,10 +72,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 throw new ArgumentNullException(nameof(agent));
             }
 
-            if (!_reservations.ContainsKey(agent))
-            {
-                _reservations.Add(agent, default);
-            }
+            _agents.Add(agent);
         }
 
         public void Unregister(IShipNavigationAgent agent)
@@ -89,7 +82,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 throw new ArgumentNullException(nameof(agent));
             }
 
-            _reservations.Remove(agent);
+            _agents.Remove(agent);
         }
 
         public ShipNavigationPlan Plan(
@@ -101,125 +94,42 @@ namespace EmpireAtWar.Services.ShipNavigation
             float clearance,
             Vector2Range mapRange)
         {
-            if (!_reservations.ContainsKey(agent))
+            if (!_agents.Contains(agent))
             {
                 throw new InvalidOperationException(
                     "Ship navigation agent must be registered before planning.");
             }
 
-            BuildSharedContacts(agent, obstacleContacts);
             Vector3 origin = agent.NavigationPosition;
-            Vector3 destination = requestedDestination;
-            ShipAvoidancePlanner.TryResolveDestination(
-                requestedDestination,
+            float minimumTurnRadius =
+                Mathf.Max(
+                    agent.NavigationRadius,
+                    ShipRotationKinematics.CalculateMinimumTurnRadius(
+                        Mathf.Max(agent.NavigationSpeed, 0f),
+                        Mathf.Max(
+                            agent.NavigationRotationSpeed,
+                            Mathf.Epsilon)));
+            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
                 origin,
-                _contacts,
-                agent.NavigationHeight,
-                heightTolerance,
-                clearance,
-                mapRange,
-                out destination);
-
-            Vector3? detour = null;
-            if (ShipAvoidancePlanner.TryCalculateDetour(
-                    origin,
-                    destination,
-                    _contacts,
-                    agent.NavigationHeight,
-                    heightTolerance,
-                    clearance,
-                    mapRange,
-                    out Vector3 calculatedDetour))
-            {
-                detour = calculatedDetour;
-            }
-
-            ShipBezierRoute route = detour.HasValue
-                ? ShipBezierPath.BuildAvoidanceRoute(
-                    origin,
-                    forward,
-                    detour.Value,
-                    destination)
-                : ShipBezierPath.BuildDirectRoute(origin, forward, destination);
+                forward,
+                requestedDestination,
+                minimumTurnRadius);
             float movementDuration =
                 route.Length / Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
-            float turnDuration = ShipRotationKinematics.CalculateTurnDuration(
-                Quaternion.LookRotation(
-                    forward.sqrMagnitude > Mathf.Epsilon
-                        ? forward
-                        : Vector3.forward,
-                    Vector3.up),
-                route.InitialTangent,
-                Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
-            ShipTrafficPath trafficTrajectory = _trafficScheduler.CreateTrajectory(
+            return new ShipNavigationPlan(
+                requestedDestination,
+                null,
                 route,
-                agent.NavigationRadius);
-            float trafficDelay = _trafficScheduler.CalculateDelay(
-                agent,
-                trafficTrajectory,
+                0f,
                 movementDuration,
-                heightTolerance,
-                _reservations);
-            float waitDuration = Mathf.Max(turnDuration, trafficDelay);
-            ShipNavigationPlan plan = new ShipNavigationPlan(
-                destination,
-                detour,
-                route,
-                waitDuration,
-                movementDuration,
-                _trafficScheduler.LastExactConflictCheckCount);
-            _reservations[agent] = new ShipTrafficReservation(
-                destination,
-                trafficTrajectory,
-                agent.NavigationHeight,
-                agent.NavigationRadius,
-                agent.NavigationSpeed,
-                waitDuration,
-                movementDuration);
-            return plan;
+                0);
         }
 
         public void ClearPlan(IShipNavigationAgent agent)
         {
-            if (_reservations.ContainsKey(agent))
+            if (agent == null)
             {
-                _reservations[agent] = default;
-            }
-        }
-
-        private void BuildSharedContacts(
-            IShipNavigationAgent planningAgent,
-            IReadOnlyList<RadarContact> obstacleContacts)
-        {
-            _contacts.Clear();
-            if (obstacleContacts != null)
-            {
-                for (int i = 0; i < obstacleContacts.Count; i++)
-                {
-                    _contacts.Add(obstacleContacts[i]);
-                }
-            }
-
-            foreach (KeyValuePair<IShipNavigationAgent, ShipTrafficReservation> pair
-                     in _reservations)
-            {
-                IShipNavigationAgent other = pair.Key;
-                if (ReferenceEquals(other, planningAgent))
-                {
-                    continue;
-                }
-
-                _contacts.Add(new RadarContact(
-                    other.NavigationPosition,
-                    other.NavigationRadius,
-                    true));
-                if (pair.Value.HasTrajectory)
-                {
-                    _contacts.Add(new RadarContact(
-                        pair.Value.Destination,
-                        other.NavigationRadius,
-                        true));
-                }
+                throw new ArgumentNullException(nameof(agent));
             }
         }
     }

@@ -25,4 +25,8 @@ MonoBehaviour:
   <PanAcceleration>k__BackingField: 1250
   <PanDeceleration>k__BackingField: 1750
   <ZoomSpeed>k__BackingField: 200
+  <MinPitch>k__BackingField: 25
+  <MaxPitch>k__BackingField: 80
+  <OrbitSensitivity>k__BackingField: 0.5
+  <StepRotationAngle>k__BackingField: 45
   <TweenSpeed>k__BackingField: 5

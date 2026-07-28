@@ -27,12 +27,16 @@ namespace EmpireAtWar.Tests.Editor
                     serializedPopup.FindProperty("enemyDifficultyDropdown").objectReferenceValue,
                     Is.Not.Null);
                 Assert.That(
-                    serializedPopup.FindProperty("startingMoneyDropdown").objectReferenceValue,
+                    serializedPopup.FindProperty("startingMoneySlider").objectReferenceValue,
+                    Is.Not.Null);
+                Assert.That(
+                    serializedPopup.FindProperty("startingMoneyText").objectReferenceValue,
                     Is.Not.Null);
 
                 Assert.That(root.transform.Find("Background/VictoryConditionField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/EnemyDifficultyField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/StartingMoneyField"), Is.Not.Null);
+                Assert.That(root.transform.Find("Background/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
             }
             finally
             {

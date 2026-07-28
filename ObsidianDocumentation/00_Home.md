@@ -30,6 +30,11 @@ Welcome to the **Empire At War** project documentation vault!
 
 ---
 
+## 🎮 Features Section
+- [[Features/CONTROLS_ANALYSIS|Control & Input System Analysis]]
+
+---
+
 ## 🔌 Obsidian MCP Integration Settings
 
 - **Plugin:** `obsidian-local-rest-api`
