@@ -39,10 +39,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _canMove;
         private bool _isSelected;
         private IMapModelObserver _mapModel;
-        private Vector3? _activeDetour;
         private IShipNavigationService _shipNavigationService;
         private bool _isApplyingNavigationDestination;
-        private readonly List<RadarContact> _obstacleContacts = new List<RadarContact>();
         private Quaternion _bodyRestRotation;
         private bool _isReleased;
 
@@ -281,7 +279,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _translationSequence.KillExt();
-            _activeDetour = null;
             _shipNavigationService.ClearPlan(this);
             StraightenBody();
             ClearRoute();
@@ -342,57 +339,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
         {
-            if (_isReleased || !_canMove || !Model.IsMoving ||
-                contacts == null || contacts.Count == 0)
-            {
-                return;
-            }
-
-            _obstacleContacts.Clear();
-            for (int i = 0; i < contacts.Count; i++)
-            {
-                _obstacleContacts.Add(contacts[i]);
-            }
-
-            if (_obstacleContacts.Count == 0)
-            {
-                return;
-            }
-
-            if (_activeDetour.HasValue)
-            {
-                if (Vector3.Distance(CurrentViewPosition, _activeDetour.Value) >
-                    NavigationRadius * 1.5f)
-                {
-                    return;
-                }
-
-                _activeDetour = null;
-            }
-
-            Vector3 destination = Model.TargetPosition.Value;
-            bool occupiedDestination = ShipAvoidancePlanner.TryResolveDestination(
-                destination,
-                CurrentViewPosition,
-                _obstacleContacts,
-                Model.Height,
-                HEIGHT_TOLERANCE,
-                NavigationRadius,
-                _mapModel.SizeRange,
-                out _);
-            bool obstructedRoute = ShipAvoidancePlanner.TryCalculateDetour(
-                CurrentViewPosition,
-                destination,
-                _obstacleContacts,
-                Model.Height,
-                HEIGHT_TOLERANCE,
-                NavigationRadius,
-                _mapModel.SizeRange,
-                out _);
-            if (occupiedDestination || obstructedRoute)
-            {
-                ApplyNavigationPlan(destination, _obstacleContacts);
-            }
+            // Avoidance is intentionally disabled while movement is evaluated.
         }
 
         private void ApplyNavigationPlan(
@@ -433,7 +380,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             _translationSequence.KillExt();
             _translationSequence = DOTween.Sequence();
 
-            _activeDetour = plan.Detour;
             _waypoints = plan.Trajectory;
 
             lineRenderer.positionCount = _waypoints.Length;
@@ -458,11 +404,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                     plan.MovementDuration,
                     progress => ApplyRouteProgress(plan.Route, progress))
                 .SetEase(Ease.Linear));
-            _translationSequence.OnUpdate(UpdateRouteVisual);
             _translationSequence.OnComplete(() =>
             {
                 ApplyRouteProgress(plan.Route, 1f);
-                _activeDetour = null;
                 _shipNavigationService.ClearPlan(this);
                 StraightenBody();
                 ClearRoute();
@@ -481,54 +425,32 @@ namespace EmpireAtWar.Components.Ship.Movement
         private void RotateAlongRoute(Vector3 tangent)
         {
             Quaternion previousRotation = transform.rotation;
+            float rotationSpeed = Mathf.Max(
+                Model.RotationSpeed,
+                Mathf.Epsilon);
+            float bank = ShipRotationKinematics.CalculateBankAngle(
+                previousRotation,
+                tangent,
+                rotationSpeed,
+                Time.deltaTime,
+                Model.BodyRotationMaxAngle);
             transform.rotation = ShipRotationKinematics.Step(
                 previousRotation,
                 tangent,
-                Mathf.Max(Model.RotationSpeed, Mathf.Epsilon),
+                rotationSpeed,
                 Time.deltaTime);
 
-            float signedTurn = Vector3.SignedAngle(
-                transform.forward,
-                tangent,
-                Vector3.up);
-            float bank = Mathf.Clamp(
-                -signedTurn,
-                -Model.BodyRotationMaxAngle,
-                Model.BodyRotationMaxAngle);
-            bodyTransform.localRotation =
+            Quaternion targetBodyRotation =
                 _bodyRestRotation * Quaternion.Euler(0f, 0f, bank);
+            bodyTransform.localRotation = Quaternion.RotateTowards(
+                bodyTransform.localRotation,
+                targetBodyRotation,
+                rotationSpeed * Time.deltaTime);
         }
 
         private void StraightenBody()
         {
             bodyTransform.localRotation = _bodyRestRotation;
-        }
-
-        private void UpdateRouteVisual()
-        {
-            if (!_isSelected || _waypoints == null || _waypoints.Length < 2)
-            {
-                return;
-            }
-
-            int nextIndex = _waypoints.Length - 1;
-            for (int i = 1; i < _waypoints.Length; i++)
-            {
-                if (Vector3.Distance(CurrentViewPosition, _waypoints[i]) >
-                    NavigationRadius)
-                {
-                    nextIndex = i;
-                    break;
-                }
-            }
-
-            int count = _waypoints.Length - nextIndex + 1;
-            lineRenderer.positionCount = count;
-            lineRenderer.SetPosition(0, CurrentViewPosition);
-            for (int i = 1; i < count; i++)
-            {
-                lineRenderer.SetPosition(i, _waypoints[nextIndex + i - 1]);
-            }
         }
 
         private void ClearRoute()

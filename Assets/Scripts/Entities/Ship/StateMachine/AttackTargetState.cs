@@ -13,8 +13,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
-        private const float REPATH_INTERVAL = 0.5f;
-
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMoveComponent _shipMoveComponent;
@@ -22,7 +20,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly LazyInject<IdleState> _idleState;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
-        private float _repathTimer;
 
         private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
 
@@ -59,7 +56,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new InvalidOperationException("AttackTargetState requires a target before Enter.");
             }
 
-            _repathTimer = 0f;
             if (_mainTargetEntity.TryGetCommand(out IHealthCommand healthCommand))
             {
                 AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
@@ -93,11 +89,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return;
             }
 
-            _repathTimer -= Time.deltaTime;
-            if (_repathTimer <= 0f)
+            if (!_shipMoveComponent.IsMoving)
             {
                 _shipMoveComponent.MoveToPosition(TargetPosition);
-                _repathTimer = REPATH_INTERVAL;
             }
         }
 
