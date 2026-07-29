@@ -22,6 +22,7 @@ using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.UnitDeathAnimation;
 
 namespace EmpireAtWar.Ship
 {
@@ -60,6 +61,8 @@ namespace EmpireAtWar.Ship
         private bool _isSelected;
         private bool _isReleased;
         private ILayerService _layerService;
+        private IUnitDeathAnimationData _deathAnimationData;
+        private IUnitDeathAnimationService _deathAnimationService;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -91,7 +94,9 @@ namespace EmpireAtWar.Ship
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
-            ILayerService layerService)
+            ILayerService layerService,
+            IUnitDeathAnimationData deathAnimationData,
+            IUnitDeathAnimationService deathAnimationService)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -110,6 +115,8 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent = audioDialogShipComponent;
             _monoComponents = monoComponents;
             _layerService = layerService;
+            _deathAnimationData = deathAnimationData;
+            _deathAnimationService = deathAnimationService;
         }
 
         public IModel GetModel()
@@ -207,6 +214,7 @@ namespace EmpireAtWar.Ship
             {
                 component.Release();
             }
+            _deathAnimationService.Play(transform, _deathAnimationData);
 
             ShipService.Remove(this);
             _selectionService.RemoveObserver(this);

@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 using Zenject;
@@ -13,9 +12,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         float Speed { get; }
         float Height { get; }
-        Vector3 FallDownDirection { get; }
-        RandomVector3 FallDownRotation { get; }
-        float FallDownDuration { get; }
         float RotationSpeed { get; }
         float HyperSpaceDuration { get; }
         float BodyRotationMaxAngle { get; }
@@ -53,9 +49,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3 CurrentPosition => ViewTransform.Value.position;
         public float Speed => ShipMoveData.Speed * _speedCoefficient;
         public float Height => ShipMoveData.Height;
-        public Vector3 FallDownDirection => ShipMoveData.FallDownDirection;
-        public RandomVector3 FallDownRotation => ShipMoveData.FallDownRotation;
-        public float FallDownDuration => ShipMoveData.FallDownDuration;
         public float RotationSpeed => ShipMoveData.RotationSpeed;
         public float HyperSpaceDuration => ShipMoveData.HyperSpaceDuration;
         public float BodyRotationMaxAngle => ShipMoveData.BodyRotationMaxAngle;

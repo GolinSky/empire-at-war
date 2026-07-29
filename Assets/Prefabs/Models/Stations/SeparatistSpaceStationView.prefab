@@ -234,6 +234,7 @@ MonoBehaviour:
       - {fileID: 2275949201521092859}
       - {fileID: 1550829152932821404}
       - {fileID: 1090676735051325938}
+  viewTransform: {fileID: 2827149078899201729}
 --- !u!1 &8846335593221323487
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +296,6 @@ GameObject:
   - component: {fileID: 210259529970908136}
   - component: {fileID: 4832025680483339946}
   - component: {fileID: 7452272234364217738}
-  - component: {fileID: 3971203830033102720}
   - component: {fileID: 7694739466049017196}
   m_Layer: 0
   m_Name: SeparatistSpaceStationView
@@ -442,18 +442,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036f62d612164b9d8fe1a6824537a043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Radar.RadarComponent
---- !u!114 &3971203830033102720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8914769984232844324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 335f300fe63bb6243adef6a5993e6a5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Movement.SimpleMoveComponent
 --- !u!114 &7694739466049017196
 MonoBehaviour:
   m_ObjectHideFlags: 0

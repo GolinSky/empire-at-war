@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.UnitDeathAnimation;
 using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -17,7 +18,7 @@ namespace EmpireAtWar.Entities.Ship.Data
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
     public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData, IAttackData,
-        IRadarData, IWeaponContext
+        IRadarData, IWeaponContext, IUnitDeathAnimationData
     {
         [Header("Ship Settings")]
         [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
@@ -26,14 +27,16 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Movement Settings")]
         [field: SerializeField] public float Speed { get; private set; }
         [field: SerializeField] public float Height { get; private set; }
-        [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
-        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
-        [field: SerializeField] public float FallDownDuration { get; private set; }
-        [field: SerializeField] public bool CanMove { get; private set; } = true;
         [field: SerializeField] public float RotationSpeed { get; private set; }
         [field: SerializeField] public float HyperSpaceDuration { get; private set; }
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         [field: SerializeField] public float NavigationRadius { get; private set; } = 8f;
+
+        [Header("Death Animation Settings")]
+        [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
+        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
+        [field: SerializeField] public float FallDownDuration { get; private set; }
+        Vector3 IUnitDeathAnimationData.FallDownRotation => FallDownRotation.Value;
 
         [Header("Health Settings")]
         [field: SerializeField] public float Armor { get; private set; }

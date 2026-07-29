@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Collections;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.TimerPoolWrapperService;
@@ -29,9 +28,9 @@ namespace EmpireAtWar.Components.AttackComponent
         ILateTickable, ILateDisposable, IDisposable
     {
         [SerializeField] private DictionaryWrapper<WeaponType, List<WeaponHardPointView>> turretDictionary;
+        [SerializeField] private Transform viewTransform;
 
         private ICoroutineService _coroutineService;
-        private IDefaultMoveModelObserver _defaultMoveModelObserver;
 
         private List<Coroutine> _coroutines = new List<Coroutine>();
         private List<AttackData> _attackDataList = new List<AttackData>();
@@ -47,16 +46,20 @@ namespace EmpireAtWar.Components.AttackComponent
         [Inject]
         private void Construct(
             AttackModel model,
-            IDefaultMoveModelObserver defaultMoveModelObserver,
             ICoroutineService coroutineService)
         {
             SetModel(model);
             _coroutineService = coroutineService;
-            _defaultMoveModelObserver = defaultMoveModelObserver;
         }
 
         public void Initialize()
         {
+            if (viewTransform == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(AttackComponent)} requires a serialized view transform.");
+            }
+
             Model.InjectDependency(TurretDictionary);
             Model.OnMainUnitSwitched += HandleNewMainTarget;
             _isInitialized = true;
@@ -177,7 +180,7 @@ namespace EmpireAtWar.Components.AttackComponent
         }
 
         private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(_defaultMoveModelObserver.CurrentPosition, targetPosition);
+            Vector3.Distance(viewTransform.position, targetPosition);
 
         private void RemoveAttackData(AttackData attackData)
         {
