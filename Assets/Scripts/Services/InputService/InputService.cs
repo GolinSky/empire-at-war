@@ -17,10 +17,7 @@ namespace EmpireAtWar.Services.InputService
         private const float MAX_SWIPE_DELTA = 10f;
 
         public event Action<Vector2> OnSwipe;
-        public event Action<Vector2> OnCameraMove;
-        public event Action<Vector2> OnCameraOrbit;
-        public event Action<float> OnCameraRotateStep;
-        public event Action OnCameraReset;
+        public event Action<Vector2> OnCameraPan;
         public event Action<Vector2> OnPrimaryDragStarted;
         public event Action<Vector2> OnPrimaryDragChanged;
         public event Action<Vector2> OnPrimaryDragEnded;
@@ -38,8 +35,6 @@ namespace EmpireAtWar.Services.InputService
         private bool _pressStartedOverUi;
         private bool _hasDragged;
         private bool _isMousePointer;
-        private bool _cameraRotateHandledThisFrame;
-        private bool _cameraResetHandledThisFrame;
         private Vector2 _pressPosition;
         private Vector2 _previousPosition;
         private float _previousMagnitude;
@@ -78,10 +73,6 @@ namespace EmpireAtWar.Services.InputService
             MapActions.PrimaryContact.canceled += OnPointerReleased;
             MapActions.SecondaryPosition.performed += OnSecondaryTouchPerformed;
             MapActions.Scroll.performed += OnScrollPerformed;
-            MapActions.CameraMove.performed += OnCameraMoveChanged;
-            MapActions.CameraMove.canceled += OnCameraMoveChanged;
-            MapActions.CameraRotate.performed += OnCameraRotatePerformed;
-            MapActions.CameraReset.performed += OnCameraResetPerformed;
         }
 
         public void Dispose()
@@ -90,10 +81,6 @@ namespace EmpireAtWar.Services.InputService
             MapActions.PrimaryContact.canceled -= OnPointerReleased;
             MapActions.SecondaryPosition.performed -= OnSecondaryTouchPerformed;
             MapActions.Scroll.performed -= OnScrollPerformed;
-            MapActions.CameraMove.performed -= OnCameraMoveChanged;
-            MapActions.CameraMove.canceled -= OnCameraMoveChanged;
-            MapActions.CameraRotate.performed -= OnCameraRotatePerformed;
-            MapActions.CameraReset.performed -= OnCameraResetPerformed;
 
             _inputComponentGenerated.Disable();
             _inputComponentGenerated.Dispose();
@@ -145,7 +132,10 @@ namespace EmpireAtWar.Services.InputService
                 else if (!_hasDragged)
                 {
                     InvokeInputEvent(InputType.Selection);
-                    InvokeInputEvent(InputType.ShipInput);
+                    if (!_isMousePointer)
+                    {
+                        InvokeInputEvent(InputType.ShipInput);
+                    }
                 }
             }
 
@@ -187,44 +177,12 @@ namespace EmpireAtWar.Services.InputService
             }
         }
 
-        private void OnCameraMoveChanged(InputAction.CallbackContext callbackContext)
-        {
-            if (_isBlocked)
-            {
-                OnCameraMove?.Invoke(Vector2.zero);
-                return;
-            }
-
-            OnCameraMove?.Invoke(callbackContext.ReadValue<Vector2>());
-        }
-
-        private void OnCameraRotatePerformed(InputAction.CallbackContext callbackContext)
-        {
-            if (_isBlocked) return;
-
-            float direction = callbackContext.ReadValue<float>();
-            if (!Mathf.Approximately(direction, 0f))
-            {
-                _cameraRotateHandledThisFrame = true;
-                OnCameraRotateStep?.Invoke(Mathf.Sign(direction));
-            }
-        }
-
-        private void OnCameraResetPerformed(InputAction.CallbackContext callbackContext)
-        {
-            if (!_isBlocked)
-            {
-                _cameraResetHandledThisFrame = true;
-                OnCameraReset?.Invoke();
-            }
-        }
-
         public void Tick()
         {
+            ProcessRightMouseCommand();
+
             if (!_isBlocked)
             {
-                ProcessKeyboardShortcuts();
-
                 if (MapActions.CameraDrag.IsPressed())
                 {
                     Vector2 dragDelta = MapActions.TouchDelta.ReadValue<Vector2>();
@@ -234,7 +192,7 @@ namespace EmpireAtWar.Services.InputService
 
                     if (direction.sqrMagnitude > Mathf.Epsilon)
                     {
-                        OnCameraOrbit?.Invoke(direction);
+                        OnCameraPan?.Invoke(direction);
                     }
                 }
             }
@@ -320,7 +278,7 @@ namespace EmpireAtWar.Services.InputService
             _isBlocked = isBlocked;
             if (isBlocked)
             {
-                OnCameraMove?.Invoke(Vector2.zero);
+                OnCameraPan?.Invoke(Vector2.zero);
             }
             OnBlocked?.Invoke(isBlocked);
         }
@@ -397,11 +355,13 @@ namespace EmpireAtWar.Services.InputService
 
             float horizontal = 0f;
             if (Keyboard.current.aKey.isPressed ||
+                Keyboard.current.qKey.isPressed ||
                 Keyboard.current.leftArrowKey.isPressed)
             {
                 horizontal -= 1f;
             }
             if (Keyboard.current.dKey.isPressed ||
+                Keyboard.current.eKey.isPressed ||
                 Keyboard.current.rightArrowKey.isPressed)
             {
                 horizontal += 1f;
@@ -441,35 +401,23 @@ namespace EmpireAtWar.Services.InputService
             return direction;
         }
 
-        private void ProcessKeyboardShortcuts()
+        private void ProcessRightMouseCommand()
         {
-            if (Keyboard.current == null)
+            if (_isBlocked ||
+                Mouse.current == null ||
+                !Mouse.current.rightButton.wasReleasedThisFrame)
             {
-                _cameraRotateHandledThisFrame = false;
-                _cameraResetHandledThisFrame = false;
                 return;
             }
 
-            if (!_cameraRotateHandledThisFrame)
+            Vector2 position = Mouse.current.position.ReadValue();
+            if (IsPointerOverUIObject(position))
             {
-                if (Keyboard.current.qKey.wasPressedThisFrame)
-                {
-                    OnCameraRotateStep?.Invoke(-1f);
-                }
-                else if (Keyboard.current.eKey.wasPressedThisFrame)
-                {
-                    OnCameraRotateStep?.Invoke(1f);
-                }
+                return;
             }
 
-            if (!_cameraResetHandledThisFrame &&
-                Keyboard.current.homeKey.wasPressedThisFrame)
-            {
-                OnCameraReset?.Invoke();
-            }
-
-            _cameraRotateHandledThisFrame = false;
-            _cameraResetHandledThisFrame = false;
+            CurrentTouchPhase = TouchPhase.Ended;
+            OnInput?.Invoke(InputType.ShipInput, CurrentTouchPhase, position);
         }
     }
 }
