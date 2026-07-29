@@ -30,6 +30,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly ITimer _startTimer;
         private readonly List<IMoveCommand> _moveCommands = new List<IMoveCommand>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
+        private readonly List<float> _formationRadii = new List<float>();
         private readonly List<FormationPoint> _formationDestinations =
             new List<FormationPoint>();
 
@@ -123,6 +124,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
             _moveCommands.Clear();
             _formationPositions.Clear();
+            _formationRadii.Clear();
             for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
             {
                 if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
@@ -132,6 +134,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     _formationPositions.Add(new FormationPoint(
                         moveCommand.WorldPosition.x,
                         moveCommand.WorldPosition.z));
+                    _formationRadii.Add(moveCommand.NavigationRadius);
                 }
             }
 
@@ -150,8 +153,9 @@ namespace EmpireAtWar.Controllers.ShipUi
                 Model.TapPosition,
                 _moveCommands[0].WorldPosition);
             FormationPoint targetCenter = new FormationPoint(targetWorldPosition.x, targetWorldPosition.z);
-            FormationModel.CalculateDestinations(
+            FormationModel.CalculateCompactDestinations(
                 _formationPositions,
+                _formationRadii,
                 targetCenter,
                 _formationDestinations);
 

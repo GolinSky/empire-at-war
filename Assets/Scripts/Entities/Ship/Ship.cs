@@ -72,6 +72,7 @@ namespace EmpireAtWar.Ship
         public string Id => GetType().Name;
         public PlayerType PlayerType => _playerType;
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
+        public float NavigationRadius => _shipMoveComponent.NavigationRadius;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]

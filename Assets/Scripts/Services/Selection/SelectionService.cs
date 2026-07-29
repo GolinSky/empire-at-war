@@ -30,6 +30,8 @@ namespace EmpireAtWar.Services.Battle
         private readonly List<IAttackCommand> _attackCommands = new List<IAttackCommand>();
         private readonly List<FormationPoint> _attackFormationPositions =
             new List<FormationPoint>();
+        private readonly List<float> _attackFormationRadii =
+            new List<float>();
         private readonly List<FormationPoint> _attackFormationOffsets =
             new List<FormationPoint>();
         private readonly SelectionContext _playerSelectionContext = new SelectionContext(PlayerType.Player);
@@ -154,6 +156,7 @@ namespace EmpireAtWar.Services.Battle
         {
             _attackCommands.Clear();
             _attackFormationPositions.Clear();
+            _attackFormationRadii.Clear();
             IReadOnlyList<IEntity> selectedEntities =
                 _playerSelectionContext.Entities;
             for (int i = 0; i < selectedEntities.Count; i++)
@@ -169,18 +172,29 @@ namespace EmpireAtWar.Services.Battle
                 _attackFormationPositions.Add(new FormationPoint(
                     attackCommand.WorldPosition.x,
                     attackCommand.WorldPosition.z));
+                _attackFormationRadii.Add(
+                    attackCommand.NavigationRadius);
             }
 
-            FormationModel.CalculateDestinations(
+            Vector3 targetPosition = target.HealthModel.Transform.position;
+            FormationPoint targetCenter = new FormationPoint(
+                targetPosition.x,
+                targetPosition.z);
+            FormationModel.CalculateCompactDestinations(
                 _attackFormationPositions,
-                default,
+                _attackFormationRadii,
+                targetCenter,
                 _attackFormationOffsets);
             for (int i = 0; i < _attackCommands.Count; i++)
             {
-                FormationPoint offset = _attackFormationOffsets[i];
+                FormationPoint destination =
+                    _attackFormationOffsets[i];
                 _attackCommands[i].Attack(
                     target,
-                    new Vector3(offset.X, 0f, offset.Z));
+                    new Vector3(
+                        destination.X - targetCenter.X,
+                        0f,
+                        destination.Z - targetCenter.Z));
             }
         }
 

@@ -144,6 +144,16 @@ namespace EmpireAtWar.Components.Ship.Movement
                     continue;
                 }
 
+                if (!BlocksPoint(
+                        requestedDestination,
+                        contact,
+                        shipHeight,
+                        heightTolerance,
+                        clearance))
+                {
+                    continue;
+                }
+
                 float safeRadius = contact.Radius + clearance;
                 Vector3 fromCenter = requestedDestination - contact.Position;
                 fromCenter.y = 0f;
@@ -189,6 +199,60 @@ namespace EmpireAtWar.Components.Ship.Movement
             return bestDistance < float.PositiveInfinity;
         }
 
+        public static bool IsRouteClear(
+            ShipBezierRoute route,
+            IReadOnlyList<RadarContact> contacts,
+            float shipHeight,
+            float heightTolerance,
+            float clearance)
+        {
+            if (route == null)
+            {
+                throw new ArgumentNullException(nameof(route));
+            }
+
+            if (contacts == null)
+            {
+                throw new ArgumentNullException(nameof(contacts));
+            }
+
+            Vector3[] samples = route.Samples;
+            for (int contactIndex = 0;
+                 contactIndex < contacts.Count;
+                 contactIndex++)
+            {
+                RadarContact contact = contacts[contactIndex];
+                if (!IsRelevant(contact, shipHeight, heightTolerance))
+                {
+                    continue;
+                }
+
+                Vector2 center = new Vector2(
+                    contact.Position.x,
+                    contact.Position.z);
+                float safeRadius = contact.Radius + clearance;
+                float safeRadiusSquared = safeRadius * safeRadius;
+                for (int sampleIndex = 1;
+                     sampleIndex < samples.Length;
+                     sampleIndex++)
+                {
+                    Vector2 start = new Vector2(
+                        samples[sampleIndex - 1].x,
+                        samples[sampleIndex - 1].z);
+                    Vector2 end = new Vector2(
+                        samples[sampleIndex].x,
+                        samples[sampleIndex].z);
+                    if (DistanceToSegmentSquared(center, start, end) <
+                        safeRadiusSquared)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private static bool IsPointClear(
             Vector3 point,
             IReadOnlyList<RadarContact> contacts,
@@ -196,7 +260,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             float heightTolerance,
             float clearance)
         {
-            Vector2 point2D = new Vector2(point.x, point.z);
             for (int i = 0; i < contacts.Count; i++)
             {
                 RadarContact contact = contacts[i];
@@ -205,15 +268,39 @@ namespace EmpireAtWar.Components.Ship.Movement
                     continue;
                 }
 
-                Vector2 center = new Vector2(contact.Position.x, contact.Position.z);
-                float safeRadius = contact.Radius + clearance;
-                if ((point2D - center).sqrMagnitude < safeRadius * safeRadius)
+                if (BlocksPoint(
+                        point,
+                        contact,
+                        shipHeight,
+                        heightTolerance,
+                        clearance))
                 {
                     return false;
                 }
             }
 
             return true;
+        }
+
+        private static bool BlocksPoint(
+            Vector3 point,
+            RadarContact contact,
+            float shipHeight,
+            float heightTolerance,
+            float clearance)
+        {
+            if (!IsRelevant(contact, shipHeight, heightTolerance))
+            {
+                return false;
+            }
+
+            Vector2 point2D = new Vector2(point.x, point.z);
+            Vector2 center = new Vector2(
+                contact.Position.x,
+                contact.Position.z);
+            float safeRadius = contact.Radius + clearance;
+            return (point2D - center).sqrMagnitude <
+                   safeRadius * safeRadius;
         }
 
         private static bool IsRelevant(
@@ -223,6 +310,23 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             return !contact.IsShip ||
                    Mathf.Abs(contact.Position.y - shipHeight) <= heightTolerance;
+        }
+
+        private static float DistanceToSegmentSquared(
+            Vector2 point,
+            Vector2 start,
+            Vector2 end)
+        {
+            Vector2 segment = end - start;
+            float lengthSquared = segment.sqrMagnitude;
+            if (lengthSquared <= Mathf.Epsilon)
+            {
+                return (point - start).sqrMagnitude;
+            }
+
+            float parameter = Mathf.Clamp01(
+                Vector2.Dot(point - start, segment) / lengthSquared);
+            return (point - (start + segment * parameter)).sqrMagnitude;
         }
     }
 }
