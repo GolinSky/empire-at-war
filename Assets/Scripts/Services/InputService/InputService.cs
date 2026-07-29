@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.InputService
 
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
+        public bool SupportsHover => Mouse.current != null;
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
         public Vector2 CameraMove
         {
