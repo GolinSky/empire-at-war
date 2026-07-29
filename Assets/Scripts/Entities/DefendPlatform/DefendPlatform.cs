@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.UnitDeathAnimation;
 using UnityEngine;
 using Zenject;
 
@@ -15,6 +16,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
+        private IUnitDeathAnimationData _deathAnimationData;
+        private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
         [Inject] private DefendPlatformModel RootModel { get; }
@@ -27,11 +30,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private void Construct(
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
-            List<IMonoComponent> monoComponents)
+            List<IMonoComponent> monoComponents,
+            IUnitDeathAnimationData deathAnimationData,
+            IUnitDeathAnimationService deathAnimationService)
         {
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
             _monoComponents = monoComponents;
+            _deathAnimationData = deathAnimationData;
+            _deathAnimationService = deathAnimationService;
         }
 
         public IModel GetModel()
@@ -66,6 +73,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 component.Release();
             }
+            _deathAnimationService.Play(transform, _deathAnimationData);
 
             OnRelease?.Invoke();
         }

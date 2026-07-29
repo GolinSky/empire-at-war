@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
@@ -19,7 +18,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
         [field:SerializeField] public HealthModel HealthModel { get; private set; }
         [field:SerializeField] public RadarModel RadarModel { get; private set; }
-        [field:SerializeField] public DefaultMoveModel DefaultMoveModel { get; private set; }
 
         [field:SerializeField] public float Income { get; private set; }
         IHealthModelObserver IUnitModelObserver.HealthModel => HealthModel;

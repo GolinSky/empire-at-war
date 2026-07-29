@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.UnitDeathAnimation;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
@@ -23,6 +24,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private IReadOnlyList<IMonoComponent> _monoComponents;
+        private IUnitDeathAnimationData _deathAnimationData;
+        private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
         [Inject] private SpaceStationModel RootModel { get; }
@@ -36,7 +39,9 @@ namespace EmpireAtWar.Entities.SpaceStation
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
             Vector3 startPosition,
-            List<IMonoComponent> monoComponents)
+            List<IMonoComponent> monoComponents,
+            IUnitDeathAnimationData deathAnimationData,
+            IUnitDeathAnimationService deathAnimationService)
         {
             _fogOfWarSystem = fogOfWarSystem;
             _playerType = playerType;
@@ -44,6 +49,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             _radarComponent = radarComponent;
             _startPosition = startPosition;
             _monoComponents = monoComponents;
+            _deathAnimationData = deathAnimationData;
+            _deathAnimationService = deathAnimationService;
         }
 
         public IModel GetModel()
@@ -81,6 +88,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             {
                 component.Release();
             }
+            _deathAnimationService.Play(transform, _deathAnimationData);
         }
     }
 }

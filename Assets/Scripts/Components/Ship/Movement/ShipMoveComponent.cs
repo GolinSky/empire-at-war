@@ -39,7 +39,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Sequence _rotationSequence;
         private Vector3[] _waypoints;
         private Vector3? _pendingTargetPosition;
-        private bool _canMove;
+        private bool _isNavigationReady;
         private bool _isSelected;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             transform.rotation = Model.StartRotation;
             transform.position = Model.JumpPosition;
-            _canMove = false;
+            _isNavigationReady = false;
             HyperSpaceJump(Model.HyperSpacePosition);
 
             if (_playerType == PlayerType.Player)
@@ -112,7 +112,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             _isReleased = true;
             _shipNavigationService.Unregister(this);
-            FallDown();
+            _shipNavigationService.ClearPlan(this);
+            _translationSequence.KillIfExist();
+            _rotationSequence.KillIfExist();
+            ClearRoute();
         }
 
         public void SetMediator(IShipMovementMediator mediator)
@@ -265,7 +268,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void StopAllMovement()
         {
-            if (!_canMove)
+            if (!_isNavigationReady)
             {
                 _pendingTargetPosition = null;
                 return;
@@ -274,18 +277,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             _translationSequence.KillExt();
             _shipNavigationService.ClearPlan(this);
             StraightenBody();
-            ClearRoute();
-        }
-
-        private void FallDown()
-        {
-            Vector3 point = CurrentViewPosition - Model.FallDownDirection;
-
-            _translationSequence.KillIfExist();
-            _rotationSequence.KillIfExist();
-            _translationSequence = DOTween.Sequence();
-            _translationSequence.Append(transform.DOMove(point, Model.FallDownDuration));
-            _translationSequence.Join(transform.DOLocalRotate(Model.FallDownRotation.Value, Model.FallDownDuration));
             ClearRoute();
         }
 
@@ -303,7 +294,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _translationSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration).SetEase(hyperSpaceEase));
             _translationSequence.OnComplete(() =>
             {
-                _canMove = true;
+                _isNavigationReady = true;
                 if (_pendingTargetPosition.HasValue)
                 {
                     Vector3 targetPosition = _pendingTargetPosition.Value;
@@ -315,7 +306,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
-            if (!_canMove)
+            if (!_isNavigationReady)
             {
                 _pendingTargetPosition = targetPosition;
                 return;

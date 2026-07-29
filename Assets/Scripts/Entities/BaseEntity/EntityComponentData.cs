@@ -1,8 +1,8 @@
 using System;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.UnitDeathAnimation;
 using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -10,15 +10,14 @@ using Utilities.ScriptUtils.Math;
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IDefaultMoveData, IHealthData, IAttackData, IRadarData
+    public sealed class EntityComponentData : IUnitDeathAnimationData, IHealthData, IAttackData,
+        IRadarData
     {
-        [Header("Movement Settings")]
-        [field: SerializeField] public float Speed { get; private set; }
-        [field: SerializeField] public float Height { get; private set; }
+        [Header("Death Animation Settings")]
         [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
         [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
         [field: SerializeField] public float FallDownDuration { get; private set; }
-        [field: SerializeField] public bool CanMove { get; private set; }
+        Vector3 IUnitDeathAnimationData.FallDownRotation => FallDownRotation.Value;
 
         [Header("Health Settings")]
         [field: SerializeField] public float Armor { get; private set; }
