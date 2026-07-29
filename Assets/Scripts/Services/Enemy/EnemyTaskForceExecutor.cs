@@ -12,6 +12,12 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float FORMATION_SPACING = 12f;
 
+        private readonly List<FormationPoint> _attackPositions =
+            new List<FormationPoint>();
+        private readonly List<float> _attackRadii = new List<float>();
+        private readonly List<FormationPoint> _attackDestinations =
+            new List<FormationPoint>();
+
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
             switch (decision.State)
@@ -79,7 +85,7 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private static void AssignAttack(
+        private void AssignAttack(
             IReadOnlyList<IShipEntity> ships,
             int committedShipCount,
             GameEntity target)
@@ -91,11 +97,36 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             int count = Math.Min(committedShipCount, ships.Count);
+            _attackPositions.Clear();
+            _attackRadii.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                _attackPositions.Add(new FormationPoint(
+                    ships[i].WorldPosition.x,
+                    ships[i].WorldPosition.z));
+                _attackRadii.Add(ships[i].NavigationRadius);
+            }
+
+            Vector3 targetPosition = target.HealthModel.Transform.position;
+            FormationPoint targetCenter = new FormationPoint(
+                targetPosition.x,
+                targetPosition.z);
+            FormationModel.CalculateCompactDestinations(
+                _attackPositions,
+                _attackRadii,
+                targetCenter,
+                _attackDestinations);
             for (int i = 0; i < ships.Count; i++)
             {
                 if (i < count)
                 {
-                    ships[i].AssignAttackTarget(target);
+                    FormationPoint destination = _attackDestinations[i];
+                    ships[i].AssignAttackTarget(
+                        target,
+                        new Vector3(
+                            destination.X - targetCenter.X,
+                            0f,
+                            destination.Z - targetCenter.Z));
                 }
                 else
                 {

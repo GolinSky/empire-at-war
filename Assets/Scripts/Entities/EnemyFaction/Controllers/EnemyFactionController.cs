@@ -103,7 +103,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ShipEntity ship = _shipFacadeFactory.Create(
                                     PlayerType,
                                     shipUnitRequest.Key,
-                                    GenerateShipCoordinates());
+                                    GenerateShipCoordinates(shipUnitRequest.Key));
                                 ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
                             }
                             catch
@@ -196,14 +196,29 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             return $"{unitRequest.GetType().FullName}:{unitRequest.Id}";
         }
         
-        private Vector3 GenerateShipCoordinates()
+        private Vector3 GenerateShipCoordinates(ShipType shipType)
         {
-            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(PlayerType, out Vector3 position))
+            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(
+                    PlayerType,
+                    shipType,
+                    out Vector3 position))
             {
                 return position;
             }
 
-            return GeneratePositionNearBase();
+            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            {
+                position = GeneratePositionNearBase();
+                if (_reinforcementZonesSystem.IsShipSpawnPositionClear(
+                        shipType,
+                        position))
+                {
+                    return position;
+                }
+            }
+
+            throw new InvalidOperationException(
+                $"No clear enemy spawn position is available for {shipType}.");
         }
 
         private Vector3 GenerateMapCoordinates()

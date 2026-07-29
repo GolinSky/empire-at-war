@@ -27,6 +27,27 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void HasClearance_RejectsOverlappingShipRadii()
+        {
+            FormationPoint position = new FormationPoint(10f, -5f);
+
+            Assert.That(
+                FormationModel.HasClearance(
+                    position,
+                    5f,
+                    position,
+                    5f),
+                Is.False);
+            Assert.That(
+                FormationModel.HasClearance(
+                    position,
+                    5f,
+                    new FormationPoint(20f, -5f),
+                    5f),
+                Is.True);
+        }
+
+        [Test]
         public void CalculateCenter_ReturnsOriginForEmptyFormation()
         {
             FormationPoint center = FormationModel.CalculateCenter(new List<FormationPoint>());
