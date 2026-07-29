@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using UnityEngine;
@@ -8,9 +9,20 @@ namespace EmpireAtWar.Components.Ship.Movement
     public static class ShipAvoidancePlanner
     {
         private const int DESTINATION_CANDIDATE_COUNT = 24;
+        private const float CURVED_ROUTE_CLEARANCE_FACTOR = 2f;
 
         public static Vector3 ClampToMap(Vector3 point, Vector2Range mapRange, float margin)
         {
+            if (mapRange == null)
+            {
+                throw new ArgumentNullException(nameof(mapRange));
+            }
+
+            if (margin < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(margin));
+            }
+
             point.x = Mathf.Clamp(point.x, mapRange.Min.x + margin, mapRange.Max.x - margin);
             point.z = Mathf.Clamp(point.z, mapRange.Min.y + margin, mapRange.Max.y - margin);
             return point;
@@ -26,6 +38,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector2Range mapRange,
             out Vector3 detour)
         {
+            if (contacts == null)
+            {
+                throw new ArgumentNullException(nameof(contacts));
+            }
+
             Vector2 start = new Vector2(origin.x, origin.z);
             Vector2 end = new Vector2(destination.x, destination.z);
             Vector2 route = end - start;
@@ -55,14 +72,34 @@ namespace EmpireAtWar.Components.Ship.Movement
                 }
 
                 Vector2 perpendicular = new Vector2(-direction.y, direction.x);
-                Vector2 left = center + perpendicular * safeRadius;
-                Vector2 right = center - perpendicular * safeRadius;
+                float detourRadius =
+                    safeRadius + clearance * CURVED_ROUTE_CLEARANCE_FACTOR;
+                Vector2 left = center + perpendicular * detourRadius;
+                Vector2 right = center - perpendicular * detourRadius;
                 Vector3 leftPoint = ClampToMap(new Vector3(left.x, shipHeight, left.y), mapRange, clearance);
                 Vector3 rightPoint = ClampToMap(new Vector3(right.x, shipHeight, right.y), mapRange, clearance);
-                detour = Vector3.Distance(origin, leftPoint) <= Vector3.Distance(origin, rightPoint)
-                    ? leftPoint
-                    : rightPoint;
-                return true;
+                bool leftIsClear = IsPointClear(
+                    leftPoint,
+                    contacts,
+                    shipHeight,
+                    heightTolerance,
+                    clearance);
+                bool rightIsClear = IsPointClear(
+                    rightPoint,
+                    contacts,
+                    shipHeight,
+                    heightTolerance,
+                    clearance);
+                if (leftIsClear || rightIsClear)
+                {
+                    detour = leftIsClear &&
+                             (!rightIsClear ||
+                              Vector3.Distance(origin, leftPoint) <=
+                              Vector3.Distance(origin, rightPoint))
+                        ? leftPoint
+                        : rightPoint;
+                    return true;
+                }
             }
 
             detour = destination;
@@ -79,6 +116,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector2Range mapRange,
             out Vector3 resolvedDestination)
         {
+            if (contacts == null)
+            {
+                throw new ArgumentNullException(nameof(contacts));
+            }
+
             requestedDestination.y = shipHeight;
             requestedDestination = ClampToMap(requestedDestination, mapRange, clearance);
             if (IsPointClear(

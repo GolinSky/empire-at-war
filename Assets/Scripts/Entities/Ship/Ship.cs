@@ -39,7 +39,7 @@ namespace EmpireAtWar.Ship
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
         ILateDisposable, ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator,
-        IShipMovementMediator, IObserver<ISelectionSubject>, IEntityLifecycle
+        IShipMovementMediator, IEntityLifecycle
     {
         private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
@@ -47,7 +47,6 @@ namespace EmpireAtWar.Ship
         private IRadarComponent _radarComponent;
         private IWeaponComponent _weaponComponent;
         private ISelectionComponent _selectionComponent;
-        private ISelectionService _selectionService;
         private AttackTargetState _attackTargetState;
         private IdleState _idleState;
         private NavigateState _navigateState;
@@ -58,7 +57,6 @@ namespace EmpireAtWar.Ship
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
         private PlayerType _playerType;
-        private bool _isSelected;
         private bool _isReleased;
         private ILayerService _layerService;
         private IUnitDeathAnimationData _deathAnimationData;
@@ -83,7 +81,6 @@ namespace EmpireAtWar.Ship
             IRadarComponent radarComponent,
             IWeaponComponent weaponComponent,
             ISelectionComponent selectionComponent,
-            ISelectionService selectionService,
             AttackTargetState attackTargetState,
             IdleState idleState,
             NavigateState navigateState,
@@ -103,7 +100,6 @@ namespace EmpireAtWar.Ship
             _radarComponent = radarComponent;
             _weaponComponent = weaponComponent;
             _selectionComponent = selectionComponent;
-            _selectionService = selectionService;
             _attackTargetState = attackTargetState;
             _idleState = idleState;
             _navigateState = navigateState;
@@ -131,7 +127,6 @@ namespace EmpireAtWar.Ship
             ShipService.Add(this);
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
-            _selectionService.AddObserver(this);
             _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
 
             if (_playerType == PlayerType.Opponent)
@@ -217,7 +212,6 @@ namespace EmpireAtWar.Ship
             _deathAnimationService.Play(transform, _deathAnimationData);
 
             ShipService.Remove(this);
-            _selectionService.RemoveObserver(this);
 
             if (_enginesUnitModel != null)
             {
@@ -243,6 +237,28 @@ namespace EmpireAtWar.Ship
             _shipAIBrain.Enable(false);
             _navigateState.SetWorldDestination(worldPosition);
             _stateMachine.SetState(_navigateState);
+        }
+
+        public void Attack(IEntity target, Vector3 formationOffset)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (ReferenceEquals(
+                    _stateMachine.CurrentState,
+                    _attackTargetState) &&
+                _attackTargetState.IsTheSameTarget(
+                    target,
+                    formationOffset))
+            {
+                return;
+            }
+
+            _shipAIBrain.Enable(false);
+            _attackTargetState.SetData(target, formationOffset);
+            _stateMachine.SetState(_attackTargetState);
         }
 
         public void HandleNewEnemy(IEntity entity)
@@ -286,27 +302,8 @@ namespace EmpireAtWar.Ship
 
         public void OnSelect(bool isActive)
         {
-            _isSelected = isActive;
             _shipMoveComponent.HandleSelection(isActive);
             _audioDialogShipComponent?.HandleSelection(isActive);
-        }
-
-        public void UpdateState(ISelectionSubject selectionSubject)
-        {
-            if (!_isSelected || selectionSubject.UpdatedType != PlayerType.Opponent ||
-                !selectionSubject.EnemySelectionContext.HasSelectable)
-            {
-                return;
-            }
-
-            IEntity entity = selectionSubject.EnemySelectionContext.Entity;
-            IHealthModelObserver healthModel = entity.HealthModel;
-            if (!healthModel.IsDestroyed && healthModel.HasUnits && !_attackTargetState.IsTheSameTarget(entity))
-            {
-                _shipAIBrain.Enable(false);
-                _attackTargetState.SetData(entity);
-                _stateMachine.SetState(_attackTargetState);
-            }
         }
 
         private void SynchronizeComponents()

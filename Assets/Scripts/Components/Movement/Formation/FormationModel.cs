@@ -45,6 +45,32 @@ namespace EmpireAtWar.Components.Movement.Formation
                 targetCenter.Z + position.Z - center.Z);
         }
 
+        public static void CalculateDestinations(
+            IReadOnlyList<FormationPoint> positions,
+            FormationPoint targetCenter,
+            IList<FormationPoint> destinations)
+        {
+            if (positions == null)
+            {
+                throw new ArgumentNullException(nameof(positions));
+            }
+
+            if (destinations == null)
+            {
+                throw new ArgumentNullException(nameof(destinations));
+            }
+
+            destinations.Clear();
+            FormationPoint center = CalculateCenter(positions);
+            for (int i = 0; i < positions.Count; i++)
+            {
+                destinations.Add(CalculateDestination(
+                    positions[i],
+                    center,
+                    targetCenter));
+            }
+        }
+
         public static FormationPoint CalculateGridDestination(
             int index,
             int count,

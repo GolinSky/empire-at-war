@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_IgnoresObstacleContacts()
+        public void Plan_AvoidsMapObstacleCrossingRoute()
         {
             FakeAgent clearAgent = new FakeAgent(
                 Vector3.zero,
@@ -81,12 +81,103 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(
                 obstructedPlan.Destination,
                 Is.EqualTo(clearPlan.Destination));
-            Assert.That(obstructedPlan.Detour.HasValue, Is.False);
+            Assert.That(obstructedPlan.Detour.HasValue, Is.True);
             Assert.That(obstructedPlan.WaitDuration, Is.Zero);
             Assert.That(obstructedPlan.TrafficConflictChecks, Is.Zero);
             Assert.That(
                 obstructedPlan.Route.Length,
-                Is.EqualTo(clearPlan.Route.Length).Within(0.01f));
+                Is.GreaterThan(clearPlan.Route.Length));
+            Assert.That(
+                Mathf.Abs(obstructedPlan.Detour.Value.z),
+                Is.GreaterThanOrEqualTo(20f));
+            for (int i = 0; i < obstructedPlan.Trajectory.Length; i++)
+            {
+                Vector3 sample = obstructedPlan.Trajectory[i];
+                float planarDistance = Vector2.Distance(
+                    new Vector2(sample.x, sample.z),
+                    new Vector2(20f, 0f));
+                Assert.That(
+                    planarDistance,
+                    Is.GreaterThanOrEqualTo(14.999f),
+                    $"Trajectory sample {i} entered the obstacle clearance.");
+            }
+        }
+
+        [Test]
+        public void Plan_AvoidsStaticMapObstacleBeforeRadarContact()
+        {
+            FakeAgent agent = new FakeAgent(
+                Vector3.zero,
+                0f,
+                5f,
+                10f,
+                30f);
+            RadarContact staticObstacle = new RadarContact(
+                new Vector3(20f, 0f, 0f),
+                10f,
+                false);
+            ShipNavigationService service = CreateService(
+                agent,
+                new[] { staticObstacle });
+
+            ShipNavigationPlan plan = Plan(
+                service,
+                agent,
+                new Vector3(50f, 0f, 0f));
+
+            Assert.That(plan.Detour.HasValue, Is.True);
+        }
+
+        [Test]
+        public void Plan_IgnoresShipContactsWhileShipAvoidanceIsDisabled()
+        {
+            FakeAgent agent = new FakeAgent(
+                Vector3.zero,
+                0f,
+                5f,
+                10f,
+                30f);
+            ShipNavigationService service = CreateService(agent);
+
+            ShipNavigationPlan plan = Plan(
+                service,
+                agent,
+                new Vector3(50f, 0f, 0f),
+                new[]
+                {
+                    new RadarContact(
+                        new Vector3(20f, 0f, 0f),
+                        10f,
+                        true)
+                });
+
+            Assert.That(plan.Detour.HasValue, Is.False);
+        }
+
+        [Test]
+        public void Plan_ResolvesDestinationInsideMapObstacle()
+        {
+            FakeAgent agent = new FakeAgent(
+                Vector3.zero,
+                0f,
+                5f,
+                10f,
+                30f);
+            ShipNavigationService service = CreateService(agent);
+            Vector3 obstacleCenter = new Vector3(20f, 0f, 0f);
+
+            ShipNavigationPlan plan = Plan(
+                service,
+                agent,
+                obstacleCenter,
+                new[]
+                {
+                    new RadarContact(obstacleCenter, 10f, false)
+                });
+
+            Assert.That(
+                Vector3.Distance(plan.Destination, obstacleCenter),
+                Is.GreaterThanOrEqualTo(14.999f));
         }
 
         [Test]
@@ -94,7 +185,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             FakeAgent first = new FakeAgent(Vector3.zero, 0f, 8f, 10f, 30f);
             FakeAgent second = new FakeAgent(Vector3.zero, 0f, 8f, 10f, 30f);
-            ShipNavigationService service = new ShipNavigationService();
+            ShipNavigationService service = CreateService();
             service.Register(first);
             service.Register(second);
             Vector3 destination = new Vector3(50f, 0f, 0f);
@@ -135,11 +226,22 @@ namespace EmpireAtWar.Tests.Movement
                 Is.GreaterThan(1f));
         }
 
-        private ShipNavigationService CreateService(FakeAgent agent)
+        private ShipNavigationService CreateService(
+            FakeAgent agent,
+            IReadOnlyList<RadarContact> staticObstacles = null)
         {
-            ShipNavigationService service = new ShipNavigationService();
+            ShipNavigationService service = CreateService(staticObstacles);
             service.Register(agent);
             return service;
+        }
+
+        private static ShipNavigationService CreateService(
+            IReadOnlyList<RadarContact> staticObstacles = null)
+        {
+            return new ShipNavigationService(
+                new FakeMapObstacleContactProvider(
+                    staticObstacles ??
+                    System.Array.Empty<RadarContact>()));
         }
 
         private ShipNavigationPlan Plan(
@@ -188,6 +290,29 @@ namespace EmpireAtWar.Tests.Movement
             public float NavigationRadius { get; }
             public float NavigationSpeed { get; }
             public float NavigationRotationSpeed { get; }
+        }
+
+        private sealed class FakeMapObstacleContactProvider :
+            IMapObstacleContactProvider
+        {
+            private readonly IReadOnlyList<RadarContact> _contacts;
+
+            public FakeMapObstacleContactProvider(
+                IReadOnlyList<RadarContact> contacts)
+            {
+                _contacts = contacts;
+            }
+
+            public string Id => nameof(FakeMapObstacleContactProvider);
+
+            public void CopyContacts(List<RadarContact> destination)
+            {
+                destination.Clear();
+                for (int i = 0; i < _contacts.Count; i++)
+                {
+                    destination.Add(_contacts[i]);
+                }
+            }
         }
     }
 }

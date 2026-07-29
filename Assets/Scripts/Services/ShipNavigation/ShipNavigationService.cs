@@ -64,6 +64,17 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         private readonly HashSet<IShipNavigationAgent> _agents =
             new HashSet<IShipNavigationAgent>();
+        private readonly List<RadarContact> _mapObstacleContacts =
+            new List<RadarContact>();
+        private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
+
+        public ShipNavigationService(
+            IMapObstacleContactProvider mapObstacleContactProvider)
+        {
+            _mapObstacleContactProvider = mapObstacleContactProvider ??
+                throw new ArgumentNullException(
+                    nameof(mapObstacleContactProvider));
+        }
 
         public void Register(IShipNavigationAgent agent)
         {
@@ -100,7 +111,32 @@ namespace EmpireAtWar.Services.ShipNavigation
                     "Ship navigation agent must be registered before planning.");
             }
 
+            if (obstacleContacts == null)
+            {
+                throw new ArgumentNullException(nameof(obstacleContacts));
+            }
+
             Vector3 origin = agent.NavigationPosition;
+            _mapObstacleContactProvider.CopyContacts(_mapObstacleContacts);
+            for (int i = 0; i < obstacleContacts.Count; i++)
+            {
+                RadarContact contact = obstacleContacts[i];
+                if (!contact.IsShip &&
+                    !ContainsEquivalentObstacle(contact))
+                {
+                    _mapObstacleContacts.Add(contact);
+                }
+            }
+
+            ShipAvoidancePlanner.TryResolveDestination(
+                requestedDestination,
+                origin,
+                _mapObstacleContacts,
+                agent.NavigationHeight,
+                heightTolerance,
+                clearance,
+                mapRange,
+                out Vector3 destination);
             float minimumTurnRadius =
                 Mathf.Max(
                     agent.NavigationRadius,
@@ -109,16 +145,39 @@ namespace EmpireAtWar.Services.ShipNavigation
                         Mathf.Max(
                             agent.NavigationRotationSpeed,
                             Mathf.Epsilon)));
-            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
-                origin,
-                forward,
-                requestedDestination,
-                minimumTurnRadius);
+            Vector3? detour = null;
+            ShipBezierRoute route;
+            if (ShipAvoidancePlanner.TryCalculateDetour(
+                    origin,
+                    destination,
+                    _mapObstacleContacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance,
+                    mapRange,
+                    out Vector3 avoidancePoint))
+            {
+                detour = avoidancePoint;
+                route = ShipBezierPath.BuildAvoidanceRoute(
+                    origin,
+                    forward,
+                    avoidancePoint,
+                    destination);
+            }
+            else
+            {
+                route = ShipBezierPath.BuildDirectRoute(
+                    origin,
+                    forward,
+                    destination,
+                    minimumTurnRadius);
+            }
+
             float movementDuration =
                 route.Length / Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
             return new ShipNavigationPlan(
-                requestedDestination,
-                null,
+                destination,
+                detour,
                 route,
                 0f,
                 movementDuration,
@@ -131,6 +190,21 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 throw new ArgumentNullException(nameof(agent));
             }
+        }
+
+        private bool ContainsEquivalentObstacle(RadarContact contact)
+        {
+            for (int i = 0; i < _mapObstacleContacts.Count; i++)
+            {
+                RadarContact existing = _mapObstacleContacts[i];
+                if (existing.Position == contact.Position &&
+                    Mathf.Approximately(existing.Radius, contact.Radius))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

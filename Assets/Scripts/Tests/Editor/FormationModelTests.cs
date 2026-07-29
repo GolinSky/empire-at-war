@@ -36,6 +36,28 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void CalculateDestinations_PreservesDistinctOffsetsForSharedTarget()
+        {
+            List<FormationPoint> positions = new List<FormationPoint>
+            {
+                new FormationPoint(-6f, 4f),
+                new FormationPoint(6f, -4f)
+            };
+            List<FormationPoint> destinations = new List<FormationPoint>();
+
+            FormationModel.CalculateDestinations(
+                positions,
+                new FormationPoint(100f, 200f),
+                destinations);
+
+            Assert.That(destinations, Has.Count.EqualTo(2));
+            Assert.That(destinations[0].X, Is.EqualTo(94f));
+            Assert.That(destinations[0].Z, Is.EqualTo(204f));
+            Assert.That(destinations[1].X, Is.EqualTo(106f));
+            Assert.That(destinations[1].Z, Is.EqualTo(196f));
+        }
+
+        [Test]
         public void CalculateGridDestination_AssignsDistinctCenteredSlots()
         {
             FormationPoint target = new FormationPoint(100f, 200f);
