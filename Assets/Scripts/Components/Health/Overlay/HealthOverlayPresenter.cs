@@ -1,5 +1,7 @@
 using System;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
@@ -21,6 +23,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private readonly ICameraService _cameraService;
 
         private IEntity _target;
+        private ISelectionPositionProvider _targetPositionProvider;
 
         public HealthOverlayPresenter(
             IHealthOverlayView view,
@@ -44,7 +47,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         public void Initialize()
         {
             _selectionService.AddObserver(this);
-            SetTarget(GetSelectedEntity());
+            SetTarget(GetDesiredTarget());
         }
 
         public void LateDispose()
@@ -60,13 +63,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 throw new ArgumentNullException(nameof(value));
             }
 
-            SetTarget(GetSelectedEntity());
+            SetTarget(GetDesiredTarget());
         }
 
         public void Tick()
         {
-            IEntity selectedEntity = GetSelectedEntity();
-            IEntity desiredTarget = selectedEntity ?? GetHoveredEntity();
+            IEntity desiredTarget = GetDesiredTarget();
             if (!ReferenceEquals(_target, desiredTarget))
             {
                 SetTarget(desiredTarget);
@@ -78,7 +80,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 return;
             }
 
-            Vector3 worldPosition = _target.HealthModel.Transform.position;
+            Vector3 worldPosition = _targetPositionProvider.WorldPosition;
             Vector3 viewportPosition = _cameraService.WorldToViewportPoint(worldPosition);
             if (viewportPosition.z <= 0f ||
                 viewportPosition.x < 0f ||
@@ -91,6 +93,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             }
 
             _view.Show(_cameraService.WorldToScreenPoint(worldPosition));
+        }
+
+        private IEntity GetDesiredTarget()
+        {
+            return GetHoveredEntity() ?? GetSelectedEntity();
         }
 
         private IEntity GetSelectedEntity()
@@ -142,6 +149,19 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 return;
             }
 
+            ISelectionPositionProvider targetPositionProvider = null;
+            if (target != null)
+            {
+                if (!target.TryGetCommand(out IEntitySelectionCommand selectionCommand) ||
+                    !(selectionCommand is ISelectionPositionProvider positionProvider))
+                {
+                    throw new InvalidOperationException(
+                        "A health overlay target requires a selection position provider.");
+                }
+
+                targetPositionProvider = positionProvider;
+            }
+
             if (_target != null)
             {
                 _target.HealthModel.OnValueChanged -= HandleHealthChanged;
@@ -149,6 +169,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             }
 
             _target = target;
+            _targetPositionProvider = targetPositionProvider;
             if (_target == null)
             {
                 _view.Hide();
