@@ -18,6 +18,7 @@ namespace EmpireAtWar.Services.InputService
         TouchPhase CurrentTouchPhase { get;}
         
         Vector2 TouchPosition { get; }
+        bool SupportsHover { get; }
         Vector2 CameraMove { get; }
         int TapCount { get; }
 
