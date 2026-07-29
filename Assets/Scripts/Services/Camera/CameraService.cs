@@ -29,7 +29,6 @@ namespace EmpireAtWar.Services.Camera
         private Plane _plane = new();
         private CameraData _cameraData;
         private IInputService _inputService;
-        private CameraOrbitModel _orbitModel;
         private Tween _moveTween;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
@@ -61,17 +60,10 @@ namespace EmpireAtWar.Services.Camera
         {
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
-            _orbitModel = new CameraOrbitModel(
-                transform.eulerAngles.x,
-                transform.eulerAngles.y,
-                _cameraData.MinPitch,
-                _cameraData.MaxPitch);
             _inputService.OnLeftMousePressed += StopMovement;
             _inputService.OnSwipe += OnSwipe;
             _inputService.OnZoom += ZoomCamera;
-            _inputService.OnCameraOrbit += OrbitCamera;
-            _inputService.OnCameraRotateStep += RotateCameraStep;
-            _inputService.OnCameraReset += ResetCamera;
+            _inputService.OnCameraPan += PanCamera;
         }
 
         public void LateDispose()
@@ -79,9 +71,7 @@ namespace EmpireAtWar.Services.Camera
             _inputService.OnLeftMousePressed -= StopMovement;
             _inputService.OnSwipe -= OnSwipe;
             _inputService.OnZoom -= ZoomCamera;
-            _inputService.OnCameraOrbit -= OrbitCamera;
-            _inputService.OnCameraRotateStep -= RotateCameraStep;
-            _inputService.OnCameraReset -= ResetCamera;
+            _inputService.OnCameraPan -= PanCamera;
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
             StopMovement();
@@ -126,7 +116,7 @@ namespace EmpireAtWar.Services.Camera
             }
 
             targetCameraPosition.y = CameraPosition.y;
-            SetPosition(ClampPosition(targetCameraPosition), true);
+            SetPosition(ClampPosition(targetCameraPosition), false);
         }
 
         private void OnSwipe(Vector2 direction)
@@ -163,58 +153,13 @@ namespace EmpireAtWar.Services.Camera
             SetPosition(ClampPosition(CameraPosition + move), false);
         }
 
-        private void OrbitCamera(Vector2 dragDelta)
+        private void PanCamera(Vector2 direction)
         {
-            _orbitModel.Rotate(
-                -dragDelta.y * _cameraData.OrbitSensitivity,
-                dragDelta.x * _cameraData.OrbitSensitivity);
-            ApplyOrbit();
-        }
-
-        private void RotateCameraStep(float direction)
-        {
-            _orbitModel.Rotate(0f, direction * _cameraData.StepRotationAngle);
-            ApplyOrbit();
-        }
-
-        private void ResetCamera()
-        {
-            _orbitModel.Reset();
-            ApplyOrbit();
-        }
-
-        private void ApplyOrbit()
-        {
-            StopMovement();
-            if (!TryGetGroundPivot(out Vector3 pivot))
-            {
-                return;
-            }
-
-            Quaternion rotation = Quaternion.Euler(_orbitModel.Pitch, _orbitModel.Yaw, 0f);
-            Vector3 forward = rotation * Vector3.forward;
-            if (forward.y >= -Mathf.Epsilon)
-            {
-                return;
-            }
-
-            float distance = (CameraPosition.y - pivot.y) / -forward.y;
-            Vector3 position = pivot - forward * distance;
-            transform.SetPositionAndRotation(ClampPosition(position), rotation);
-        }
-
-        private bool TryGetGroundPivot(out Vector3 pivot)
-        {
-            _plane.SetNormalAndPosition(Vector3.up, Vector3.zero);
-            Ray ray = new Ray(CameraPosition, CameraForward);
-            if (_plane.Raycast(ray, out float distance))
-            {
-                pivot = ray.GetPoint(distance);
-                return true;
-            }
-
-            pivot = default;
-            return false;
+            Vector2 normalizedDirection = Vector2.ClampMagnitude(direction, 1f);
+            Vector3 move = GetPlanarDirection(normalizedDirection) *
+                _cameraData.PanSpeed *
+                Time.unscaledDeltaTime;
+            SetPosition(ClampPosition(CameraPosition + move), false);
         }
 
         private Vector3 GetPlanarDirection(Vector2 input)
