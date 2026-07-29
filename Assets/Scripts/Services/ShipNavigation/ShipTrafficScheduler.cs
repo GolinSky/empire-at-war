@@ -7,6 +7,8 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal sealed class ShipTrafficScheduler
     {
         private const float TRAFFIC_SAFETY_DELAY = 0.5f;
+        private const float MAXIMUM_TRAFFIC_START_DELAY =
+            TRAFFIC_SAFETY_DELAY;
         private const int MINIMUM_TRAFFIC_SAMPLE_COUNT = 16;
         private const int MAXIMUM_TRAFFIC_SAMPLE_COUNT = 128;
         private const int MAXIMUM_SCHEDULING_ITERATIONS = 128;
@@ -83,7 +85,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                     safeTime);
             }
 
-            return ResolveDelay();
+            return Mathf.Min(
+                ResolveDelay(),
+                MAXIMUM_TRAFFIC_START_DELAY);
         }
 
         private float ResolveDelay()

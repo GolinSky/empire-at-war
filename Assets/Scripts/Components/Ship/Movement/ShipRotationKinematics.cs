@@ -5,6 +5,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 {
     public static class ShipRotationKinematics
     {
+        private const float HALF_TURN_ANGLE = 180f;
+
         public static float CalculateMinimumTurnRadius(
             float speed,
             float degreesPerSecond)
@@ -81,6 +83,32 @@ namespace EmpireAtWar.Components.Ship.Movement
                 -1f,
                 1f);
             return -turnRatio * maximumBankAngle;
+        }
+
+        public static float CalculateLookBankAngle(
+            Quaternion currentRotation,
+            Vector3 targetDirection,
+            float maximumBankAngle)
+        {
+            if (maximumBankAngle < 0f)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(maximumBankAngle));
+            }
+
+            if (targetDirection.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return 0f;
+            }
+
+            float turnAngle = Vector3.SignedAngle(
+                currentRotation * Vector3.forward,
+                targetDirection,
+                Vector3.up);
+            return -Mathf.Clamp(
+                turnAngle / HALF_TURN_ANGLE,
+                -1f,
+                1f) * maximumBankAngle;
         }
 
         public static Quaternion Step(

@@ -14,10 +14,6 @@ namespace EmpireAtWar.Services.Camera
         [field: SerializeField] public float PanAcceleration { get; private set; }
         [field: SerializeField] public float PanDeceleration { get; private set; }
         [field: SerializeField] public float ZoomSpeed { get; private set; }
-        [field: SerializeField, Range(1f, 89f)] public float MinPitch { get; private set; }
-        [field: SerializeField, Range(1f, 89f)] public float MaxPitch { get; private set; }
-        [field: SerializeField] public float OrbitSensitivity { get; private set; }
-        [field: SerializeField] public float StepRotationAngle { get; private set; }
         [field: SerializeField] public float TweenSpeed { get; private set; }
     }
 }

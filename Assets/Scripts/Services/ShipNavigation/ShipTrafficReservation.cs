@@ -6,6 +6,15 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         public ShipTrafficReservation(
             Vector3 destination,
+            float height,
+            float radius,
+            float speed)
+            : this(destination, null, height, radius, speed, 0f, 0f)
+        {
+        }
+
+        public ShipTrafficReservation(
+            Vector3 destination,
             ShipTrafficPath path,
             float height,
             float radius,
@@ -20,6 +29,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Speed = speed;
             WaitDuration = waitDuration;
             MovementDuration = movementDuration;
+            HasDestination = true;
         }
 
         public Vector3 Destination { get; }
@@ -29,6 +39,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float Speed { get; }
         public float WaitDuration { get; }
         public float MovementDuration { get; }
+        public bool HasDestination { get; }
         public bool HasTrajectory => Path != null;
     }
 }

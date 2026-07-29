@@ -116,7 +116,6 @@ GameObject:
   - component: {fileID: 1387384039836268560}
   - component: {fileID: 2610921033299271252}
   - component: {fileID: 2557233241895815559}
-  - component: {fileID: 6130150771502648301}
   - component: {fileID: 1785301417331425728}
   m_Layer: 0
   m_Name: DefendPlatformView
@@ -204,18 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036f62d612164b9d8fe1a6824537a043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Radar.RadarComponent
---- !u!114 &6130150771502648301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 414979512125735457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 335f300fe63bb6243adef6a5993e6a5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Movement.SimpleMoveComponent
 --- !u!114 &1785301417331425728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,6 +605,7 @@ MonoBehaviour:
       - {fileID: 3904722521049085063}
       - {fileID: 4187391721111521243}
       - {fileID: 3007545869417895737}
+  viewTransform: {fileID: 1345302067295067274}
 --- !u!1001 &1052237977207897725
 PrefabInstance:
   m_ObjectHideFlags: 0

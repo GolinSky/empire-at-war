@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.UnitDeathAnimation;
 using UnityEngine;
 using Zenject;
 
@@ -22,6 +23,8 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private IReadOnlyList<IMonoComponent> _monoComponents;
+        private IUnitDeathAnimationData _deathAnimationData;
+        private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
         [Inject] private MiningFacilityModel RootModel { get; }
@@ -37,13 +40,17 @@ namespace EmpireAtWar.Entities.MiningFacility
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
             Vector3 startPosition,
-            List<IMonoComponent> monoComponents)
+            List<IMonoComponent> monoComponents,
+            IUnitDeathAnimationData deathAnimationData,
+            IUnitDeathAnimationService deathAnimationService)
         {
             _economyProvider = economyProvider;
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
             _startPosition = startPosition;
             _monoComponents = monoComponents;
+            _deathAnimationData = deathAnimationData;
+            _deathAnimationService = deathAnimationService;
         }
 
         public IModel GetModel()
@@ -77,6 +84,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 component.Release();
             }
+            _deathAnimationService.Play(transform, _deathAnimationData);
 
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);

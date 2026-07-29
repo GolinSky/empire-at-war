@@ -11,6 +11,7 @@ namespace EmpireAtWar.Commands.Ship
     public class PlayerShipCommand: Command<EmpireAtWar.Ship.Ship>, IShipCommand, IMoveCommand
     {
         public Vector3 WorldPosition => Controller.WorldPosition;
+        public float NavigationRadius => Controller.NavigationRadius;
 
         public PlayerShipCommand(EmpireAtWar.Ship.Ship ship) : base(ship)
         {

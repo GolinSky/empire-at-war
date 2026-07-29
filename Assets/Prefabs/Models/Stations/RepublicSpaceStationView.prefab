@@ -904,6 +904,7 @@ MonoBehaviour:
       - {fileID: 3338842454457253282}
       - {fileID: 8636718447074006593}
       - {fileID: 5541572143087454584}
+  viewTransform: {fileID: 4603807269250663179}
 --- !u!1 &3878823890033674953
 GameObject:
   m_ObjectHideFlags: 0
@@ -1455,7 +1456,6 @@ GameObject:
   - component: {fileID: 4944068100476870398}
   - component: {fileID: 8450382512840613885}
   - component: {fileID: 1280977221910138847}
-  - component: {fileID: 5628420194237981201}
   - component: {fileID: 3629884125025287426}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
@@ -1556,18 +1556,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036f62d612164b9d8fe1a6824537a043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Radar.RadarComponent
---- !u!114 &5628420194237981201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8430518895033861752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 335f300fe63bb6243adef6a5993e6a5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Movement.SimpleMoveComponent
 --- !u!114 &3629884125025287426
 MonoBehaviour:
   m_ObjectHideFlags: 0

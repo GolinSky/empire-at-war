@@ -174,24 +174,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""CameraRotate"",
-                    ""type"": ""Value"",
-                    ""id"": ""daa5fdb3-5ab5-4127-bb2d-0c82e9fb4767"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""CameraReset"",
-                    ""type"": ""Button"",
-                    ""id"": ""dadbb832-c153-493e-81d3-edd373fb5a62"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""CameraMove"",
                     ""type"": ""Value"",
                     ""id"": ""d8da86bf-b5bb-44df-aa10-f9b77609f9ef"",
@@ -478,59 +460,37 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""1D Axis"",
+                    ""name"": ""QE"",
                     ""id"": ""508eb2af-46ba-49cd-8c36-c1c2a887d359"",
-                    ""path"": ""1DAxis"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""CameraRotate"",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""positive"",
+                    ""name"": ""right"",
                     ""id"": ""bd5eea4f-b90a-4199-b02a-bb3101fb9f52"",
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""CameraRotate"",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""negative"",
+                    ""name"": ""left"",
                     ""id"": ""de2fb0bc-33a2-4517-b3c0-d29e8799c6a1"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""CameraRotate"",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""fbbe4686-3f78-42fe-abde-7487dfbdb8f7"",
-                    ""path"": ""<Keyboard>/home"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""CameraReset"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8211391a-cb61-4243-aadc-4c64da034d62"",
-                    ""path"": ""<Mouse>/middleButton"",
-                    ""interactions"": ""MultiTap(tapCount=2)"",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""CameraReset"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -609,8 +569,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         m_TouchMap_SecondaryPosition = m_TouchMap.FindAction("SecondaryPosition", throwIfNotFound: true);
         m_TouchMap_Zoom = m_TouchMap.FindAction("Zoom", throwIfNotFound: true);
         m_TouchMap_CameraDrag = m_TouchMap.FindAction("CameraDrag", throwIfNotFound: true);
-        m_TouchMap_CameraRotate = m_TouchMap.FindAction("CameraRotate", throwIfNotFound: true);
-        m_TouchMap_CameraReset = m_TouchMap.FindAction("CameraReset", throwIfNotFound: true);
         m_TouchMap_CameraMove = m_TouchMap.FindAction("CameraMove", throwIfNotFound: true);
     }
 
@@ -701,8 +659,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
     private readonly InputAction m_TouchMap_SecondaryPosition;
     private readonly InputAction m_TouchMap_Zoom;
     private readonly InputAction m_TouchMap_CameraDrag;
-    private readonly InputAction m_TouchMap_CameraRotate;
-    private readonly InputAction m_TouchMap_CameraReset;
     private readonly InputAction m_TouchMap_CameraMove;
     /// <summary>
     /// Provides access to input actions defined in input action map "TouchMap".
@@ -751,14 +707,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         /// Provides access to the underlying input action "TouchMap/CameraDrag".
         /// </summary>
         public InputAction @CameraDrag => m_Wrapper.m_TouchMap_CameraDrag;
-        /// <summary>
-        /// Provides access to the underlying input action "TouchMap/CameraRotate".
-        /// </summary>
-        public InputAction @CameraRotate => m_Wrapper.m_TouchMap_CameraRotate;
-        /// <summary>
-        /// Provides access to the underlying input action "TouchMap/CameraReset".
-        /// </summary>
-        public InputAction @CameraReset => m_Wrapper.m_TouchMap_CameraReset;
         /// <summary>
         /// Provides access to the underlying input action "TouchMap/CameraMove".
         /// </summary>
@@ -816,12 +764,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
             @CameraDrag.started += instance.OnCameraDrag;
             @CameraDrag.performed += instance.OnCameraDrag;
             @CameraDrag.canceled += instance.OnCameraDrag;
-            @CameraRotate.started += instance.OnCameraRotate;
-            @CameraRotate.performed += instance.OnCameraRotate;
-            @CameraRotate.canceled += instance.OnCameraRotate;
-            @CameraReset.started += instance.OnCameraReset;
-            @CameraReset.performed += instance.OnCameraReset;
-            @CameraReset.canceled += instance.OnCameraReset;
             @CameraMove.started += instance.OnCameraMove;
             @CameraMove.performed += instance.OnCameraMove;
             @CameraMove.canceled += instance.OnCameraMove;
@@ -863,12 +805,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
             @CameraDrag.started -= instance.OnCameraDrag;
             @CameraDrag.performed -= instance.OnCameraDrag;
             @CameraDrag.canceled -= instance.OnCameraDrag;
-            @CameraRotate.started -= instance.OnCameraRotate;
-            @CameraRotate.performed -= instance.OnCameraRotate;
-            @CameraRotate.canceled -= instance.OnCameraRotate;
-            @CameraReset.started -= instance.OnCameraReset;
-            @CameraReset.performed -= instance.OnCameraReset;
-            @CameraReset.canceled -= instance.OnCameraReset;
             @CameraMove.started -= instance.OnCameraMove;
             @CameraMove.performed -= instance.OnCameraMove;
             @CameraMove.canceled -= instance.OnCameraMove;
@@ -1040,20 +976,6 @@ public partial class @InputComponent_Generated: IInputActionCollection2, IDispos
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCameraDrag(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "CameraRotate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCameraRotate(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "CameraReset" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCameraReset(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "CameraMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

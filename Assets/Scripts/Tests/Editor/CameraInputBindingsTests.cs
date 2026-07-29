@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void CameraMove_UsesArrowKeysAndWasd()
+        public void CameraMove_UsesArrowKeysWasdAndQe()
         {
             InputAction action = _inputActions.FindAction(
                 "TouchMap/CameraMove",
@@ -36,7 +36,9 @@ namespace EmpireAtWar.Tests.Camera
                 "<Keyboard>/w",
                 "<Keyboard>/s",
                 "<Keyboard>/a",
-                "<Keyboard>/d");
+                "<Keyboard>/d",
+                "<Keyboard>/q",
+                "<Keyboard>/e");
             Assert.That(
                 action.bindings.Any(binding =>
                     binding.effectivePath == "<Keyboard>/digit2" ||
@@ -65,28 +67,17 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void RotationAndReset_UseDocumentedBindings()
+        public void CameraDrag_UsesMiddleMouseWithoutRotationActions()
         {
             AssertBindings(
                 _inputActions.FindAction("TouchMap/CameraDrag", true),
                 "<Mouse>/middleButton");
-            AssertBindings(
-                _inputActions.FindAction("TouchMap/CameraRotate", true),
-                "<Keyboard>/q",
-                "<Keyboard>/e");
-            AssertBindings(
-                _inputActions.FindAction("TouchMap/CameraReset", true),
-                "<Keyboard>/home",
-                "<Mouse>/middleButton");
-
-            InputAction reset = _inputActions.FindAction(
-                "TouchMap/CameraReset",
-                true);
             Assert.That(
-                reset.bindings.Any(binding =>
-                    binding.effectivePath == "<Mouse>/middleButton" &&
-                    binding.interactions.Contains("MultiTap")),
-                Is.True);
+                _inputActions.FindAction("TouchMap/CameraRotate", false),
+                Is.Null);
+            Assert.That(
+                _inputActions.FindAction("TouchMap/CameraReset", false),
+                Is.Null);
         }
 
         private static void AssertBindings(

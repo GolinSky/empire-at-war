@@ -7,27 +7,29 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
 {
     public class ShipUiController: Controller<ShipUiModel>, IInitializable, ILateDisposable, IShipUiCommand, IObserver<ISelectionSubject>
     {
-        private const float START_DELAY = 0.1f;
-        
         private readonly ISelectionService _selectionService;
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
-        private readonly ITimer _startTimer;
+        private readonly ILayerService _layerService;
+        private readonly ISelectionQuery _selectionQuery;
         private readonly List<IMoveCommand> _moveCommands = new List<IMoveCommand>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
+        private readonly List<float> _formationRadii = new List<float>();
+        private readonly List<FormationPoint> _formationDestinations =
+            new List<FormationPoint>();
 
         private ISelectionContext _playerSelectionContext;
 
@@ -36,13 +38,17 @@ namespace EmpireAtWar.Controllers.ShipUi
             ISelectionService selectionService,
             IUiService uiService,
             IInputService inputService,
-            ICameraService cameraService) : base(model)
+            ICameraService cameraService,
+            ILayerService layerService,
+            ISelectionQuery selectionQuery) : base(model)
         {
             _selectionService = selectionService;
             _uiService = uiService;
             _inputService = inputService;
             _cameraService = cameraService;
-            _startTimer = TimerFactory.ConstructTimer(START_DELAY);
+            _layerService = layerService;
+            _selectionQuery = selectionQuery ??
+                throw new System.ArgumentNullException(nameof(selectionQuery));
         }
 
         public void Initialize()
@@ -50,46 +56,23 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.AddObserver(this);
             _uiService.CreateUi(UiType.Ship);
             _inputService.OnInput += HandleInput;
-            _inputService.OnSwipe += CloseMoveToPositionUi;
-            _inputService.OnCameraMove += CloseMoveToPositionUi;
-            _inputService.OnZoom += CloseMoveToPositionUi;
         }
 
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
             _inputService.OnInput -= HandleInput;
-            _inputService.OnSwipe -= CloseMoveToPositionUi;
-            _inputService.OnCameraMove -= CloseMoveToPositionUi;
-            _inputService.OnZoom -= CloseMoveToPositionUi;
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if (inputType == InputType.ShipInput && HasMovableSelection() && _startTimer.IsComplete)
+            if (inputType == InputType.ShipInput &&
+                HasMovableSelection() &&
+                !IsMapObstacleTap(touchPosition) &&
+                !_selectionQuery.TryFindAt(touchPosition, out SelectionEntry _))
             {
-                Model.TapPosition = touchPosition;
-                //todo: create plane map entity - use layers or add it as selectable
+                MoveToPosition(touchPosition);
             }
-            else
-            {
-                CloseMoveToPositionUi();
-            }
-        }
-
-        private void CloseMoveToPositionUi()
-        {
-            Model.SkipGoToPositionUi();
-        }
-        
-        private void CloseMoveToPositionUi(float obj)
-        {
-            CloseMoveToPositionUi();
-        }
-
-        private void CloseMoveToPositionUi(Vector2 obj)
-        {
-            CloseMoveToPositionUi();
         }
 
         public void CloseSelection()
@@ -100,7 +83,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
         }
 
-        public void MoveToPosition()
+        private void MoveToPosition(Vector2 touchPosition)
         {
             if (_playerSelectionContext == null)
             {
@@ -109,6 +92,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
             _moveCommands.Clear();
             _formationPositions.Clear();
+            _formationRadii.Clear();
             for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
             {
                 if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
@@ -118,6 +102,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     _formationPositions.Add(new FormationPoint(
                         moveCommand.WorldPosition.x,
                         moveCommand.WorldPosition.z));
+                    _formationRadii.Add(moveCommand.NavigationRadius);
                 }
             }
 
@@ -128,27 +113,37 @@ namespace EmpireAtWar.Controllers.ShipUi
 
             if (_moveCommands.Count == 1)
             {
-                _moveCommands[0].MoveTo(Model.TapPosition);
+                _moveCommands[0].MoveTo(touchPosition);
                 return;
             }
 
-            FormationPoint center = FormationModel.CalculateCenter(_formationPositions);
             Vector3 targetWorldPosition = _cameraService.GetWorldPoint(
-                Model.TapPosition,
+                touchPosition,
                 _moveCommands[0].WorldPosition);
             FormationPoint targetCenter = new FormationPoint(targetWorldPosition.x, targetWorldPosition.z);
+            FormationModel.CalculateCompactDestinations(
+                _formationPositions,
+                _formationRadii,
+                targetCenter,
+                _formationDestinations);
 
             for (int i = 0; i < _moveCommands.Count; i++)
             {
-                FormationPoint destination = FormationModel.CalculateDestination(
-                    _formationPositions[i],
-                    center,
-                    targetCenter);
+                FormationPoint destination = _formationDestinations[i];
                 _moveCommands[i].MoveTo(new Vector3(
                     destination.X,
                     _moveCommands[i].WorldPosition.y,
                     destination.Z));
             }
+        }
+
+        private bool IsMapObstacleTap(Vector2 screenPosition)
+        {
+            RaycastHit hit = _cameraService.ScreenPointToRay(screenPosition);
+            return hit.collider != null &&
+                   _layerService.IsInLayer(
+                       hit.collider.gameObject,
+                       LayerKey.Obstacle);
         }
 
         public void UpdateState(ISelectionSubject subject)
@@ -169,15 +164,11 @@ namespace EmpireAtWar.Controllers.ShipUi
                     Model.UpdateSelection(HasMovableSelection());
                     break;
                 case PlayerType.Opponent:
-                    CloseMoveToPositionUi();
                     break;
                 case PlayerType.None:
-                    CloseMoveToPositionUi();
                     break;
 
             }
-            _startTimer.StartTimer();
-
         }
 
         private bool HasMovableSelection()

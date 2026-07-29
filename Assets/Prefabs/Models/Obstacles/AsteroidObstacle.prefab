@@ -126,4 +126,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9be72dd46644de9b2b7be335c5731e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Obstacles.MapObstacle
-  avoidanceRadius: 12
+  _obstacleCollider: {fileID: 4768869826488159445}
