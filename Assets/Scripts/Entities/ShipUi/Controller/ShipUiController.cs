@@ -7,6 +7,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
@@ -25,9 +26,12 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
+        private readonly ILayerService _layerService;
         private readonly ITimer _startTimer;
         private readonly List<IMoveCommand> _moveCommands = new List<IMoveCommand>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
+        private readonly List<FormationPoint> _formationDestinations =
+            new List<FormationPoint>();
 
         private ISelectionContext _playerSelectionContext;
 
@@ -36,12 +40,14 @@ namespace EmpireAtWar.Controllers.ShipUi
             ISelectionService selectionService,
             IUiService uiService,
             IInputService inputService,
-            ICameraService cameraService) : base(model)
+            ICameraService cameraService,
+            ILayerService layerService) : base(model)
         {
             _selectionService = selectionService;
             _uiService = uiService;
             _inputService = inputService;
             _cameraService = cameraService;
+            _layerService = layerService;
             _startTimer = TimerFactory.ConstructTimer(START_DELAY);
         }
 
@@ -66,10 +72,12 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if (inputType == InputType.ShipInput && HasMovableSelection() && _startTimer.IsComplete)
+            if (inputType == InputType.ShipInput &&
+                HasMovableSelection() &&
+                _startTimer.IsComplete &&
+                !IsMapObstacleTap(touchPosition))
             {
                 Model.TapPosition = touchPosition;
-                //todo: create plane map entity - use layers or add it as selectable
             }
             else
             {
@@ -107,6 +115,12 @@ namespace EmpireAtWar.Controllers.ShipUi
                 return;
             }
 
+            if (IsMapObstacleTap(Model.TapPosition))
+            {
+                CloseMoveToPositionUi();
+                return;
+            }
+
             _moveCommands.Clear();
             _formationPositions.Clear();
             for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
@@ -132,23 +146,32 @@ namespace EmpireAtWar.Controllers.ShipUi
                 return;
             }
 
-            FormationPoint center = FormationModel.CalculateCenter(_formationPositions);
             Vector3 targetWorldPosition = _cameraService.GetWorldPoint(
                 Model.TapPosition,
                 _moveCommands[0].WorldPosition);
             FormationPoint targetCenter = new FormationPoint(targetWorldPosition.x, targetWorldPosition.z);
+            FormationModel.CalculateDestinations(
+                _formationPositions,
+                targetCenter,
+                _formationDestinations);
 
             for (int i = 0; i < _moveCommands.Count; i++)
             {
-                FormationPoint destination = FormationModel.CalculateDestination(
-                    _formationPositions[i],
-                    center,
-                    targetCenter);
+                FormationPoint destination = _formationDestinations[i];
                 _moveCommands[i].MoveTo(new Vector3(
                     destination.X,
                     _moveCommands[i].WorldPosition.y,
                     destination.Z));
             }
+        }
+
+        private bool IsMapObstacleTap(Vector2 screenPosition)
+        {
+            RaycastHit hit = _cameraService.ScreenPointToRay(screenPosition);
+            return hit.collider != null &&
+                   _layerService.IsInLayer(
+                       hit.collider.gameObject,
+                       LayerKey.Obstacle);
         }
 
         public void UpdateState(ISelectionSubject subject)

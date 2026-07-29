@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Selection.Marquee;
+using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.BattleService;
@@ -35,10 +36,16 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesAndSelfTo<CameraService>()
                 .FromComponentInHierarchy()
                 .AsSingle();
+            Container
+                .Bind<IMapObstacleContactSource>()
+                .To<MapObstacle>()
+                .FromComponentsInHierarchy()
+                .AsCached();
 
             Container
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()
                 .BindInterfacesExt<UnitDeathAnimationService>()
                 .BindInterfacesExt<SelectionQuery>()

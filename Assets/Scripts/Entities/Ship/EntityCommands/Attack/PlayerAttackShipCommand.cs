@@ -1,14 +1,25 @@
-﻿using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Mvc;
+using UnityEngine;
+using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Entities.Ship.EntityCommands
 {
-    public class PlayerAttackShipCommand: IAttackCommand
+    public sealed class PlayerAttackShipCommand :
+        Command<EmpireAtWar.Ship.Ship>,
+        IAttackCommand
     {
-        // public long Id { get; }
+        public Vector3 WorldPosition => Controller.WorldPosition;
 
-        public PlayerAttackShipCommand()
+        public PlayerAttackShipCommand(EmpireAtWar.Ship.Ship ship)
+            : base(ship)
         {
-           
+        }
+
+        public void Attack(IEntity target, Vector3 formationOffset)
+        {
+            Controller.Attack(target, formationOffset);
         }
     }
 }

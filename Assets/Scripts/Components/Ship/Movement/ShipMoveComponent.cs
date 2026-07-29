@@ -2,9 +2,8 @@ using DG.Tweening;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Utils;
 using UnityEngine;
-using Utilities.ScriptUtils.Dotween;
+using UnityEngine.Serialization;
 using Utilities.ScriptUtils.Math;
 using ViewComponents;
 using Zenject;
@@ -21,31 +20,39 @@ namespace EmpireAtWar.Components.Ship.Movement
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent, IInitializable,
         ILateDisposable, IShipNavigationAgent
     {
-        private const float BODY_ROTATION_DEFAULT_DURATION = 1f;
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
+        private const float MOVE_AROUND_MINIMUM_BACKWARD_DISTANCE = 30f;
+        private const float MOVE_AROUND_MAXIMUM_BACKWARD_DISTANCE = 50f;
+        private const float MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE = 30f;
 
-        [SerializeField] private Ease lookAtEase;
-        [SerializeField] private Ease hyperSpaceEase;
-        [SerializeField] private LineRenderer lineRenderer;
-        [SerializeField] private Transform bodyTransform;
-        [SerializeField] private bool logNavigationDecisions;
+        [FormerlySerializedAs("lookAtEase")]
+        [SerializeField] private Ease _lookAtEase;
+        [FormerlySerializedAs("hyperSpaceEase")]
+        [SerializeField] private Ease _hyperSpaceEase;
+        [FormerlySerializedAs("lineRenderer")]
+        [SerializeField] private LineRenderer _lineRenderer;
+        [FormerlySerializedAs("bodyTransform")]
+        [SerializeField] private Transform _bodyTransform;
+        [FormerlySerializedAs("logNavigationDecisions")]
+        [SerializeField] private bool _logNavigationDecisions;
 
         private ICameraService _cameraService;
         private Vector3 _startPosition;
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
-        private Sequence _translationSequence;
-        private Sequence _rotationSequence;
-        private Vector3[] _waypoints;
         private Vector3? _pendingTargetPosition;
         private bool _isNavigationReady;
-        private bool _isSelected;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
         private IShipMovementMediator _movementMediator;
-        private Quaternion _bodyRestRotation;
+        private IRadarModelObserver _radarModel;
         private bool _isReleased;
+        private ShipMovementTweenPlayer _tweenPlayer;
+        private readonly List<RadarContact> _mapObstacleContacts =
+            new List<RadarContact>();
+        private readonly List<RadarContact> _plannedMapObstacleContacts =
+            new List<RadarContact>();
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -67,7 +74,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             FogOfWarSystem fogOfWarSystem,
             PlayerType playerType,
             IMapModelObserver mapModel,
-            IShipNavigationService shipNavigationService)
+            IShipNavigationService shipNavigationService,
+            IRadarModelObserver radarModel)
         {
             SetModel(model);
             _cameraService = cameraService;
@@ -77,13 +85,30 @@ namespace EmpireAtWar.Components.Ship.Movement
             _playerType = playerType;
             _mapModel = mapModel;
             _shipNavigationService = shipNavigationService;
+            _radarModel = radarModel;
         }
 
         public void Initialize()
         {
+            if (_lineRenderer == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(ShipMoveComponent)} requires a serialized line renderer.");
+            }
+
+            if (_bodyTransform == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(ShipMoveComponent)} requires a serialized body transform.");
+            }
+
             _isReleased = false;
-            lineRenderer.enabled = false;
-            _bodyRestRotation = bodyTransform.localRotation;
+            _tweenPlayer = new ShipMovementTweenPlayer(
+                transform,
+                _bodyTransform,
+                _lineRenderer,
+                _lookAtEase,
+                _hyperSpaceEase);
             _shipNavigationService.Register(this);
             Model.HyperSpacePosition = _startPosition;
 
@@ -94,7 +119,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             if (_playerType == PlayerType.Player)
             {
-                _fogOfWarSystem.RegisterVisionSource(Model.ViewTransform.Value, 80f);
+                _fogOfWarSystem.RegisterVisionSource(
+                    Model.ViewTransform.Value,
+                    _radarModel.Range);
             }
         }
 
@@ -113,9 +140,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             _isReleased = true;
             _shipNavigationService.Unregister(this);
             _shipNavigationService.ClearPlan(this);
-            _translationSequence.KillIfExist();
-            _rotationSequence.KillIfExist();
-            ClearRoute();
+            if (_tweenPlayer != null)
+            {
+                _tweenPlayer.Release();
+            }
         }
 
         public void SetMediator(IShipMovementMediator mediator)
@@ -130,21 +158,22 @@ namespace EmpireAtWar.Components.Ship.Movement
             SetTargetPosition(newPosition);
         }
 
-        private void SetTargetPosition(Vector3 newPosition)
+        private Vector3 SetTargetPosition(Vector3 requestedPosition)
         {
-            newPosition.y = Model.Height;
-            newPosition = ShipAvoidancePlanner.ClampToMap(
-                newPosition,
+            requestedPosition.y = Model.Height;
+            Vector3 destination = ShipAvoidancePlanner.ClampToMap(
+                requestedPosition,
                 _mapModel.SizeRange,
                 NavigationRadius);
-            if (Model.HasTargetPosition(newPosition))
+            if (Model.HasTargetPosition(destination))
             {
-                return;
+                return destination;
             }
 
-            Model.SetTargetPosition(newPosition);
-            UpdateTargetPosition(newPosition);
-            MovementMediator.OnPositionChanged(newPosition);
+            Model.SetTargetPosition(destination);
+            UpdateTargetPosition(destination);
+            MovementMediator.OnPositionChanged(destination);
+            return destination;
         }
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
@@ -157,10 +186,20 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public float MoveAround()
         {
-            Vector3 backPosition = Model.CurrentPosition - Model.ViewTransform.Value.forward * Random.Range(30, 50f) + Model.ViewTransform.Value.right * Random.Range(-30, 30);
-            SetTargetPosition(backPosition);
+            float backwardDistance = Random.Range(
+                MOVE_AROUND_MINIMUM_BACKWARD_DISTANCE,
+                MOVE_AROUND_MAXIMUM_BACKWARD_DISTANCE);
+            float lateralDistance = Random.Range(
+                -MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE,
+                MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE);
+            Vector3 requestedPosition =
+                Model.CurrentPosition -
+                Model.ViewTransform.Value.forward * backwardDistance +
+                Model.ViewTransform.Value.right * lateralDistance;
+            Vector3 destination = SetTargetPosition(requestedPosition);
 
-            return Vector3.Distance(backPosition, Model.CurrentPosition) / Model.Speed;
+            return Vector3.Distance(destination, Model.CurrentPosition) /
+                   Mathf.Max(Model.Speed, Mathf.Epsilon);
         }
 
         public Vector3 CalculateLookDirection(Vector3 targetPosition)
@@ -206,8 +245,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void HandleSelection(bool isSelected)
         {
-            _isSelected = isSelected;
-            lineRenderer.enabled = isSelected && Model.IsMoving && lineRenderer.positionCount > 1;
+            _tweenPlayer.SetSelected(isSelected, Model.IsMoving);
         }
 
         private Vector3 CurrentViewPosition => transform.position;
@@ -229,40 +267,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                 return;
             }
 
-            _rotationSequence.KillExt();
-            _rotationSequence = DOTween.Sequence();
-
-            Quaternion desiredRotation = Quaternion.LookRotation(direction, Vector3.up);
-            float rotationDuration = ShipRotationKinematics.CalculateTurnDuration(
-                transform.rotation,
+            _tweenPlayer.PlayLookAt(
                 direction,
-                Mathf.Max(Model.RotationSpeed, Mathf.Epsilon));
-
-            _rotationSequence.Append(transform
-                .DORotateQuaternion(desiredRotation, rotationDuration)
-                .SetEase(Ease.Linear));
-
-            float targetZ = GetZRotationOnly(targetPosition);
-            Quaternion bodyTargetRotation =
-                _bodyRestRotation * Quaternion.Euler(0f, 0f, targetZ);
-
-            _rotationSequence.Join(bodyTransform
-                .DOLocalRotateQuaternion(bodyTargetRotation, rotationDuration)
-                .SetEase(lookAtEase));
-            _rotationSequence.Append(bodyTransform
-                .DOLocalRotateQuaternion(
-                    _bodyRestRotation,
-                    BODY_ROTATION_DEFAULT_DURATION)
-                .SetEase(lookAtEase));
-        }
-
-        private float GetZRotationOnly(Vector3 targetPosition)
-        {
-            Vector3 toTarget = targetPosition - CurrentViewPosition;
-            float direction = Vector3.SignedAngle(transform.forward, toTarget, Vector3.up);
-            return Mathf.Clamp(
-                -direction * 0.2f,
-                -Model.BodyRotationMaxAngle,
+                Model.RotationSpeed,
                 Model.BodyRotationMaxAngle);
         }
 
@@ -274,25 +281,16 @@ namespace EmpireAtWar.Components.Ship.Movement
                 return;
             }
 
-            _translationSequence.KillExt();
+            _tweenPlayer.StopPath();
             _shipNavigationService.ClearPlan(this);
-            StraightenBody();
-            ClearRoute();
         }
 
         private void HyperSpaceJump(Vector3 point)
         {
-            Vector3 lookDirection = point - CurrentViewPosition;
-
-            if (lookDirection.sqrMagnitude > Mathf.Epsilon)
-            {
-                transform.rotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            }
-
-            _translationSequence.KillIfExist();
-            _translationSequence = DOTween.Sequence();
-            _translationSequence.Append(transform.DOMove(point, Model.HyperSpaceDuration).SetEase(hyperSpaceEase));
-            _translationSequence.OnComplete(() =>
+            _tweenPlayer.PlayHyperSpace(
+                point,
+                Model.HyperSpaceDuration,
+                () =>
             {
                 _isNavigationReady = true;
                 if (_pendingTargetPosition.HasValue)
@@ -313,18 +311,51 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             targetPosition.y = CurrentViewPosition.y;
-            ApplyNavigationPlan(targetPosition, Array.Empty<RadarContact>());
+            ApplyNavigationPlan(targetPosition, _mapObstacleContacts);
         }
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
         {
-            // Avoidance is intentionally disabled while movement is evaluated.
+            if (contacts == null)
+            {
+                throw new ArgumentNullException(nameof(contacts));
+            }
+
+            ReplaceMapObstacleContacts(contacts);
+            if (!_isNavigationReady || !Model.IsMoving ||
+                AreSameContacts(
+                    _mapObstacleContacts,
+                    _plannedMapObstacleContacts))
+            {
+                return;
+            }
+
+            if (!ShipAvoidancePlanner.TryCalculateDetour(
+                    CurrentViewPosition,
+                    Model.TargetPosition,
+                    _mapObstacleContacts,
+                    NavigationHeight,
+                    HEIGHT_TOLERANCE,
+                    NavigationRadius,
+                    _mapModel.SizeRange,
+                    out _))
+            {
+                CopyContacts(
+                    _mapObstacleContacts,
+                    _plannedMapObstacleContacts);
+                return;
+            }
+
+            ApplyNavigationPlan(
+                Model.TargetPosition,
+                _mapObstacleContacts);
         }
 
         private void ApplyNavigationPlan(
             Vector3 requestedDestination,
             IReadOnlyList<RadarContact> obstacleContacts)
         {
+            CopyContacts(obstacleContacts, _plannedMapObstacleContacts);
             ShipNavigationPlan plan = _shipNavigationService.Plan(
                 this,
                 transform.forward,
@@ -333,7 +364,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 HEIGHT_TOLERANCE,
                 NavigationRadius,
                 _mapModel.SizeRange);
-            if (logNavigationDecisions)
+            if (_logNavigationDecisions)
             {
                 Debug.Log(
                     $"[ShipNavigation] Ship={name}, " +
@@ -352,88 +383,59 @@ namespace EmpireAtWar.Components.Ship.Movement
             StartPath(plan);
         }
 
+        private void ReplaceMapObstacleContacts(
+            IReadOnlyList<RadarContact> contacts)
+        {
+            _mapObstacleContacts.Clear();
+            for (int i = 0; i < contacts.Count; i++)
+            {
+                if (!contacts[i].IsShip)
+                {
+                    _mapObstacleContacts.Add(contacts[i]);
+                }
+            }
+        }
+
+        private static void CopyContacts(
+            IReadOnlyList<RadarContact> source,
+            List<RadarContact> destination)
+        {
+            destination.Clear();
+            for (int i = 0; i < source.Count; i++)
+            {
+                destination.Add(source[i]);
+            }
+        }
+
+        private static bool AreSameContacts(
+            IReadOnlyList<RadarContact> first,
+            IReadOnlyList<RadarContact> second)
+        {
+            if (first.Count != second.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < first.Count; i++)
+            {
+                if (first[i].Position != second[i].Position ||
+                    !Mathf.Approximately(first[i].Radius, second[i].Radius) ||
+                    first[i].IsShip != second[i].IsShip)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void StartPath(ShipNavigationPlan plan)
         {
-            _translationSequence.KillExt();
-            _translationSequence = DOTween.Sequence();
-
-            _waypoints = plan.Trajectory;
-
-            lineRenderer.positionCount = _waypoints.Length;
-            for (int i = 0; i < _waypoints.Length; i++)
-            {
-                lineRenderer.SetPosition(i, _waypoints[i]);
-            }
-
-            lineRenderer.enabled = _isSelected && _waypoints.Length > 1;
-            if (plan.WaitDuration > Mathf.Epsilon)
-            {
-                _translationSequence.Append(DOVirtual.Float(
-                    0f,
-                    1f,
-                    plan.WaitDuration,
-                    _ => { }));
-            }
-
-            _translationSequence.Append(DOVirtual.Float(
-                    0f,
-                    1f,
-                    plan.MovementDuration,
-                    progress => ApplyRouteProgress(plan.Route, progress))
-                .SetEase(Ease.Linear));
-            _translationSequence.OnComplete(() =>
-            {
-                ApplyRouteProgress(plan.Route, 1f);
-                _shipNavigationService.ClearPlan(this);
-                StraightenBody();
-                ClearRoute();
-            });
-        }
-
-        private void ApplyRouteProgress(ShipBezierRoute route, float progress)
-        {
-            Vector3 position = route.EvaluateNormalizedDistance(
-                progress,
-                out Vector3 tangent);
-            transform.position = position;
-            RotateAlongRoute(tangent);
-        }
-
-        private void RotateAlongRoute(Vector3 tangent)
-        {
-            Quaternion previousRotation = transform.rotation;
-            float rotationSpeed = Mathf.Max(
+            _tweenPlayer.PlayPath(
+                plan,
                 Model.RotationSpeed,
-                Mathf.Epsilon);
-            float bank = ShipRotationKinematics.CalculateBankAngle(
-                previousRotation,
-                tangent,
-                rotationSpeed,
-                Time.deltaTime,
-                Model.BodyRotationMaxAngle);
-            transform.rotation = ShipRotationKinematics.Step(
-                previousRotation,
-                tangent,
-                rotationSpeed,
-                Time.deltaTime);
-
-            Quaternion targetBodyRotation =
-                _bodyRestRotation * Quaternion.Euler(0f, 0f, bank);
-            bodyTransform.localRotation = Quaternion.RotateTowards(
-                bodyTransform.localRotation,
-                targetBodyRotation,
-                rotationSpeed * Time.deltaTime);
-        }
-
-        private void StraightenBody()
-        {
-            bodyTransform.localRotation = _bodyRestRotation;
-        }
-
-        private void ClearRoute()
-        {
-            lineRenderer.positionCount = 0;
-            lineRenderer.enabled = false;
+                Model.BodyRotationMaxAngle,
+                () => _shipNavigationService.ClearPlan(this));
         }
 
     }
