@@ -31,8 +31,9 @@ namespace EmpireAtWar.Ship
         IShipModelObserver ModelObserver { get; }
         PlayerType PlayerType { get; }
         Vector3 WorldPosition { get; }
+        float NavigationRadius { get; }
 
-        void AssignAttackTarget(IEntity target);
+        void AssignAttackTarget(IEntity target, Vector3 formationOffset);
         void AssignMoveTarget(Vector3 target);
         void HoldPosition();
     }
@@ -163,11 +164,13 @@ namespace EmpireAtWar.Ship
             SynchronizeComponents();
         }
 
-        public void AssignAttackTarget(IEntity target)
+        public void AssignAttackTarget(
+            IEntity target,
+            Vector3 formationOffset)
         {
             if (_playerType == PlayerType.Opponent)
             {
-                _shipAIBrain.AssignAttackTarget(target);
+                _shipAIBrain.AssignAttackTarget(target, formationOffset);
             }
         }
 

@@ -1,5 +1,5 @@
+using System;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -27,10 +27,11 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private float _decisionTimer = 0f;
         private bool _isEnabled = false;
         private IEntity _assignedTarget;
+        private Vector3 _attackFormationOffset;
 
         public ShipAIBrain(
             StateMachine1 stateMachine,
-            IHealthComponent healthComponent,
+            IHealthModelObserver healthModel,
             IRadarComponent radarComponent,
             IShipMoveComponent shipMoveComponent,
             AttackTargetState attackTargetState,
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IGameModelObserver gameModel)
         {
             _stateMachine = stateMachine;
-            _healthModel = healthComponent.HealthModelObserver;
+            _healthModel = healthModel ?? throw new ArgumentNullException(nameof(healthModel));
             _radarComponent = radarComponent;
             _shipMoveComponent = shipMoveComponent;
             _attackTargetState = attackTargetState;
@@ -57,7 +58,27 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         public void AssignAttackTarget(IEntity target)
         {
-            _assignedTarget = target;
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (_assignedTarget != null && _assignedTarget.Id == target.Id)
+            {
+                return;
+            }
+
+            AssignAttackTarget(target, Vector3.zero);
+        }
+
+        public void AssignAttackTarget(
+            IEntity target,
+            Vector3 formationOffset)
+        {
+            _assignedTarget = target ??
+                throw new ArgumentNullException(nameof(target));
+            formationOffset.y = 0f;
+            _attackFormationOffset = formationOffset;
         }
 
         public void Tick()
@@ -100,6 +121,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             if (hasAssignedTarget && !isAssignedTargetAvailable)
             {
                 _assignedTarget = null;
+                _attackFormationOffset = Vector3.zero;
             }
 
             switch (decision)
@@ -108,9 +130,13 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                     SetState(_fleeState);
                     return;
                 case ShipAiDecision.Attack:
-                    if (!_attackTargetState.IsTheSameTarget(_assignedTarget))
+                    if (!_attackTargetState.IsTheSameTarget(
+                            _assignedTarget,
+                            _attackFormationOffset))
                     {
-                        _attackTargetState.SetData(_assignedTarget);
+                        _attackTargetState.SetData(
+                            _assignedTarget,
+                            _attackFormationOffset);
                     }
 
                     SetState(_attackTargetState);

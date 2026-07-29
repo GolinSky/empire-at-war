@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands
 
         public void Attack(IEntity target, Vector3 formationOffset)
         {
-            Controller.AssignAttackTarget(target);
+            Controller.AssignAttackTarget(target, formationOffset);
         }
     }
 }
