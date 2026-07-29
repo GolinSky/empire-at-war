@@ -80,6 +80,12 @@ namespace EmpireAtWar.Services.Battle
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
+            if (inputType == InputType.ShipInput)
+            {
+                HandleActionInput(touchPosition);
+                return;
+            }
+
             if (inputType != InputType.Selection)
             {
                 return;
@@ -105,9 +111,14 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(selection.Entity.PlayerType, _selectionBuffer);
-            if (selection.Entity.PlayerType == PlayerType.Opponent)
+        }
+
+        private void HandleActionInput(Vector2 touchPosition)
+        {
+            if (_selectionQuery.TryFindAt(touchPosition, out SelectionEntry target) &&
+                target.Entity.PlayerType == PlayerType.Opponent)
             {
-                DispatchAttack(selection.Entity);
+                DispatchAttack(target.Entity);
             }
         }
 

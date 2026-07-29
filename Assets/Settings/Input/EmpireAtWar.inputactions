@@ -87,24 +87,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CameraRotate",
-                    "type": "Value",
-                    "id": "daa5fdb3-5ab5-4127-bb2d-0c82e9fb4767",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "CameraReset",
-                    "type": "Button",
-                    "id": "dadbb832-c153-493e-81d3-edd373fb5a62",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "CameraMove",
                     "type": "Value",
                     "id": "d8da86bf-b5bb-44df-aa10-f9b77609f9ef",
@@ -391,59 +373,37 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "1D Axis",
+                    "name": "QE",
                     "id": "508eb2af-46ba-49cd-8c36-c1c2a887d359",
-                    "path": "1DAxis",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CameraRotate",
+                    "action": "CameraMove",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "positive",
+                    "name": "right",
                     "id": "bd5eea4f-b90a-4199-b02a-bb3101fb9f52",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraRotate",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "negative",
+                    "name": "left",
                     "id": "de2fb0bc-33a2-4517-b3c0-d29e8799c6a1",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraRotate",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "fbbe4686-3f78-42fe-abde-7487dfbdb8f7",
-                    "path": "<Keyboard>/home",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraReset",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8211391a-cb61-4243-aadc-4c64da034d62",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "MultiTap(tapCount=2)",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraReset",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }
