@@ -51,8 +51,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private ShipMovementTweenPlayer _tweenPlayer;
         private readonly List<RadarContact> _navigationContacts =
             new List<RadarContact>();
-        private readonly List<RadarContact> _plannedNavigationContacts =
-            new List<RadarContact>();
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -328,24 +326,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             ReplaceNavigationContacts(contacts);
-            if (!_isNavigationReady || !Model.IsMoving ||
-                AreSameContacts(
-                    _navigationContacts,
-                    _plannedNavigationContacts))
-            {
-                return;
-            }
-
-            ApplyNavigationPlan(
-                Model.TargetPosition,
-                _navigationContacts);
         }
 
         private void ApplyNavigationPlan(
             Vector3 requestedDestination,
             IReadOnlyList<RadarContact> obstacleContacts)
         {
-            CopyContacts(obstacleContacts, _plannedNavigationContacts);
             ShipNavigationPlan plan = _shipNavigationService.Plan(
                 this,
                 transform.forward,
@@ -388,39 +374,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                     _navigationContacts.Add(contact);
                 }
             }
-        }
-
-        private static void CopyContacts(
-            IReadOnlyList<RadarContact> source,
-            List<RadarContact> destination)
-        {
-            destination.Clear();
-            for (int i = 0; i < source.Count; i++)
-            {
-                destination.Add(source[i]);
-            }
-        }
-
-        private static bool AreSameContacts(
-            IReadOnlyList<RadarContact> first,
-            IReadOnlyList<RadarContact> second)
-        {
-            if (first.Count != second.Count)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < first.Count; i++)
-            {
-                if (first[i].Position != second[i].Position ||
-                    !Mathf.Approximately(first[i].Radius, second[i].Radius) ||
-                    first[i].IsShip != second[i].IsShip)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         private void StartPath(ShipNavigationPlan plan)
