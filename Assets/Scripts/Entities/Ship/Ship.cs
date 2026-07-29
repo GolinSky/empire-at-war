@@ -49,6 +49,7 @@ namespace EmpireAtWar.Ship
         private ISelectionService _selectionService;
         private AttackTargetState _attackTargetState;
         private IdleState _idleState;
+        private NavigateState _navigateState;
         private StateMachine1 _stateMachine;
         private ShipAIBrain _shipAIBrain;
         private ICoroutineService _coroutineService;
@@ -82,6 +83,7 @@ namespace EmpireAtWar.Ship
             ISelectionService selectionService,
             AttackTargetState attackTargetState,
             IdleState idleState,
+            NavigateState navigateState,
             StateMachine1 stateMachine,
             ShipAIBrain shipAIBrain,
             PlayerType playerType,
@@ -99,6 +101,7 @@ namespace EmpireAtWar.Ship
             _selectionService = selectionService;
             _attackTargetState = attackTargetState;
             _idleState = idleState;
+            _navigateState = navigateState;
             _stateMachine = stateMachine;
             _shipAIBrain = shipAIBrain;
             _playerType = playerType;
@@ -175,8 +178,9 @@ namespace EmpireAtWar.Ship
         {
             if (_playerType == PlayerType.Opponent)
             {
-                MoveTo(target);
                 _shipAIBrain.Enable(true);
+                _navigateState.SetWorldDestination(target);
+                _stateMachine.SetState(_navigateState);
             }
         }
 
@@ -188,8 +192,7 @@ namespace EmpireAtWar.Ship
             }
 
             _shipAIBrain.Enable(false);
-            _stateMachine.ExitState();
-            _shipMoveComponent.Stop();
+            _stateMachine.SetState(_idleState);
         }
 
         public void LateDispose()
@@ -236,15 +239,15 @@ namespace EmpireAtWar.Ship
         public void MoveTo(Vector2 screenPosition)
         {
             _shipAIBrain.Enable(false);
-            _stateMachine.ExitState();
-            _shipMoveComponent.MoveToPositionOnScreen(screenPosition);
+            _navigateState.SetScreenDestination(screenPosition);
+            _stateMachine.SetState(_navigateState);
         }
 
         public void MoveTo(Vector3 worldPosition)
         {
             _shipAIBrain.Enable(false);
-            _stateMachine.ExitState();
-            _shipMoveComponent.MoveToPosition(worldPosition);
+            _navigateState.SetWorldDestination(worldPosition);
+            _stateMachine.SetState(_navigateState);
         }
 
         public void HandleNewEnemy(IEntity entity)

@@ -24,6 +24,11 @@ namespace EmpireAtWar.SceneContext
             Container.Install<GameUnitsInstaller>();
             
             Container.BindInterfacesExt<EnemyService>();
+            Container.Bind<EnemyStrategicDecisionModel>().AsSingle();
+            Container.Bind<EnemyProductionDecisionModel>().AsSingle();
+            Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
+            Container.Bind<EnemyTaskForceExecutor>().AsSingle();
+            Container.Bind<EnemyProductionStrategy>().AsSingle();
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
             Container.BindScriptableObject<ReinforcementData>(Repository);

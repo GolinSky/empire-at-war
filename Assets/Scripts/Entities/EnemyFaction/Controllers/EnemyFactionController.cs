@@ -26,6 +26,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 5f;
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
+        private const float BASE_SPAWN_MIN_RADIUS = 20f;
+        private const float BASE_SPAWN_MAX_RADIUS = 45f;
 
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly IEconomyProvider _economyProvider;
@@ -201,11 +203,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 return position;
             }
 
-            throw new InvalidOperationException("The enemy has no owned reinforcement zone available for spawning.");
+            return GeneratePositionNearBase();
         }
 
         private Vector3 GenerateMapCoordinates()
         {
+            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            {
+                Vector3 position = GeneratePositionNearBase();
+                if (!_reinforcementZonesSystem.IsPositionInAnyZone(position))
+                {
+                    return position;
+                }
+            }
+
             Vector2Range sizeRange = _mapModel.Value.SizeRange;
             for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
             {
@@ -221,6 +232,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             throw new InvalidOperationException("No enemy non-ship spawn position is available outside reinforcement zones.");
+        }
+
+        private Vector3 GeneratePositionNearBase()
+        {
+            Vector2Range sizeRange = _mapModel.Value.SizeRange;
+            Vector3 basePosition = _mapModel.Value.GetStationPosition(PlayerType);
+            Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
+            float radius = UnityEngine.Random.Range(BASE_SPAWN_MIN_RADIUS, BASE_SPAWN_MAX_RADIUS);
+            return new Vector3(
+                Mathf.Clamp(basePosition.x + direction.x * radius, sizeRange.Min.x, sizeRange.Max.x),
+                0f,
+                Mathf.Clamp(basePosition.z + direction.y * radius, sizeRange.Min.y, sizeRange.Max.y));
         }
 
         public void Initialize()

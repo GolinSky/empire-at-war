@@ -7,6 +7,7 @@ using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Extentions;
@@ -40,6 +41,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
 
         Container.BindInterfacesExt<AttackDataFactory>();
+        Container.Bind<BattleVictoryModel>().AsSingle();
+        Container.BindInterfacesExt<BattleVictoryService>();
 
         Container
             .BindInterfacesAndSelfTo<UiService>()

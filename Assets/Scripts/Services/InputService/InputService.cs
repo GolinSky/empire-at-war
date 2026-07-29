@@ -13,10 +13,14 @@ namespace EmpireAtWar.Services.InputService
     public class InputService : Service, IInputService, ITickable, IInitializable, IDisposable
     {
         private const float DRAG_THRESHOLD = 5f;
+        private const float EDGE_SCROLL_THICKNESS = 16f;
         private const float MAX_SWIPE_DELTA = 10f;
 
         public event Action<Vector2> OnSwipe;
         public event Action<Vector2> OnCameraMove;
+        public event Action<Vector2> OnCameraOrbit;
+        public event Action<float> OnCameraRotateStep;
+        public event Action OnCameraReset;
         public event Action<Vector2> OnPrimaryDragStarted;
         public event Action<Vector2> OnPrimaryDragChanged;
         public event Action<Vector2> OnPrimaryDragEnded;
@@ -34,6 +38,8 @@ namespace EmpireAtWar.Services.InputService
         private bool _pressStartedOverUi;
         private bool _hasDragged;
         private bool _isMousePointer;
+        private bool _cameraRotateHandledThisFrame;
+        private bool _cameraResetHandledThisFrame;
         private Vector2 _pressPosition;
         private Vector2 _previousPosition;
         private float _previousMagnitude;
@@ -41,6 +47,21 @@ namespace EmpireAtWar.Services.InputService
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
+        public Vector2 CameraMove
+        {
+            get
+            {
+                if (_isBlocked)
+                {
+                    return Vector2.zero;
+                }
+
+                Vector2 direction = MapActions.CameraMove.ReadValue<Vector2>();
+                direction += GetKeyboardMoveDirection();
+                direction += GetEdgeScrollDirection();
+                return Vector2.ClampMagnitude(direction, 1f);
+            }
+        }
         public int TapCount => Mathf.Max(1, MapActions.TouchCount.ReadValue<int>());
 
         public InputService()
@@ -59,6 +80,8 @@ namespace EmpireAtWar.Services.InputService
             MapActions.Scroll.performed += OnScrollPerformed;
             MapActions.CameraMove.performed += OnCameraMoveChanged;
             MapActions.CameraMove.canceled += OnCameraMoveChanged;
+            MapActions.CameraRotate.performed += OnCameraRotatePerformed;
+            MapActions.CameraReset.performed += OnCameraResetPerformed;
         }
 
         public void Dispose()
@@ -69,6 +92,8 @@ namespace EmpireAtWar.Services.InputService
             MapActions.Scroll.performed -= OnScrollPerformed;
             MapActions.CameraMove.performed -= OnCameraMoveChanged;
             MapActions.CameraMove.canceled -= OnCameraMoveChanged;
+            MapActions.CameraRotate.performed -= OnCameraRotatePerformed;
+            MapActions.CameraReset.performed -= OnCameraResetPerformed;
 
             _inputComponentGenerated.Disable();
             _inputComponentGenerated.Dispose();
@@ -173,10 +198,33 @@ namespace EmpireAtWar.Services.InputService
             OnCameraMove?.Invoke(callbackContext.ReadValue<Vector2>());
         }
 
+        private void OnCameraRotatePerformed(InputAction.CallbackContext callbackContext)
+        {
+            if (_isBlocked) return;
+
+            float direction = callbackContext.ReadValue<float>();
+            if (!Mathf.Approximately(direction, 0f))
+            {
+                _cameraRotateHandledThisFrame = true;
+                OnCameraRotateStep?.Invoke(Mathf.Sign(direction));
+            }
+        }
+
+        private void OnCameraResetPerformed(InputAction.CallbackContext callbackContext)
+        {
+            if (!_isBlocked)
+            {
+                _cameraResetHandledThisFrame = true;
+                OnCameraReset?.Invoke();
+            }
+        }
+
         public void Tick()
         {
             if (!_isBlocked)
             {
+                ProcessKeyboardShortcuts();
+
                 if (MapActions.CameraDrag.IsPressed())
                 {
                     Vector2 dragDelta = MapActions.TouchDelta.ReadValue<Vector2>();
@@ -186,14 +234,24 @@ namespace EmpireAtWar.Services.InputService
 
                     if (direction.sqrMagnitude > Mathf.Epsilon)
                     {
-                        OnSwipe?.Invoke(direction);
+                        OnCameraOrbit?.Invoke(direction);
                     }
                 }
             }
 
-            if (!_isBlocked && MapActions.Zoom.IsPressed())
+            if (!_isBlocked)
             {
-                OnZoom?.Invoke(MapActions.Zoom.ReadValue<float>());
+                float zoomDirection = GetKeyboardZoomDirection();
+                if (Mathf.Approximately(zoomDirection, 0f) &&
+                    MapActions.Zoom.IsPressed())
+                {
+                    zoomDirection = MapActions.Zoom.ReadValue<float>();
+                }
+
+                if (!Mathf.Approximately(zoomDirection, 0f))
+                {
+                    OnZoom?.Invoke(zoomDirection);
+                }
             }
 
             if (Touchscreen.current != null)
@@ -291,6 +349,127 @@ namespace EmpireAtWar.Services.InputService
             }
 
             return false;
+        }
+
+        private static Vector2 GetEdgeScrollDirection()
+        {
+            if (Mouse.current == null)
+            {
+                return Vector2.zero;
+            }
+
+            Vector2 position = Mouse.current.position.ReadValue();
+            if (position.x < 0f || position.x > Screen.width ||
+                position.y < 0f || position.y > Screen.height)
+            {
+                return Vector2.zero;
+            }
+
+            float horizontal = 0f;
+            if (position.x <= EDGE_SCROLL_THICKNESS)
+            {
+                horizontal = -1f;
+            }
+            else if (position.x >= Screen.width - EDGE_SCROLL_THICKNESS)
+            {
+                horizontal = 1f;
+            }
+
+            float vertical = 0f;
+            if (position.y <= EDGE_SCROLL_THICKNESS)
+            {
+                vertical = -1f;
+            }
+            else if (position.y >= Screen.height - EDGE_SCROLL_THICKNESS)
+            {
+                vertical = 1f;
+            }
+
+            return new Vector2(horizontal, vertical);
+        }
+
+        private static Vector2 GetKeyboardMoveDirection()
+        {
+            if (Keyboard.current == null)
+            {
+                return Vector2.zero;
+            }
+
+            float horizontal = 0f;
+            if (Keyboard.current.aKey.isPressed ||
+                Keyboard.current.leftArrowKey.isPressed)
+            {
+                horizontal -= 1f;
+            }
+            if (Keyboard.current.dKey.isPressed ||
+                Keyboard.current.rightArrowKey.isPressed)
+            {
+                horizontal += 1f;
+            }
+
+            float vertical = 0f;
+            if (Keyboard.current.sKey.isPressed ||
+                Keyboard.current.downArrowKey.isPressed)
+            {
+                vertical -= 1f;
+            }
+            if (Keyboard.current.wKey.isPressed ||
+                Keyboard.current.upArrowKey.isPressed)
+            {
+                vertical += 1f;
+            }
+
+            return new Vector2(horizontal, vertical);
+        }
+
+        private static float GetKeyboardZoomDirection()
+        {
+            if (Keyboard.current == null)
+            {
+                return 0f;
+            }
+
+            float direction = 0f;
+            if (Keyboard.current.rKey.isPressed)
+            {
+                direction -= 1f;
+            }
+            if (Keyboard.current.fKey.isPressed)
+            {
+                direction += 1f;
+            }
+            return direction;
+        }
+
+        private void ProcessKeyboardShortcuts()
+        {
+            if (Keyboard.current == null)
+            {
+                _cameraRotateHandledThisFrame = false;
+                _cameraResetHandledThisFrame = false;
+                return;
+            }
+
+            if (!_cameraRotateHandledThisFrame)
+            {
+                if (Keyboard.current.qKey.wasPressedThisFrame)
+                {
+                    OnCameraRotateStep?.Invoke(-1f);
+                }
+                else if (Keyboard.current.eKey.wasPressedThisFrame)
+                {
+                    OnCameraRotateStep?.Invoke(1f);
+                }
+            }
+
+            if (!_cameraResetHandledThisFrame &&
+                Keyboard.current.homeKey.wasPressedThisFrame)
+            {
+                OnCameraReset?.Invoke();
+            }
+
+            _cameraRotateHandledThisFrame = false;
+            _cameraResetHandledThisFrame = false;
         }
     }
 }

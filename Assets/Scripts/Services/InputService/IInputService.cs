@@ -8,6 +8,9 @@ namespace EmpireAtWar.Services.InputService
     {
         event Action<Vector2> OnSwipe; 
         event Action<Vector2> OnCameraMove;
+        event Action<Vector2> OnCameraOrbit;
+        event Action<float> OnCameraRotateStep;
+        event Action OnCameraReset;
         event Action OnLeftMousePressed;
         event Action<Vector2> OnPrimaryDragStarted;
         event Action<Vector2> OnPrimaryDragChanged;
@@ -18,6 +21,7 @@ namespace EmpireAtWar.Services.InputService
         TouchPhase CurrentTouchPhase { get;}
         
         Vector2 TouchPosition { get; }
+        Vector2 CameraMove { get; }
         int TapCount { get; }
 
         event Action<Vector2>  OnEndDrag;
