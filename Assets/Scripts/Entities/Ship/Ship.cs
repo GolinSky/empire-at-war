@@ -38,7 +38,7 @@ namespace EmpireAtWar.Ship
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
         ILateDisposable, ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator,
-        IObserver<ISelectionSubject>, IEntityLifecycle
+        IShipMovementMediator, IObserver<ISelectionSubject>, IEntityLifecycle
     {
         private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
@@ -119,19 +119,13 @@ namespace EmpireAtWar.Ship
 
         public void Initialize()
         {
+            _shipMoveComponent.SetMediator(this);
             _stateMachine.SetState(_idleState);
             ShipService.Add(this);
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
             _selectionService.AddObserver(this);
             _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
-
-            if (_audioDialogShipComponent != null)
-            {
-                _shipMoveComponent.TargetPositionChanged += _audioDialogShipComponent.HandleMove;
-                _shipMoveComponent.LookAtTargetChanged += _audioDialogShipComponent.HandleAttack;
-                _shipMoveComponent.Stopped += _audioDialogShipComponent.HandleStopped;
-            }
 
             if (_playerType == PlayerType.Opponent)
             {
@@ -217,13 +211,6 @@ namespace EmpireAtWar.Ship
             ShipService.Remove(this);
             _selectionService.RemoveObserver(this);
 
-            if (_audioDialogShipComponent != null)
-            {
-                _shipMoveComponent.TargetPositionChanged -= _audioDialogShipComponent.HandleMove;
-                _shipMoveComponent.LookAtTargetChanged -= _audioDialogShipComponent.HandleAttack;
-                _shipMoveComponent.Stopped -= _audioDialogShipComponent.HandleStopped;
-            }
-
             if (_enginesUnitModel != null)
             {
                 _enginesUnitModel.OnHardPointHealthChanged -= HandleEnginesData;
@@ -272,6 +259,21 @@ namespace EmpireAtWar.Ship
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
         {
             _shipMoveComponent.HandleRadarContacts(contacts);
+        }
+
+        public void OnPositionChanged(Vector3 position)
+        {
+            _audioDialogShipComponent?.HandleMove(position);
+        }
+
+        public void OnLookAtTarget(Vector3 targetPosition)
+        {
+            _audioDialogShipComponent?.HandleAttack(targetPosition);
+        }
+
+        public void OnStopped()
+        {
+            _audioDialogShipComponent?.HandleStopped();
         }
 
         public void OnSelect(bool isActive)

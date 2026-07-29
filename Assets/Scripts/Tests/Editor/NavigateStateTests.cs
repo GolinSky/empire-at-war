@@ -49,10 +49,6 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 LastWorldDestination { get; private set; }
             public int WorldMoveCount { get; private set; }
 
-            public event Action<Vector3> TargetPositionChanged;
-            public event Action<Vector3> LookAtTargetChanged;
-            public event Action Stopped;
-
             public float MoveAround()
             {
                 return 0f;
@@ -67,7 +63,6 @@ namespace EmpireAtWar.Tests.Editor
             {
                 LastWorldDestination = targetPosition;
                 WorldMoveCount++;
-                TargetPositionChanged?.Invoke(targetPosition);
             }
 
             public void MoveToPositionOnScreen(Vector2 targetPosition)
@@ -76,7 +71,6 @@ namespace EmpireAtWar.Tests.Editor
 
             public void LookAtTarget(Vector3 targetPosition)
             {
-                LookAtTargetChanged?.Invoke(targetPosition);
             }
 
             public float GetRange(Vector3 targetPosition)
@@ -86,7 +80,6 @@ namespace EmpireAtWar.Tests.Editor
 
             public void Stop()
             {
-                Stopped?.Invoke();
             }
 
             public void ApplyMoveCoefficient(float coefficient)
@@ -98,6 +91,11 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
+            {
+            }
+
+            public void SetMediator(
+                EmpireAtWar.Entities.Ship.Mediator.IShipMovementMediator mediator)
             {
             }
         }

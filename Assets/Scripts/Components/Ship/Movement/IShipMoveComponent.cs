@@ -1,12 +1,12 @@
-﻿using EmpireAtWar.Components.Movement;
-using EmpireAtWar.Mvc;
-using UnityEngine;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Mvc;
+using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
-    public interface IShipMoveComponent:IComponent
+    public interface IShipMoveComponent : IComponent
     {
         Vector3 CurrentPosition { get; }
         Transform ViewTransform { get; }
@@ -21,9 +21,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         void ApplyMoveCoefficient(float coefficient);
         void HandleSelection(bool isSelected);
         void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
+        void SetMediator(IShipMovementMediator mediator);
         float HyperSpaceDuration { get; }
-        event System.Action<Vector3> TargetPositionChanged;
-        event System.Action<Vector3> LookAtTargetChanged;
-        event System.Action Stopped;
     }
 }

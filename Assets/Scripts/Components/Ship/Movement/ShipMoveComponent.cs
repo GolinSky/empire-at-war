@@ -11,7 +11,10 @@ using Zenject;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Services.ShipNavigation;
+using System;
+using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
@@ -40,7 +43,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isSelected;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
-        private bool _isApplyingNavigationDestination;
+        private IShipMovementMediator _movementMediator;
         private Quaternion _bodyRestRotation;
         private bool _isReleased;
 
@@ -51,30 +54,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationSpeed => Model.Speed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
 
-        public bool CanMove => Model.CanMove;
         public Vector3 CurrentPosition => Model.CurrentPosition;
         public Transform ViewTransform => Model.ViewTransform.Value;
         public bool IsMoving => Model.IsMoving;
         public float HyperSpaceDuration => Model.HyperSpaceDuration;
-
-        public event System.Action<Vector3> TargetPositionChanged
-        {
-            add => Model.TargetPosition.OnChanged += value;
-            remove => Model.TargetPosition.OnChanged -= value;
-        }
-
-        public event System.Action<Vector3> LookAtTargetChanged
-        {
-            add => Model.LookAtTarget.OnChanged += value;
-            remove => Model.LookAtTarget.OnChanged -= value;
-        }
-
-        public event System.Action Stopped
-        {
-            add => Model.OnStop += value;
-            remove => Model.OnStop -= value;
-        }
-
 
         [Inject]
         private void Construct(
@@ -94,7 +77,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             _playerType = playerType;
             _mapModel = mapModel;
             _shipNavigationService = shipNavigationService;
-            // Model.TargetPosition = startPosition;
         }
 
         public void Initialize()
@@ -109,10 +91,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             transform.position = Model.JumpPosition;
             _canMove = false;
             HyperSpaceJump(Model.HyperSpacePosition);
-
-            Model.TargetPosition.OnChanged += UpdateTargetPosition;
-            Model.OnStop += StopAllMovement;
-            Model.LookAtTarget.OnChanged += LookAt;
 
             if (_playerType == PlayerType.Player)
             {
@@ -133,11 +111,14 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _isReleased = true;
-            Model.TargetPosition.OnChanged -= UpdateTargetPosition;
-            Model.OnStop -= StopAllMovement;
-            Model.LookAtTarget.OnChanged -= LookAt;
             _shipNavigationService.Unregister(this);
             FallDown();
+        }
+
+        public void SetMediator(IShipMovementMediator mediator)
+        {
+            _movementMediator = mediator ??
+                throw new ArgumentNullException(nameof(mediator));
         }
 
         public void MoveToPosition(Vector2 screenPosition)
@@ -153,11 +134,16 @@ namespace EmpireAtWar.Components.Ship.Movement
                 newPosition,
                 _mapModel.SizeRange,
                 NavigationRadius);
-            if (!newPosition.IsEqual(Model.TargetPosition.Value))
+            if (Model.HasTargetPosition(newPosition))
             {
-                Model.TargetPosition.Value = newPosition;
+                return;
             }
+
+            Model.SetTargetPosition(newPosition);
+            UpdateTargetPosition(newPosition);
+            MovementMediator.OnPositionChanged(newPosition);
         }
+
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
             Vector3 point = _cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
@@ -193,7 +179,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void LookAtTarget(Vector3 targetPosition)
         {
-            Model.LookAtTarget.Value = targetPosition;
+            LookAt(targetPosition);
+            MovementMediator.OnLookAtTarget(targetPosition);
         }
 
         public float GetRange(Vector3 targetPosition)
@@ -203,12 +190,15 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Stop()
         {
-            Model.Stop();
+            Model.SetTargetPosition(CurrentViewPosition);
+            StopAllMovement();
+            MovementMediator.OnStopped();
         }
 
         public void ApplyMoveCoefficient(float coefficient)
         {
             Model.ApplyMoveCoefficient(coefficient);
+            Stop();
         }
 
         public void HandleSelection(bool isSelected)
@@ -218,6 +208,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         }
 
         private Vector3 CurrentViewPosition => transform.position;
+        private IShipMovementMediator MovementMediator =>
+            _movementMediator ?? throw new InvalidOperationException(
+                $"{nameof(ShipMoveComponent)} requires a movement mediator before receiving commands.");
 
         private void LookAt(Vector3 targetPosition)
         {
@@ -322,11 +315,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void UpdateTargetPosition(Vector3 targetPosition)
         {
-            if (_isApplyingNavigationDestination)
-            {
-                return;
-            }
-
             if (!_canMove)
             {
                 _pendingTargetPosition = targetPosition;
@@ -334,7 +322,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             targetPosition.y = CurrentViewPosition.y;
-            ApplyNavigationPlan(targetPosition, System.Array.Empty<RadarContact>());
+            ApplyNavigationPlan(targetPosition, Array.Empty<RadarContact>());
         }
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
@@ -365,11 +353,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                     this);
             }
 
-            if (!plan.Destination.IsEqual(Model.TargetPosition.Value))
+            if (!Model.HasTargetPosition(plan.Destination))
             {
-                _isApplyingNavigationDestination = true;
-                Model.TargetPosition.Value = plan.Destination;
-                _isApplyingNavigationDestination = false;
+                Model.SetTargetPosition(plan.Destination);
             }
 
             StartPath(plan);
