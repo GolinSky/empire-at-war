@@ -15,8 +15,6 @@ MonoBehaviour:
   models:
   - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   <ComponentData>k__BackingField:
-    <Speed>k__BackingField: 0
-    <Height>k__BackingField: 0
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
       x:
@@ -29,7 +27,6 @@ MonoBehaviour:
         <Min>k__BackingField: -360
         <Max>k__BackingField: 360
     <FallDownDuration>k__BackingField: 180
-    <CanMove>k__BackingField: 0
     <Armor>k__BackingField: 90000
     <Dexterity>k__BackingField: 0
     <Shields>k__BackingField: 50000
@@ -44,5 +41,4 @@ MonoBehaviour:
     <Distance>k__BackingField: 200
   <HealthModel>k__BackingField: {}
   <RadarModel>k__BackingField: {}
-  <DefaultMoveModel>k__BackingField: {}
   <AttackModel>k__BackingField: {}

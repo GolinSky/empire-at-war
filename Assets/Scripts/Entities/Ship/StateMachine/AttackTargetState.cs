@@ -20,8 +20,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly LazyInject<IdleState> _idleState;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
+        private Vector3 _formationOffset;
 
         private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
+        private Vector3 MovementTargetPosition => TargetPosition + _formationOffset;
 
 
         public AttackTargetState(
@@ -38,15 +40,33 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _idleState = idleState;
         }
         
+        public void SetData(IEntity mainTarget, Vector3 formationOffset)
+        {
+            _mainTargetEntity = mainTarget ??
+                throw new ArgumentNullException(nameof(mainTarget));
+            _mainTarget = _mainTargetEntity.HealthModel;
+            formationOffset.y = 0f;
+            _formationOffset = formationOffset;
+        }
+
         public void SetData(IEntity mainTarget)
         {
-            _mainTargetEntity = mainTarget;
-            _mainTarget = _mainTargetEntity.HealthModel;
+            SetData(mainTarget, Vector3.zero);
         }
         
         public bool IsTheSameTarget(IEntity entity)
         {
             return _mainTarget != null && _mainTargetEntity.Id == entity.Id;
+        }
+
+        public bool IsTheSameTarget(
+            IEntity entity,
+            Vector3 formationOffset)
+        {
+            formationOffset.y = 0f;
+            return IsTheSameTarget(entity) &&
+                   (_formationOffset - formationOffset).sqrMagnitude <=
+                   Mathf.Epsilon;
         }
         
         public void Enter()
@@ -91,7 +111,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (!_shipMoveComponent.IsMoving)
             {
-                _shipMoveComponent.MoveToPosition(TargetPosition);
+                _shipMoveComponent.MoveToPosition(MovementTargetPosition);
             }
         }
 
@@ -103,7 +123,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (!_weaponComponent.HasEnoughRange(_shipMoveComponent.GetRange(TargetPosition)))
             {
-                _shipMoveComponent.MoveToPosition(TargetPosition);
+                _shipMoveComponent.MoveToPosition(MovementTargetPosition);
             }
             else
             {

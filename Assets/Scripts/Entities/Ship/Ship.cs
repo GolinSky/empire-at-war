@@ -22,6 +22,7 @@ using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.UnitDeathAnimation;
 
 namespace EmpireAtWar.Ship
 {
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Ship
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
         ILateDisposable, ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator,
-        IObserver<ISelectionSubject>, IEntityLifecycle
+        IShipMovementMediator, IEntityLifecycle
     {
         private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
@@ -46,7 +47,6 @@ namespace EmpireAtWar.Ship
         private IRadarComponent _radarComponent;
         private IWeaponComponent _weaponComponent;
         private ISelectionComponent _selectionComponent;
-        private ISelectionService _selectionService;
         private AttackTargetState _attackTargetState;
         private IdleState _idleState;
         private NavigateState _navigateState;
@@ -57,9 +57,10 @@ namespace EmpireAtWar.Ship
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
         private PlayerType _playerType;
-        private bool _isSelected;
         private bool _isReleased;
         private ILayerService _layerService;
+        private IUnitDeathAnimationData _deathAnimationData;
+        private IUnitDeathAnimationService _deathAnimationService;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -71,6 +72,7 @@ namespace EmpireAtWar.Ship
         public string Id => GetType().Name;
         public PlayerType PlayerType => _playerType;
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
+        public float NavigationRadius => _shipMoveComponent.NavigationRadius;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
@@ -80,7 +82,6 @@ namespace EmpireAtWar.Ship
             IRadarComponent radarComponent,
             IWeaponComponent weaponComponent,
             ISelectionComponent selectionComponent,
-            ISelectionService selectionService,
             AttackTargetState attackTargetState,
             IdleState idleState,
             NavigateState navigateState,
@@ -91,14 +92,15 @@ namespace EmpireAtWar.Ship
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
-            ILayerService layerService)
+            ILayerService layerService,
+            IUnitDeathAnimationData deathAnimationData,
+            IUnitDeathAnimationService deathAnimationService)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
             _radarComponent = radarComponent;
             _weaponComponent = weaponComponent;
             _selectionComponent = selectionComponent;
-            _selectionService = selectionService;
             _attackTargetState = attackTargetState;
             _idleState = idleState;
             _navigateState = navigateState;
@@ -110,6 +112,8 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent = audioDialogShipComponent;
             _monoComponents = monoComponents;
             _layerService = layerService;
+            _deathAnimationData = deathAnimationData;
+            _deathAnimationService = deathAnimationService;
         }
 
         public IModel GetModel()
@@ -119,19 +123,12 @@ namespace EmpireAtWar.Ship
 
         public void Initialize()
         {
+            _shipMoveComponent.SetMediator(this);
             _stateMachine.SetState(_idleState);
             ShipService.Add(this);
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
-            _selectionService.AddObserver(this);
             _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
-
-            if (_audioDialogShipComponent != null)
-            {
-                _shipMoveComponent.TargetPositionChanged += _audioDialogShipComponent.HandleMove;
-                _shipMoveComponent.LookAtTargetChanged += _audioDialogShipComponent.HandleAttack;
-                _shipMoveComponent.Stopped += _audioDialogShipComponent.HandleStopped;
-            }
 
             if (_playerType == PlayerType.Opponent)
             {
@@ -213,16 +210,9 @@ namespace EmpireAtWar.Ship
             {
                 component.Release();
             }
+            _deathAnimationService.Play(transform, _deathAnimationData);
 
             ShipService.Remove(this);
-            _selectionService.RemoveObserver(this);
-
-            if (_audioDialogShipComponent != null)
-            {
-                _shipMoveComponent.TargetPositionChanged -= _audioDialogShipComponent.HandleMove;
-                _shipMoveComponent.LookAtTargetChanged -= _audioDialogShipComponent.HandleAttack;
-                _shipMoveComponent.Stopped -= _audioDialogShipComponent.HandleStopped;
-            }
 
             if (_enginesUnitModel != null)
             {
@@ -250,6 +240,28 @@ namespace EmpireAtWar.Ship
             _stateMachine.SetState(_navigateState);
         }
 
+        public void Attack(IEntity target, Vector3 formationOffset)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (ReferenceEquals(
+                    _stateMachine.CurrentState,
+                    _attackTargetState) &&
+                _attackTargetState.IsTheSameTarget(
+                    target,
+                    formationOffset))
+            {
+                return;
+            }
+
+            _shipAIBrain.Enable(false);
+            _attackTargetState.SetData(target, formationOffset);
+            _stateMachine.SetState(_attackTargetState);
+        }
+
         public void HandleNewEnemy(IEntity entity)
         {
             IHealthModelObserver healthModel = entity.HealthModel;
@@ -274,29 +286,25 @@ namespace EmpireAtWar.Ship
             _shipMoveComponent.HandleRadarContacts(contacts);
         }
 
-        public void OnSelect(bool isActive)
+        public void OnPositionChanged(Vector3 position)
         {
-            _isSelected = isActive;
-            _shipMoveComponent.HandleSelection(isActive);
-            _audioDialogShipComponent?.HandleSelection(isActive);
+            _audioDialogShipComponent?.HandleMove(position);
         }
 
-        public void UpdateState(ISelectionSubject selectionSubject)
+        public void OnLookAtTarget(Vector3 targetPosition)
         {
-            if (!_isSelected || selectionSubject.UpdatedType != PlayerType.Opponent ||
-                !selectionSubject.EnemySelectionContext.HasSelectable)
-            {
-                return;
-            }
+            _audioDialogShipComponent?.HandleAttack(targetPosition);
+        }
 
-            IEntity entity = selectionSubject.EnemySelectionContext.Entity;
-            IHealthModelObserver healthModel = entity.HealthModel;
-            if (!healthModel.IsDestroyed && healthModel.HasUnits && !_attackTargetState.IsTheSameTarget(entity))
-            {
-                _shipAIBrain.Enable(false);
-                _attackTargetState.SetData(entity);
-                _stateMachine.SetState(_attackTargetState);
-            }
+        public void OnStopped()
+        {
+            _audioDialogShipComponent?.HandleStopped();
+        }
+
+        public void OnSelect(bool isActive)
+        {
+            _shipMoveComponent.HandleSelection(isActive);
+            _audioDialogShipComponent?.HandleSelection(isActive);
         }
 
         private void SynchronizeComponents()

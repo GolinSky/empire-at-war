@@ -56,5 +56,16 @@ namespace EmpireAtWar.Tests.Movement
 
             Assert.That(duration, Is.EqualTo(12f).Within(0.01f));
         }
+
+        [Test]
+        public void CalculateLookBankAngle_ScalesConfiguredMaximumByTurnAngle()
+        {
+            float bank = ShipRotationKinematics.CalculateLookBankAngle(
+                Quaternion.identity,
+                Vector3.right,
+                20f);
+
+            Assert.That(bank, Is.EqualTo(-10f).Within(0.001f));
+        }
     }
 }

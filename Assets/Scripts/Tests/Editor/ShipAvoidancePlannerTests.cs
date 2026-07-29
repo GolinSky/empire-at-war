@@ -84,6 +84,33 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void TryCalculateDetour_UsesClearCandidateWhenObstacleIsNearMapEdge()
+        {
+            List<RadarContact> contacts = new List<RadarContact>
+            {
+                new RadarContact(new Vector3(20f, 0f, 90f), 5f, false)
+            };
+
+            bool found = ShipAvoidancePlanner.TryCalculateDetour(
+                new Vector3(0f, 0f, 90f),
+                new Vector3(50f, 0f, 90f),
+                contacts,
+                0f,
+                0.5f,
+                5f,
+                _mapRange,
+                out Vector3 detour);
+
+            Assert.That(found, Is.True);
+            Assert.That(detour.z, Is.LessThan(90f));
+            Assert.That(
+                Vector3.Distance(
+                    detour,
+                    new Vector3(20f, 0f, 90f)),
+                Is.GreaterThanOrEqualTo(10f));
+        }
+
+        [Test]
         public void BuildAvoidance_CreatesSmoothCurveThroughDetour()
         {
             Vector3 origin = Vector3.zero;

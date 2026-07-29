@@ -6,6 +6,7 @@ namespace EmpireAtWar.Components.Ship.Movement
     public static class ShipBezierPath
     {
         private const float CONTROL_DISTANCE_FACTOR = 0.35f;
+        private const float AVOIDANCE_CONTROL_DISTANCE_FACTOR = 0.15f;
         private const float QUARTER_CIRCLE_CONTROL_FACTOR = 0.5522848f;
         private const float TURNAROUND_RADIUS_FACTOR = 0.25f;
 
@@ -130,13 +131,25 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             CubicBezierSegment first = new CubicBezierSegment(
                 origin,
-                origin + startDirection * firstDistance * CONTROL_DISTANCE_FACTOR,
-                detour - detourDirection * firstDistance * CONTROL_DISTANCE_FACTOR,
+                origin +
+                startDirection *
+                firstDistance *
+                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                detour -
+                detourDirection *
+                firstDistance *
+                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
                 detour);
             CubicBezierSegment second = new CubicBezierSegment(
                 detour,
-                detour + detourDirection * secondDistance * CONTROL_DISTANCE_FACTOR,
-                destination - arrivalDirection * secondDistance * CONTROL_DISTANCE_FACTOR,
+                detour +
+                detourDirection *
+                secondDistance *
+                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                destination -
+                arrivalDirection *
+                secondDistance *
+                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
                 destination);
             return new ShipBezierRoute(new[] { first, second });
         }

@@ -1,6 +1,5 @@
 ﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
@@ -78,7 +77,6 @@ namespace EmpireAtWar.Ship
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
             BindBuffer(model.ShipMoveModel);
             Container.Bind<IShipMoveModelObserver>().To<ShipMoveModel>().FromResolve();
-            Container.Bind<IDefaultMoveModelObserver>().To<ShipMoveModel>().FromResolve();
             BindBuffer(model.AttackModel);
             Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
             BindBuffer(model.RadarModel);

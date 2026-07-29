@@ -1,5 +1,4 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
@@ -52,8 +51,6 @@ namespace EmpireAtWar.SpaceStation
             SpaceStationModel model = Container.Resolve<SpaceStationModel>();
             BindBuffer(model.HealthModel);
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
-            BindBuffer(model.DefaultMoveModel);
-            Container.Bind<IDefaultMoveModelObserver>().To<DefaultMoveModel>().FromResolve();
             BindBuffer(model.AttackModel);
             Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
             BindBuffer(model.RadarModel);
@@ -68,9 +65,6 @@ namespace EmpireAtWar.SpaceStation
                 .FromComponentsInHierarchy()
                 .AsCached();
             Container.BindInterfacesAndSelfTo<RadarComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-            Container.BindInterfacesAndSelfTo<SimpleMoveComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
             Container.BindInterfacesAndSelfTo<AttackComponent>()

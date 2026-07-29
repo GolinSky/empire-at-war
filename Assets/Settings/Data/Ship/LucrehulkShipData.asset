@@ -29,7 +29,6 @@ MonoBehaviour:
       <Min>k__BackingField: -360
       <Max>k__BackingField: 360
   <FallDownDuration>k__BackingField: 180
-  <CanMove>k__BackingField: 1
   <RotationSpeed>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 3
   <BodyRotationMaxAngle>k__BackingField: 10
