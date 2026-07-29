@@ -37,5 +37,21 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetReservedCount("ship"), Is.Zero);
             Assert.That(model.TryReserve("ship", 1, 3, 3), Is.True);
         }
+
+        [Test]
+        public void GetReservedCount_WithRequestTypeUsesControllerIdentifier()
+        {
+            EnemyUnitLimitModel model = new EnemyUnitLimitModel();
+            string unitId = $"{typeof(FakeRequest).FullName}:mine";
+            model.TryReserve(unitId, 2, 1, 10);
+
+            Assert.That(
+                model.GetReservedCount<FakeRequest>("mine"),
+                Is.EqualTo(1));
+        }
+
+        private sealed class FakeRequest
+        {
+        }
     }
 }

@@ -1,8 +1,9 @@
-using System.Linq;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
@@ -13,8 +14,6 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 {
     public class ShipAIBrain : ITickable
     {
-        private const float DECISION_INTERVAL = 1f;
-
         private readonly StateMachine1 _stateMachine;
         private readonly IHealthModelObserver _healthModel;
         private readonly IRadarComponent _radarComponent;
@@ -22,6 +21,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly AttackTargetState _attackTargetState;
         private readonly IdleState _idleState;
         private readonly FleeState _fleeState;
+        private readonly ShipAiDecisionModel _decisionModel;
+        private readonly IGameModelObserver _gameModel;
 
         private float _decisionTimer = 0f;
         private bool _isEnabled = false;
@@ -34,7 +35,9 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IShipMoveComponent shipMoveComponent,
             AttackTargetState attackTargetState,
             IdleState idleState,
-            FleeState fleeState)
+            FleeState fleeState,
+            ShipAiDecisionModel decisionModel,
+            IGameModelObserver gameModel)
         {
             _stateMachine = stateMachine;
             _healthModel = healthComponent.HealthModelObserver;
@@ -43,6 +46,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _attackTargetState = attackTargetState;
             _idleState = idleState;
             _fleeState = fleeState;
+            _decisionModel = decisionModel;
+            _gameModel = gameModel;
         }
 
         public void Enable(bool isEnabled)
@@ -61,23 +66,13 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer > 0) return;
-            _decisionTimer = DECISION_INTERVAL;
+            _decisionTimer = EnemyAiDifficultyProfile.Get(_gameModel.EnemyDifficulty).DecisionInterval;
 
             MakeDecision();
         }
 
         private void MakeDecision()
         {
-            if (_healthModel.IsDestroyed) return;
-
-            // 1. Check HP status
-            if (_healthModel.HasShields && _healthModel.ShieldPercentage < 0.2f)
-            {
-                SetState(_fleeState);
-                return;
-            }
-
-            // Clean up radar enemies
             for (int i = _radarComponent.Enemies.Count - 1; i >= 0; i--)
             {
                 var radarEnemyHealth = _radarComponent.Enemies[i].HealthModel;
@@ -87,39 +82,45 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 }
             }
 
-            var enemies = _radarComponent.Enemies.Where(e => !e.HealthModel.IsDestroyed).ToList();
+            bool hasAssignedTarget = _assignedTarget != null;
+            bool isAssignedTargetAvailable = hasAssignedTarget &&
+                !_assignedTarget.HealthModel.IsDestroyed &&
+                _assignedTarget.HealthModel.HasUnits;
+            ShipAiDecision decision = _decisionModel.Evaluate(
+                new ShipAiSnapshot(
+                    _healthModel.IsDestroyed,
+                    _healthModel.HasShields,
+                    _healthModel.ShieldPercentage,
+                    _radarComponent.Enemies.Count,
+                    hasAssignedTarget,
+                    isAssignedTargetAvailable,
+                    _shipMoveComponent.IsMoving),
+                _gameModel.EnemyDifficulty);
 
-            if (enemies.Count > 2)
-            {
-                SetState(_fleeState);
-                return;
-            }
-
-            if (_assignedTarget == null)
-            {
-                if (_shipMoveComponent.IsMoving)
-                {
-                    return;
-                }
-
-                SetState(_idleState);
-                return;
-            }
-
-            IHealthModelObserver targetHealth = _assignedTarget.HealthModel;
-            if (targetHealth.IsDestroyed || !targetHealth.HasUnits)
+            if (hasAssignedTarget && !isAssignedTargetAvailable)
             {
                 _assignedTarget = null;
-                SetState(_idleState);
-                return;
             }
 
-            if (!_attackTargetState.IsTheSameTarget(_assignedTarget))
+            switch (decision)
             {
-                _attackTargetState.SetData(_assignedTarget);
-            }
+                case ShipAiDecision.Flee:
+                    SetState(_fleeState);
+                    return;
+                case ShipAiDecision.Attack:
+                    if (!_attackTargetState.IsTheSameTarget(_assignedTarget))
+                    {
+                        _attackTargetState.SetData(_assignedTarget);
+                    }
 
-            SetState(_attackTargetState);
+                    SetState(_attackTargetState);
+                    return;
+                case ShipAiDecision.Navigate:
+                    return;
+                case ShipAiDecision.Idle:
+                    SetState(_idleState);
+                    return;
+            }
         }
 
         private void SetState(IBaseState state)

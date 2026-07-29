@@ -4,7 +4,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public sealed class EnemyUnitLimitModel
     {
-        private readonly Dictionary<string, int> _reservedCounts = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _reservedCounts =
+            new Dictionary<string, int>();
 
         public int CurrentUnitCapacity { get; private set; }
 
@@ -43,12 +44,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 _reservedCounts[unitId] = reservedCount - 1;
             }
 
-            CurrentUnitCapacity = System.Math.Max(0, CurrentUnitCapacity - unitCapacity);
+            CurrentUnitCapacity = System.Math.Max(
+                0,
+                CurrentUnitCapacity - unitCapacity);
         }
 
         public int GetReservedCount(string unitId)
         {
             return _reservedCounts.TryGetValue(unitId, out int count) ? count : 0;
+        }
+
+        public int GetReservedCount<TRequest>(string requestId)
+        {
+            return GetReservedCount($"{typeof(TRequest).FullName}:{requestId}");
         }
 
         public void Reset()

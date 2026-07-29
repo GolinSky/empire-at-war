@@ -16,8 +16,8 @@ namespace EmpireAtWar.Entities.Ship.Data
     }
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
-    public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData, IAttackData, IRadarData,
-        IWeaponContext
+    public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData, IAttackData,
+        IRadarData, IWeaponContext
     {
         [Header("Ship Settings")]
         [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
@@ -32,9 +32,8 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public bool CanMove { get; private set; } = true;
         [field: SerializeField] public float RotationSpeed { get; private set; }
         [field: SerializeField] public float HyperSpaceDuration { get; private set; }
-        [field: SerializeField] public float MinRotationDuration { get; private set; } = 5f;
-        [field: SerializeField] public float MaxRotationDuration { get; private set; } = 25f;
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
+        [field: SerializeField] public float NavigationRadius { get; private set; } = 8f;
 
         [Header("Health Settings")]
         [field: SerializeField] public float Armor { get; private set; }

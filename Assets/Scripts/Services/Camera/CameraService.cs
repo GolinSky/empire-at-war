@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
@@ -22,12 +23,13 @@ namespace EmpireAtWar.Services.Camera
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable
     {
+        [SerializeField] private UnityEngine.Camera _camera;
         [SerializeField] private Ease _moveEase = Ease.OutExpo;
 
         private Plane _plane = new();
-        private UnityEngine.Camera _camera;
         private CameraData _cameraData;
         private IInputService _inputService;
+        private CameraOrbitModel _orbitModel;
         private Tween _moveTween;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
@@ -42,29 +44,46 @@ namespace EmpireAtWar.Services.Camera
         [Inject]
         public void Constructor(CameraData cameraData, IInputService inputService)
         {
-            _cameraData = cameraData;
-            _inputService = inputService;
+            _cameraData = cameraData ?? throw new ArgumentNullException(nameof(cameraData));
+            _inputService = inputService ?? throw new ArgumentNullException(nameof(inputService));
         }
 
         private void Awake()
         {
-            _camera = GetComponent<UnityEngine.Camera>();
+            if (_camera == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(CameraService)} requires an explicitly assigned camera.");
+            }
         }
 
         public void Initialize()
         {
+            _keyboardInput = Vector2.zero;
+            _keyboardVelocity = Vector2.zero;
+            _orbitModel = new CameraOrbitModel(
+                transform.eulerAngles.x,
+                transform.eulerAngles.y,
+                _cameraData.MinPitch,
+                _cameraData.MaxPitch);
             _inputService.OnLeftMousePressed += StopMovement;
             _inputService.OnSwipe += OnSwipe;
-            _inputService.OnCameraMove += OnCameraMove;
             _inputService.OnZoom += ZoomCamera;
+            _inputService.OnCameraOrbit += OrbitCamera;
+            _inputService.OnCameraRotateStep += RotateCameraStep;
+            _inputService.OnCameraReset += ResetCamera;
         }
 
         public void LateDispose()
         {
             _inputService.OnLeftMousePressed -= StopMovement;
             _inputService.OnSwipe -= OnSwipe;
-            _inputService.OnCameraMove -= OnCameraMove;
             _inputService.OnZoom -= ZoomCamera;
+            _inputService.OnCameraOrbit -= OrbitCamera;
+            _inputService.OnCameraRotateStep -= RotateCameraStep;
+            _inputService.OnCameraReset -= ResetCamera;
+            _keyboardInput = Vector2.zero;
+            _keyboardVelocity = Vector2.zero;
             StopMovement();
         }
 
@@ -112,19 +131,21 @@ namespace EmpireAtWar.Services.Camera
 
         private void OnSwipe(Vector2 direction)
         {
-            Vector3 worldDirection = new(direction.x, 0, direction.y);
+            Vector3 worldDirection = GetPlanarDirection(direction);
             Vector3 move = -worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move), true);
         }
 
-        private void OnCameraMove(Vector2 direction)
-        {
-            StopMovement();
-            _keyboardInput = direction;
-        }
-
         public void Tick()
         {
+            Vector2 currentInput = _inputService.CameraMove;
+            if (currentInput.sqrMagnitude > Mathf.Epsilon &&
+                _keyboardInput.sqrMagnitude <= Mathf.Epsilon)
+            {
+                StopMovement();
+            }
+
+            _keyboardInput = currentInput;
             _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
                 _keyboardVelocity,
                 _keyboardInput,
@@ -138,11 +159,74 @@ namespace EmpireAtWar.Services.Camera
                 return;
             }
 
-            Vector3 move = new Vector3(
-                _keyboardVelocity.x,
-                0f,
-                _keyboardVelocity.y) * Time.unscaledDeltaTime;
+            Vector3 move = GetPlanarDirection(_keyboardVelocity) * Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move), false);
+        }
+
+        private void OrbitCamera(Vector2 dragDelta)
+        {
+            _orbitModel.Rotate(
+                -dragDelta.y * _cameraData.OrbitSensitivity,
+                dragDelta.x * _cameraData.OrbitSensitivity);
+            ApplyOrbit();
+        }
+
+        private void RotateCameraStep(float direction)
+        {
+            _orbitModel.Rotate(0f, direction * _cameraData.StepRotationAngle);
+            ApplyOrbit();
+        }
+
+        private void ResetCamera()
+        {
+            _orbitModel.Reset();
+            ApplyOrbit();
+        }
+
+        private void ApplyOrbit()
+        {
+            StopMovement();
+            if (!TryGetGroundPivot(out Vector3 pivot))
+            {
+                return;
+            }
+
+            Quaternion rotation = Quaternion.Euler(_orbitModel.Pitch, _orbitModel.Yaw, 0f);
+            Vector3 forward = rotation * Vector3.forward;
+            if (forward.y >= -Mathf.Epsilon)
+            {
+                return;
+            }
+
+            float distance = (CameraPosition.y - pivot.y) / -forward.y;
+            Vector3 position = pivot - forward * distance;
+            transform.SetPositionAndRotation(ClampPosition(position), rotation);
+        }
+
+        private bool TryGetGroundPivot(out Vector3 pivot)
+        {
+            _plane.SetNormalAndPosition(Vector3.up, Vector3.zero);
+            Ray ray = new Ray(CameraPosition, CameraForward);
+            if (_plane.Raycast(ray, out float distance))
+            {
+                pivot = ray.GetPoint(distance);
+                return true;
+            }
+
+            pivot = default;
+            return false;
+        }
+
+        private Vector3 GetPlanarDirection(Vector2 input)
+        {
+            Vector3 right = transform.right;
+            right.y = 0f;
+            right.Normalize();
+
+            Vector3 forward = transform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+            return right * input.x + forward * input.y;
         }
 
         private void StopMovement()
@@ -168,7 +252,7 @@ namespace EmpireAtWar.Services.Camera
             float heightPercentage = Mathf.InverseLerp(
                 _cameraData.ZoomRange.Min,
                 _cameraData.ZoomRange.Max,
-                CameraPosition.y);
+                position.y);
             float xMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.x, _cameraData.MaxMoveRangeY.Min.x, heightPercentage);
             float xMax = Mathf.Lerp(_cameraData.MinMoveRangeX.Max.x, _cameraData.MaxMoveRangeY.Max.x, heightPercentage);
             float zMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.y, _cameraData.MaxMoveRangeY.Min.y, heightPercentage);
