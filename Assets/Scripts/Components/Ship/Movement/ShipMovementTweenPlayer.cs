@@ -121,15 +121,44 @@ namespace EmpireAtWar.Components.Ship.Movement
             Action completed)
         {
             _translationSequence.KillExt();
+            _rotationSequence.KillExt();
             _translationSequence = DOTween.Sequence();
             DisplayRoute(plan.Trajectory);
 
-            if (plan.WaitDuration > Mathf.Epsilon)
+            if (plan.TurnDuration > Mathf.Epsilon)
+            {
+                Vector3 initialDirection = plan.Route.InitialTangent;
+                Quaternion desiredRotation = Quaternion.LookRotation(
+                    initialDirection,
+                    Vector3.up);
+                float bankAngle =
+                    ShipRotationKinematics.CalculateLookBankAngle(
+                        _rootTransform.rotation,
+                        initialDirection,
+                        maximumBankAngle);
+                Quaternion bodyTargetRotation =
+                    _bodyRestRotation *
+                    Quaternion.Euler(0f, 0f, bankAngle);
+                _translationSequence.Append(_rootTransform
+                    .DORotateQuaternion(
+                        desiredRotation,
+                        plan.TurnDuration)
+                    .SetEase(Ease.Linear));
+                _translationSequence.Join(_bodyTransform
+                    .DOLocalRotateQuaternion(
+                        bodyTargetRotation,
+                        plan.TurnDuration)
+                    .SetEase(_lookAtEase));
+                _translationSequence.AppendCallback(StraightenBody);
+            }
+
+            float remainingWait = plan.WaitDuration - plan.TurnDuration;
+            if (remainingWait > Mathf.Epsilon)
             {
                 _translationSequence.Append(DOVirtual.Float(
                     0f,
                     1f,
-                    plan.WaitDuration,
+                    remainingWait,
                     _ => { }));
             }
 

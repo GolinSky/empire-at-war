@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands
         IAttackCommand
     {
         public Vector3 WorldPosition => Controller.WorldPosition;
+        public float NavigationRadius => Controller.NavigationRadius;
 
         public EnemyAttackShipCommand(EmpireAtWar.Ship.Ship ship)
             : base(ship)

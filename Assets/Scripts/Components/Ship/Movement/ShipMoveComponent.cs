@@ -49,9 +49,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IRadarModelObserver _radarModel;
         private bool _isReleased;
         private ShipMovementTweenPlayer _tweenPlayer;
-        private readonly List<RadarContact> _mapObstacleContacts =
+        private readonly List<RadarContact> _navigationContacts =
             new List<RadarContact>();
-        private readonly List<RadarContact> _plannedMapObstacleContacts =
+        private readonly List<RadarContact> _plannedNavigationContacts =
             new List<RadarContact>();
 
         public Vector3 NavigationPosition => CurrentViewPosition;
@@ -138,8 +138,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _isReleased = true;
-            _shipNavigationService.Unregister(this);
             _shipNavigationService.ClearPlan(this);
+            _shipNavigationService.Unregister(this);
             if (_tweenPlayer != null)
             {
                 _tweenPlayer.Release();
@@ -172,8 +172,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             Model.SetTargetPosition(destination);
             UpdateTargetPosition(destination);
-            MovementMediator.OnPositionChanged(destination);
-            return destination;
+            Vector3 appliedDestination = Model.TargetPosition;
+            MovementMediator.OnPositionChanged(appliedDestination);
+            return appliedDestination;
         }
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
@@ -311,7 +312,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             targetPosition.y = CurrentViewPosition.y;
-            ApplyNavigationPlan(targetPosition, _mapObstacleContacts);
+            ApplyNavigationPlan(targetPosition, _navigationContacts);
         }
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
@@ -321,41 +322,30 @@ namespace EmpireAtWar.Components.Ship.Movement
                 throw new ArgumentNullException(nameof(contacts));
             }
 
-            ReplaceMapObstacleContacts(contacts);
-            if (!_isNavigationReady || !Model.IsMoving ||
-                AreSameContacts(
-                    _mapObstacleContacts,
-                    _plannedMapObstacleContacts))
+            if (_isReleased)
             {
                 return;
             }
 
-            if (!ShipAvoidancePlanner.TryCalculateDetour(
-                    CurrentViewPosition,
-                    Model.TargetPosition,
-                    _mapObstacleContacts,
-                    NavigationHeight,
-                    HEIGHT_TOLERANCE,
-                    NavigationRadius,
-                    _mapModel.SizeRange,
-                    out _))
+            ReplaceNavigationContacts(contacts);
+            if (!_isNavigationReady || !Model.IsMoving ||
+                AreSameContacts(
+                    _navigationContacts,
+                    _plannedNavigationContacts))
             {
-                CopyContacts(
-                    _mapObstacleContacts,
-                    _plannedMapObstacleContacts);
                 return;
             }
 
             ApplyNavigationPlan(
                 Model.TargetPosition,
-                _mapObstacleContacts);
+                _navigationContacts);
         }
 
         private void ApplyNavigationPlan(
             Vector3 requestedDestination,
             IReadOnlyList<RadarContact> obstacleContacts)
         {
-            CopyContacts(obstacleContacts, _plannedMapObstacleContacts);
+            CopyContacts(obstacleContacts, _plannedNavigationContacts);
             ShipNavigationPlan plan = _shipNavigationService.Plan(
                 this,
                 transform.forward,
@@ -368,7 +358,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             {
                 Debug.Log(
                     $"[ShipNavigation] Ship={name}, " +
-                    $"Detour={plan.Detour.HasValue}, Wait={plan.WaitDuration:F2}s, " +
+                    $"Detour={plan.Detour.HasValue}, Turn={plan.TurnDuration:F2}s, " +
+                    $"Wait={plan.WaitDuration:F2}s, " +
                     $"Move={plan.MovementDuration:F2}s, Radius={NavigationRadius:F1}, " +
                     $"Speed={NavigationSpeed:F1}, TurnSpeed={NavigationRotationSpeed:F1}, " +
                     $"TrafficChecks={plan.TrafficConflictChecks}",
@@ -383,15 +374,18 @@ namespace EmpireAtWar.Components.Ship.Movement
             StartPath(plan);
         }
 
-        private void ReplaceMapObstacleContacts(
+        private void ReplaceNavigationContacts(
             IReadOnlyList<RadarContact> contacts)
         {
-            _mapObstacleContacts.Clear();
+            _navigationContacts.Clear();
             for (int i = 0; i < contacts.Count; i++)
             {
-                if (!contacts[i].IsShip)
+                RadarContact contact = contacts[i];
+                if (!contact.IsShip ||
+                    Mathf.Abs(contact.Position.y - NavigationHeight) <=
+                    HEIGHT_TOLERANCE)
                 {
-                    _mapObstacleContacts.Add(contacts[i]);
+                    _navigationContacts.Add(contact);
                 }
             }
         }
