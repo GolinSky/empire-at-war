@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         bool IsPositionInAnyZone(Vector3 position);
         bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
+        bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position);
         bool TryGetRandomSpawnPosition(
             PlayerType playerType,
             ShipType shipType,
