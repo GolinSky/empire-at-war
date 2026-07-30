@@ -101,13 +101,21 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
+            {
+                return true;
+            }
+
             public bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetRandomSpawnPosition(PlayerType playerType, out Vector3 position)
+            public bool TryGetRandomSpawnPosition(
+                PlayerType playerType,
+                ShipType shipType,
+                out Vector3 position)
             {
                 position = default;
                 return false;
