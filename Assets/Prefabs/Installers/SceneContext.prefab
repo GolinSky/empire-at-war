@@ -112,7 +112,8 @@ MonoBehaviour:
   flipZ: 1
   updateInterval: 0.1
   fadeSpeed: 3
-  keepHistory: 1
+  edgeSoftness: 0.25
+  keepHistory: 0
 --- !u!1 &8275563448249933054
 GameObject:
   m_ObjectHideFlags: 0
