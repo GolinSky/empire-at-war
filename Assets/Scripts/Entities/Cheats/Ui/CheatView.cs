@@ -21,6 +21,8 @@ namespace EmpireAtWar.Views.Cheats
         private const float WINDOW_WIDTH = 360f;
         private const float WINDOW_HEIGHT = 430f;
         private const float WINDOW_MARGIN = 16f;
+        private const float WINDOW_ANIMATION_DURATION = 0.18f;
+        private const float WINDOW_COLLAPSED_SCALE = 0.85f;
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
         private static readonly string[] TAB_NAMES = { "Economy", "Ships" };
@@ -40,7 +42,8 @@ namespace EmpireAtWar.Views.Cheats
         private string _status = string.Empty;
         private int _selectedTab;
         private int _selectedShip;
-        private bool _isExpanded = true;
+        private bool _isExpanded;
+        private float _windowVisibility;
 
         public void SetShips(IReadOnlyList<ShipType> ships)
         {
@@ -65,11 +68,20 @@ namespace EmpireAtWar.Views.Cheats
             _status = status ?? string.Empty;
         }
 
+        private void Update()
+        {
+            float targetVisibility = _isExpanded ? 1f : 0f;
+            _windowVisibility = Mathf.MoveTowards(
+                _windowVisibility,
+                targetVisibility,
+                Time.unscaledDeltaTime / WINDOW_ANIMATION_DURATION);
+        }
+
         private void OnGUI()
         {
             GUI.depth = -1000;
 
-            if (!_isExpanded)
+            if (!_isExpanded && _windowVisibility <= 0f)
             {
                 if (GUI.Button(new Rect(WINDOW_MARGIN, WINDOW_MARGIN, 100f, 32f), "Cheats"))
                 {
@@ -79,6 +91,21 @@ namespace EmpireAtWar.Views.Cheats
                 return;
             }
 
+            float easedVisibility = Mathf.SmoothStep(0f, 1f, _windowVisibility);
+            float scale = Mathf.Lerp(WINDOW_COLLAPSED_SCALE, 1f, easedVisibility);
+            Matrix4x4 previousMatrix = GUI.matrix;
+            Color previousColor = GUI.color;
+            bool wasEnabled = GUI.enabled;
+
+            GUIUtility.ScaleAroundPivot(
+                new Vector2(scale, scale),
+                new Vector2(_windowRect.xMin, _windowRect.yMin));
+            GUI.color = new Color(
+                previousColor.r,
+                previousColor.g,
+                previousColor.b,
+                previousColor.a * easedVisibility);
+            GUI.enabled = wasEnabled && _isExpanded && _windowVisibility >= 1f;
             _windowRect = GUILayout.Window(
                 WINDOW_ID,
                 _windowRect,
@@ -86,6 +113,9 @@ namespace EmpireAtWar.Views.Cheats
                 "Cheats",
                 GUILayout.Width(WINDOW_WIDTH),
                 GUILayout.Height(WINDOW_HEIGHT));
+            GUI.enabled = wasEnabled;
+            GUI.color = previousColor;
+            GUI.matrix = previousMatrix;
         }
 
         private void DrawWindow(int windowId)
