@@ -3,14 +3,17 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Presenters.Cheats;
 using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.Economy;
+using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Views.Cheats;
 using EmpireAtWar.Mvc;
 using Zenject;
 
@@ -39,6 +42,14 @@ namespace EmpireAtWar
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
             Container.BindInterfacesNonLazyExt<EconomyUiController>();
+
+            Container.BindInterfacesExt<CheatService>();
+            Container
+                .BindInterfacesAndSelfTo<CheatView>()
+                .FromNewComponentOnNewGameObject()
+                .WithGameObjectName(nameof(CheatView))
+                .AsSingle();
+            Container.BindInterfacesNonLazyExt<CheatPresenter>();
             
             Container.BindInterfacesExt<PlayerService>();
 
