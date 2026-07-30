@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.FogOfWar;
 using UnityEngine;
 
 namespace ViewComponents
 {
     public class FogOfWarSystem : MonoBehaviour
     {
-        private const float HISTORIC_VISIBILITY = 1f;
+        private const float HISTORIC_VISIBILITY = 0.35f;
 
         
         [SerializeField] private MeshFilter meshFilter;
@@ -30,8 +31,11 @@ namespace ViewComponents
         [Header("Update Settings")]
         public float updateInterval = 0.1f;
         public float fadeSpeed = 3f;
+        [Range(0f, 1f)]
+        [Tooltip("Width of the feathered border relative to vision radius. The configured radius remains 50% visible.")]
+        public float edgeSoftness = 0.25f;
         [Tooltip("If true, already visited areas will remain dimly visible. If false, fog completely returns when sources leave.")]
-        public bool keepHistory = true;
+        public bool keepHistory;
 
         // Represents a single area of vision
         public class VisionSource
@@ -94,6 +98,7 @@ namespace ViewComponents
             // Using RGBA32 is fully compatible everywhere compared to R8
             _fogTexture = new Texture2D(textureResolution, textureResolution, TextureFormat.RGBA32, false);
             _fogTexture.wrapMode = TextureWrapMode.Clamp;
+            _fogTexture.filterMode = FilterMode.Bilinear;
 
             int totalPixels = textureResolution * textureResolution;
             _fogPixels = new Color[totalPixels];
@@ -214,13 +219,16 @@ namespace ViewComponents
                 // Ensure a minimum of at least 1 pixel radius if there is supposed to be a hole
                 if (radiusPx < 1) radiusPx = 1;
 
-                // Build bounds in pixel space
-                int minX = Mathf.Clamp(px - radiusPx, 0, textureResolution - 1);
-                int maxX = Mathf.Clamp(px + radiusPx, 0, textureResolution - 1);
-                int minY = Mathf.Clamp(py - radiusPx, 0, textureResolution - 1);
-                int maxY = Mathf.Clamp(py + radiusPx, 0, textureResolution - 1);
+                int outerRadiusPx = Mathf.CeilToInt(
+                    radiusPx * (1f + edgeSoftness));
 
-                float sqrRadiusPx = radiusPx * radiusPx;
+                // Build bounds around the full feathered edge in pixel space.
+                int minX = Mathf.Clamp(px - outerRadiusPx, 0, textureResolution - 1);
+                int maxX = Mathf.Clamp(px + outerRadiusPx, 0, textureResolution - 1);
+                int minY = Mathf.Clamp(py - outerRadiusPx, 0, textureResolution - 1);
+                int maxY = Mathf.Clamp(py + outerRadiusPx, 0, textureResolution - 1);
+
+                float sqrOuterRadiusPx = outerRadiusPx * outerRadiusPx;
 
                 for (int y = minY; y <= maxY; y++)
                 {
@@ -229,16 +237,18 @@ namespace ViewComponents
                         // Calculate square distance in pixels
                         float distSqr = (x - px) * (x - px) + (y - py) * (y - py);
 
-                        if (distSqr <= sqrRadiusPx)
+                        if (distSqr <= sqrOuterRadiusPx)
                         {
-                            // Soft falloff calculation
-                            float normalizedDist = Mathf.Sqrt(distSqr) / radiusPx;
-                            float falloff = 1f - Mathf.Pow(normalizedDist, 1.5f); // Curve adjustment for nice edges
-
                             int index = y * textureResolution + x;
 
-                            // Apply visibility to target array without dropping below the existing calculated intensity
-                            float targetVis = falloff * source.intensity;
+                            // The registered radius is the middle of the
+                            // feather, so its border is exactly half visible.
+                            float targetVis =
+                                FogVisibilityModel.CalculateSoftVisibility(
+                                    Mathf.Sqrt(distSqr),
+                                    radiusPx,
+                                    edgeSoftness) *
+                                source.intensity;
 
                             // Apply to all RGB channels equally
                             _targetPixels[index].r = Mathf.Max(_targetPixels[index].r, targetVis);
