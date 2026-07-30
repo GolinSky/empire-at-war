@@ -22,19 +22,18 @@ namespace EmpireAtWar.Views.MiniMap
         private const float HIGHLIGHT_MARK_ALPHA = 1f;
         private const float FADE_DURATION = 0.5f;
         private const float ORIGIN_MAP_ALPHA = 1f;
-        
-        [SerializeField] private Button switcherButton;
+
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
-        
+
         private List<Image> _mapMarkers = new List<Image>();
         private Vector2Range _mapRange;
         private bool _isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
-        
-        
+
+
         public void Initialize()
         {
             _mapRange = Model.MapRange;
@@ -44,7 +43,6 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded += AddMark;
             Model.OnDynamicMarkAdded += AddDynamicMark;
             Model.OnInteractableChanged += ActivateInteraction;
-            switcherButton.onClick.AddListener(SetCanvasActive);
         }
 
         public void LateDispose()
@@ -52,9 +50,8 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded -= AddMark;
             Model.OnDynamicMarkAdded -= AddDynamicMark;
             Model.OnInteractableChanged -= ActivateInteraction;
-            switcherButton.onClick.RemoveListener(SetCanvasActive);
         }
-        
+
         private void SetCanvasActive()
         {
             canvas.enabled = !canvas.enabled;
@@ -67,14 +64,14 @@ namespace EmpireAtWar.Views.MiniMap
             mapImage.DOFade(targetAlpha, FADE_DURATION);
             DoFade(targetAlpha, FADE_DURATION);
         }
-        
+
         private void AddMark(MarkData markData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
             _mapMarkers.Add(view.IconImage);
         }
-        
+
         private void AddDynamicMark(DynamicMarkData dynamicMarkData)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
@@ -86,16 +83,16 @@ namespace EmpireAtWar.Views.MiniMap
         {
             float x = Mathf.InverseLerp(_mapRange.Min.x, _mapRange.Max.x, worldPos.x);
             float y = Mathf.InverseLerp(_mapRange.Min.y, _mapRange.Max.y, worldPos.z);
-            
+
             Vector2 miniMapPos = new Vector2
             {
                 x = Mathf.Lerp(MiniMapRect.xMin, MiniMapRect.xMax, x),
                 y = Mathf.Lerp(MiniMapRect.yMin, MiniMapRect.yMax, y),
             };
-            
+
             return miniMapPos;
         }
-        
+
         public void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left)
