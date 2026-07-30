@@ -220,6 +220,12 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
             {
                 position = new Vector3(55f, 0f, -55f);
