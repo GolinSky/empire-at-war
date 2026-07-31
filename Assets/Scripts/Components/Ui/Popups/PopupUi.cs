@@ -6,10 +6,12 @@ using Zenject;
 
 namespace EmpireAtWar.Ui.Popups
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class PopupUi : MonoBehaviour, IInitializable, ILateDisposable
     {
         [SerializeField] private PopupType popupType; // not need here
         [SerializeField] protected Button closeButton;
+        [SerializeField] private CanvasGroup canvasGroup;
 
         [Inject] private IPopupCommand _popupCommand;
 
@@ -26,15 +28,17 @@ namespace EmpireAtWar.Ui.Popups
             OnPopupClose();
         }
 
-        public void SetParent(Transform parent)
-        {
-            transform.SetParent(parent, false);
-            transform.localScale = Vector3.one;
-        }
-
         private void SetPopupState(bool state)
         {
-            gameObject.SetActive(state);
+            if (canvasGroup == null)
+            {
+                throw new System.InvalidOperationException(
+                    $"{GetType().Name} requires a bound {nameof(CanvasGroup)}.");
+            }
+
+            canvasGroup.alpha = state ? 1f : 0f;
+            canvasGroup.interactable = state;
+            canvasGroup.blocksRaycasts = state;
         }
 
         protected virtual void OnPopupOpen()

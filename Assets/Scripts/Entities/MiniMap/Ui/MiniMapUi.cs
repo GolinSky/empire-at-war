@@ -23,7 +23,6 @@ namespace EmpireAtWar.Views.MiniMap
         private const float FADE_DURATION = 0.3f;
         private const float ORIGIN_MAP_ALPHA = 0.8f;
 
-        [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
@@ -50,11 +49,6 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded -= AddMark;
             Model.OnDynamicMarkAdded -= AddDynamicMark;
             Model.OnInteractableChanged -= ActivateInteraction;
-        }
-
-        private void SetCanvasActive()
-        {
-            canvas.enabled = !canvas.enabled;
         }
 
         private void ActivateInteraction(bool isActive)

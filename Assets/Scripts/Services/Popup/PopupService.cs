@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Commands.PopupCommands;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Ui.Popups;
-using UnityEngine;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Popup
@@ -12,17 +13,17 @@ namespace EmpireAtWar.Services.Popup
         void ClosePopup(PopupType popupType);
     }
     
-    public class PopupService : Service, IPopupService,IPopupCommand
+    public class PopupService : Service, IPopupService, IPopupCommand
     {
         private readonly PopupUiFacade _popupUiFacade;
-        private readonly Transform _popupParent;
+        private readonly IUiService _uiService;
 
-        private Dictionary<PopupType, PopupUi> _popupDictionary = new Dictionary<PopupType, PopupUi>();
+        private readonly Dictionary<PopupType, PopupUi> _popupDictionary = new();
 
-        public PopupService(PopupUiFacade popupUiFacade, Transform popupParent)
+        public PopupService(PopupUiFacade popupUiFacade, IUiService uiService)
         {
-            _popupUiFacade = popupUiFacade;
-            _popupParent = popupParent;
+            _popupUiFacade = popupUiFacade ?? throw new ArgumentNullException(nameof(popupUiFacade));
+            _uiService = uiService ?? throw new ArgumentNullException(nameof(uiService));
         }
 
         public void OpenPopup(PopupType popupType)
@@ -33,9 +34,10 @@ namespace EmpireAtWar.Services.Popup
             }
             else
             {
-                PopupUi newPopupUI = _popupUiFacade.Create(popupType);
+                PopupUi newPopupUI = _popupUiFacade.Create(
+                    popupType,
+                    _uiService.PopupCanvasTransform);
                 _popupDictionary.Add(popupType, newPopupUI);
-                newPopupUI.SetParent(_popupParent);
                 newPopupUI.OpenPopup();
             }
         }

@@ -34,7 +34,7 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private Button switchButton;
         [SerializeField] private Button closeButton;
-        [SerializeField] private Canvas panelCanvas;
+        [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private Image signalImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
 
@@ -73,8 +73,8 @@ namespace EmpireAtWar.Views.Reinforcement
             _originColor = signalImage.color;
             unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{_model.MaxUnitCapacity}";
 
-            switchButton.onClick.AddListener(ActivateCanvas);
-            closeButton.onClick.AddListener(DisableCanvas);
+            switchButton.onClick.AddListener(TogglePanel);
+            closeButton.onClick.AddListener(HidePanel);
 
             _model.OnSpawnUnit += HandleSpawning;
             _model.OnReinforcementAdded += AddUi;
@@ -89,8 +89,8 @@ namespace EmpireAtWar.Views.Reinforcement
                 return;
             }
 
-            switchButton.onClick.RemoveListener(ActivateCanvas);
-            closeButton.onClick.RemoveListener(DisableCanvas);
+            switchButton.onClick.RemoveListener(TogglePanel);
+            closeButton.onClick.RemoveListener(HidePanel);
 
             _model.OnSpawnUnit -= HandleSpawning;
             _model.OnReinforcementAdded -= AddUi;
@@ -156,17 +156,36 @@ namespace EmpireAtWar.Views.Reinforcement
                 _currentSpawnUnitUi.DecreaseUnitCount();
             }
 
-            ActivateCanvas();
+            TogglePanel();
         }
 
-        private void ActivateCanvas()
+        private void TogglePanel()
         {
-            panelCanvas.enabled = !panelCanvas.enabled;
+            if (panelCanvasGroup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(ReinforcementUi)} requires a bound panel {nameof(CanvasGroup)}.");
+            }
+
+            SetPanelVisibility(!panelCanvasGroup.interactable);
         }
 
-        private void DisableCanvas()
+        private void HidePanel()
         {
-            panelCanvas.enabled = false;
+            SetPanelVisibility(false);
+        }
+
+        private void SetPanelVisibility(bool isVisible)
+        {
+            if (panelCanvasGroup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(ReinforcementUi)} requires a bound panel {nameof(CanvasGroup)}.");
+            }
+
+            panelCanvasGroup.alpha = isVisible ? 1f : 0f;
+            panelCanvasGroup.interactable = isVisible;
+            panelCanvasGroup.blocksRaycasts = isVisible;
         }
 
         public void Handle(ISpawnShipUi spawnShipUi)
@@ -176,7 +195,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 return;
             }
 
-            DisableCanvas();
+            HidePanel();
             _currentSpawnUnitUi = spawnShipUi;
             _presenter.TrySpawnReinforcement(spawnShipUi.UnitType);
         }

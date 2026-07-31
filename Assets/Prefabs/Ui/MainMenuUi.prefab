@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 3438202474243012778}
   - component: {fileID: 5321049060276107008}
   - component: {fileID: 438907039119797536}
+  - component: {fileID: 1921191959141574646}
   m_Layer: 5
   m_Name: MainMenuUi
   m_TagString: Untagged
@@ -1128,9 +1129,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7be156284c44a22ba1984c6ceb1bc02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 1921191959141574646}
   startDemoButton: {fileID: 7259654646338060828}
   optionsButton: {fileID: 7959810965066805952}
   quitApplicationButton: {fileID: 7849887689591581002}
+--- !u!225 &1921191959141574646
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6300282049906800805}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6373692745017430674
 GameObject:
   m_ObjectHideFlags: 0

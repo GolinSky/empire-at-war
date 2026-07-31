@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1627114000439265590}
   - component: {fileID: 1168781857408660717}
   - component: {fileID: 9220919144486463678}
+  - component: {fileID: 4118319410730507669}
   m_Layer: 5
   m_Name: FactionUi
   m_TagString: Untagged
@@ -58,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0eaa69dc49563f48bf95d514a7b2e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 4118319410730507669}
 --- !u!114 &9220919144486463678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,3 +80,15 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!225 &4118319410730507669
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111893382535395372}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

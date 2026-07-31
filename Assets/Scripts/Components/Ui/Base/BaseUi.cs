@@ -5,8 +5,11 @@ using Zenject;
 
 namespace EmpireAtWar.Ui.Base
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class BaseUi : MonoBehaviour
     {
+        [SerializeField] private CanvasGroup canvasGroup;
+
         public bool IsVisible { get; private set; } = true;
 
         public virtual void SetParent(Transform parent)
@@ -21,14 +24,26 @@ namespace EmpireAtWar.Ui.Base
 
         public virtual void Show()
         {
-            gameObject.SetActive(true);// use canvas group
-            IsVisible = true;
+            SetVisibility(true);
         }
 
         public virtual void Hide()
         {
-            gameObject.SetActive(false);
-            IsVisible = false;
+            SetVisibility(false);
+        }
+
+        private void SetVisibility(bool isVisible)
+        {
+            if (canvasGroup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{GetType().Name} requires a bound {nameof(CanvasGroup)}.");
+            }
+
+            canvasGroup.alpha = isVisible ? 1f : 0f;
+            canvasGroup.interactable = isVisible;
+            canvasGroup.blocksRaycasts = isVisible;
+            IsVisible = isVisible;
         }
     }
 
