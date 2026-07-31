@@ -73,7 +73,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         
         Container.BindModel<CoreGameModel>(Repository);
-        Container.BindInterfacesNonLazyExt<CoreGameController>();
+        Container.BindInterfacesNonLazyExt<SkirmishOrhestrator>();
         
         Container
             .BindModel<FactionsModel>(Repository)

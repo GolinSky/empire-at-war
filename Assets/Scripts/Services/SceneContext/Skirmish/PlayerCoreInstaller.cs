@@ -37,6 +37,7 @@ namespace EmpireAtWar
             Container.BindInterfacesAndSelfTo<PlayerFactionModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
+            Container.BindInterfacesNonLazyExt<ShipBuildUiController>();
             
             Container.BindScriptableObject<EconomyData>(Repository);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();

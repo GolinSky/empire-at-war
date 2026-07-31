@@ -7,6 +7,7 @@ namespace EmpireAtWar.Ui.Base
     public interface IUiService
     {
         BaseUi CreateUi(UiType uiType);
+        BaseUi CreateUi(UiType uiType, Transform parent);
     }
     
     [RequireComponent(typeof(Canvas))]
@@ -22,10 +23,22 @@ namespace EmpireAtWar.Ui.Base
         
         public BaseUi CreateUi(UiType uiType)
         {
-            if (_uiFacade == null)
-                throw new InvalidOperationException($"{nameof(UiService)} has not been initialized.");
+            return CreateUi(uiType, transform);
+        }
 
-            return _uiFacade.Create(uiType, transform);
+        public BaseUi CreateUi(UiType uiType, Transform parent)
+        {
+            if (_uiFacade == null)
+            {
+                throw new InvalidOperationException($"{nameof(UiService)} has not been initialized.");
+            }
+
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+
+            return _uiFacade.Create(uiType, parent);
         }
     }
 }

@@ -60,9 +60,8 @@ namespace EmpireAtWar.Views.MiniMap
         private void ActivateInteraction(bool isActive)
         {
             _isInteractable = isActive;
-            float targetAlpha = isActive ? ORIGIN_MAP_ALPHA : 0;
-            mapImage.DOFade(targetAlpha, FADE_DURATION);
-            DoFade(targetAlpha, FADE_DURATION);
+            mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
+            DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }
 
         private void AddMark(MarkData markData)
