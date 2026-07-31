@@ -197,10 +197,15 @@ namespace EmpireAtWar.Ship
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathEffects)
         {
             if (_isReleased)
             {
@@ -208,12 +213,18 @@ namespace EmpireAtWar.Ship
             }
 
             _isReleased = true;
-            _layerService.Apply(gameObject, LayerKey.Dead, true);
+            if (playDeathEffects)
+            {
+                _layerService.Apply(gameObject, LayerKey.Dead, true);
+            }
             foreach (IMonoComponent component in _monoComponents)
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathEffects)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
 
             ShipService.Remove(this);
 
@@ -222,7 +233,7 @@ namespace EmpireAtWar.Ship
                 _enginesUnitModel.OnHardPointHealthChanged -= HandleEnginesData;
             }
 
-            if (gameObject.activeInHierarchy)
+            if (playDeathEffects && gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(ShipType);
                 Instantiate(Data.DeathExplosionVfx, transform.position, Quaternion.identity);

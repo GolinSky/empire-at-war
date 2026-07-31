@@ -42,7 +42,9 @@ namespace EmpireAtWar.Controllers.MiniMap
             ITimerPoolWrapperService timerPoolWrapperService,
             IUiService uiService,
             ISelectionService selectionService,
-            ISkirmishRouteNavigation routeNavigation) : base(model)
+            ISkirmishRouteNavigation routeNavigation,
+            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
+            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType) : base(model)
         {
             _cameraService = cameraService;
             _inputService = inputService;
@@ -51,8 +53,8 @@ namespace EmpireAtWar.Controllers.MiniMap
             _selectionService = selectionService;
             _routeNavigation = routeNavigation;
             Model.MapRange = mapModel.SizeRange;            
-            Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(PlayerType.Player));
-            Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(PlayerType.Opponent));
+            Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(playerFactionType));
+            Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(opponentFactionType));
         }
 
     

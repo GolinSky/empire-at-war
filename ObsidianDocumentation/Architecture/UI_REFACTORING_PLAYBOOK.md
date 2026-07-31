@@ -51,3 +51,9 @@ flowchart LR
 ```
 
 The important container boundary is at UI creation. The prefab may be created by a parent UI factory, but its feature dependencies are supplied afterward by `<Feature>UiController` through explicit methods.
+
+## UI Prefab Component & Transition Rules
+
+1. **Button Transition Mode**: Always set `UnityEngine.UI.Button` transitions to `Color Tint` (`m_Transition: 1`), **NEVER** `Sprite Swap` (`m_Transition: 2`). When refactoring UI buttons to use `MPUIKIT.MPImage`, clear all sprite references in `m_SpriteState` (`m_HighlightedSprite`, `m_PressedSprite`, `m_SelectedSprite`, `m_DisabledSprite` set to `{fileID: 0}`) to prevent Unity from swapping in legacy bitmap sprites on hover or click.
+2. **Existing Panel MPImage Preservation**: Do not override pre-existing border outlines, outline colors (`#1F87E6` / `rgba(31, 135, 230, 0.85)`), or widths (`1.5`) on existing panel `MPImage` components (`MiddlePanel`, `ShipActions`, `Panel`, `UpperPanel`).
+

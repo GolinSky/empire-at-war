@@ -62,10 +62,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathEffects)
         {
             if (_isReleased)
             {
@@ -77,9 +82,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathEffects)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
 
-            OnRelease?.Invoke();
+            if (playDeathEffects)
+            {
+                OnRelease?.Invoke();
+            }
         }
 
         private void SynchronizeComponents()

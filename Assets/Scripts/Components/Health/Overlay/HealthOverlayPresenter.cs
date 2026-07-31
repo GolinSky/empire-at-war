@@ -46,6 +46,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
         public void Initialize()
         {
+            if (!_view.IsAvailable)
+            {
+                throw new InvalidOperationException(
+                    "The health overlay view must be initialized before its presenter.");
+            }
+
             _selectionService.AddObserver(this);
             SetTarget(GetDesiredTarget());
         }
@@ -63,11 +69,21 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 throw new ArgumentNullException(nameof(value));
             }
 
+            if (!_view.IsAvailable)
+            {
+                return;
+            }
+
             SetTarget(GetDesiredTarget());
         }
 
         public void Tick()
         {
+            if (!_view.IsAvailable)
+            {
+                return;
+            }
+
             IEntity desiredTarget = GetDesiredTarget();
             if (!ReferenceEquals(_target, desiredTarget))
             {
@@ -172,7 +188,10 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             _targetPositionProvider = targetPositionProvider;
             if (_target == null)
             {
-                _view.Hide();
+                if (_view.IsAvailable)
+                {
+                    _view.Hide();
+                }
                 return;
             }
 
@@ -186,6 +205,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             if (_target == null)
             {
                 throw new InvalidOperationException("A health update requires an active target.");
+            }
+
+            if (!_view.IsAvailable)
+            {
+                return;
             }
 
             UpdateValues(_target.HealthModel);

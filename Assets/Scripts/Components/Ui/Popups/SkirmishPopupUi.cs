@@ -17,6 +17,8 @@ namespace EmpireAtWar.Ui.Popups
         private const float MAX_STARTING_MONEY = 10000f;
         private const float DEFAULT_STARTING_MONEY = 2000f;
         private const float MONEY_STEP = 500f;
+        private const FactionType DEFAULT_PLAYER_FACTION = FactionType.Republic;
+        private const FactionType DEFAULT_ENEMY_FACTION = FactionType.Separatist;
 
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
@@ -40,6 +42,12 @@ namespace EmpireAtWar.Ui.Popups
             startGameButton.onClick.AddListener(OnStartGame);
             SetData<FactionType>(playerFactionDropdown);
             SetData<FactionType>(enemyFactionDropdown);
+            playerFactionDropdown.value = (int)DEFAULT_PLAYER_FACTION;
+            enemyFactionDropdown.value = (int)DEFAULT_ENEMY_FACTION;
+            playerFactionDropdown.RefreshShownValue();
+            enemyFactionDropdown.RefreshShownValue();
+            playerFactionDropdown.onValueChanged.AddListener(OnPlayerFactionChanged);
+            enemyFactionDropdown.onValueChanged.AddListener(OnEnemyFactionChanged);
             SetData<PlanetType>(planetsDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
             SetData<EnemyAiDifficulty>(enemyDifficultyDropdown);
@@ -90,6 +98,8 @@ namespace EmpireAtWar.Ui.Popups
         {
             base.LateDispose();
             startGameButton.onClick.RemoveListener(OnStartGame);
+            playerFactionDropdown.onValueChanged.RemoveListener(OnPlayerFactionChanged);
+            enemyFactionDropdown.onValueChanged.RemoveListener(OnEnemyFactionChanged);
             if (startingMoneySlider != null)
             {
                 startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
@@ -98,6 +108,7 @@ namespace EmpireAtWar.Ui.Popups
 
         private void OnStartGame()
         {
+            KeepFactionsDifferent(playerFactionDropdown, enemyFactionDropdown);
             GameCommand
                 .StartGame(
                     GetEnum<FactionType>(playerFactionDropdown.captionText.text),
@@ -106,6 +117,36 @@ namespace EmpireAtWar.Ui.Popups
                     GetEnum<BattleVictoryCondition>(victoryConditionDropdown.captionText.text),
                     GetEnum<EnemyAiDifficulty>(enemyDifficultyDropdown.captionText.text),
                     startingMoneySlider.value);
+        }
+
+        private void OnPlayerFactionChanged(int _)
+        {
+            KeepFactionsDifferent(playerFactionDropdown, enemyFactionDropdown);
+        }
+
+        private void OnEnemyFactionChanged(int _)
+        {
+            KeepFactionsDifferent(enemyFactionDropdown, playerFactionDropdown);
+        }
+
+        private static void KeepFactionsDifferent(
+            TMP_Dropdown changedDropdown,
+            TMP_Dropdown otherDropdown)
+        {
+            if (changedDropdown.value != otherDropdown.value)
+            {
+                return;
+            }
+
+            if (otherDropdown.options.Count < 2)
+            {
+                throw new InvalidOperationException(
+                    "Skirmish setup requires at least two factions.");
+            }
+
+            otherDropdown.value =
+                (changedDropdown.value + 1) % otherDropdown.options.Count;
+            otherDropdown.RefreshShownValue();
         }
 
         private TEnum GetEnum<TEnum>(string text) where TEnum : struct => Enum.Parse<TEnum>(text);

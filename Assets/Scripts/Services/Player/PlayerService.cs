@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.Player
             _spaceStationViewFacade.Create(
                 PlayerType.Player,
                 FactionType,
-                _mapModel.Value.GetStationPosition(PlayerType.Player));
+                _mapModel.Value.GetStationPosition(FactionType));
             
         }
     }
