@@ -26,6 +26,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IUiService _uiService;
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes =
             new Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>();
+        private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates =
+            new Dictionary<SkirmishUiRoutePosition, bool>();
 
         private CoreGameUi _coreGameUi;
         private GameTimeMode _gameTimeMode;
@@ -59,7 +61,7 @@ namespace EmpireAtWar.Controllers.Game
                     ActivateRoute(
                         routesAtPosition.Key,
                         routesAtPosition.Value[i],
-                        true);
+                        IsRouteActive(routesAtPosition.Key));
                 }
             }
         }
@@ -110,7 +112,7 @@ namespace EmpireAtWar.Controllers.Game
 
             if (_coreGameUi != null)
             {
-                ActivateRoute(position, route, true);
+                ActivateRoute(position, route, IsRouteActive(position));
             }
         }
 
@@ -133,6 +135,24 @@ namespace EmpireAtWar.Controllers.Game
             if (routes.Count == 0)
             {
                 _routes.Remove(position);
+            }
+        }
+
+        public void SetRouteActive(
+            SkirmishUiRoutePosition position,
+            bool isActive)
+        {
+            _routeStates[position] = isActive;
+
+            if (_coreGameUi == null ||
+                !_routes.TryGetValue(position, out List<ISkirmishUiRoute> routes))
+            {
+                return;
+            }
+
+            for (int i = 0; i < routes.Count; i++)
+            {
+                ActivateRoute(position, routes[i], isActive);
             }
         }
 
@@ -170,6 +190,13 @@ namespace EmpireAtWar.Controllers.Game
             }
 
             ChangeTime(_gameTimeMode);
+        }
+
+        public void ToggleReinforcement()
+        {
+            SkirmishUiRoutePosition position =
+                SkirmishUiRoutePosition.Reinforcement;
+            SetRouteActive(position, !IsRouteActive(position));
         }
 
         public void UpdateState(UserNotifierState notifierState)
@@ -211,6 +238,12 @@ namespace EmpireAtWar.Controllers.Game
             bool isActive)
         {
             route.Activate(isActive, _coreGameUi.GetRouteParent(position));
+        }
+
+        private bool IsRouteActive(SkirmishUiRoutePosition position)
+        {
+            return !_routeStates.TryGetValue(position, out bool isActive) ||
+                   isActive;
         }
     }
 }

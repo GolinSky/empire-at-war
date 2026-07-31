@@ -6,7 +6,9 @@ namespace EmpireAtWar.Services.UiRouting
     {
         MiniMap,
         Content,
-        BuildPipeline
+        BuildPipeline,
+        Economy,
+        Reinforcement
     }
 
     public interface ISkirmishUiRoute
@@ -23,5 +25,9 @@ namespace EmpireAtWar.Services.UiRouting
         void UnregisterRoute(
             SkirmishUiRoutePosition position,
             ISkirmishUiRoute route);
+
+        void SetRouteActive(
+            SkirmishUiRoutePosition position,
+            bool isActive);
     }
 }

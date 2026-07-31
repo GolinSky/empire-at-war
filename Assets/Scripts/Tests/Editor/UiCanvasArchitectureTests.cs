@@ -1,6 +1,10 @@
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Ui.Popups;
+using EmpireAtWar.Presenters.Economy;
+using EmpireAtWar.Presenters.Reinforcement;
+using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Views.Factions;
+using EmpireAtWar.Views.Game;
 using EmpireAtWar.Views.Reinforcement;
 using NUnit.Framework;
 using UnityEditor;
@@ -13,6 +17,8 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string UI_PREFAB_FOLDER = "Assets/Prefabs/Ui";
         private const string UI_SERVICE_PREFAB_PATH = "Assets/Prefabs/Ui/UiService.prefab";
+        private const string CORE_GAME_PREFAB_PATH =
+            "Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab";
         private const string ECONOMY_PREFAB_PATH =
             "Assets/Prefabs/Ui/Economy/EconomyUi.prefab";
         private const string REINFORCEMENT_PREFAB_PATH =
@@ -144,6 +150,70 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(reinforcementRoot);
                 PrefabUtility.UnloadPrefabContents(shipBuildRoot);
+            }
+        }
+
+        [Test]
+        public void EconomyAndReinforcementControllers_AreSkirmishUiRoutes()
+        {
+            Assert.That(
+                typeof(ISkirmishUiRoute).IsAssignableFrom(
+                    typeof(EconomyUiController)),
+                Is.True);
+            Assert.That(
+                typeof(ISkirmishUiRoute).IsAssignableFrom(
+                    typeof(ReinforcementUiController)),
+                Is.True);
+        }
+
+        [Test]
+        public void CoreGameUiPrefab_BindsReinforcementRouteButton()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(
+                CORE_GAME_PREFAB_PATH);
+
+            try
+            {
+                CoreGameUi coreGameUi = root.GetComponent<CoreGameUi>();
+                Button expectedButton = root.transform
+                    .Find("MiddlePanel/ReinforcementButton")
+                    .GetComponent<Button>();
+                SerializedProperty reinforcementButton =
+                    new SerializedObject(coreGameUi)
+                        .FindProperty("reinforcementButton");
+
+                Assert.That(reinforcementButton, Is.Not.Null);
+                Assert.That(
+                    reinforcementButton.objectReferenceValue,
+                    Is.SameAs(expectedButton));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void ReinforcementUiPrefab_RemovesLegacySwitchButton()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(
+                REINFORCEMENT_PREFAB_PATH);
+
+            try
+            {
+                ReinforcementUi reinforcementUi =
+                    root.GetComponent<ReinforcementUi>();
+                SerializedObject serializedUi =
+                    new SerializedObject(reinforcementUi);
+
+                Assert.That(root.transform.Find("RoundButtonCyan"), Is.Null);
+                Assert.That(
+                    serializedUi.FindProperty("switchButton"),
+                    Is.Null);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
             }
         }
 

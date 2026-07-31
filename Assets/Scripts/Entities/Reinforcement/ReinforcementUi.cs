@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.Visitor;
@@ -9,7 +8,6 @@ using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities.ScriptUtils.Dotween;
 
 namespace EmpireAtWar.Views.Reinforcement
 {
@@ -23,6 +21,9 @@ namespace EmpireAtWar.Views.Reinforcement
         void SetModel(IReinforcementModelObserver model);
         void SetPresenter(IReinforcementPresenter presenter);
         void SetData(ReinforcementData data);
+        void SetParent(Transform parent);
+        void Show();
+        void Hide();
         void Initialize();
         void Dispose();
     }
@@ -32,10 +33,8 @@ namespace EmpireAtWar.Views.Reinforcement
         private const string UNIT_CAPACITY_TEXT = "Reinforcement";
 
         [SerializeField] private Transform spawnTransform;
-        [SerializeField] private Button switchButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private CanvasGroup panelCanvasGroup;
-        [SerializeField] private Image signalImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
 
         private readonly Dictionary<string, ISpawnShipUi> _spawnUnitUiDictionary = new();
@@ -44,8 +43,6 @@ namespace EmpireAtWar.Views.Reinforcement
         private IReinforcementPresenter _presenter;
         private ReinforcementData _data;
         private ISpawnShipUi _currentSpawnUnitUi;
-        private Sequence _fadeSequence;
-        private Color _originColor;
         private bool _isInitialized;
 
         public void SetModel(IReinforcementModelObserver model)
@@ -70,11 +67,9 @@ namespace EmpireAtWar.Views.Reinforcement
                 throw new InvalidOperationException("Reinforcement UI dependencies must be set before initialization.");
             }
 
-            _originColor = signalImage.color;
             unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{_model.MaxUnitCapacity}";
 
-            switchButton.onClick.AddListener(TogglePanel);
-            closeButton.onClick.AddListener(HidePanel);
+            closeButton.onClick.AddListener(_presenter.Hide);
 
             _model.OnSpawnUnit += HandleSpawning;
             _model.OnReinforcementAdded += AddUi;
@@ -89,8 +84,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 return;
             }
 
-            switchButton.onClick.RemoveListener(TogglePanel);
-            closeButton.onClick.RemoveListener(HidePanel);
+            closeButton.onClick.RemoveListener(_presenter.Hide);
 
             _model.OnSpawnUnit -= HandleSpawning;
             _model.OnReinforcementAdded -= AddUi;
@@ -120,20 +114,6 @@ namespace EmpireAtWar.Views.Reinforcement
                     ActivateShipUnitUi(result, spawnShipUi);
                 }
             }
-
-            PlayTweens();
-        }
-
-        private void PlayTweens()
-        {
-            if (_fadeSequence.KillIfExist())
-            {
-                _fadeSequence.Append(signalImage.DOColor(_originColor, 0.1f));
-            }
-
-            _fadeSequence = DOTween.Sequence();
-            _fadeSequence.Append(signalImage.DOColor(Color.green, 1f));
-            _fadeSequence.Append(signalImage.DOColor(_originColor, 1f));
         }
 
         private void UpdateCapacityData(int capacity)
@@ -156,23 +136,19 @@ namespace EmpireAtWar.Views.Reinforcement
                 _currentSpawnUnitUi.DecreaseUnitCount();
             }
 
-            TogglePanel();
+            _presenter.Show();
         }
 
-        private void TogglePanel()
+        public override void Show()
         {
-            if (panelCanvasGroup == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(ReinforcementUi)} requires a bound panel {nameof(CanvasGroup)}.");
-            }
-
-            SetPanelVisibility(!panelCanvasGroup.interactable);
+            base.Show();
+            SetPanelVisibility(true);
         }
 
-        private void HidePanel()
+        public override void Hide()
         {
             SetPanelVisibility(false);
+            base.Hide();
         }
 
         private void SetPanelVisibility(bool isVisible)
@@ -195,7 +171,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 return;
             }
 
-            HidePanel();
+            _presenter.Hide();
             _currentSpawnUnitUi = spawnShipUi;
             _presenter.TrySpawnReinforcement(spawnShipUi.UnitType);
         }

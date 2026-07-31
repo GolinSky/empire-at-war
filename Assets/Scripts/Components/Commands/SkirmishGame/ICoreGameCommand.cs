@@ -6,5 +6,6 @@ namespace EmpireAtWar.Commands.SkirmishGame
     {
         void Play();
         void SpeedUp();
+        void ToggleReinforcement();
     }
 }
