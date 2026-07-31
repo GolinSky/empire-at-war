@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3828243179141239550}
   - component: {fileID: 7802464133228914937}
   m_Layer: 5
-  m_Name: SuperWeaponButton
+  m_Name: AttackMode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -710,7 +710,7 @@ GameObject:
   - component: {fileID: 4540490237964994132}
   - component: {fileID: 5124279546039539805}
   m_Layer: 5
-  m_Name: VideoModeButton (2)
+  m_Name: Stop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -965,7 +965,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b9c15587bd3641a4788074116c47f7ec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e7ce837574cb7ef48883710e912c3718, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1487,7 +1487,7 @@ GameObject:
   - component: {fileID: 4391058928786129877}
   - component: {fileID: 1199345000837036300}
   m_Layer: 5
-  m_Name: VideoModeButton (1)
+  m_Name: CustomTrajectory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1894,6 +1894,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 8287887705338463486}
   timeButton: {fileID: 5382548466387303350}
   speedUpButton: {fileID: 4369815565643574192}
+  reinforcementButton: {fileID: 9160219314195454050}
   timeImage: {fileID: 9050232912466798936}
   speedUpImage: {fileID: 8725600740947644431}
   timeSprites:
@@ -2432,7 +2433,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b9c15587bd3641a4788074116c47f7ec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eacc13945d971654dbd1affa5ac9bc76, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2830,7 +2831,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b9c15587bd3641a4788074116c47f7ec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d399716888a1eeb4295fae9176e2970a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2853,7 +2854,7 @@ GameObject:
   - component: {fileID: 8119893199016127632}
   - component: {fileID: 2732730717606544041}
   m_Layer: 5
-  m_Name: VideoModeButton
+  m_Name: GoAround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3699,7 +3700,7 @@ GameObject:
   - component: {fileID: 5928799736296535071}
   - component: {fileID: 3929096553356100707}
   m_Layer: 5
-  m_Name: VideoModeButton (3)
+  m_Name: Guard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3977,7 +3978,7 @@ GameObject:
   - component: {fileID: 5956633361286898358}
   - component: {fileID: 8718756691752914978}
   m_Layer: 5
-  m_Name: ReinforcementButton
+  m_Name: AttackOnMove
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4232,7 +4233,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b9c15587bd3641a4788074116c47f7ec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b938362154adb7647b816e89388f2492, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4307,7 +4308,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fd45161fb1eac26468da5b78cf84d43c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9e34d3eabdf58bc498232bc6a12cf1ce, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

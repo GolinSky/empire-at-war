@@ -15,6 +15,7 @@ namespace EmpireAtWar.Views.Game
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
+        [SerializeField] private Button reinforcementButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
         
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Views.Game
             ValidateRouteParents();
             timeButton.onClick.AddListener(Command.Play);
             speedUpButton.onClick.AddListener(Command.SpeedUp);
+            reinforcementButton.onClick.AddListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange += UpdateSprites;
         }
 
@@ -37,6 +39,7 @@ namespace EmpireAtWar.Views.Game
         {
             timeButton.onClick.RemoveListener(Command.Play);
             speedUpButton.onClick.RemoveListener(Command.SpeedUp);
+            reinforcementButton.onClick.RemoveListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange -= UpdateSprites;
         }
         
@@ -56,6 +59,9 @@ namespace EmpireAtWar.Views.Game
                     return contentRouteParent;
                 case SkirmishUiRoutePosition.BuildPipeline:
                     return buildPipelineRouteParent;
+                case SkirmishUiRoutePosition.Economy:
+                case SkirmishUiRoutePosition.Reinforcement:
+                    return transform;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(position), position, null);
             }
@@ -63,6 +69,12 @@ namespace EmpireAtWar.Views.Game
 
         private void ValidateRouteParents()
         {
+            if (reinforcementButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(reinforcementButton)} is not assigned.");
+            }
+
             if (miniMapRouteParent == null)
             {
                 throw new InvalidOperationException(
