@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 8768730661901922601}
   - component: {fileID: 88558583102079023}
   - component: {fileID: 3201764120452726311}
+  - component: {fileID: 4003304680418406474}
   m_Layer: 5
   m_Name: ShipUi
   m_TagString: Untagged
@@ -335,5 +336,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11831f368694864a9c051c6b8f33df5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 4003304680418406474}
   shipIconImage: {fileID: 1598169822330211070}
   disableSelectionButton: {fileID: 6334947701094778549}
+--- !u!225 &4003304680418406474
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5749101046437683160}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

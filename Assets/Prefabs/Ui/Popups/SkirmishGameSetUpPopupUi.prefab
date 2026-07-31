@@ -4530,6 +4530,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6215877517377226150}
   - component: {fileID: 4666495235759102847}
+  - component: {fileID: 6091553307987835861}
   m_Layer: 5
   m_Name: SkirmishGameSetUpPopupUi
   m_TagString: Untagged
@@ -4571,6 +4572,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupType: 0
   closeButton: {fileID: 7705600912149352972}
+  canvasGroup: {fileID: 6091553307987835861}
   startGameButton: {fileID: 8616130414433798983}
   playerFactionDropdown: {fileID: 3107124290759105077}
   enemyFactionDropdown: {fileID: 2636358113396540520}
@@ -4579,6 +4581,18 @@ MonoBehaviour:
   enemyDifficultyDropdown: {fileID: 1950669667237111593}
   startingMoneySlider: {fileID: 7476319599465114112}
   startingMoneyText: {fileID: 4372128502141099759}
+--- !u!225 &6091553307987835861
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4082562394569656993}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4445823130443666117
 GameObject:
   m_ObjectHideFlags: 0

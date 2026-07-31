@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 43
+    y: 0
     width: 2560
     height: 36
   m_SerializedDataModeController:
@@ -582,8 +582,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 498
-    y: 79
+    x: 499
+    y: 24
     width: 1579
     height: 737
   m_SerializedDataModeController:
@@ -689,7 +689,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 79
+    y: 24
     width: 497
     height: 737
   m_SerializedDataModeController:
@@ -1503,7 +1503,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 842
+    y: 787
     width: 2078
     height: 504
   m_SerializedDataModeController:
@@ -1554,17 +1554,6 @@ MonoBehaviour:
       m_Data: 75512
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 60312
-    - m_Data: 60314
-    - m_Data: 60316
-    - m_Data: 60318
-    - m_Data: 60320
-    - m_Data: 60322
-    - m_Data: 60324
-    - m_Data: 60326
-    - m_Data: 60328
-    - m_Data: 60330
-    - m_Data: 60332
     - m_Data: 60334
     - m_Data: 60336
     - m_Data: 60338
@@ -1595,8 +1584,17 @@ MonoBehaviour:
     - m_Data: 60388
     - m_Data: 60390
     - m_Data: 60392
-    - m_Data: 60528
-    - m_Data: 1000000000
+    - m_Data: 60394
+    - m_Data: 60396
+    - m_Data: 60398
+    - m_Data: 60400
+    - m_Data: 60402
+    - m_Data: 60404
+    - m_Data: 60406
+    - m_Data: 60408
+    - m_Data: 60410
+    - m_Data: 60412
+    - m_Data: 60414
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1630,17 +1628,6 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 60312
-    - m_Data: 60314
-    - m_Data: 60316
-    - m_Data: 60318
-    - m_Data: 60320
-    - m_Data: 60322
-    - m_Data: 60324
-    - m_Data: 60326
-    - m_Data: 60328
-    - m_Data: 60330
-    - m_Data: 60332
     - m_Data: 60334
     - m_Data: 60336
     - m_Data: 60338
@@ -1671,7 +1658,17 @@ MonoBehaviour:
     - m_Data: 60388
     - m_Data: 60390
     - m_Data: 60392
-    - m_Data: 1000000000
+    - m_Data: 60394
+    - m_Data: 60396
+    - m_Data: 60398
+    - m_Data: 60400
+    - m_Data: 60402
+    - m_Data: 60404
+    - m_Data: 60406
+    - m_Data: 60408
+    - m_Data: 60410
+    - m_Data: 60412
+    - m_Data: 60414
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1803,8 +1800,8 @@ MonoBehaviour:
     m_TextWithWhitespace: "Inspector\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 2079
-    y: 79
+    x: 2080
+    y: 24
     width: 480
     height: 1267
   m_SerializedDataModeController:

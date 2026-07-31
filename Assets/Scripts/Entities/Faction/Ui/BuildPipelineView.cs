@@ -13,7 +13,7 @@ namespace EmpireAtWar.Views.Factions
     public class BuildPipelineView: IBuildPipeline
     {
         public event Action<bool, string> OnFinishSequence; 
-        [SerializeField] private Canvas canvas;
+        [SerializeField] private CanvasGroup canvasGroup;
 
         [SerializeField] private List<PipelineView> pipelineViews;
 
@@ -30,7 +30,15 @@ namespace EmpireAtWar.Views.Factions
         
         public float AddPipeline(string id, Sprite icon, float fillTime)
         {
-            canvas.enabled = true;
+            if (canvasGroup == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(BuildPipelineView)} requires a bound {nameof(CanvasGroup)}.");
+            }
+
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
             if (_workingPipelines.TryGetValue(id, out PipelineView pipelineView))
             {
                 pipelineView.AddCount();
