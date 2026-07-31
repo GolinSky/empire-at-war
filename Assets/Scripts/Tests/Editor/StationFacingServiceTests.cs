@@ -15,7 +15,10 @@ namespace EmpireAtWar.Tests.Editor
             CountingMapModel mapModel = new CountingMapModel(
                 new Vector3(-10f, 3f, 5f),
                 new Vector3(20f, 9f, 5f));
-            StationFacingService service = new StationFacingService(mapModel);
+            StationFacingService service = new StationFacingService(
+                mapModel,
+                FactionType.Republic,
+                FactionType.Separatist);
 
             Quaternion playerRotation = service.GetRotation(PlayerType.Player);
             Quaternion opponentRotation = service.GetRotation(PlayerType.Opponent);
@@ -32,24 +35,24 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class CountingMapModel : IMapModelObserver
         {
-            private readonly Vector3 _playerPosition;
-            private readonly Vector3 _opponentPosition;
+            private readonly Vector3 _republicPosition;
+            private readonly Vector3 _separatistPosition;
 
-            public CountingMapModel(Vector3 playerPosition, Vector3 opponentPosition)
+            public CountingMapModel(Vector3 republicPosition, Vector3 separatistPosition)
             {
-                _playerPosition = playerPosition;
-                _opponentPosition = opponentPosition;
+                _republicPosition = republicPosition;
+                _separatistPosition = separatistPosition;
             }
 
             public int PositionRequestCount { get; private set; }
             public Vector2Range SizeRange => default;
 
-            public Vector3 GetStationPosition(PlayerType playerType)
+            public Vector3 GetStationPosition(FactionType factionType)
             {
                 PositionRequestCount++;
-                return playerType == PlayerType.Player
-                    ? _playerPosition
-                    : _opponentPosition;
+                return factionType == FactionType.Republic
+                    ? _republicPosition
+                    : _separatistPosition;
             }
         }
     }

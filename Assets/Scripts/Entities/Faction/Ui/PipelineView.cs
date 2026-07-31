@@ -31,6 +31,12 @@ namespace EmpireAtWar.Views.Factions
 
         private void OnDestroy()
         {
+            if (_fillImageSequence != null && _fillImageSequence.IsActive())
+            {
+                _fillImageSequence.Pause();
+                _fillImageSequence.Kill();
+            }
+
             skipButton.onClick.RemoveListener(SkipSequence);
         }
 

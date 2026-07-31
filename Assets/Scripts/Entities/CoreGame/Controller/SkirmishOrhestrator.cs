@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Controllers.Menu;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Game;
@@ -24,6 +27,9 @@ namespace EmpireAtWar.Controllers.Game
         private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
         private readonly IGameCommand _gameCommand;
         private readonly IUiService _uiService;
+        private readonly ICameraService _cameraService;
+        private readonly IMapModelObserver _mapModel;
+        private readonly FactionType _playerFactionType;
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes =
             new Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates =
@@ -36,11 +42,17 @@ namespace EmpireAtWar.Controllers.Game
             CoreGameModel model,
             LazyInject<IUserStateNotifier> userStateNotifier,
             IGameCommand gameCommand,
-            IUiService uiService) : base(model)
+            IUiService uiService,
+            ICameraService cameraService,
+            IMapModelObserver mapModel,
+            [Inject(Id = PlayerType.Player)] FactionType playerFactionType) : base(model)
         {
             _userStateNotifier = userStateNotifier;
             _gameCommand = gameCommand;
             _uiService = uiService;
+            _cameraService = cameraService;
+            _mapModel = mapModel;
+            _playerFactionType = playerFactionType;
             _gameTimeMode = GameTimeMode.Common;
             ChangeTime(_gameTimeMode);
         }
@@ -48,6 +60,8 @@ namespace EmpireAtWar.Controllers.Game
         public void Initialize()
         {
             _userStateNotifier.Value.AddObserver(this);
+            _cameraService.MoveTo(
+                _mapModel.GetStationPosition(_playerFactionType));
             BaseUi ui = _uiService.CreateUi(UiType.CoreGame);
             _coreGameUi = ui as CoreGameUi
                 ?? throw new InvalidOperationException(

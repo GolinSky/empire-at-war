@@ -10,21 +10,21 @@ namespace EmpireAtWar.Entities.Map
     public interface IMapModelObserver:IModelObserver
     {
         Vector2Range SizeRange { get; }
-        Vector3 GetStationPosition(PlayerType opponent);
+        Vector3 GetStationPosition(FactionType factionType);
     }
     
     [CreateAssetMenu(fileName = "MapModel", menuName = "Model/MapModel")]
     public class MapModel: Model, IMapModelObserver
     {
-        [SerializeField] private DictionaryWrapper<PlayerType, Vector3> stationPositionWrapper;
+        [SerializeField] private DictionaryWrapper<FactionType, Vector3> stationPositionWrapper;
 
         [field:SerializeField] public Vector2Range SizeRange { get; private set; }
-        private Dictionary<PlayerType, Vector3> StationPositions => stationPositionWrapper.Dictionary;
+        private Dictionary<FactionType, Vector3> StationPositions => stationPositionWrapper.Dictionary;
 
         
-        public Vector3 GetStationPosition(PlayerType opponent)
+        public Vector3 GetStationPosition(FactionType factionType)
         {
-            return StationPositions[opponent];
+            return StationPositions[factionType];
         }
         
     }

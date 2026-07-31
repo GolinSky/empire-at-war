@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Services.StationFacing
 {
@@ -15,7 +16,10 @@ namespace EmpireAtWar.Services.StationFacing
         private readonly Quaternion _playerRotation;
         private readonly Quaternion _opponentRotation;
 
-        public StationFacingService(IMapModelObserver mapModel)
+        public StationFacingService(
+            IMapModelObserver mapModel,
+            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
+            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
             if (mapModel == null)
             {
@@ -23,8 +27,8 @@ namespace EmpireAtWar.Services.StationFacing
             }
 
             Vector3 playerToOpponent =
-                mapModel.GetStationPosition(PlayerType.Opponent) -
-                mapModel.GetStationPosition(PlayerType.Player);
+                mapModel.GetStationPosition(opponentFactionType) -
+                mapModel.GetStationPosition(playerFactionType);
             playerToOpponent.y = 0f;
             if (playerToOpponent.sqrMagnitude <= Mathf.Epsilon)
             {

@@ -18,7 +18,22 @@ Every AI agent (Codex, Claude, Gemini, Antigravity) **MUST** read and adhere to 
 
 ---
 
-## 2. Harmonious 3-Color Palette System
+## 2. Button Transition & SpriteState Rules
+
+- **Use `Color Tint` (`m_Transition: 1`)**: All `UnityEngine.UI.Button` components **MUST** have transition set to `Color Tint` (`m_Transition: 1`). **NEVER** use `Sprite Swap` (`m_Transition: 2`).
+- **Clear `m_SpriteState` Sprites**: When converting UI buttons to procedural `MPImage` backgrounds, all sprites in `Selectable.m_SpriteState` (`m_HighlightedSprite`, `m_PressedSprite`, `m_SelectedSprite`, `m_DisabledSprite`) **MUST be cleared to `{fileID: 0}`**.
+- **Rationale**: If `m_Transition` is set to `Sprite Swap` (`2`) or `m_SpriteState` retains legacy bitmap sprite references (such as `guid: 8d8dc128f5ad49d41b7b43b0cc943b9c`), Unity's `Button` component will swap in the old bitmap sprite image whenever the button is hovered or clicked, hiding the procedural `MPImage` visuals.
+
+---
+
+## 3. Existing Panel MPImage Preservation Rule
+
+- **Preserve Panel Outlines & Borders**: Do NOT override, strip, or alter pre-existing border outlines, outline colors (e.g. `#1F87E6` / `rgba(31, 135, 230, 0.85)`), outline widths (`1.5`), or corner radii on existing panel `MPImage` components (`MiddlePanel`, `ShipActions`, `Panel`, `UpperPanel`).
+- **Rationale**: Existing panel containers have curated structural border outlines and corner radii designed for HUD layout alignment. UI refactors must focus on buttons, controls, and legacy bitmap conversion without disturbing intentional panel container styling.
+
+---
+
+## 4. Harmonious 3-Color Palette System
 
 All UI elements must follow the **3-Color Wheel Harmony Rule** (Dark Low-Brightness Canvas, Muted Structural Accents, High-Contrast Bright Text & Actions). Never use arbitrary or high-luminance canvas backgrounds.
 
@@ -41,7 +56,7 @@ All UI elements must follow the **3-Color Wheel Harmony Rule** (Dark Low-Brightn
 
 ---
 
-## 3. Component Design Rules
+## 5. Component Design Rules
 
 ### Header Banners (`HeaderBanner`)
 - **Header Title Label Rule**: Header banners must **NOT** look like clickable buttons (no rounded box shape or border outline on the banner container).
@@ -63,7 +78,7 @@ All UI elements must follow the **3-Color Wheel Harmony Rule** (Dark Low-Brightn
 
 ---
 
-## 4. Class Inheritance & Serialized Image Binding Safety
+## 6. Class Inheritance & Serialized Image Binding Safety
 
 - **BaseUi Inheritance**: Only top-level MVP view containers (such as `CoreGameUi`, `EconomyUi`, `FactionUi`, `MenuUi`, `MiniMapUi`, `ReinforcementUi`, `ShipUi`, `SkirmishPopupUi`) inherit from `BaseUi<TModel, TCommand>` or `BaseUi`. Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit directly from `MonoBehaviour` to avoid Zenject DI binding failures.
 - **Serialized Image & DOTween Safety**: Do NOT replace standard `UnityEngine.UI.Image` components with `MPImage` on GameObjects where C# scripts have serialized `[SerializeField] private Image ...` fields (e.g. `ReinforcementUi.signalImage`, `CoreGameUi.timeImage`, `ShipUi.shipIconImage`) or DOTween animation calls (`signalImage.DOColor(...)`). Replacing serialized `Image` components breaks script inspector references and causes `NullReferenceException` at runtime.
@@ -71,21 +86,12 @@ All UI elements must follow the **3-Color Wheel Harmony Rule** (Dark Low-Brightn
 
 ---
 
-## 5. Layout & Paradigm Standards
-
-- **Symmetrical Column Grid**: Organize setup fields into symmetrical 2-column or grid layouts under root panels.
-- **Root Panel Containment**: All UI elements must fit inside root panel bounds without overflowing or overlapping adjacent components.
-- **Standard Control Heights**:
-  - Main Action Buttons: Height = 68px, Width = 340–360px.
-  - Field Cards: Height = 52px.
-  - Header Divider Line: Height = 2px.
-
----
-
-## 6. Summary Checklist for AI Agents
+## 7. Summary Checklist for AI Agents
 
 Before committing any UI change, verify:
 - [ ] Are popup/menu panel `Image` components converted to `MPUIKIT.MPImage`?
+- [ ] Are all `Button` components configured with `Color Tint` (`m_Transition: 1`) and `m_SpriteState` cleared to `{fileID: 0}`?
+- [ ] Are pre-existing panel `MPImage` outlines, outline colors (`#1F87E6`), and widths (`1.5`) preserved?
 - [ ] Are root GameObjects kept free of background `MPImage` overlays?
 - [ ] Are pre-existing icon GameObjects (`Your icon`, `Icon`, `MoneyIcon`, `ShipIcon`) kept 100% intact?
 - [ ] Have serialized `[SerializeField] Image` fields on gameplay views (`ReinforcementUi`, `CoreGameUi`, `ShipUi`) been preserved as standard `Image`?

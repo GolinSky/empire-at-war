@@ -69,10 +69,15 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathEffects)
         {
             if (_isReleased)
             {
@@ -84,11 +89,17 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathEffects)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
 
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);
-            OnRelease?.Invoke();
+            if (playDeathEffects)
+            {
+                OnRelease?.Invoke();
+            }
         }
 
         private void HandleDestroy()

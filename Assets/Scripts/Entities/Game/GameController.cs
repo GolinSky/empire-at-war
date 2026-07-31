@@ -25,6 +25,13 @@ namespace EmpireAtWar.Entities.Game
             EnemyAiDifficulty enemyDifficulty,
             float startingMoney)
         {
+            if (playerFactionType == enemyFactionType)
+            {
+                throw new ArgumentException(
+                    "Player and enemy factions must be different because each map has one station anchor per faction.",
+                    nameof(enemyFactionType));
+            }
+
             if (startingMoney <= 0f)
             {
                 throw new ArgumentOutOfRangeException(nameof(startingMoney), "Starting money must be greater than zero.");

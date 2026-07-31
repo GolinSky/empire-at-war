@@ -89,14 +89,19 @@ Use patterns only when their complexity is justified:
 - Do not modify the structure of `Assets/AddressableAssetsData`.
 - Keep `Assets/Resources` minimal and limited to bootstrap needs.
 
-## 9. Project Placement Summary
+## 10. UI/UX Recipe Manual & MPUIKit Standards
 
-The complete and authoritative placement rules are in [[../Architecture/PROJECT_ORGANIZATION|PROJECT_ORGANIZATION.md]]. At minimum:
+When creating, modifying, or refactoring any UI prefab or component:
 
-- Follow a type-first layout under `Assets`.
-- Put visual source assets in `Assets/Art`.
-- Put reusable GameObject configurations in `Assets/Prefabs`.
-- Put project-owned C# in `Assets/Scripts`, preserving the `Components`, `Entities`, `Services`, `Editor`, and `Tests` separation.
-- Put configuration and ScriptableObject data in `Assets/Settings`.
-- Put major core packages in `Assets/Plugins` and other external assets in `Assets/ThirdParty`.
-- Use `Assets/Sandbox` for temporary prototypes and technical tests.
+- **Read [[UI_UX_GUIDELINES|UI_UX_GUIDELINES.md]] in full** before touching UI.
+- Use `MPUIKIT.MPImage` for popup and menu panels, buttons, cards, and dropdowns.
+- **Button Transition & SpriteState Rule**: Set all `Button` transitions to `Color Tint` (`m_Transition: 1`), **NEVER** `Sprite Swap` (`m_Transition: 2`). Clear all `m_SpriteState` sprites (`{fileID: 0}`) to prevent Unity from swapping in legacy bitmap sprites on hover or click.
+- **Preserve Panel Outlines**: Do NOT override pre-existing border outlines, outline colors (`#1F87E6`), or widths (`1.5`) on existing panel `MPImage` components (`MiddlePanel`, `ShipActions`, `Panel`, `UpperPanel`).
+- **Do NOT convert standard `Image` to `MPImage`** on GameObjects with serialized `[SerializeField] private Image ...` fields (such as `ReinforcementUi.signalImage`, `CoreGameUi.timeImage`, `ShipUi.shipIconImage`) or DOTween animations (`DOColor`/`DOFade`).
+- **Sub-item views (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit from `MonoBehaviour`**, not `BaseUi`, to prevent Zenject DI injection errors.
+- Strictly adhere to the **3-Color Wheel Harmony System** (Deep Dark Canvas `#080C14`, Muted Structural Accents `#94A3B8`, Bright High-Contrast Text `#F8FAFC`).
+- Ensure dropdown preview values (`Label` and `Item Label`) are bright crisp white (`#F8FAFC`) and never greyed out.
+- Ensure `HeaderBanner` displays as a clean title label with a horizontal accent line (`HeaderDivider`), never as a button box.
+- Ensure `CloseButton` has explicit standard ASCII `"X"` text icon visuals.
+- Set `fontSizeMin < 12` (e.g. `fontSizeMin = 6`) on all auto-sized text components.
+

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -14,6 +15,7 @@ using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
@@ -36,12 +38,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
+            new Dictionary<CustomCoroutine, UnitRequest>();
 
 
         private IChainHandler<UnitRequest> _nextChain;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
         private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private bool _isInitialized;
 
         private PlayerType PlayerType => PlayerType.Opponent;
         public float Income => DEFAULT_INCOME;
@@ -96,7 +101,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(shipUnitRequest, () =>
                         {
                             try
                             {
@@ -111,8 +116,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ReleaseUnit(shipUnitRequest);
                                 throw;
                             }
-                        },
-                        shipUnitRequest.FactionData.BuildTime);
+                        });
                     break;
                 }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
@@ -123,7 +127,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(miningFacilityUnitRequest, () =>
                         {
                             try
                             {
@@ -138,8 +142,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ReleaseUnit(miningFacilityUnitRequest);
                                 throw;
                             }
-                        },
-                        miningFacilityUnitRequest.FactionData.BuildTime);
+                        });
                     break;
                 }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
@@ -150,7 +153,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(defendPlatformUnitRequest, () =>
                         {
                             try
                             {
@@ -165,8 +168,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ReleaseUnit(defendPlatformUnitRequest);
                                 throw;
                             }
-                        },
-                        defendPlatformUnitRequest.FactionData.BuildTime);
+                        });
                     break;
                 }
                 
@@ -194,6 +196,34 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private static string GetUnitLimitId(UnitRequest unitRequest)
         {
             return $"{unitRequest.GetType().FullName}:{unitRequest.Id}";
+        }
+
+        private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)
+        {
+            CustomCoroutine pendingBuild = _timerPoolWrapperService.Invoke(
+                buildAction,
+                unitRequest.FactionData.BuildTime);
+            _pendingBuilds.Add(pendingBuild, unitRequest);
+            pendingBuild.OnFinished += HandleBuildFinished;
+        }
+
+        private void HandleBuildFinished(CustomCoroutine pendingBuild)
+        {
+            pendingBuild.OnFinished -= HandleBuildFinished;
+            _pendingBuilds.Remove(pendingBuild);
+        }
+
+        private void CancelPendingBuilds()
+        {
+            foreach (KeyValuePair<CustomCoroutine, UnitRequest> pendingBuild
+                     in _pendingBuilds)
+            {
+                pendingBuild.Key.OnFinished -= HandleBuildFinished;
+                pendingBuild.Key.Release();
+                ReleaseUnit(pendingBuild.Value);
+            }
+
+            _pendingBuilds.Clear();
         }
         
         private Vector3 GenerateShipCoordinates(ShipType shipType)
@@ -252,7 +282,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3 GeneratePositionNearBase()
         {
             Vector2Range sizeRange = _mapModel.Value.SizeRange;
-            Vector3 basePosition = _mapModel.Value.GetStationPosition(PlayerType);
+            Vector3 basePosition = _mapModel.Value.GetStationPosition(Model.FactionType);
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
             float radius = UnityEngine.Random.Range(BASE_SPAWN_MIN_RADIUS, BASE_SPAWN_MAX_RADIUS);
             return new Vector3(
@@ -263,13 +293,27 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Initialize()
         {
+            if (_isInitialized)
+            {
+                return;
+            }
+
             _unitLimitModel.Reset();
             _economyProvider.AddProvider(this);
+            _isInitialized = true;
         }
 
         public void LateDispose()
         {
+            CancelPendingBuilds();
+
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             _economyProvider.RemoveProvider(this);
+            _isInitialized = false;
         }
     }
 }

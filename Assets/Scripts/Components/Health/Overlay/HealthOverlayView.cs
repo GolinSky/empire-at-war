@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 {
     public interface IHealthOverlayView
     {
+        bool IsAvailable { get; }
         void SetValues(float armorPercentage, float shieldPercentage);
         void Show(Vector2 screenPosition);
         void Hide();
@@ -31,6 +32,8 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private RectTransform _panel;
         private MPImage _armorFill;
         private MPImage _shieldFill;
+
+        public bool IsAvailable => _panel != null;
 
         private void Awake()
         {
