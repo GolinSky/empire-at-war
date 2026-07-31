@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Commands.Menu;
+using EmpireAtWar.Commands.Menu;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -7,12 +7,12 @@ using Zenject;
 
 namespace EmpireAtWar.Views.Menu
 {
-    public interface IMenuUiView
+    public interface IPauseMenuUiView
     {
         void SetMenuVisible(bool isVisible);
     }
 
-    public class MenuUi : BaseUi<IMenuModelModelObserver, IMenuCommand>, IMenuUiView, IInitializable, ILateDisposable
+    public class PauseMenuUi : BaseUi<IMenuModelModelObserver, IMenuCommand>, IPauseMenuUiView, IInitializable, ILateDisposable
     {
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button exitButton;
