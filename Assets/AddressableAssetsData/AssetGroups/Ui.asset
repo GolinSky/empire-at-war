@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59a22247254dcd940938e92f73528b82
+    m_Address: ShipBuildUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7f28d0bab5d08794096e1d38ee2bc176
     m_Address: MiniMapUi
     m_ReadOnly: 0

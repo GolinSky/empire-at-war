@@ -93,6 +93,11 @@ namespace EmpireAtWar.Services.Battle
                 return;
             }
 
+            if (touchPhase == TouchPhase.Began)
+            {
+                ResetAllSelections();
+            }
+
             if (!_selectionQuery.TryFindAt(touchPosition, out SelectionEntry selection))
             {
                 _lastTappedEntityId = null;
@@ -161,6 +166,19 @@ namespace EmpireAtWar.Services.Battle
 
             context.ResetCurrentSelectable();
             NotifyObservers(playerType);
+        }
+
+        private void ResetAllSelections()
+        {
+            if (_playerSelectionContext.HasSelectable)
+            {
+                ClearSelection(PlayerType.Player);
+            }
+
+            if (_enemySelectionContext.HasSelectable)
+            {
+                ClearSelection(PlayerType.Opponent);
+            }
         }
 
         private void DispatchAttack(IEntity target)
