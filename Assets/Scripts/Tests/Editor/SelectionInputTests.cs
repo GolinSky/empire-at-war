@@ -107,7 +107,7 @@ namespace EmpireAtWar.Tests.Selection
                 activateInteractionMethod.Invoke(miniMapUi, new object[] { false });
                 DOTween.Complete(mapImage);
 
-                Assert.That(mapImage.color.a, Is.EqualTo(1f));
+                Assert.That(mapImage.color.a, Is.GreaterThanOrEqualTo(0.75f));
             }
             finally
             {

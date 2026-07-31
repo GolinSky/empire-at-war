@@ -18,6 +18,7 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
@@ -69,6 +70,7 @@ public class SkirmishMainInstaller : MonoInstaller
         
         //todo: merge map model with minimap 
         Container.BindModel<MapModel>(Repository);
+        Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
         Container.BindModel<MiniMapModel>(Repository);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         

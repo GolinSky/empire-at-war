@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.MiniMap;
@@ -17,11 +17,11 @@ namespace EmpireAtWar.Views.MiniMap
     }
     public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
     {
-        private const float HIGHLIGHT_DURATION = 1f;
-        private const float HIGHLIGHT_MAP_ALPHA = 0.1f;
+        private const float HIGHLIGHT_DURATION = 0.3f;
+        private const float HIGHLIGHT_MAP_ALPHA = 1f;
         private const float HIGHLIGHT_MARK_ALPHA = 1f;
-        private const float FADE_DURATION = 0.5f;
-        private const float ORIGIN_MAP_ALPHA = 1f;
+        private const float FADE_DURATION = 0.3f;
+        private const float ORIGIN_MAP_ALPHA = 0.8f;
 
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform miniMapRectTransform;

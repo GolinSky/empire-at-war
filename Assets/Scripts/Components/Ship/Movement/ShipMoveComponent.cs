@@ -12,6 +12,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Services.StationFacing;
 using System;
 using Random = UnityEngine.Random;
 
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isNavigationReady;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
+        private IStationFacingService _stationFacingService;
         private IShipMovementMediator _movementMediator;
         private IRadarModelObserver _radarModel;
         private bool _isReleased;
@@ -72,6 +74,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             FogOfWarSystem fogOfWarSystem,
             PlayerType playerType,
             IMapModelObserver mapModel,
+            IStationFacingService stationFacingService,
             IShipNavigationService shipNavigationService,
             IRadarModelObserver radarModel)
         {
@@ -82,6 +85,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _fogOfWarSystem = fogOfWarSystem;
             _playerType = playerType;
             _mapModel = mapModel;
+            _stationFacingService = stationFacingService;
             _shipNavigationService = shipNavigationService;
             _radarModel = radarModel;
         }
@@ -108,7 +112,10 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _lookAtEase,
                 _hyperSpaceEase);
             _shipNavigationService.Register(this);
-            Model.HyperSpacePosition = _startPosition;
+            Model.ConfigureSpawnPose(
+                _startPosition,
+                _stationFacingService.GetRotation(_playerType),
+                _playerType == PlayerType.Player);
 
             transform.rotation = Model.StartRotation;
             transform.position = Model.JumpPosition;
