@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -42,8 +43,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             new Dictionary<ShipType, float>();
         private IShipService _shipService;
         private ReinforcementZoneData _data;
+        private IMapModelObserver _mapModel;
         private IRepository _repository;
         private ShipsData _shipsData;
+        private FactionType _playerFactionType;
+        private FactionType _opponentFactionType;
 
         public event Action OwnershipChanged;
 
@@ -52,7 +56,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IShipService shipService,
             ReinforcementZoneData data,
             IRepository repository,
-            ShipsData shipsData)
+            ShipsData shipsData,
+            IMapModelObserver mapModel,
+            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
+            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
             _shipService = shipService ??
                 throw new ArgumentNullException(nameof(shipService));
@@ -61,6 +68,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 throw new ArgumentNullException(nameof(repository));
             _shipsData = shipsData ??
                 throw new ArgumentNullException(nameof(shipsData));
+            _mapModel = mapModel ??
+                throw new ArgumentNullException(nameof(mapModel));
+            _playerFactionType = playerFactionType;
+            _opponentFactionType = opponentFactionType;
         }
 
         public void Initialize()
@@ -74,6 +85,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     continue;
                 }
 
+                AlignDefaultZoneWithOwningStation(view);
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
                     view.StartingOwner,
                     view.IsCapturable,
@@ -281,6 +293,26 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 MINIMUM_NAVIGATION_RADIUS);
             _shipNavigationRadii.Add(shipType, navigationRadius);
             return navigationRadius;
+        }
+
+        private void AlignDefaultZoneWithOwningStation(ReinforcementZoneView view)
+        {
+            if (view.IsCapturable)
+            {
+                return;
+            }
+
+            FactionType factionType = view.StartingOwner switch
+            {
+                PlayerType.Player => _playerFactionType,
+                PlayerType.Opponent => _opponentFactionType,
+                _ => throw new InvalidOperationException(
+                    "A non-capturable reinforcement zone must belong to the player or opponent.")
+            };
+
+            Vector3 center = _mapModel.GetStationPosition(factionType);
+            center.y = view.Center.y;
+            view.SetCenter(center);
         }
     }
 }

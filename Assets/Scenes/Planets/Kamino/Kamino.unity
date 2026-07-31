@@ -7019,6 +7019,11 @@ PrefabInstance:
       propertyPath: m_TextStyleHashCode
       value: -1183493901
       objectReference: {fileID: 0}
+    - target: {fileID: 4397590006509803312, guid: d74a6bbeb7438d14b9cd9c365612cee5,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 190.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5100280650750662576, guid: d74a6bbeb7438d14b9cd9c365612cee5,
         type: 3}
       propertyPath: m_TextStyleHashCode
@@ -7088,6 +7093,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TextStyleHashCode
       value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7856297845482721538, guid: d74a6bbeb7438d14b9cd9c365612cee5,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -57.6
       objectReference: {fileID: 0}
     - target: {fileID: 7985379044733987393, guid: d74a6bbeb7438d14b9cd9c365612cee5,
         type: 3}
