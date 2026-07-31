@@ -19,7 +19,7 @@ namespace EmpireAtWar.Controllers.Menu
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
-        private IMenuUiView _ui;
+        private IPauseMenuUiView _ui;
         private bool _isMenuOpen;
 
         public MenuController(
@@ -33,10 +33,10 @@ namespace EmpireAtWar.Controllers.Menu
         
         public void Initialize()
         {
-            BaseUi ui = _uiService.CreateUi(UiType.Menu);
-            _ui = ui as IMenuUiView
+            BaseUi ui = _uiService.CreateUi(UiType.PauseMenu);
+            _ui = ui as IPauseMenuUiView
                 ?? throw new InvalidOperationException(
-                    "The skirmish menu prefab does not implement IMenuUiView.");
+                    "The skirmish pause menu prefab does not implement IPauseMenuUiView.");
             _ui.SetMenuVisible(false);
             _inputService.OnEscapePressed += ToggleMenu;
         }

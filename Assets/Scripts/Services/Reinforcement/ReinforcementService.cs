@@ -8,6 +8,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
@@ -36,6 +37,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly DefendPlatformFacade _defendPlatformFacade;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IStationFacingService _stationFacingService;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -53,7 +55,8 @@ namespace EmpireAtWar.Services.Reinforcement
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,
             IReinforcementZonesSystem reinforcementZonesSystem,
-            FogOfWarSystem fogOfWarSystem)
+            FogOfWarSystem fogOfWarSystem,
+            IStationFacingService stationFacingService)
         {
             _model = model;
             _data = data;
@@ -64,6 +67,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _defendPlatformFacade = defendPlatformFacade;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _fogOfWarSystem = fogOfWarSystem;
+            _stationFacingService = stationFacingService;
         }
 
         public void Initialize()
@@ -172,13 +176,13 @@ namespace EmpireAtWar.Services.Reinforcement
             {
                 StartSpawnSequence(SpawnType.MiningFacility);
                 _currentFacilityType = facilityType;
-                _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(facilityType));
+                _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(facilityType));
             }
             else if (Enum.TryParse(id, out DefendPlatformType defendPlatformType))
             {
                 StartSpawnSequence(SpawnType.DefendPlatform);
                 _currentPlatformType = defendPlatformType;
-                _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(defendPlatformType));
+                _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(defendPlatformType));
             }
         }
 
@@ -191,7 +195,14 @@ namespace EmpireAtWar.Services.Reinforcement
 
             StartSpawnSequence(SpawnType.Ship);
             _currentShipType = shipType;
-            _spawnReinforcement = Object.Instantiate(_data.GetSpawnPrefab(shipType));
+            _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(shipType));
+        }
+
+        private UnitSpawnView CreateSpawnView(UnitSpawnView prefab)
+        {
+            UnitSpawnView spawnView = Object.Instantiate(prefab);
+            spawnView.SetRotation(_stationFacingService.GetRotation(PlayerType.Player));
+            return spawnView;
         }
 
         private void StartSpawnSequence(SpawnType spawnType)

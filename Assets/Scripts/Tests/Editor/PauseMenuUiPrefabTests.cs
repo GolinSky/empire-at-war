@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    public sealed class MenuUiPrefabTests
+    public sealed class PauseMenuUiPrefabTests
     {
         private const string PREFAB_PATH =
-            "Assets/Prefabs/Ui/SkirmishMenu/MenuUi.prefab";
+            "Assets/Prefabs/Ui/SkirmishMenu/PauseMenuUi.prefab";
 
         [Test]
         public void PauseMenu_UsesSingleProceduralPanelWithCompactButtons()
@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
             try
             {
-                MenuUi menuUi = root.GetComponent<MenuUi>();
+                PauseMenuUi menuUi = root.GetComponent<PauseMenuUi>();
                 Assert.That(menuUi, Is.Not.Null);
 
                 SerializedObject serializedMenuUi = new SerializedObject(menuUi);
