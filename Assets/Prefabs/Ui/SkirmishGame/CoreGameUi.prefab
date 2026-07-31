@@ -264,7 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
-  m_Color: {r: 0.03137255, g: 0.050980393, b: 0.078431375, a: 0.8784314}
+  m_Color: {r: 0.03137255, g: 0.050980393, b: 0.078431375, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -546,7 +546,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000076293945, y: 0.0000038146973}
+  m_AnchoredPosition: {x: 0.0000076293945, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1527370123024828742
@@ -1243,7 +1243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
-  m_Color: {r: 0.03137255, g: 0.050980393, b: 0.078431375, a: 0.8784314}
+  m_Color: {r: 0.03137255, g: 0.050980393, b: 0.078431375, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2123,8 +2123,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.14}
-  m_AnchoredPosition: {x: 270.6894, y: 9.575989}
-  m_SizeDelta: {x: -543.3787, y: 19.152}
+  m_AnchoredPosition: {x: 270.6894, y: 37.283}
+  m_SizeDelta: {x: -543.3787, y: 74.565}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &371738624838680915
 CanvasRenderer:
@@ -2147,7 +2147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
-  m_Color: {r: 0.03, g: 0.05, b: 0.08, a: 0.88}
+  m_Color: {r: 0.03, g: 0.05, b: 0.08, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2639,7 +2639,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 64, y: 64}
+  m_CellSize: {x: 90, y: 90}
   m_Spacing: {x: 12, y: 12}
   m_Constraint: 2
   m_ConstraintCount: 2
@@ -4377,7 +4377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5199359, g: 0.85172707, b: 0.8679245, a: 0.14901961}
+  m_Color: {r: 0.03137255, g: 0.050980393, b: 0.078431375, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4398,8 +4398,8 @@ MonoBehaviour:
   m_ImageType: 0
   m_MaterialMode: 0
   m_StrokeWidth: 0
-  m_OutlineWidth: 0
-  m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+  m_OutlineWidth: 1.5
+  m_OutlineColor: {r: 0.12156863, g: 0.5294118, b: 0.9019608, a: 0.8509804}
   m_FalloffDistance: 0.5
   m_ConstrainRotation: 1
   m_ShapeRotation: 0
@@ -4409,7 +4409,7 @@ MonoBehaviour:
     m_CornerRadius: {x: 0, y: 0, z: 0}
     m_UniformCornerRadius: 0
   m_Rectangle:
-    m_CornerRadius: {x: 0, y: 0, z: 12, w: 12}
+    m_CornerRadius: {x: 0, y: 0, z: 5, w: 5}
     m_UniformCornerRadius: 0
   m_ChamferBox:
     m_ChamferSize: 0
