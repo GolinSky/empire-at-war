@@ -1,0 +1,29 @@
+name = "context_curator"
+description = "Retrieves and compresses relevant prior context for another agent."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "low"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Use Context Mode to answer the exact retrieval or handoff request.
+
+Return only:
+- Relevant earlier decisions.
+- Relevant evidence and errors.
+- Superseded decisions that could cause confusion.
+- Unresolved questions.
+- A compact handoff.
+
+Do not inspect unrelated project areas.
+Do not edit anything.
+Do not invent missing history.
+"""
+
+[mcp_servers.context-mode]
+enabled = true
+
+[mcp_servers.graphify]
+enabled = false
+
+[mcp_servers.unityMCP]
+enabled = false

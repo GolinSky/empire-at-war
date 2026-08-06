@@ -1,0 +1,26 @@
+name = "unity_test_runner"
+description = "Runs bounded Unity validation and returns compact evidence without editing."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "low"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Validate the requested behaviour without editing source files, scenes, prefabs,
+project settings, or assets.
+
+- Wait for Unity compilation to finish.
+- Run only the specified tests or reproduction steps.
+- Capture relevant test results and console errors.
+- Return concise structured evidence.
+- Do not attempt repairs.
+- Do not broaden the test scope unless the requested test cannot establish the result.
+"""
+
+[mcp_servers.unityMCP]
+enabled = true
+
+[mcp_servers.context-mode]
+enabled = true
+
+[mcp_servers.graphify]
+enabled = false
