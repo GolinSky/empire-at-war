@@ -1,7 +1,13 @@
-[mcp_servers.UnityMCP]
-command = "/opt/homebrew/bin/uvx"
-args = [
-    "--from",
-    "mcpforunityserver==10.0.0",
-    "mcp-for-unity",
-]
+[mcp_servers.unityMCP]
+command = "C:\\Users\\golin\\.local\\bin\\uvx.exe"
+args = [ "--offline", "--from", "mcpforunityserver==10.1.2", "mcp-for-unity", "--transport", "stdio" ]
+startup_timeout_sec = 60
+env = { SystemRoot = "C:\\WINDOWS" }
+
+[mcp_servers.graphify]
+command = "python"
+args = [ "-m", "graphify.serve", "graphify-out/graph.json" ]
+
+[mcp_servers.obsidian]
+url = "https://127.0.0.1:27124/mcp/"
+headers = { Authorization = "Bearer 507a07f462f01ec4e5e825e847b159a32ebbd122e1e4a5897fd345f4eb3c35a7" }
