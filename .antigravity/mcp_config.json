@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "unityMCP": {
+      "command": "C:\\Users\\golin\\.local\\bin\\uvx.exe",
+      "args": [
+        "--offline",
+        "--from",
+        "mcpforunityserver==10.1.2",
+        "mcp-for-unity",
+        "--transport",
+        "stdio"
+      ],
+      "type": "stdio",
+      "disabled": false
+    },
+    "graphify": {
+      "command": "python",
+      "args": [
+        "-m",
+        "graphify.serve",
+        "graphify-out/graph.json"
+      ]
+    },
+    "obsidian": {
+      "url": "https://127.0.0.1:27124/mcp/",
+      "headers": {
+        "Authorization": "Bearer 507a07f462f01ec4e5e825e847b159a32ebbd122e1e4a5897fd345f4eb3c35a7"
+      }
+    }
+  }
+}
