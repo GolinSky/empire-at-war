@@ -101,6 +101,11 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public int GetOwnedCapturableZoneCount(PlayerType playerType)
+            {
+                return 0;
+            }
+
             public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
             {
                 return true;

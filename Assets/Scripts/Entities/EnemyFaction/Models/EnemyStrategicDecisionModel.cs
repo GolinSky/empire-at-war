@@ -22,7 +22,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int enemyShipCount,
             bool hasCaptureTarget,
             bool hasEnemyBaseTarget,
-            bool hasOwnBase)
+            bool hasOwnBase,
+            int ownedCapturableZoneCount,
+            int enemyShipsNearOwnBase)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -31,6 +33,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasCaptureTarget = hasCaptureTarget;
             HasEnemyBaseTarget = hasEnemyBaseTarget;
             HasOwnBase = hasOwnBase;
+            OwnedCapturableZoneCount = ownedCapturableZoneCount;
+            EnemyShipsNearOwnBase = enemyShipsNearOwnBase;
         }
 
         public BattleVictoryCondition VictoryCondition { get; }
@@ -40,6 +44,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasCaptureTarget { get; }
         public bool HasEnemyBaseTarget { get; }
         public bool HasOwnBase { get; }
+        public int OwnedCapturableZoneCount { get; }
+        public int EnemyShipsNearOwnBase { get; }
     }
 
     public readonly struct EnemyStrategicDecision
@@ -70,6 +76,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 throw new ArgumentOutOfRangeException(nameof(snapshot.EnemyShipCount));
             }
 
+            if (snapshot.OwnedCapturableZoneCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(snapshot.OwnedCapturableZoneCount));
+            }
+
+            if (snapshot.EnemyShipsNearOwnBase < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(snapshot.EnemyShipsNearOwnBase));
+            }
+
             if (snapshot.OwnShipCount == 0)
             {
                 return new EnemyStrategicDecision(
@@ -83,22 +101,40 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 1,
                 Math.Min(
                     snapshot.OwnShipCount,
-                    (int)Math.Ceiling(snapshot.OwnShipCount * profile.CommittedFleetRatio)));
+                    CalculateThreshold(
+                        snapshot.OwnShipCount,
+                        profile.CommittedFleetRatio)));
 
-            if (snapshot.EnemyShipCount > snapshot.OwnShipCount / profile.RequiredAttackRatio &&
-                snapshot.HasOwnBase)
+            int defenseThreshold = Math.Max(
+                1,
+                CalculateThreshold(
+                    snapshot.OwnShipCount,
+                    profile.DefenseThreatRatio));
+            if (snapshot.HasOwnBase &&
+                snapshot.EnemyShipsNearOwnBase >= defenseThreshold)
             {
                 return new EnemyStrategicDecision(
                     EnemyStrategicState.DefendBase,
                     committedShipCount,
-                    "Enemy fleet pressure exceeds the configured risk tolerance.");
+                    "A nearby enemy task force threatens the home base.");
+            }
+
+            if (snapshot.HasCaptureTarget &&
+                snapshot.OwnedCapturableZoneCount < profile.MinimumControlledZones)
+            {
+                return new EnemyStrategicDecision(
+                    EnemyStrategicState.CaptureZone,
+                    committedShipCount,
+                    "The configured map-control floor has not been established.");
             }
 
             if (snapshot.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase)
             {
                 int requiredShips = Math.Max(
                     1,
-                    (int)Math.Ceiling(Math.Max(1, snapshot.EnemyShipCount) * profile.RequiredAttackRatio));
+                    CalculateThreshold(
+                        Math.Max(1, snapshot.EnemyShipCount),
+                        profile.RequiredAttackRatio));
                 if (snapshot.HasEnemyBaseTarget && snapshot.OwnShipCount >= requiredShips)
                 {
                     return new EnemyStrategicDecision(
@@ -154,6 +190,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 EnemyStrategicState.Hold,
                 committedShipCount,
                 "No valid strategic target is currently available.");
+        }
+
+        private static int CalculateThreshold(int unitCount, float ratio)
+        {
+            return (int)Math.Ceiling(unitCount * (decimal)ratio);
         }
     }
 }

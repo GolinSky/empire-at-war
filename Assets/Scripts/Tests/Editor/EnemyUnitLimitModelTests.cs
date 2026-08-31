@@ -50,6 +50,32 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(1));
         }
 
+        [Test]
+        public void CanReserve_ReportsLimitWithoutChangingCountOrCapacity()
+        {
+            EnemyUnitLimitModel model = new EnemyUnitLimitModel();
+            model.TryReserve("ship", 1, 3, 10);
+
+            bool canReserveSameShip = model.CanReserve("ship", 1, 3, 10);
+            bool canReserveOtherShip = model.CanReserve("other", 1, 3, 10);
+
+            Assert.That(canReserveSameShip, Is.False);
+            Assert.That(canReserveOtherShip, Is.True);
+            Assert.That(model.GetReservedCount("ship"), Is.EqualTo(1));
+            Assert.That(model.GetReservedCount("other"), Is.Zero);
+            Assert.That(model.CurrentUnitCapacity, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void CanReserve_RejectsOptionThatExceedsRemainingCapacity()
+        {
+            EnemyUnitLimitModel model = new EnemyUnitLimitModel();
+            model.TryReserve("existing", 2, 4, 5);
+
+            Assert.That(model.CanReserve("ship", 2, 2, 5), Is.False);
+            Assert.That(model.CurrentUnitCapacity, Is.EqualTo(4));
+        }
+
         private sealed class FakeRequest
         {
         }

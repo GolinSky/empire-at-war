@@ -42,6 +42,8 @@ namespace EmpireAtWar.Services.Enemy
 
     public sealed class EnemyStrategicContextBuilder
     {
+        private const float BASE_THREAT_RADIUS = 100f;
+
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
@@ -79,6 +81,13 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity enemyFleetTarget = FindClosestEntity<IShipModelObserver>(
                 PlayerType.Player,
                 origin);
+            int ownedCapturableZoneCount =
+                _reinforcementZonesSystem.GetOwnedCapturableZoneCount(
+                    PlayerType.Opponent);
+            int enemyShipsNearOwnBase = CountShipsNearBase(
+                playerShips,
+                ownBase,
+                BASE_THREAT_RADIUS);
 
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 _gameModel.VictoryCondition,
@@ -87,7 +96,9 @@ namespace EmpireAtWar.Services.Enemy
                 playerShips.Count,
                 hasCaptureTarget,
                 enemyBaseTarget != null,
-                ownBase != null);
+                ownBase != null,
+                ownedCapturableZoneCount,
+                enemyShipsNearOwnBase);
             return new EnemyStrategicContext(
                 snapshot,
                 enemyShips,
@@ -125,6 +136,32 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return FormationModel.CalculateCenter(positions);
+        }
+
+        private static int CountShipsNearBase(
+            IReadOnlyList<IShipEntity> ships,
+            GameEntity ownBase,
+            float threatRadius)
+        {
+            if (ownBase == null)
+            {
+                return 0;
+            }
+
+            Vector3 basePosition = ownBase.HealthModel.Transform.position;
+            float threatRadiusSquared = threatRadius * threatRadius;
+            int count = 0;
+            foreach (IShipEntity ship in ships)
+            {
+                Vector3 offset = ship.WorldPosition - basePosition;
+                offset.y = 0f;
+                if (offset.sqrMagnitude <= threatRadiusSquared)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private GameEntity FindClosestEntity<TModel>(PlayerType playerType, Vector3 origin)

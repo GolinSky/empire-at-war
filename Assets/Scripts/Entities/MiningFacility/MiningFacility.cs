@@ -63,7 +63,6 @@ namespace EmpireAtWar.Entities.MiningFacility
             transform.position = _startPosition;
             _healthComponent.SetMovementState(false);
             _radarComponent.SetPosition(transform.position);
-            _healthComponent.HealthModelObserver.OnDestroy += HandleDestroy;
             _economyProvider.AddProvider(this);
         }
 
@@ -94,17 +93,11 @@ namespace EmpireAtWar.Entities.MiningFacility
                 _deathAnimationService.Play(transform, _deathAnimationData);
             }
 
-            _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
             }
-        }
-
-        private void HandleDestroy()
-        {
-            _economyProvider.RemoveProvider(this);
         }
     }
 }
