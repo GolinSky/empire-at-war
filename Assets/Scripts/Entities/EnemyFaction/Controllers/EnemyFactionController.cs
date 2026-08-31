@@ -103,19 +103,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(shipUnitRequest, () =>
                         {
-                            try
-                            {
-                                ShipEntity ship = _shipFacadeFactory.Create(
-                                    PlayerType,
-                                    shipUnitRequest.Key,
-                                    GenerateShipCoordinates(shipUnitRequest.Key));
-                                ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(shipUnitRequest);
-                                throw;
-                            }
+                            ShipEntity ship = _shipFacadeFactory.Create(
+                                PlayerType,
+                                shipUnitRequest.Key,
+                                GenerateShipCoordinates(shipUnitRequest.Key));
+                            ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
                         });
                     break;
                 }
@@ -129,19 +121,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(miningFacilityUnitRequest, () =>
                         {
-                            try
-                            {
-                                MiningFacilityEntity facility = _miningFacilityFacade.Create(
-                                    PlayerType,
-                                    miningFacilityUnitRequest.Key,
-                                    GenerateMapCoordinates());
-                                facility.OnRelease += () => ReleaseUnit(miningFacilityUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(miningFacilityUnitRequest);
-                                throw;
-                            }
+                            MiningFacilityEntity facility = _miningFacilityFacade.Create(
+                                PlayerType,
+                                miningFacilityUnitRequest.Key,
+                                GenerateMapCoordinates());
+                            facility.OnRelease += () => ReleaseUnit(miningFacilityUnitRequest);
                         });
                     break;
                 }
@@ -155,19 +139,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(defendPlatformUnitRequest, () =>
                         {
-                            try
-                            {
-                                DefendPlatformEntity platform = _defendPlatformFacade.Create(
-                                    PlayerType,
-                                    defendPlatformUnitRequest.Key,
-                                    GenerateMapCoordinates());
-                                platform.OnRelease += () => ReleaseUnit(defendPlatformUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(defendPlatformUnitRequest);
-                                throw;
-                            }
+                            DefendPlatformEntity platform = _defendPlatformFacade.Create(
+                                PlayerType,
+                                defendPlatformUnitRequest.Key,
+                                GenerateMapCoordinates());
+                            platform.OnRelease += () => ReleaseUnit(defendPlatformUnitRequest);
                         });
                     break;
                 }
@@ -201,10 +177,27 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)
         {
             CustomCoroutine pendingBuild = _timerPoolWrapperService.Invoke(
-                buildAction,
+                () => ExecuteBuild(unitRequest, buildAction),
                 unitRequest.FactionData.BuildTime);
             _pendingBuilds.Add(pendingBuild, unitRequest);
             pendingBuild.OnFinished += HandleBuildFinished;
+        }
+
+        private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
+        {
+            try
+            {
+                buildAction();
+            }
+            catch (Exception exception)
+            {
+                ReleaseUnit(unitRequest);
+                _purchaseChain.Revert(unitRequest);
+                Debug.LogError(
+                    $"[EnemyAI:Production] Build failed for " +
+                    $"{unitRequest.GetType().Name} ({unitRequest.Id}). " +
+                    $"Purchase refunded.\n{exception}");
+            }
         }
 
         private void HandleBuildFinished(CustomCoroutine pendingBuild)

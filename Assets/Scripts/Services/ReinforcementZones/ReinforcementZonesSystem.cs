@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         bool IsPositionInAnyZone(Vector3 position);
         bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position);
+        int GetOwnedCapturableZoneCount(PlayerType playerType);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
         bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position);
         bool TryGetRandomSpawnPosition(
@@ -143,6 +144,20 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             return false;
+        }
+
+        public int GetOwnedCapturableZoneCount(PlayerType playerType)
+        {
+            int count = 0;
+            foreach (ReinforcementZonePresenter zone in _zones)
+            {
+                if (zone.IsCapturable && zone.Owner == playerType)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)

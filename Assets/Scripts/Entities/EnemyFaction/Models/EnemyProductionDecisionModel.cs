@@ -76,11 +76,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 {
                     return EnemyProductionCategory.Level;
                 }
-
-                if (snapshot.CanBuildMining)
-                {
-                    return EnemyProductionCategory.Mining;
-                }
             }
 
             if (snapshot.CanBuildShip)
@@ -91,11 +86,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanBuildDefense)
             {
                 return EnemyProductionCategory.Defense;
-            }
-
-            if (snapshot.CanBuildMining)
-            {
-                return EnemyProductionCategory.Mining;
             }
 
             return snapshot.CanLevelUp
