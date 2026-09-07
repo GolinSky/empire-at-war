@@ -16,7 +16,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.Initialiaze;
 using UnityEngine;
 using Zenject;
@@ -53,7 +52,6 @@ namespace EmpireAtWar.Ship
         private NavigateState _navigateState;
         private StateMachine1 _stateMachine;
         private ShipAIBrain _shipAIBrain;
-        private ICoroutineService _coroutineService;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
@@ -89,7 +87,6 @@ namespace EmpireAtWar.Ship
             StateMachine1 stateMachine,
             ShipAIBrain shipAIBrain,
             PlayerType playerType,
-            ICoroutineService coroutineService,
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
@@ -108,7 +105,6 @@ namespace EmpireAtWar.Ship
             _stateMachine = stateMachine;
             _shipAIBrain = shipAIBrain;
             _playerType = playerType;
-            _coroutineService = coroutineService;
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
             _monoComponents = monoComponents;
@@ -130,13 +126,6 @@ namespace EmpireAtWar.Ship
             _radarComponent.SetMediator(this);
             _selectionComponent.SetMediator(this);
             _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
-
-            if (_playerType == PlayerType.Opponent)
-            {
-                _coroutineService.InvokeWithDelay(
-                    () => _shipAIBrain.Enable(true),
-                    _shipMoveComponent.HyperSpaceDuration * 2);
-            }
 
             SynchronizeComponents();
         }
@@ -178,6 +167,7 @@ namespace EmpireAtWar.Ship
         {
             if (_playerType == PlayerType.Opponent)
             {
+                _shipAIBrain.ClearAssignedTarget();
                 _shipAIBrain.Enable(true);
                 _navigateState.SetWorldDestination(target);
                 _stateMachine.SetState(_navigateState);
@@ -191,6 +181,7 @@ namespace EmpireAtWar.Ship
                 return;
             }
 
+            _shipAIBrain.ClearAssignedTarget();
             _shipAIBrain.Enable(false);
             _stateMachine.SetState(_idleState);
         }
@@ -285,10 +276,6 @@ namespace EmpireAtWar.Ship
                     new AttackData(healthModel, healthCommand, HardPointType.Any),
                     AttackType.Base);
 
-                if (_playerType == PlayerType.Opponent)
-                {
-                    _shipAIBrain.AssignAttackTarget(entity);
-                }
             }
 
             _audioShipComponent.HandleEnemyDetected();

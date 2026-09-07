@@ -15,16 +15,38 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int unitCapacity,
             int maxUnitCapacity)
         {
-            int reservedCount = GetReservedCount(unitId);
-            if (reservedCount >= maxCount ||
-                CurrentUnitCapacity + unitCapacity > maxUnitCapacity)
+            if (!CanReserve(unitId, maxCount, unitCapacity, maxUnitCapacity))
             {
                 return false;
             }
 
+            int reservedCount = GetReservedCount(unitId);
             _reservedCounts[unitId] = reservedCount + 1;
             CurrentUnitCapacity += unitCapacity;
             return true;
+        }
+
+        public bool CanReserve(
+            string unitId,
+            int maxCount,
+            int unitCapacity,
+            int maxUnitCapacity)
+        {
+            return GetReservedCount(unitId) < maxCount &&
+                CurrentUnitCapacity + unitCapacity <= maxUnitCapacity;
+        }
+
+        public bool CanReserve<TRequest>(
+            string requestId,
+            int maxCount,
+            int unitCapacity,
+            int maxUnitCapacity)
+        {
+            return CanReserve(
+                $"{typeof(TRequest).FullName}:{requestId}",
+                maxCount,
+                unitCapacity,
+                maxUnitCapacity);
         }
 
         public void Release(string unitId, int unitCapacity)
