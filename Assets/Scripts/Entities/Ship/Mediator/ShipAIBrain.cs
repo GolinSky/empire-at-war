@@ -54,6 +54,10 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         public void Enable(bool isEnabled)
         {
             _isEnabled = isEnabled;
+            if (isEnabled)
+            {
+                _decisionTimer = 0f;
+            }
         }
 
         public void AssignAttackTarget(IEntity target)
@@ -65,6 +69,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
             if (_assignedTarget != null && _assignedTarget.Id == target.Id)
             {
+                Enable(true);
                 return;
             }
 
@@ -79,6 +84,13 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 throw new ArgumentNullException(nameof(target));
             formationOffset.y = 0f;
             _attackFormationOffset = formationOffset;
+            Enable(true);
+        }
+
+        public void ClearAssignedTarget()
+        {
+            _assignedTarget = null;
+            _attackFormationOffset = Vector3.zero;
         }
 
         public void Tick()

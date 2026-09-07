@@ -19,7 +19,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class EnemyUnitCommanderTests
     {
         [Test]
-        public void Initialize_AssignsDistinctFormationDestinations()
+        public void Initialize_AssignsRadiusAwareCaptureFormation()
         {
             FakeShip first = new FakeShip(new Vector3(150f, 0f, -170f));
             FakeShip second = new FakeShip(new Vector3(170f, 0f, -170f));
@@ -39,8 +39,13 @@ namespace EmpireAtWar.Tests.Editor
             commander.Initialize();
 
             Assert.That(first.AssignedMoveTarget, Is.Not.EqualTo(second.AssignedMoveTarget));
-            Assert.That(first.AssignedMoveTarget.x, Is.EqualTo(49f));
-            Assert.That(second.AssignedMoveTarget.x, Is.EqualTo(61f));
+            Assert.That(first.AssignedMoveTarget, Is.EqualTo(new Vector3(55f, 0f, -55f)));
+            Assert.That(
+                Vector3.Distance(
+                    first.AssignedMoveTarget,
+                    second.AssignedMoveTarget),
+                Is.GreaterThanOrEqualTo(
+                    first.NavigationRadius + second.NavigationRadius));
         }
 
         [Test]
@@ -202,6 +207,11 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position)
             {
                 return false;
+            }
+
+            public int GetOwnedCapturableZoneCount(PlayerType playerType)
+            {
+                return 0;
             }
 
             public bool IsShipSpawnPositionClear(
