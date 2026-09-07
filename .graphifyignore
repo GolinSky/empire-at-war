@@ -1,0 +1,6 @@
+*
+!Assets/
+!Assets/Scripts/
+!Assets/Scripts/**
+Assets/Scripts/Services/Input/ProjectInputActions.cs
+Assets/Scripts/Editor/**
