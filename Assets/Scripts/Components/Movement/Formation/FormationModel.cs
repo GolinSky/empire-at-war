@@ -47,6 +47,28 @@ namespace EmpireAtWar.Components.Movement.Formation
                 targetCenter.Z + position.Z - center.Z);
         }
 
+        public static bool HasClearance(
+            FormationPoint first,
+            float firstRadius,
+            FormationPoint second,
+            float secondRadius)
+        {
+            if (firstRadius <= 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(firstRadius));
+            }
+
+            if (secondRadius <= 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(secondRadius));
+            }
+
+            float x = first.X - second.X;
+            float z = first.Z - second.Z;
+            float requiredDistance = firstRadius + secondRadius;
+            return x * x + z * z >= requiredDistance * requiredDistance;
+        }
+
         public static void CalculateDestinations(
             IReadOnlyList<FormationPoint> positions,
             FormationPoint targetCenter,

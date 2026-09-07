@@ -151,7 +151,10 @@ namespace EmpireAtWar.Services.Enemy
                 $"[EnemyAI] Difficulty={_gameModel.EnemyDifficulty}, " +
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
-                $"EnemyShips={LastSnapshot.EnemyShipCount}, Reason={decision.Reason}");
+                $"EnemyShips={LastSnapshot.EnemyShipCount}, " +
+                $"BaseThreats={LastSnapshot.EnemyShipsNearOwnBase}, " +
+                $"ControlledZones={LastSnapshot.OwnedCapturableZoneCount}, " +
+                $"Reason={decision.Reason}");
             DecisionChanged?.Invoke(decision);
         }
     }

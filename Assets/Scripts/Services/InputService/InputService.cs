@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.InputService
         public event Action<Vector2> OnPrimaryDragChanged;
         public event Action<Vector2> OnPrimaryDragEnded;
         public event Action OnLeftMousePressed;
+        public event Action OnEscapePressed;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -41,6 +42,7 @@ namespace EmpireAtWar.Services.InputService
 
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
+        public bool SupportsHover => Mouse.current != null;
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
         public Vector2 CameraMove
         {
@@ -179,6 +181,7 @@ namespace EmpireAtWar.Services.InputService
 
         public void Tick()
         {
+            ProcessEscapeInput();
             ProcessRightMouseCommand();
 
             if (!_isBlocked)
@@ -418,6 +421,15 @@ namespace EmpireAtWar.Services.InputService
 
             CurrentTouchPhase = TouchPhase.Ended;
             OnInput?.Invoke(InputType.ShipInput, CurrentTouchPhase, position);
+        }
+
+        private void ProcessEscapeInput()
+        {
+            if (Keyboard.current != null &&
+                Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                OnEscapePressed?.Invoke();
+            }
         }
     }
 }

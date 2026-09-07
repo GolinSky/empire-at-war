@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
@@ -30,6 +31,14 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .AsSingle();
             Container
                 .BindInterfacesAndSelfTo<MarqueeSelectionPresenter>()
+                .AsSingle()
+                .NonLazy();
+            Container
+                .BindInterfacesAndSelfTo<HealthOverlayView>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle();
+            Container
+                .BindInterfacesAndSelfTo<HealthOverlayPresenter>()
                 .AsSingle()
                 .NonLazy();
             Container

@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Commands;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         private SharedSelectionData _sharedSelectionData;
 
         [Inject] private PlayerType PlayerType { get; }
-        public Vector3 WorldPosition => transform.position;
+        public Vector3 WorldPosition => selectedCanvas.transform.position;
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
         {
@@ -43,6 +44,18 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public void Initialize()
         {
+            if (selectedCanvas == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(SelectionComponent)} requires an explicitly assigned selection canvas.");
+            }
+
+            if (selectedImage == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(SelectionComponent)} requires an explicitly assigned selection image.");
+            }
+
             Model.OnSelected += HandleSelection;
             selectedImage.sprite = _sharedSelectionData.SelectionSprite;
         }

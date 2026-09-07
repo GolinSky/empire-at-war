@@ -13,6 +13,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
         bool IsCapturable { get; }
         float CaptureDuration { get; }
 
+        void SetCenter(Vector3 center);
         void Render(PlayerType owner, PlayerType capturingPlayer, float captureProgress, bool isContested);
     }
 
@@ -38,6 +39,11 @@ namespace EmpireAtWar.Views.ReinforcementZones
         public PlayerType StartingOwner => _startingOwner;
         public bool IsCapturable => _isCapturable;
         public float CaptureDuration => _captureDuration;
+
+        public void SetCenter(Vector3 center)
+        {
+            transform.position = center;
+        }
 
         private void Awake()
         {

@@ -12,12 +12,14 @@ namespace EmpireAtWar.Services.InputService
         event Action<Vector2> OnPrimaryDragStarted;
         event Action<Vector2> OnPrimaryDragChanged;
         event Action<Vector2> OnPrimaryDragEnded;
+        event Action OnEscapePressed;
         event Action<bool> OnBlocked;
         event Action<InputType,TouchPhase, Vector2> OnInput;
         
         TouchPhase CurrentTouchPhase { get;}
         
         Vector2 TouchPosition { get; }
+        bool SupportsHover { get; }
         Vector2 CameraMove { get; }
         int TapCount { get; }
 

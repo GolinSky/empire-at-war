@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using UnityEngine.UI;
-using Utilities.ScriptUtils.Dotween;
-using Utilities.ScriptUtils.EditorSerialization;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
@@ -29,27 +24,15 @@ namespace EmpireAtWar.Components.Ship.Health
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, ITickable
     {
-        private static readonly Vector3 DefaultRotation = new(0, 180, 0);
-        private const float TWEEN_DURATION = 0.1f;
-
         [field: SerializeField] public List<HardPointView> ShipUnits { get; set; }
-        [SerializeField] private Canvas healthCanvas;
-        [SerializeField] private Image shieldsFillImage;
-        [SerializeField] private Image armorFillImage;
         [SerializeField] private ShieldView shieldView;
-        [SerializeField] private DictionaryWrapper<PlayerType, Color> shieldColors;
-        [SerializeField] private DictionaryWrapper<PlayerType, Color> hullColors;
 
         private ITimer _refreshShieldsTimer;
         private bool _isMoving;
         private float _originShieldValue;
         private Coroutine _shieldsAnimatedCoroutine;
-        private Sequence _sequence;
-        private float _baseShieldsValue;
-        private float _baseArmorValue;
         private bool _isReleased;
 
-        [Inject] private PlayerType PlayerType { get; }
         [InjectOptional] private IEntityLifecycle EntityLifecycle { get; }
 
         public bool Destroyed => Model.IsDestroyed;
@@ -66,14 +49,9 @@ namespace EmpireAtWar.Components.Ship.Health
             Model.InjectDependency(ShipUnits);
             _originShieldValue = Model.Shields;
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
-            _baseShieldsValue = Model.Shields;
-            _baseArmorValue = Model.Armor;
 
             Model.OnValueChanged += UpdateData;
             Model.OnDestroy += HandleDestroy;
-
-            shieldsFillImage.color = shieldColors.Dictionary[PlayerType];
-            armorFillImage.color = hullColors.Dictionary[PlayerType];
 
             if (shieldView != null)
             {
@@ -96,7 +74,6 @@ namespace EmpireAtWar.Components.Ship.Health
             _isReleased = true;
             Model.OnValueChanged -= UpdateData;
             Model.OnDestroy -= HandleDestroy;
-            healthCanvas.enabled = false;
 
             if (_shieldsAnimatedCoroutine != null)
             {
@@ -121,8 +98,6 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void Tick()
         {
-            healthCanvas.transform.rotation = Quaternion.Euler(DefaultRotation);
-
             if (!Model.IsLostShieldGenerator && Model.Shields < _originShieldValue &&
                 _refreshShieldsTimer.IsComplete)
             {
@@ -174,11 +149,6 @@ namespace EmpireAtWar.Components.Ship.Health
             {
                 shieldView.SetActive(Model.Shields > 0f);
             }
-
-            _sequence.KillIfExist();
-            _sequence = DOTween.Sequence();
-            _sequence.Append(shieldsFillImage.DOFillAmount(Model.Shields / _baseShieldsValue, TWEEN_DURATION));
-            _sequence.Append(armorFillImage.DOFillAmount(Model.Armor / _baseArmorValue, TWEEN_DURATION));
         }
     }
 }

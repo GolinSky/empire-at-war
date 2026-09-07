@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly PlayerFactionModel _model;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
+        private bool _isInitialized;
         
         public float Income { get; private set; }
 
@@ -47,15 +48,27 @@ namespace EmpireAtWar.Services.Factions
 
         public void Initialize()
         {
+            if (_isInitialized)
+            {
+                return;
+            }
+
             _purchaseMediator.Value.Add(this);
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
+            _isInitialized = true;
         }
 
         public void LateDispose()
         {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
+            _isInitialized = false;
         }
 
         public void ChangeSelection()

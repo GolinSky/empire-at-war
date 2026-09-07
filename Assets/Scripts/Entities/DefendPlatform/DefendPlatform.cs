@@ -15,6 +15,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
     {
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
+        private Vector3 _startPosition;
         private IReadOnlyList<IMonoComponent> _monoComponents;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
@@ -30,12 +31,14 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private void Construct(
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
+            Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitDeathAnimationData deathAnimationData,
             IUnitDeathAnimationService deathAnimationService)
         {
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
+            _startPosition = startPosition;
             _monoComponents = monoComponents;
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
@@ -48,6 +51,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         public void Initialize()
         {
+            transform.position = _startPosition;
             SynchronizeComponents();
         }
 
@@ -58,10 +62,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathEffects)
         {
             if (_isReleased)
             {
@@ -73,9 +82,15 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathEffects)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
 
-            OnRelease?.Invoke();
+            if (playDeathEffects)
+            {
+                OnRelease?.Invoke();
+            }
         }
 
         private void SynchronizeComponents()

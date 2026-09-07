@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -14,6 +15,7 @@ using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
@@ -36,12 +38,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
+            new Dictionary<CustomCoroutine, UnitRequest>();
 
 
         private IChainHandler<UnitRequest> _nextChain;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
         private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private bool _isInitialized;
 
         private PlayerType PlayerType => PlayerType.Opponent;
         public float Income => DEFAULT_INCOME;
@@ -96,23 +101,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(shipUnitRequest, () =>
                         {
-                            try
-                            {
-                                ShipEntity ship = _shipFacadeFactory.Create(
-                                    PlayerType,
-                                    shipUnitRequest.Key,
-                                    GenerateShipCoordinates());
-                                ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(shipUnitRequest);
-                                throw;
-                            }
-                        },
-                        shipUnitRequest.FactionData.BuildTime);
+                            ShipEntity ship = _shipFacadeFactory.Create(
+                                PlayerType,
+                                shipUnitRequest.Key,
+                                GenerateShipCoordinates(shipUnitRequest.Key));
+                            ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
+                        });
                     break;
                 }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
@@ -123,23 +119,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(miningFacilityUnitRequest, () =>
                         {
-                            try
-                            {
-                                MiningFacilityEntity facility = _miningFacilityFacade.Create(
-                                    PlayerType,
-                                    miningFacilityUnitRequest.Key,
-                                    GenerateMapCoordinates());
-                                facility.OnRelease += () => ReleaseUnit(miningFacilityUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(miningFacilityUnitRequest);
-                                throw;
-                            }
-                        },
-                        miningFacilityUnitRequest.FactionData.BuildTime);
+                            MiningFacilityEntity facility = _miningFacilityFacade.Create(
+                                PlayerType,
+                                miningFacilityUnitRequest.Key,
+                                GenerateMapCoordinates());
+                            facility.OnRelease += () => ReleaseUnit(miningFacilityUnitRequest);
+                        });
                     break;
                 }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
@@ -150,23 +137,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
-                    _timerPoolWrapperService.Invoke(() =>
+                    ScheduleBuild(defendPlatformUnitRequest, () =>
                         {
-                            try
-                            {
-                                DefendPlatformEntity platform = _defendPlatformFacade.Create(
-                                    PlayerType,
-                                    defendPlatformUnitRequest.Key,
-                                    GenerateMapCoordinates());
-                                platform.OnRelease += () => ReleaseUnit(defendPlatformUnitRequest);
-                            }
-                            catch
-                            {
-                                ReleaseUnit(defendPlatformUnitRequest);
-                                throw;
-                            }
-                        },
-                        defendPlatformUnitRequest.FactionData.BuildTime);
+                            DefendPlatformEntity platform = _defendPlatformFacade.Create(
+                                PlayerType,
+                                defendPlatformUnitRequest.Key,
+                                GenerateMapCoordinates());
+                            platform.OnRelease += () => ReleaseUnit(defendPlatformUnitRequest);
+                        });
                     break;
                 }
                 
@@ -195,15 +173,75 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             return $"{unitRequest.GetType().FullName}:{unitRequest.Id}";
         }
-        
-        private Vector3 GenerateShipCoordinates()
+
+        private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)
         {
-            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(PlayerType, out Vector3 position))
+            CustomCoroutine pendingBuild = _timerPoolWrapperService.Invoke(
+                () => ExecuteBuild(unitRequest, buildAction),
+                unitRequest.FactionData.BuildTime);
+            _pendingBuilds.Add(pendingBuild, unitRequest);
+            pendingBuild.OnFinished += HandleBuildFinished;
+        }
+
+        private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
+        {
+            try
+            {
+                buildAction();
+            }
+            catch (Exception exception)
+            {
+                ReleaseUnit(unitRequest);
+                _purchaseChain.Revert(unitRequest);
+                Debug.LogError(
+                    $"[EnemyAI:Production] Build failed for " +
+                    $"{unitRequest.GetType().Name} ({unitRequest.Id}). " +
+                    $"Purchase refunded.\n{exception}");
+            }
+        }
+
+        private void HandleBuildFinished(CustomCoroutine pendingBuild)
+        {
+            pendingBuild.OnFinished -= HandleBuildFinished;
+            _pendingBuilds.Remove(pendingBuild);
+        }
+
+        private void CancelPendingBuilds()
+        {
+            foreach (KeyValuePair<CustomCoroutine, UnitRequest> pendingBuild
+                     in _pendingBuilds)
+            {
+                pendingBuild.Key.OnFinished -= HandleBuildFinished;
+                pendingBuild.Key.Release();
+                ReleaseUnit(pendingBuild.Value);
+            }
+
+            _pendingBuilds.Clear();
+        }
+        
+        private Vector3 GenerateShipCoordinates(ShipType shipType)
+        {
+            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(
+                    PlayerType,
+                    shipType,
+                    out Vector3 position))
             {
                 return position;
             }
 
-            return GeneratePositionNearBase();
+            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            {
+                position = GeneratePositionNearBase();
+                if (_reinforcementZonesSystem.IsShipSpawnPositionClear(
+                        shipType,
+                        position))
+                {
+                    return position;
+                }
+            }
+
+            throw new InvalidOperationException(
+                $"No clear enemy spawn position is available for {shipType}.");
         }
 
         private Vector3 GenerateMapCoordinates()
@@ -237,7 +275,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3 GeneratePositionNearBase()
         {
             Vector2Range sizeRange = _mapModel.Value.SizeRange;
-            Vector3 basePosition = _mapModel.Value.GetStationPosition(PlayerType);
+            Vector3 basePosition = _mapModel.Value.GetStationPosition(Model.FactionType);
             Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
             float radius = UnityEngine.Random.Range(BASE_SPAWN_MIN_RADIUS, BASE_SPAWN_MAX_RADIUS);
             return new Vector3(
@@ -248,13 +286,27 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Initialize()
         {
+            if (_isInitialized)
+            {
+                return;
+            }
+
             _unitLimitModel.Reset();
             _economyProvider.AddProvider(this);
+            _isInitialized = true;
         }
 
         public void LateDispose()
         {
+            CancelPendingBuilds();
+
+            if (!_isInitialized)
+            {
+                return;
+            }
+
             _economyProvider.RemoveProvider(this);
+            _isInitialized = false;
         }
     }
 }

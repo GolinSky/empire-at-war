@@ -73,10 +73,15 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathAnimation)
         {
             if (_isReleased)
             {
@@ -88,7 +93,10 @@ namespace EmpireAtWar.Entities.SpaceStation
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathAnimation)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
         }
     }
 }

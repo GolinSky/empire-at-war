@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -41,8 +40,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _targetPosition;
 
         [Inject] private IShipMoveData ShipMoveData { get; }
-        [Inject] private PlayerType PlayerType { get; }
-
         [Inject(Id = EntityBindType.ViewTransform)]
         public LazyInject<Transform> ViewTransform { get; }
 
@@ -56,13 +53,22 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3 TargetPosition => _targetPosition;
         public bool IsMoving =>
             _hasTargetPosition && !CurrentPosition.IsEqual(_targetPosition);
-        public Vector3 JumpPosition => PlayerType == PlayerType.Opponent
-            ? HyperSpacePosition
-            : HyperSpacePosition - Vector3.right * OFFSET_HYPERSPACE_JUMP;
-        public Quaternion StartRotation => PlayerType == PlayerType.Player
-            ? Quaternion.identity
-            : Quaternion.Euler(new Vector3(0f, -180f, 0f));
-        public Vector3 HyperSpacePosition { get; set; }
+        public Vector3 JumpPosition { get; private set; }
+        public Quaternion StartRotation { get; private set; } = Quaternion.identity;
+        public Vector3 HyperSpacePosition { get; private set; }
+
+        public void ConfigureSpawnPose(
+            Vector3 hyperSpacePosition,
+            Quaternion startRotation,
+            bool useHyperSpaceEntry)
+        {
+            HyperSpacePosition = hyperSpacePosition;
+            StartRotation = startRotation;
+            JumpPosition = useHyperSpaceEntry
+                ? HyperSpacePosition -
+                  StartRotation * Vector3.forward * OFFSET_HYPERSPACE_JUMP
+                : HyperSpacePosition;
+        }
 
         public void ApplyMoveCoefficient(float coefficient)
         {

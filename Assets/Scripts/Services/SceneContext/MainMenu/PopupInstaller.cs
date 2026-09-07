@@ -7,21 +7,14 @@ namespace EmpireAtWar
 {
     public class PopupInstaller : MonoInstaller
     {
-        [SerializeField] private Transform popupParent;
-
         public override void InstallBindings()
         {
-            Container
-                .BindInstance(popupParent)
-                .AsSingle()
-                .WhenInjectedInto<PopupService>();
-        
             Container
                 .BindInterfacesTo<PopupService>()
                 .AsSingle();
         
             Container
-                .BindFactory<PopupType, PopupUi, PopupUiFacade>()
+                .BindFactory<PopupType, Transform, PopupUi, PopupUiFacade>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<PopupDynamicInstaller>();
         }
