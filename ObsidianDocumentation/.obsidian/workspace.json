@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Architecture/UI_REFACTORING_PLAYBOOK.md",
+                "file": "Architecture/PROJECT_ORGANIZATION.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "UI_REFACTORING_PLAYBOOK"
+              "title": "PROJECT_ORGANIZATION"
             }
           }
         ]
@@ -185,23 +185,27 @@
       "bases:Create new base": false
     }
   },
-  "active": "1261212fe2167d70",
+  "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
-    "Architecture/UI_REFACTORING_PLAYBOOK 1.md",
-    "Rules/AGENTS.md",
-    "Rules/README.md",
-    "Artifacts/Walkthrough.md",
+    "Architecture/PROJECT_ORGANIZATION 2.md",
+    "Architecture/PROJECT_ORGANIZATION 1.md",
+    "Architecture/PROJECT_ORGANIZATION.md",
     "Artifacts/Implementation_Plan.md",
+    "Artifacts/Walkthrough.md",
+    "Features/CONTROLS_ANALYSIS.md",
     "00_Home.md",
+    "TODOs/UI_Service_Refactoring.md",
+    "TODOs/TODOs.md",
+    "Rules/UI_UX_GUIDELINES.md",
+    "Rules/README.md",
+    "Rules/AGENTS.md",
+    "Architecture/UI_REFACTORING_PLAYBOOK.md",
+    "Architecture/UI_REFACTORING_PLAYBOOK 1.md",
     "Artifacts",
     "Rules",
     "Architecture/GRAPHIFY_GUIDE.md",
     "Architecture/SELECTION_SYSTEM.md",
-    "Architecture/UI_REFACTORING_PLAYBOOK.md",
-    "Architecture/PROJECT_ORGANIZATION.md",
     "Architecture",
-    "TODOs/UI_Service_Refactoring.md",
-    "TODOs/TODOs.md",
     "TODOs",
     "AGENTS.md",
     "GRAPHIFY_GUIDE.md",

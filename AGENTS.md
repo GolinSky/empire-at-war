@@ -60,5 +60,7 @@ The complete and authoritative placement rules are in the **`PROJECT_ORGANIZATIO
 When creating, modifying, or refactoring any UI prefab, component, or view:
 - AI agents must read the **`UI_UX_GUIDELINES`** note in the Obsidian Vault in full on demand via the **Obsidian MCP** tool (`vault_read` or `read_note` / `search_notes` for note `"UI_UX_GUIDELINES"`) before touching UI code or prefabs.
 
+## Tooling & Execution Constraints
 
-
+- **Graphify Prohibited:** Do NOT use Graphify under any circumstances. All agents (including root agents and subagents) must strictly avoid using Graphify.
+- **No Automated Test Execution:** Do NOT run tests (unit tests, automated test runners, etc.) unless the user explicitly requests it.
