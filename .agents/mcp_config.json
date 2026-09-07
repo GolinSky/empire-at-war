@@ -10,7 +10,9 @@
     "unity": {
       "command": "unity",
       "args": [
-        "mcp"
+        "mcp",
+        "--project-path",
+        "F:\\Private\\empire-at-war"
       ]
     }
   }

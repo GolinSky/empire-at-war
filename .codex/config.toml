@@ -1,13 +1,65 @@
-[mcp_servers.unityMCP]
-command = "C:\\Users\\golin\\.local\\bin\\uvx.exe"
-args = [ "--offline", "--from", "mcpforunityserver==10.1.2", "mcp-for-unity", "--transport", "stdio" ]
+[mcp_servers.unity]
+command = "unity"
+args = [ "mcp" ]
+
+[mcp_servers.serena]
+command = "uvx"
+args = [
+  "-p", "3.13",
+  "--from", "serena-agent==1.7.0",
+  "serena", "start-mcp-server",
+  "--context", "codex",
+  "--project-from-cwd",
+  "--enable-web-dashboard", "false",
+]
 startup_timeout_sec = 60
-env = { SystemRoot = "C:\\WINDOWS" }
+tool_timeout_sec = 120
 
+[mcp_servers.serena.env]
+SERENA_HOME = ".serena/home"
+PYTHONUTF8 = "1"
+
+[mcp_servers.empire-vault]
+command = "C:\\Program Files\\nodejs\\node.exe"
+args = [
+  "C:\\Users\\golin\\AppData\\Local\\AI-Tools\\mcpvault\\0.16.0\\node_modules\\@bitbonsai\\mcpvault\\dist\\server.js",
+  "F:\\Private\\empire-at-war\\ObsidianDocumentation",
+]
+
+# Kept configured for compatibility with the local graph artifact, but disabled by
+# repository policy. Do not enable or use Graphify in this project.
 [mcp_servers.graphify]
-command = "python"
-args = [ "-m", "graphify.serve", "graphify-out/graph.json" ]
+command = "uvx"
+args = [
+  "--from", "graphifyy[mcp]==0.9.54",
+  "graphify-mcp", "graphify-out/graph.json",
+]
+enabled = false
+enabled_tools = [
+  "query_graph",
+  "get_node",
+  "get_neighbors",
+  "god_nodes",
+  "graph_stats",
+  "shortest_path",
+]
+default_tools_approval_mode = "approve"
+startup_timeout_sec = 45
+tool_timeout_sec = 60
 
-[mcp_servers.obsidian]
-url = "https://127.0.0.1:27124/mcp/"
-headers = { Authorization = "Bearer 507a07f462f01ec4e5e825e847b159a32ebbd122e1e4a5897fd345f4eb3c35a7" }
+[mcp_servers.graphify.env]
+GRAPHIFY_QUERY_LOG_DISABLE = "1"
+
+# Compatibility tombstone for the retired mcp-for-unity server.
+[mcp_servers.unityMCP]
+enabled = false
+
+[features]
+multi_agent = true
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "high"
+interrupt_message = true
