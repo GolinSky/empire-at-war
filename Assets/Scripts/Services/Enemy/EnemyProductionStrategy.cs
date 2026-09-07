@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Reinforcement;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IGameModelObserver _gameModel;
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
+        private readonly ReinforcementData _reinforcementData;
 
         private float _decisionTimer;
 
@@ -34,7 +36,8 @@ namespace EmpireAtWar.Services.Enemy
             IEnemyAiStateProvider stateProvider,
             IGameModelObserver gameModel,
             EnemyProductionDecisionModel decisionModel,
-            EnemyUnitLimitModel unitLimitModel)
+            EnemyUnitLimitModel unitLimitModel,
+            ReinforcementData reinforcementData)
         {
             _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
             _purchaseProcessor = purchaseProcessor ?? throw new ArgumentNullException(nameof(purchaseProcessor));
@@ -44,6 +47,8 @@ namespace EmpireAtWar.Services.Enemy
             _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
             _decisionModel = decisionModel ?? throw new ArgumentNullException(nameof(decisionModel));
             _unitLimitModel = unitLimitModel ?? throw new ArgumentNullException(nameof(unitLimitModel));
+            _reinforcementData = reinforcementData ??
+                throw new ArgumentNullException(nameof(reinforcementData));
         }
 
         public void Start()
@@ -75,8 +80,7 @@ namespace EmpireAtWar.Services.Enemy
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
             bool canBuildMining = hasMiningOption &&
                 mining.Value.Price <= _economyModel.Money;
-            bool canBuildDefense = TrySelectCheapestAffordable(
-                _factionModel.DefendPlatforms,
+            bool canBuildDefense = TrySelectDefense(
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
@@ -149,11 +153,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<MiningFacilityType, FactionData> option
                      in _factionModel.MiningFactions)
             {
-                int reservedCount =
-                    _unitLimitModel.GetReservedCount<MiningFacilityUnitRequest>(
-                        option.Key.ToString());
                 if (option.Value.AvailableLevel > _factionModel.CurrentLevel ||
-                    reservedCount >= option.Value.MaxCount)
+                    !CanReserve<MiningFacilityUnitRequest>(
+                        option.Key.ToString(),
+                        option.Value))
                 {
                     continue;
                 }
@@ -176,7 +179,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
-                if (!IsAffordableAndAvailable(option.Value))
+                if (!IsAffordableAndAvailable(option.Value) ||
+                    !CanReserve<ShipUnitRequest>(
+                        option.Key.ToString(),
+                        option.Value))
                 {
                     continue;
                 }
@@ -193,27 +199,18 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
-        private bool TrySelectCheapestAffordable<TKey>(
-            IReadOnlyDictionary<TKey, FactionData> options,
-            out KeyValuePair<TKey, FactionData> selected)
-        {
-            if (!TrySelectCheapestAvailable(options, out selected))
-            {
-                return false;
-            }
-
-            return selected.Value.Price <= _economyModel.Money;
-        }
-
-        private bool TrySelectCheapestAvailable<TKey>(
-            IReadOnlyDictionary<TKey, FactionData> options,
-            out KeyValuePair<TKey, FactionData> selected)
+        private bool TrySelectDefense(
+            out KeyValuePair<DefendPlatformType, FactionData> selected)
         {
             selected = default;
             bool found = false;
-            foreach (KeyValuePair<TKey, FactionData> option in options)
+            foreach (KeyValuePair<DefendPlatformType, FactionData> option
+                     in _factionModel.DefendPlatforms)
             {
-                if (option.Value.AvailableLevel > _factionModel.CurrentLevel)
+                if (!IsAffordableAndAvailable(option.Value) ||
+                    !CanReserve<DefendPlatformUnitRequest>(
+                        option.Key.ToString(),
+                        option.Value))
                 {
                     continue;
                 }
@@ -226,6 +223,15 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        private bool CanReserve<TRequest>(string requestId, FactionData data)
+        {
+            return _unitLimitModel.CanReserve<TRequest>(
+                requestId,
+                data.MaxCount,
+                data.UnitCapacity,
+                _reinforcementData.MaxUnitCapacity);
         }
 
         private bool IsAffordableAndAvailable(FactionData data)

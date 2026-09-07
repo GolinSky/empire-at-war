@@ -6,7 +6,6 @@ using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.Factions
 {
@@ -21,28 +20,26 @@ namespace EmpireAtWar.Views.Factions
         void SetPresenter(IFactionPresenter presenter);
         void SetData(PlayerFactionData data);
         void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
+        void SetParent(Transform parent);
+        void Show();
+        void Hide();
         void Initialize();
         void Dispose();
     }
 
     public class FactionUi : BaseUi, IFactionUi, IFactionView
     {
-        [SerializeField] private Canvas controlCanvas;
-        [SerializeField] private Button exitButton;
-        [SerializeField] private Transform shipUnitParent;
-        [SerializeField] private BuildPipelineView pipelineView;
-        [SerializeField] private Button triggerUiButton;
-
-        private readonly Dictionary<string, UnitRequest> _unitRequests = new();
-        private readonly List<FactionUnitUi> _factionUnitsUi = new();
+        private readonly List<FactionUnitUi> _factionUnitsUi =
+            new List<FactionUnitUi>();
 
         private FactionUnitUi _levelFactionUnitUi;
-        private UnitRequest _currentLevelUnitRequest;
         private IPlayerFactionModelObserver _model;
         private IFactionPresenter _presenter;
         private PlayerFactionData _data;
         private IUnitRequestFactory _unitRequestFactory;
+        private Transform _unitParent;
         private bool _isInitialized;
+        private bool _isRouteActive = true;
 
         public void SetModel(IPlayerFactionModelObserver model)
         {
@@ -64,11 +61,30 @@ namespace EmpireAtWar.Views.Factions
             _unitRequestFactory = unitRequestFactory;
         }
 
+        public override void SetParent(Transform parent)
+        {
+            base.SetParent(parent);
+            _unitParent = parent;
+
+            for (int i = 0; i < _factionUnitsUi.Count; i++)
+            {
+                _factionUnitsUi[i].transform.SetParent(parent, false);
+            }
+        }
+
         public void Initialize()
         {
-            if (_model == null || _presenter == null || _data == null || _unitRequestFactory == null)
+            if (_model == null || _presenter == null || _data == null ||
+                _unitRequestFactory == null)
             {
-                throw new InvalidOperationException("Faction UI dependencies must be set before initialization.");
+                throw new InvalidOperationException(
+                    "Faction UI dependencies must be set before initialization.");
+            }
+
+            if (_unitParent == null)
+            {
+                throw new InvalidOperationException(
+                    "Faction UI route parent must be set before initialization.");
             }
 
             if (_isInitialized)
@@ -76,34 +92,35 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
-            pipelineView.Init();
-            HandleSelectionChanged(_model.SelectionType);
             foreach (var data in _data.GetShipFactionData(_model.FactionType))
             {
-                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                AddUi(_unitRequestFactory.ConstructUnitRequest(
+                    data.Value,
+                    data.Key));
             }
 
-            _currentLevelUnitRequest = ConstructLevelUnitRequest();
-            
+            CreateLevelUnit();
+
             foreach (var data in _data.GetMiningFactionData())
             {
-                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                AddUi(_unitRequestFactory.ConstructUnitRequest(
+                    data.Value,
+                    data.Key));
             }
-            
+
             foreach (var data in _data.GetDefendPlatformData())
             {
-                AddUi(_unitRequestFactory.ConstructUnitRequest(data.Value, data.Key));
+                AddUi(_unitRequestFactory.ConstructUnitRequest(
+                    data.Value,
+                    data.Key));
             }
-            
+
             _model.OnSelectionTypeChanged += HandleSelectionChanged;
             _model.OnLevelUpgraded += UpdateUnits;
-            _model.OnUnitBuild += BuildUnit;
-            exitButton.onClick.AddListener(ExitUi);
-            pipelineView.OnFinishSequence += HandleEndOfBuilding;
-            triggerUiButton.onClick.AddListener(_presenter.ChangeSelection);
             _isInitialized = true;
+            RefreshUnitVisibility(_model.SelectionType);
         }
-        
+
         public void Dispose()
         {
             if (!_isInitialized)
@@ -113,93 +130,89 @@ namespace EmpireAtWar.Views.Factions
 
             _model.OnSelectionTypeChanged -= HandleSelectionChanged;
             _model.OnLevelUpgraded -= UpdateUnits;
-            _model.OnUnitBuild -= BuildUnit;
-            exitButton.onClick.RemoveListener(ExitUi);
-            pipelineView.OnFinishSequence -= HandleEndOfBuilding;
-            triggerUiButton.onClick.RemoveListener(_presenter.ChangeSelection);
             _isInitialized = false;
-        }
-
-        private void OnDestroy()
-        {
-            Dispose();
-        }
-
-        private void AddUi(UnitRequest unitRequest)
-        {
-            FactionUnitUi unitUi = Instantiate(_data.FactionUnit, shipUnitParent);
-            unitUi.SetData(unitRequest.FactionData,this, unitRequest);
-            _factionUnitsUi.Add(unitUi);
-            if (unitRequest.FactionData.AvailableLevel > _model.CurrentLevel)
-            {
-                unitUi.SetActive(false);
-            }
-            _unitRequests.Add(unitRequest.Id, unitRequest);
-        }
-        
-        private UnitRequest ConstructLevelUnitRequest()// refactor
-        {
-            FactionData levelData = _model.GetCurrentLevelFactionData();
-            if (levelData != null)
-            {
-                _levelFactionUnitUi = Instantiate(_data.FactionUnit, shipUnitParent);
-                LevelUnitRequest levelUnitRequest = _unitRequestFactory.ConstructUnitRequest(levelData, _model.CurrentLevel);
-                _levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
-                _unitRequests.Add(levelUnitRequest.Id, levelUnitRequest);
-                return levelUnitRequest;
-            }
-
-            return null;
-        }
-        
-        private void HandleEndOfBuilding(bool isSuccess, string id)
-        {
-            UnitRequest unitRequest = _unitRequests[id];
-
-            if (!isSuccess)
-            {
-                _presenter.RevertBuilding(unitRequest);
-            }
-            else
-            {
-                _presenter.BuildUnit(unitRequest);
-            }
-        }
-        
-        private void UpdateUnits(int level)
-        {
-            foreach (FactionUnitUi factionUnitUi in _factionUnitsUi)
-            {
-                factionUnitUi.SetActive(factionUnitUi.Level <= level);
-            }
-
-            _levelFactionUnitUi.Destroy();
-            if (_currentLevelUnitRequest != null)
-            {
-                _unitRequests.Remove(_currentLevelUnitRequest.Id);
-            }
-            _currentLevelUnitRequest = ConstructLevelUnitRequest();
-        
-        }
-
-        private void ExitUi()
-        {
-            _presenter.CloseSelection();
-        }
-
-        private void BuildUnit(UnitRequest unitRequest)
-        {
-            pipelineView.AddPipeline(unitRequest.Id, unitRequest.FactionData.Icon, unitRequest.FactionData.BuildTime);
-        }
-
-        private void HandleSelectionChanged(SelectionType selectionType)
-        {
-            controlCanvas.enabled = selectionType == SelectionType.Base;
         }
 
         public void BuyUnit(UnitRequest unitRequest)
         {
             _presenter.TryPurchaseUnit(unitRequest);
+        }
+
+        public override void Show()
+        {
+            _isRouteActive = true;
+            base.Show();
+
+            if (_model != null)
+            {
+                RefreshUnitVisibility(_model.SelectionType);
+            }
+        }
+
+        public override void Hide()
+        {
+            _isRouteActive = false;
+
+            if (_model != null)
+            {
+                RefreshUnitVisibility(_model.SelectionType);
+            }
+
+            base.Hide();
+        }
+
+        private void AddUi(UnitRequest unitRequest)
+        {
+            FactionUnitUi unitUi = Instantiate(_data.FactionUnit, _unitParent);
+            unitUi.SetData(unitRequest.FactionData, this, unitRequest);
+            _factionUnitsUi.Add(unitUi);
+        }
+
+        private void CreateLevelUnit()
+        {
+            FactionData levelData = _model.GetCurrentLevelFactionData();
+            if (levelData == null)
+            {
+                return;
+            }
+
+            _levelFactionUnitUi = Instantiate(_data.FactionUnit, _unitParent);
+            LevelUnitRequest levelUnitRequest =
+                _unitRequestFactory.ConstructUnitRequest(
+                    levelData,
+                    _model.CurrentLevel);
+            _levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
+            _factionUnitsUi.Add(_levelFactionUnitUi);
+        }
+
+        private void UpdateUnits(int level)
+        {
+            if (_levelFactionUnitUi != null)
+            {
+                _factionUnitsUi.Remove(_levelFactionUnitUi);
+                _levelFactionUnitUi.Destroy();
+            }
+
+            CreateLevelUnit();
+            RefreshUnitVisibility(_model.SelectionType);
+        }
+
+        private void HandleSelectionChanged(SelectionType selectionType)
+        {
+            RefreshUnitVisibility(selectionType);
+        }
+
+        private void RefreshUnitVisibility(SelectionType selectionType)
+        {
+            bool isSelectionVisible =
+                _isRouteActive && selectionType == SelectionType.Base;
+
+            for (int i = 0; i < _factionUnitsUi.Count; i++)
+            {
+                FactionUnitUi unitUi = _factionUnitsUi[i];
+                unitUi.SetActive(
+                    isSelectionVisible && unitUi.Level <= _model.CurrentLevel);
+            }
         }
     }
 }

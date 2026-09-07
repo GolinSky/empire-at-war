@@ -21,6 +21,7 @@ namespace EmpireAtWar.Models.Health
 
         HardPointModel[] HardPointModels { get; }
         float Armor { get; }
+        float ArmorPercentage { get; }
         float Shields { get; }
         float ShieldPercentage { get; }
         bool IsDestroyed { get; }
@@ -47,9 +48,11 @@ namespace EmpireAtWar.Models.Health
         
         
         protected float _shieldsBaseValue;
+        private float _armorBaseValue;
         private IHealthData _data;
 
         public float Armor { get; private set; }
+        public float ArmorPercentage => _armorBaseValue <= 0f ? 0f : Armor / _armorBaseValue;
         public float Shields { get; private set; }
         public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
@@ -65,7 +68,7 @@ namespace EmpireAtWar.Models.Health
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0;
         public float Dexterity => _data.Dexterity;
-        public float ShieldPercentage => Shields/ _shieldsBaseValue;
+        public float ShieldPercentage => _shieldsBaseValue <= 0f ? 0f : Shields / _shieldsBaseValue;
 
         public bool IsLostShieldGenerator { get; private set; }
         
@@ -84,6 +87,7 @@ namespace EmpireAtWar.Models.Health
         {
             _data = data;
             Armor = data.Armor;
+            _armorBaseValue = Armor;
             Shields = data.Shields;
             _shieldsBaseValue = Shields;
         }

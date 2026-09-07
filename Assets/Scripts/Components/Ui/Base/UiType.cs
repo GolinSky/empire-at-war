@@ -11,8 +11,8 @@ namespace EmpireAtWar.Ui.Base
         CoreGame = 3,
         MiniMap = 4,
         Ship = 5,
-        // Navigation = 6, //deleted
-        Menu = 7,
+        ShipBuild = 6,
+        PauseMenu = 7,
         Interaction = 8,
         MainMenu = 9,
     }

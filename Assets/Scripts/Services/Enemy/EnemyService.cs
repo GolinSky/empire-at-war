@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.Enemy
         
         public void Initialize()
         {
-            _stationPosition = _mapModel.Value.GetStationPosition(PlayerType.Opponent);
+            _stationPosition = _mapModel.Value.GetStationPosition(FactionType);
             _spaceStation = _spaceStationViewFacade.Create(PlayerType.Opponent, FactionType, _stationPosition);
             _productionStrategy.Start();
         }

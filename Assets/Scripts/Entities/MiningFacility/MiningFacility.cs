@@ -63,16 +63,20 @@ namespace EmpireAtWar.Entities.MiningFacility
             transform.position = _startPosition;
             _healthComponent.SetMovementState(false);
             _radarComponent.SetPosition(transform.position);
-            _healthComponent.HealthModelObserver.OnDestroy += HandleDestroy;
             _economyProvider.AddProvider(this);
         }
 
         public void LateDispose()
         {
-            Release();
+            Release(false);
         }
 
         public void Release()
+        {
+            Release(true);
+        }
+
+        private void Release(bool playDeathEffects)
         {
             if (_isReleased)
             {
@@ -84,16 +88,16 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 component.Release();
             }
-            _deathAnimationService.Play(transform, _deathAnimationData);
+            if (playDeathEffects)
+            {
+                _deathAnimationService.Play(transform, _deathAnimationData);
+            }
 
-            _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroy;
             _economyProvider.RemoveProvider(this);
-            OnRelease?.Invoke();
-        }
-
-        private void HandleDestroy()
-        {
-            _economyProvider.RemoveProvider(this);
+            if (playDeathEffects)
+            {
+                OnRelease?.Invoke();
+            }
         }
     }
 }

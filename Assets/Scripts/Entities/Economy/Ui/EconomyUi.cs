@@ -10,6 +10,9 @@ namespace EmpireAtWar.Views.Economy
     public interface IEconomyUi
     {
         void SetModel(IEconomyModelObserver model);
+        void SetParent(Transform parent);
+        void Show();
+        void Hide();
         void Initialize();
         void Dispose();
     }

@@ -1,6 +1,8 @@
 ﻿using EmpireAtWar.Commands.Game;
+using System;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using Utilities.ScriptUtils.EditorSerialization;
 using UnityEngine;
@@ -13,17 +15,23 @@ namespace EmpireAtWar.Views.Game
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
+        [SerializeField] private Button reinforcementButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
         
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
+        [SerializeField] private Transform miniMapRouteParent;
+        [SerializeField] private Transform contentRouteParent;
+        [SerializeField] private Transform buildPipelineRouteParent;
 
 
         public void Initialize()
         {
+            ValidateRouteParents();
             timeButton.onClick.AddListener(Command.Play);
             speedUpButton.onClick.AddListener(Command.SpeedUp);
+            reinforcementButton.onClick.AddListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange += UpdateSprites;
         }
 
@@ -31,6 +39,7 @@ namespace EmpireAtWar.Views.Game
         {
             timeButton.onClick.RemoveListener(Command.Play);
             speedUpButton.onClick.RemoveListener(Command.SpeedUp);
+            reinforcementButton.onClick.RemoveListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange -= UpdateSprites;
         }
         
@@ -38,6 +47,51 @@ namespace EmpireAtWar.Views.Game
         {
             timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
             speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
+        }
+
+        public Transform GetRouteParent(SkirmishUiRoutePosition position)
+        {
+            switch (position)
+            {
+                case SkirmishUiRoutePosition.MiniMap:
+                    return miniMapRouteParent;
+                case SkirmishUiRoutePosition.Content:
+                    return contentRouteParent;
+                case SkirmishUiRoutePosition.BuildPipeline:
+                    return buildPipelineRouteParent;
+                case SkirmishUiRoutePosition.Economy:
+                case SkirmishUiRoutePosition.Reinforcement:
+                    return transform;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(position), position, null);
+            }
+        }
+
+        private void ValidateRouteParents()
+        {
+            if (reinforcementButton == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(reinforcementButton)} is not assigned.");
+            }
+
+            if (miniMapRouteParent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(miniMapRouteParent)} is not assigned.");
+            }
+
+            if (contentRouteParent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(contentRouteParent)} is not assigned.");
+            }
+
+            if (buildPipelineRouteParent == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(buildPipelineRouteParent)} is not assigned.");
+            }
         }
     }
 }

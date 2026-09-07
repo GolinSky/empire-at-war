@@ -39,6 +39,11 @@ namespace EmpireAtWar.Views.Reinforcement
             transform.position = position;
         }
 
+        public void SetRotation(Quaternion rotation)
+        {
+            transform.rotation = rotation;
+        }
+
         public void SetPlacementValidity(bool isPlacementValid)
         {
             _isPlacementValid = isPlacementValid;

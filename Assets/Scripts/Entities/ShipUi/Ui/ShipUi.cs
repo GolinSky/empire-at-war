@@ -8,13 +8,15 @@ using Zenject;
 
 namespace EmpireAtWar.Views
 {
-    public class ShipUi: BaseUi<IShipUiModelObserver, IShipUiCommand>, IInitializable, ILateDisposable
+    public class ShipUi : BaseUi<IShipUiModelObserver, IShipUiCommand>,
+        IInitializable, ILateDisposable
     {
-        [SerializeField] private Canvas canvas;
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
-        [SerializeField] private Transform rootTransform;
-        
+
+        private bool _hasMovableSelection;
+        private bool _isRouteActive = true;
+
         public void Initialize()
         {
             Model.OnSelectionChanged += HandleChangedSelection;
@@ -34,8 +36,28 @@ namespace EmpireAtWar.Views
         
         private void HandleChangedSelection(bool hasMovableSelection)
         {
-            canvas.enabled = hasMovableSelection;
-            shipIconImage.enabled = hasMovableSelection && Model.ShipIcon != null;
+            _hasMovableSelection = hasMovableSelection;
+            UpdateVisibility();
+        }
+
+        public override void Show()
+        {
+            _isRouteActive = true;
+            base.Show();
+            UpdateVisibility();
+        }
+
+        public override void Hide()
+        {
+            _isRouteActive = false;
+            base.Hide();
+        }
+
+        private void UpdateVisibility()
+        {
+            bool isVisible = _isRouteActive && _hasMovableSelection;
+            gameObject.SetActive(isVisible);
+            shipIconImage.enabled = isVisible && Model.ShipIcon != null;
             if (shipIconImage.enabled)
             {
                 shipIconImage.sprite = Model.ShipIcon;

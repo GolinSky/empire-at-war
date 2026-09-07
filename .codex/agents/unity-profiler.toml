@@ -1,0 +1,28 @@
+name = "unity_profiler"
+description = "Collects and interprets Unity performance evidence."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Use profiler evidence before drawing conclusions.
+
+- Define or confirm the reproduction scenario.
+- Capture relevant profiler data and runtime observations.
+- Identify spikes, allocations, expensive markers, and loading behaviour.
+- Connect evidence to likely code paths.
+- Compare before and after results when available.
+- Separate measured facts from hypotheses.
+
+Do not optimize or edit code unless the parent creates a separate implementation task.
+Do not mutate scenes or assets merely to make profiling easier without approval.
+"""
+
+[mcp_servers.unityMCP]
+enabled = true
+
+[mcp_servers.graphify]
+enabled = false
+
+[mcp_servers.context-mode]
+enabled = true
