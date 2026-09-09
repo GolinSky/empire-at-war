@@ -29,6 +29,8 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private IEntity _assignedTarget;
         private Vector3 _attackFormationOffset;
 
+        public bool IsFleeing => _stateMachine.CurrentState == _fleeState;
+
         public ShipAIBrain(
             StateMachine1 stateMachine,
             IHealthModelObserver healthModel,
@@ -149,14 +151,26 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                         _attackTargetState.SetData(
                             _assignedTarget,
                             _attackFormationOffset);
+                        _stateMachine.SetState(_attackTargetState);
+                        return;
                     }
 
                     SetState(_attackTargetState);
                     return;
                 case ShipAiDecision.Navigate:
+                    if (IsFleeing)
+                    {
+                        SetState(_idleState);
+                    }
+
                     return;
                 case ShipAiDecision.Idle:
-                    SetState(_idleState);
+                    // Ship completes navigation and clears its pending move order.
+                    if (!(_stateMachine.CurrentState is NavigateState))
+                    {
+                        SetState(_idleState);
+                    }
+
                     return;
             }
         }

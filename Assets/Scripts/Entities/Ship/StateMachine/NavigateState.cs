@@ -33,6 +33,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _hasPendingDestination = true;
         }
 
+        public bool IsTheSameWorldDestination(Vector3 destination)
+        {
+            return !_useScreenDestination &&
+                   (_worldDestination - destination).sqrMagnitude <= Mathf.Epsilon;
+        }
+
         public void Enter()
         {
             if (!_hasPendingDestination)

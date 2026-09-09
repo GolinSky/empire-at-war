@@ -12,7 +12,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         Transform ViewTransform { get; }
         bool IsMoving { get; }
         float NavigationRadius { get; }
-        float MoveAround();
         Vector3 CalculateLookDirection(Vector3 targetPosition);
         void MoveToPosition(Vector3 targetPosition);
         void MoveToPositionOnScreen(Vector2 targetPosition);

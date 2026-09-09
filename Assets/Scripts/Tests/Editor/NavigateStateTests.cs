@@ -50,11 +50,6 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 LastWorldDestination { get; private set; }
             public int WorldMoveCount { get; private set; }
 
-            public float MoveAround()
-            {
-                return 0f;
-            }
-
             public Vector3 CalculateLookDirection(Vector3 targetPosition)
             {
                 return Vector3.zero;

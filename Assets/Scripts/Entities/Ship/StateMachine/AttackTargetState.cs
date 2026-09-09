@@ -13,6 +13,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
+        private const float CHASE_UPDATE_INTERVAL = 0.5f;
+
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMoveComponent _shipMoveComponent;
@@ -21,6 +23,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private Vector3 _formationOffset;
+        private float _chaseUpdateTimer;
 
         private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
         private Vector3 MovementTargetPosition => TargetPosition + _formationOffset;
@@ -80,10 +83,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
                 _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
-                
+                _chaseUpdateTimer = CHASE_UPDATE_INTERVAL;
                 UpdateMoveState();
             }
-            
+
         }
 
         public void Update()
@@ -106,17 +109,21 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
 
                 _shipMoveComponent.LookAtTarget(TargetPosition);
+                _chaseUpdateTimer = 0f;
                 return;
             }
 
-            if (!_shipMoveComponent.IsMoving)
+            _chaseUpdateTimer -= Time.deltaTime;
+            if (_chaseUpdateTimer <= 0f)
             {
+                _chaseUpdateTimer = CHASE_UPDATE_INTERVAL;
                 _shipMoveComponent.MoveToPosition(MovementTargetPosition);
             }
         }
 
         public void Exit()
         {
+            _weaponComponent.ResetTarget();
         }
         
         private void UpdateMoveState()

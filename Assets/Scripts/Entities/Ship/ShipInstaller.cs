@@ -111,7 +111,6 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
             Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
             Container.BindInterfacesAndSelfTo<NavigateState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PatrolState>().AsSingle();
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
@@ -120,16 +119,14 @@ namespace EmpireAtWar.Ship
             {
                 case PlayerType.Player:
                     {
-                        Container.BindInterfacesExt<PlayerShipCommand>();//todo: why we need this
+                        Container.BindInterfacesExt<PlayerShipCommand>();
                         Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
                             .FromComponentsInHierarchy()
                             .AsCached();
-                        //  Container.BindInterfacesExt<PlayerShipStateMachine>();
 
                         //entity commands
                         Container.BindInterfacesExt<PlayerAttackShipCommand>();
                         Container.BindInterfacesExt<SelectionCommand>();
-                        //  Container.BindInterfacesExt<ShipMovementCommand>();
                         Container.BindInterfacesExt<HealthCommand>();
 
                         break;
@@ -137,7 +134,6 @@ namespace EmpireAtWar.Ship
                 case PlayerType.Opponent:
                     {
                         Container.BindInterfacesExt<EnemyShipCommand>();
-                        // Container.BindInterfacesExt<EnemyShipStateMachine>();
                         //entity commands
                         Container.BindInterfacesExt<EnemyAttackShipCommand>();
                         Container.BindInterfacesExt<SelectionCommand>();

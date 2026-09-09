@@ -14,7 +14,6 @@ using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.StationFacing;
 using System;
-using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
@@ -23,9 +22,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
-        private const float MOVE_AROUND_MINIMUM_BACKWARD_DISTANCE = 30f;
-        private const float MOVE_AROUND_MAXIMUM_BACKWARD_DISTANCE = 50f;
-        private const float MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE = 30f;
 
         [FormerlySerializedAs("lookAtEase")]
         [SerializeField] private Ease _lookAtEase;
@@ -188,24 +184,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             point.y = Model.Height;
 
             return point;
-        }
-
-        public float MoveAround()
-        {
-            float backwardDistance = Random.Range(
-                MOVE_AROUND_MINIMUM_BACKWARD_DISTANCE,
-                MOVE_AROUND_MAXIMUM_BACKWARD_DISTANCE);
-            float lateralDistance = Random.Range(
-                -MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE,
-                MOVE_AROUND_MAXIMUM_LATERAL_DISTANCE);
-            Vector3 requestedPosition =
-                Model.CurrentPosition -
-                Model.ViewTransform.Value.forward * backwardDistance +
-                Model.ViewTransform.Value.right * lateralDistance;
-            Vector3 destination = SetTargetPosition(requestedPosition);
-
-            return Vector3.Distance(destination, Model.CurrentPosition) /
-                   Mathf.Max(Model.Speed, Mathf.Epsilon);
         }
 
         public Vector3 CalculateLookDirection(Vector3 targetPosition)

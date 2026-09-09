@@ -47,12 +47,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Update()
         {
-            // Just keep moving to the base if we are not moving
-            if (!_shipMoveComponent.IsMoving)
-            {
-                Vector3 safePosition = _mapModel.GetStationPosition(_factionType);
-                _shipMoveComponent.MoveToPosition(safePosition);
-            }
         }
 
         public void Exit()
