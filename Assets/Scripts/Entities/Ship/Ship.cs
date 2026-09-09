@@ -56,6 +56,8 @@ namespace EmpireAtWar.Ship
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IReadOnlyList<IMonoComponent> _monoComponents;
         private PlayerType _playerType;
+        private Vector3 _opponentMoveTarget;
+        private bool _hasOpponentMoveTarget;
         private bool _isReleased;
         private ILayerService _layerService;
         private IUnitDeathAnimationData _deathAnimationData;
@@ -150,6 +152,8 @@ namespace EmpireAtWar.Ship
         public void Tick()
         {
             _stateMachine.Update();
+            CompleteNavigation();
+            ResumeOpponentNavigation();
             SynchronizeComponents();
         }
 
@@ -159,6 +163,7 @@ namespace EmpireAtWar.Ship
         {
             if (_playerType == PlayerType.Opponent)
             {
+                _hasOpponentMoveTarget = false;
                 _shipAIBrain.AssignAttackTarget(target, formationOffset);
             }
         }
@@ -167,10 +172,15 @@ namespace EmpireAtWar.Ship
         {
             if (_playerType == PlayerType.Opponent)
             {
+                _opponentMoveTarget = target;
+                _hasOpponentMoveTarget = true;
                 _shipAIBrain.ClearAssignedTarget();
                 _shipAIBrain.Enable(true);
-                _navigateState.SetWorldDestination(target);
-                _stateMachine.SetState(_navigateState);
+
+                if (!_shipAIBrain.IsFleeing)
+                {
+                    StartOpponentNavigation();
+                }
             }
         }
 
@@ -181,9 +191,14 @@ namespace EmpireAtWar.Ship
                 return;
             }
 
+            _hasOpponentMoveTarget = false;
             _shipAIBrain.ClearAssignedTarget();
-            _shipAIBrain.Enable(false);
-            _stateMachine.SetState(_idleState);
+            _shipAIBrain.Enable(true);
+            if (!_shipAIBrain.IsFleeing &&
+                _stateMachine.CurrentState != _idleState)
+            {
+                _stateMachine.SetState(_idleState);
+            }
         }
 
         public void LateDispose()
@@ -300,6 +315,43 @@ namespace EmpireAtWar.Ship
         public void OnStopped()
         {
             _audioDialogShipComponent?.HandleStopped();
+        }
+
+        private void CompleteNavigation()
+        {
+            if (_stateMachine.CurrentState != _navigateState ||
+                _shipMoveComponent.IsMoving)
+            {
+                return;
+            }
+
+            _hasOpponentMoveTarget = false;
+            _stateMachine.SetState(_idleState);
+        }
+
+        private void ResumeOpponentNavigation()
+        {
+            if (_playerType != PlayerType.Opponent ||
+                !_hasOpponentMoveTarget ||
+                _shipAIBrain.IsFleeing ||
+                _stateMachine.CurrentState != _idleState)
+            {
+                return;
+            }
+
+            StartOpponentNavigation();
+        }
+
+        private void StartOpponentNavigation()
+        {
+            if (_stateMachine.CurrentState == _navigateState &&
+                _navigateState.IsTheSameWorldDestination(_opponentMoveTarget))
+            {
+                return;
+            }
+
+            _navigateState.SetWorldDestination(_opponentMoveTarget);
+            _stateMachine.SetState(_navigateState);
         }
 
         public void OnSelect(bool isActive)
