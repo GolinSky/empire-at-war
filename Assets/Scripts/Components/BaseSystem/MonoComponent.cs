@@ -9,7 +9,7 @@ namespace EmpireAtWar.Mvc
     }
 
     public abstract class MonoComponent<TModel>: MonoBehaviour, IMonoComponent
-        where TModel : class
+        where TModel : PureModel
     {
         public string Id { get; }// remove this
         protected TModel Model { get; private set; }

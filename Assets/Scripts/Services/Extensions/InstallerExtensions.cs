@@ -41,7 +41,7 @@ namespace EmpireAtWar.Extentions
             IRepository repository,
             string prefix = null,
             string postfix = null)
-         where TModel: Model
+         where TModel: Data
         {
             ModelDependencyBuilder
                 .ConstructBuilder(container)

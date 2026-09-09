@@ -12,7 +12,7 @@ namespace EmpireAtWar.Extentions
         }
 
         public DiContainer BindFromNewScriptable<TModel>(IRepository repository,  Action onCompleted = null) 
-            where TModel : Model
+            where TModel : Data
         {
             ConstructName<TModel>();
             
@@ -28,7 +28,7 @@ namespace EmpireAtWar.Extentions
         }
 
         public DiContainer BindFromNewScriptable<TModel>(IRepository repository, object id, Action onCompleted = null) 
-            where TModel : Model
+            where TModel : Data
         {
             ConstructName<TModel>();
             

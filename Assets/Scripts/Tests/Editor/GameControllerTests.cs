@@ -11,12 +11,12 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class GameControllerTests
     {
-        private GameModel _model;
+        private GameData _model;
 
         [SetUp]
         public void SetUp()
         {
-            _model = ScriptableObject.CreateInstance<GameModel>();
+            _model = ScriptableObject.CreateInstance<GameData>();
         }
 
         [TearDown]

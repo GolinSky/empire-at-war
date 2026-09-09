@@ -5,7 +5,7 @@ namespace EmpireAtWar.Entities.Map
     [ExecuteAlways]
     public sealed class MapBoundaryView : MonoBehaviour
     {
-        [SerializeField] private MapModel mapModel;
+        [SerializeField] private MapData mapModel;
         [SerializeField] private Color borderColor = new Color(0f, 0.8f, 1f, 0.9f);
         [SerializeField] private float height;
 

@@ -154,7 +154,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class EnemyProductionStrategyTests
     {
         private const string FACTIONS_MODEL_PATH =
-            "Assets/Settings/Data/Models/Factions/FactionsModel.asset";
+            "Assets/Settings/Data/Models/Factions/FactionsData.asset";
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
         private const int MAX_UNIT_CAPACITY = 60;
@@ -180,14 +180,14 @@ namespace EmpireAtWar.Tests.Editor
             ShipType preferredShip,
             ShipType expectedShip)
         {
-            FactionsModel source =
-                AssetDatabase.LoadAssetAtPath<FactionsModel>(FACTIONS_MODEL_PATH);
+            FactionsData source =
+                AssetDatabase.LoadAssetAtPath<FactionsData>(FACTIONS_MODEL_PATH);
             Assert.That(source, Is.Not.Null);
 
-            FactionsModel factionsModel = UnityEngine.Object.Instantiate(source);
-            EnemyFactionModel factionModel =
-                ScriptableObject.CreateInstance<EnemyFactionModel>();
-            GameModel gameModel = ScriptableObject.CreateInstance<GameModel>();
+            FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
+            EnemyFactionData factionModel =
+                ScriptableObject.CreateInstance<EnemyFactionData>();
+            GameData gameModel = ScriptableObject.CreateInstance<GameData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -199,7 +199,7 @@ namespace EmpireAtWar.Tests.Editor
                     factionsModel);
                 SetBackingField(
                     factionModel,
-                    nameof(EnemyFactionModel.FactionType),
+                    nameof(EnemyFactionData.FactionType),
                     FactionType.Republic);
                 SetBackingField(
                     reinforcementData,
@@ -261,7 +261,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static void ReserveEconomicFloor(
-            EnemyFactionModel factionModel,
+            EnemyFactionData factionModel,
             EnemyUnitLimitModel unitLimitModel,
             int minimumMiningFacilities)
         {

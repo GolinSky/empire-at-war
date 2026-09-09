@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
@@ -62,7 +63,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public string Reason { get; }
     }
 
-    public sealed class EnemyStrategicDecisionModel
+    public sealed class EnemyStrategicDecisionModel : PureModel
     {
         public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot)
         {

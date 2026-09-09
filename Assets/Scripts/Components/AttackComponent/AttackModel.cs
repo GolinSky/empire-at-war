@@ -45,7 +45,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Inject] public IProjectileModel ProjectileModel { get; }
 
-        [Inject] private WeaponDamageModel WeaponDamageModel { get; }
+        [Inject] private WeaponDamageData WeaponDamageModel { get; }
 
         public List<IHardPointModel> Targets => _shipUnitViews;
 

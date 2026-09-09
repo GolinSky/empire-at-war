@@ -12,13 +12,13 @@ namespace EmpireAtWar.Presenters.Cheats
     public sealed class CheatPresenter : IInitializable, ILateDisposable
     {
         private readonly ICheatView _view;
-        private readonly FactionsModel _factionsModel;
+        private readonly FactionsData _factionsModel;
         private readonly ICheatService _cheatService;
         private readonly Dictionary<ShipType, FactionData> _shipData = new();
 
         public CheatPresenter(
             ICheatView view,
-            FactionsModel factionsModel,
+            FactionsData factionsModel,
             ICheatService cheatService)
         {
             _view = view ?? throw new ArgumentNullException(nameof(view));

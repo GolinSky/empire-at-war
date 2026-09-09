@@ -23,6 +23,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         private const float MIN_ALARM_DELAY = 30f;
         private const float MAX_ALARM_DELAY = 60f;
         
+        private AudioShipDialogData _data;
         private IAudioService _audioService;
         private PlayerType _playerType;
         private ITimer _alarmRadarTimer;
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         [Inject]
         private void Construct(
             [InjectOptional] AudioShipDialogModel model,
+            [InjectOptional] AudioShipDialogData data,
             IAudioService audioService,
             PlayerType playerType)
         {
@@ -40,7 +42,13 @@ namespace EmpireAtWar.Components.Ship.Audio
                 return;
             }
 
+            if (data == null)
+            {
+                throw new System.InvalidOperationException($"{nameof(AudioShipDialogData)} is required when {nameof(AudioShipDialogModel)} is bound.");
+            }
+
             SetModel(model);
+            _data = data;
             _audioService = audioService;
             _playerType = playerType;
             _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));
@@ -100,9 +108,9 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
 
-        private void Play(AudioClip audioClip)
+        private void Play((FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) request)
         {
-            _audioService.PlayOneShot(audioClip, AudioType.Dialog);
+            _audioService.PlayOneShot(_data.GetClip(request), AudioType.Dialog);
         }
     }
 }

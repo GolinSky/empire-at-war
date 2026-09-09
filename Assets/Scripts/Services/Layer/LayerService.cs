@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Layer
     {
         private readonly Dictionary<LayerKey, int> _layers = new Dictionary<LayerKey, int>();
 
-        public LayerService(LayerModel layerModel)
+        public LayerService(LayerData layerModel)
         {
             Register(LayerKey.Player, layerModel.PlayerLayerMask);
             Register(LayerKey.Enemy, layerModel.EnemyLayerMask);

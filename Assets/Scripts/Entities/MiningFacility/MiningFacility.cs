@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
-        [Inject] private MiningFacilityModel RootModel { get; }
+        [Inject] private MiningFacilityData RootModel { get; }
 
         public event Action OnRelease;
 

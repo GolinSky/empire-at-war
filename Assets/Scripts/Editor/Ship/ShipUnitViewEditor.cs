@@ -29,7 +29,7 @@ namespace EmpireAtWar.Editor.Ship
             foreach (string shipName in shipNames)
             {
                 ShipEntity view = addressableRepository.LoadComponent<ShipEntity>($"{shipName}ShipView");
-                ShipModel model = addressableRepository.Load<ShipModel>($"{shipName}{nameof(ShipModel)}");
+                ShipComponentsData model = addressableRepository.Load<ShipComponentsData>($"{shipName}{nameof(ShipComponentsData)}");
                 
             }
         }
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Editor.Ship
             IHardPointProvider[] shipUnits = selectionObject.GetComponentsInChildren<IHardPointProvider>();
             AddressableRepository addressableRepository = new AddressableRepository();
 
-            // ShipModel shipModel = addressableRepository.Load<ShipModel>($"{shipType}ShipModel");
+            // ShipComponentsData shipModel = addressableRepository.Load<ShipComponentsData>($"{shipType}ShipComponentsData");
 
             
             int counter = 0;

@@ -49,21 +49,21 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MusicAudioModel
+    - key: MusicAudioData
       value:
         m_AssetGUID: 023f129b8c45cdc45a5710abd9de1183
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: StarDestroyer2ShipModel
+    - key: StarDestroyer2ShipComponentsData
       value:
         m_AssetGUID: 092775259e573b543be55d7db56d8849
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: EnemyFactionModel
+    - key: EnemyFactionData
       value:
         m_AssetGUID: 101b5ddd7be8a4245b61329bea6fba64
         m_SubObjectName: 
@@ -91,196 +91,196 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: GameModel
+    - key: GameData
       value:
         m_AssetGUID: 2510ebd5efb7d064a9f43448fb8e55f0
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ProjectileModel
+    - key: ProjectilesData
       value:
         m_AssetGUID: 2b971ad1a3d99dd4590f41be6e6fee50
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: LucrehulkShipModel
+    - key: LucrehulkShipComponentsData
       value:
         m_AssetGUID: 2d4f8dcc8b8133b44802863fc6a27f01
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: WeaponDamageModel
+    - key: WeaponDamageData
       value:
         m_AssetGUID: 2f8acb09e989fe54fbb45ed7510ec287
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: DamageCalculationModel
+    - key: DamageCalculationData
       value:
         m_AssetGUID: 3147ba13197ab094b8cdfa36c3b45a50
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MiniMapModel
+    - key: MiniMapData
       value:
         m_AssetGUID: 38bf9d71cf198ee4c95db7c57cba6be8
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: AcclamatorShipModel
+    - key: AcclamatorShipComponentsData
       value:
         m_AssetGUID: 3ba22e215b4787a44ae118a021f83b79
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: AudioShipModel
+    - key: AudioShipData
       value:
         m_AssetGUID: 3c3e6847e2f3d68408516d8339afde3f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: FactionsModel
+    - key: FactionsData
       value:
         m_AssetGUID: 3de703d0a2c0ac5428de8b8f64093d18
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MapModel
+    - key: MapData
       value:
         m_AssetGUID: 3e84814326b95ad439662fee97464b33
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MiningFacilityModel
+    - key: MiningFacilityData
       value:
         m_AssetGUID: 4e9982630aa2fc24aadc3d4d3e5dea74
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: HeavyDreadnoughtShipModel
+    - key: HeavyDreadnoughtShipComponentsData
       value:
         m_AssetGUID: 5cb1f21f695b6b6429325e7fed3cf62f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ShipUiModel
+    - key: ShipUiData
       value:
         m_AssetGUID: 5d122ff846ebd9c42b0d93d92110997b
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: RecusantShipModel
+    - key: RecusantShipComponentsData
       value:
         m_AssetGUID: 5efdec56a487ebd429ddded2e410a66d
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ArquitensShipModel
+    - key: ArquitensShipComponentsData
       value:
         m_AssetGUID: 691bb38511b36a64894408d57d5744b9
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MunificentShipModel
+    - key: MunificentShipComponentsData
       value:
         m_AssetGUID: 76e32cae182412b4289ed05333d1fcc7
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: AudioShipDialogModel
+    - key: AudioShipDialogData
       value:
         m_AssetGUID: 7a4bfb5f7b726044ab56858e9a73e245
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: DefendPlatformModel
+    - key: DefendPlatformData
       value:
         m_AssetGUID: 84600a7480cad2b46937e09ca1f373d6
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: StarDestroyer1ShipModel
+    - key: StarDestroyer1ShipComponentsData
       value:
         m_AssetGUID: 87dc459f3860177409b8eebd6196cc8f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: LoadingModel
+    - key: LoadingData
       value:
         m_AssetGUID: 8881836f549b03847be8d3173622e376
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: SpaceStationModel
+    - key: SpaceStationData
       value:
         m_AssetGUID: b73aaa91e66d8ce48ae38c8806b1992b
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: SceneModel
+    - key: SceneData
       value:
         m_AssetGUID: b8062674d66d079419593e17879a77b8
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: CoreGameModel
+    - key: CoreGameData
       value:
         m_AssetGUID: c7c667c14d310a4499d62638ddd5c2f8
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MenuModel
+    - key: MenuData
       value:
         m_AssetGUID: cec5011cf91f219438a8b647c98b2398
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: LayerModel
+    - key: LayerData
       value:
         m_AssetGUID: dce26a8d996febd4a8ad15563ab38472
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ProvidenceShipModel
+    - key: ProvidenceShipComponentsData
       value:
         m_AssetGUID: ec359ffc69a7a3345aae8f7e9be0dc60
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: PlanetModel
+    - key: PlanetData
       value:
         m_AssetGUID: fbbdc831ce20cd7438fbdb30070fa53c
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: VenatorShipModel
+    - key: VenatorShipComponentsData
       value:
         m_AssetGUID: fecf936004296974b821296b00f2065f
         m_SubObjectName: 

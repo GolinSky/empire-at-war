@@ -9,11 +9,11 @@ namespace EmpireAtWar.Components.Weapon
         public float DelayBetweenAttack { get; }
         public float OptimalAttackRange { get; set; } = 100f;// temp value
 
-        public WeaponDamageModel WeaponDamageModel { get; }
+        public WeaponDamageData WeaponDamageModel { get; }
         public IProjectileModel ProjectileModel{ get; }
 
 
-        public WeaponModel(IWeaponContext weaponContext, IProjectileModel projectileModel, WeaponDamageModel weaponDamageModel)
+        public WeaponModel(IWeaponContext weaponContext, IProjectileModel projectileModel, WeaponDamageData weaponDamageModel)
         {
             ProjectileModel = projectileModel;
             WeaponDamageModel = weaponDamageModel;

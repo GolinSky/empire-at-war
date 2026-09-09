@@ -8,7 +8,7 @@ namespace EmpireAtWar
 {
     public abstract class StaticViewInstaller<TController, TModel> : MonoInstaller
         where TController : Controller
-        where TModel : Model
+        where TModel : Data
     {
         [SerializeField] private View view;
         [SerializeField] private bool bindViewComponents;

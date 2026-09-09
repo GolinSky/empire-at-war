@@ -55,7 +55,7 @@ namespace EmpireAtWar.SceneContext
 
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
-                .BindFromNewScriptable<EnemyFactionModel>(Repository, PlayerType.Opponent);
+                .BindFromNewScriptable<EnemyFactionData>(Repository, PlayerType.Opponent);
             
             
             SceneContext.Container

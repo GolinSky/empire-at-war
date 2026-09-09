@@ -10,7 +10,7 @@ namespace EmpireAtWar.Models.Factions
     [CreateAssetMenu(fileName = nameof(PlayerFactionData), menuName = "Data/Player Faction Data")]
     public class PlayerFactionData : Data
     {
-        [SerializeField] private FactionsModel factionsModel;
+        [SerializeField] private FactionsData factionsModel;
 
         [field: SerializeField] public FactionUnitUi FactionUnit { get; private set; }
 

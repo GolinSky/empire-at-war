@@ -1,68 +1,64 @@
-using System.Collections.Generic;
+using System;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using UnityEngine;
-using Utilities.ScriptUtils.EditorSerialization;
 using Zenject;
-using Random = System.Random;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipDialogModelObserver : IModelObserver
+    public class AudioShipDialogModel : PureModel, IAudioShipDialogModelObserver
     {
+        private readonly AudioShipDialogData _data;
+        private readonly Random _dialogRandom = new Random();
+        private readonly Random _attackRandom = new Random();
+        private readonly Random _moveRandom = new Random();
+        private readonly Random _alarmSightsRandom = new Random();
+        private readonly Random _damageRandom = new Random();
+        private readonly FactionType _playerFactionType;
+        private readonly FactionType _enemyFactionType;
 
-    }
-
-    [CreateAssetMenu(fileName = "AudioShipDialogModel", menuName = "Model/Audio/AudioShipDialogModel")]
-    public class AudioShipDialogModel : Model, IAudioShipDialogModelObserver
-    {
-        [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> dialogAudioClipsWrapper;
-        [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> moveAudioClipsWrapper;
-        [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> attackAudioClipsWrapper;
-        [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> alarmSightsAudioClipsWrapper;
-        [SerializeField] private DictionaryWrapper<FactionType, List<AudioClip>> damageAudioClipsWrapper;
-        private AudioClip _hyperSpaceAudioClip;
-        private Random _dialogRandom = new Random();
-        private Random _attackRandom = new Random();
-        private Random _moveRandom = new Random();
-        private Random _alarmSightsRandom = new Random();
-        private Random _damaageRandom = new Random();
-        
-        [Inject(Id = PlayerType.Player)] 
-        private FactionType PlayerFactionType { get; }
-        
-        [Inject(Id = PlayerType.Opponent)] 
-        private FactionType EnemyFactionType { get; }
-        
-        public AudioClip GetDialogClip(PlayerType playerType)
+        [Inject]
+        public AudioShipDialogModel(
+            AudioShipDialogData data,
+            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
+            [Inject(Id = PlayerType.Opponent)] FactionType enemyFactionType)
         {
-            return GetClip(playerType, dialogAudioClipsWrapper.Dictionary, _dialogRandom);
-        }
-        
-        public AudioClip GetAttackClip(PlayerType playerType)
-        {
-            return GetClip(playerType, attackAudioClipsWrapper.Dictionary, _attackRandom);
-        }
-        
-        public AudioClip GetMoveClip(PlayerType playerType)
-        {
-            return GetClip(playerType, moveAudioClipsWrapper.Dictionary, _moveRandom);
-        }
-        
-        public AudioClip GetAlarmSightsClip(PlayerType playerType)
-        {
-            return GetClip(playerType, alarmSightsAudioClipsWrapper.Dictionary, _alarmSightsRandom);
+            _data = data;
+            _playerFactionType = playerFactionType;
+            _enemyFactionType = enemyFactionType;
         }
 
-        public AudioClip GetDamageClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDialogClip(PlayerType playerType)
         {
-            return GetClip(playerType, damageAudioClipsWrapper.Dictionary, _damaageRandom);
+            return GetClip(playerType, AudioShipDialogData.ClipType.Dialog, _dialogRandom);
         }
-        private AudioClip GetClip(PlayerType playerType, Dictionary<FactionType, List<AudioClip>> clipDictionary, Random random)
+
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAttackClip(PlayerType playerType)
         {
-            FactionType factionType = playerType == PlayerType.Player ? PlayerFactionType : EnemyFactionType;
-            List<AudioClip> clips = clipDictionary[factionType];
-            return clips[random.Next(clips.Count)];
+            return GetClip(playerType, AudioShipDialogData.ClipType.Attack, _attackRandom);
+        }
+
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetMoveClip(PlayerType playerType)
+        {
+            return GetClip(playerType, AudioShipDialogData.ClipType.Move, _moveRandom);
+        }
+
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAlarmSightsClip(PlayerType playerType)
+        {
+            return GetClip(playerType, AudioShipDialogData.ClipType.AlarmSights, _alarmSightsRandom);
+        }
+
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDamageClip(PlayerType playerType)
+        {
+            return GetClip(playerType, AudioShipDialogData.ClipType.Damage, _damageRandom);
+        }
+
+        private (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetClip(
+            PlayerType playerType,
+            AudioShipDialogData.ClipType clipType,
+            Random random)
+        {
+            FactionType factionType = playerType == PlayerType.Player ? _playerFactionType : _enemyFactionType;
+            return (factionType, clipType, random.Next(_data.GetClipCount(factionType, clipType)));
         }
     }
 }

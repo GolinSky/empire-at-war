@@ -1,64 +1,42 @@
 using System;
-using EmpireAtWar.Utils.Random;
 using EmpireAtWar.Mvc;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipModelObserver : IModelObserver
+    public class AudioShipModel : PureModel, IAudioShipModelObserver
     {
-        event Action<AudioClip> OnOneShotPlayed;
-        AudioClip AmbientClip { get; }
-    }
-
-    [CreateAssetMenu(fileName = "AudioShipModel", menuName = "Model/Audio/AudioShipModel")]
-    public class AudioShipModel : Model, IAudioShipModelObserver, ILateDisposable
-    {
-        public event Action<AudioClip> OnOneShotPlayed;
-
-        [SerializeField] private AssetReferenceT<AudioClip> hyperSpaceAudioReference;
-        [SerializeField] private RandomAudioClips alarmRandomClips;
-        [SerializeField] private RandomAudioClips backgroundClips;
-        private AudioClip _hyperSpaceAudioClip;
-
-
-        public AudioClip HyperSpaceAudioClip
+        public enum OneShot
         {
-            get
-            {
-                if (_hyperSpaceAudioClip == null)
-                {
-                    _hyperSpaceAudioClip = hyperSpaceAudioReference.LoadAssetAsync().WaitForCompletion();
-                }
-
-                return _hyperSpaceAudioClip;
-            }
+            HyperSpace,
+            Alarm
         }
 
-        public AudioClip AmbientClip => backgroundClips.GetRandom();
-        [field:SerializeField] public RandomFloat AlarmDelay { get; private set; }
+        private readonly AudioShipData _data;
 
-        
-        public void LateDispose()
+        public event Action<OneShot> OnOneShotRequested;
+
+        public float AlarmDelay => _data.AlarmDelay.Random;
+
+        [Inject]
+        public AudioShipModel(AudioShipData data)
         {
-            hyperSpaceAudioReference.ReleaseAsset();
+            _data = data;
         }
 
         public void PlayHyperSpace()
         {
-            PlayOneShot(HyperSpaceAudioClip);
+            RequestOneShot(OneShot.HyperSpace);
         }
 
         public void PlayAlarm()
         {
-            PlayOneShot(alarmRandomClips.GetRandom());
+            RequestOneShot(OneShot.Alarm);
         }
 
-        private void PlayOneShot(AudioClip audioClip)
+        private void RequestOneShot(OneShot oneShot)
         {
-            OnOneShotPlayed?.Invoke(audioClip);
+            OnOneShotRequested?.Invoke(oneShot);
         }
     }
 }

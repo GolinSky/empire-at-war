@@ -1,6 +1,7 @@
 ﻿using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Health
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Models.Health
     }
 
     [Serializable]
-    public class HardPointModel : IHardPointModel
+    public class HardPointModel : PureModel, IHardPointModel
     {
         [field: SerializeField] public int Id { get; private set; }
         [field: SerializeField] public HardPointType HardPointType { get; private set; }

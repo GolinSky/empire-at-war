@@ -62,7 +62,7 @@ namespace EmpireAtWar.Models.Health
         public HardPointModel[] HardPointModels { get; private set; }
 
         [Inject]
-        private DamageCalculationModel DamageCalculationModel { get; }
+        private DamageCalculationData DamageCalculationModel { get; }
         
         
         public bool IsDestroyed { get; private set; }

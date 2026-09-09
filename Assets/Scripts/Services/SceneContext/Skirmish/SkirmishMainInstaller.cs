@@ -62,27 +62,27 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
         Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
         
-        Container.BindModel<MenuModel>(Repository);
+        Container.BindModel<MenuData>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();
         
-        Container.BindModel<ShipUiModel>(Repository);
+        Container.BindModel<ShipUiData>(Repository);
         Container.BindInterfacesNonLazyExt<ShipUiController>();
         
         //todo: merge map model with minimap 
-        Container.BindModel<MapModel>(Repository);
+        Container.BindModel<MapData>(Repository);
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
-        Container.BindModel<MiniMapModel>(Repository);
+        Container.BindModel<MiniMapData>(Repository);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         
-        Container.BindModel<CoreGameModel>(Repository);
+        Container.BindModel<CoreGameData>(Repository);
         Container.BindInterfacesNonLazyExt<SkirmishOrhestrator>();
         
         Container
-            .BindModel<FactionsModel>(Repository)
-            .BindModel<WeaponDamageModel>(Repository)
-            .BindModel<ProjectileModel>(Repository)
-            .BindModel<LayerModel>(Repository)
-            .BindModel<DamageCalculationModel>(Repository);
+            .BindModel<FactionsData>(Repository)
+            .BindModel<WeaponDamageData>(Repository)
+            .BindModel<ProjectilesData>(Repository)
+            .BindModel<LayerData>(Repository)
+            .BindModel<DamageCalculationData>(Repository);
         Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
         Container.BindScriptableObject<ShipsData>(Repository);

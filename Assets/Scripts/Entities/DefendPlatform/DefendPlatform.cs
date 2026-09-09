@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
-        [Inject] private DefendPlatformModel RootModel { get; }
+        [Inject] private DefendPlatformData RootModel { get; }
 
         public event Action OnRelease;
 

@@ -24,7 +24,7 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic 
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
+    public class EnemyFactionController : Controller<EnemyFactionData>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
     {
         private const float DEFAULT_INCOME = 5f;
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
 
         public EnemyFactionController(
-            EnemyFactionModel model,
+            EnemyFactionData model,
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,

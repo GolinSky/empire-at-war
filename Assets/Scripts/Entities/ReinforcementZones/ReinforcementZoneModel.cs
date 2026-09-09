@@ -1,8 +1,9 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.ReinforcementZones
 {
-    public sealed class ReinforcementZoneModel
+    public sealed class ReinforcementZoneModel : PureModel
     {
         private readonly bool _isCapturable;
         private readonly float _captureDuration;

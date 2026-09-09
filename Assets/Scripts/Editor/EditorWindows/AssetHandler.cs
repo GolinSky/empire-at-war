@@ -8,7 +8,7 @@ namespace EmpireAtWar.Editor.EditorWindows
     {
         public static bool OpenEditor(int instanceId, int line)
         {
-            ShipModel model = EditorUtility.InstanceIDToObject(instanceId) as ShipModel;
+            ShipComponentsData model = EditorUtility.InstanceIDToObject(instanceId) as ShipComponentsData;
             if (model != null)
             {
                 ShipModelEditorWindow.Open(model);

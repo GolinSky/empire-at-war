@@ -1,6 +1,6 @@
 ﻿namespace EmpireAtWar.Entities.Planet
 {
-    public class PlanetInstaller:StaticViewInstaller<PlanetController, PlanetModel>
+    public class PlanetInstaller:StaticViewInstaller<PlanetController, PlanetData>
     {
         
     }
