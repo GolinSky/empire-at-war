@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using EmpireAtWar.Mvc;
+using UnityEngine;
+using Utilities.ScriptUtils.EditorSerialization;
+
+namespace EmpireAtWar.Components.AttackComponent
+{
+    [CreateAssetMenu(fileName = nameof(WeaponDamageData), menuName = "Data/Weapon/WeaponDamageData")]
+    public class WeaponDamageData:Data
+    {
+        [SerializeField] private DictionaryWrapper<WeaponType, DamageModel> damageDictionary;
+
+
+        private Dictionary<WeaponType, DamageModel> DamageDictionary => damageDictionary.Dictionary;
+        
+        
+        public DamageModel GetDamageModel(WeaponType weaponType)
+        {
+            return DamageDictionary[weaponType];
+        }
+    }
+
+    [Serializable]
+    public class DamageModel : PureModel
+    {
+        [SerializeField] private float damage;
+        [field:SerializeField] public float Distance { get; private set; }
+        [field:SerializeField] public AnimationCurve DistanceCurve { get; private set; }
+
+        public float GetDamage(float distance)
+        {
+            float coefficient = distance / Distance;
+            
+            //Debug.Log($"{damage} ==> {DistanceCurve.Evaluate(coefficient)*damage}; --- distance: {distance}");
+            return DistanceCurve.Evaluate(coefficient)*damage;
+        }
+        
+    }
+}

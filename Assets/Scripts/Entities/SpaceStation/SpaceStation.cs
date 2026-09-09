@@ -28,7 +28,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IUnitDeathAnimationService _deathAnimationService;
         private bool _isReleased;
 
-        [Inject] private SpaceStationModel RootModel { get; }
+        [Inject] private SpaceStationData RootModel { get; }
 
         public string Id => GetType().Name;
 

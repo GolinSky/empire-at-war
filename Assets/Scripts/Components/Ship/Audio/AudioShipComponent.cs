@@ -20,6 +20,7 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         [SerializeField] private AudioSource source;
 
+        private AudioShipData _data;
         private ITimerPoolWrapperService _timerPoolWrapperService;
         private IAudioService _audioService;
         private ITimer _alarmTimer;
@@ -27,19 +28,21 @@ namespace EmpireAtWar.Components.Ship.Audio
         [Inject]
         private void Construct(
             AudioShipModel model,
+            AudioShipData data,
             ITimerPoolWrapperService timerPoolWrapperService,
             IAudioService audioService)
         {
             SetModel(model);
+            _data = data;
             _timerPoolWrapperService = timerPoolWrapperService;
             _audioService = audioService;
-            _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay.Random);
+            _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay);
         }
 
         public void Initialize()
         {
-            Model.OnOneShotPlayed += PlayOneShot;
-            PlayLoop(Model.AmbientClip);
+            Model.OnOneShotRequested += PlayOneShot;
+            PlayLoop(_data.GetAmbientClip());
         }
 
         public void LateDispose()
@@ -49,7 +52,7 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public override void Release()
         {
-            Model.OnOneShotPlayed -= PlayOneShot;
+            Model.OnOneShotRequested -= PlayOneShot;
         }
         
         public void HandleEnemyDetected()
@@ -69,6 +72,19 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
                 hyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
+        }
+
+        private void PlayOneShot(AudioShipModel.OneShot oneShot)
+        {
+            switch (oneShot)
+            {
+                case AudioShipModel.OneShot.HyperSpace:
+                    PlayOneShot(_data.GetHyperSpaceClip());
+                    break;
+                case AudioShipModel.OneShot.Alarm:
+                    PlayOneShot(_data.GetAlarmClip());
+                    break;
+            }
         }
 
         private void PlayOneShot(AudioClip clip)

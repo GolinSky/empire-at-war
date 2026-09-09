@@ -19,7 +19,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
 {
-    public class ShipUiController : Controller<ShipUiModel>, IInitializable,
+    public class ShipUiController : Controller<ShipUiData>, IInitializable,
         ILateDisposable, IShipUiCommand, IObserver<ISelectionSubject>,
         ISkirmishUiRoute
     {
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private ShipUiView _shipUi;
 
         public ShipUiController(
-            ShipUiModel model,
+            ShipUiData model,
             ISelectionService selectionService,
             IUiService uiService,
             IInputService inputService,

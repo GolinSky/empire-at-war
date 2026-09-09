@@ -9,7 +9,7 @@ namespace EmpireAtWar
 {
     public abstract class DynamicViewInstaller<TController, TModel, TView> : MonoInstaller
         where TController : class, IController
-        where TModel : Model
+        where TModel : Data
         where TView: View
     {
         [SerializeField] private bool bindViewComponents;

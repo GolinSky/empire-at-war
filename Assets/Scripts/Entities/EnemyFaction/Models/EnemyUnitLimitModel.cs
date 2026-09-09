@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
-    public sealed class EnemyUnitLimitModel
+    public sealed class EnemyUnitLimitModel : PureModel
     {
         private readonly Dictionary<string, int> _reservedCounts =
             new Dictionary<string, int>();

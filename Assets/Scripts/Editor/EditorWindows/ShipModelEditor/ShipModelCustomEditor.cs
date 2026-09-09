@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Editor.EditorWindows.ShipModelEditor
 {
-    [CustomEditor(typeof(ShipModel))]
+    [CustomEditor(typeof(ShipComponentsData))]
     public class ShipModelCustomEditor: UnityEditor.Editor
     {
         public override void OnInspectorGUI()
@@ -12,7 +12,7 @@ namespace EmpireAtWar.Editor.EditorWindows.ShipModelEditor
             base.OnInspectorGUI();
             if (GUILayout.Button("Open Editor"))
             {
-                ShipModelEditorWindow.Open((ShipModel)target);
+                ShipModelEditorWindow.Open((ShipComponentsData)target);
             }
         }
     }

@@ -25,8 +25,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
-            EnemyFactionModel model =
-                ScriptableObject.CreateInstance<EnemyFactionModel>();
+            EnemyFactionData model =
+                ScriptableObject.CreateInstance<EnemyFactionData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -83,8 +83,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds()
         {
-            EnemyFactionModel model =
-                ScriptableObject.CreateInstance<EnemyFactionModel>();
+            EnemyFactionData model =
+                ScriptableObject.CreateInstance<EnemyFactionData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 

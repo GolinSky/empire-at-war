@@ -17,7 +17,7 @@ using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.SpaceStation
 {
-    public class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationModel>
+    public class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationData>
     {
         private FactionType _factionType;
         private PlayerType _playerType;
@@ -40,7 +40,7 @@ namespace EmpireAtWar.SpaceStation
             Container.BindEntityExt(_factionType);
             Container.BindEntityExt(SelectionType.Base);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<SpaceStationModel>(nameof(SpaceStationModel)).ComponentData);
+                .FromInstance(Repository.Load<SpaceStationData>(nameof(SpaceStationData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
@@ -48,7 +48,7 @@ namespace EmpireAtWar.SpaceStation
         protected override void BindComponents()
         {
             base.BindComponents();
-            SpaceStationModel model = Container.Resolve<SpaceStationModel>();
+            SpaceStationData model = Container.Resolve<SpaceStationData>();
             BindBuffer(model.HealthModel);
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
             BindBuffer(model.AttackModel);

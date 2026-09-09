@@ -14,7 +14,7 @@ namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
     
-    public class MenuController : Controller<MenuModel>, IMenuCommand, IUserStateNotifier, IInitializable, ILateDisposable
+    public class MenuController : Controller<MenuData>, IMenuCommand, IUserStateNotifier, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Controllers.Menu
         private bool _isMenuOpen;
 
         public MenuController(
-            MenuModel model,
+            MenuData model,
             IUiService uiService,
             IInputService inputService) : base(model)
         {

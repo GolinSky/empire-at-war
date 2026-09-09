@@ -6,7 +6,7 @@ namespace EmpireAtWar.Editor.EditorWindows.ShipModelEditor
 {
     public class ShipModelEditorWindow: ExtendedEditorWindow
     {
-        public static void Open(ShipModel model)
+        public static void Open(ShipComponentsData model)
         {
             ShipModelEditorWindow window = GetWindow<ShipModelEditorWindow>("Game Data Editor");
             window._serializedObject = new SerializedObject(model);

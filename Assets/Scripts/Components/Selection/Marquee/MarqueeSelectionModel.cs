@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Components.Selection.Marquee
 {
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
         }
     }
 
-    public sealed class MarqueeSelectionModel
+    public sealed class MarqueeSelectionModel : PureModel
     {
         private MarqueePoint _start;
 

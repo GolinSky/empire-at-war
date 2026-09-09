@@ -16,7 +16,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishOrhestrator : Controller<CoreGameModel>, ICoreGameCommand,
+    public class SkirmishOrhestrator : Controller<CoreGameData>, ICoreGameCommand,
         IObserver<UserNotifierState>, IInitializable, ILateDisposable,
         ISkirmishRouteNavigation
     {
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Controllers.Game
         private GameTimeMode _gameTimeMode;
 
         public SkirmishOrhestrator(
-            CoreGameModel model,
+            CoreGameData model,
             LazyInject<IUserStateNotifier> userStateNotifier,
             IGameCommand gameCommand,
             IUiService uiService,

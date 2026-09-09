@@ -1,8 +1,9 @@
 using System;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Game
 {
-    public sealed class BattleVictoryModel
+    public sealed class BattleVictoryModel : PureModel
     {
         private bool _hasObservedPlayerFleet;
         private bool _hasObservedEnemyFleet;

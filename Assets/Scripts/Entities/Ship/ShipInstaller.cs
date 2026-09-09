@@ -22,7 +22,7 @@ using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipModel>
+    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipComponentsData>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
@@ -52,17 +52,19 @@ namespace EmpireAtWar.Ship
             Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-            Container.Bind<AudioShipModel>()
-                .FromNewScriptableObject(Repository.Load<AudioShipModel>(nameof(AudioShipModel)))
+            Container.Bind<AudioShipData>()
+                .FromNewScriptableObject(Repository.Load<AudioShipData>(nameof(AudioShipData)))
                 .AsSingle();
+            Container.Bind<ILateDisposable>().To<AudioShipData>().FromResolve();
+            Container.Bind<AudioShipModel>().AsSingle();
             Container.Bind<IAudioShipModelObserver>().To<AudioShipModel>().FromResolve();
-            Container.Bind<ILateDisposable>().To<AudioShipModel>().FromResolve();
 
             if (_playerType == PlayerType.Player)
             {
-                Container.Bind<AudioShipDialogModel>()
-                    .FromNewScriptableObject(Repository.Load<AudioShipDialogModel>(nameof(AudioShipDialogModel)))
+                Container.Bind<AudioShipDialogData>()
+                    .FromNewScriptableObject(Repository.Load<AudioShipDialogData>(nameof(AudioShipDialogData)))
                     .AsSingle();
+                Container.Bind<AudioShipDialogModel>().AsSingle();
                 Container.Bind<IAudioShipDialogModelObserver>().To<AudioShipDialogModel>().FromResolve();
             }
 
@@ -72,7 +74,7 @@ namespace EmpireAtWar.Ship
         protected override void BindComponents()
         {
             base.BindComponents();
-            ShipModel model = Container.Resolve<ShipModel>();
+            ShipComponentsData model = Container.Resolve<ShipComponentsData>();
             BindBuffer(model.HealthModel);
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
             BindBuffer(model.ShipMoveModel);

@@ -6,11 +6,11 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Loading
 {
     //todo: rename it
-    public class LoadingController : Controller<LoadingModel>, ITickable
+    public class LoadingController : Controller<LoadingData>, ITickable
     {
         private readonly ISceneService _sceneService;
 
-        public LoadingController(LoadingModel model, ISceneService sceneService) : base(model)
+        public LoadingController(LoadingData model, ISceneService sceneService) : base(model)
         {
             _sceneService = sceneService;
         }

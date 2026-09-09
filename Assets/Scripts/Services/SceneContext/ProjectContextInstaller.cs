@@ -39,9 +39,9 @@ namespace EmpireAtWar.SceneContext
         
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
-                .BindFromNewScriptable<GameModel>(_repository); //todo: change it
+                .BindFromNewScriptable<GameData>(_repository); //todo: change it
 
-            Container.BindModel<SceneModel>(_repository);
+            Container.BindModel<SceneData>(_repository);
 
             Container
                 .BindInterfacesNonLazyExt<TimerPoolWrapperService>()

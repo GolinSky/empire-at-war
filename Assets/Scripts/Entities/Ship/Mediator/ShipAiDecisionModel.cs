@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Ship.Mediator
 {
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         public bool IsMoving { get; }
     }
 
-    public sealed class ShipAiDecisionModel
+    public sealed class ShipAiDecisionModel : PureModel
     {
         public ShipAiDecision Evaluate(ShipAiSnapshot snapshot, EnemyAiDifficulty difficulty)
         {

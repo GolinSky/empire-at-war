@@ -16,7 +16,7 @@ using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.MiningFacility
 {
-    public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityModel>
+    public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityData>
     {
         private PlayerType _playerType;
         private MiningFacilityType _miningFacilityType;
@@ -37,7 +37,7 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.MiningFacility);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<MiningFacilityModel>(nameof(MiningFacilityModel)).ComponentData);
+                .FromInstance(Repository.Load<MiningFacilityData>(nameof(MiningFacilityData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
@@ -45,7 +45,7 @@ namespace EmpireAtWar.MiningFacility
         protected override void BindComponents()
         {
             base.BindComponents();
-            MiningFacilityModel model = Container.Resolve<MiningFacilityModel>();
+            MiningFacilityData model = Container.Resolve<MiningFacilityData>();
             BindBuffer(model.HealthModel);
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
             BindBuffer(model.RadarModel);

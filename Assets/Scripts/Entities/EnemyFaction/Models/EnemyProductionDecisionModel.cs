@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanLevelUp { get; }
     }
 
-    public sealed class EnemyProductionDecisionModel
+    public sealed class EnemyProductionDecisionModel : PureModel
     {
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)
         {

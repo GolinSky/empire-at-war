@@ -8,11 +8,11 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Game
 {
-    public class GameController : Controller<GameModel>, IGameCommand
+    public class GameController : Controller<GameData>, IGameCommand
     {
         private readonly ISceneService _sceneService;
 
-        public GameController(GameModel model, ISceneService sceneService) : base(model)
+        public GameController(GameData model, ISceneService sceneService) : base(model)
         {
             _sceneService = sceneService;
         }

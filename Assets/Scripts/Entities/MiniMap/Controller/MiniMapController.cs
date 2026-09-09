@@ -21,7 +21,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         void MoveTo(Vector3 worldPoint);
     }
 
-    public class MiniMapController : Controller<MiniMapModel>, IMiniMapCommand,
+    public class MiniMapController : Controller<MiniMapData>, IMiniMapCommand,
         IInitializable, ILateDisposable, IObserver<ISelectionSubject>,
         ISkirmishUiRoute
     {
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private CustomCoroutine _unblockCoroutine;
         
         public MiniMapController(
-            MiniMapModel model,
+            MiniMapData model,
             IMapModelObserver mapModel,
             ICameraService cameraService,
             IInputService inputService,

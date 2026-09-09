@@ -45,7 +45,7 @@ namespace EmpireAtWar.Components.Radar
         private PlayerType PlayerTypeValue { get; }
         
         [Inject] 
-        private LayerModel LayerModel { get; }
+        private LayerData LayerModel { get; }
 
         public LayerMask LayerMask =>
             PlayerTypeValue == EmpireAtWar.Models.Factions.PlayerType.Player

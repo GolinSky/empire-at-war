@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.Audio
         private const string DIALOG_SOURCE_PATH = "AudioDialogSource";
         private readonly ISceneService _sceneService;
         private readonly IGameModelObserver _gameModelObserver;
-        private readonly MusicAudioModel _musicAudioModel;
+        private readonly MusicAudioData _musicAudioModel;
         private readonly AudioSource _backgroundSource;
         private readonly AudioSource _dialogSource;
         private readonly Random _random;
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Services.Audio
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;
             _timer = TimerFactory.ConstructTimer();
-            _musicAudioModel = repository.Load<MusicAudioModel>(nameof(MusicAudioModel));
+            _musicAudioModel = repository.Load<MusicAudioData>(nameof(MusicAudioData));
             _backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SOURCE_PATH));
             _dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
             Object.DontDestroyOnLoad(_backgroundSource);

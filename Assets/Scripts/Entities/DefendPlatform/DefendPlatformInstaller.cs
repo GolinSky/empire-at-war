@@ -16,7 +16,7 @@ using Zenject;
 
 namespace EmpireAtWar
 {
-    public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformModel>
+    public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformData>
     {
         private PlayerType _playerType;
         private DefendPlatformType _miningFacilityType;
@@ -37,7 +37,7 @@ namespace EmpireAtWar
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.DefendPlatform);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<DefendPlatformModel>(nameof(DefendPlatformModel)).ComponentData);
+                .FromInstance(Repository.Load<DefendPlatformData>(nameof(DefendPlatformData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
@@ -45,7 +45,7 @@ namespace EmpireAtWar
         protected override void BindComponents()
         {
             base.BindComponents();
-            DefendPlatformModel model = Container.Resolve<DefendPlatformModel>();
+            DefendPlatformData model = Container.Resolve<DefendPlatformData>();
             BindBuffer(model.HealthModel);
             Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
             BindBuffer(model.AttackModel);

@@ -7,7 +7,7 @@ namespace EmpireAtWar
 {
     public abstract class DynamicEntityInstaller<TEntity, TModel> : MonoInstaller
         where TEntity : MonoBehaviour, IController
-        where TModel : Model
+        where TModel : Data
     {
         protected TEntity Entity { get; private set; }
         protected Vector3 StartPosition { get; private set; }

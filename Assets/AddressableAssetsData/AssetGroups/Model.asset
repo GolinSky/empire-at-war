@@ -21,17 +21,17 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 023f129b8c45cdc45a5710abd9de1183
-    m_Address: MusicAudioModel
+    m_Address: MusicAudioData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 092775259e573b543be55d7db56d8849
-    m_Address: StarDestroyer2ShipModel
+    m_Address: StarDestroyer2ShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
-    m_Address: EnemyFactionModel
+    m_Address: EnemyFactionData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -51,142 +51,142 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2510ebd5efb7d064a9f43448fb8e55f0
-    m_Address: GameModel
+    m_Address: GameData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b971ad1a3d99dd4590f41be6e6fee50
-    m_Address: ProjectileModel
+    m_Address: ProjectilesData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2d4f8dcc8b8133b44802863fc6a27f01
-    m_Address: LucrehulkShipModel
+    m_Address: LucrehulkShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f8acb09e989fe54fbb45ed7510ec287
-    m_Address: WeaponDamageModel
+    m_Address: WeaponDamageData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3147ba13197ab094b8cdfa36c3b45a50
-    m_Address: DamageCalculationModel
+    m_Address: DamageCalculationData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38bf9d71cf198ee4c95db7c57cba6be8
-    m_Address: MiniMapModel
+    m_Address: MiniMapData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ba22e215b4787a44ae118a021f83b79
-    m_Address: AcclamatorShipModel
+    m_Address: AcclamatorShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3c3e6847e2f3d68408516d8339afde3f
-    m_Address: AudioShipModel
+    m_Address: AudioShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3de703d0a2c0ac5428de8b8f64093d18
-    m_Address: FactionsModel
+    m_Address: FactionsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3e84814326b95ad439662fee97464b33
-    m_Address: MapModel
+    m_Address: MapData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4e9982630aa2fc24aadc3d4d3e5dea74
-    m_Address: MiningFacilityModel
+    m_Address: MiningFacilityData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5cb1f21f695b6b6429325e7fed3cf62f
-    m_Address: HeavyDreadnoughtShipModel
+    m_Address: HeavyDreadnoughtShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
-    m_Address: ShipUiModel
+    m_Address: ShipUiData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5efdec56a487ebd429ddded2e410a66d
-    m_Address: RecusantShipModel
+    m_Address: RecusantShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 691bb38511b36a64894408d57d5744b9
-    m_Address: ArquitensShipModel
+    m_Address: ArquitensShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76e32cae182412b4289ed05333d1fcc7
-    m_Address: MunificentShipModel
+    m_Address: MunificentShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
-    m_Address: AudioShipDialogModel
+    m_Address: AudioShipDialogData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84600a7480cad2b46937e09ca1f373d6
-    m_Address: DefendPlatformModel
+    m_Address: DefendPlatformData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 87dc459f3860177409b8eebd6196cc8f
-    m_Address: StarDestroyer1ShipModel
+    m_Address: StarDestroyer1ShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8881836f549b03847be8d3173622e376
-    m_Address: LoadingModel
+    m_Address: LoadingData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b73aaa91e66d8ce48ae38c8806b1992b
-    m_Address: SpaceStationModel
+    m_Address: SpaceStationData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8062674d66d079419593e17879a77b8
-    m_Address: SceneModel
+    m_Address: SceneData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c7c667c14d310a4499d62638ddd5c2f8
-    m_Address: CoreGameModel
+    m_Address: CoreGameData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cec5011cf91f219438a8b647c98b2398
-    m_Address: MenuModel
+    m_Address: MenuData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dce26a8d996febd4a8ad15563ab38472
-    m_Address: LayerModel
+    m_Address: LayerData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec359ffc69a7a3345aae8f7e9be0dc60
-    m_Address: ProvidenceShipModel
+    m_Address: ProvidenceShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fbbdc831ce20cd7438fbdb30070fa53c
-    m_Address: PlanetModel
+    m_Address: PlanetData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fecf936004296974b821296b00f2065f
-    m_Address: VenatorShipModel
+    m_Address: VenatorShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

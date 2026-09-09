@@ -13,8 +13,8 @@ namespace EmpireAtWar.Editor
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Ships";
         private const string ICON_OUTPUT_FOLDER = "Assets/Art/Textures/Ui/Icons/ShipIcon";
-        private const string SHIP_UI_MODEL_PATH = "Assets/Settings/Data/Models/ShipUi/ShipUiModel.asset";
-        private const string FACTIONS_MODEL_PATH = "Assets/Settings/Data/Models/Factions/FactionsModel.asset";
+        private const string SHIP_UI_MODEL_PATH = "Assets/Settings/Data/Models/ShipUi/ShipUiData.asset";
+        private const string FACTIONS_MODEL_PATH = "Assets/Settings/Data/Models/Factions/FactionsData.asset";
         private const int ICON_RESOLUTION = 512;
         private const int ICON_RENDER_LAYER = 31; // Dedicated layer to isolate ship from scene environment
 
@@ -261,9 +261,9 @@ namespace EmpireAtWar.Editor
                     }
                 }
 
-                UpdateShipUiModel(generatedSprites);
-                UpdateFactionsModel(generatedSprites);
-                Debug.Log("[ShipIconGenerator] Successfully generated dead-centered 85%-fill blueprint ship icons and updated ShipUiModel & FactionsModel!");
+                UpdateShipUiData(generatedSprites);
+                UpdateFactionsData(generatedSprites);
+                Debug.Log("[ShipIconGenerator] Successfully generated dead-centered 85%-fill blueprint ship icons and updated ShipUiData & FactionsData!");
             }
             finally
             {
@@ -366,12 +366,12 @@ namespace EmpireAtWar.Editor
             }
         }
 
-        private static void UpdateShipUiModel(Dictionary<ShipType, Sprite> generatedSprites)
+        private static void UpdateShipUiData(Dictionary<ShipType, Sprite> generatedSprites)
         {
-            ShipUiModel modelAsset = AssetDatabase.LoadAssetAtPath<ShipUiModel>(SHIP_UI_MODEL_PATH);
+            ShipUiData modelAsset = AssetDatabase.LoadAssetAtPath<ShipUiData>(SHIP_UI_MODEL_PATH);
             if (modelAsset == null)
             {
-                Debug.LogError($"[ShipIconGenerator] Could not load ShipUiModel at {SHIP_UI_MODEL_PATH}");
+                Debug.LogError($"[ShipIconGenerator] Could not load ShipUiData at {SHIP_UI_MODEL_PATH}");
                 return;
             }
 
@@ -379,7 +379,7 @@ namespace EmpireAtWar.Editor
             SerializedProperty wrapperProp = serializedModel.FindProperty("shipIconWrapper");
             if (wrapperProp == null)
             {
-                Debug.LogError("[ShipIconGenerator] Could not find shipIconWrapper property in ShipUiModel");
+                Debug.LogError("[ShipIconGenerator] Could not find shipIconWrapper property in ShipUiData");
                 return;
             }
 
@@ -423,12 +423,12 @@ namespace EmpireAtWar.Editor
             EditorUtility.SetDirty(modelAsset);
         }
 
-        private static void UpdateFactionsModel(Dictionary<ShipType, Sprite> generatedSprites)
+        private static void UpdateFactionsData(Dictionary<ShipType, Sprite> generatedSprites)
         {
             UnityEngine.Object modelAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(FACTIONS_MODEL_PATH);
             if (modelAsset == null)
             {
-                Debug.LogError($"[ShipIconGenerator] Could not load FactionsModel at {FACTIONS_MODEL_PATH}");
+                Debug.LogError($"[ShipIconGenerator] Could not load FactionsData at {FACTIONS_MODEL_PATH}");
                 return;
             }
 
@@ -436,7 +436,7 @@ namespace EmpireAtWar.Editor
             SerializedProperty wrapperProp = serializedModel.FindProperty("factionDataWrapper");
             if (wrapperProp == null)
             {
-                Debug.LogError("[ShipIconGenerator] Could not find factionDataWrapper property in FactionsModel");
+                Debug.LogError("[ShipIconGenerator] Could not find factionDataWrapper property in FactionsData");
                 return;
             }
 

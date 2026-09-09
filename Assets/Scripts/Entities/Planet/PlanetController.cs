@@ -4,12 +4,12 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Planet
 {
-    public class PlanetController:Controller<PlanetModel>, ITickable
+    public class PlanetController:Controller<PlanetData>, ITickable
     {
         private Vector3 _cloudRotation;
         private Vector3 _planetRotation;
         
-        public PlanetController(PlanetModel model) : base(model)
+        public PlanetController(PlanetData model) : base(model)
         {
         }
 

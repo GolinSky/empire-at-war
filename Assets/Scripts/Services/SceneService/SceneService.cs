@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.SceneService
 
     public class SceneService : Service, ISceneService, IInitializable, ILateDisposable
     {
-        private readonly SceneModel _sceneModel;
+        private readonly SceneData _sceneModel;
         private const float MIN_SCENE_PROGRESS = 0.88f;
         public event Action<SceneType> OnSceneActivation;
 
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.SceneService
         };
         
 
-        public SceneService(SceneModel sceneModel, ITimerPoolWrapperService timerPoolWrapperService )
+        public SceneService(SceneData sceneModel, ITimerPoolWrapperService timerPoolWrapperService )
         {
             _sceneModel = sceneModel;
             _timerPoolWrapperService = timerPoolWrapperService;
