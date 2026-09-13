@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.InputService
         public event Action OnLeftMousePressed;
         public event Action OnEscapePressed;
         public event Action OnSelectAllUnitsPressed;
+        public event Action OnSelectVisibleUnitsPressed;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -54,9 +55,15 @@ namespace EmpireAtWar.Services.InputService
                     return Vector2.zero;
                 }
 
-                Vector2 direction = MapActions.CameraMove.ReadValue<Vector2>();
-                direction += GetKeyboardMoveDirection();
-                direction += GetEdgeScrollDirection();
+                Vector2 direction = GetEdgeScrollDirection();
+                if (Keyboard.current == null ||
+                    !Keyboard.current.ctrlKey.isPressed ||
+                    !Keyboard.current.aKey.isPressed)
+                {
+                    direction += MapActions.CameraMove.ReadValue<Vector2>();
+                    direction += GetKeyboardMoveDirection();
+                }
+
                 return Vector2.ClampMagnitude(direction, 1f);
             }
         }
@@ -187,7 +194,7 @@ namespace EmpireAtWar.Services.InputService
 
             if (!_isBlocked)
             {
-                ProcessSelectAllUnitsInput();
+                ProcessUnitSelectionInput();
 
                 if (MapActions.CameraDrag.IsPressed())
                 {
@@ -435,12 +442,22 @@ namespace EmpireAtWar.Services.InputService
             }
         }
 
-        private void ProcessSelectAllUnitsInput()
+        private void ProcessUnitSelectionInput()
         {
-            if (Keyboard.current != null &&
-                Keyboard.current.f2Key.wasPressedThisFrame)
+            if (Keyboard.current == null ||
+                !Keyboard.current.ctrlKey.isPressed ||
+                !Keyboard.current.aKey.wasPressedThisFrame)
+            {
+                return;
+            }
+
+            if (Keyboard.current.shiftKey.isPressed)
             {
                 OnSelectAllUnitsPressed?.Invoke();
+            }
+            else
+            {
+                OnSelectVisibleUnitsPressed?.Invoke();
             }
         }
     }
