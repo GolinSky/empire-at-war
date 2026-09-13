@@ -36,7 +36,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             float heightTolerance,
             float clearance,
             Vector2Range mapRange,
-            out Vector3 detour)
+            out Vector3 detour,
+            Vector3? preferredDirection = null,
+            bool alternateSide = false)
         {
             if (contacts == null)
             {
@@ -92,12 +94,22 @@ namespace EmpireAtWar.Components.Ship.Movement
                     clearance);
                 if (leftIsClear || rightIsClear)
                 {
-                    detour = leftIsClear &&
-                             (!rightIsClear ||
-                              Vector3.Distance(origin, leftPoint) <=
-                              Vector3.Distance(origin, rightPoint))
-                        ? leftPoint
-                        : rightPoint;
+                    bool preferLeft = preferredDirection.HasValue
+                        ? Vector3.Dot(preferredDirection.Value, (leftPoint - origin).normalized) >=
+                          Vector3.Dot(preferredDirection.Value, (rightPoint - origin).normalized)
+                        : Vector3.Distance(origin, leftPoint) <= Vector3.Distance(origin, rightPoint);
+                    if (alternateSide)
+                    {
+                        if (!leftIsClear || !rightIsClear)
+                        {
+                            detour = destination;
+                            return false;
+                        }
+
+                        preferLeft = !preferLeft;
+                    }
+
+                    detour = leftIsClear && (!rightIsClear || preferLeft) ? leftPoint : rightPoint;
                     return true;
                 }
             }

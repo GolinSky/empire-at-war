@@ -32,6 +32,7 @@ namespace EmpireAtWar.Components.Radar
         private IUnitMediator _unitMediator;
         private ILayerService _layerService;
         private Vector3 _position;
+        private bool _isReleased;
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService)
@@ -60,6 +61,11 @@ namespace EmpireAtWar.Components.Radar
 
         public void FixedTick()
         {
+            if (_isReleased)
+            {
+                return;
+            }
+
             if (_timer.IsComplete)
             {
                 int hitAmount = GetOverlapHits();
@@ -76,7 +82,9 @@ namespace EmpireAtWar.Components.Radar
                     if (_entityLocator.TryGetEntity(_overlapHits[i], out IEntity entity) &&
                         !entity.HealthModel.IsDestroyed)
                     {
-                        if (entity.PlayerType != Model.PlayerType)
+                        if (entity.PlayerType != Model.PlayerType && entity.HealthModel.HasUnits &&
+                            (entity.HealthModel.Transform.position - _position).sqrMagnitude <=
+                            Model.Range * Model.Range)
                         {
                             _detectedEnemies.Add(entity);
                         }
@@ -144,6 +152,14 @@ namespace EmpireAtWar.Components.Radar
         public void SetMediator(IUnitMediator unitMediator)
         {
             _unitMediator = unitMediator;
+        }
+
+        public override void Release()
+        {
+            _isReleased = true;
+            _contacts.Clear();
+            _detectedEnemies.Clear();
+            Model.Enemies.Clear();
         }
 
         private void OnDrawGizmosSelected()

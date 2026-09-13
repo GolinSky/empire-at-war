@@ -13,8 +13,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
-        private const float CHASE_UPDATE_INTERVAL = 0.5f;
-
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMoveComponent _shipMoveComponent;
@@ -23,11 +21,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private Vector3 _formationOffset;
-        private float _chaseUpdateTimer;
+        private Vector3 _pursuitDestination;
+        private bool _hasPursuitDestination;
+        private bool _wasMoving;
 
         private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
-        private Vector3 MovementTargetPosition => TargetPosition + _formationOffset;
-
+        private Vector3 MovementTargetPosition => TargetPosition +
+            Vector3.ClampMagnitude(_formationOffset, _weaponComponent.AttackDistance * 0.5f);
+        private float PursuitDestinationUpdateDistance => Mathf.Max(
+            _shipMoveComponent.NavigationRadius,
+            _weaponComponent.AttackDistance * 0.1f);
 
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
@@ -42,21 +45,30 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _stateMachine = stateMachine;
             _idleState = idleState;
         }
-        
+
         public void SetData(IEntity mainTarget, Vector3 formationOffset)
         {
-            _mainTargetEntity = mainTarget ??
+            if (mainTarget == null)
+            {
                 throw new ArgumentNullException(nameof(mainTarget));
+            }
+
+            bool targetChanged = !IsTheSameTarget(mainTarget);
+            _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
             formationOffset.y = 0f;
             _formationOffset = formationOffset;
+            if (targetChanged)
+            {
+                _hasPursuitDestination = false;
+            }
         }
 
         public void SetData(IEntity mainTarget)
         {
             SetData(mainTarget, Vector3.zero);
         }
-        
+
         public bool IsTheSameTarget(IEntity entity)
         {
             return _mainTarget != null && _mainTargetEntity.Id == entity.Id;
@@ -71,7 +83,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                    (_formationOffset - formationOffset).sqrMagnitude <=
                    Mathf.Epsilon;
         }
-        
+
         public void Enter()
         {
             if (_mainTargetEntity == null || _mainTarget == null)
@@ -83,7 +95,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
                 _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
-                _chaseUpdateTimer = CHASE_UPDATE_INTERVAL;
                 UpdateMoveState();
             }
 
@@ -96,46 +107,62 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _weaponComponent.ResetTarget();
                 _mainTarget = null;
                 _mainTargetEntity = null;
+                _hasPursuitDestination = false;
                 _stateMachine.Value.SetState(_idleState.Value);
                 return;
             }
 
-            float range = _shipMoveComponent.GetRange(TargetPosition);
-            if (_weaponComponent.HasEnoughRange(range))
-            {
-                if (_shipMoveComponent.IsMoving)
-                {
-                    _shipMoveComponent.Stop();
-                }
-
-                _shipMoveComponent.LookAtTarget(TargetPosition);
-                _chaseUpdateTimer = 0f;
-                return;
-            }
-
-            _chaseUpdateTimer -= Time.deltaTime;
-            if (_chaseUpdateTimer <= 0f)
-            {
-                _chaseUpdateTimer = CHASE_UPDATE_INTERVAL;
-                _shipMoveComponent.MoveToPosition(MovementTargetPosition);
-            }
+            UpdateMoveState();
         }
 
         public void Exit()
         {
             _weaponComponent.ResetTarget();
+            _hasPursuitDestination = false;
         }
-        
+
         private void UpdateMoveState()
         {
-            if (!_weaponComponent.HasEnoughRange(_shipMoveComponent.GetRange(TargetPosition)))
+            if (_wasMoving && !_shipMoveComponent.IsMoving)
             {
-                _shipMoveComponent.MoveToPosition(MovementTargetPosition);
+                _hasPursuitDestination = false;
             }
-            else
+
+            _wasMoving = _shipMoveComponent.IsMoving;
+            if (_weaponComponent.HasEnoughRange(
+                    _shipMoveComponent.GetRange(TargetPosition)))
             {
+                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                {
+                    _shipMoveComponent.Stop();
+                }
+
                 _shipMoveComponent.LookAtTarget(TargetPosition);
+                _hasPursuitDestination = false;
+                return;
             }
+
+            Vector3 movementTargetPosition = MovementTargetPosition;
+            if (_hasPursuitDestination &&
+                _weaponComponent.HasEnoughRange(Vector3.Distance(
+                    _pursuitDestination,
+                    TargetPosition)))
+            {
+                return;
+            }
+
+            if (_hasPursuitDestination &&
+                (movementTargetPosition - _pursuitDestination).sqrMagnitude <
+                PursuitDestinationUpdateDistance *
+                PursuitDestinationUpdateDistance)
+            {
+                return;
+            }
+
+            _pursuitDestination = movementTargetPosition;
+            _hasPursuitDestination = true;
+            _shipMoveComponent.MoveToPosition(_pursuitDestination, preserveCourse: true);
+            _wasMoving = _shipMoveComponent.IsMoving;
         }
     }
 }

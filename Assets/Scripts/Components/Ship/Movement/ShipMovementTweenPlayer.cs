@@ -9,6 +9,7 @@ namespace EmpireAtWar.Components.Ship.Movement
     internal sealed class ShipMovementTweenPlayer
     {
         private const float BODY_STRAIGHTEN_DURATION = 1f;
+        private const float LOOK_DIRECTION_TOLERANCE = 1f;
 
         private readonly Transform _rootTransform;
         private readonly Transform _bodyTransform;
@@ -20,6 +21,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Sequence _translationSequence;
         private Sequence _rotationSequence;
         private bool _isSelected;
+        private Vector3 _lookDirection;
+        private bool _hasLookDirection;
+        private Vector3? _currentPathTangent;
+
+        public Vector3? CurrentPathTangent => _currentPathTangent;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,
@@ -52,11 +58,31 @@ namespace EmpireAtWar.Components.Ship.Movement
             float rotationSpeed,
             float maximumBankAngle)
         {
+            targetDirection.y = 0f;
             if (targetDirection.sqrMagnitude <= Mathf.Epsilon)
             {
                 return;
             }
 
+            targetDirection.Normalize();
+            Vector3 currentDirection = _rootTransform.forward;
+            currentDirection.y = 0f;
+            if (currentDirection.sqrMagnitude > Mathf.Epsilon &&
+                Vector3.Angle(currentDirection, targetDirection) <=
+                LOOK_DIRECTION_TOLERANCE)
+            {
+                return;
+            }
+
+            if (_hasLookDirection &&
+                Vector3.Angle(_lookDirection, targetDirection) <=
+                LOOK_DIRECTION_TOLERANCE)
+            {
+                return;
+            }
+
+            _lookDirection = targetDirection;
+            _hasLookDirection = true;
             _rotationSequence.KillExt();
             _rotationSequence = DOTween.Sequence();
 
@@ -120,6 +146,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             float maximumBankAngle,
             Action completed)
         {
+            _hasLookDirection = false;
+            _currentPathTangent = null;
             _translationSequence.KillExt();
             _rotationSequence.KillExt();
             _translationSequence = DOTween.Sequence();
@@ -187,6 +215,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void StopPath()
         {
+            _hasLookDirection = false;
             _translationSequence.KillExt();
             StraightenBody();
             ClearRoute();
@@ -194,6 +223,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Release()
         {
+            _hasLookDirection = false;
             _translationSequence.KillExt();
             _rotationSequence.KillExt();
             ClearRoute();
@@ -219,6 +249,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector3 position = route.EvaluateNormalizedDistance(
                 progress,
                 out Vector3 tangent);
+            _currentPathTangent = tangent;
             _rootTransform.position = position;
             RotateAlongRoute(
                 tangent,
@@ -262,6 +293,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void ClearRoute()
         {
+            _currentPathTangent = null;
             _lineRenderer.positionCount = 0;
             _lineRenderer.enabled = false;
         }

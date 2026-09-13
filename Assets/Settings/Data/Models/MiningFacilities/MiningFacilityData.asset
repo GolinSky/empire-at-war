@@ -35,6 +35,6 @@ MonoBehaviour:
       <Max>k__BackingField: 0
     <DelayBetweenAttack>k__BackingField: 0
     <Range>k__BackingField: 30
-    <Delay>k__BackingField: 30
+    <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 50
   <Income>k__BackingField: 10

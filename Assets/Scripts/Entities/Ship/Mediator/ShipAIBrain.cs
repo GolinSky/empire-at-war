@@ -82,8 +82,18 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IEntity target,
             Vector3 formationOffset)
         {
-            _assignedTarget = target ??
+            if (target == null)
+            {
                 throw new ArgumentNullException(nameof(target));
+            }
+
+            if (_assignedTarget != null && _assignedTarget.Id == target.Id)
+            {
+                Enable(true);
+                return;
+            }
+
+            _assignedTarget = target;
             formationOffset.y = 0f;
             _attackFormationOffset = formationOffset;
             Enable(true);
@@ -111,7 +121,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             for (int i = _radarComponent.Enemies.Count - 1; i >= 0; i--)
             {
                 var radarEnemyHealth = _radarComponent.Enemies[i].HealthModel;
-                if (radarEnemyHealth.IsDestroyed)
+                if (radarEnemyHealth.IsDestroyed || !radarEnemyHealth.HasUnits)
                 {
                     _radarComponent.Enemies.RemoveAt(i);
                 }
