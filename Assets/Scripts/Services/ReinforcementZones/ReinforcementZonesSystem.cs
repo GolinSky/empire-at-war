@@ -216,34 +216,55 @@ namespace EmpireAtWar.Services.ReinforcementZones
             out Vector3 position)
         {
             List<ReinforcementZonePresenter> ownedZones = new List<ReinforcementZonePresenter>();
+            List<ReinforcementZonePresenter> capturedZones = new List<ReinforcementZonePresenter>();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner == playerType)
+                if (zone.Owner != playerType)
                 {
-                    ownedZones.Add(zone);
+                    continue;
+                }
+
+                ownedZones.Add(zone);
+                if (zone.IsCapturable && playerType == PlayerType.Opponent)
+                {
+                    capturedZones.Add(zone);
                 }
             }
 
-            if (ownedZones.Count == 0)
+            if (capturedZones.Count > 0 &&
+                TryGetClearSpawnPosition(capturedZones, shipType, out position))
             {
-                position = default;
-                return false;
+                return true;
             }
 
-            float navigationRadius = GetNavigationRadius(shipType);
-            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            return TryGetClearSpawnPosition(ownedZones, shipType, out position);
+        }
+
+        private bool TryGetClearSpawnPosition(
+            IReadOnlyList<ReinforcementZonePresenter> zones,
+            ShipType shipType,
+            out Vector3 position)
+        {
+            if (zones.Count > 0)
             {
-                ReinforcementZonePresenter selectedZone =
-                    ownedZones[Random.Range(0, ownedZones.Count)];
-                float radius = Mathf.Max(
-                    0f,
-                    selectedZone.Radius - _spawnEdgePadding - navigationRadius);
-                Vector2 offset = Random.insideUnitCircle * radius;
-                position = selectedZone.Center + new Vector3(offset.x, 0f, offset.y);
-                position.y = 0f;
-                if (IsShipSpawnPositionClear(shipType, position))
+                float navigationRadius = GetNavigationRadius(shipType);
+                for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
                 {
-                    return true;
+                    ReinforcementZonePresenter selectedZone =
+                        zones[Random.Range(0, zones.Count)];
+                    float radius = selectedZone.Radius - _spawnEdgePadding - navigationRadius;
+                    if (radius < 0f)
+                    {
+                        continue;
+                    }
+
+                    Vector2 offset = Random.insideUnitCircle * radius;
+                    position = selectedZone.Center + new Vector3(offset.x, 0f, offset.y);
+                    position.y = 0f;
+                    if (IsShipSpawnPositionClear(shipType, position))
+                    {
+                        return true;
+                    }
                 }
             }
 

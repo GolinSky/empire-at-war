@@ -15,14 +15,19 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<float> _formationRadii = new List<float>();
         private readonly List<FormationPoint> _formationDestinations =
             new List<FormationPoint>();
+        private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
             switch (decision.State)
             {
                 case EnemyStrategicState.CaptureZone:
+                    _captureShips.Clear();
+                    _captureShips.AddRange(context.Ships);
+                    _captureShips.Sort((first, second) =>
+                        second.NavigationSpeed.CompareTo(first.NavigationSpeed));
                     AssignFormationMove(
-                        context.Ships,
+                        _captureShips,
                         decision.CommittedShipCount,
                         context.CaptureTarget);
                     return;

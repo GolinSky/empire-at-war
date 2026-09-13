@@ -161,12 +161,77 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void Initialize_ResetsStructurePlacementStateOncePerBattle()
+        {
+            EnemyFactionData model =
+                ScriptableObject.CreateInstance<EnemyFactionData>();
+
+            try
+            {
+                TrackingStructurePlacement structurePlacement =
+                    new TrackingStructurePlacement();
+                EnemyFactionController controller = new EnemyFactionController(
+                    model,
+                    null,
+                    null,
+                    null,
+                    new TimerPoolService(),
+                    new TrackingEconomyProvider(),
+                    null,
+                    null,
+                    new EnemyUnitLimitModel(),
+                    null,
+                    null,
+                    structurePlacement);
+
+                controller.Initialize();
+                controller.Initialize();
+
+                Assert.That(structurePlacement.ResetCount, Is.EqualTo(1));
+
+                controller.LateDispose();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(model);
+            }
+        }
+
         private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService
         {
             public bool TryGetPosition(out Vector3 position)
             {
                 position = default;
                 return false;
+            }
+
+            public void RecordDestroyedPosition(Vector3 position)
+            {
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
+        private sealed class TrackingStructurePlacement : IEnemyStructurePlacementService
+        {
+            public int ResetCount { get; private set; }
+
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public void RecordDestroyedPosition(Vector3 position)
+            {
+            }
+
+            public void Reset()
+            {
+                ResetCount++;
             }
         }
 

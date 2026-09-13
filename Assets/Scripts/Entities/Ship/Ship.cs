@@ -30,6 +30,7 @@ namespace EmpireAtWar.Ship
         PlayerType PlayerType { get; }
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+        float NavigationSpeed { get; }
 
         void AssignAttackTarget(IEntity target, Vector3 formationOffset);
         void AssignMoveTarget(Vector3 target);
@@ -72,6 +73,7 @@ namespace EmpireAtWar.Ship
         public PlayerType PlayerType => _playerType;
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
         public float NavigationRadius => _shipMoveComponent.NavigationRadius;
+        public float NavigationSpeed => _shipMoveComponent.NavigationSpeed;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]

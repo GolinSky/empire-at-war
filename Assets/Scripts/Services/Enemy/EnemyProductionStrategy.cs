@@ -28,6 +28,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyStructurePlacementService _structurePlacementService;
 
         private float _decisionTimer;
+        private int _observedReleaseVersion;
 
         public EnemyProductionStrategy(
             EnemyFactionData factionModel,
@@ -58,10 +59,17 @@ namespace EmpireAtWar.Services.Enemy
         public void Start()
         {
             _decisionTimer = 0f;
+            _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
         }
 
         public void Tick(float deltaTime)
         {
+            if (_observedReleaseVersion != _unitLimitModel.ReleaseVersion)
+            {
+                _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
+                _decisionTimer = 0f;
+            }
+
             _decisionTimer -= deltaTime;
             if (_decisionTimer > 0f)
             {
@@ -92,20 +100,19 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
 
             bool isUltraHard = _gameModel.EnemyDifficulty == EnemyAiDifficulty.UltraHard;
-            KeyValuePair<ShipType, FactionData> ship;
-            bool hasShipOption = isUltraHard
-                ? TrySelectUltraHardShip(shipCount, out ship)
-                : TrySelectShip(out ship);
+            bool hasShipOption = TrySelectShip(
+                shipCount,
+                out KeyValuePair<ShipType, FactionData> ship);
             bool canBuildShip = hasShipOption && IsAffordable(ship.Value);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
             int miningFacilityTarget = isUltraHard
-                ? profile.MinimumMiningFacilities + _unitLimitModel.ShipOrdersCount / 2
+                ? profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount / 2
                 : profile.MinimumMiningFacilities;
             int defensePlatformTarget = isUltraHard
-                ? 1 + _unitLimitModel.ShipOrdersCount / 3
-                : 0;
+                ? 1 + _stateProvider.ActiveShipCount / 3
+                : 1;
 
             EnemyProductionCategory category = _decisionModel.Evaluate(
                 new EnemyProductionSnapshot(
@@ -221,11 +228,13 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
-        private bool TrySelectShip(out KeyValuePair<ShipType, FactionData> selected)
+        private bool TrySelectShip(
+            int shipCount,
+            out KeyValuePair<ShipType, FactionData> selected)
         {
             selected = default;
             bool found = false;
-            bool preferExpensive = _gameModel.EnemyDifficulty >= EnemyAiDifficulty.Hard;
+            float bestPriority = float.MaxValue;
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
@@ -237,43 +246,19 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (!found ||
-                    preferExpensive && option.Value.Price > selected.Value.Price ||
-                    !preferExpensive && option.Value.Price < selected.Value.Price)
+                int reservedCount = _unitLimitModel.GetReservedCount<ShipUnitRequest>(
+                    option.Key.ToString());
+                float priority = _decisionModel.CalculateShipPriority(
+                    _stateProvider.CurrentState,
+                    shipCount,
+                    reservedCount,
+                    option.Value.BuildTime,
+                    option.Value.UnitCapacity);
+                if (!found || priority < bestPriority ||
+                    priority == bestPriority && option.Value.Price < selected.Value.Price)
                 {
                     selected = option;
-                    found = true;
-                }
-            }
-
-            return found;
-        }
-
-        private bool TrySelectUltraHardShip(
-            int shipCount,
-            out KeyValuePair<ShipType, FactionData> selected)
-        {
-            selected = default;
-            bool found = false;
-            foreach (KeyValuePair<ShipType, FactionData> option
-                     in _factionModel.ShipFactionData)
-            {
-                if (!IsAvailable(option.Value) ||
-                    !CanReserve<ShipUnitRequest>(
-                        option.Key.ToString(),
-                        option.Value))
-                {
-                    continue;
-                }
-
-                if (!found ||
-                    shipCount == 0 && option.Value.Price < selected.Value.Price ||
-                    shipCount > 0 &&
-                    (option.Value.AvailableLevel > selected.Value.AvailableLevel ||
-                     option.Value.AvailableLevel == selected.Value.AvailableLevel &&
-                     option.Value.Price > selected.Value.Price))
-                {
-                    selected = option;
+                    bestPriority = priority;
                     found = true;
                 }
             }

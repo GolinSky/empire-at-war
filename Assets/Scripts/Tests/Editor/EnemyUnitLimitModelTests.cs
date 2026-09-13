@@ -39,6 +39,30 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Release_IncrementsVersionOnlyWhenAReservationIsReleased()
+        {
+            EnemyUnitLimitModel model = new EnemyUnitLimitModel();
+            model.TryReserve("ship", 2, 1, 3);
+            model.TryReserve("ship", 2, 1, 3);
+
+            model.Release("missing", 3);
+
+            Assert.That(model.ReleaseVersion, Is.Zero);
+
+            model.Release("ship", 1);
+
+            Assert.That(model.ReleaseVersion, Is.EqualTo(1));
+
+            model.Release("ship", 1);
+
+            Assert.That(model.ReleaseVersion, Is.EqualTo(2));
+
+            model.Reset();
+
+            Assert.That(model.ReleaseVersion, Is.Zero);
+        }
+
+        [Test]
         public void GetReservedCount_WithRequestTypeUsesControllerIdentifier()
         {
             EnemyUnitLimitModel model = new EnemyUnitLimitModel();

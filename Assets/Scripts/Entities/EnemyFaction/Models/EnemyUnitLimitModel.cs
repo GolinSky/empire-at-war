@@ -10,6 +10,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public int CurrentUnitCapacity { get; private set; }
         public int ShipOrdersCount { get; private set; }
+        public int ReleaseVersion { get; private set; }
 
         public void RecordShipOrder()
         {
@@ -81,6 +82,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CurrentUnitCapacity = System.Math.Max(
                 0,
                 CurrentUnitCapacity - unitCapacity);
+            ReleaseVersion++;
         }
 
         public int GetReservedCount(string unitId)
@@ -98,6 +100,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             _reservedCounts.Clear();
             CurrentUnitCapacity = 0;
             ShipOrdersCount = 0;
+            ReleaseVersion = 0;
         }
     }
 }
