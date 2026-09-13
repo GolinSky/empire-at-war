@@ -52,6 +52,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private FactionType _opponentFactionType;
 
         public event Action OwnershipChanged;
+        public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
 
         [Inject]
         private void Construct(

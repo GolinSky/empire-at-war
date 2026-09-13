@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.MiniMap;
 using UnityEngine;
@@ -12,13 +13,17 @@ namespace EmpireAtWar.Models.MiniMap
         event Action<bool> OnInteractableChanged;
         event Action<MarkData> OnMarkAdded;
         event Action<DynamicMarkData> OnDynamicMarkAdded;
+        event Action<MiniMapMarker> OnMarkerAdded;
+        event Action<MiniMapMarker> OnMarkerRemoved;
         
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
         MarkData PlayerBase { get; }
         MarkData EnemyBase { get; }
         DynamicMarkData CameraMark { get;}
+        IReadOnlyList<MiniMapMarker> Markers { get; }
         bool IsInputBlocked { get; }
+        Sprite GetIcon(MarkType markType);
     }
 
     [CreateAssetMenu(fileName = nameof(MiniMapData), menuName = "Data/MiniMapData")]
@@ -27,10 +32,15 @@ namespace EmpireAtWar.Models.MiniMap
         public event Action<bool> OnInteractableChanged;
         public event Action<MarkData> OnMarkAdded;
         public event Action<DynamicMarkData> OnDynamicMarkAdded;
+        public event Action<MiniMapMarker> OnMarkerAdded;
+        public event Action<MiniMapMarker> OnMarkerRemoved;
         public Vector2Range MapRange { get; set; }
         public MarkData PlayerBase { get; private set; }
         public MarkData EnemyBase { get; private set; }
         public DynamicMarkData CameraMark { get; private set; }
+        public IReadOnlyList<MiniMapMarker> Markers => _markers;
+
+        private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
 
         [field:SerializeField] public DictionaryWrapper<MarkType, Sprite> MarkWrapper { get; private set; }
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }
@@ -68,7 +78,21 @@ namespace EmpireAtWar.Models.MiniMap
             }
             OnMarkAdded?.Invoke(new DynamicMarkData(transform.position, icon, transform));
         }
+
+        public void AddMarker(MiniMapMarker marker)
+        {
+            _markers.Add(marker);
+            OnMarkerAdded?.Invoke(marker);
+        }
+
+        public void RemoveMarker(MiniMapMarker marker)
+        {
+            if (_markers.Remove(marker))
+            {
+                OnMarkerRemoved?.Invoke(marker);
+            }
+        }
         
-        private Sprite GetIcon(MarkType markType) => MarkWrapper.Dictionary[markType];
+        public Sprite GetIcon(MarkType markType) => MarkWrapper.Dictionary[markType];
     }
 }
