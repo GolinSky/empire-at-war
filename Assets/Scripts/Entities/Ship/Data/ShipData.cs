@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -17,7 +16,7 @@ namespace EmpireAtWar.Entities.Ship.Data
     }
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
-    public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData, IAttackData,
+    public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData,
         IRadarData, IWeaponContext, IUnitDeathAnimationData
     {
         [Header("Ship Settings")]
@@ -49,8 +48,6 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Attack Settings")]
         [field: SerializeField] public float AttackDelayBetweenAttack { get; private set; }
         [field: SerializeField] public float DelayBetweenAttack { get; private set; }
-
-        float IAttackData.DelayBetweenAttack => AttackDelayBetweenAttack;
 
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }

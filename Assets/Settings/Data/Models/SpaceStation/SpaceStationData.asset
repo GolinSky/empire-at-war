@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73059e39df065a1499c87549d1d330a5, type: 3}
   m_Name: SpaceStationData
   m_EditorClassIdentifier: 
-  models:
-  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   <ComponentData>k__BackingField:
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
@@ -39,6 +37,3 @@ MonoBehaviour:
     <Range>k__BackingField: 80
     <Delay>k__BackingField: 10
     <Distance>k__BackingField: 100
-  <HealthModel>k__BackingField: {}
-  <RadarModel>k__BackingField: {}
-  <AttackModel>k__BackingField: {}

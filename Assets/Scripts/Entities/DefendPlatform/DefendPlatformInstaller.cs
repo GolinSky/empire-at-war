@@ -1,8 +1,7 @@
-﻿using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Radar;
+﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.StateMachine;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
@@ -40,16 +39,15 @@ namespace EmpireAtWar
                 .FromInstance(Repository.Load<DefendPlatformData>(nameof(DefendPlatformData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
+            Container.Bind<WeaponModel>().AsSingle();
         }
 
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.BindInitializableExecutionOrder<HealthComponent>(-100);
             DefendPlatformData model = Container.Resolve<DefendPlatformData>();
-            BindBuffer(model.HealthModel);
-            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
-            BindBuffer(model.AttackModel);
-            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            Container.Bind<HealthModel>().AsSingle();
             BindBuffer(model.RadarModel);
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
@@ -61,12 +59,10 @@ namespace EmpireAtWar
             Container.BindInterfacesAndSelfTo<RadarComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
-            Container.BindInterfacesAndSelfTo<AttackComponent>()
+            Container.BindInterfacesAndSelfTo<WeaponComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
-            Container.BindInterfacesAndSelfTo<UnitStateMachineComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+            Container.BindInterfacesAndSelfTo<StationCombatPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<SelectionComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();

@@ -1,6 +1,6 @@
 using System;
-using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using EmpireAtWar.Utils.Random;
@@ -10,7 +10,7 @@ using Utilities.ScriptUtils.Math;
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IUnitDeathAnimationData, IHealthData, IAttackData,
+    public sealed class EntityComponentData : IUnitDeathAnimationData, IHealthData, IWeaponContext,
         IRadarData
     {
         [Header("Death Animation Settings")]

@@ -101,8 +101,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1b0635126764df796ba6194d27372a0, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &414979512125735457
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +116,6 @@ GameObject:
   - component: {fileID: 1387384039836268560}
   - component: {fileID: 2610921033299271252}
   - component: {fileID: 2557233241895815559}
-  - component: {fileID: 1785301417331425728}
   - component: {fileID: 4068811108492124294}
   m_Layer: 0
   m_Name: DefendPlatformView
@@ -204,18 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036f62d612164b9d8fe1a6824537a043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Radar.RadarComponent
---- !u!114 &1785301417331425728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 414979512125735457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0a163db856046f095ac09d48296ade2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.StateMachine.UnitStateMachineComponent
 --- !u!114 &4068811108492124294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,7 +562,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5246781089788651524}
-  - component: {fileID: 6738878484448143865}
+  - component: {fileID: 4545628569554571522}
   m_Layer: 0
   m_Name: WeaponComponent
   m_TagString: Untagged
@@ -604,7 +591,7 @@ Transform:
   - {fileID: 1102055817490771205}
   m_Father: {fileID: 9012350264189186865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6738878484448143865
+--- !u!114 &4545628569554571522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -613,20 +600,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 9208288799206979059}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20078e3faeea40d984cc476b3241bb7c, type: 3}
+  m_Script: {fileID: 11500000, guid: b0620a0dd7ee4a3dae980f3bfc0f51dd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.AttackComponent.AttackComponent
-  turretDictionary:
-    keyValue:
-    - key: 5
-      value:
-      - {fileID: 2159636519144197231}
-      - {fileID: 8644830824659767434}
-      - {fileID: 3224702364876874753}
-      - {fileID: 3904722521049085063}
-      - {fileID: 4187391721111521243}
-      - {fileID: 3007545869417895737}
-  viewTransform: {fileID: 1345302067295067274}
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
+  hardPoints:
+  - {fileID: 2159636519144197231}
+  - {fileID: 8644830824659767434}
+  - {fileID: 3224702364876874753}
+  - {fileID: 3904722521049085063}
+  - {fileID: 4187391721111521243}
+  - {fileID: 3007545869417895737}
+  attackOrigin: {fileID: 1345302067295067274}
+  useWeaponDamageRange: 1
 --- !u!1001 &1052237977207897725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -639,6 +624,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -743,6 +733,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 360
       objectReference: {fileID: 0}
@@ -840,6 +835,11 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
@@ -945,6 +945,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 360
       objectReference: {fileID: 0}
@@ -1046,6 +1051,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
       value: 360
       objectReference: {fileID: 0}
@@ -1144,6 +1154,11 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

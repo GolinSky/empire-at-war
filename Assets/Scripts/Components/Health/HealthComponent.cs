@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Extentions;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -22,7 +26,7 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, ITickable
+        IHealthComponent, IHealthModelObserver, ITickable
     {
         [field: SerializeField] public List<HardPointView> ShipUnits { get; set; }
         [SerializeField] private ShieldView shieldView;
@@ -32,21 +36,53 @@ namespace EmpireAtWar.Components.Ship.Health
         private float _originShieldValue;
         private Coroutine _shieldsAnimatedCoroutine;
         private bool _isReleased;
+        private IEntityLifecycle _entityLifecycle;
+        private PlayerType _playerType;
+        private Transform _viewTransform;
+        private HardPointAdapter[] _hardPointAdapters;
 
-        [InjectOptional] private IEntityLifecycle EntityLifecycle { get; }
+        public event Action OnValueChanged
+        {
+            add => Model.OnValueChanged += value;
+            remove => Model.OnValueChanged -= value;
+        }
+
+        event Action IHealthModelObserver.OnDestroy
+        {
+            add => Model.OnDestroy += value;
+            remove => Model.OnDestroy -= value;
+        }
 
         public bool Destroyed => Model.IsDestroyed;
-        public IHealthModelObserver HealthModelObserver => Model;
+        public IHealthModelObserver HealthModelObserver => this;
+        public HardPointModel[] HardPointModels => Model.HardPointModels;
+        public float Armor => Model.Armor;
+        public float ArmorPercentage => Model.ArmorPercentage;
+        public float Shields => Model.Shields;
+        public float ShieldPercentage => Model.ShieldPercentage;
+        public bool IsDestroyed => Model.IsDestroyed;
+        public bool IsLostShieldGenerator => Model.IsLostShieldGenerator;
+        public bool HasUnits => Model.HasUnits;
+        public bool HasShields => Model.HasShields;
+        public PlayerType PlayerType => _playerType;
+        public Transform Transform => _viewTransform;
 
         [Inject]
-        private void Construct(HealthModel model)
+        private void Construct(
+            HealthModel model,
+            IEntityLifecycle entityLifecycle,
+            PlayerType playerType,
+            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
+            _entityLifecycle = entityLifecycle;
+            _playerType = playerType;
+            _viewTransform = viewTransform;
         }
 
         public void Initialize()
         {
-            Model.InjectDependency(ShipUnits);
+            InitializeHardPoints();
             _originShieldValue = Model.Shields;
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
@@ -79,6 +115,16 @@ namespace EmpireAtWar.Components.Ship.Health
             {
                 StopCoroutine(_shieldsAnimatedCoroutine);
             }
+
+            if (_hardPointAdapters == null)
+            {
+                return;
+            }
+
+            foreach (HardPointAdapter hardPointAdapter in _hardPointAdapters)
+            {
+                hardPointAdapter.Dispose();
+            }
         }
 
         public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
@@ -93,7 +139,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public bool Equal(IHealthModelObserver modelObserver)
         {
-            return Model == modelObserver;
+            return this == modelObserver;
         }
 
         public void Tick()
@@ -102,31 +148,51 @@ namespace EmpireAtWar.Components.Ship.Health
                 _refreshShieldsTimer.IsComplete)
             {
                 _refreshShieldsTimer.StartTimer();
-                //Model.RegenerateShields(Model.ShieldRegenerateValue);
             }
         }
 
-        public IHardPointView[] GetShipUnits(HardPointType hardPointType)
+        public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
         {
-            List<HardPointView> currentShipUnits = ShipUnits.Where(x => !x.IsDestroyed).ToList();
-
-            if (currentShipUnits.Count == 0)
+            IHardPointModel[] currentHardPoints = _hardPointAdapters
+                .Where(hardPoint => !hardPoint.IsDestroyed)
+                .Cast<IHardPointModel>()
+                .ToArray();
+            if (currentHardPoints.Length == 0)
             {
                 return null;
             }
 
             if (hardPointType == HardPointType.Any ||
-                currentShipUnits.All(x => x.HardPointType != hardPointType))
+                currentHardPoints.All(hardPoint => hardPoint.HardPointType != hardPointType))
             {
-                return currentShipUnits.ToArray();
+                return currentHardPoints;
             }
 
-            return currentShipUnits.Where(x => x.HardPointType == hardPointType).ToArray();
+            return currentHardPoints
+                .Where(hardPoint => hardPoint.HardPointType == hardPointType)
+                .ToArray();
+        }
+
+        private void InitializeHardPoints()
+        {
+            HardPointModel[] hardPointModels = new HardPointModel[ShipUnits.Count];
+            _hardPointAdapters = new HardPointAdapter[ShipUnits.Count];
+            for (int index = 0; index < ShipUnits.Count; index++)
+            {
+                IHardPointView hardPointView = ShipUnits[index];
+                HardPointModel hardPointModel = new HardPointModel(
+                    hardPointView.Id,
+                    hardPointView.HardPointType);
+                hardPointModels[index] = hardPointModel;
+                _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPointView);
+            }
+
+            Model.InitializeHardPoints(hardPointModels);
         }
 
         private void HandleDestroy()
         {
-            EntityLifecycle?.Release();
+            _entityLifecycle.Release();
             Release();
         }
 
@@ -134,7 +200,7 @@ namespace EmpireAtWar.Components.Ship.Health
         {
             while (!Model.IsDestroyed && !Model.IsLostShieldGenerator)
             {
-                if (shieldView.IsVisibleToCamera && Model.Shields > 0)
+                if (shieldView.IsVisibleToCamera && Model.Shields > 0f)
                 {
                     shieldView.AnimateTextureOffset();
                 }

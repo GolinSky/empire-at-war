@@ -22,10 +22,9 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
-        private IReadOnlyList<IMonoComponent> _monoComponents;
+        private EntityComponentLifecycle _componentLifecycle;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
-        private bool _isReleased;
 
         [Inject] private MiningFacilityData RootModel { get; }
 
@@ -48,7 +47,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
             _startPosition = startPosition;
-            _monoComponents = monoComponents;
+            _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
         }
@@ -78,15 +77,9 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         private void Release(bool playDeathEffects)
         {
-            if (_isReleased)
+            if (!_componentLifecycle.Release())
             {
                 return;
-            }
-
-            _isReleased = true;
-            foreach (IMonoComponent component in _monoComponents)
-            {
-                component.Release();
             }
             if (playDeathEffects)
             {

@@ -1,5 +1,4 @@
 using System.Reflection;
-using DG.Tweening;
 using EmpireAtWar.Views.Factions;
 using NUnit.Framework;
 using UnityEngine;
@@ -13,28 +12,29 @@ namespace EmpireAtWar.Tests.Editor
             BindingFlags.Instance | BindingFlags.NonPublic;
 
         [Test]
-        public void Destroy_KillsFillSequence()
+        public void Destroy_RemovesSkipListener()
         {
             GameObject gameObject = new GameObject(nameof(PipelineView));
             gameObject.SetActive(false);
 
             try
             {
-                Image fillIcon = gameObject.AddComponent<Image>();
                 Button skipButton = gameObject.AddComponent<Button>();
                 PipelineView view = gameObject.AddComponent<PipelineView>();
-                SetField(view, "fillIcon", fillIcon);
                 SetField(view, "skipButton", skipButton);
                 gameObject.SetActive(true);
+                InvokeLifecycle(view, "Awake");
 
-                view.Fill(10f, "test-pipeline");
-                Sequence sequence = GetFillSequence(view);
+                int cancelCallCount = 0;
+                view.Init(_ => cancelCallCount++);
+                skipButton.onClick.Invoke();
 
-                Assert.That(sequence.IsPlaying(), Is.True);
+                Assert.That(cancelCallCount, Is.EqualTo(1));
 
-                InvokeOnDestroy(view);
+                InvokeLifecycle(view, "OnDestroy");
+                skipButton.onClick.Invoke();
 
-                Assert.That(sequence.IsPlaying(), Is.False);
+                Assert.That(cancelCallCount, Is.EqualTo(1));
             }
             finally
             {
@@ -45,22 +45,13 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private static void InvokeOnDestroy(PipelineView view)
+        private static void InvokeLifecycle(PipelineView view, string methodName)
         {
             MethodInfo method = typeof(PipelineView).GetMethod(
-                "OnDestroy",
+                methodName,
                 PRIVATE_INSTANCE);
             Assert.That(method, Is.Not.Null);
             method.Invoke(view, null);
-        }
-
-        private static Sequence GetFillSequence(PipelineView view)
-        {
-            FieldInfo field = typeof(PipelineView).GetField(
-                "_fillImageSequence",
-                PRIVATE_INSTANCE);
-            Assert.That(field, Is.Not.Null);
-            return (Sequence)field.GetValue(view);
         }
 
         private static void SetField(

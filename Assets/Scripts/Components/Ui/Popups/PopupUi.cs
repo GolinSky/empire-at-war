@@ -21,11 +21,15 @@ namespace EmpireAtWar.Ui.Popups
             OnPopupOpen();
         }
 
-        private void ClosePopup()
+        public void ClosePopup()
         {
-            _popupCommand.ClosePopup(popupType);
             SetPopupState(false);
             OnPopupClose();
+        }
+
+        private void RequestClose()
+        {
+            _popupCommand.ClosePopup(popupType);
         }
 
         private void SetPopupState(bool state)
@@ -51,12 +55,12 @@ namespace EmpireAtWar.Ui.Popups
 
         public virtual void Initialize() //todo: make template method
         {
-            closeButton.onClick.AddListener(ClosePopup);
+            closeButton.onClick.AddListener(RequestClose);
         }
 
         public virtual void LateDispose() //todo: make template method
         {
-            closeButton.onClick.RemoveListener(ClosePopup);
+            closeButton.onClick.RemoveListener(RequestClose);
         }
     }
 }

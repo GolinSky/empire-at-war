@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Mvc;
-using Zenject;
 
 namespace EmpireAtWar.Models.Factions
 {
     public interface IPlayerFactionModelObserver : IModelObserver
     {
-        event Action<UnitRequest> OnUnitBuild;
+        event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
         event Action<int> OnLevelUpgraded;
         event Action<SelectionType> OnSelectionTypeChanged;
 
@@ -17,23 +16,27 @@ namespace EmpireAtWar.Models.Factions
         FactionType FactionType { get; }
         FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
+        IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots();
     }
 
     public class PlayerFactionModel : PureModel, IPlayerFactionModelObserver
     {
-        public event Action<UnitRequest> OnUnitBuild;
+        private const int MAX_ACTIVE_PIPELINES = 7;
+
+        public event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
+        public event Action<UnitRequest> OnUnitCompleted;
         public event Action<int> OnLevelUpgraded;
         public event Action<SelectionType> OnSelectionTypeChanged;
 
         private readonly PlayerFactionData _data;
-        private readonly List<UnitRequest> _buildingUnits = new();
+        private readonly Dictionary<string, Queue<ProductionQueueItem>> _productionQueues = new();
 
         private SelectionType _selectionType;
         private int _currentLevel = 1;
 
         public PlayerFactionModel(
             PlayerFactionData data,
-            [Inject(Id = PlayerType.Player)] FactionType factionType)
+            FactionType factionType)
         {
             _data = data;
             FactionType = factionType;
@@ -68,27 +71,130 @@ namespace EmpireAtWar.Models.Factions
 
         public bool CanQueueUnit(UnitRequest unitRequest)
         {
-            int queuedCount = 0;
-            foreach (UnitRequest request in _buildingUnits)
+            if (unitRequest == null)
             {
-                if (request.Id == unitRequest.Id)
-                {
-                    queuedCount++;
-                }
+                throw new ArgumentNullException(nameof(unitRequest));
             }
 
-            return queuedCount < unitRequest.FactionData.MaxCount;
+            if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
+            {
+                return unitRequest.FactionData.MaxCount > 0 &&
+                    _productionQueues.Count < MAX_ACTIVE_PIPELINES;
+            }
+
+            return queue.Count < unitRequest.FactionData.MaxCount;
         }
 
         public void QueueUnit(UnitRequest unitRequest)
         {
-            _buildingUnits.Add(unitRequest);
-            OnUnitBuild?.Invoke(unitRequest);
+            if (unitRequest == null)
+            {
+                throw new ArgumentNullException(nameof(unitRequest));
+            }
+
+            if (!CanQueueUnit(unitRequest))
+            {
+                throw new InvalidOperationException(
+                    "The unit request exceeds the production queue capacity.");
+            }
+
+            if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
+            {
+                queue = new Queue<ProductionQueueItem>();
+                _productionQueues.Add(unitRequest.Id, queue);
+            }
+
+            queue.Enqueue(new ProductionQueueItem(unitRequest));
+            NotifyProductionChanged();
         }
 
-        public void CompleteUnit(UnitRequest unitRequest)
+        public bool TryCancelCurrentUnit(string id, out UnitRequest unitRequest)
         {
-            _buildingUnits.Remove(unitRequest);
+            if (!_productionQueues.TryGetValue(id, out Queue<ProductionQueueItem> queue))
+            {
+                unitRequest = null;
+                return false;
+            }
+
+            unitRequest = queue.Dequeue().UnitRequest;
+            if (queue.Count == 0)
+            {
+                _productionQueues.Remove(id);
+            }
+
+            NotifyProductionChanged();
+            return true;
+        }
+
+        public void Advance(float deltaTime)
+        {
+            if (deltaTime < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(deltaTime));
+            }
+
+            if (_productionQueues.Count == 0)
+            {
+                return;
+            }
+
+            List<string> pipelineIds = new List<string>(_productionQueues.Keys);
+            foreach (string pipelineId in pipelineIds)
+            {
+                AdvancePipeline(pipelineId, deltaTime);
+            }
+
+            NotifyProductionChanged();
+        }
+
+        public IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots()
+        {
+            List<ProductionQueueSnapshot> snapshots =
+                new List<ProductionQueueSnapshot>(_productionQueues.Count);
+            foreach (Queue<ProductionQueueItem> queue in _productionQueues.Values)
+            {
+                ProductionQueueItem activeItem = queue.Peek();
+                snapshots.Add(new ProductionQueueSnapshot(
+                    activeItem.UnitRequest,
+                    queue.Count,
+                    activeItem.RemainingBuildTime));
+            }
+
+            return snapshots;
+        }
+
+        private void AdvancePipeline(string pipelineId, float deltaTime)
+        {
+            float remainingDeltaTime = deltaTime;
+            while (_productionQueues.TryGetValue(
+                       pipelineId,
+                       out Queue<ProductionQueueItem> queue))
+            {
+                ProductionQueueItem activeItem = queue.Peek();
+                if (activeItem.RemainingBuildTime > remainingDeltaTime)
+                {
+                    activeItem.Advance(remainingDeltaTime);
+                    return;
+                }
+
+                remainingDeltaTime -= activeItem.RemainingBuildTime;
+                UnitRequest completedUnit = queue.Dequeue().UnitRequest;
+                if (queue.Count == 0)
+                {
+                    _productionQueues.Remove(pipelineId);
+                }
+
+                OnUnitCompleted?.Invoke(completedUnit);
+                if (remainingDeltaTime <= 0f)
+                {
+                    return;
+                }
+            }
+        }
+
+        private void NotifyProductionChanged()
+        {
+            OnProductionChanged?.Invoke(GetProductionQueueSnapshots());
         }
     }
 }

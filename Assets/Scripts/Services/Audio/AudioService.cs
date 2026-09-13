@@ -36,7 +36,7 @@ namespace EmpireAtWar.Services.Audio
         private float _lastTimePlaySfx;
         
        
-        public AudioService(ISceneService sceneService, IRepository repository, IGameModelObserver gameModelObserver)
+        public AudioService(ISceneService sceneService, IAssetService repository, IGameModelObserver gameModelObserver)
         {
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;

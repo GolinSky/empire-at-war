@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78f17a0364434049947ddfb07d49d3c4, type: 3}
   m_Name: DefendPlatformData
   m_EditorClassIdentifier: 
-  models:
-  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   <ComponentData>k__BackingField:
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
@@ -39,6 +37,3 @@ MonoBehaviour:
     <Range>k__BackingField: 40
     <Delay>k__BackingField: 5
     <Distance>k__BackingField: 200
-  <HealthModel>k__BackingField: {}
-  <RadarModel>k__BackingField: {}
-  <AttackModel>k__BackingField: {}

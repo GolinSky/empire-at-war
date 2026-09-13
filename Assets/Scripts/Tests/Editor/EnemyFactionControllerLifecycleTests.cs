@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Services.TimerPoolWrapperService;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -41,8 +40,8 @@ namespace EmpireAtWar.Tests.Editor
                     nameof(ReinforcementData.MaxUnitCapacity),
                     10);
 
-                TimerPoolWrapperService timerPool =
-                    new TimerPoolWrapperService();
+                TimerPoolService timerPool =
+                    new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingEconomyProvider economyProvider =
                     new TrackingEconomyProvider();
@@ -99,8 +98,8 @@ namespace EmpireAtWar.Tests.Editor
                     nameof(ReinforcementData.MaxUnitCapacity),
                     10);
 
-                TimerPoolWrapperService timerPool =
-                    new TimerPoolWrapperService();
+                TimerPoolService timerPool =
+                    new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingPurchaseChain purchaseChain =
                     new TrackingPurchaseChain();
@@ -168,31 +167,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static int GetActiveTimerCount(
-            TimerPoolWrapperService timerPool)
+            TimerPoolService timerPool)
         {
             return GetActiveTimers(timerPool).Count;
         }
 
         private static ICollection GetActiveTimers(
-            TimerPoolWrapperService timerPool)
+            TimerPoolService timerPool)
         {
-            FieldInfo timerPoolField = typeof(TimerPoolWrapperService).GetField(
-                "_timerPoolService",
-                PRIVATE_INSTANCE);
-            Assert.That(timerPoolField, Is.Not.Null);
-            object timerPoolService = timerPoolField.GetValue(timerPool);
-            FieldInfo activeTimersField = timerPoolService.GetType().GetField(
+            FieldInfo activeTimersField = typeof(TimerPoolService).GetField(
                 "customCoroutines",
                 PRIVATE_INSTANCE);
             Assert.That(activeTimersField, Is.Not.Null);
             ICollection activeTimers =
-                activeTimersField.GetValue(timerPoolService) as ICollection;
+                activeTimersField.GetValue(timerPool) as ICollection;
             Assert.That(activeTimers, Is.Not.Null);
             return activeTimers;
         }
 
         private static CustomCoroutine GetOnlyActiveTimer(
-            TimerPoolWrapperService timerPool)
+            TimerPoolService timerPool)
         {
             ICollection activeTimers = GetActiveTimers(timerPool);
             Assert.That(activeTimers.Count, Is.EqualTo(1));

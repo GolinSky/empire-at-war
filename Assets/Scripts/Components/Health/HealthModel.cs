@@ -3,197 +3,113 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
-using EmpireAtWar.ViewComponents;
-using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Mvc;
-using UnityEngine;
-using Utilities.ScriptUtils.Math;
-using Zenject;
 
 namespace EmpireAtWar.Models.Health
 {
-    public interface IHealthModelObserver:IModelObserver
-    {
-        event Action OnDestroy;
-        event Action OnValueChanged;
-
-        HardPointModel[] HardPointModels { get; }
-        float Armor { get; }
-        float ArmorPercentage { get; }
-        float Shields { get; }
-        float ShieldPercentage { get; }
-        bool IsDestroyed { get; }
-        bool IsLostShieldGenerator { get; }
-        FloatRange ShieldDangerStateRange { get; }
-
-        void InjectDependency(List<HardPointView> shipUnits);
-        
-        
-        bool HasUnits { get; }
-        IHardPointModel[] GetShipUnits(HardPointType hardPointType);
-        PlayerType PlayerType { get; }
-        Transform Transform { get; }
-        bool HasShields { get; }
-    }
-
     [Serializable]
-    public class HealthModel : PureModel, IHealthModelObserver, IHealthState
+    public class HealthModel : PureModel, IHealthState
     {
         private const float WEAPON_SYSTEM_COEFFICIENT = 0.8f;
-        private const int MAIN_SYSTEM_AMOUNT = 2; 
+
+        private readonly IHealthData _data;
+        private readonly IDamageCalculator _damageCalculator;
+        private readonly float _armorBaseValue;
+        private readonly float _shieldsBaseValue;
+
         public event Action OnValueChanged;
         public event Action OnDestroy;
-        
-        
-        protected float _shieldsBaseValue;
-        private float _armorBaseValue;
-        private IHealthData _data;
 
         public float Armor { get; private set; }
         public float ArmorPercentage => _armorBaseValue <= 0f ? 0f : Armor / _armorBaseValue;
         public float Shields { get; private set; }
         public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
-        public FloatRange ShieldDangerStateRange => _data.ShieldDangerStateRange;
-     
-
-        public HardPointModel[] HardPointModels { get; private set; }
-
-        [Inject]
-        private DamageCalculationData DamageCalculationModel { get; }
-        
-        
+        public HardPointModel[] HardPointModels { get; private set; } = Array.Empty<HardPointModel>();
         public bool IsDestroyed { get; private set; }
-        public bool HasShields => Shields > 0;
+        public bool HasShields => Shields > 0f;
         public float Dexterity => _data.Dexterity;
         public float ShieldPercentage => _shieldsBaseValue <= 0f ? 0f : Shields / _shieldsBaseValue;
-
         public bool IsLostShieldGenerator { get; private set; }
-        
-        public bool HasUnits => HardPointModels.Any(x => !x.IsDestroyed);
-        
-        [Inject]
-        public PlayerType PlayerType { get; }
-        
-        [Inject(Id = EntityBindType.ViewTransform)]
-        public LazyInject<Transform> ViewTransform { get; }
-        
-        public Transform Transform => ViewTransform.Value;
+        public bool HasUnits => HardPointModels.Any(hardPoint => !hardPoint.IsDestroyed);
 
-        [Inject]
-        private void Construct(IHealthData data)
+        public HealthModel(IHealthData data, IDamageCalculator damageCalculator)
         {
-            _data = data;
+            _data = data ?? throw new ArgumentNullException(nameof(data));
+            _damageCalculator = damageCalculator ?? throw new ArgumentNullException(nameof(damageCalculator));
             Armor = data.Armor;
             _armorBaseValue = Armor;
             Shields = data.Shields;
             _shieldsBaseValue = Shields;
         }
 
-        
-        public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
+        public void InitializeHardPoints(IReadOnlyList<HardPointModel> hardPointModels)
         {
-            var currentHardPoints = HardPointModels.Where(x => !x.IsDestroyed).ToArray();
-
-            if (currentHardPoints.Length == 0)
+            if (hardPointModels == null)
             {
-                return null;
-            }
-            if (hardPointType == HardPointType.Any)
-            {
-                return currentHardPoints;
+                throw new ArgumentNullException(nameof(hardPointModels));
             }
 
-            if (currentHardPoints.Any(x => x.HardPointType == hardPointType))
-            {
-                return currentHardPoints.Where(x => x.HardPointType == hardPointType).ToArray();
-            }
-
-            return currentHardPoints;
-        }
-        
-        
-        public void InjectDependency(List<HardPointView> shipUnits)
-        {
-            HardPointModels = new HardPointModel[shipUnits.Count];
-            for (var i = 0; i < shipUnits.Count; i++)
-            {
-                HardPointModels[i] = new HardPointModel(); // Initialize each element
-                HardPointModels[i].SetData(shipUnits[i]);
-            }
-
+            HardPointModels = hardPointModels.ToArray();
             float totalCount = HardPointModels.Length;
-
             if (totalCount == 0)
-                return; // No hardpoints to assign health to
+            {
+                return;
+            }
 
-            float mainSystemCount = HardPointModels.Count(x =>
-                x.HardPointType == HardPointType.Engines || x.HardPointType == HardPointType.ShieldGenerator);
+            float mainSystemCount = HardPointModels.Count(hardPoint =>
+                hardPoint.HardPointType == HardPointType.Engines ||
+                hardPoint.HardPointType == HardPointType.ShieldGenerator);
 
             if (mainSystemCount == 0 || mainSystemCount == totalCount)
             {
-                // All are weapons or all are main systems — distribute equally
                 float healthPerUnit = Armor / totalCount;
-                foreach (HardPointModel model in HardPointModels)
+                foreach (HardPointModel hardPoint in HardPointModels)
                 {
-                    model.SetHealth(healthPerUnit);
+                    hardPoint.SetHealth(healthPerUnit);
                 }
+
+                return;
             }
-            else
+
+            float weaponCount = totalCount - mainSystemCount;
+            float weaponHealth = Armor * WEAPON_SYSTEM_COEFFICIENT;
+            float mainSystemHealth = Armor - weaponHealth;
+            float weaponHealthPerUnit = weaponCount > 0f ? weaponHealth / weaponCount : 0f;
+            float mainSystemHealthPerUnit = mainSystemCount > 0f ? mainSystemHealth / mainSystemCount : 0f;
+
+            foreach (HardPointModel hardPoint in HardPointModels)
             {
-                // Mixed hardpoints
-                float weaponCount = totalCount - mainSystemCount;
-                float weaponHealth = Armor * WEAPON_SYSTEM_COEFFICIENT;
-                float mainSystemHealth = Armor - weaponHealth;
-
-                float weaponHealthPerUnit = weaponCount > 0 ? weaponHealth / weaponCount : 0f;
-                float mainSystemHealthPerUnit = mainSystemCount > 0 ? mainSystemHealth / mainSystemCount : 0f;
-
-                foreach (HardPointModel model in HardPointModels)
-                {
-                    if (model.HardPointType == HardPointType.Engines || model.HardPointType == HardPointType.ShieldGenerator)
-                    {
-                        model.SetHealth(mainSystemHealthPerUnit);
-                    }
-                    else
-                    {
-                        model.SetHealth(weaponHealthPerUnit);
-                    }
-                }
+                bool isMainSystem = hardPoint.HardPointType == HardPointType.Engines ||
+                    hardPoint.HardPointType == HardPointType.ShieldGenerator;
+                hardPoint.SetHealth(isMainSystem ? mainSystemHealthPerUnit : weaponHealthPerUnit);
             }
         }
 
-    
-
         public void ApplyDamage(float damage, WeaponType weaponType, bool isMoving, int shipUnitId)
         {
-            if(IsDestroyed) return;
-            
-            DamageData damageData = DamageCalculationModel.GetDamage(weaponType, this, isMoving, damage);
-            
-            
+            if (IsDestroyed)
+            {
+                return;
+            }
+
+            DamageData damageData = _damageCalculator.GetDamage(weaponType, this, isMoving, damage);
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
-            
-            HardPointModel hardPointModel = HardPointModels[shipUnitId];
-      
 
+            HardPointModel hardPointModel = HardPointModels[shipUnitId];
             float damageLeft = ApplyDamageOnShipUnit(hardPointModel, damageData.ArmorDamage);
-            if (damageLeft > 0)
+            if (damageLeft > 0f)
             {
                 ApplyDamageOnAllUnit(damageLeft);
             }
-            
-                
-            if (Armor <= 0)
+
+            if (Armor <= 0f)
             {
                 IsDestroyed = true;
-                
                 OnDestroy?.Invoke();
             }
-            
+
             OnValueChanged?.Invoke();
         }
 
@@ -202,30 +118,17 @@ namespace EmpireAtWar.Models.Health
             float damageLeft = damage;
             foreach (HardPointModel hardPointModel in HardPointModels)
             {
-                if(hardPointModel.IsDestroyed) continue;
-                
+                if (hardPointModel.IsDestroyed)
+                {
+                    continue;
+                }
+
                 damageLeft = ApplyDamageOnShipUnit(hardPointModel, damageLeft);
-                if (damageLeft == 0)
+                if (damageLeft == 0f)
                 {
                     break;
                 }
             }
-
-        }
-
-        private float ApplyDamageOnShipUnit(HardPointModel hardPointModel, float damage)
-        {
-            float damageLeft = hardPointModel.TryApplyDamage(damage);
-            
-            
-            if (hardPointModel.HardPointType == HardPointType.ShieldGenerator && hardPointModel.IsDestroyed)
-            {
-                IsLostShieldGenerator = true;
-                Shields = 0;
-                // OnValueChanged?.Invoke();
-            }
-
-            return damageLeft;
         }
 
         public void RegenerateShields(float value)
@@ -234,17 +137,16 @@ namespace EmpireAtWar.Models.Health
             OnValueChanged?.Invoke();
         }
 
-
-#if UNITY_EDITOR
-        public void SetHardPoints(IHardPointProvider[] providers)
+        private float ApplyDamageOnShipUnit(HardPointModel hardPointModel, float damage)
         {
-            HardPointModels = new HardPointModel[providers.Length];
-            for (var i = 0; i < providers.Length; i++)
+            float damageLeft = hardPointModel.TryApplyDamage(damage);
+            if (hardPointModel.HardPointType == HardPointType.ShieldGenerator && hardPointModel.IsDestroyed)
             {
-                HardPointModels[i] = new HardPointModel(); // Initialize each element
-                HardPointModels[i].SetDataFromEditor(providers[i].Id, providers[i].HardPointType);
+                IsLostShieldGenerator = true;
+                Shields = 0f;
             }
-        }  
-#endif
+
+            return damageLeft;
+        }
     }
 }

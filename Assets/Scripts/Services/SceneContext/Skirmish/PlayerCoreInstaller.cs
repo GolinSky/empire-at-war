@@ -21,7 +21,7 @@ namespace EmpireAtWar
 {
     public class PlayerCoreInstaller : MonoInstaller
     {
-        [Inject] private IRepository Repository { get; }
+        [Inject] private IAssetService Repository { get; }
         [Inject] private Zenject.SceneContext SceneContext { get; }
 
         public override void InstallBindings()
@@ -34,7 +34,12 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
             Container.BindScriptableObject<PlayerFactionData>(Repository);
-            Container.BindInterfacesAndSelfTo<PlayerFactionModel>().AsSingle();
+            // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
+            FactionType playerFactionType = Container.ResolveId<FactionType>(PlayerType.Player);
+            Container
+                .BindInterfacesAndSelfTo<PlayerFactionModel>()
+                .AsSingle()
+                .WithArguments(playerFactionType);
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();

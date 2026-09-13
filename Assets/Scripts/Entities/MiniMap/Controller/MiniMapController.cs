@@ -5,7 +5,6 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
@@ -27,7 +26,7 @@ namespace EmpireAtWar.Controllers.MiniMap
     {
         private readonly ICameraService _cameraService;
         private readonly IInputService _inputService;
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly TimerPoolService _timerPoolService;
         private readonly IUiService _uiService;
         private readonly ISelectionService _selectionService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -39,7 +38,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             IMapModelObserver mapModel,
             ICameraService cameraService,
             IInputService inputService,
-            ITimerPoolWrapperService timerPoolWrapperService,
+            TimerPoolService timerPoolService,
             IUiService uiService,
             ISelectionService selectionService,
             ISkirmishRouteNavigation routeNavigation,
@@ -48,7 +47,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         {
             _cameraService = cameraService;
             _inputService = inputService;
-            _timerPoolWrapperService = timerPoolWrapperService;
+            _timerPoolService = timerPoolService;
             _uiService = uiService;
             _selectionService = selectionService;
             _routeNavigation = routeNavigation;
@@ -114,7 +113,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             }
             if (!isBlocked)
             {
-                _unblockCoroutine = _timerPoolWrapperService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
+                _unblockCoroutine = _timerPoolService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
             }
             else
             {

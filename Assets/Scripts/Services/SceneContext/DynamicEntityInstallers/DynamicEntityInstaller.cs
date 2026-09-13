@@ -11,7 +11,7 @@ namespace EmpireAtWar
     {
         protected TEntity Entity { get; private set; }
         protected Vector3 StartPosition { get; private set; }
-        protected IRepository Repository { get; private set; }
+        protected IAssetService Repository { get; private set; }
 
         protected virtual Transform EntityTransformParent => transform;
         protected virtual string ModelPathPrefix { get; } = string.Empty;
@@ -20,7 +20,7 @@ namespace EmpireAtWar
         protected virtual string PrefabPathPostfix { get; } = string.Empty;
 
         [Inject]
-        public void Constructor(IRepository repository, Vector3 startPosition)
+        public void Constructor(IAssetService repository, Vector3 startPosition)
         {
             Repository = repository;
             StartPosition = startPosition;
@@ -32,8 +32,11 @@ namespace EmpireAtWar
             BindModel();
             BindComponents();
             BindEntity();
+            Container.Bind<Transform>()
+                .WithId(EntityBindType.ViewTransform)
+                .FromResolveGetter<TEntity>(entity => entity.transform)
+                .AsCached();
             AssignEntity();
-            Container.Install<MonoComponentInstaller>(new object[] { Entity.transform });
             OnEntityCreated();
         }
 

@@ -9,12 +9,12 @@ namespace EmpireAtWar.Ui.Base
     public class UiInstaller: Installer
     {
         private const string DEFAULT_NAME = "Ui";
-        private IRepository _repository;
+        private IAssetService _repository;
         private UiType _uiType;
         private Transform _parent;
         
         [Inject]
-        public void Constructor(IRepository repository, UiType uiType, Transform parent)
+        public void Constructor(IAssetService repository, UiType uiType, Transform parent)
         {
             _parent = parent;
             _uiType = uiType;

@@ -16,7 +16,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
 {
     public class GameUnitsInstaller: Installer
     {
-        [Inject] private IRepository Repository { get; }
+        [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {

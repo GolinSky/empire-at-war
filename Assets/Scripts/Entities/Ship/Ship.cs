@@ -16,7 +16,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.Initialiaze;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -37,8 +36,8 @@ namespace EmpireAtWar.Ship
         void HoldPosition();
     }
 
-    public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateIInitializable,
-        ILateDisposable, ITickable, EmpireAtWar.Commands.Move.IMoveCommand, IUnitMediator,
+    public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable,
+        ILateDisposable, ITickable, IUnitMediator,
         IShipMovementMediator, IEntityLifecycle
     {
         private HardPointModel _enginesUnitModel;
@@ -54,11 +53,10 @@ namespace EmpireAtWar.Ship
         private ShipAIBrain _shipAIBrain;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
-        private IReadOnlyList<IMonoComponent> _monoComponents;
+        private EntityComponentLifecycle _componentLifecycle;
         private PlayerType _playerType;
         private Vector3 _opponentMoveTarget;
         private bool _hasOpponentMoveTarget;
-        private bool _isReleased;
         private ILayerService _layerService;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
@@ -109,7 +107,7 @@ namespace EmpireAtWar.Ship
             _playerType = playerType;
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
-            _monoComponents = monoComponents;
+            _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
@@ -122,6 +120,16 @@ namespace EmpireAtWar.Ship
 
         public void Initialize()
         {
+            foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
+            {
+                if (hardPointModel.HardPointType == HardPointType.Engines)
+                {
+                    _enginesUnitModel = hardPointModel;
+                    _enginesUnitModel.OnHardPointHealthChanged += HandleEnginesData;
+                    break;
+                }
+            }
+
             _shipMoveComponent.SetMediator(this);
             _stateMachine.SetState(_idleState);
             ShipService.Add(this);
@@ -130,23 +138,6 @@ namespace EmpireAtWar.Ship
             _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
 
             SynchronizeComponents();
-        }
-
-        public void LateInitialize()
-        {
-            foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
-            {
-                if (hardPointModel.HardPointType == HardPointType.Engines)
-                {
-                    _enginesUnitModel = hardPointModel;
-                    break;
-                }
-            }
-
-            if (_enginesUnitModel != null)
-            {
-                _enginesUnitModel.OnHardPointHealthChanged += HandleEnginesData;
-            }
         }
 
         public void Tick()
@@ -213,19 +204,13 @@ namespace EmpireAtWar.Ship
 
         private void Release(bool playDeathEffects)
         {
-            if (_isReleased)
+            if (!_componentLifecycle.Release())
             {
                 return;
             }
-
-            _isReleased = true;
             if (playDeathEffects)
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
-            }
-            foreach (IMonoComponent component in _monoComponents)
-            {
-                component.Release();
             }
             if (playDeathEffects)
             {

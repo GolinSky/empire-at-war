@@ -15,7 +15,7 @@ namespace EmpireAtWar
         [SerializeField] private bool bindMonoComponent;
         
         [Inject]
-        protected IRepository Repository { get; }
+        protected IAssetService Repository { get; }
         
         private void OnValidate()
         {

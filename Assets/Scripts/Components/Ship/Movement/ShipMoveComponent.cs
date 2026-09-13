@@ -14,6 +14,8 @@ using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.StationFacing;
 using System;
+using NumericsQuaternion = System.Numerics.Quaternion;
+using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
@@ -57,9 +59,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationSpeed => Model.Speed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
 
-        public Vector3 CurrentPosition => Model.CurrentPosition;
-        public Transform ViewTransform => Model.ViewTransform.Value;
-        public bool IsMoving => Model.IsMoving;
+        public Vector3 CurrentPosition => CurrentViewPosition;
+        public Transform ViewTransform => transform;
+        public bool IsMoving => Model.IsMoving(ToNumerics(CurrentViewPosition));
         public float HyperSpaceDuration => Model.HyperSpaceDuration;
 
         [Inject]
@@ -109,19 +111,19 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _hyperSpaceEase);
             _shipNavigationService.Register(this);
             Model.ConfigureSpawnPose(
-                _startPosition,
-                _stationFacingService.GetRotation(_playerType),
+                ToNumerics(_startPosition),
+                ToNumerics(_stationFacingService.GetRotation(_playerType)),
                 _playerType == PlayerType.Player);
 
-            transform.rotation = Model.StartRotation;
-            transform.position = Model.JumpPosition;
+            transform.rotation = ToUnity(Model.StartRotation);
+            transform.position = ToUnity(Model.JumpPosition);
             _isNavigationReady = false;
-            HyperSpaceJump(Model.HyperSpacePosition);
+            HyperSpaceJump(ToUnity(Model.HyperSpacePosition));
 
             if (_playerType == PlayerType.Player)
             {
                 _fogOfWarSystem.RegisterVisionSource(
-                    Model.ViewTransform.Value,
+                    ViewTransform,
                     _radarModel.Range);
             }
         }
@@ -166,21 +168,21 @@ namespace EmpireAtWar.Components.Ship.Movement
                 requestedPosition,
                 _mapModel.SizeRange,
                 NavigationRadius);
-            if (Model.HasTargetPosition(destination))
+            if (Model.HasTargetPosition(ToNumerics(destination)))
             {
                 return destination;
             }
 
-            Model.SetTargetPosition(destination);
+            Model.SetTargetPosition(ToNumerics(destination));
             UpdateTargetPosition(destination);
-            Vector3 appliedDestination = Model.TargetPosition;
+            Vector3 appliedDestination = ToUnity(Model.TargetPosition);
             MovementMediator.OnPositionChanged(appliedDestination);
             return appliedDestination;
         }
 
         private Vector3 GetWorldCoordinate(Vector2 screenPosition)
         {
-            Vector3 point = _cameraService.GetWorldPoint(screenPosition, Model.CurrentPosition);
+            Vector3 point = _cameraService.GetWorldPoint(screenPosition, CurrentViewPosition);
             point.y = Model.Height;
 
             return point;
@@ -189,7 +191,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3 CalculateLookDirection(Vector3 targetPosition)
         {
             targetPosition.y = Model.Height;
-            return targetPosition - Model.CurrentPosition;
+            return targetPosition - CurrentViewPosition;
         }
 
         public void MoveToPosition(Vector3 targetPosition)
@@ -211,25 +213,29 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public float GetRange(Vector3 targetPosition)
         {
-            return Vector3.Distance(Model.CurrentPosition, targetPosition);
+            return Vector3.Distance(CurrentViewPosition, targetPosition);
         }
 
         public void Stop()
         {
-            Model.SetTargetPosition(CurrentViewPosition);
+            Model.SetTargetPosition(ToNumerics(CurrentViewPosition));
             StopAllMovement();
             MovementMediator.OnStopped();
         }
 
         public void ApplyMoveCoefficient(float coefficient)
         {
+            bool wasMoving = IsMoving;
             Model.ApplyMoveCoefficient(coefficient);
-            Stop();
+            if (wasMoving)
+            {
+                UpdateTargetPosition(ToUnity(Model.TargetPosition));
+            }
         }
 
         public void HandleSelection(bool isSelected)
         {
-            _tweenPlayer.SetSelected(isSelected, Model.IsMoving);
+            _tweenPlayer.SetSelected(isSelected, IsMoving);
         }
 
         private Vector3 CurrentViewPosition => transform.position;
@@ -239,7 +245,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void LookAt(Vector3 targetPosition)
         {
-            if (Model.IsMoving)
+            if (IsMoving)
             {
                 return;
             }
@@ -337,9 +343,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                     this);
             }
 
-            if (!Model.HasTargetPosition(plan.Destination))
+            if (!Model.HasTargetPosition(ToNumerics(plan.Destination)))
             {
-                Model.SetTargetPosition(plan.Destination);
+                Model.SetTargetPosition(ToNumerics(plan.Destination));
             }
 
             StartPath(plan);
@@ -368,6 +374,26 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.RotationSpeed,
                 Model.BodyRotationMaxAngle,
                 () => _shipNavigationService.ClearPlan(this));
+        }
+
+        private static NumericsVector3 ToNumerics(Vector3 value)
+        {
+            return new NumericsVector3(value.x, value.y, value.z);
+        }
+
+        private static NumericsQuaternion ToNumerics(Quaternion value)
+        {
+            return new NumericsQuaternion(value.x, value.y, value.z, value.w);
+        }
+
+        private static Vector3 ToUnity(NumericsVector3 value)
+        {
+            return new Vector3(value.X, value.Y, value.Z);
+        }
+
+        private static Quaternion ToUnity(NumericsQuaternion value)
+        {
+            return new Quaternion(value.X, value.Y, value.Z, value.W);
         }
 
     }

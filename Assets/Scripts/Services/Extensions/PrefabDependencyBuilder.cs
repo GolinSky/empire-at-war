@@ -10,7 +10,7 @@ namespace EmpireAtWar.Extentions
         {
         }
 
-        public void BindFromNewComponent<TEntity>(IRepository repository, Transform parent)
+        public void BindFromNewComponent<TEntity>(IAssetService repository, Transform parent)
             where TEntity : Component
         {
             ConstructName<TEntity>();

@@ -1,33 +1,56 @@
-using EmpireAtWar.Commands.Menu;
-using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Menu
 {
-    public interface IPauseMenuUiView
-    {
-        void SetMenuVisible(bool isVisible);
-    }
-
-    public class PauseMenuUi : BaseUi<IMenuModelModelObserver, IMenuCommand>, IPauseMenuUiView, IInitializable, ILateDisposable
+    public class PauseMenuUi : BaseUi, IPauseMenuUiView
     {
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
 
-        public void Initialize()
+        private IPauseMenuPresenter _presenter;
+        private bool _isInitialized;
+
+        public void SetPresenter(IPauseMenuPresenter presenter)
         {
-            exitButton.onClick.AddListener(Command.ExitSkirmish);
-            resumeButton.onClick.AddListener(Command.ResumeGame);
+            _presenter = presenter;
         }
 
-        public void LateDispose()
+        public void Initialize()
         {
-            exitButton.onClick.RemoveListener(Command.ExitSkirmish);
-            resumeButton.onClick.RemoveListener(Command.ResumeGame);
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            if (_presenter == null || resumeButton == null || exitButton == null || menuPanel == null)
+            {
+                throw new System.InvalidOperationException(
+                    "PauseMenuUi requires its presenter and serialized view references before initialization.");
+            }
+
+            exitButton.onClick.AddListener(_presenter.ExitSkirmish);
+            resumeButton.onClick.AddListener(_presenter.ResumeGame);
+            _isInitialized = true;
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            exitButton.onClick.RemoveListener(_presenter.ExitSkirmish);
+            resumeButton.onClick.RemoveListener(_presenter.ResumeGame);
+            _isInitialized = false;
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
         }
 
         public void SetMenuVisible(bool isVisible)

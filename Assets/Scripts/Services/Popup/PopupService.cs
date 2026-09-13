@@ -44,14 +44,7 @@ namespace EmpireAtWar.Services.Popup
 
         public void ClosePopup(PopupType popupType)
         {
-            // if (popupDictionary.TryGetValue(popupType, out PopupUi popupUI))
-            // {
-            //     //popupUI.ClosePopup();
-            // }
-            // else
-            // {
-            //     Debug.LogError($"No popup with id {popupType} found for closing");
-            // }
+            _popupDictionary[popupType].ClosePopup();
         }
     }
 }

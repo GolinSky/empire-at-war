@@ -38,7 +38,7 @@ namespace EmpireAtWar.Extentions
         
         public static DiContainer BindModel<TModel>(
             this DiContainer container,
-            IRepository repository,
+            IAssetService repository,
             string prefix = null,
             string postfix = null)
          where TModel: Data
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Extentions
         
         public static DiContainer BindScriptableObject<T>(
             this DiContainer container,
-            IRepository repository,
+            IAssetService repository,
             string path = null)
             where T: ScriptableObject
         {
