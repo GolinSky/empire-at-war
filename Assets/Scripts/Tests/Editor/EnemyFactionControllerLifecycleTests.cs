@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
+using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -56,7 +57,8 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     unitLimitModel,
                     reinforcementData,
-                    null);
+                    null,
+                    new UnavailableStructurePlacement());
 
                 controller.Initialize();
                 controller.Handle(
@@ -64,12 +66,14 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(GetActiveTimerCount(timerPool), Is.EqualTo(1));
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.EqualTo(1));
+                Assert.That(unitLimitModel.ShipOrdersCount, Is.EqualTo(1));
 
                 controller.LateDispose();
                 controller.LateDispose();
 
                 Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.Zero);
+                Assert.That(unitLimitModel.ShipOrdersCount, Is.Zero);
                 Assert.That(economyProvider.RemoveCount, Is.EqualTo(1));
             }
             finally
@@ -114,13 +118,15 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     unitLimitModel,
                     reinforcementData,
-                    null);
+                    null,
+                    new UnavailableStructurePlacement());
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 string unitId = $"{request.GetType().FullName}:{request.Id}";
                 Assert.That(
                     unitLimitModel.TryReserve(unitId, 1, 1, 10),
                     Is.True);
+                unitLimitModel.RecordShipOrder();
 
                 LogAssert.Expect(
                     LogType.Error,
@@ -134,6 +140,7 @@ namespace EmpireAtWar.Tests.Editor
                 GetOnlyActiveTimer(timerPool).Release(true);
 
                 Assert.That(purchaseChain.RevertCount, Is.EqualTo(1));
+                Assert.That(unitLimitModel.ShipOrdersCount, Is.Zero);
                 Assert.That(purchaseChain.LastReverted, Is.SameAs(request));
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.Zero);
                 Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
@@ -151,6 +158,15 @@ namespace EmpireAtWar.Tests.Editor
             {
                 UnityEngine.Object.DestroyImmediate(model);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
+            }
+        }
+
+        private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService
+        {
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = default;
+                return false;
             }
         }
 

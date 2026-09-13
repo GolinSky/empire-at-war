@@ -29,6 +29,7 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();
+            Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle();
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
             Container.BindScriptableObject<ReinforcementData>(Repository);
