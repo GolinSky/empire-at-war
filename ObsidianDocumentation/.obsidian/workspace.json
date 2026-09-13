@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Architecture/PROJECT_ORGANIZATION.md",
+                "file": "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PROJECT_ORGANIZATION"
+              "title": "SCRIPTS_CODE_AUDIT_2026-09-12"
             }
           }
         ]
@@ -187,25 +187,21 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
-    "Architecture/PROJECT_ORGANIZATION 2.md",
-    "Architecture/PROJECT_ORGANIZATION 1.md",
-    "Architecture/PROJECT_ORGANIZATION.md",
     "Artifacts/Implementation_Plan.md",
     "Artifacts/Walkthrough.md",
-    "Features/CONTROLS_ANALYSIS.md",
-    "00_Home.md",
-    "TODOs/UI_Service_Refactoring.md",
-    "TODOs/TODOs.md",
-    "Rules/UI_UX_GUIDELINES.md",
-    "Rules/README.md",
     "Rules/AGENTS.md",
-    "Architecture/UI_REFACTORING_PLAYBOOK.md",
-    "Architecture/UI_REFACTORING_PLAYBOOK 1.md",
+    "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
+    "Rules/README.md",
+    "00_Home.md",
     "Artifacts",
     "Rules",
     "Architecture/GRAPHIFY_GUIDE.md",
     "Architecture/SELECTION_SYSTEM.md",
+    "Architecture/UI_REFACTORING_PLAYBOOK.md",
+    "Architecture/PROJECT_ORGANIZATION.md",
     "Architecture",
+    "TODOs/UI_Service_Refactoring.md",
+    "TODOs/TODOs.md",
     "TODOs",
     "AGENTS.md",
     "GRAPHIFY_GUIDE.md",
