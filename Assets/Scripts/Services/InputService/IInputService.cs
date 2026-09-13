@@ -13,6 +13,7 @@ namespace EmpireAtWar.Services.InputService
         event Action<Vector2> OnPrimaryDragChanged;
         event Action<Vector2> OnPrimaryDragEnded;
         event Action OnEscapePressed;
+        event Action OnSelectAllUnitsPressed;
         event Action<bool> OnBlocked;
         event Action<InputType,TouchPhase, Vector2> OnInput;
         

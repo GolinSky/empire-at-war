@@ -57,6 +57,7 @@ namespace EmpireAtWar.Services.Battle
         public void Initialize()
         {
             _inputService.OnInput += HandleInput;
+            _inputService.OnSelectAllUnitsPressed += HandleSelectAllUnitsPressed;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
@@ -64,6 +65,7 @@ namespace EmpireAtWar.Services.Battle
         public void LateDispose()
         {
             _inputService.OnInput -= HandleInput;
+            _inputService.OnSelectAllUnitsPressed -= HandleSelectAllUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _playerSelectionContext.ResetCurrentSelectable();
@@ -141,6 +143,15 @@ namespace EmpireAtWar.Services.Battle
             _lastTappedEntityId = null;
             _selectionBuffer.Clear();
             _selectionQuery.CollectInside(rectangle, _selectionBuffer);
+            SetSelection(PlayerType.Player, _selectionBuffer);
+        }
+
+        private void HandleSelectAllUnitsPressed()
+        {
+            _lastTappedEntityId = null;
+            _selectionBuffer.Clear();
+            _selectionQuery.CollectAllPlayerUnits(_selectionBuffer);
+            ResetAllSelections();
             SetSelection(PlayerType.Player, _selectionBuffer);
         }
 

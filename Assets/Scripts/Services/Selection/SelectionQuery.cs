@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.Battle
     {
         bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection);
         void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results);
+        void CollectAllPlayerUnits(ICollection<SelectionEntry> results);
         void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results);
     }
 
@@ -61,6 +62,21 @@ namespace EmpireAtWar.Services.Battle
                     entity.PlayerType != selected.Entity.PlayerType ||
                     !(entity.Model is IShipModelObserver ship) ||
                     ship.ShipType != selectedShip.ShipType ||
+                    !entity.TryGetCommand(out IEntitySelectionCommand command))
+                {
+                    continue;
+                }
+
+                results.Add(new SelectionEntry(entity, command));
+            }
+        }
+
+        public void CollectAllPlayerUnits(ICollection<SelectionEntry> results)
+        {
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.PlayerType != PlayerType.Player ||
+                    entity.HealthModel.IsDestroyed ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command))
                 {
                     continue;
