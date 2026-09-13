@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.InputService
         public event Action<Vector2> OnPrimaryDragEnded;
         public event Action OnLeftMousePressed;
         public event Action OnEscapePressed;
+        public event Action OnSelectAllUnitsPressed;
         public event Action<float> OnZoom;
         public event Action<Vector2> OnEndDrag;
         public event Action<bool> OnBlocked;
@@ -186,6 +187,8 @@ namespace EmpireAtWar.Services.InputService
 
             if (!_isBlocked)
             {
+                ProcessSelectAllUnitsInput();
+
                 if (MapActions.CameraDrag.IsPressed())
                 {
                     Vector2 dragDelta = MapActions.TouchDelta.ReadValue<Vector2>();
@@ -429,6 +432,15 @@ namespace EmpireAtWar.Services.InputService
                 Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 OnEscapePressed?.Invoke();
+            }
+        }
+
+        private void ProcessSelectAllUnitsInput()
+        {
+            if (Keyboard.current != null &&
+                Keyboard.current.f2Key.wasPressedThisFrame)
+            {
+                OnSelectAllUnitsPressed?.Invoke();
             }
         }
     }

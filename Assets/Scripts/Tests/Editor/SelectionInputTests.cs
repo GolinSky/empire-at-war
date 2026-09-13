@@ -125,6 +125,7 @@ namespace EmpireAtWar.Tests.Selection
             public event Action<Vector2> OnPrimaryDragChanged;
             public event Action<Vector2> OnPrimaryDragEnded;
             public event Action OnEscapePressed;
+            public event Action OnSelectAllUnitsPressed;
             public event Action<bool> OnBlocked;
             public event Action<InputType, TouchPhase, Vector2> OnInput;
             public event Action<Vector2> OnEndDrag;
@@ -165,6 +166,10 @@ namespace EmpireAtWar.Tests.Selection
                 ICollection<SelectionEntry> results)
             {
                 results.Add(selected);
+            }
+
+            public void CollectAllPlayerUnits(ICollection<SelectionEntry> results)
+            {
             }
 
             public void CollectInside(
