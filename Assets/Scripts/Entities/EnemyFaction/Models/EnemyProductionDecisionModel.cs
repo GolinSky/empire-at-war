@@ -73,11 +73,36 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
     public sealed class EnemyProductionDecisionModel : PureModel
     {
+        private const int MINIMUM_FLEET_SIZE = 3;
+
+        public float CalculateShipPriority(
+            EnemyStrategicState state,
+            int shipCount,
+            int reservedCount,
+            int buildTime,
+            int unitCapacity)
+        {
+            bool needsQuickShips = shipCount < MINIMUM_FLEET_SIZE ||
+                state == EnemyStrategicState.CaptureZone ||
+                state == EnemyStrategicState.RebuildFleet;
+            int weight = needsQuickShips
+                ? Math.Max(1, buildTime)
+                : Math.Max(1, unitCapacity);
+
+            // Balance the active and queued fleet; lower priority values build first.
+            return (reservedCount + 1f) * weight;
+        }
+
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)
         {
             if (snapshot.MiningFacilityCount < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
+            }
+
+            if (snapshot.ShipCount < MINIMUM_FLEET_SIZE && snapshot.CanBuildShip)
+            {
+                return EnemyProductionCategory.Ship;
             }
 
             if (snapshot.Difficulty == EnemyAiDifficulty.UltraHard)
@@ -96,8 +121,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     : EnemyProductionCategory.None;
             }
 
-            if (snapshot.StrategicState == EnemyStrategicState.DefendBase &&
-                snapshot.Difficulty >= EnemyAiDifficulty.Hard &&
+            if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
                 snapshot.CanBuildDefense)
             {
                 return EnemyProductionCategory.Defense;
@@ -150,11 +174,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel &&
-                snapshot.HasLevelUpOption)
+                snapshot.HasLevelUpOption && snapshot.CanLevelUp)
             {
-                return snapshot.CanLevelUp
-                    ? EnemyProductionCategory.Level
-                    : EnemyProductionCategory.None;
+                return EnemyProductionCategory.Level;
             }
 
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&

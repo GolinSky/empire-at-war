@@ -47,6 +47,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CaptureZone_CommitsFasterShipBeforeCapitalShip()
+        {
+            FakeShip capital = new FakeShip(Vector3.zero) { NavigationSpeed = 0.8f };
+            FakeShip scout = new FakeShip(Vector3.right * 20f) { NavigationSpeed = 3f };
+            Vector3 target = new Vector3(55f, 0f, -55f);
+            EnemyStrategicContext context = new EnemyStrategicContext(
+                default,
+                new IShipEntity[] { capital, scout },
+                target,
+                null,
+                null,
+                null);
+
+            new EnemyTaskForceExecutor().Execute(
+                new EnemyStrategicDecision(EnemyStrategicState.CaptureZone, 1, "test"),
+                context);
+
+            Assert.That(scout.AssignedMoveTarget, Is.EqualTo(target));
+            Assert.That(capital.AssignedMoveTarget, Is.EqualTo(Vector3.zero));
+        }
+
+        [Test]
         public void ExecuteHuntFleet_AssignsDistinctAttackFormationOffsets()
         {
             FakeShip first = new FakeShip(new Vector3(-20f, 0f, 0f));
@@ -148,6 +170,7 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerType PlayerType => PlayerType.Opponent;
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 5f;
+            public float NavigationSpeed { get; set; } = 1f;
             public Vector3 AssignedMoveTarget { get; private set; }
             public IEntity AssignedAttackTarget { get; private set; }
             public Vector3 AssignedAttackOffset { get; private set; }

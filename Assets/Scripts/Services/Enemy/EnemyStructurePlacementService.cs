@@ -18,12 +18,15 @@ namespace EmpireAtWar.Services.Enemy
         private const float MAXIMUM_ANCHOR_DISTANCE = 88f;
         private const float RING_SPACING = 12f;
         private const int POSITIONS_PER_RING = 32;
+        private const int MAX_RECENT_DESTROYED_POSITIONS = 10;
+        private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
 
         private readonly EnemyFactionData _factionModel;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IReinforcementZonesSystem _zones;
         private readonly int _obstacleMask;
         private readonly List<Vector3> _capturedZoneCenters = new List<Vector3>();
+        private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
         public EnemyStructurePlacementService(
             EnemyFactionData factionModel,
@@ -64,6 +67,21 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
+        public void RecordDestroyedPosition(Vector3 position)
+        {
+            if (_recentDestroyedPositions.Count == MAX_RECENT_DESTROYED_POSITIONS)
+            {
+                _recentDestroyedPositions.Dequeue();
+            }
+
+            _recentDestroyedPositions.Enqueue(position);
+        }
+
+        public void Reset()
+        {
+            _recentDestroyedPositions.Clear();
+        }
+
         private bool TryGetPositionNear(Vector3 anchor, out Vector3 position)
         {
             var bounds = _mapModel.Value.SizeRange;
@@ -82,6 +100,7 @@ namespace EmpireAtWar.Services.Enemy
                         candidate.x + STRUCTURE_CLEARANCE > bounds.Max.x ||
                         candidate.z - STRUCTURE_CLEARANCE < bounds.Min.y ||
                         candidate.z + STRUCTURE_CLEARANCE > bounds.Max.y ||
+                        IsNearRecentDestroyedPosition(candidate) ||
                         _zones.IsPositionInAnyZone(candidate, STRUCTURE_CLEARANCE) ||
                         Physics.CheckSphere(candidate, STRUCTURE_CLEARANCE,
                             _obstacleMask, QueryTriggerInteraction.Ignore))
@@ -95,6 +114,21 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             position = default;
+            return false;
+        }
+
+        private bool IsNearRecentDestroyedPosition(Vector3 candidate)
+        {
+            float exclusionRadiusSquared =
+                DESTROYED_POSITION_EXCLUSION_RADIUS * DESTROYED_POSITION_EXCLUSION_RADIUS;
+            foreach (Vector3 destroyedPosition in _recentDestroyedPositions)
+            {
+                if ((candidate - destroyedPosition).sqrMagnitude <= exclusionRadiusSquared)
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
     }

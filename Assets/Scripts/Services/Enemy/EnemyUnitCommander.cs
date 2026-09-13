@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.Enemy
     public interface IEnemyAiStateProvider
     {
         EnemyStrategicState CurrentState { get; }
+        int ActiveShipCount { get; }
     }
 
     public sealed class EnemyUnitCommander :
@@ -68,6 +69,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicSnapshot LastSnapshot { get; private set; }
         public EnemyStrategicState CurrentState =>
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
+        public int ActiveShipCount => LastSnapshot.OwnShipCount;
 
         public void Initialize()
         {

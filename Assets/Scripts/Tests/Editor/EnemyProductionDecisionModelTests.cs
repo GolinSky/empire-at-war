@@ -19,6 +19,44 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class EnemyProductionDecisionModelTests
     {
+        [TestCase(EnemyAiDifficulty.Easy, 0)]
+        [TestCase(EnemyAiDifficulty.Medium, 1)]
+        [TestCase(EnemyAiDifficulty.Hard, 2)]
+        [TestCase(EnemyAiDifficulty.UltraHard, 1)]
+        public void DepletedFleet_RebuildsBeforeInfrastructureAndTechnology(
+            EnemyAiDifficulty difficulty,
+            int shipCount)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.DefendBase, difficulty,
+                    0, shipCount, 100, 0, 5, 5, 5,
+                    true, true, true, true, true, true, true, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
+        [Test]
+        public void CaptureFleet_BalancesQuickShipsWithSlowerReinforcements()
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            float firstLight = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 5, 2);
+            float firstMedium = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 10, 4);
+            float firstHeavy = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 25, 6);
+            float sixthLight = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 7, 5, 5, 2);
+            float thirdMedium = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 7, 2, 10, 4);
+
+            Assert.That(firstLight, Is.LessThan(firstMedium));
+            Assert.That(firstMedium, Is.LessThan(firstHeavy));
+            Assert.That(firstHeavy, Is.LessThan(sixthLight));
+            Assert.That(firstHeavy, Is.LessThan(thirdMedium));
+        }
+
         [TestCase(EnemyAiDifficulty.Easy, 1)]
         [TestCase(EnemyAiDifficulty.Medium, 1)]
         [TestCase(EnemyAiDifficulty.Hard, 2)]
@@ -99,7 +137,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EasyDefenseState_PrioritizesShipsAfterEconomicFloor()
+        public void EasyDefenseState_ReplacesMissingPlatformAfterEconomicFloor()
         {
             EnemyProductionCategory result = Evaluate(
                 EnemyStrategicState.DefendBase,
@@ -111,7 +149,7 @@ namespace EmpireAtWar.Tests.Editor
                 true,
                 true);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Defense));
         }
 
         [Test]
@@ -124,7 +162,7 @@ namespace EmpireAtWar.Tests.Editor
                 true,
                 true,
                 true,
-                true,
+                false,
                 true);
 
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Level));
@@ -178,7 +216,7 @@ namespace EmpireAtWar.Tests.Editor
         public void UltraHardExpandsMiningBeforeDueTechnology()
         {
             EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 1,
+                shipCount: 3,
                 shipsOrdered: 2,
                 miningFacilityCount: 3,
                 miningFacilityTarget: 4,
@@ -197,10 +235,10 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void UltraHardDueTechnology_SavesInsteadOfFallingBackToDefense()
+        public void UltraHardDueTechnology_ReplacesDefenseWhenUpgradeIsUnaffordable()
         {
             EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 1,
+                shipCount: 3,
                 shipsOrdered: 2,
                 miningFacilityCount: 3,
                 miningFacilityTarget: 3,
@@ -215,7 +253,7 @@ namespace EmpireAtWar.Tests.Editor
                 hasDefenseOption: true,
                 canBuildDefense: true);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Defense));
         }
 
         [Test]
@@ -255,7 +293,7 @@ namespace EmpireAtWar.Tests.Editor
                     state,
                     difficulty,
                     miningFacilityCount,
-                    1,
+                    3,
                     1,
                     0,
                     1,
@@ -423,9 +461,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(5000f, ShipType.Providence)]
-        [TestCase(1500f, null)]
-        public void UltraHardPrefersHighestLevelShipAndSavesForIt(
+        [TestCase(5000f, ShipType.Recusant)]
+        [TestCase(1500f, ShipType.Munificent)]
+        [TestCase(0f, null)]
+        public void UltraHardRebuild_SelectsVariedAffordableShipsAndRechecksLosses(
             float money,
             ShipType? expectedShip)
         {
@@ -492,6 +531,19 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(
                         ((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
                         Is.EqualTo(expectedShip.Value));
+
+                    strategy.Tick(0f);
+                    Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
+
+                    unitLimitModel.Release(
+                        GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()),
+                        existingShipData.UnitCapacity);
+                    strategy.Tick(0f);
+
+                    Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(2));
+                    Assert.That(
+                        ((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
+                        Is.EqualTo(ShipType.Munificent));
                 }
                 else
                 {
@@ -582,6 +634,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class StateProviderStub : IEnemyAiStateProvider
         {
+            public int ActiveShipCount => 1;
             public EnemyStrategicState CurrentState =>
                 EnemyStrategicState.RebuildFleet;
         }
@@ -589,6 +642,14 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class StructurePlacementServiceStub :
             IEnemyStructurePlacementService
         {
+            public void RecordDestroyedPosition(Vector3 position)
+            {
+            }
+
+            public void Reset()
+            {
+            }
+
             public bool TryGetPosition(out Vector3 position)
             {
                 position = Vector3.zero;
@@ -599,6 +660,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingPurchaseProcessor : IEnemyPurchaseProcessor
         {
             public UnitRequest LastRequest { get; private set; }
+            public int RequestCount { get; private set; }
 
             public IChainHandler<UnitRequest> SetNext(
                 IChainHandler<UnitRequest> chainHandler)
@@ -609,6 +671,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Handle(UnitRequest request)
             {
                 LastRequest = request;
+                RequestCount++;
             }
         }
     }

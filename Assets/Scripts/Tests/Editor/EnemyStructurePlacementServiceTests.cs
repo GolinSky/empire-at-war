@@ -90,7 +90,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void OccupiedSite_IsReusableWhenItsStructureBecomesDead()
+        public void DestroyedSite_IsNotReusedWhenItsStructureBecomesDead()
         {
             Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
             GameObject structure = Block(first, Vector3.one * 20f);
@@ -99,9 +99,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Vector3.Distance(first, second), Is.GreaterThan(16f));
 
             structure.layer = DEAD_LAYER;
+            _service.RecordDestroyedPosition(first);
 
             Assert.That(_service.TryGetPosition(out Vector3 replacement), Is.True);
-            Assert.That(replacement, Is.EqualTo(first));
+            Assert.That(Vector3.Distance(replacement, first), Is.GreaterThan(1f));
+        }
+
+        [Test]
+        public void Query_WithoutRecordingPlacementDoesNotReservePosition()
+        {
+            Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
+            Assert.That(_service.TryGetPosition(out Vector3 second), Is.True);
+
+            Assert.That(second, Is.EqualTo(first));
         }
 
         private GameObject Block(Vector3 position, Vector3 size)

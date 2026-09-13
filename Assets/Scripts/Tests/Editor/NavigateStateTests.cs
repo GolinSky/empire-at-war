@@ -46,6 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             public Transform ViewTransform => null;
             public bool IsMoving => false;
             public float NavigationRadius => 1f;
+            public float NavigationSpeed => 1f;
             public float HyperSpaceDuration => 0f;
             public Vector3 LastWorldDestination { get; private set; }
             public int WorldMoveCount { get; private set; }

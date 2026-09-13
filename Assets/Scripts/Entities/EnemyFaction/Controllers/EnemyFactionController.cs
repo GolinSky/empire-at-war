@@ -126,11 +126,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(miningFacilityUnitRequest, () =>
                         {
+                            Vector3 position = GenerateMapCoordinates();
                             MiningFacilityEntity facility = _miningFacilityFacade.Create(
                                 PlayerType,
                                 miningFacilityUnitRequest.Key,
-                                GenerateMapCoordinates());
-                            facility.OnRelease += () => ReleaseUnit(miningFacilityUnitRequest);
+                                position);
+                            facility.OnRelease += () =>
+                            {
+                                _structurePlacement.RecordDestroyedPosition(
+                                    facility.transform.position);
+                                ReleaseUnit(miningFacilityUnitRequest);
+                            };
                         });
                     break;
                 }
@@ -144,11 +150,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(defendPlatformUnitRequest, () =>
                         {
+                            Vector3 position = GenerateMapCoordinates();
                             DefendPlatformEntity platform = _defendPlatformFacade.Create(
                                 PlayerType,
                                 defendPlatformUnitRequest.Key,
-                                GenerateMapCoordinates());
-                            platform.OnRelease += () => ReleaseUnit(defendPlatformUnitRequest);
+                                position);
+                            platform.OnRelease += () =>
+                            {
+                                _structurePlacement.RecordDestroyedPosition(
+                                    platform.transform.position);
+                                ReleaseUnit(defendPlatformUnitRequest);
+                            };
                         });
                     break;
                 }
@@ -288,6 +300,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _unitLimitModel.Reset();
+            _structurePlacement.Reset();
             _economyProvider.AddProvider(this);
             _isInitialized = true;
         }

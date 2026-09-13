@@ -5,6 +5,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Ship;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -105,6 +106,43 @@ namespace EmpireAtWar.Tests.Editor
                 system.CopyOwnedCapturableZoneCenters(PlayerType.Opponent, centers);
 
                 Assert.That(centers, Is.EqualTo(new[] { capturedPosition }));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [TestCase(40f, true)]
+        [TestCase(1f, false)]
+        public void EnemySpawn_PrefersCapturedZoneAndFallsBackWhenShipDoesNotFit(
+            float capturedRadius,
+            bool usesCapturedZone)
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZoneView home = CreateZone(
+                    root.transform, PlayerType.Opponent, false, new Vector3(160f, 0f, -170f));
+                ReinforcementZoneView captured = CreateZone(
+                    root.transform, PlayerType.Opponent, true, Vector3.zero);
+                SetField(captured, "_radius", capturedRadius);
+                ReinforcementZonesSystem system = CreateSystem(root, data, home, captured);
+                SetField(system, "_shipService", new ShipService());
+                Dictionary<ShipType, float> radii = (Dictionary<ShipType, float>)
+                    typeof(ReinforcementZonesSystem).GetField(
+                        "_shipNavigationRadii", PRIVATE_INSTANCE).GetValue(system);
+                radii.Add(ShipType.Arquitens, 5f);
+
+                bool found = system.TryGetRandomSpawnPosition(
+                    PlayerType.Opponent, ShipType.Arquitens, out Vector3 position);
+
+                Assert.That(found, Is.True);
+                ReinforcementZoneView expectedZone = usesCapturedZone ? captured : home;
+                Assert.That(Vector3.Distance(position, expectedZone.Center),
+                    Is.LessThanOrEqualTo(expectedZone.Radius - 5f));
             }
             finally
             {
