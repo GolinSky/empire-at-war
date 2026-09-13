@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Battle
         bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection);
         void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results);
         void CollectAllPlayerUnits(ICollection<SelectionEntry> results);
+        void CollectVisiblePlayerUnits(ICollection<SelectionEntry> results);
         void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results);
     }
 
@@ -78,6 +79,32 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command))
+                {
+                    continue;
+                }
+
+                results.Add(new SelectionEntry(entity, command));
+            }
+        }
+
+        public void CollectVisiblePlayerUnits(ICollection<SelectionEntry> results)
+        {
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.PlayerType != PlayerType.Player ||
+                    entity.HealthModel.IsDestroyed ||
+                    !entity.TryGetCommand(out IEntitySelectionCommand command) ||
+                    !(command is ISelectionPositionProvider positionProvider))
+                {
+                    continue;
+                }
+
+                Vector3 viewportPoint = _cameraService.WorldToViewportPoint(positionProvider.WorldPosition);
+                if (viewportPoint.z <= 0f ||
+                    viewportPoint.x < 0f ||
+                    viewportPoint.x > 1f ||
+                    viewportPoint.y < 0f ||
+                    viewportPoint.y > 1f)
                 {
                     continue;
                 }
