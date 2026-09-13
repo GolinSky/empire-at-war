@@ -1,0 +1,245 @@
+[
+  {
+    "path": "/Users/golinsky/.codex/config.toml",
+    "sha256": "4837bd4b6a1767545ba449a461e812049c3e72fd35e2642d5090dff8c4717d83",
+    "bytes": 5507,
+    "lines": 171,
+    "mtime": 1789208577.7876036,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.codex/AGENTS.md",
+    "sha256": "eea3db230766c0777d5a2c96010ff1837396113fc245e7fab7a57dd6faf3da4a",
+    "bytes": 4052,
+    "lines": 98,
+    "mtime": 1788373840.781773,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.codex/rules/default.rules",
+    "sha256": "7a0eeb8291a48d0dd39e1294de38224a8bb689e404a50b607fc5e4d010961d55",
+    "bytes": 462,
+    "lines": 7,
+    "mtime": 1788454059.0127006,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.local/share/chezmoi/home/dot_codex/config.toml.tmpl",
+    "sha256": "80195830530caef8c1ea71afaf47c62c3c1da02f00a4f85a608796876d90327f",
+    "bytes": 10911,
+    "lines": 316,
+    "mtime": 1788373865.7024791,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.local/share/chezmoi/home/dot_codex/AGENTS.md",
+    "sha256": "eea3db230766c0777d5a2c96010ff1837396113fc245e7fab7a57dd6faf3da4a",
+    "bytes": 4052,
+    "lines": 98,
+    "mtime": 1788373656.020537,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.local/share/chezmoi/home/dot_codex/rules/default.rules.tmpl",
+    "sha256": "b92f3f2bccda09ece4569b7d0adabed8da1fd116cbf40fe5ac0d7a28df002951",
+    "bytes": 6865,
+    "lines": 21,
+    "mtime": 1788373656.0207617,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.local/share/chezmoi/MACOS_RECEIVER.md",
+    "sha256": "6e6b0413c292349c06f2b99dc9b5c9c7627edb54a3fcd4a33d44f33ba7aa7ccd",
+    "bytes": 5518,
+    "lines": 243,
+    "mtime": 1788373656.0192683,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/.local/share/chezmoi/WINDOWS11_DONOR.md",
+    "sha256": "debb7c5acaa5c5e25a77180c0471e686fa5af6845517649ecd170541c4085e06",
+    "bytes": 13046,
+    "lines": 533,
+    "mtime": 1788373656.019373,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/AGENTS.md",
+    "sha256": "f3ad19937c7e1b46aec22b80e219d6eb1f93f19cfff5bbb85921e30b3df8e118",
+    "bytes": 13796,
+    "lines": 173,
+    "mtime": 1788960030.7854843,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/config.toml",
+    "sha256": "7e8f8a4acaeb833c52d99db1eb62c320040c6539eb8045fc567b78b09f195755",
+    "bytes": 1531,
+    "lines": 65,
+    "mtime": 1788960030.7839372,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/csharp-worker.toml",
+    "sha256": "79a9ef90ddf3cbf3706820f24301db78aceaaedecef07f1c56cb5979ad0874e3",
+    "bytes": 1381,
+    "lines": 37,
+    "mtime": 1788960030.7834356,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/unity-operator.toml",
+    "sha256": "9c00394597e8544651c309a735178cd7e654b4449b70acc3a8f71927255e4c2c",
+    "bytes": 1186,
+    "lines": 32,
+    "mtime": 1788960030.7836125,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/code-explorer.toml",
+    "sha256": "869e1e4501159811e4ecbf88554dc7486d31931d00bcc2ce69f1ae54c5bafe9f",
+    "bytes": 986,
+    "lines": 28,
+    "mtime": 1788960030.783254,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/unity-reviewer.toml",
+    "sha256": "a334105e07704ee130e13813b200c6aecb5c5ec32fb6f2431b1f9c1e9b3dc741",
+    "bytes": 1522,
+    "lines": 35,
+    "mtime": 1788960030.783771,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/unity-test-runner.toml",
+    "sha256": "f3e958159bb317283adbef1ed95d6307d0f5c65658821eb3a917e560c229d71a",
+    "bytes": 1283,
+    "lines": 33,
+    "mtime": 1788960030.7838545,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/unity-architect.toml",
+    "sha256": "69d619405412a7fab80becc8849a7cd123f085c63b684771793ce5470ee861ca",
+    "bytes": 1106,
+    "lines": 31,
+    "mtime": 1788960030.7835193,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/unity-profiler.toml",
+    "sha256": "25e06ac879e1f359eee84bc8b40a0bf543ba4d123a5577b5fc2705c36fa11328",
+    "bytes": 1198,
+    "lines": 31,
+    "mtime": 1788960030.7836895,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/context-curator.toml",
+    "sha256": "839bdc5f7a7adf9d5ae1d625663a21b35fa3e629ef092c615a13aa3e70d63c91",
+    "bytes": 684,
+    "lines": 24,
+    "mtime": 1788960030.7833483,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.codex/agents/README.md",
+    "sha256": "ad439afa5f2f86a9033c9ffb42e85561f6a8fecccec9eea06b8c0bc6ecfd9a6b",
+    "bytes": 1330,
+    "lines": 23,
+    "mtime": 1788960030.7831697,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.agents/mcp_config.json",
+    "sha256": "99f7f2c005b742c65f27f08261503a9dab67876927df60c87861615f07c34c2c",
+    "bytes": 469,
+    "lines": 19,
+    "mtime": 1788960030.782813,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.gemini/mcp_config.json",
+    "sha256": "0dd4f783233b9d5b923a15f7092f6d7fdbd15d271f5fb293bb8d975bdc10d91e",
+    "bytes": 405,
+    "lines": 17,
+    "mtime": 1788960030.7841375,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/.antigravity/mcp_config.json",
+    "sha256": "0dd4f783233b9d5b923a15f7092f6d7fdbd15d271f5fb293bb8d975bdc10d91e",
+    "bytes": 405,
+    "lines": 17,
+    "mtime": 1788960030.7829764,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/00_Home.md",
+    "sha256": "c9c9ac33b7ade3f936a9dab291f0bea84a6fc5b57a13e90eed539c07672335b3",
+    "bytes": 1482,
+    "lines": 43,
+    "mtime": 1788960033.1585546,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": true
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/Rules/AGENTS.md",
+    "sha256": "f90128228664fab4a95e922d67122e77d58cab3ab1e7758d9a2d2c418afb2911",
+    "bytes": 5154,
+    "lines": 61,
+    "mtime": 1788960033.160261,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/Rules/README.md",
+    "sha256": "d2cd3a15ce88e1a64bb38f49e104be4a1ec0c683407ae7a780aa222e0dc9971e",
+    "bytes": 2705,
+    "lines": 49,
+    "mtime": 1788960033.160345,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/Packages/manifest.json",
+    "sha256": "0d34b96498b4c272dcd252af0dc88cd70f0196c85b9af18a983d4b8499782a90",
+    "bytes": 2957,
+    "lines": 59,
+    "mtime": 1788960617.567875,
+    "kind": "config",
+    "sensitive_content_not_copied": false
+  },
+  {
+    "path": "/Users/golinsky/Projects/empire-at-war/ProjectSettings/ProjectVersion.txt",
+    "sha256": "7682d5a612c24f8310ca7094cfe88140abc299dafb4a92293d3b405f524d6f8e",
+    "bytes": 83,
+    "lines": 2,
+    "mtime": 1788960033.1616554,
+    "kind": "instruction_or_reference",
+    "sensitive_content_not_copied": false
+  }
+]
