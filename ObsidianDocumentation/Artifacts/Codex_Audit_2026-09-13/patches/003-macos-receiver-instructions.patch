@@ -1,0 +1,31 @@
+--- a/MACOS_RECEIVER.md
++++ b/MACOS_RECEIVER.md
+@@ -149,7 +149,11 @@
+ Confirm that the variables are present in the current session:
+ 
+ ```zsh
+-echo $CONTEXT7_API_KEY
++if [[ -n "${CONTEXT7_API_KEY:-}" ]]; then
++    echo "CONTEXT7_API_KEY is set"
++else
++    echo "CONTEXT7_API_KEY is missing"
++fi
+ ```
+ 
+ ---
+@@ -159,7 +163,7 @@
+ Do not copy `auth.json` from the Windows donor. Run official authentication directly on the Mac:
+ 
+ ```zsh
+-codex auth login
++codex login
+ ```
+ 
+ Follow the browser prompt to complete login. This creates a fresh, valid `~/.codex/auth.json` on macOS.
+@@ -239,5 +243,5 @@
+ - [ ] `~/.codex/config.toml` exists and contains macOS-compatible paths/settings.
+ - [ ] `~/.codex/AGENTS.md` and `~/.agents/skills` exist.
+ - [ ] `CONTEXT7_API_KEY` added to `~/.zshrc`.
+-- [ ] `codex auth login` completed successfully.
++- [ ] `codex login` completed successfully.
+ - [ ] `codex mcp list` displays configured MCP servers.

@@ -1,0 +1,17 @@
+--- a/.codex/agents/README.md
++++ b/.codex/agents/README.md
+@@ -1,4 +1,4 @@
+-# Sol High multi-agent setup
++# Project multi-agent setup
+ 
+ ## Recommended role mapping
+ 
+@@ -17,7 +17,7 @@
+ 
+ - Use one writer at a time for overlapping Unity/C# scope.
+ - Run read-only roles in parallel only when their scopes are genuinely independent.
+-- Keep the parent/orchestrator on GPT-5.6 Sol High as the final decision-maker.
++- Keep the parent/orchestrator as the final decision-maker, using the model and reasoning effort selected for the current task.
+ - Each child has `[agents] enabled = false` so it cannot recursively create more subagents.
+ - Graphify remains disabled by repository policy; `code_explorer` uses Serena and targeted source inspection.
+ - Automated tests may run only when the user explicitly requests them.

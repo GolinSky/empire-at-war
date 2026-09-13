@@ -1,0 +1,11 @@
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -34,7 +34,7 @@
+ - Serena MCP is configured only for this repository in `.codex/config.toml`. Never install or register Serena in user/global Codex configuration.
+ - Use Serena for live C# symbol work: symbol/file overviews, definitions, callers and references, implementations, diagnostics, symbol-aware renames, and surgical symbol-body edits.
+ - Use built-in search/read/patch tools for non-code files, exact text searches, and small line-oriented edits. Use Unity tooling, not Serena, for scenes, prefabs, assets, Editor state, imports, serialization, and play/build operations.
+-- The local MCP launch auto-activates the project from the current working directory. If Serena reports that no project is active, activate `F:\Private\empire-at-war`.
++- The local MCP launch auto-activates the project from the current working directory. If Serena reports that no project is active, activate the verified absolute root of the current repository on this host.
+ - Do not run Serena onboarding or write Serena memories automatically. `AGENTS.md` is the source of durable agent instructions; use Serena memories only when the user explicitly requests them.
+ 
+ ## Subagent Orchestration
