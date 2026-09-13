@@ -14,6 +14,7 @@ namespace EmpireAtWar.Views.MiniMap
     public interface IMiniMapPositionConvector
     {
         Vector2 GetPosition(Vector3 worldPos);
+        Vector2 GetSize(float worldDiameter);
     }
     public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
     {
@@ -28,10 +29,11 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Image mapImage;
 
         private List<Image> _mapMarkers = new List<Image>();
+        private Dictionary<MiniMapMarker, MarkView> _markerViews =
+            new Dictionary<MiniMapMarker, MarkView>();
         private Vector2Range _mapRange;
         private bool _isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
-
 
         public void Initialize()
         {
@@ -39,8 +41,14 @@ namespace EmpireAtWar.Views.MiniMap
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
             AddDynamicMark(Model.CameraMark);
+            foreach (MiniMapMarker marker in Model.Markers)
+            {
+                AddMarker(marker);
+            }
             Model.OnMarkAdded += AddMark;
             Model.OnDynamicMarkAdded += AddDynamicMark;
+            Model.OnMarkerAdded += AddMarker;
+            Model.OnMarkerRemoved += RemoveMarker;
             Model.OnInteractableChanged += ActivateInteraction;
         }
 
@@ -48,6 +56,8 @@ namespace EmpireAtWar.Views.MiniMap
         {
             Model.OnMarkAdded -= AddMark;
             Model.OnDynamicMarkAdded -= AddDynamicMark;
+            Model.OnMarkerAdded -= AddMarker;
+            Model.OnMarkerRemoved -= RemoveMarker;
             Model.OnInteractableChanged -= ActivateInteraction;
         }
 
@@ -72,6 +82,26 @@ namespace EmpireAtWar.Views.MiniMap
             _mapMarkers.Add(view.IconImage);
         }
 
+        private void AddMarker(MiniMapMarker marker)
+        {
+            MarkView view = Instantiate(Model.MarkViewPrefab);
+            view.SetData(this, iconParent, marker, Model.GetIcon(marker.MarkType));
+            _markerViews.Add(marker, view);
+            _mapMarkers.Add(view.IconImage);
+        }
+
+        private void RemoveMarker(MiniMapMarker marker)
+        {
+            if (!_markerViews.Remove(marker, out MarkView view))
+            {
+                return;
+            }
+
+            _mapMarkers.Remove(view.IconImage);
+            view.Release();
+            Destroy(view.gameObject);
+        }
+
         public Vector2 GetPosition(Vector3 worldPos)
         {
             float x = Mathf.InverseLerp(_mapRange.Min.x, _mapRange.Max.x, worldPos.x);
@@ -84,6 +114,13 @@ namespace EmpireAtWar.Views.MiniMap
             };
 
             return miniMapPos;
+        }
+
+        public Vector2 GetSize(float worldDiameter)
+        {
+            return new Vector2(
+                MiniMapRect.width * worldDiameter / (_mapRange.Max.x - _mapRange.Min.x),
+                MiniMapRect.height * worldDiameter / (_mapRange.Max.y - _mapRange.Min.y));
         }
 
         public void OnPointerDown(PointerEventData eventData)

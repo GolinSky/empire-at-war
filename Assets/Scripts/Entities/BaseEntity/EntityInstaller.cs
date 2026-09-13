@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.Presenters.MiniMap;
 using UnityEngine;
 using Zenject;
 
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         {
             Container.BindInterfacesNonLazyExt<Entity>();
             Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_entity.gameObject).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<MiniMapUnitMarkerPresenter>().AsSingle().NonLazy();
 
             Container.BindEntityExt(_uniqueIdGenerator.GenerateUniqueId());
         }
