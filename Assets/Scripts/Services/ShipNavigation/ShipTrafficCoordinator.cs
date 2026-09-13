@@ -116,7 +116,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             ShipBezierRoute route,
             float turnDuration,
             float movementDuration,
-            float heightTolerance)
+            float heightTolerance,
+            bool preserveCourse = false)
         {
             ShipTrafficPath trafficPath = _scheduler.CreateTrajectory(
                 route,
@@ -128,6 +129,11 @@ namespace EmpireAtWar.Services.ShipNavigation
                 heightTolerance,
                 _reservations);
             float waitDuration = Mathf.Max(turnDuration, trafficDelay);
+            if (preserveCourse && waitDuration > Mathf.Epsilon)
+            {
+                return new ShipTrafficSchedule(waitDuration, _scheduler.LastExactConflictCheckCount);
+            }
+
             _reservations[agent] = new ShipTrafficReservation(
                 destination,
                 trafficPath,

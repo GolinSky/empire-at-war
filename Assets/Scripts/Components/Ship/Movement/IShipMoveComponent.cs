@@ -11,10 +11,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         Vector3 CurrentPosition { get; }
         Transform ViewTransform { get; }
         bool IsMoving { get; }
+        bool IsBlocked { get; }
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
         Vector3 CalculateLookDirection(Vector3 targetPosition);
-        void MoveToPosition(Vector3 targetPosition);
+        void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
         void MoveToPositionOnScreen(Vector2 targetPosition);
         void LookAtTarget(Vector3 targetPosition);
         float GetRange(Vector3 targetPosition);

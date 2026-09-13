@@ -51,6 +51,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         private ShipMovementTweenPlayer _tweenPlayer;
         private readonly List<RadarContact> _navigationContacts =
             new List<RadarContact>();
+        private Vector3 _lastBroadsideDirection;
+        private bool _hasBroadsideDirection;
+        private Vector3? _deferredTargetPosition;
+        private Vector3? _blockedTargetPosition;
+        private readonly List<RadarContact> _blockedNavigationContacts =
+            new List<RadarContact>();
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -62,6 +68,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3 CurrentPosition => CurrentViewPosition;
         public Transform ViewTransform => transform;
         public bool IsMoving => Model.IsMoving(ToNumerics(CurrentViewPosition));
+        public bool IsBlocked => _blockedTargetPosition.HasValue;
         public float HyperSpaceDuration => Model.HyperSpaceDuration;
 
         [Inject]
@@ -161,20 +168,25 @@ namespace EmpireAtWar.Components.Ship.Movement
             SetTargetPosition(newPosition);
         }
 
-        private Vector3 SetTargetPosition(Vector3 requestedPosition)
+        private Vector3 SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
         {
             requestedPosition.y = Model.Height;
             Vector3 destination = ShipAvoidancePlanner.ClampToMap(
-                requestedPosition,
-                _mapModel.SizeRange,
-                NavigationRadius);
+                requestedPosition, _mapModel.SizeRange, NavigationRadius);
+            if (_blockedTargetPosition.HasValue &&
+                (_blockedTargetPosition.Value - destination).sqrMagnitude < 0.0025f)
+            {
+                return ToUnity(Model.TargetPosition);
+            }
+
+            _deferredTargetPosition = null;
+            _blockedTargetPosition = null;
             if (Model.HasTargetPosition(ToNumerics(destination)))
             {
                 return destination;
             }
 
-            Model.SetTargetPosition(ToNumerics(destination));
-            UpdateTargetPosition(destination);
+            UpdateTargetPosition(destination, preserveCourse);
             Vector3 appliedDestination = ToUnity(Model.TargetPosition);
             MovementMediator.OnPositionChanged(appliedDestination);
             return appliedDestination;
@@ -194,10 +206,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             return targetPosition - CurrentViewPosition;
         }
 
-        public void MoveToPosition(Vector3 targetPosition)
+        public void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false)
         {
             targetPosition.y = Model.Height;
-            SetTargetPosition(targetPosition);
+            SetTargetPosition(targetPosition, preserveCourse);
         }
 
         public void MoveToPositionOnScreen(Vector2 targetPosition)
@@ -257,8 +269,28 @@ namespace EmpireAtWar.Components.Ship.Movement
                 return;
             }
 
+            direction.Normalize();
+            Vector3 broadsideDirection = Vector3.Cross(
+                Vector3.up,
+                direction).normalized;
+            if (_hasBroadsideDirection &&
+                Mathf.Abs(Vector3.Dot(transform.forward, broadsideDirection)) <=
+                Mathf.Epsilon)
+            {
+                if (Vector3.Dot(_lastBroadsideDirection, broadsideDirection) < 0f)
+                {
+                    broadsideDirection = -broadsideDirection;
+                }
+            }
+            else if (Vector3.Dot(transform.forward, broadsideDirection) < 0f)
+            {
+                broadsideDirection = -broadsideDirection;
+            }
+
+            _lastBroadsideDirection = broadsideDirection;
+            _hasBroadsideDirection = true;
             _tweenPlayer.PlayLookAt(
-                direction,
+                broadsideDirection,
                 Model.RotationSpeed,
                 Model.BodyRotationMaxAngle);
         }
@@ -273,6 +305,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             _tweenPlayer.StopPath();
             _shipNavigationService.ClearPlan(this);
+            _deferredTargetPosition = null;
+            _blockedTargetPosition = null;
+            _blockedNavigationContacts.Clear();
         }
 
         private void HyperSpaceJump(Vector3 point)
@@ -292,16 +327,17 @@ namespace EmpireAtWar.Components.Ship.Movement
             });
         }
 
-        private void UpdateTargetPosition(Vector3 targetPosition)
+        private void UpdateTargetPosition(Vector3 targetPosition, bool preserveCourse = false)
         {
             if (!_isNavigationReady)
             {
                 _pendingTargetPosition = targetPosition;
+                Model.SetTargetPosition(ToNumerics(targetPosition));
                 return;
             }
 
             targetPosition.y = CurrentViewPosition.y;
-            ApplyNavigationPlan(targetPosition, _navigationContacts);
+            ApplyNavigationPlan(targetPosition, _navigationContacts, preserveCourse);
         }
 
         public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
@@ -317,20 +353,30 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             ReplaceNavigationContacts(contacts);
+            if (_blockedTargetPosition.HasValue &&
+                HaveBlockedContactsChanged(_navigationContacts))
+            {
+                Vector3 blockedDestination = _blockedTargetPosition.Value;
+                _blockedTargetPosition = null;
+                _blockedNavigationContacts.Clear();
+                UpdateTargetPosition(blockedDestination);
+            }
         }
 
         private void ApplyNavigationPlan(
             Vector3 requestedDestination,
-            IReadOnlyList<RadarContact> obstacleContacts)
+            IReadOnlyList<RadarContact> obstacleContacts,
+            bool preserveCourse = false)
         {
             ShipNavigationPlan plan = _shipNavigationService.Plan(
                 this,
-                transform.forward,
+                _tweenPlayer.CurrentPathTangent ?? transform.forward,
                 requestedDestination,
                 obstacleContacts,
                 HEIGHT_TOLERANCE,
                 NavigationRadius,
-                _mapModel.SizeRange);
+                _mapModel.SizeRange,
+                preserveCourse && _tweenPlayer.CurrentPathTangent.HasValue);
             if (_logNavigationDecisions)
             {
                 Debug.Log(
@@ -339,9 +385,31 @@ namespace EmpireAtWar.Components.Ship.Movement
                     $"Wait={plan.WaitDuration:F2}s, " +
                     $"Move={plan.MovementDuration:F2}s, Radius={NavigationRadius:F1}, " +
                     $"Speed={NavigationSpeed:F1}, TurnSpeed={NavigationRotationSpeed:F1}, " +
-                    $"TrafficChecks={plan.TrafficConflictChecks}",
+                    $"TrafficChecks={plan.TrafficConflictChecks}, " +
+                    $"Blocked={plan.IsStationary}",
                     this);
             }
+
+            if (plan.IsDeferred)
+            {
+                _deferredTargetPosition = requestedDestination;
+                return;
+            }
+
+            if (plan.IsStationary)
+            {
+                _tweenPlayer.StopPath();
+                _shipNavigationService.ClearPlan(this);
+                Model.SetTargetPosition(ToNumerics(CurrentViewPosition));
+                _blockedTargetPosition = requestedDestination;
+                _blockedNavigationContacts.Clear();
+                _blockedNavigationContacts.AddRange(obstacleContacts);
+                return;
+            }
+
+            _blockedTargetPosition = null;
+            _deferredTargetPosition = null;
+            _blockedNavigationContacts.Clear();
 
             if (!Model.HasTargetPosition(ToNumerics(plan.Destination)))
             {
@@ -373,7 +441,49 @@ namespace EmpireAtWar.Components.Ship.Movement
                 plan,
                 Model.RotationSpeed,
                 Model.BodyRotationMaxAngle,
-                () => _shipNavigationService.ClearPlan(this));
+                () =>
+                {
+                    _shipNavigationService.ClearPlan(this);
+                    if (_deferredTargetPosition.HasValue)
+                    {
+                        Vector3 deferredTargetPosition =
+                            _deferredTargetPosition.Value;
+                        _deferredTargetPosition = null;
+                        SetTargetPosition(deferredTargetPosition);
+                    }
+                });
+        }
+
+        private bool HaveBlockedContactsChanged(IReadOnlyList<RadarContact> contacts)
+        {
+            if (contacts.Count != _blockedNavigationContacts.Count)
+            {
+                return true;
+            }
+
+            float movementThreshold = NavigationRadius * 0.25f;
+            float movementThresholdSquared = movementThreshold * movementThreshold;
+            foreach (RadarContact current in contacts)
+            {
+                bool matches = false;
+                foreach (RadarContact blocked in _blockedNavigationContacts)
+                {
+                    if (current.IsShip == blocked.IsShip &&
+                        Mathf.Approximately(current.Radius, blocked.Radius) &&
+                        (current.Position - blocked.Position).sqrMagnitude <= movementThresholdSquared)
+                    {
+                        matches = true;
+                        break;
+                    }
+                }
+
+                if (!matches)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static NumericsVector3 ToNumerics(Vector3 value)

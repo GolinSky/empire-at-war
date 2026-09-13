@@ -58,6 +58,7 @@ namespace EmpireAtWar.Ship
         private PlayerType _playerType;
         private Vector3 _opponentMoveTarget;
         private bool _hasOpponentMoveTarget;
+        private bool _isReleased;
         private ILayerService _layerService;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
@@ -144,6 +145,11 @@ namespace EmpireAtWar.Ship
 
         public void Tick()
         {
+            if (_isReleased)
+            {
+                return;
+            }
+
             _stateMachine.Update();
             CompleteNavigation();
             ResumeOpponentNavigation();
@@ -206,6 +212,10 @@ namespace EmpireAtWar.Ship
 
         private void Release(bool playDeathEffects)
         {
+            _isReleased = true;
+            _hasOpponentMoveTarget = false;
+            _shipAIBrain.Enable(false);
+            _shipAIBrain.ClearAssignedTarget();
             if (!_componentLifecycle.Release())
             {
                 return;
@@ -307,7 +317,7 @@ namespace EmpireAtWar.Ship
         private void CompleteNavigation()
         {
             if (_stateMachine.CurrentState != _navigateState ||
-                _shipMoveComponent.IsMoving)
+                _shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
             {
                 return;
             }

@@ -9,18 +9,24 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal readonly struct ShipRoutePlan
     {
         public ShipRoutePlan(
+            Vector3 destination,
             Vector3? detour,
             ShipBezierRoute route,
-            float turnDuration)
+            float turnDuration,
+            bool isStationary = false)
         {
+            Destination = destination;
             Detour = detour;
             Route = route;
             TurnDuration = turnDuration;
+            IsStationary = isStationary;
         }
 
+        public Vector3 Destination { get; }
         public Vector3? Detour { get; }
         public ShipBezierRoute Route { get; }
         public float TurnDuration { get; }
+        public bool IsStationary { get; }
     }
 
     internal static class ShipRoutePlanner
@@ -53,7 +59,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     heightTolerance,
                     clearance,
                     mapRange,
-                    out Vector3 avoidancePoint))
+                    out Vector3 avoidancePoint,
+                    forward))
             {
                 detour = avoidancePoint;
                 route = ShipBezierPath.BuildAvoidanceRoute(
@@ -78,7 +85,21 @@ namespace EmpireAtWar.Services.ShipNavigation
                     heightTolerance,
                     clearance))
             {
-                return new ShipRoutePlan(detour, route, 0f);
+                return new ShipRoutePlan(destination, detour, route, 0f);
+            }
+
+            if (detour.HasValue && ShipAvoidancePlanner.TryCalculateDetour(
+                    origin, destination, contacts, agent.NavigationHeight,
+                    heightTolerance, clearance, mapRange, out Vector3 alternateDetour,
+                    forward, alternateSide: true))
+            {
+                ShipBezierRoute alternateRoute = ShipBezierPath.BuildAvoidanceRoute(
+                    origin, forward, alternateDetour, destination);
+                if (ShipAvoidancePlanner.IsRouteClear(
+                        alternateRoute, contacts, agent.NavigationHeight, heightTolerance, clearance))
+                {
+                    return new ShipRoutePlan(destination, alternateDetour, alternateRoute, 0f);
+                }
             }
 
             Vector3 initialTravelDirection = detour.HasValue
@@ -109,7 +130,30 @@ namespace EmpireAtWar.Services.ShipNavigation
                     Mathf.Max(
                         agent.NavigationRotationSpeed,
                         Mathf.Epsilon));
-            return new ShipRoutePlan(detour, route, turnDuration);
+            if (ShipAvoidancePlanner.IsRouteClear(
+                    route,
+                    contacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance))
+            {
+                return new ShipRoutePlan(
+                    destination,
+                    detour,
+                    route,
+                    turnDuration);
+            }
+
+            ShipBezierRoute stationaryRoute = ShipBezierPath.BuildDirectRoute(
+                origin,
+                forward,
+                origin);
+            return new ShipRoutePlan(
+                origin,
+                null,
+                stationaryRoute,
+                0f,
+                true);
         }
 
         private static Vector3 GetPlanarDirection(Vector3 direction)

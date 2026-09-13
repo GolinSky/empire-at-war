@@ -15,8 +15,12 @@ MonoBehaviour:
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
   <MinMoveCoefficient>k__BackingField: 0.5
-  <Speed>k__BackingField: 1
+  <Speed>k__BackingField: 1.5
   <Height>k__BackingField: 5
+  <RotationSpeed>k__BackingField: 7.5
+  <HyperSpaceDuration>k__BackingField: 3
+  <BodyRotationMaxAngle>k__BackingField: 15
+  <NavigationRadius>k__BackingField: 12
   <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
   <FallDownRotation>k__BackingField:
     x:
@@ -29,10 +33,6 @@ MonoBehaviour:
       <Min>k__BackingField: -360
       <Max>k__BackingField: 360
   <FallDownDuration>k__BackingField: 180
-  <RotationSpeed>k__BackingField: 15
-  <HyperSpaceDuration>k__BackingField: 3
-  <BodyRotationMaxAngle>k__BackingField: 15
-  <NavigationRadius>k__BackingField: 12
   <Armor>k__BackingField: 100000
   <Dexterity>k__BackingField: 0.1
   <Shields>k__BackingField: 60000
@@ -43,6 +43,6 @@ MonoBehaviour:
     <Max>k__BackingField: 0.4
   <AttackDelayBetweenAttack>k__BackingField: 0.5
   <DelayBetweenAttack>k__BackingField: 0.1
-  <Range>k__BackingField: 60
-  <Delay>k__BackingField: 5
+  <Range>k__BackingField: 100
+  <Delay>k__BackingField: 0.25
   <Distance>k__BackingField: 200

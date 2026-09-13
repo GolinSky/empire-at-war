@@ -26,7 +26,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             float turnDuration,
             float waitDuration,
             float movementDuration,
-            int trafficConflictChecks)
+            int trafficConflictChecks,
+            bool isStationary = false,
+            bool isDeferred = false)
         {
             Destination = destination;
             Detour = detour;
@@ -35,6 +37,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             WaitDuration = waitDuration;
             MovementDuration = movementDuration;
             TrafficConflictChecks = trafficConflictChecks;
+            IsStationary = isStationary;
+            IsDeferred = isDeferred;
         }
 
         public Vector3 Destination { get; }
@@ -45,6 +49,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float WaitDuration { get; }
         public float MovementDuration { get; }
         public int TrafficConflictChecks { get; }
+        public bool IsStationary { get; }
+        public bool IsDeferred { get; }
         public float TotalDuration => WaitDuration + MovementDuration;
     }
 
@@ -59,7 +65,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             IReadOnlyList<RadarContact> obstacleContacts,
             float heightTolerance,
             float clearance,
-            Vector2Range mapRange);
+            Vector2Range mapRange,
+            bool preserveCourse = false);
         void ClearPlan(IShipNavigationAgent agent);
     }
 
@@ -106,7 +113,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             IReadOnlyList<RadarContact> obstacleContacts,
             float heightTolerance,
             float clearance,
-            Vector2Range mapRange)
+            Vector2Range mapRange,
+            bool preserveCourse = false)
         {
             if (!_trafficCoordinator.IsRegistered(agent))
             {
@@ -142,21 +150,26 @@ namespace EmpireAtWar.Services.ShipNavigation
             float movementDuration =
                 routePlan.Route.Length /
                 Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
-            ShipTrafficSchedule trafficSchedule = _trafficCoordinator.Reserve(
-                agent,
-                destination,
-                routePlan.Route,
-                routePlan.TurnDuration,
-                movementDuration,
-                heightTolerance);
+            ShipTrafficSchedule trafficSchedule = routePlan.IsStationary
+                ? new ShipTrafficSchedule(0f, 0)
+                : _trafficCoordinator.Reserve(
+                    agent,
+                    routePlan.Destination,
+                    routePlan.Route,
+                    routePlan.TurnDuration,
+                    movementDuration,
+                    heightTolerance,
+                    preserveCourse);
             ShipNavigationPlan plan = new ShipNavigationPlan(
-                destination,
+                routePlan.Destination,
                 routePlan.Detour,
                 routePlan.Route,
                 routePlan.TurnDuration,
                 trafficSchedule.WaitDuration,
                 movementDuration,
-                trafficSchedule.ExactConflictCheckCount);
+                trafficSchedule.ExactConflictCheckCount,
+                routePlan.IsStationary,
+                preserveCourse && (routePlan.IsStationary || trafficSchedule.WaitDuration > Mathf.Epsilon));
             return plan;
         }
 

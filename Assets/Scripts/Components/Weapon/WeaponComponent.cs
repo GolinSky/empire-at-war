@@ -104,7 +104,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public bool HasEnoughRange(float distance)
         {
-            return Model.OptimalAttackRange > distance;
+            return distance <= Model.OptimalAttackRange;
         }
 
         public void ResetTarget()

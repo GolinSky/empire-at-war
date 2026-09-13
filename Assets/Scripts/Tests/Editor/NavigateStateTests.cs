@@ -45,6 +45,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 CurrentPosition => Vector3.zero;
             public Transform ViewTransform => null;
             public bool IsMoving => false;
+            public bool IsBlocked => false;
             public float NavigationRadius => 1f;
             public float NavigationSpeed => 1f;
             public float HyperSpaceDuration => 0f;
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Tests.Editor
                 return Vector3.zero;
             }
 
-            public void MoveToPosition(Vector3 targetPosition)
+            public void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false)
             {
                 LastWorldDestination = targetPosition;
                 WorldMoveCount++;
