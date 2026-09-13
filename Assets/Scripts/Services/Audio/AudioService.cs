@@ -4,7 +4,6 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using EmpireAtWar.Mvc;
 using Zenject;
 using Random = System.Random;
@@ -21,6 +20,7 @@ namespace EmpireAtWar.Services.Audio
     public class AudioService: Service, IInitializable, ILateDisposable, ITickable, IAudioService
     {
         private const float SOUND_DELAY = 2f;
+        private const float MUSIC_FADE_DURATION = 1f;
         private const string SOURCE_PATH = "MusicSource";
         private const string DIALOG_SOURCE_PATH = "AudioDialogSource";
         private readonly ISceneService _sceneService;
@@ -29,9 +29,11 @@ namespace EmpireAtWar.Services.Audio
         private readonly AudioSource _backgroundSource;
         private readonly AudioSource _dialogSource;
         private readonly Random _random;
-        private readonly ITimer _timer;
+        private readonly float _musicVolume;
         private List<AudioClip> _clips;
         private bool _isMusicPlaying;
+        private bool _isFadingOut;
+        private float _musicFadeDuration;
         private float _lastTimePlayAlarm;
         private float _lastTimePlaySfx;
         
@@ -40,9 +42,9 @@ namespace EmpireAtWar.Services.Audio
         {
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;
-            _timer = TimerFactory.ConstructTimer();
             _musicAudioModel = repository.Load<MusicAudioData>(nameof(MusicAudioData));
             _backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SOURCE_PATH));
+            _musicVolume = _backgroundSource.volume;
             _dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
             Object.DontDestroyOnLoad(_backgroundSource);
             Object.DontDestroyOnLoad(_dialogSource);
@@ -70,18 +72,27 @@ namespace EmpireAtWar.Services.Audio
         private void PlayMusic(SceneType sceneType)
         {
             _clips = _musicAudioModel.GetMusicList(sceneType, _gameModelObserver.PlayerFactionType);
+            if (_isMusicPlaying)
+            {
+                _isFadingOut = true;
+                return;
+            }
+
             PlayMusicInternal();
         }
 
         private void PlayMusicInternal()
         {
+            _backgroundSource.Stop();
+            _isMusicPlaying = false;
+            _isFadingOut = false;
             if(_clips == null || _clips.Count == 0) return;
             int randomIndex = _random.Next(_clips.Count);
             AudioClip audioClip = _clips.ElementAt(randomIndex);
             _backgroundSource.clip = audioClip;
+            _backgroundSource.volume = 0f;
+            _musicFadeDuration = Mathf.Min(MUSIC_FADE_DURATION, audioClip.length * 0.5f);
             _backgroundSource.Play();
-            _timer.ChangeDelay(audioClip.length);
-            _timer.StartTimer();
             _isMusicPlaying = true;
         }
 
@@ -89,11 +100,26 @@ namespace EmpireAtWar.Services.Audio
         {
             if(!_isMusicPlaying) return;
 
-            if (_timer.IsComplete)
+            if (!_backgroundSource.isPlaying)
             {
-                _isMusicPlaying = false;
                 PlayMusicInternal();
-                _timer.StartTimer();
+                return;
+            }
+
+            AudioClip audioClip = _backgroundSource.clip;
+            float remainingTime = (audioClip.samples - _backgroundSource.timeSamples) / (float)audioClip.frequency;
+            if (remainingTime <= _musicFadeDuration)
+            {
+                _isFadingOut = true;
+            }
+
+            float targetVolume = _isFadingOut ? 0f : _musicVolume;
+            _backgroundSource.volume = Mathf.MoveTowards(_backgroundSource.volume, targetVolume,
+                _musicVolume * Time.unscaledDeltaTime / _musicFadeDuration);
+
+            if (_isFadingOut && _backgroundSource.volume == 0f)
+            {
+                PlayMusicInternal();
             }
         }
 
