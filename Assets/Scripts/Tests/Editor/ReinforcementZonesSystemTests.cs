@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
@@ -62,6 +63,68 @@ namespace EmpireAtWar.Tests.Editor
                 Object.DestroyImmediate(root);
                 Object.DestroyImmediate(data);
             }
+        }
+
+        [Test]
+        public void StructureClearance_RejectsFootprintOverlappingZone()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, PlayerType.Opponent,
+                    true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, zone);
+
+                Assert.That(system.IsPositionInAnyZone(new Vector3(50f, 0f, 0f)), Is.False);
+                Assert.That(system.IsPositionInAnyZone(new Vector3(50f, 0f, 0f), 16f), Is.True);
+                Assert.That(system.IsPositionInAnyZone(new Vector3(64f, 0f, 0f), 16f), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void StructureFallback_UsesOnlyOwnedCapturableZonesAndClearsPreviousCenters()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                Vector3 capturedPosition = new Vector3(55f, 0f, -55f);
+                ReinforcementZonesSystem system = CreateSystem(root, data,
+                    CreateZone(root.transform, PlayerType.Opponent, false, Vector3.zero),
+                    CreateZone(root.transform, PlayerType.Opponent, true, capturedPosition),
+                    CreateZone(root.transform, PlayerType.Player, true, Vector3.left * 80f),
+                    CreateZone(root.transform, PlayerType.None, true, Vector3.right * 80f));
+                List<Vector3> centers = new List<Vector3> { Vector3.one };
+
+                system.CopyOwnedCapturableZoneCenters(PlayerType.Opponent, centers);
+
+                Assert.That(centers, Is.EqualTo(new[] { capturedPosition }));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        private static ReinforcementZonesSystem CreateSystem(GameObject root,
+            ReinforcementZoneData data, params ReinforcementZoneView[] zones)
+        {
+            ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
+            SetField(system, "_zoneViews", zones);
+            SetField(system, "_data", data);
+            SetField(system, "_mapModel", new FakeMapModel(
+                new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
+            SetField(system, "_playerFactionType", FactionType.Republic);
+            SetField(system, "_opponentFactionType", FactionType.Separatist);
+            system.Initialize();
+            return system;
         }
 
         private static ReinforcementZoneView CreateZone(

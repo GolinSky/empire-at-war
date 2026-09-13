@@ -9,6 +9,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             new Dictionary<string, int>();
 
         public int CurrentUnitCapacity { get; private set; }
+        public int ShipOrdersCount { get; private set; }
+
+        public void RecordShipOrder()
+        {
+            ShipOrdersCount++;
+        }
+
+        public void CancelShipOrder()
+        {
+            ShipOrdersCount--;
+        }
 
         public bool TryReserve(
             string unitId,
@@ -86,6 +97,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             _reservedCounts.Clear();
             CurrentUnitCapacity = 0;
+            ShipOrdersCount = 0;
         }
     }
 }

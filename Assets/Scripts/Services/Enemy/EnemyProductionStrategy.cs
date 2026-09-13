@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
+        private readonly IEnemyStructurePlacementService _structurePlacementService;
 
         private float _decisionTimer;
 
@@ -37,7 +38,8 @@ namespace EmpireAtWar.Services.Enemy
             IGameModelObserver gameModel,
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
-            ReinforcementData reinforcementData)
+            ReinforcementData reinforcementData,
+            IEnemyStructurePlacementService structurePlacementService)
         {
             _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
             _purchaseProcessor = purchaseProcessor ?? throw new ArgumentNullException(nameof(purchaseProcessor));
@@ -49,6 +51,8 @@ namespace EmpireAtWar.Services.Enemy
             _unitLimitModel = unitLimitModel ?? throw new ArgumentNullException(nameof(unitLimitModel));
             _reinforcementData = reinforcementData ??
                 throw new ArgumentNullException(nameof(reinforcementData));
+            _structurePlacementService = structurePlacementService ??
+                throw new ArgumentNullException(nameof(structurePlacementService));
         }
 
         public void Start()
@@ -74,26 +78,53 @@ namespace EmpireAtWar.Services.Enemy
 
         private void EvaluateProduction(EnemyAiDifficultyProfile profile)
         {
-            bool canBuildShip = TrySelectShip(out KeyValuePair<ShipType, FactionData> ship);
+            int shipCount = CountReservedShips();
             int miningFacilityCount = CountReservedMiningFacilities();
-            bool hasMiningOption = TrySelectMiningFacility(
+            int defensePlatformCount = CountReservedDefensePlatforms();
+            bool canPlaceStructure = _structurePlacementService.TryGetPosition(out _);
+            bool hasMiningSelection = TrySelectMiningFacility(
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
-            bool canBuildMining = hasMiningOption &&
-                mining.Value.Price <= _economyModel.Money;
-            bool canBuildDefense = TrySelectDefense(
+            bool hasMiningOption = canPlaceStructure && hasMiningSelection;
+            bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
+            bool hasDefenseSelection = TrySelectDefense(
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
+            bool hasDefenseOption = canPlaceStructure && hasDefenseSelection;
+            bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
+
+            bool isUltraHard = _gameModel.EnemyDifficulty == EnemyAiDifficulty.UltraHard;
+            KeyValuePair<ShipType, FactionData> ship;
+            bool hasShipOption = isUltraHard
+                ? TrySelectUltraHardShip(shipCount, out ship)
+                : TrySelectShip(out ship);
+            bool canBuildShip = hasShipOption && IsAffordable(ship.Value);
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
+            bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
+            int miningFacilityTarget = isUltraHard
+                ? profile.MinimumMiningFacilities + _unitLimitModel.ShipOrdersCount / 2
+                : profile.MinimumMiningFacilities;
+            int defensePlatformTarget = isUltraHard
+                ? 1 + _unitLimitModel.ShipOrdersCount / 3
+                : 0;
 
             EnemyProductionCategory category = _decisionModel.Evaluate(
                 new EnemyProductionSnapshot(
                     _stateProvider.CurrentState,
                     _gameModel.EnemyDifficulty,
                     miningFacilityCount,
+                    shipCount,
+                    _unitLimitModel.ShipOrdersCount,
+                    defensePlatformCount,
+                    _factionModel.CurrentLevel,
+                    miningFacilityTarget,
+                    defensePlatformTarget,
                     hasMiningOption,
+                    hasShipOption,
                     canBuildShip,
                     canBuildMining,
+                    hasDefenseOption,
                     canBuildDefense,
+                    hasLevelUpOption,
                     canLevelUp));
 
             UnitRequest request = category switch
@@ -112,24 +143,30 @@ namespace EmpireAtWar.Services.Enemy
 
             if (request == null)
             {
-                if (miningFacilityCount < profile.MinimumMiningFacilities &&
-                    hasMiningOption)
-                {
-                    Debug.Log(
-                        $"[EnemyAI:Production] SavingForMining=true, " +
-                        $"Mining={miningFacilityCount}/{profile.MinimumMiningFacilities}, " +
-                        $"Cost={mining.Value.Price}, Money={_economyModel.Money}");
-                }
-
                 return;
             }
 
             Debug.Log(
                 $"[EnemyAI:Production] State={_stateProvider.CurrentState}, " +
-                $"Category={category}, Mining={miningFacilityCount}/" +
-                $"{profile.MinimumMiningFacilities}, Cost={request.FactionData.Price}, " +
+                $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, " +
+                $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
+                $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
+                $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
             _purchaseProcessor.Handle(request);
+        }
+
+        private int CountReservedShips()
+        {
+            int count = 0;
+            foreach (KeyValuePair<ShipType, FactionData> option
+                     in _factionModel.ShipFactionData)
+            {
+                count += _unitLimitModel.GetReservedCount<ShipUnitRequest>(
+                    option.Key.ToString());
+            }
+
+            return count;
         }
 
         private int CountReservedMiningFacilities()
@@ -139,6 +176,19 @@ namespace EmpireAtWar.Services.Enemy
                      in _factionModel.MiningFactions)
             {
                 count += _unitLimitModel.GetReservedCount<MiningFacilityUnitRequest>(
+                    option.Key.ToString());
+            }
+
+            return count;
+        }
+
+        private int CountReservedDefensePlatforms()
+        {
+            int count = 0;
+            foreach (KeyValuePair<DefendPlatformType, FactionData> option
+                     in _factionModel.DefendPlatforms)
+            {
+                count += _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(
                     option.Key.ToString());
             }
 
@@ -199,6 +249,38 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
+        private bool TrySelectUltraHardShip(
+            int shipCount,
+            out KeyValuePair<ShipType, FactionData> selected)
+        {
+            selected = default;
+            bool found = false;
+            foreach (KeyValuePair<ShipType, FactionData> option
+                     in _factionModel.ShipFactionData)
+            {
+                if (!IsAvailable(option.Value) ||
+                    !CanReserve<ShipUnitRequest>(
+                        option.Key.ToString(),
+                        option.Value))
+                {
+                    continue;
+                }
+
+                if (!found ||
+                    shipCount == 0 && option.Value.Price < selected.Value.Price ||
+                    shipCount > 0 &&
+                    (option.Value.AvailableLevel > selected.Value.AvailableLevel ||
+                     option.Value.AvailableLevel == selected.Value.AvailableLevel &&
+                     option.Value.Price > selected.Value.Price))
+                {
+                    selected = option;
+                    found = true;
+                }
+            }
+
+            return found;
+        }
+
         private bool TrySelectDefense(
             out KeyValuePair<DefendPlatformType, FactionData> selected)
         {
@@ -207,7 +289,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<DefendPlatformType, FactionData> option
                      in _factionModel.DefendPlatforms)
             {
-                if (!IsAffordableAndAvailable(option.Value) ||
+                if (!IsAvailable(option.Value) ||
                     !CanReserve<DefendPlatformUnitRequest>(
                         option.Key.ToString(),
                         option.Value))
@@ -236,8 +318,17 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsAffordableAndAvailable(FactionData data)
         {
-            return data.AvailableLevel <= _factionModel.CurrentLevel &&
-                data.Price <= _economyModel.Money;
+            return IsAvailable(data) && IsAffordable(data);
+        }
+
+        private bool IsAvailable(FactionData data)
+        {
+            return data.AvailableLevel <= _factionModel.CurrentLevel;
+        }
+
+        private bool IsAffordable(FactionData data)
+        {
+            return data.Price <= _economyModel.Money;
         }
     }
 }

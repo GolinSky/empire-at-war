@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using UnityEngine;
+using EmpireAtWar.Services.Layer;
 using Zenject;
 
 namespace EmpireAtWar.Entities.DefendPlatform
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private EntityComponentLifecycle _componentLifecycle;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
+        private ILayerService _layerService;
 
         [Inject] private DefendPlatformData RootModel { get; }
 
@@ -33,7 +35,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitDeathAnimationData deathAnimationData,
-            IUnitDeathAnimationService deathAnimationService)
+            IUnitDeathAnimationService deathAnimationService,
+            ILayerService layerService)
         {
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
@@ -41,6 +44,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
+            _layerService = layerService ?? throw new ArgumentNullException(nameof(layerService));
         }
 
         public IModel GetModel()
@@ -77,6 +81,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             }
             if (playDeathEffects)
             {
+                _layerService.Apply(gameObject, LayerKey.Dead, true);
                 _deathAnimationService.Play(transform, _deathAnimationData);
             }
 

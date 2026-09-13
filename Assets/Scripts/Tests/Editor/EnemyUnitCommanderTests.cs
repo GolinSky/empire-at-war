@@ -197,7 +197,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action OwnershipChanged;
 
-            public bool IsPositionInAnyZone(Vector3 position)
+            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
             {
                 return false;
             }
@@ -210,6 +210,11 @@ namespace EmpireAtWar.Tests.Editor
             public int GetOwnedCapturableZoneCount(PlayerType playerType)
             {
                 return 0;
+            }
+
+            public void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination)
+            {
+                destination.Clear();
             }
 
             public bool IsShipSpawnPositionClear(

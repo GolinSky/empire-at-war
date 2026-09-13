@@ -76,6 +76,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.CurrentUnitCapacity, Is.EqualTo(4));
         }
 
+        [Test]
+        public void ShipOrderProgress_SurvivesCombatLossButExcludesCanceledBuilds()
+        {
+            EnemyUnitLimitModel model = new EnemyUnitLimitModel();
+            model.TryReserve("ship", 2, 3, 10);
+            model.RecordShipOrder();
+            model.Release("ship", 3);
+            model.RecordShipOrder();
+            model.CancelShipOrder();
+
+            Assert.That(model.ShipOrdersCount, Is.EqualTo(1));
+
+            model.Reset();
+
+            Assert.That(model.ShipOrdersCount, Is.Zero);
+        }
+
         private sealed class FakeRequest
         {
         }

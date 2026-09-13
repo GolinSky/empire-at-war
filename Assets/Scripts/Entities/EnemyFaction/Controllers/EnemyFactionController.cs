@@ -10,6 +10,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
             new Dictionary<CustomCoroutine, UnitRequest>();
 
@@ -62,7 +64,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IReinforcementZonesSystem reinforcementZonesSystem,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            LazyInject<IMapModelObserver> mapModel) : base(model)
+            LazyInject<IMapModelObserver> mapModel,
+            IEnemyStructurePlacementService structurePlacement) : base(model)
         {
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
@@ -74,6 +77,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _mapModel = mapModel;
+            _structurePlacement = structurePlacement ??
+                throw new ArgumentNullException(nameof(structurePlacement));
         }
         
 
@@ -100,6 +105,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
+                    _unitLimitModel.RecordShipOrder();
                     ScheduleBuild(shipUnitRequest, () =>
                         {
                             ShipEntity ship = _shipFacadeFactory.Create(
@@ -190,6 +196,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
             catch (Exception exception)
             {
+                if (unitRequest is ShipUnitRequest)
+                {
+                    _unitLimitModel.CancelShipOrder();
+                }
                 ReleaseUnit(unitRequest);
                 _purchaseChain.Revert(unitRequest);
                 Debug.LogError(
@@ -212,6 +222,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             {
                 pendingBuild.Key.OnFinished -= HandleBuildFinished;
                 pendingBuild.Key.Release();
+                if (pendingBuild.Value is ShipUnitRequest)
+                {
+                    _unitLimitModel.CancelShipOrder();
+                }
                 ReleaseUnit(pendingBuild.Value);
             }
 
@@ -245,30 +259,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private Vector3 GenerateMapCoordinates()
         {
-            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            if (_structurePlacement.TryGetPosition(out Vector3 position))
             {
-                Vector3 position = GeneratePositionNearBase();
-                if (!_reinforcementZonesSystem.IsPositionInAnyZone(position))
-                {
-                    return position;
-                }
+                return position;
             }
 
-            Vector2Range sizeRange = _mapModel.Value.SizeRange;
-            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
-            {
-                Vector3 position = new Vector3(
-                    UnityEngine.Random.Range(sizeRange.Min.x, sizeRange.Max.x),
-                    0f,
-                    UnityEngine.Random.Range(sizeRange.Min.y, sizeRange.Max.y));
-
-                if (!_reinforcementZonesSystem.IsPositionInAnyZone(position))
-                {
-                    return position;
-                }
-            }
-
-            throw new InvalidOperationException("No enemy non-ship spawn position is available outside reinforcement zones.");
+            throw new InvalidOperationException(
+                "No clear enemy structure position is available near the station or captured zones.");
         }
 
         private Vector3 GeneratePositionNearBase()

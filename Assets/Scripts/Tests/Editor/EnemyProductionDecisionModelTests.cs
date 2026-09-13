@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
@@ -128,6 +130,116 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Level));
         }
 
+        [Test]
+        public void UltraHardZeroFleet_BuildsAffordableRecoveryShip()
+        {
+            EnemyProductionCategory result = EvaluateUltraHard(
+                shipCount: 0,
+                shipsOrdered: 0,
+                miningFacilityCount: 0,
+                miningFacilityTarget: 3,
+                hasShipOption: true,
+                canBuildShip: true,
+                hasMiningOption: true,
+                canBuildMining: true,
+                hasLevelUpOption: true,
+                canLevelUp: true,
+                defensePlatformCount: 0,
+                defensePlatformTarget: 1,
+                hasDefenseOption: true,
+                canBuildDefense: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
+        [Test]
+        public void UltraHardZeroFleet_SeedsMiningWhenRecoveryShipIsUnaffordable()
+        {
+            EnemyProductionCategory result = EvaluateUltraHard(
+                shipCount: 0,
+                shipsOrdered: 0,
+                miningFacilityCount: 0,
+                miningFacilityTarget: 3,
+                hasShipOption: true,
+                canBuildShip: false,
+                hasMiningOption: true,
+                canBuildMining: true,
+                hasLevelUpOption: true,
+                canLevelUp: true,
+                defensePlatformCount: 0,
+                defensePlatformTarget: 1,
+                hasDefenseOption: true,
+                canBuildDefense: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Mining));
+        }
+
+        [Test]
+        public void UltraHardExpandsMiningBeforeDueTechnology()
+        {
+            EnemyProductionCategory result = EvaluateUltraHard(
+                shipCount: 1,
+                shipsOrdered: 2,
+                miningFacilityCount: 3,
+                miningFacilityTarget: 4,
+                hasShipOption: true,
+                canBuildShip: true,
+                hasMiningOption: true,
+                canBuildMining: true,
+                hasLevelUpOption: true,
+                canLevelUp: true,
+                defensePlatformCount: 0,
+                defensePlatformTarget: 1,
+                hasDefenseOption: true,
+                canBuildDefense: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Mining));
+        }
+
+        [Test]
+        public void UltraHardDueTechnology_SavesInsteadOfFallingBackToDefense()
+        {
+            EnemyProductionCategory result = EvaluateUltraHard(
+                shipCount: 1,
+                shipsOrdered: 2,
+                miningFacilityCount: 3,
+                miningFacilityTarget: 3,
+                hasShipOption: true,
+                canBuildShip: true,
+                hasMiningOption: true,
+                canBuildMining: true,
+                hasLevelUpOption: true,
+                canLevelUp: false,
+                defensePlatformCount: 0,
+                defensePlatformTarget: 1,
+                hasDefenseOption: true,
+                canBuildDefense: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
+        }
+
+        [Test]
+        public void UltraHardPreferredShipUnaffordable_DoesNotBuyFallbackCategory()
+        {
+            EnemyProductionCategory result = EvaluateUltraHard(
+                shipCount: 1,
+                shipsOrdered: 0,
+                miningFacilityCount: 3,
+                miningFacilityTarget: 3,
+                hasShipOption: true,
+                canBuildShip: false,
+                hasMiningOption: true,
+                canBuildMining: true,
+                hasLevelUpOption: true,
+                canLevelUp: true,
+                defensePlatformCount: 1,
+                defensePlatformTarget: 1,
+                hasDefenseOption: true,
+                canBuildDefense: true);
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
+        }
+
         private static EnemyProductionCategory Evaluate(
             EnemyStrategicState state,
             EnemyAiDifficulty difficulty,
@@ -143,10 +255,56 @@ namespace EmpireAtWar.Tests.Editor
                     state,
                     difficulty,
                     miningFacilityCount,
+                    1,
+                    1,
+                    0,
+                    1,
+                    EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities,
+                    1,
                     hasMiningOption,
+                    canBuildShip,
                     canBuildShip,
                     canBuildMining,
                     canBuildDefense,
+                    canBuildDefense,
+                    canLevelUp,
+                    canLevelUp));
+        }
+
+        private static EnemyProductionCategory EvaluateUltraHard(
+            int shipCount,
+            int shipsOrdered,
+            int miningFacilityCount,
+            int miningFacilityTarget,
+            bool hasShipOption,
+            bool canBuildShip,
+            bool hasMiningOption,
+            bool canBuildMining,
+            bool hasLevelUpOption,
+            bool canLevelUp,
+            int defensePlatformCount,
+            int defensePlatformTarget,
+            bool hasDefenseOption,
+            bool canBuildDefense)
+        {
+            return new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.HuntFleet,
+                    EnemyAiDifficulty.UltraHard,
+                    miningFacilityCount,
+                    shipCount,
+                    shipsOrdered,
+                    defensePlatformCount,
+                    2,
+                    miningFacilityTarget,
+                    defensePlatformTarget,
+                    hasMiningOption,
+                    hasShipOption,
+                    canBuildShip,
+                    canBuildMining,
+                    hasDefenseOption,
+                    canBuildDefense,
+                    hasLevelUpOption,
                     canLevelUp));
         }
     }
@@ -213,6 +371,10 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     EnemyAiDifficultyProfile.Get(difficulty)
                         .MinimumMiningFacilities);
+                if (difficulty == EnemyAiDifficulty.UltraHard)
+                {
+                    ReserveDefensePlatform(factionModel, unitLimitModel);
+                }
 
                 FactionData preferredData =
                     factionModel.ShipFactionData[preferredShip];
@@ -239,7 +401,8 @@ namespace EmpireAtWar.Tests.Editor
                     gameModel,
                     new EnemyProductionDecisionModel(),
                     unitLimitModel,
-                    reinforcementData);
+                    reinforcementData,
+                    new StructurePlacementServiceStub());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -250,6 +413,90 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(
                     ((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
                     Is.EqualTo(expectedShip));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(factionModel);
+                UnityEngine.Object.DestroyImmediate(factionsModel);
+                UnityEngine.Object.DestroyImmediate(gameModel);
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+            }
+        }
+
+        [TestCase(5000f, ShipType.Providence)]
+        [TestCase(1500f, null)]
+        public void UltraHardPrefersHighestLevelShipAndSavesForIt(
+            float money,
+            ShipType? expectedShip)
+        {
+            FactionsData source =
+                AssetDatabase.LoadAssetAtPath<FactionsData>(FACTIONS_MODEL_PATH);
+            Assert.That(source, Is.Not.Null);
+
+            FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
+            EnemyFactionData factionModel =
+                ScriptableObject.CreateInstance<EnemyFactionData>();
+            GameData gameModel = ScriptableObject.CreateInstance<GameData>();
+            ReinforcementData reinforcementData =
+                ScriptableObject.CreateInstance<ReinforcementData>();
+
+            try
+            {
+                SetBackingField(factionModel, "FactionsModel", factionsModel);
+                SetBackingField(
+                    factionModel,
+                    nameof(EnemyFactionData.FactionType),
+                    FactionType.Separatist);
+                factionModel.CurrentLevel = 5;
+                SetBackingField(
+                    reinforcementData,
+                    nameof(ReinforcementData.MaxUnitCapacity),
+                    MAX_UNIT_CAPACITY);
+                gameModel.EnemyDifficulty = EnemyAiDifficulty.UltraHard;
+
+                EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, unitLimitModel, 3);
+                ReserveDefensePlatform(factionModel, unitLimitModel);
+                FactionData existingShipData =
+                    factionModel.ShipFactionData[ShipType.Munificent];
+                Assert.That(
+                    unitLimitModel.TryReserve(
+                        GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()),
+                        existingShipData.MaxCount,
+                        existingShipData.UnitCapacity,
+                        MAX_UNIT_CAPACITY),
+                    Is.True);
+
+                RecordingPurchaseProcessor purchaseProcessor =
+                    new RecordingPurchaseProcessor();
+                EnemyProductionStrategy strategy = new EnemyProductionStrategy(
+                    factionModel,
+                    purchaseProcessor,
+                    new UnitRequestFactory(),
+                    new EconomyModelStub(money),
+                    new StateProviderStub(),
+                    gameModel,
+                    new EnemyProductionDecisionModel(),
+                    unitLimitModel,
+                    reinforcementData,
+                    new StructurePlacementServiceStub());
+
+                strategy.Start();
+                strategy.Tick(0f);
+
+                if (expectedShip.HasValue)
+                {
+                    Assert.That(
+                        purchaseProcessor.LastRequest,
+                        Is.TypeOf<ShipUnitRequest>());
+                    Assert.That(
+                        ((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
+                        Is.EqualTo(expectedShip.Value));
+                }
+                else
+                {
+                    Assert.That(purchaseProcessor.LastRequest, Is.Null);
+                }
             }
             finally
             {
@@ -278,6 +525,26 @@ namespace EmpireAtWar.Tests.Editor
                         MAX_UNIT_CAPACITY),
                     Is.True);
             }
+        }
+
+        private static void ReserveDefensePlatform(
+            EnemyFactionData factionModel,
+            EnemyUnitLimitModel unitLimitModel)
+        {
+            foreach (KeyValuePair<DefendPlatformType, FactionData> option
+                     in factionModel.DefendPlatforms)
+            {
+                Assert.That(
+                    unitLimitModel.TryReserve(
+                        GetUnitId<DefendPlatformUnitRequest>(option.Key.ToString()),
+                        option.Value.MaxCount,
+                        option.Value.UnitCapacity,
+                        MAX_UNIT_CAPACITY),
+                    Is.True);
+                return;
+            }
+
+            Assert.Fail("Expected at least one defense platform option.");
         }
 
         private static string GetUnitId<TRequest>(string requestId)
@@ -317,6 +584,16 @@ namespace EmpireAtWar.Tests.Editor
         {
             public EnemyStrategicState CurrentState =>
                 EnemyStrategicState.RebuildFleet;
+        }
+
+        private sealed class StructurePlacementServiceStub :
+            IEnemyStructurePlacementService
+        {
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = Vector3.zero;
+                return true;
+            }
         }
 
         private sealed class RecordingPurchaseProcessor : IEnemyPurchaseProcessor

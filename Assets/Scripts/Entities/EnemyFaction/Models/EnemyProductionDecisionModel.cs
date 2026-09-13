@@ -18,29 +18,56 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
             int miningFacilityCount,
+            int shipCount,
+            int shipsOrdered,
+            int defensePlatformCount,
+            int currentFactionLevel,
+            int miningFacilityTarget,
+            int defensePlatformTarget,
             bool hasMiningOption,
+            bool hasShipOption,
             bool canBuildShip,
             bool canBuildMining,
+            bool hasDefenseOption,
             bool canBuildDefense,
+            bool hasLevelUpOption,
             bool canLevelUp)
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
             MiningFacilityCount = miningFacilityCount;
+            ShipCount = shipCount;
+            ShipsOrdered = shipsOrdered;
+            DefensePlatformCount = defensePlatformCount;
+            CurrentFactionLevel = currentFactionLevel;
+            MiningFacilityTarget = miningFacilityTarget;
+            DefensePlatformTarget = defensePlatformTarget;
             HasMiningOption = hasMiningOption;
+            HasShipOption = hasShipOption;
             CanBuildShip = canBuildShip;
             CanBuildMining = canBuildMining;
+            HasDefenseOption = hasDefenseOption;
             CanBuildDefense = canBuildDefense;
+            HasLevelUpOption = hasLevelUpOption;
             CanLevelUp = canLevelUp;
         }
 
         public EnemyStrategicState StrategicState { get; }
         public EnemyAiDifficulty Difficulty { get; }
         public int MiningFacilityCount { get; }
+        public int ShipCount { get; }
+        public int ShipsOrdered { get; }
+        public int DefensePlatformCount { get; }
+        public int CurrentFactionLevel { get; }
+        public int MiningFacilityTarget { get; }
+        public int DefensePlatformTarget { get; }
         public bool HasMiningOption { get; }
+        public bool HasShipOption { get; }
         public bool CanBuildShip { get; }
         public bool CanBuildMining { get; }
+        public bool HasDefenseOption { get; }
         public bool CanBuildDefense { get; }
+        public bool HasLevelUpOption { get; }
         public bool CanLevelUp { get; }
     }
 
@@ -51,6 +78,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.MiningFacilityCount < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
+            }
+
+            if (snapshot.Difficulty == EnemyAiDifficulty.UltraHard)
+            {
+                return EvaluateUltraHard(snapshot);
             }
 
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
@@ -92,6 +124,55 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return snapshot.CanLevelUp
                 ? EnemyProductionCategory.Level
                 : EnemyProductionCategory.None;
+        }
+
+        private static EnemyProductionCategory EvaluateUltraHard(
+            EnemyProductionSnapshot snapshot)
+        {
+            if (snapshot.ShipCount == 0)
+            {
+                if (snapshot.CanBuildShip)
+                {
+                    return EnemyProductionCategory.Ship;
+                }
+
+                return snapshot.MiningFacilityCount == 0 && snapshot.CanBuildMining
+                    ? EnemyProductionCategory.Mining
+                    : EnemyProductionCategory.None;
+            }
+
+            if (snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget &&
+                snapshot.HasMiningOption)
+            {
+                return snapshot.CanBuildMining
+                    ? EnemyProductionCategory.Mining
+                    : EnemyProductionCategory.None;
+            }
+
+            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel &&
+                snapshot.HasLevelUpOption)
+            {
+                return snapshot.CanLevelUp
+                    ? EnemyProductionCategory.Level
+                    : EnemyProductionCategory.None;
+            }
+
+            if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
+                snapshot.HasDefenseOption)
+            {
+                return snapshot.CanBuildDefense
+                    ? EnemyProductionCategory.Defense
+                    : EnemyProductionCategory.None;
+            }
+
+            if (snapshot.HasShipOption)
+            {
+                return snapshot.CanBuildShip
+                    ? EnemyProductionCategory.Ship
+                    : EnemyProductionCategory.None;
+            }
+
+            return EnemyProductionCategory.None;
         }
     }
 }

@@ -19,7 +19,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
     {
         event Action OwnershipChanged;
 
-        bool IsPositionInAnyZone(Vector3 position);
+        bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
+        void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination);
         bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position);
         int GetOwnedCapturableZoneCount(PlayerType playerType);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
@@ -145,11 +146,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return false;
         }
 
-        public bool IsPositionInAnyZone(Vector3 position)
+        public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Contains(position))
+                float x = position.x - zone.Center.x;
+                float z = position.z - zone.Center.z;
+                float radius = zone.Radius + clearance;
+                if (x * x + z * z <= radius * radius)
                 {
                     return true;
                 }
@@ -170,6 +174,18 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             return count;
+        }
+
+        public void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination)
+        {
+            destination.Clear();
+            foreach (ReinforcementZonePresenter zone in _zones)
+            {
+                if (zone.IsCapturable && zone.Owner == playerType)
+                {
+                    destination.Add(zone.Center);
+                }
+            }
         }
 
         public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
