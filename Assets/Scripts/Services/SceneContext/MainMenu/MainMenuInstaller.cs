@@ -8,7 +8,7 @@ namespace EmpireAtWar
 {
     public class MainMenuInstaller : MonoInstaller
     {
-        [Inject] private IRepository Repository { get; }
+        [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {

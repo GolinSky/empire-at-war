@@ -4,10 +4,10 @@ using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.IdGeneration;
-using EmpireAtWar.Services.Initialiaze;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
-using EmpireAtWar.Services.TimerPoolWrapperService;
+using EmpireAtWar.Services.Timing;
+using Utilities.ScriptUtils.Time;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
@@ -18,7 +18,7 @@ namespace EmpireAtWar.SceneContext
     {
         [SerializeField] private CoroutineService coroutineService;
         
-        private IRepository _repository;
+        private IAssetService _repository;
     
         public override void InstallBindings()
         {
@@ -29,13 +29,9 @@ namespace EmpireAtWar.SceneContext
                 .AsSingle();
             
             
-            Container.Bind<IInitializable>().To<LateInitializableService>().AsSingle();
-            Container.BindExecutionOrder<LateInitializableService>(10); // Set a higher order to execute later
-
-
-            Container.BindInterfacesExt<AddressableRepository>();
+            Container.BindInterfacesExt<AddressableAssetService>();
         
-            _repository = Container.Resolve<IRepository>();
+            _repository = Container.Resolve<IAssetService>();
         
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
@@ -43,8 +39,10 @@ namespace EmpireAtWar.SceneContext
 
             Container.BindModel<SceneData>(_repository);
 
+            Container.Bind<TimerPoolService>().AsSingle();
+
             Container
-                .BindInterfacesNonLazyExt<TimerPoolWrapperService>()
+                .BindInterfacesNonLazyExt<TimerPoolTick>()
                 .BindInterfacesExt<GameController>()
                 .BindInterfacesExt<SceneService>()
                 .BindInterfacesExt<SettingsService>()

@@ -1,7 +1,6 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.StateMachine;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
@@ -45,9 +44,9 @@ namespace EmpireAtWar.MiningFacility
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.BindInitializableExecutionOrder<HealthComponent>(-100);
             MiningFacilityData model = Container.Resolve<MiningFacilityData>();
-            BindBuffer(model.HealthModel);
-            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
+            Container.Bind<HealthModel>().AsSingle();
             BindBuffer(model.RadarModel);
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 

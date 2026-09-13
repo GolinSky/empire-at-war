@@ -32,7 +32,7 @@ public class SkirmishMainInstaller : MonoInstaller
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [Inject] private IGameModelObserver GameModelObserver { get; }
-    [Inject] private IRepository Repository { get; }
+    [Inject] private IAssetService Repository { get; }
 
     public override void InstallBindings()
     {

@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e993b49aa0049aa9385b1c6e68b8c22, type: 3}
   m_Name: MiningFacilityData
   m_EditorClassIdentifier: 
-  models:
-  - {fileID: 11400000, guid: ce19becbcde080241bf3e211f170e8dc, type: 2}
   <ComponentData>k__BackingField:
     <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
     <FallDownRotation>k__BackingField:
@@ -39,6 +37,4 @@ MonoBehaviour:
     <Range>k__BackingField: 30
     <Delay>k__BackingField: 30
     <Distance>k__BackingField: 50
-  <HealthModel>k__BackingField: {}
-  <RadarModel>k__BackingField: {}
   <Income>k__BackingField: 10

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Commands.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Services.InputService;
@@ -14,7 +13,7 @@ namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
     
-    public class MenuController : Controller<MenuData>, IMenuCommand, IUserStateNotifier, IInitializable, ILateDisposable
+    public class MenuController : Controller<MenuData>, IPauseMenuPresenter, IUserStateNotifier, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
         private readonly IInputService _inputService;
@@ -37,6 +36,8 @@ namespace EmpireAtWar.Controllers.Menu
             _ui = ui as IPauseMenuUiView
                 ?? throw new InvalidOperationException(
                     "The skirmish pause menu prefab does not implement IPauseMenuUiView.");
+            _ui.SetPresenter(this);
+            _ui.Initialize();
             _ui.SetMenuVisible(false);
             _inputService.OnEscapePressed += ToggleMenu;
         }
@@ -44,6 +45,10 @@ namespace EmpireAtWar.Controllers.Menu
         public void LateDispose()
         {
             _inputService.OnEscapePressed -= ToggleMenu;
+            if (_ui != null)
+            {
+                _ui.Dispose();
+            }
         }
 
         public void ExitSkirmish()

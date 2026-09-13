@@ -1,5 +1,6 @@
 using System;
-using EmpireAtWar.Controllers.Factions;
+using System.Collections.Generic;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace EmpireAtWar.Views.Factions
 {
     public interface IShipBuildPresenter
     {
-        void CompleteBuilding(bool isSuccess, string id);
+        void CancelBuilding(string id);
     }
 
     public interface IShipBuildUi
@@ -15,7 +16,7 @@ namespace EmpireAtWar.Views.Factions
         void SetPresenter(IShipBuildPresenter presenter);
         void Initialize();
         void Dispose();
-        void AddPipeline(UnitRequest unitRequest);
+        void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots);
         void SetParent(Transform parent);
         void Show();
         void Hide();
@@ -53,8 +54,7 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
-            pipelineView.Init();
-            pipelineView.OnFinishSequence += _presenter.CompleteBuilding;
+            pipelineView.Init(_presenter.CancelBuilding);
             _isInitialized = true;
         }
 
@@ -65,21 +65,18 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
-            pipelineView.OnFinishSequence -= _presenter.CompleteBuilding;
             _isInitialized = false;
         }
 
-        public void AddPipeline(UnitRequest unitRequest)
+        public void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
-            if (unitRequest == null)
+            if (!_isInitialized)
             {
-                throw new ArgumentNullException(nameof(unitRequest));
+                throw new InvalidOperationException(
+                    "Ship build UI must be initialized before rendering pipelines.");
             }
 
-            pipelineView.AddPipeline(
-                unitRequest.Id,
-                unitRequest.FactionData.Icon,
-                unitRequest.FactionData.BuildTime);
+            pipelineView.Render(snapshots);
         }
 
     }

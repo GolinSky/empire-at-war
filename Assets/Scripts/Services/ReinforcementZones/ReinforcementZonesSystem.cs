@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IShipService _shipService;
         private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
-        private IRepository _repository;
+        private IAssetService _repository;
         private ShipsData _shipsData;
         private FactionType _playerFactionType;
         private FactionType _opponentFactionType;
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private void Construct(
             IShipService shipService,
             ReinforcementZoneData data,
-            IRepository repository,
+            IAssetService repository,
             ShipsData shipsData,
             IMapModelObserver mapModel,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,

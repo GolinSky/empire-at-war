@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
@@ -7,7 +6,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -31,7 +29,6 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(platform, "_healthComponent", healthComponent);
                 SetField(platform, "_radarComponent", radarComponent);
                 SetField(platform, "_startPosition", startPosition);
-                SetField(platform, "_monoComponents", new List<IMonoComponent>());
 
                 platform.Initialize();
 

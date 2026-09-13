@@ -1,7 +1,7 @@
+using Utilities.ScriptUtils.Time;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Planet;
-using EmpireAtWar.Services.TimerPoolWrapperService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using EmpireAtWar.Mvc;
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.SceneService
         private const float MIN_SCENE_PROGRESS = 0.88f;
         public event Action<SceneType> OnSceneActivation;
 
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly TimerPoolService _timerPoolService;
 
         private AsyncOperation _asyncOperation;
 
@@ -37,10 +37,10 @@ namespace EmpireAtWar.Services.SceneService
         };
         
 
-        public SceneService(SceneData sceneModel, ITimerPoolWrapperService timerPoolWrapperService )
+        public SceneService(SceneData sceneModel, TimerPoolService timerPoolService )
         {
             _sceneModel = sceneModel;
-            _timerPoolWrapperService = timerPoolWrapperService;
+            _timerPoolService = timerPoolService;
         }
         
         public void LoadSceneByPlanetType(PlanetType planetType)
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Services.SceneService
             OnSceneActivation?.Invoke(_sceneModel.GetSceneType(scene));
             if (_sceneModel.IsLoadingScene(scene))
             {
-                _timerPoolWrapperService.Invoke(LoadTargetScene, 1f);//todo: move to const
+                _timerPoolService.Invoke(LoadTargetScene, 1f);//todo: move to const
             }
         }
 

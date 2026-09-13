@@ -9,7 +9,7 @@ namespace EmpireAtWar.Models.Health
 {
     //todo: make decorator here for health model
     [CreateAssetMenu(fileName = nameof(DamageCalculationData), menuName = "Data/DamageCalculationData")]
-    public class DamageCalculationData:Data
+    public class DamageCalculationData:Data, IDamageCalculator
     {
         [SerializeField] private DictionaryWrapper<WeaponType, DamageModel> damageWrapper;
         
@@ -85,15 +85,4 @@ namespace EmpireAtWar.Models.Health
         }
     }
 
-    public struct DamageData
-    {
-        public readonly float ShieldDamage { get; }
-        public readonly float ArmorDamage { get; }
-        
-        public DamageData(float shieldDamage, float armorDamage)
-        {
-            ShieldDamage = shieldDamage;
-            ArmorDamage = armorDamage;
-        }
-    }
 }

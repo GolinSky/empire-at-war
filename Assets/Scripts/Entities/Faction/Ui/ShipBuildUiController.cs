@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
@@ -18,9 +17,6 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private readonly Dictionary<string, UnitRequest> _unitRequests =
-            new Dictionary<string, UnitRequest>();
-
         private IShipBuildUi _ui;
 
         public ShipBuildUiController(
@@ -41,7 +37,7 @@ namespace EmpireAtWar.Presenters.Factions
 
         public void Initialize()
         {
-            _model.OnUnitBuild += AddPipeline;
+            _model.OnProductionChanged += RenderPipelines;
             _routeNavigation.RegisterRoute(
                 SkirmishUiRoutePosition.BuildPipeline,
                 this);
@@ -49,7 +45,7 @@ namespace EmpireAtWar.Presenters.Factions
 
         public void LateDispose()
         {
-            _model.OnUnitBuild -= AddPipeline;
+            _model.OnProductionChanged -= RenderPipelines;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.BuildPipeline,
                 this);
@@ -76,6 +72,8 @@ namespace EmpireAtWar.Presenters.Factions
                 _ui.SetParent(parentTransform);
             }
 
+            _ui.RenderPipelines(_model.GetProductionQueueSnapshots());
+
             if (isActive)
             {
                 _ui.Show();
@@ -86,34 +84,14 @@ namespace EmpireAtWar.Presenters.Factions
             }
         }
 
-        public void CompleteBuilding(bool isSuccess, string id)
+        public void CancelBuilding(string id)
         {
-            if (!_unitRequests.TryGetValue(id, out UnitRequest unitRequest))
-            {
-                throw new InvalidOperationException(
-                    $"No queued unit request exists for id '{id}'.");
-            }
-
-            if (isSuccess)
-            {
-                _factionService.BuildUnit(unitRequest);
-            }
-            else
-            {
-                _factionService.RevertBuilding(unitRequest);
-            }
+            _factionService.CancelBuilding(id);
         }
 
-        private void AddPipeline(UnitRequest unitRequest)
+        private void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
-            if (_ui == null)
-            {
-                throw new InvalidOperationException(
-                    "Ship build route must be active before units can be queued.");
-            }
-
-            _unitRequests[unitRequest.Id] = unitRequest;
-            _ui.AddPipeline(unitRequest);
+            _ui?.RenderPipelines(snapshots);
         }
     }
 }

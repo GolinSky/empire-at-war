@@ -8,12 +8,12 @@ namespace EmpireAtWar
 {
     public class PopupDynamicInstaller : Installer
     {
-        private readonly IRepository _repository;
+        private readonly IAssetService _repository;
         private readonly PopupType _popupType;
         private readonly Transform _popupParent;
 
         public PopupDynamicInstaller(
-            IRepository repository,
+            IAssetService repository,
             PopupType popupType,
             Transform popupParent)
         {

@@ -1,5 +1,4 @@
 using EmpireAtWar.Services.Audio;
-using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -21,7 +20,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         [SerializeField] private AudioSource source;
 
         private AudioShipData _data;
-        private ITimerPoolWrapperService _timerPoolWrapperService;
+        private TimerPoolService _timerPoolService;
         private IAudioService _audioService;
         private ITimer _alarmTimer;
         
@@ -29,12 +28,12 @@ namespace EmpireAtWar.Components.Ship.Audio
         private void Construct(
             AudioShipModel model,
             AudioShipData data,
-            ITimerPoolWrapperService timerPoolWrapperService,
+            TimerPoolService timerPoolService,
             IAudioService audioService)
         {
             SetModel(model);
             _data = data;
-            _timerPoolWrapperService = timerPoolWrapperService;
+            _timerPoolService = timerPoolService;
             _audioService = audioService;
             _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay);
         }
@@ -70,7 +69,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         
         public void PlayHyperSpace(float hyperSpaceDuration)
         {
-            _timerPoolWrapperService.Invoke(() => { Model.PlayHyperSpace(); },
+            _timerPoolService.Invoke(() => { Model.PlayHyperSpace(); },
                 hyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
         }
 

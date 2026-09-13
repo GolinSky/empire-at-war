@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -13,22 +14,11 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public interface IWeaponComponent: IComponent
-    {
-        void AddTarget(AttackData attackData, AttackType attackType);
-        bool HasEnoughRange(float distance);
-        void ResetTarget();
-        float AttackDistance { get; }
-    }
-
-    public interface IWeaponPresenter
-    {
-        void ApplyDamage(AttackData attackData,IHardPointModel unitView, WeaponType weaponType, float attackDelay);
-    }
-    
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter
     {
         [SerializeField] private List<WeaponHardPointView> hardPoints;
+        [SerializeField] private Transform attackOrigin;
+        [SerializeField] private bool useWeaponDamageRange;
         
         private ICoroutineService _coroutineService;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
@@ -38,6 +28,7 @@ namespace EmpireAtWar.Components.Weapon
         private float _nextFireTime = 0f;
         private int _currentWeaponIndex = 0;
         private bool _isAttackedThisFrame;
+        private bool _isReleased;
         public float AttackDistance => Model.OptimalAttackRange;
 
 
@@ -49,6 +40,11 @@ namespace EmpireAtWar.Components.Weapon
         
         public void Initialize()
         {
+            if (useWeaponDamageRange)
+            {
+                Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => hardPoint.WeaponType));
+            }
+
             foreach (WeaponHardPointView hardPoint in hardPoints)
             {
                 hardPoint.SetData(Model.ProjectileModel.GetData(hardPoint.WeaponType), Model.OptimalAttackRange, this);
@@ -57,10 +53,25 @@ namespace EmpireAtWar.Components.Weapon
 
         private void OnDestroy()
         {
+            Release();
+        }
+
+        public override void Release()
+        {
+            if (_isReleased)
+            {
+                return;
+            }
+
+            _isReleased = true;
             foreach (Coroutine pendingAttack in _pendingAttacks)
             {
                 _coroutineService.StopCustomCoroutine(pendingAttack);
             }
+
+            _pendingAttacks.Clear();
+            _attackDataList.Clear();
+            _mainAttackData = null;
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)
@@ -69,13 +80,23 @@ namespace EmpireAtWar.Components.Weapon
             {
                 case AttackType.Base:
                 {
-                     _attackDataList.Add(attackData);
+                    if (_attackDataList.Any(data => attackData.SameSource(data)))
+                    {
+                        return;
+                    }
+
+                    _attackDataList.Add(attackData);
                     break;
                 }
                 case AttackType.MainTarget:
                 {
                     _mainAttackData = attackData;
-                    _attackDataList.Add(attackData);
+
+                    if (!_attackDataList.Any(data => attackData.SameSource(data)))
+                    {
+                        _attackDataList.Add(attackData);
+                    }
+
                     break;
                 }
             }
@@ -92,6 +113,9 @@ namespace EmpireAtWar.Components.Weapon
         }
         public void Tick()
         {
+            if (_isReleased)
+                return;
+
             if (Time.time < _nextFireTime)
                 return;
 
@@ -152,7 +176,7 @@ namespace EmpireAtWar.Components.Weapon
         
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, float attackDelay)
         {
-            if (!IsTargetValid()) return;
+            if (_isReleased || !IsTargetValid()) return;
 
             Coroutine attackCoroutine = null;
             attackCoroutine = _coroutineService.InvokeWithDelay(() =>
@@ -160,7 +184,7 @@ namespace EmpireAtWar.Components.Weapon
                 Assert.IsNotNull(attackCoroutine);
                 _pendingAttacks.Remove(attackCoroutine);
 
-                if (!IsTargetValid()) return;
+                if (_isReleased || !IsTargetValid()) return;
 
                 ApplyDamageInternal(
                     attackData,
@@ -189,6 +213,6 @@ namespace EmpireAtWar.Components.Weapon
             attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType, id);
         }
         private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(transform.position, targetPosition);
+            Vector3.Distance(attackOrigin == null ? transform.position : attackOrigin.position, targetPosition);
     }
 }

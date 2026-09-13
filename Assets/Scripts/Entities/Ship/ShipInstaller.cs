@@ -74,13 +74,10 @@ namespace EmpireAtWar.Ship
         protected override void BindComponents()
         {
             base.BindComponents();
+            Container.BindInitializableExecutionOrder<HealthComponent>(-100);
             ShipComponentsData model = Container.Resolve<ShipComponentsData>();
-            BindBuffer(model.HealthModel);
-            Container.Bind<IHealthModelObserver>().To<HealthModel>().FromResolve();
-            BindBuffer(model.ShipMoveModel);
-            Container.Bind<IShipMoveModelObserver>().To<ShipMoveModel>().FromResolve();
-            BindBuffer(model.AttackModel);
-            Container.Bind<IAttackModelObserver>().To<AttackModel>().FromResolve();
+            Container.Bind<HealthModel>().AsSingle();
+            Container.Bind<ShipMoveModel>().AsSingle();
             BindBuffer(model.RadarModel);
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 

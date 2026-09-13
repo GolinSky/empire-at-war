@@ -16,7 +16,7 @@ namespace EmpireAtWar.SceneContext
 {
     public class EnemyCoreInstaller : MonoInstaller
     {
-        [Inject] private IRepository Repository { get; }
+        [Inject] private IAssetService Repository { get; }
         [Inject] private Zenject.SceneContext SceneContext { get; }
         
         public override void InstallBindings()

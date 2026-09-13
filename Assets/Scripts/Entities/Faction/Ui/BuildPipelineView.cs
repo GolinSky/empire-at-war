@@ -1,77 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Models.Factions;
 using UnityEngine;
 
 namespace EmpireAtWar.Views.Factions
 {
-    public interface IBuildPipeline
-    {
-        void OnFinishPipeline(string id, bool isSuccess, int countLeft);
-    }
     [Serializable]
-    public class BuildPipelineView: IBuildPipeline
+    public class BuildPipelineView
     {
-        public event Action<bool, string> OnFinishSequence; 
         [SerializeField] private CanvasGroup canvasGroup;
 
         [SerializeField] private List<PipelineView> pipelineViews;
 
         private Dictionary<string, PipelineView> _workingPipelines = new Dictionary<string, PipelineView>();
 
-        public void Init()
+        public void Init(Action<string> cancelBuilding)
         {
             foreach (PipelineView pipelineView in pipelineViews)
             {
-                pipelineView.Init(this);
+                pipelineView.Init(cancelBuilding);
                 pipelineView.Activate(false);
             }
         }
         
-        public float AddPipeline(string id, Sprite icon, float fillTime)
+        public void Render(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
+            if (snapshots == null)
+            {
+                throw new ArgumentNullException(nameof(snapshots));
+            }
+
             if (canvasGroup == null)
             {
                 throw new InvalidOperationException(
                     $"{nameof(BuildPipelineView)} requires a bound {nameof(CanvasGroup)}.");
             }
 
-            canvasGroup.alpha = 1f;
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
-            if (_workingPipelines.TryGetValue(id, out PipelineView pipelineView))
+            RemoveMissingPipelines(snapshots);
+            foreach (ProductionQueueSnapshot snapshot in snapshots)
             {
-                pipelineView.AddCount();
-                return pipelineView.TimeLeft;
-            }
+                if (!_workingPipelines.TryGetValue(
+                        snapshot.UnitRequest.Id,
+                        out PipelineView pipelineView))
+                {
+                    pipelineView = pipelineViews.FirstOrDefault(view => !view.IsBusy)
+                        ?? throw new InvalidOperationException(
+                            "Production snapshot exceeds the configured pipeline view capacity.");
+                    _workingPipelines.Add(snapshot.UnitRequest.Id, pipelineView);
+                }
 
-            PipelineView freePipeline = pipelineViews
-                .FirstOrDefault(x => !x.IsBusy);
-                
-            SetUpPipeline(freePipeline);
-            _workingPipelines.Add(id, freePipeline);
-            return fillTime;
-
-            void SetUpPipeline(PipelineView view)
-            {
-                view.SetIcon(icon);
-                view.Activate(true);
-                view.Fill(fillTime, id);
+                pipelineView.Render(snapshot);
+                pipelineView.Activate(true);
             }
         }
 
-        private void OnComplete(string id, bool isSuccess)
+        private void RemoveMissingPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
-            OnFinishSequence?.Invoke(isSuccess, id);
-            _workingPipelines.Remove(id);
-        }
+            HashSet<string> activeIds = new HashSet<string>(
+                snapshots.Select(snapshot => snapshot.UnitRequest.Id));
+            List<string> completedIds = _workingPipelines.Keys
+                .Where(id => !activeIds.Contains(id))
+                .ToList();
 
-        public void OnFinishPipeline(string id, bool isSuccess, int countLeft)
-        {
-            OnFinishSequence?.Invoke(isSuccess, id);
-            if (countLeft == 1)
+            foreach (string completedId in completedIds)
             {
-                _workingPipelines.Remove(id);
+                PipelineView pipelineView = _workingPipelines[completedId];
+                pipelineView.Activate(false);
+                _workingPipelines.Remove(completedId);
             }
         }
     }

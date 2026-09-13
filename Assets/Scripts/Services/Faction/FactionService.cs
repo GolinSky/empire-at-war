@@ -5,6 +5,7 @@ using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Mvc;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Services.Factions
@@ -13,13 +14,12 @@ namespace EmpireAtWar.Services.Factions
     {
         void ChangeSelection();
         void CloseSelection();
-        void BuildUnit(UnitRequest unitRequest);
         void TryPurchaseUnit(UnitRequest unitRequest);
-        void RevertBuilding(UnitRequest unitRequest);
+        void CancelBuilding(string id);
     }
 
     public class FactionService : Service, IFactionService, IInitializable, ILateDisposable,
-        IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>
+        IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>, ITickable
     {
         private const float DEFAULT_INCOME = 5f;
 
@@ -56,6 +56,7 @@ namespace EmpireAtWar.Services.Factions
             _purchaseMediator.Value.Add(this);
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
+            _model.OnUnitCompleted += BuildUnit;
             _isInitialized = true;
         }
 
@@ -68,6 +69,7 @@ namespace EmpireAtWar.Services.Factions
 
             _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
+            _model.OnUnitCompleted -= BuildUnit;
             _isInitialized = false;
         }
 
@@ -84,10 +86,8 @@ namespace EmpireAtWar.Services.Factions
             }
         }
 
-        public void BuildUnit(UnitRequest unitRequest)
+        private void BuildUnit(UnitRequest unitRequest)
         {
-            _model.CompleteUnit(unitRequest);
-
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
@@ -113,10 +113,20 @@ namespace EmpireAtWar.Services.Factions
             _purchaseMediator.Value.Handle(unitRequest);
         }
 
-        public void RevertBuilding(UnitRequest unitRequest)
+        public void CancelBuilding(string id)
         {
-            _purchaseMediator.Value.RevertFlow(unitRequest);
-            _model.CompleteUnit(unitRequest);
+            if (_model.TryCancelCurrentUnit(id, out UnitRequest unitRequest))
+            {
+                _purchaseMediator.Value.RevertFlow(unitRequest);
+            }
+        }
+
+        public void Tick()
+        {
+            if (_isInitialized)
+            {
+                _model.Advance(Time.deltaTime);
+            }
         }
 
         public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)

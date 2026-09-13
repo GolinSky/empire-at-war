@@ -10,7 +10,7 @@ namespace EmpireAtWar.Extentions
         {
         }
 
-        public void BindFromNewComponent<TView>(IRepository repository, Transform parent)
+        public void BindFromNewComponent<TView>(IAssetService repository, Transform parent)
             where TView : IView
         {
             ConstructName<TView>();

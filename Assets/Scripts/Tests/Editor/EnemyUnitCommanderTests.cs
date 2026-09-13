@@ -9,10 +9,8 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
-using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
-using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -285,15 +283,10 @@ namespace EmpireAtWar.Tests.Editor
             public float ShieldPercentage => 1f;
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
-            public FloatRange ShieldDangerStateRange => default;
             public bool HasUnits => true;
             public PlayerType PlayerType => PlayerType.Player;
             public Transform Transform { get; }
             public bool HasShields => true;
-
-            public void InjectDependency(List<HardPointView> shipUnits)
-            {
-            }
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
             {

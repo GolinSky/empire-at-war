@@ -10,7 +10,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
-using EmpireAtWar.Services.TimerPoolWrapperService;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -45,7 +44,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private IChainHandler<UnitRequest> _nextChain;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
-        private readonly ITimerPoolWrapperService _timerPoolWrapperService;
+        private readonly TimerPoolService _timerPoolService;
         private bool _isInitialized;
 
         private PlayerType PlayerType => PlayerType.Opponent;
@@ -57,7 +56,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ShipFacadeFactory shipFacadeFactory,
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,
-            ITimerPoolWrapperService timerPoolWrapperService, 
+            TimerPoolService timerPoolService,
             IEconomyProvider economyProvider,
             IPurchaseChain purchaseChain,
             IReinforcementZonesSystem reinforcementZonesSystem,
@@ -68,7 +67,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
-            _timerPoolWrapperService = timerPoolWrapperService;
+            _timerPoolService = timerPoolService;
             _economyProvider = economyProvider;
             _purchaseChain = purchaseChain;
             _reinforcementZonesSystem = reinforcementZonesSystem;
@@ -176,7 +175,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)
         {
-            CustomCoroutine pendingBuild = _timerPoolWrapperService.Invoke(
+            CustomCoroutine pendingBuild = _timerPoolService.Invoke(
                 () => ExecuteBuild(unitRequest, buildAction),
                 unitRequest.FactionData.BuildTime);
             _pendingBuilds.Add(pendingBuild, unitRequest);

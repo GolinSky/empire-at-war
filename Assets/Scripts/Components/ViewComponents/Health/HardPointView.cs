@@ -33,7 +33,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public bool IsDestroyed => _healthPercentage <= 0f;
 
         [Inject]
-        protected IRepository Repository { get; }
+        protected IAssetService Repository { get; }
 
         public void UpdateData(float healthPercentage)
         {
