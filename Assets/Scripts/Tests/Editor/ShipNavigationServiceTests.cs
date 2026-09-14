@@ -1,8 +1,13 @@
 using System.Collections.Generic;
 using System.Reflection;
+using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using NUnit.Framework;
 using UnityEngine;
@@ -26,8 +31,8 @@ namespace EmpireAtWar.Tests.Movement
         {
             FakeAgent slow = new FakeAgent(Vector3.zero, 0f, 4f, 5f, 30f);
             FakeAgent fast = new FakeAgent(Vector3.zero, 0f, 4f, 20f, 30f);
-            ShipNavigationService slowService = CreateService(slow);
-            ShipNavigationService fastService = CreateService(fast);
+            ShipNavigationService slowService = CreateService();
+            ShipNavigationService fastService = CreateService();
 
             ShipNavigationPlan slowPlan = Plan(
                 slowService,
@@ -58,9 +63,9 @@ namespace EmpireAtWar.Tests.Movement
                 5f,
                 10f,
                 30f);
-            ShipNavigationService clearService = CreateService(clearAgent);
+            ShipNavigationService clearService = CreateService();
             ShipNavigationService obstructedService =
-                CreateService(obstructedAgent);
+                CreateService();
             Vector3 destination = new Vector3(50f, 0f, 0f);
 
             ShipNavigationPlan clearPlan = Plan(
@@ -83,8 +88,6 @@ namespace EmpireAtWar.Tests.Movement
                 obstructedPlan.Destination,
                 Is.EqualTo(clearPlan.Destination));
             Assert.That(obstructedPlan.Detour.HasValue, Is.True);
-            Assert.That(obstructedPlan.WaitDuration, Is.Zero);
-            Assert.That(obstructedPlan.TrafficConflictChecks, Is.Zero);
             Assert.That(
                 obstructedPlan.Route.Length,
                 Is.GreaterThan(clearPlan.Route.Length));
@@ -118,7 +121,6 @@ namespace EmpireAtWar.Tests.Movement
                 10f,
                 false);
             ShipNavigationService service = CreateService(
-                agent,
                 new[] { staticObstacle });
 
             ShipNavigationPlan plan = Plan(
@@ -130,7 +132,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_AvoidsShipContactAtSameHeight()
+        public void Plan_IgnoresShipContactsAheadAndAtOrigin()
         {
             FakeAgent agent = new FakeAgent(
                 Vector3.zero,
@@ -138,7 +140,7 @@ namespace EmpireAtWar.Tests.Movement
                 5f,
                 10f,
                 30f);
-            ShipNavigationService service = CreateService(agent);
+            ShipNavigationService service = CreateService();
 
             ShipNavigationPlan plan = Plan(
                 service,
@@ -149,10 +151,92 @@ namespace EmpireAtWar.Tests.Movement
                     new RadarContact(
                         new Vector3(20f, 0f, 0f),
                         10f,
-                        true)
+                        true),
+                    new RadarContact(Vector3.zero, 10f, true)
                 });
 
-            Assert.That(plan.Detour.HasValue, Is.True);
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination, Is.EqualTo(new Vector3(50f, 0f, 0f)));
+            Assert.That(plan.Detour.HasValue, Is.False);
+        }
+
+        [Test]
+        public void Plan_KeepsDestinationOccupiedByShip()
+        {
+            FakeAgent ship = new FakeAgent(
+                Vector3.zero,
+                0f,
+                4f,
+                10f,
+                90f);
+            ShipNavigationService service = CreateService();
+            Vector3 destination = new Vector3(40f, 0f, 0f);
+
+            ShipNavigationPlan plan = Plan(
+                service,
+                ship,
+                destination,
+                new[] { new RadarContact(destination, 10f, true) });
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination, Is.EqualTo(destination));
+            Assert.That(plan.Detour.HasValue, Is.False);
+        }
+
+        [Test]
+        public void Plan_CrossingShipContacts_KeepDirectDestinations()
+        {
+            FakeAgent horizontalShip = new FakeAgent(
+                Vector3.left * 40f,
+                0f,
+                4f,
+                10f,
+                90f);
+            FakeAgent verticalShip = new FakeAgent(
+                Vector3.back * 40f,
+                0f,
+                4f,
+                10f,
+                90f);
+            ShipNavigationService service = CreateService();
+            Vector3 horizontalDestination = Vector3.right * 40f;
+            Vector3 verticalDestination = Vector3.forward * 40f;
+
+            ShipNavigationPlan horizontalPlan = service.Plan(
+                horizontalShip,
+                Vector3.right,
+                horizontalDestination,
+                new[]
+                {
+                    new RadarContact(
+                        verticalShip.NavigationPosition,
+                        verticalShip.NavigationRadius,
+                        true)
+                },
+                0.5f,
+                horizontalShip.NavigationRadius,
+                _mapRange);
+            ShipNavigationPlan verticalPlan = service.Plan(
+                verticalShip,
+                Vector3.forward,
+                verticalDestination,
+                new[]
+                {
+                    new RadarContact(
+                        horizontalShip.NavigationPosition,
+                        horizontalShip.NavigationRadius,
+                        true)
+                },
+                0.5f,
+                verticalShip.NavigationRadius,
+                _mapRange);
+
+            Assert.That(horizontalPlan.Destination, Is.EqualTo(horizontalDestination));
+            Assert.That(verticalPlan.Destination, Is.EqualTo(verticalDestination));
+            Assert.That(horizontalPlan.Detour.HasValue, Is.False);
+            Assert.That(verticalPlan.Detour.HasValue, Is.False);
+            Assert.That(horizontalPlan.TurnDuration, Is.Zero);
+            Assert.That(verticalPlan.TurnDuration, Is.Zero);
         }
 
         [Test]
@@ -164,7 +248,7 @@ namespace EmpireAtWar.Tests.Movement
                 5f,
                 10f,
                 30f);
-            ShipNavigationService service = CreateService(agent);
+            ShipNavigationService service = CreateService();
             Vector3 obstacleCenter = new Vector3(20f, 0f, 0f);
 
             ShipNavigationPlan plan = Plan(
@@ -182,124 +266,10 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_ReservesDistinctFinalDestinations()
-        {
-            FakeAgent first = new FakeAgent(
-                Vector3.back * 20f,
-                0f,
-                8f,
-                10f,
-                30f);
-            FakeAgent second = new FakeAgent(
-                Vector3.forward * 20f,
-                0f,
-                8f,
-                10f,
-                30f);
-            ShipNavigationService service = CreateService();
-            service.Register(first);
-            service.Register(second);
-            Vector3 destination = new Vector3(50f, 0f, 0f);
-
-            ShipNavigationPlan firstPlan = Plan(service, first, destination);
-            ShipNavigationPlan secondPlan = Plan(service, second, destination);
-
-            Assert.That(secondPlan.Destination, Is.Not.EqualTo(firstPlan.Destination));
-            Assert.That(
-                Vector3.Distance(
-                    secondPlan.Destination,
-                    firstPlan.Destination),
-                Is.GreaterThanOrEqualTo(
-                    first.NavigationRadius +
-                    second.NavigationRadius -
-                    0.001f));
-        }
-
-        [Test]
-        public void Plan_CrossingReservedTrajectory_UsesBoundedStartDelay()
-        {
-            FakeAgent horizontalShip = new FakeAgent(
-                Vector3.left * 40f,
-                0f,
-                4f,
-                10f,
-                90f);
-            FakeAgent verticalShip = new FakeAgent(
-                Vector3.back * 40f,
-                0f,
-                4f,
-                10f,
-                90f);
-            ShipNavigationService service = CreateService();
-            service.Register(horizontalShip);
-            service.Register(verticalShip);
-
-            service.Plan(
-                horizontalShip,
-                Vector3.right,
-                Vector3.right * 40f,
-                System.Array.Empty<RadarContact>(),
-                0.5f,
-                horizontalShip.NavigationRadius,
-                _mapRange);
-            ShipNavigationPlan verticalPlan = service.Plan(
-                verticalShip,
-                Vector3.forward,
-                Vector3.forward * 40f,
-                System.Array.Empty<RadarContact>(),
-                0.5f,
-                verticalShip.NavigationRadius,
-                _mapRange);
-
-            Assert.That(verticalPlan.TrafficConflictChecks, Is.GreaterThan(0));
-            Assert.That(verticalPlan.WaitDuration, Is.GreaterThan(0f));
-            Assert.That(verticalPlan.WaitDuration, Is.LessThanOrEqualTo(0.5f));
-        }
-
-        [Test]
-        public void Plan_CoMovingReservedTrajectory_DoesNotDelaySecondShip()
-        {
-            FakeAgent leadingShip = new FakeAgent(
-                Vector3.zero,
-                0f,
-                4f,
-                10f,
-                90f);
-            FakeAgent followingShip = new FakeAgent(
-                Vector3.back * 20f,
-                0f,
-                4f,
-                10f,
-                90f);
-            ShipNavigationService service = CreateService();
-            service.Register(leadingShip);
-            service.Register(followingShip);
-
-            service.Plan(
-                leadingShip,
-                Vector3.forward,
-                Vector3.forward * 80f,
-                System.Array.Empty<RadarContact>(),
-                0.5f,
-                leadingShip.NavigationRadius,
-                _mapRange);
-            ShipNavigationPlan followingPlan = service.Plan(
-                followingShip,
-                Vector3.forward,
-                Vector3.forward * 60f,
-                System.Array.Empty<RadarContact>(),
-                0.5f,
-                followingShip.NavigationRadius,
-                _mapRange);
-
-            Assert.That(followingPlan.WaitDuration, Is.Zero);
-        }
-
-        [Test]
-        public void Plan_DestinationBehind_HasNoWaitAndStartsForward()
+        public void Plan_DestinationBehind_StartsForward()
         {
             FakeAgent ship = new FakeAgent(Vector3.zero, 0f, 5f, 10f, 30f);
-            ShipNavigationService service = CreateService(ship);
+            ShipNavigationService service = CreateService();
 
             ShipNavigationPlan plan = service.Plan(
                 ship,
@@ -312,7 +282,6 @@ namespace EmpireAtWar.Tests.Movement
             Vector3 earlyPosition =
                 plan.Route.EvaluateNormalizedDistance(0.05f, out _);
 
-            Assert.That(plan.WaitDuration, Is.Zero);
             Assert.That(plan.TurnDuration, Is.Zero);
             Assert.That(plan.Detour.HasValue, Is.False);
             Assert.That(
@@ -337,7 +306,6 @@ namespace EmpireAtWar.Tests.Movement
                 3f,
                 false);
             ShipNavigationService service = CreateService(
-                ship,
                 new[] { obstacle });
 
             ShipNavigationPlan plan = service.Plan(
@@ -390,13 +358,59 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
-        private ShipNavigationService CreateService(
-            FakeAgent agent,
-            IReadOnlyList<RadarContact> staticObstacles = null)
+        [Test]
+        public void HandleRadarContacts_WithUnchangedContacts_RetriesBlockedTarget()
         {
-            ShipNavigationService service = CreateService(staticObstacles);
-            service.Register(agent);
-            return service;
+            GameObject gameObject = new GameObject(
+                nameof(HandleRadarContacts_WithUnchangedContacts_RetriesBlockedTarget));
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(
+                    gameObject,
+                    out RecordingShipNavigationService navigationService);
+                Vector3 destination = new Vector3(25f, 0f, 0f);
+                SetPrivateField(
+                    component,
+                    "_blockedTargetPosition",
+                    destination);
+
+                component.HandleRadarContacts(System.Array.Empty<RadarContact>());
+
+                Assert.That(navigationService.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigationService.LastDestination, Is.EqualTo(destination));
+            }
+            finally
+            {
+                Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [Test]
+        public void SetTargetPosition_RepeatedBlockedDestination_RetriesTarget()
+        {
+            GameObject gameObject = new GameObject(
+                nameof(SetTargetPosition_RepeatedBlockedDestination_RetriesTarget));
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(
+                    gameObject,
+                    out RecordingShipNavigationService navigationService);
+                Vector3 destination = new Vector3(25f, 0f, 0f);
+                SetPrivateField(component, "_blockedTargetPosition", destination);
+                MethodInfo setTargetPosition = typeof(ShipMoveComponent).GetMethod(
+                    "SetTargetPosition",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.That(setTargetPosition, Is.Not.Null);
+
+                setTargetPosition.Invoke(component, new object[] { destination, false });
+
+                Assert.That(navigationService.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigationService.LastDestination, Is.EqualTo(destination));
+            }
+            finally
+            {
+                Object.DestroyImmediate(gameObject);
+            }
         }
 
         private static ShipNavigationService CreateService(
@@ -431,6 +445,67 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(_mapRange, value);
+        }
+
+        private ShipMoveComponent CreateReadyComponent(
+            GameObject gameObject,
+            out RecordingShipNavigationService navigationService)
+        {
+            ShipMoveComponent component =
+                gameObject.AddComponent<ShipMoveComponent>();
+            MethodInfo setModel = typeof(MonoComponent<ShipMoveModel>).GetMethod(
+                "SetModel",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(setModel, Is.Not.Null);
+            setModel.Invoke(
+                component,
+                new object[] { new ShipMoveModel(new FakeShipMoveData()) });
+            navigationService = new RecordingShipNavigationService();
+            GameObject bodyObject = new GameObject("Body");
+            bodyObject.transform.SetParent(gameObject.transform);
+            LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
+            System.Type tweenPlayerType = typeof(ShipMoveComponent).Assembly.GetType(
+                "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
+            Assert.That(tweenPlayerType, Is.Not.Null);
+            ConstructorInfo tweenPlayerConstructor = tweenPlayerType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new[]
+                {
+                    typeof(Transform),
+                    typeof(Transform),
+                    typeof(LineRenderer),
+                    typeof(Ease),
+                    typeof(Ease)
+                },
+                null);
+            Assert.That(tweenPlayerConstructor, Is.Not.Null);
+            object tweenPlayer = tweenPlayerConstructor.Invoke(new object[]
+            {
+                gameObject.transform,
+                bodyObject.transform,
+                lineRenderer,
+                Ease.Linear,
+                Ease.Linear
+            });
+            SetPrivateField(component, "_mapModel", new FakeMapModel(_mapRange));
+            SetPrivateField(component, "_movementMediator", new FakeShipMovementMediator());
+            SetPrivateField(component, "_shipNavigationService", navigationService);
+            SetPrivateField(component, "_tweenPlayer", tweenPlayer);
+            SetPrivateField(component, "_isNavigationReady", true);
+            return component;
+        }
+
+        private static void SetPrivateField(
+            ShipMoveComponent component,
+            string fieldName,
+            object value)
+        {
+            FieldInfo field = typeof(ShipMoveComponent).GetField(
+                fieldName,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null);
+            field.SetValue(component, value);
         }
 
         private sealed class FakeAgent : IShipNavigationAgent
@@ -476,6 +551,77 @@ namespace EmpireAtWar.Tests.Movement
                 {
                     destination.Add(_contacts[i]);
                 }
+            }
+        }
+
+        private sealed class FakeMapModel : IMapModelObserver
+        {
+            public FakeMapModel(Vector2Range sizeRange)
+            {
+                SizeRange = sizeRange;
+            }
+
+            public Vector2Range SizeRange { get; }
+
+            public Vector3 GetStationPosition(FactionType factionType)
+            {
+                return Vector3.zero;
+            }
+        }
+
+        private sealed class FakeShipMovementMediator : IShipMovementMediator
+        {
+            public void OnPositionChanged(Vector3 position)
+            {
+            }
+
+            public void OnLookAtTarget(Vector3 targetPosition)
+            {
+            }
+
+            public void OnStopped()
+            {
+            }
+        }
+
+        private sealed class FakeShipMoveData : IShipMoveData
+        {
+            public float Speed => 10f;
+            public float Height => 0f;
+            public float RotationSpeed => 30f;
+            public float HyperSpaceDuration => 1f;
+            public float BodyRotationMaxAngle => 10f;
+            public float NavigationRadius => 5f;
+        }
+
+        private sealed class RecordingShipNavigationService : IShipNavigationService
+        {
+            public string Id => nameof(RecordingShipNavigationService);
+            public int PlanCallCount { get; private set; }
+            public Vector3 LastDestination { get; private set; }
+
+            public ShipNavigationPlan Plan(
+                IShipNavigationAgent agent,
+                Vector3 forward,
+                Vector3 requestedDestination,
+                IReadOnlyList<RadarContact> obstacleContacts,
+                float heightTolerance,
+                float clearance,
+                Vector2Range mapRange,
+                bool preserveCourse = false)
+            {
+                PlanCallCount++;
+                LastDestination = requestedDestination;
+                return new ShipNavigationPlan(
+                    requestedDestination,
+                    null,
+                    ShipBezierPath.BuildDirectRoute(
+                        agent.NavigationPosition,
+                        forward,
+                        requestedDestination),
+                    0f,
+                    0f,
+                    isDeferred: true);
             }
         }
     }

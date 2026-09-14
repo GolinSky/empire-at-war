@@ -88,17 +88,23 @@ namespace EmpireAtWar.Services.ShipNavigation
                 return new ShipRoutePlan(destination, detour, route, 0f);
             }
 
+            Vector3? alternateDetour = null;
             if (detour.HasValue && ShipAvoidancePlanner.TryCalculateDetour(
                     origin, destination, contacts, agent.NavigationHeight,
-                    heightTolerance, clearance, mapRange, out Vector3 alternateDetour,
+                    heightTolerance, clearance, mapRange, out Vector3 calculatedAlternateDetour,
                     forward, alternateSide: true))
             {
+                alternateDetour = calculatedAlternateDetour;
                 ShipBezierRoute alternateRoute = ShipBezierPath.BuildAvoidanceRoute(
-                    origin, forward, alternateDetour, destination);
+                    origin, forward, calculatedAlternateDetour, destination);
                 if (ShipAvoidancePlanner.IsRouteClear(
                         alternateRoute, contacts, agent.NavigationHeight, heightTolerance, clearance))
                 {
-                    return new ShipRoutePlan(destination, alternateDetour, alternateRoute, 0f);
+                    return new ShipRoutePlan(
+                        destination,
+                        calculatedAlternateDetour,
+                        alternateRoute,
+                        0f);
                 }
             }
 
@@ -121,15 +127,6 @@ namespace EmpireAtWar.Services.ShipNavigation
                     initialTravelDirection,
                     destination,
                     minimumTurnRadius);
-            float turnDuration =
-                ShipRotationKinematics.CalculateTurnDuration(
-                    Quaternion.LookRotation(
-                        GetPlanarDirection(forward),
-                        Vector3.up),
-                    route.InitialTangent,
-                    Mathf.Max(
-                        agent.NavigationRotationSpeed,
-                        Mathf.Epsilon));
             if (ShipAvoidancePlanner.IsRouteClear(
                     route,
                     contacts,
@@ -141,7 +138,35 @@ namespace EmpireAtWar.Services.ShipNavigation
                     destination,
                     detour,
                     route,
-                    turnDuration);
+                    CalculateTurnDuration(agent, forward, route));
+            }
+
+            if (alternateDetour.HasValue)
+            {
+                Vector3 alternateTravelDirection = alternateDetour.Value - origin;
+                if (alternateTravelDirection.sqrMagnitude <= Mathf.Epsilon)
+                {
+                    alternateTravelDirection = GetPlanarDirection(forward);
+                }
+
+                route = ShipBezierPath.BuildAvoidanceRoute(
+                    origin,
+                    alternateTravelDirection,
+                    alternateDetour.Value,
+                    destination);
+                if (ShipAvoidancePlanner.IsRouteClear(
+                        route,
+                        contacts,
+                        agent.NavigationHeight,
+                        heightTolerance,
+                        clearance))
+                {
+                    return new ShipRoutePlan(
+                        destination,
+                        alternateDetour,
+                        route,
+                        CalculateTurnDuration(agent, forward, route));
+                }
             }
 
             ShipBezierRoute stationaryRoute = ShipBezierPath.BuildDirectRoute(
@@ -154,6 +179,17 @@ namespace EmpireAtWar.Services.ShipNavigation
                 stationaryRoute,
                 0f,
                 true);
+        }
+
+        private static float CalculateTurnDuration(
+            IShipNavigationAgent agent,
+            Vector3 forward,
+            ShipBezierRoute route)
+        {
+            return ShipRotationKinematics.CalculateTurnDuration(
+                Quaternion.LookRotation(GetPlanarDirection(forward), Vector3.up),
+                route.InitialTangent,
+                Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
         }
 
         private static Vector3 GetPlanarDirection(Vector3 direction)

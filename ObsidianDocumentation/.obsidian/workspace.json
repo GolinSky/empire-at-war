@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
+                "file": "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SCRIPTS_CODE_AUDIT_2026-09-12"
+              "title": "01_INVENTORY"
             }
           }
         ]
@@ -187,10 +187,25 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "Artifacts/Codex_Audit_2026-09-13/02_EFFECTIVE_LOAD_MAP.md",
+    "Artifacts/Codex_Audit_2026-09-13/04_MIGRATION_MAP.md",
+    "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
+    "Artifacts/Codex_Audit_2026-09-13/inventory.json",
+    "Artifacts/Codex_Audit_2026-09-13/patches/README.md",
+    "Artifacts/Codex_Audit_2026-09-13/patches/003-macos-receiver-instructions.patch",
+    "Artifacts/Codex_Audit_2026-09-13/patches/002-parent-model-documentation.patch",
+    "Artifacts/Codex_Audit_2026-09-13/patches/001-serena-recovery-path.patch",
+    "Artifacts/Codex_Audit_2026-09-13/patches",
+    "Artifacts/Codex_Audit_2026-09-13/07_HANDOFF.md",
+    "Artifacts/Codex_Audit_2026-09-13/06_ROLLBACK.md",
+    "Artifacts/Codex_Audit_2026-09-13/05_VALIDATION.md",
+    "Artifacts/Codex_Audit_2026-09-13/03_FINDINGS.md",
+    "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
+    "Artifacts/Codex_Audit_2026-09-13/00_SCOPE_AND_ENVIRONMENT.md",
+    "Artifacts/Codex_Audit_2026-09-13",
     "Artifacts/Implementation_Plan.md",
     "Artifacts/Walkthrough.md",
     "Rules/AGENTS.md",
-    "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
     "Rules/README.md",
     "00_Home.md",
     "Artifacts",
@@ -206,8 +221,6 @@
     "AGENTS.md",
     "GRAPHIFY_GUIDE.md",
     "PROJECT_ORGANIZATION.md",
-    "README.md",
-    "SELECTION_SYSTEM.md",
-    "TODOs.md"
+    "README.md"
   ]
 }

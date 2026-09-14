@@ -55,8 +55,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _hasBroadsideDirection;
         private Vector3? _deferredTargetPosition;
         private Vector3? _blockedTargetPosition;
-        private readonly List<RadarContact> _blockedNavigationContacts =
-            new List<RadarContact>();
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -116,7 +114,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _lineRenderer,
                 _lookAtEase,
                 _hyperSpaceEase);
-            _shipNavigationService.Register(this);
             Model.ConfigureSpawnPose(
                 ToNumerics(_startPosition),
                 ToNumerics(_stationFacingService.GetRotation(_playerType)),
@@ -148,8 +145,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _isReleased = true;
-            _shipNavigationService.ClearPlan(this);
-            _shipNavigationService.Unregister(this);
             if (_tweenPlayer != null)
             {
                 _tweenPlayer.Release();
@@ -173,12 +168,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             requestedPosition.y = Model.Height;
             Vector3 destination = ShipAvoidancePlanner.ClampToMap(
                 requestedPosition, _mapModel.SizeRange, NavigationRadius);
-            if (_blockedTargetPosition.HasValue &&
-                (_blockedTargetPosition.Value - destination).sqrMagnitude < 0.0025f)
-            {
-                return ToUnity(Model.TargetPosition);
-            }
-
             _deferredTargetPosition = null;
             _blockedTargetPosition = null;
             if (Model.HasTargetPosition(ToNumerics(destination)))
@@ -304,10 +293,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _tweenPlayer.StopPath();
-            _shipNavigationService.ClearPlan(this);
             _deferredTargetPosition = null;
             _blockedTargetPosition = null;
-            _blockedNavigationContacts.Clear();
         }
 
         private void HyperSpaceJump(Vector3 point)
@@ -353,12 +340,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             ReplaceNavigationContacts(contacts);
-            if (_blockedTargetPosition.HasValue &&
-                HaveBlockedContactsChanged(_navigationContacts))
+            if (_blockedTargetPosition.HasValue)
             {
                 Vector3 blockedDestination = _blockedTargetPosition.Value;
                 _blockedTargetPosition = null;
-                _blockedNavigationContacts.Clear();
                 UpdateTargetPosition(blockedDestination);
             }
         }
@@ -382,10 +367,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Debug.Log(
                     $"[ShipNavigation] Ship={name}, " +
                     $"Detour={plan.Detour.HasValue}, Turn={plan.TurnDuration:F2}s, " +
-                    $"Wait={plan.WaitDuration:F2}s, " +
                     $"Move={plan.MovementDuration:F2}s, Radius={NavigationRadius:F1}, " +
                     $"Speed={NavigationSpeed:F1}, TurnSpeed={NavigationRotationSpeed:F1}, " +
-                    $"TrafficChecks={plan.TrafficConflictChecks}, " +
                     $"Blocked={plan.IsStationary}",
                     this);
             }
@@ -399,17 +382,13 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (plan.IsStationary)
             {
                 _tweenPlayer.StopPath();
-                _shipNavigationService.ClearPlan(this);
                 Model.SetTargetPosition(ToNumerics(CurrentViewPosition));
                 _blockedTargetPosition = requestedDestination;
-                _blockedNavigationContacts.Clear();
-                _blockedNavigationContacts.AddRange(obstacleContacts);
                 return;
             }
 
             _blockedTargetPosition = null;
             _deferredTargetPosition = null;
-            _blockedNavigationContacts.Clear();
 
             if (!Model.HasTargetPosition(ToNumerics(plan.Destination)))
             {
@@ -426,9 +405,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             for (int i = 0; i < contacts.Count; i++)
             {
                 RadarContact contact = contacts[i];
-                if (!contact.IsShip ||
-                    Mathf.Abs(contact.Position.y - NavigationHeight) <=
-                    HEIGHT_TOLERANCE)
+                if (!contact.IsShip)
                 {
                     _navigationContacts.Add(contact);
                 }
@@ -443,7 +420,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.BodyRotationMaxAngle,
                 () =>
                 {
-                    _shipNavigationService.ClearPlan(this);
                     if (_deferredTargetPosition.HasValue)
                     {
                         Vector3 deferredTargetPosition =
@@ -452,38 +428,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                         SetTargetPosition(deferredTargetPosition);
                     }
                 });
-        }
-
-        private bool HaveBlockedContactsChanged(IReadOnlyList<RadarContact> contacts)
-        {
-            if (contacts.Count != _blockedNavigationContacts.Count)
-            {
-                return true;
-            }
-
-            float movementThreshold = NavigationRadius * 0.25f;
-            float movementThresholdSquared = movementThreshold * movementThreshold;
-            foreach (RadarContact current in contacts)
-            {
-                bool matches = false;
-                foreach (RadarContact blocked in _blockedNavigationContacts)
-                {
-                    if (current.IsShip == blocked.IsShip &&
-                        Mathf.Approximately(current.Radius, blocked.Radius) &&
-                        (current.Position - blocked.Position).sqrMagnitude <= movementThresholdSquared)
-                    {
-                        matches = true;
-                        break;
-                    }
-                }
-
-                if (!matches)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private static NumericsVector3 ToNumerics(Vector3 value)
