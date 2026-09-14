@@ -59,15 +59,15 @@ namespace EmpireAtWar.Components.Ship.Movement
             for (int i = 0; i < contacts.Count; i++)
             {
                 RadarContact contact = contacts[i];
-                if (contact.IsShip && Mathf.Abs(contact.Position.y - shipHeight) > heightTolerance)
+                if (contact.IsShip)
                 {
                     continue;
                 }
 
                 Vector2 center = new Vector2(contact.Position.x, contact.Position.z);
+                float safeRadius = contact.Radius + clearance;
                 float projectedDistance = Mathf.Clamp(Vector2.Dot(center - start, direction), 0f, routeLength);
                 Vector2 closest = start + direction * projectedDistance;
-                float safeRadius = contact.Radius + clearance;
                 if ((center - closest).sqrMagnitude >= safeRadius * safeRadius)
                 {
                     continue;
@@ -151,7 +151,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             for (int contactIndex = 0; contactIndex < contacts.Count; contactIndex++)
             {
                 RadarContact contact = contacts[contactIndex];
-                if (!IsRelevant(contact, shipHeight, heightTolerance))
+                if (!IsRelevant(contact))
                 {
                     continue;
                 }
@@ -234,7 +234,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                  contactIndex++)
             {
                 RadarContact contact = contacts[contactIndex];
-                if (!IsRelevant(contact, shipHeight, heightTolerance))
+                if (!IsRelevant(contact))
                 {
                     continue;
                 }
@@ -275,7 +275,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             for (int i = 0; i < contacts.Count; i++)
             {
                 RadarContact contact = contacts[i];
-                if (!IsRelevant(contact, shipHeight, heightTolerance))
+                if (!IsRelevant(contact))
                 {
                     continue;
                 }
@@ -301,7 +301,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             float heightTolerance,
             float clearance)
         {
-            if (!IsRelevant(contact, shipHeight, heightTolerance))
+            if (!IsRelevant(contact))
             {
                 return false;
             }
@@ -315,13 +315,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                    safeRadius * safeRadius;
         }
 
-        private static bool IsRelevant(
-            RadarContact contact,
-            float shipHeight,
-            float heightTolerance)
+        private static bool IsRelevant(RadarContact contact)
         {
-            return !contact.IsShip ||
-                   Mathf.Abs(contact.Position.y - shipHeight) <= heightTolerance;
+            return !contact.IsShip;
         }
 
         private static float DistanceToSegmentSquared(

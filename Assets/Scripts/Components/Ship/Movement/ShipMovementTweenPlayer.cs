@@ -180,16 +180,6 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _translationSequence.AppendCallback(StraightenBody);
             }
 
-            float remainingWait = plan.WaitDuration - plan.TurnDuration;
-            if (remainingWait > Mathf.Epsilon)
-            {
-                _translationSequence.Append(DOVirtual.Float(
-                    0f,
-                    1f,
-                    remainingWait,
-                    _ => { }));
-            }
-
             _translationSequence.Append(DOVirtual.Float(
                     0f,
                     1f,

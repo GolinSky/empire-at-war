@@ -24,9 +24,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3? detour,
             ShipBezierRoute route,
             float turnDuration,
-            float waitDuration,
             float movementDuration,
-            int trafficConflictChecks,
             bool isStationary = false,
             bool isDeferred = false)
         {
@@ -34,9 +32,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Detour = detour;
             Route = route ?? throw new ArgumentNullException(nameof(route));
             TurnDuration = turnDuration;
-            WaitDuration = waitDuration;
             MovementDuration = movementDuration;
-            TrafficConflictChecks = trafficConflictChecks;
             IsStationary = isStationary;
             IsDeferred = isDeferred;
         }
@@ -46,18 +42,13 @@ namespace EmpireAtWar.Services.ShipNavigation
         public ShipBezierRoute Route { get; }
         public Vector3[] Trajectory => Route.Samples;
         public float TurnDuration { get; }
-        public float WaitDuration { get; }
         public float MovementDuration { get; }
-        public int TrafficConflictChecks { get; }
         public bool IsStationary { get; }
         public bool IsDeferred { get; }
-        public float TotalDuration => WaitDuration + MovementDuration;
     }
 
     public interface IShipNavigationService : IService
     {
-        void Register(IShipNavigationAgent agent);
-        void Unregister(IShipNavigationAgent agent);
         ShipNavigationPlan Plan(
             IShipNavigationAgent agent,
             Vector3 forward,
@@ -67,7 +58,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             float clearance,
             Vector2Range mapRange,
             bool preserveCourse = false);
-        void ClearPlan(IShipNavigationAgent agent);
     }
 
     public sealed class ShipNavigationService : Service, IShipNavigationService
@@ -75,8 +65,6 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly List<RadarContact> _mapObstacleContacts =
             new List<RadarContact>();
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
-        private readonly ShipTrafficCoordinator _trafficCoordinator =
-            new ShipTrafficCoordinator();
 
         public ShipNavigationService(
             IMapObstacleContactProvider mapObstacleContactProvider)
@@ -84,26 +72,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             _mapObstacleContactProvider = mapObstacleContactProvider ??
                 throw new ArgumentNullException(
                     nameof(mapObstacleContactProvider));
-        }
-
-        public void Register(IShipNavigationAgent agent)
-        {
-            if (agent == null)
-            {
-                throw new ArgumentNullException(nameof(agent));
-            }
-
-            _trafficCoordinator.Register(agent);
-        }
-
-        public void Unregister(IShipNavigationAgent agent)
-        {
-            if (agent == null)
-            {
-                throw new ArgumentNullException(nameof(agent));
-            }
-
-            _trafficCoordinator.Unregister(agent);
         }
 
         public ShipNavigationPlan Plan(
@@ -116,19 +84,13 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector2Range mapRange,
             bool preserveCourse = false)
         {
-            if (!_trafficCoordinator.IsRegistered(agent))
-            {
-                throw new InvalidOperationException(
-                    "Ship navigation agent must be registered before planning.");
-            }
-
             if (obstacleContacts == null)
             {
                 throw new ArgumentNullException(nameof(obstacleContacts));
             }
 
             Vector3 origin = agent.NavigationPosition;
-            BuildNavigationContacts(agent, obstacleContacts);
+            BuildNavigationContacts(obstacleContacts);
 
             ShipAvoidancePlanner.TryResolveDestination(
                 requestedDestination,
@@ -150,52 +112,30 @@ namespace EmpireAtWar.Services.ShipNavigation
             float movementDuration =
                 routePlan.Route.Length /
                 Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
-            ShipTrafficSchedule trafficSchedule = routePlan.IsStationary
-                ? new ShipTrafficSchedule(0f, 0)
-                : _trafficCoordinator.Reserve(
-                    agent,
-                    routePlan.Destination,
-                    routePlan.Route,
-                    routePlan.TurnDuration,
-                    movementDuration,
-                    heightTolerance,
-                    preserveCourse);
             ShipNavigationPlan plan = new ShipNavigationPlan(
                 routePlan.Destination,
                 routePlan.Detour,
                 routePlan.Route,
                 routePlan.TurnDuration,
-                trafficSchedule.WaitDuration,
                 movementDuration,
-                trafficSchedule.ExactConflictCheckCount,
                 routePlan.IsStationary,
-                preserveCourse && (routePlan.IsStationary || trafficSchedule.WaitDuration > Mathf.Epsilon));
+                preserveCourse && (routePlan.IsStationary || routePlan.TurnDuration > Mathf.Epsilon));
             return plan;
         }
 
-        public void ClearPlan(IShipNavigationAgent agent)
-        {
-            if (agent == null)
-            {
-                throw new ArgumentNullException(nameof(agent));
-            }
-
-            _trafficCoordinator.Clear(agent);
-        }
-
         private void BuildNavigationContacts(
-            IShipNavigationAgent planningAgent,
             IReadOnlyList<RadarContact> radarContacts)
         {
             _mapObstacleContactProvider.CopyContacts(_mapObstacleContacts);
+            _mapObstacleContacts.RemoveAll(contact => contact.IsShip);
             for (int i = 0; i < radarContacts.Count; i++)
             {
-                AddContactIfUnique(radarContacts[i]);
+                RadarContact contact = radarContacts[i];
+                if (!contact.IsShip)
+                {
+                    AddContactIfUnique(contact);
+                }
             }
-
-            _trafficCoordinator.AppendPredictedContacts(
-                planningAgent,
-                _mapObstacleContacts);
         }
 
         private void AddContactIfUnique(RadarContact contact)

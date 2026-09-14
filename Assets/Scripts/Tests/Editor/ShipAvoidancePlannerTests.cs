@@ -63,11 +63,11 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void TryCalculateDetour_IgnoresShipAtDifferentHeight()
+        public void TryCalculateDetour_IgnoresShipContact()
         {
             List<RadarContact> contacts = new List<RadarContact>
             {
-                new RadarContact(new Vector3(20f, 10f, 0f), 5f, true)
+                new RadarContact(new Vector3(20f, 0f, 0f), 5f, true)
             };
 
             bool found = ShipAvoidancePlanner.TryCalculateDetour(
@@ -160,12 +160,11 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void TryResolveDestination_RejectsCandidateOccupiedByAnotherShip()
+        public void TryResolveDestination_KeepsShipOccupiedTarget()
         {
             List<RadarContact> contacts = new List<RadarContact>
             {
-                new RadarContact(new Vector3(20f, 0f, 0f), 5f, false),
-                new RadarContact(new Vector3(10f, 0f, 0f), 4f, true)
+                new RadarContact(new Vector3(20f, 0f, 0f), 5f, true)
             };
 
             bool resolved = ShipAvoidancePlanner.TryResolveDestination(
@@ -178,8 +177,49 @@ namespace EmpireAtWar.Tests.Movement
                 _mapRange,
                 out Vector3 destination);
 
-            Assert.That(resolved, Is.True);
-            Assert.That(Vector3.Distance(destination, new Vector3(10f, 0f, 0f)), Is.GreaterThanOrEqualTo(9f));
+            Assert.That(resolved, Is.False);
+            Assert.That(destination, Is.EqualTo(new Vector3(20f, 0f, 0f)));
         }
+
+        [Test]
+        public void IsRouteClear_IgnoresShipContact()
+        {
+            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                Vector3.zero,
+                Vector3.right,
+                new Vector3(30f, 0f, 0f));
+            RadarContact contact = new RadarContact(
+                new Vector3(15f, 0f, 0f),
+                3f,
+                true);
+
+            bool isClear = ShipAvoidancePlanner.IsRouteClear(
+                route,
+                new[] { contact },
+                0f,
+                0.5f,
+                2f);
+
+            Assert.That(isClear, Is.True);
+        }
+
+        [Test]
+        public void IsRouteClear_RejectsInitialStaticObstacleOverlap()
+        {
+            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
+                Vector3.zero,
+                Vector3.right,
+                new Vector3(30f, 0f, 0f));
+
+            bool isClear = ShipAvoidancePlanner.IsRouteClear(
+                route,
+                new[] { new RadarContact(Vector3.zero, 3f, false) },
+                0f,
+                0.5f,
+                2f);
+
+            Assert.That(isClear, Is.False);
+        }
+
     }
 }
