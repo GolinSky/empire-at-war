@@ -10,6 +10,7 @@ namespace EmpireAtWar.Models.Health
         HardPointType HardPointType { get; }
         float HealthPercentage { get; }
         int Id { get; }
+        int Generation { get; }
         bool IsDestroyed { get; }
         Vector3 Position { get; }
         Transform Transform { get; }
