@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Models.Health;
 using UnityEngine;
+using EmpireAtWar.Services.Timing;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
@@ -114,6 +115,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void UpdateLaser()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ProjectileLaserUpdate.Auto())
+            {
+#endif
             float elapsedTime = Time.time - _fireTime;
             Vector3 startPos = transform.position;
             Vector3 endPos;
@@ -218,6 +223,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             // Update line renderer positions
             _lineRenderer.SetPosition(0, startPos);
             _lineRenderer.SetPosition(1, endPos);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
         
             

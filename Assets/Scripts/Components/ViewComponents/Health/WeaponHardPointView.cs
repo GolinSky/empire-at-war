@@ -5,6 +5,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Timing;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -93,6 +94,10 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected BaseTurretView GetTurret()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ProjectileGetOrCreate.Auto())
+            {
+#endif
             BaseTurretView turret = null;
             foreach (BaseTurretView turretView in _turrets)
             {
@@ -125,13 +130,23 @@ namespace EmpireAtWar.ViewComponents.Health
                         throw new ArgumentOutOfRangeException();
                 }
                 var prefab = Repository.LoadComponent<BaseTurretView>(turretPath);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.ProjectileInstantiate.Auto())
+                {
+#endif
                 turret = Instantiate(prefab, transform);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                }
+#endif
                 turret.transform.localPosition = Vector3.zero;// move it to set data method
                 turret.SetData(_projectileData, _maxAttackDistance);
                 _turrets.Add(turret);
             }
 
             return turret;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
 
 

@@ -16,6 +16,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -150,10 +151,17 @@ namespace EmpireAtWar.Ship
                 return;
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ShipTick.Auto())
+            {
+#endif
             _stateMachine.Update();
             CompleteNavigation();
             ResumeOpponentNavigation();
             SynchronizeComponents();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
 
         public void AssignAttackTarget(
