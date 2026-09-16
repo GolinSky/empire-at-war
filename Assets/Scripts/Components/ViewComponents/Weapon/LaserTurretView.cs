@@ -81,9 +81,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 .ChangeDelay(duration)
                 .StartTimer();
 
-            _busyTimer
-                .ChangeDelay(_projectileData.Delay + duration + holdDuration)
-                .StartTimer();
+            BeginLease(_projectileData.Delay + duration + holdDuration);
             
             _currentTarget = hardPointModel.Transform;
             _isFiring = true;
@@ -110,6 +108,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (_isFiring)
             {
                 UpdateLaser();
+            }
+
+            if (!_isFiring)
+            {
+                UpdateLeaseCompletion();
             }
         }
 
@@ -236,6 +239,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _currentTarget = null;
             _currentStage = LaserStage.Finished;
             _hasContactedTarget = false;
+        }
+
+        protected override void OnLeaseCompleted()
+        {
+            StopFiring();
         }
 
         /// <summary>
