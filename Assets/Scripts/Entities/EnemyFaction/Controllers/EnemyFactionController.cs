@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly ReinforcementData _reinforcementData;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IEnemyStructurePlacementService _structurePlacement;
+        private readonly IEntityLocator _entityLocator;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
             new Dictionary<CustomCoroutine, UnitRequest>();
 
@@ -65,7 +67,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             LazyInject<IMapModelObserver> mapModel,
-            IEnemyStructurePlacementService structurePlacement) : base(model)
+            IEnemyStructurePlacementService structurePlacement,
+            IEntityLocator entityLocator) : base(model)
         {
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
@@ -79,6 +82,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _mapModel = mapModel;
             _structurePlacement = structurePlacement ??
                 throw new ArgumentNullException(nameof(structurePlacement));
+            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
         }
         
 
@@ -90,6 +94,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Handle(UnitRequest unitRequest)
         {
+            if (!_entityLocator.IsStationOperational(PlayerType))
+            {
+                _purchaseChain.Revert(unitRequest);
+                return;
+            }
+
             //todo: store reinforcement - not spawn them here
             switch (unitRequest)
             {
@@ -202,6 +212,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
         {
+            if (!_entityLocator.IsStationOperational(PlayerType))
+            {
+                if (unitRequest is ShipUnitRequest)
+                {
+                    _unitLimitModel.CancelShipOrder();
+                }
+                ReleaseUnit(unitRequest);
+                _purchaseChain.Revert(unitRequest);
+                return;
+            }
+
             try
             {
                 buildAction();

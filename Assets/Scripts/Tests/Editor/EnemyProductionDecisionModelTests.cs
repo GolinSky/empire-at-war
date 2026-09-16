@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
@@ -440,7 +441,8 @@ namespace EmpireAtWar.Tests.Editor
                     new EnemyProductionDecisionModel(),
                     unitLimitModel,
                     reinforcementData,
-                    new StructurePlacementServiceStub());
+                    new StructurePlacementServiceStub(),
+                    new OperationalEntityLocator());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -518,7 +520,8 @@ namespace EmpireAtWar.Tests.Editor
                     new EnemyProductionDecisionModel(),
                     unitLimitModel,
                     reinforcementData,
-                    new StructurePlacementServiceStub());
+                    new StructurePlacementServiceStub(),
+                    new OperationalEntityLocator());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -654,6 +657,28 @@ namespace EmpireAtWar.Tests.Editor
             {
                 position = Vector3.zero;
                 return true;
+            }
+        }
+
+        private sealed class OperationalEntityLocator : IEntityLocator
+        {
+            public string Id => nameof(OperationalEntityLocator);
+            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public bool IsStationOperational(PlayerType playerType) => true;
+            public void AddEntity(IEntity entity) { }
+            public void RemoveEntity(IEntity entity) { }
+            public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+            public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
+            {
+                entity = null;
+                return false;
+            }
+            public bool TryGetEntity(Collider collider, out IEntity entity)
+            {
+                entity = null;
+                return false;
             }
         }
 

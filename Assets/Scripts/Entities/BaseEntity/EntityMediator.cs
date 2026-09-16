@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         void AddEntity(IEntity entity);
         void RemoveEntity(IEntity entity);
         IEntity GetEntity(long entityId);
+        bool IsStationOperational(PlayerType playerType);
         
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
         bool TryGetEntity(Collider collider, out IEntity entity);
@@ -50,6 +53,22 @@ namespace EmpireAtWar.Entities.BaseEntity
                 return _entities[entityId];
             }
             throw new Exception("Not entity found with id: " + entityId);
+        }
+
+        public bool IsStationOperational(PlayerType playerType)
+        {
+            foreach (IEntity entity in _entities.Values)
+            {
+                if (entity.PlayerType == playerType &&
+                    entity.Model is ISpaceStationModelObserver &&
+                    !entity.HealthModel.IsDestroyed &&
+                    entity.HealthModel.HasUnits)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)

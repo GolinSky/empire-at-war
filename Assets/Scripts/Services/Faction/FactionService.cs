@@ -1,5 +1,6 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly ISelectionService _selectionService;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
+        private readonly IEntityLocator _entityLocator;
         private readonly PlayerFactionModel _model;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
@@ -37,13 +39,15 @@ namespace EmpireAtWar.Services.Factions
             PlayerFactionModel model,
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
-            IEconomyProvider economyProvider)
+            IEconomyProvider economyProvider,
+            IEntityLocator entityLocator)
         {
             _model = model;
             Income = DEFAULT_INCOME;
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
+            _entityLocator = entityLocator ?? throw new System.ArgumentNullException(nameof(entityLocator));
         }
 
         public void Initialize()
@@ -88,6 +92,12 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
+            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            {
+                _purchaseMediator.Value.RevertFlow(unitRequest);
+                return;
+            }
+
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
@@ -105,7 +115,8 @@ namespace EmpireAtWar.Services.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            if (!_model.CanQueueUnit(unitRequest))
+            if (!_entityLocator.IsStationOperational(PlayerType.Player) ||
+                !_model.CanQueueUnit(unitRequest))
             {
                 return;
             }

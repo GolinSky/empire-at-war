@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -30,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
                 _economyModel,
                 _reinforcementModel,
                 new ShipFacadeFactory(),
-                new FakeReinforcementZonesSystem());
+                new FakeReinforcementZonesSystem(),
+                new OperationalEntityLocator());
         }
 
         [TearDown]
@@ -134,6 +137,28 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
             {
                 position = default;
+                return false;
+            }
+        }
+
+        private sealed class OperationalEntityLocator : IEntityLocator
+        {
+            public string Id => nameof(OperationalEntityLocator);
+            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public bool IsStationOperational(PlayerType playerType) => true;
+            public void AddEntity(IEntity entity) { }
+            public void RemoveEntity(IEntity entity) { }
+            public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+            public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
+            {
+                entity = null;
+                return false;
+            }
+            public bool TryGetEntity(Collider collider, out IEntity entity)
+            {
+                entity = null;
                 return false;
             }
         }

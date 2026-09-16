@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
+        private readonly IEntityLocator _entityLocator;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -56,7 +58,8 @@ namespace EmpireAtWar.Services.Reinforcement
             DefendPlatformFacade defendPlatformFacade,
             IReinforcementZonesSystem reinforcementZonesSystem,
             FogOfWarSystem fogOfWarSystem,
-            IStationFacingService stationFacingService)
+            IStationFacingService stationFacingService,
+            IEntityLocator entityLocator)
         {
             _model = model;
             _data = data;
@@ -68,6 +71,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
+            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
         }
 
         public void Initialize()
@@ -89,7 +93,8 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
-            bool canSpawn = _spawnReinforcement.CanSpawn && IsPlacementValid(spawnPosition);
+            bool canSpawn = _entityLocator.IsStationOperational(PlayerType.Player) &&
+                _spawnReinforcement.CanSpawn && IsPlacementValid(spawnPosition);
 
             if (canSpawn)
             {
@@ -168,6 +173,12 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(string id)
         {
+            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            {
+                _model.InvokeSpawnShipEvent(false);
+                return;
+            }
+
             if (Enum.TryParse(id, out ShipType shipType))
             {
                 TrySpawnShip(shipType);
@@ -214,10 +225,11 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private bool IsPlacementValid(Vector3 position)
         {
-            return _currentSpawnType == SpawnType.Ship
+            return _entityLocator.IsStationOperational(PlayerType.Player) &&
+                (_currentSpawnType == SpawnType.Ship
                 ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
                 : !_fogOfWarSystem.IsHidden(position) &&
-                  !_reinforcementZonesSystem.IsPositionInAnyZone(position);
+                  !_reinforcementZonesSystem.IsPositionInAnyZone(position));
         }
     }
 }

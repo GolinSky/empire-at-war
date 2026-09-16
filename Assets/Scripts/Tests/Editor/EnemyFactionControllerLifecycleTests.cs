@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
@@ -58,7 +60,8 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     null,
-                    new UnavailableStructurePlacement());
+                    new UnavailableStructurePlacement(),
+                    new OperationalEntityLocator());
 
                 controller.Initialize();
                 controller.Handle(
@@ -119,7 +122,8 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     null,
-                    new UnavailableStructurePlacement());
+                    new UnavailableStructurePlacement(),
+                    new OperationalEntityLocator());
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 string unitId = $"{request.GetType().FullName}:{request.Id}";
@@ -183,7 +187,8 @@ namespace EmpireAtWar.Tests.Editor
                     new EnemyUnitLimitModel(),
                     null,
                     null,
-                    structurePlacement);
+                    structurePlacement,
+                    new OperationalEntityLocator());
 
                 controller.Initialize();
                 controller.Initialize();
@@ -232,6 +237,28 @@ namespace EmpireAtWar.Tests.Editor
             public void Reset()
             {
                 ResetCount++;
+            }
+        }
+
+        private sealed class OperationalEntityLocator : IEntityLocator
+        {
+            public string Id => nameof(OperationalEntityLocator);
+            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public bool IsStationOperational(PlayerType playerType) => true;
+            public void AddEntity(IEntity entity) { }
+            public void RemoveEntity(IEntity entity) { }
+            public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+            public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
+            {
+                entity = null;
+                return false;
+            }
+            public bool TryGetEntity(Collider collider, out IEntity entity)
+            {
+                entity = null;
+                return false;
             }
         }
 
