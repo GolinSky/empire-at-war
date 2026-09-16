@@ -6,6 +6,7 @@ Welcome to the **Empire At War** project documentation vault!
 
 ## 📋 TODOs Section
 - [[TODOs/TODOs|Project Backlog & Active Tasks]]
+- [[TODOs/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
 - [[TODOs/UI_Service_Refactoring|Fix UI Service Architecture (Move to UI Prefabs)]]
 
 ---
