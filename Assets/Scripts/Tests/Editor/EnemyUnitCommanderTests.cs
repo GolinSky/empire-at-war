@@ -130,6 +130,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<IEntity> EntityRemoved;
             public string Id => nameof(FakeEntityLocator);
             public IReadOnlyCollection<IEntity> Entities { get; } = Array.Empty<IEntity>();
+            public bool IsStationOperational(PlayerType playerType) => true;
 
             public void AddEntity(IEntity entity)
             {

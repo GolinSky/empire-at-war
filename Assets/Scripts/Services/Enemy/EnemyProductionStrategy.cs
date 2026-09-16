@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacementService;
+        private readonly IEntityLocator _entityLocator;
 
         private float _decisionTimer;
         private int _observedReleaseVersion;
@@ -40,7 +42,8 @@ namespace EmpireAtWar.Services.Enemy
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            IEnemyStructurePlacementService structurePlacementService)
+            IEnemyStructurePlacementService structurePlacementService,
+            IEntityLocator entityLocator)
         {
             _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
             _purchaseProcessor = purchaseProcessor ?? throw new ArgumentNullException(nameof(purchaseProcessor));
@@ -54,6 +57,7 @@ namespace EmpireAtWar.Services.Enemy
                 throw new ArgumentNullException(nameof(reinforcementData));
             _structurePlacementService = structurePlacementService ??
                 throw new ArgumentNullException(nameof(structurePlacementService));
+            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
         }
 
         public void Start()
@@ -64,6 +68,11 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
+            if (!_entityLocator.IsStationOperational(PlayerType.Opponent))
+            {
+                return;
+            }
+
             if (_observedReleaseVersion != _unitLimitModel.ReleaseVersion)
             {
                 _observedReleaseVersion = _unitLimitModel.ReleaseVersion;

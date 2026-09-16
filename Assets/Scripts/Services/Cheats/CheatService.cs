@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -23,12 +24,14 @@ namespace EmpireAtWar.Services.Cheats
         private readonly ReinforcementModel _reinforcementModel;
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly IEntityLocator _entityLocator;
 
         public CheatService(
             EconomyModel economyModel,
             ReinforcementModel reinforcementModel,
             ShipFacadeFactory shipFacadeFactory,
-            IReinforcementZonesSystem reinforcementZonesSystem)
+            IReinforcementZonesSystem reinforcementZonesSystem,
+            IEntityLocator entityLocator)
         {
             _economyModel = economyModel ?? throw new ArgumentNullException(nameof(economyModel));
             _reinforcementModel = reinforcementModel ??
@@ -37,6 +40,7 @@ namespace EmpireAtWar.Services.Cheats
                 throw new ArgumentNullException(nameof(shipFacadeFactory));
             _reinforcementZonesSystem = reinforcementZonesSystem ??
                 throw new ArgumentNullException(nameof(reinforcementZonesSystem));
+            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
         }
 
         public void AddMoney(float amount)
@@ -65,6 +69,11 @@ namespace EmpireAtWar.Services.Cheats
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
+            }
+
+            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            {
+                return false;
             }
 
             if (!_reinforcementZonesSystem.TryGetDefaultSpawnPosition(
