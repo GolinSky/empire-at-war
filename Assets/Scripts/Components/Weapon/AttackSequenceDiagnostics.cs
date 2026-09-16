@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace EmpireAtWar.Components.Weapon
 {
     public static class AttackSequenceDiagnostics
@@ -20,7 +22,51 @@ namespace EmpireAtWar.Components.Weapon
         public static int PoolExpansions { get; private set; }
         public static int PoolActiveHighWater { get; private set; }
         public static int OwnerlessActive { get; private set; }
+        public static long CandidateVisits { get; private set; }
+        public static long TargetSnapshots { get; private set; }
+        public static long TargetInvalidations { get; private set; }
+        public static long TargetSelectionTicks { get; private set; }
+        public static long TargetSelectionAttempts { get; private set; }
+        public static long CandidateRebuildTicks { get; private set; }
+        public static long CandidateRebuilds { get; private set; }
 #endif
+
+        public static void RecordCandidateVisit()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            CandidateVisits++;
+#endif
+        }
+
+        public static void RecordTargetSnapshot()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            TargetSnapshots++;
+#endif
+        }
+
+        public static void RecordTargetInvalidation()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            TargetInvalidations++;
+#endif
+        }
+
+        public static void RecordTargetSelectionTime(long startedAt)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            TargetSelectionTicks += Stopwatch.GetTimestamp() - startedAt;
+            TargetSelectionAttempts++;
+#endif
+        }
+
+        public static void RecordCandidateRebuildTime(long startedAt)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            CandidateRebuildTicks += Stopwatch.GetTimestamp() - startedAt;
+            CandidateRebuilds++;
+#endif
+        }
 
         public static void RecordStart()
         {

@@ -9,8 +9,10 @@ namespace EmpireAtWar.Models.Health
     {
         private readonly HardPointModel _model;
         private readonly IHardPointView _view;
+        private bool _wasDestroyed;
 
         public event Action OnHardPointHealthChanged;
+        public event Action OnDestroyed;
 
         public HardPointType HardPointType => _model.HardPointType;
         public float HealthPercentage => _model.HealthPercentage;
@@ -24,6 +26,7 @@ namespace EmpireAtWar.Models.Health
         {
             _model = model ?? throw new ArgumentNullException(nameof(model));
             _view = view ?? throw new ArgumentNullException(nameof(view));
+            _wasDestroyed = _model.IsDestroyed;
 
             _model.OnHardPointHealthChanged += HandleHealthChanged;
             _view.UpdateData(_model.HealthPercentage);
@@ -36,8 +39,11 @@ namespace EmpireAtWar.Models.Health
 
         private void HandleHealthChanged()
         {
+            bool wasDestroyed = _wasDestroyed;
+            _wasDestroyed = _model.IsDestroyed;
             _view.UpdateData(_model.HealthPercentage);
             OnHardPointHealthChanged?.Invoke();
+            if (!wasDestroyed && _wasDestroyed) OnDestroyed?.Invoke();
         }
     }
 }

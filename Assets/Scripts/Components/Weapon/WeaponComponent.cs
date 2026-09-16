@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
@@ -13,6 +15,12 @@ namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter
     {
+        private struct TargetCandidate
+        {
+            public AttackData Group;
+            public IHardPointModel Unit;
+        }
+
         [SerializeField] private List<WeaponHardPointView> hardPoints;
         [SerializeField] private Transform attackOrigin;
         [SerializeField] private bool useWeaponDamageRange;
@@ -20,6 +28,10 @@ namespace EmpireAtWar.Components.Weapon
         private CombatAttackCoordinator _attackCoordinator;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
+        private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
+        private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
+        private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
+        private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private AttackData _mainAttackData = null;
         private float _nextFireTime = 0f;
         private int _currentWeaponIndex = 0;
@@ -67,12 +79,25 @@ namespace EmpireAtWar.Components.Weapon
                 hardPoint.ReleaseAttackSequence();
             }
 
+            foreach (AttackData group in _subscribedGroups)
+            {
+                group.UnitsChanged -= RebuildCandidates;
+                group.Destroyed -= RebuildCandidates;
+            }
+            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
+                handler.Key.OnDestroyed -= handler.Value;
+            _subscribedGroups.Clear();
+            _unitDestroyedHandlers.Clear();
+            _orderedCandidates.Clear();
+            _targetPositions.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)
         {
+            if (_isReleased) return;
+
             switch (attackType)
             {
                 case AttackType.Base:
@@ -83,17 +108,23 @@ namespace EmpireAtWar.Components.Weapon
                     }
 
                     _attackDataList.Add(attackData);
+                    Subscribe(attackData);
+                    RebuildCandidates();
                     break;
                 }
                 case AttackType.MainTarget:
                 {
+                    AttackData previousMain = _mainAttackData;
                     _mainAttackData = attackData;
+                    Subscribe(attackData);
 
                     if (!_attackDataList.Any(data => attackData.SameSource(data)))
                     {
                         _attackDataList.Add(attackData);
                     }
 
+                    UnsubscribeIfUnused(previousMain);
+                    RebuildCandidates();
                     break;
                 }
             }
@@ -106,7 +137,10 @@ namespace EmpireAtWar.Components.Weapon
 
         public void ResetTarget()
         {
+            AttackData previousMain = _mainAttackData;
             _mainAttackData = null;
+            UnsubscribeIfUnused(previousMain);
+            RebuildCandidates();
         }
         public void Tick()
         {
@@ -149,40 +183,146 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.WeaponTryFire.Auto())
             {
+            long selectionStart = Stopwatch.GetTimestamp();
 #endif
-            // MAIN TARGET
-            if (_mainAttackData != null && !_mainAttackData.IsDestroyed)
+            Transform weaponTransform = weapon.transform;
+            Vector3 origin = weaponTransform.position;
+            Quaternion parentRotation = weaponTransform.parent == null
+                ? Quaternion.identity : weaponTransform.parent.rotation;
+            Quaternion lastAim = default;
+            bool hasAim = false;
+            _targetPositions.Clear();
+
+            for (int i = 0; i < _orderedCandidates.Count; i++)
             {
-                foreach (var unit in _mainAttackData.Units)
+                TargetCandidate candidate = _orderedCandidates[i];
+                if (candidate.Group.IsDestroyed || candidate.Unit.IsDestroyed)
                 {
-                    if (!unit.IsDestroyed && weapon.CanAttack(unit.Position))
-                    {
-                        weapon.Attack(_mainAttackData, unit);
-                        return true;
-                    }
+                    _orderedCandidates.RemoveAt(i--);
+                    AttackSequenceDiagnostics.RecordTargetInvalidation();
+                    continue;
+                }
+
+                AttackSequenceDiagnostics.RecordCandidateVisit();
+                Vector3 position = GetTargetPosition(candidate.Unit);
+                bool canAttack = WeaponTargetSelector.TryCalculateAim(position, origin, parentRotation,
+                    weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw,
+                    out Quaternion aim, out bool inRange);
+                if (inRange)
+                {
+                    lastAim = aim;
+                    hasAim = true;
+                }
+
+                if (canAttack)
+                {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                    AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
+#endif
+                    weapon.ApplyAim(aim);
+                    weapon.Attack(candidate.Group, candidate.Unit);
+                    return true;
                 }
             }
 
-            // ADDITIONAL TARGETS
-            for (int i = _attackDataList.Count - 1; i >= 0; i--)
-            {
-                var attackData = _attackDataList[i];
-                if (attackData.IsDestroyed) continue;
-
-                foreach (var unit in attackData.Units)
-                {
-                    if (!unit.IsDestroyed && weapon.CanAttack(unit.Position))
-                    {
-                        weapon.Attack(attackData, unit);
-                        return true;
-                    }
-                }
-            }
-
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
+#endif
+            if (hasAim) weapon.ApplyAim(lastAim);
             return false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
+        }
+
+        private void Subscribe(AttackData group)
+        {
+            if (!_subscribedGroups.Add(group)) return;
+            group.UnitsChanged += RebuildCandidates;
+            group.Destroyed += RebuildCandidates;
+        }
+
+        private void UnsubscribeIfUnused(AttackData group)
+        {
+            if (group == null || ReferenceEquals(group, _mainAttackData) || _attackDataList.Contains(group)) return;
+            if (!_subscribedGroups.Remove(group)) return;
+            group.UnitsChanged -= RebuildCandidates;
+            group.Destroyed -= RebuildCandidates;
+        }
+
+        private void RebuildCandidates()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            long rebuildStart = Stopwatch.GetTimestamp();
+#endif
+            foreach (KeyValuePair<IHardPointModel, Action> handler in _unitDestroyedHandlers)
+                handler.Key.OnDestroyed -= handler.Value;
+            _unitDestroyedHandlers.Clear();
+            _orderedCandidates.Clear();
+            if (_mainAttackData != null)
+            {
+                if (_mainAttackData.IsDestroyed)
+                {
+                    AttackData destroyedMain = _mainAttackData;
+                    _mainAttackData = null;
+                    UnsubscribeIfUnused(destroyedMain);
+                    AttackSequenceDiagnostics.RecordTargetInvalidation();
+                }
+                else
+                    AddCandidates(_mainAttackData);
+            }
+
+            for (int i = _attackDataList.Count - 1; i >= 0; i--)
+            {
+                AttackData group = _attackDataList[i];
+                if (group.IsDestroyed)
+                {
+                    _attackDataList.RemoveAt(i);
+                    UnsubscribeIfUnused(group);
+                    AttackSequenceDiagnostics.RecordTargetInvalidation();
+                    continue;
+                }
+
+                AddCandidates(group);
+            }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            AttackSequenceDiagnostics.RecordCandidateRebuildTime(rebuildStart);
+#endif
+        }
+
+        private void AddCandidates(AttackData group)
+        {
+            List<IHardPointModel> units = group.Units;
+            for (int i = 0; i < units.Count; i++)
+                if (!units[i].IsDestroyed)
+                {
+                    _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = units[i] });
+                    if (_unitDestroyedHandlers.ContainsKey(units[i])) continue;
+                    IHardPointModel unit = units[i];
+                    Action handler = () => OnUnitDestroyed(unit);
+                    _unitDestroyedHandlers.Add(unit, handler);
+                    unit.OnDestroyed += handler;
+                }
+        }
+
+        private void OnUnitDestroyed(IHardPointModel unit)
+        {
+            Action handler = _unitDestroyedHandlers[unit];
+            unit.OnDestroyed -= handler;
+            _unitDestroyedHandlers.Remove(unit);
+            for (int i = _orderedCandidates.Count - 1; i >= 0; i--)
+                if (ReferenceEquals(_orderedCandidates[i].Unit, unit))
+                    _orderedCandidates.RemoveAt(i);
+            AttackSequenceDiagnostics.RecordTargetInvalidation();
+        }
+
+        private Vector3 GetTargetPosition(IHardPointModel unit)
+        {
+            if (_targetPositions.TryGetValue(unit, out Vector3 position)) return position;
+            position = unit.Position;
+            _targetPositions.Add(unit, position);
+            AttackSequenceDiagnostics.RecordTargetSnapshot();
+            return position;
         }
         
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, float attackDelay)
