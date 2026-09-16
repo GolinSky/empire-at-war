@@ -20,6 +20,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private bool _retireAfterCompletion;
 
         public event Action<BaseTurretView, int> EffectCompleted;
+        public event Action<BaseTurretView, int> EffectDestroyed;
 
         public bool IsBusy => _leaseActive;
         public int LeaseId => _leaseId;
@@ -49,7 +50,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected void UpdateLeaseCompletion()
         {
-            if (!_leaseActive || !_busyTimer.IsComplete)
+            if (!_leaseActive || !_busyTimer.IsComplete || !IsVisualComplete())
             {
                 return;
             }
@@ -73,6 +74,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
+        private void OnDestroy()
+        {
+            EffectDestroyed?.Invoke(this, _leaseId);
+        }
+
         protected virtual void OnLeaseCompleted(){}
+
+        protected virtual bool IsVisualComplete() => true;
     }
 }

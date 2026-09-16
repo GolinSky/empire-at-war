@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.Timing;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -20,11 +18,11 @@ namespace EmpireAtWar.ViewComponents.Health
         private const string TORPEDO_TURRET_PATH = "TorpedoProjectile";
         
         [SerializeField] private FloatRange yAxisRange;
+        [SerializeField] private int prewarmEffects;
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
         
-        private readonly List<BaseTurretView> _turrets = new List<BaseTurretView>();
-        private readonly Dictionary<BaseTurretView, int> _activeEffectSequences = new Dictionary<BaseTurretView, int>();
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
+        private ProjectileEffectPool _effectPool;
         private ProjectileData _projectileData;
         private Coroutine _attackCoroutine;
 
@@ -81,13 +79,11 @@ namespace EmpireAtWar.ViewComponents.Health
                 _attackCoroutine = null;
             }
 
-            foreach (BaseTurretView turret in _turrets)
+            if (_effectPool != null)
             {
-                turret.EffectCompleted -= OnTurretEffectCompleted;
-                turret.RetireAfterCompletion();
+                _effectPool.Release();
             }
 
-            _activeEffectSequences.Clear();
             _sequence.Release();
         }
 
@@ -120,94 +116,56 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private void EmitShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
         {
-            BaseTurretView turretView = GetTurret();
-            turretView.SetParent(transform);
-            turretView.Attack(hardPointModel, out float duration);
-            turretView.ResetParent();
+            ProjectileEffectPool pool = GetPool();
+            float duration = pool.Play(hardPointModel, sequenceGeneration);
 
             if (!_sequence.RegisterEffect(sequenceGeneration))
             {
                 return;
             }
 
-            if (_activeEffectSequences.ContainsKey(turretView))
-            {
-                throw new InvalidOperationException("An active projectile effect cannot be leased twice.");
-            }
-
-            _activeEffectSequences.Add(turretView, sequenceGeneration);
             _sequence.RecordShotEmission(sequenceGeneration);
             WeaponPresenter.ApplyDamage(attackData, hardPointModel, WeaponType, duration);
         }
 
-        private void OnTurretEffectCompleted(BaseTurretView turretView, int leaseId)
+        private void OnTurretEffectCompleted(int sequenceGeneration)
         {
-            if (turretView.LeaseId != leaseId || !_activeEffectSequences.TryGetValue(turretView, out int sequenceGeneration))
-            {
-                AttackSequenceDiagnostics.RecordUnmatchedCompletion();
-                return;
-            }
-
-            _activeEffectSequences.Remove(turretView);
             _sequence.TryCompleteEffect(sequenceGeneration);
         }
 
-        protected BaseTurretView GetTurret()
+        private ProjectileEffectPool GetPool()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileGetOrCreate.Auto())
+            if (_effectPool != null)
             {
-#endif
-            BaseTurretView turret = null;
-            foreach (BaseTurretView turretView in _turrets)
-            {
-                if (!turretView.IsBusy)
-                {
-                    turret = turretView;
-                }
+                return _effectPool;
             }
 
-            if (!turret)
+            string turretPath = TURRET_PATH;
+            switch (_projectileData.TurretType)
             {
-                string turretPath = TURRET_PATH;
-                switch (_projectileData.TurretType)
-                {
-                    case TurretType.Single:
-                        turretPath = TURRET_PATH;
-                        break;
-                    case TurretType.Dual:
-                        turretPath = DOUBLE_TURRET_PATH;
-                        break;
-                    case TurretType.Laser:
-                        turretPath = LASER_TURRET_PATH;
-                        break;
-                    case TurretType.Torpedo:
-                        turretPath = TORPEDO_TURRET_PATH;
-                        break;
-                    case TurretType.Rocket:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-                var prefab = Repository.LoadComponent<BaseTurretView>(turretPath);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.ProjectileInstantiate.Auto())
-                {
-#endif
-                turret = Instantiate(prefab, transform);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                }
-#endif
-                turret.transform.localPosition = Vector3.zero;// move it to set data method
-                turret.SetData(_projectileData, _maxAttackDistance);
-                turret.EffectCompleted += OnTurretEffectCompleted;
-                _turrets.Add(turret);
+                case TurretType.Single:
+                    break;
+                case TurretType.Dual:
+                    turretPath = DOUBLE_TURRET_PATH;
+                    break;
+                case TurretType.Laser:
+                    turretPath = LASER_TURRET_PATH;
+                    break;
+                case TurretType.Torpedo:
+                    turretPath = TORPEDO_TURRET_PATH;
+                    break;
+                case TurretType.Rocket:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            return turret;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
+            BaseTurretView prefab = Repository.LoadComponent<BaseTurretView>(turretPath);
+            int maxIdle = Mathf.CeilToInt(_projectileData.ShotsPerSalvo);
+            _effectPool = new ProjectileEffectPool(prefab, transform, _projectileData, _maxAttackDistance,
+                maxIdle, OnTurretEffectCompleted);
+            _effectPool.Prewarm(prewarmEffects);
+            return _effectPool;
         }
 
 

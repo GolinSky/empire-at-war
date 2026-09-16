@@ -89,5 +89,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             target = null;
         }
+
+        protected override bool IsVisualComplete() => !vfx.IsAlive(true);
     }
 }

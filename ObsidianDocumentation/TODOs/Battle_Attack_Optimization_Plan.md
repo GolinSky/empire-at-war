@@ -1,7 +1,7 @@
 # Battle attack and projectile optimization plan
 
 - Created: 2026-09-16
-- Status: Phase 1 implemented; manual battle and performance validation pending. Later phases not started.
+- Status: Phases 1 and 2 implemented; manual battle and performance validation pending. Later phases not started.
 - Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
 
 The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. This plan does not include quality settings, lighting, shadows, resolution, or general rendering optimization.
@@ -182,7 +182,7 @@ The existing capture command uses a ten-second window; duration itself is not th
 | Phase | Status | Evidence and decision |
 | --- | --- | --- |
 | 1. Readable attack states and busy/cancellation | Implemented; awaiting manual validation | Explicit sequence state and effect leases, owner/hardpoint cancellation, target-hardpoint impact rejection, rocket shared path, and development counters. Unity recompile completed without errors; one filtered EditMode health-model smoke test passed; independent diff review found no material defect. No battle or performance capture was run, so firing/pause/lifecycle parity and CPU/allocation impact remain unverified. |
-| 2. Projectile ownership and reuse | Not started | — |
+| 2. Projectile ownership and reuse | Implemented; awaiting manual validation and measured prewarm calibration | A per-hardpoint pool uses an available stack and active lease map. Idle effects are inactive and retained up to one salvo's capacity; excess effects retire. Active effects detach and drain on owner release. Particle completion waits for live particles as well as the configured busy time. Development counters track created, reused, active, available, returned, retired, expansions, high-water and ownerless-active effects; the existing acquisition profiler marker remains. Independent review found idle-destruction bookkeeping and retained laser target state issues; both were corrected. Unity recompile completed without errors and one filtered EditMode smoke test passed. No battle or performance capture was run at the user's request. `prewarmEffects` defaults to zero until concurrent demand is measured and configured; visual/lifecycle parity and capacity measurements remain unverified. |
 | 3. Serial attack/impact scheduler | Not started | — |
 | 4. Target iteration and numeric rules | Not started | — |
 | 5A. Jobs + Burst targeting | Not started | — |
