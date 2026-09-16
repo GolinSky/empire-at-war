@@ -65,9 +65,15 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _isReleased = true;
+            foreach (WeaponHardPointView hardPoint in hardPoints)
+            {
+                hardPoint.ReleaseAttackSequence();
+            }
+
             foreach (Coroutine pendingAttack in _pendingAttacks)
             {
                 _coroutineService.StopCustomCoroutine(pendingAttack);
+                AttackSequenceDiagnostics.RecordCancelledImpact();
             }
 
             _pendingAttacks.Clear();
@@ -199,21 +205,27 @@ namespace EmpireAtWar.Components.Weapon
                 Assert.IsNotNull(attackCoroutine);
                 _pendingAttacks.Remove(attackCoroutine);
 
-                if (_isReleased || !IsTargetValid()) return;
+                if (_isReleased || !IsTargetValid())
+                {
+                    AttackSequenceDiagnostics.RecordCancelledImpact();
+                    return;
+                }
 
                 ApplyDamageInternal(
                     attackData,
                     weaponType,
                     hardPointModel.Id,
                     GetDistance(hardPointModel.Position));
+                AttackSequenceDiagnostics.RecordAppliedImpact();
 
             }, attackDelay);
 
             _pendingAttacks.Add(attackCoroutine);
+            AttackSequenceDiagnostics.RecordScheduledImpact();
 
             bool IsTargetValid()
             {
-                if (attackData.IsDestroyed || !attackData.Contains(hardPointModel))
+                if (attackData.IsDestroyed || hardPointModel.IsDestroyed || !attackData.Contains(hardPointModel))
                 {
                     Debug.LogWarning("Can not attack hardpoint");
                     return false;

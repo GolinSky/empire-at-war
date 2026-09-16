@@ -16,8 +16,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
        
         private Vector3 _lookPosition = Vector3.zero;
         
-        public override bool IsBusy => !_busyTimer.IsComplete;
-
         public float Speed => vfx.main.startSpeed.constant;
         
         public FloatRange YAxisRange => yAxisRange;
@@ -40,6 +38,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             float distance = Vector3.Distance(hardPointModel.Position, transform.position);
             duration = distance / Speed;
+            BeginLease(_projectileData.Delay + duration);
             var mainModule = vfx.main;
     
             mainModule.startLifetime = duration;
@@ -52,10 +51,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
             
             _attackTimer
                 .ChangeDelay(duration)
-                .StartTimer();
-            
-            _busyTimer
-                .ChangeDelay(_projectileData.Delay + duration)
                 .StartTimer();
         }
         
@@ -72,6 +67,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     transform.LookAt(target);
                 }
             }
+            UpdateLeaseCompletion();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
@@ -87,6 +83,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public override void ResetParent()
         {
             transform.parent = null;
+        }
+
+        protected override void OnLeaseCompleted()
+        {
+            target = null;
         }
     }
 }

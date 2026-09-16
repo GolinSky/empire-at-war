@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
@@ -23,14 +22,16 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private FloatRange yAxisRange;
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
         
-        private List<BaseTurretView> _turrets = new List<BaseTurretView>();
+        private readonly List<BaseTurretView> _turrets = new List<BaseTurretView>();
+        private readonly Dictionary<BaseTurretView, int> _activeEffectSequences = new Dictionary<BaseTurretView, int>();
+        private readonly AttackSequenceState _sequence = new AttackSequenceState();
         private ProjectileData _projectileData;
         private Coroutine _attackCoroutine;
 
         private float _maxAttackDistance;
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
-        public bool IsBusy { get; private set; }
+        public bool IsBusy => _sequence.IsBusy;
 
 
 
@@ -64,32 +65,91 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
-            if (_attackCoroutine != null)
+            if (!_sequence.TryStart(out int sequenceGeneration))
             {
-                Debug.LogError($"_attackCoroutine is not null on {gameObject.name}");
+                return;
             }
-            _attackCoroutine = StartCoroutine(AttackCoroutine(attackData, hardPointModel));
 
+            _attackCoroutine = StartCoroutine(AttackCoroutine(attackData, hardPointModel, sequenceGeneration));
         }
 
-        private IEnumerator AttackCoroutine(AttackData attackData, IHardPointModel hardPointModel)
+        public void ReleaseAttackSequence()
         {
-            IsBusy = true;
+            if (_attackCoroutine != null)
+            {
+                StopCoroutine(_attackCoroutine);
+                _attackCoroutine = null;
+            }
+
+            foreach (BaseTurretView turret in _turrets)
+            {
+                turret.EffectCompleted -= OnTurretEffectCompleted;
+                turret.RetireAfterCompletion();
+            }
+
+            _activeEffectSequences.Clear();
+            _sequence.Release();
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseAttackSequence();
+        }
+
+        private IEnumerator AttackCoroutine(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
+        {
             for (int i = 0; i < _projectileData.ShotsPerSalvo; i++)
             {
-                BaseTurretView turretView = GetTurret();
-                turretView.SetParent(transform);
-              
+                if (!_sequence.IsEmitting(sequenceGeneration) || IsDestroyed)
+                {
+                    break;
+                }
 
-                turretView.Attack(hardPointModel, out var duration);
-                turretView.ResetParent();
-                WeaponPresenter.ApplyDamage(attackData, hardPointModel, WeaponType, duration);
+                EmitShot(attackData, hardPointModel, sequenceGeneration);
                 yield return new WaitForSeconds(_projectileData.DelayBetweenShots);
             }
 
-            yield return new WaitWhile(()=>_turrets.Any(x => x.IsBusy));
-            IsBusy = false;
-            _attackCoroutine = null;
+            _sequence.StopEmitting(sequenceGeneration);
+            yield return new WaitWhile(() => _sequence.Generation == sequenceGeneration && _sequence.IsBusy);
+
+            if (_sequence.Generation == sequenceGeneration)
+            {
+                _attackCoroutine = null;
+            }
+        }
+
+        private void EmitShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
+        {
+            BaseTurretView turretView = GetTurret();
+            turretView.SetParent(transform);
+            turretView.Attack(hardPointModel, out float duration);
+            turretView.ResetParent();
+
+            if (!_sequence.RegisterEffect(sequenceGeneration))
+            {
+                return;
+            }
+
+            if (_activeEffectSequences.ContainsKey(turretView))
+            {
+                throw new InvalidOperationException("An active projectile effect cannot be leased twice.");
+            }
+
+            _activeEffectSequences.Add(turretView, sequenceGeneration);
+            _sequence.RecordShotEmission(sequenceGeneration);
+            WeaponPresenter.ApplyDamage(attackData, hardPointModel, WeaponType, duration);
+        }
+
+        private void OnTurretEffectCompleted(BaseTurretView turretView, int leaseId)
+        {
+            if (turretView.LeaseId != leaseId || !_activeEffectSequences.TryGetValue(turretView, out int sequenceGeneration))
+            {
+                AttackSequenceDiagnostics.RecordUnmatchedCompletion();
+                return;
+            }
+
+            _activeEffectSequences.Remove(turretView);
+            _sequence.TryCompleteEffect(sequenceGeneration);
         }
 
         protected BaseTurretView GetTurret()
@@ -140,6 +200,7 @@ namespace EmpireAtWar.ViewComponents.Health
 #endif
                 turret.transform.localPosition = Vector3.zero;// move it to set data method
                 turret.SetData(_projectileData, _maxAttackDistance);
+                turret.EffectCompleted += OnTurretEffectCompleted;
                 _turrets.Add(turret);
             }
 
@@ -166,6 +227,7 @@ namespace EmpireAtWar.ViewComponents.Health
             if (healthPercentage <= 0f)
             {
                 Destroyed = true;
+                _sequence.StopEmitting(_sequence.Generation);
             }
         }
 

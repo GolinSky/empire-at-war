@@ -1,7 +1,7 @@
 # Battle attack and projectile optimization plan
 
 - Created: 2026-09-16
-- Status: Planning complete; implementation phases not started.
+- Status: Phase 1 implemented; manual battle and performance validation pending. Later phases not started.
 - Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
 
 The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. This plan does not include quality settings, lighting, shadows, resolution, or general rendering optimization.
@@ -61,6 +61,12 @@ Proposed responsibilities (names may be adjusted to existing conventions):
 Use one coordinator to batch combat work, with focused state/pool helpers. Do not turn it into a general manager for movement, radar, rendering, or all unit behavior. Reuse existing interfaces and DI where possible. Whole-unit ECS conversion and new projectile trajectory simulation are outside this plan.
 
 ## Phase 1 — Simplify attack flow and fix busy/cancellation behavior
+
+### Pre-change timeline (recorded before implementation)
+
+- Ordinary and dual hardpoints began a salvo immediately, emitted one shot per iteration, waited `DelayBetweenShots` after every shot including the last, then waited until all retained turret views reported idle. The hardpoint was busy throughout.
+- Each emitted ordinary shot scheduled damage after its returned travel duration; its turret stayed busy for configured projectile delay plus travel duration. Laser damage used growth duration, while its visual also held after growth.
+- Owner release stopped pending damage coroutines but did not stop an active hardpoint salvo. Destroying a firing hardpoint did not stop its remaining shots. A target group destroyed before impact was rejected, but a destroyed target hardpoint within a surviving group was not.
 
 - [ ] Record the current target, salvo, busy and impact timeline for ordinary, dual and laser weapons before changing it. Include owner death during a salvo and target death before impact.
 - [ ] Express the sequence with explicit states such as Ready, Emitting, WaitingForEffects and Released. Keep cooldown timestamps separate; derive busy from one authoritative sequence state.
@@ -175,7 +181,7 @@ The existing capture command uses a ten-second window; duration itself is not th
 
 | Phase | Status | Evidence and decision |
 | --- | --- | --- |
-| 1. Readable attack states and busy/cancellation | Not started | — |
+| 1. Readable attack states and busy/cancellation | Implemented; awaiting manual validation | Explicit sequence state and effect leases, owner/hardpoint cancellation, target-hardpoint impact rejection, rocket shared path, and development counters. Unity recompile completed without errors; one filtered EditMode health-model smoke test passed; independent diff review found no material defect. No battle or performance capture was run, so firing/pause/lifecycle parity and CPU/allocation impact remain unverified. |
 | 2. Projectile ownership and reuse | Not started | — |
 | 3. Serial attack/impact scheduler | Not started | — |
 | 4. Target iteration and numeric rules | Not started | — |
