@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Timing;
 using Utilities.ScriptUtils.Math;
 using UnityEngine;
 
@@ -60,6 +61,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         
         private void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ProjectileTurretUpdate.Auto())
+            {
+#endif
             if (IsBusy)
             {
                 if (target != null)
@@ -67,6 +72,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     transform.LookAt(target);
                 }
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
             ///transform.LookAt(_lookPosition);
         }
 

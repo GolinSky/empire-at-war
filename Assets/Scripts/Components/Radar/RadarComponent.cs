@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Timing;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -68,6 +69,10 @@ namespace EmpireAtWar.Components.Radar
 
             if (_timer.IsComplete)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleProfilerMarkers.RadarScan.Auto())
+                {
+#endif
                 int hitAmount = GetOverlapHits();
                 _detectedEnemies.Clear();
                 _contacts.Clear();
@@ -125,6 +130,9 @@ namespace EmpireAtWar.Components.Radar
 
                 _unitMediator?.HandleRadarContacts(_contacts);
                 _timer.StartTimer();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                }
+#endif
             }
         }
 

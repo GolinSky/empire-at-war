@@ -7,6 +7,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Utilities.ScriptUtils.Time;
@@ -113,6 +114,10 @@ namespace EmpireAtWar.Components.Weapon
         }
         public void Tick()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.WeaponTick.Auto())
+            {
+#endif
             if (_isReleased)
                 return;
 
@@ -138,10 +143,17 @@ namespace EmpireAtWar.Components.Weapon
             {
                 _nextFireTime = Time.time + Model.DelayBetweenAttack;
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
 
         private bool TryFireWeapon(WeaponHardPointView weapon)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.WeaponTryFire.Auto())
+            {
+#endif
             // MAIN TARGET
             if (_mainAttackData != null && !_mainAttackData.IsDestroyed)
             {
@@ -172,6 +184,9 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             return false;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
         }
         
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, float attackDelay)
