@@ -237,6 +237,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _isFiring = false;
             _lineRenderer.enabled = false;
             _currentTarget = null;
+            _hardPointModel = null;
             _currentStage = LaserStage.Finished;
             _hasContactedTarget = false;
         }

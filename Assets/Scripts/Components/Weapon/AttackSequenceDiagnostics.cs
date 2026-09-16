@@ -11,6 +11,15 @@ namespace EmpireAtWar.Components.Weapon
         public static int CancelledImpacts { get; private set; }
         public static int ActiveSequences { get; private set; }
         public static int UnmatchedCompletions { get; private set; }
+        public static int PoolCreated { get; private set; }
+        public static int PoolReused { get; private set; }
+        public static int PoolActive { get; private set; }
+        public static int PoolAvailable { get; private set; }
+        public static int PoolReturned { get; private set; }
+        public static int PoolRetired { get; private set; }
+        public static int PoolExpansions { get; private set; }
+        public static int PoolActiveHighWater { get; private set; }
+        public static int OwnerlessActive { get; private set; }
 #endif
 
         public static void RecordStart()
@@ -67,6 +76,64 @@ namespace EmpireAtWar.Components.Weapon
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UnmatchedCompletions++;
+#endif
+        }
+
+        public static void RecordPoolCreated(bool expansion)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolCreated++;
+            if (expansion)
+            {
+                PoolExpansions++;
+            }
+#endif
+        }
+
+        public static void RecordPoolReused()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolReused++;
+#endif
+        }
+
+        public static void RecordPoolActivated()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolActive++;
+            if (PoolActive > PoolActiveHighWater)
+            {
+                PoolActiveHighWater = PoolActive;
+            }
+#endif
+        }
+
+        public static void RecordPoolAvailable(int change)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolAvailable += change;
+#endif
+        }
+
+        public static void RecordPoolReturned()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolActive--;
+            PoolReturned++;
+#endif
+        }
+
+        public static void RecordPoolRetired()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PoolRetired++;
+#endif
+        }
+
+        public static void RecordOwnerlessActive(int change)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            OwnerlessActive += change;
 #endif
         }
     }
