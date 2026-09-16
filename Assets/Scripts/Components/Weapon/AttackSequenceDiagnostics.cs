@@ -27,6 +27,9 @@ namespace EmpireAtWar.Components.Weapon
         public static long TargetInvalidations { get; private set; }
         public static long TargetSelectionTicks { get; private set; }
         public static long TargetSelectionAttempts { get; private set; }
+        public static long BatchTargetSelectionTicks { get; private set; }
+        public static long BatchTargetSelectionAttempts { get; private set; }
+        public static long TargetSelectionFallbacks { get; private set; }
         public static long CandidateRebuildTicks { get; private set; }
         public static long CandidateRebuilds { get; private set; }
 #endif
@@ -35,6 +38,13 @@ namespace EmpireAtWar.Components.Weapon
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             CandidateVisits++;
+#endif
+        }
+
+        public static void RecordCandidateVisits(int count)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            CandidateVisits += count;
 #endif
         }
 
@@ -57,6 +67,21 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             TargetSelectionTicks += Stopwatch.GetTimestamp() - startedAt;
             TargetSelectionAttempts++;
+#endif
+        }
+
+        public static void RecordTargetSelectionBatchTime(long startedAt, int attempts)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            BatchTargetSelectionTicks += Stopwatch.GetTimestamp() - startedAt;
+            BatchTargetSelectionAttempts += attempts;
+#endif
+        }
+
+        public static void RecordTargetSelectionFallback()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            TargetSelectionFallbacks++;
 #endif
         }
 

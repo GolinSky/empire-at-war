@@ -21,6 +21,14 @@ namespace EmpireAtWar.Components.Weapon
             public IHardPointModel Unit;
         }
 
+        internal struct TargetSelectionCandidate
+        {
+            public AttackData Group;
+            public IHardPointModel Unit;
+            public int Generation;
+            public Vector3 Position;
+        }
+
         [SerializeField] private List<WeaponHardPointView> hardPoints;
         [SerializeField] private Transform attackOrigin;
         [SerializeField] private bool useWeaponDamageRange;
@@ -32,10 +40,11 @@ namespace EmpireAtWar.Components.Weapon
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
+        private readonly List<TargetSelectionCandidate> _targetSelectionCandidates = new List<TargetSelectionCandidate>();
         private AttackData _mainAttackData = null;
         private float _nextFireTime = 0f;
         private int _currentWeaponIndex = 0;
-        private bool _isAttackedThisFrame;
+        private int _targetVersion;
         private bool _isReleased;
         public float AttackDistance => Model.OptimalAttackRange;
 
@@ -89,6 +98,7 @@ namespace EmpireAtWar.Components.Weapon
             _subscribedGroups.Clear();
             _unitDestroyedHandlers.Clear();
             _orderedCandidates.Clear();
+            _targetSelectionCandidates.Clear();
             _targetPositions.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
@@ -158,24 +168,51 @@ namespace EmpireAtWar.Components.Weapon
                 return;
 
             WeaponHardPointView weapon = hardPoints[_currentWeaponIndex];
-            _isAttackedThisFrame = false;
-            
             if (!weapon.IsDestroyed && !weapon.IsBusy)
             {
-                _isAttackedThisFrame = TryFireWeapon(weapon);
+                QueueTargetSelection(weapon);
             }
 
             _currentWeaponIndex++;
             if (_currentWeaponIndex >= hardPoints.Count)
                 _currentWeaponIndex = 0;
 
-            if (_isAttackedThisFrame)
-            {
-                _nextFireTime = Time.time + Model.DelayBetweenAttack;
-            }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
+        }
+
+        private void QueueTargetSelection(WeaponHardPointView weapon)
+        {
+            _targetPositions.Clear();
+            _targetSelectionCandidates.Clear();
+            bool removedInvalidCandidate = false;
+
+            for (int i = 0; i < _orderedCandidates.Count; i++)
+            {
+                TargetCandidate candidate = _orderedCandidates[i];
+                if (candidate.Group.IsDestroyed || candidate.Unit.IsDestroyed)
+                {
+                    _orderedCandidates.RemoveAt(i--);
+                    AttackSequenceDiagnostics.RecordTargetInvalidation();
+                    removedInvalidCandidate = true;
+                    continue;
+                }
+
+                _targetSelectionCandidates.Add(new TargetSelectionCandidate
+                {
+                    Group = candidate.Group,
+                    Unit = candidate.Unit,
+                    Generation = candidate.Unit.Generation,
+                    Position = GetTargetPosition(candidate.Unit)
+                });
+            }
+
+            if (removedInvalidCandidate) _targetVersion++;
+
+            Transform weaponTransform = weapon.transform;
+            _attackCoordinator.QueueTargetSelection(this, weapon, _targetVersion, _targetSelectionCandidates,
+                weaponTransform.position, weaponTransform.parent == null ? Quaternion.identity : weaponTransform.parent.rotation);
         }
 
         private bool TryFireWeapon(WeaponHardPointView weapon)
@@ -235,6 +272,38 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
+        internal void CommitTargetSelection(WeaponHardPointView weapon, int targetVersion,
+            WeaponTargetSelectionJob.Result result, TargetSelectionCandidate selectedCandidate)
+        {
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
+
+            if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
+                (!IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
+                 selectedCandidate.Unit.Generation != selectedCandidate.Generation))
+            {
+                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
+                CommitTargetSelectionSerial(weapon);
+                return;
+            }
+
+            if (result.CandidateIndex < 0)
+            {
+                if (result.HasInRangeAim != 0) weapon.ApplyAim(ToQuaternion(result.LastInRangeAim));
+                return;
+            }
+
+            weapon.ApplyAim(ToQuaternion(result.SelectedAim));
+            weapon.Attack(selectedCandidate.Group, selectedCandidate.Unit);
+            _nextFireTime = Time.time + Model.DelayBetweenAttack;
+        }
+
+        internal void CommitTargetSelectionSerial(WeaponHardPointView weapon)
+        {
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
+            if (!TryFireWeapon(weapon)) return;
+            _nextFireTime = Time.time + Model.DelayBetweenAttack;
+        }
+
         private void Subscribe(AttackData group)
         {
             if (!_subscribedGroups.Add(group)) return;
@@ -252,6 +321,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private void RebuildCandidates()
         {
+            _targetVersion++;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             long rebuildStart = Stopwatch.GetTimestamp();
 #endif
@@ -314,6 +384,7 @@ namespace EmpireAtWar.Components.Weapon
                 if (ReferenceEquals(_orderedCandidates[i].Unit, unit))
                     _orderedCandidates.RemoveAt(i);
             AttackSequenceDiagnostics.RecordTargetInvalidation();
+            _targetVersion++;
         }
 
         private Vector3 GetTargetPosition(IHardPointModel unit)
@@ -351,5 +422,8 @@ namespace EmpireAtWar.Components.Weapon
         }
         private float GetDistance(Vector3 targetPosition) =>
             Vector3.Distance(attackOrigin == null ? transform.position : attackOrigin.position, targetPosition);
+
+        private static Quaternion ToQuaternion(Unity.Mathematics.float4 value) =>
+            new Quaternion(value.x, value.y, value.z, value.w);
     }
 }

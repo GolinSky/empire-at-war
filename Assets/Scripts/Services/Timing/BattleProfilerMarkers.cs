@@ -7,6 +7,10 @@ namespace EmpireAtWar.Services.Timing
         public const string SHIP_TICK = "Battle.Ship.Tick";
         public const string WEAPON_TICK = "Battle.Weapon.Tick";
         public const string WEAPON_TRY_FIRE = "Battle.Weapon.TryFire";
+        public const string TARGET_BATCH = "Battle.Attack.TargetBatch";
+        public const string TARGET_BATCH_JOB = "Battle.Attack.TargetBatch.Job";
+        public const string DUE_BATCH = "Battle.Attack.DueBatch";
+        public const string DUE_BATCH_JOB = "Battle.Attack.DueBatch.Job";
         public const string PROJECTILE_GET_OR_CREATE = "Battle.Projectile.GetOrCreate";
         public const string PROJECTILE_INSTANTIATE = "Battle.Projectile.Instantiate";
         public const string PROJECTILE_TURRET_UPDATE = "Battle.Projectile.TurretUpdate";
@@ -16,6 +20,10 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker ShipTick = new ProfilerMarker(SHIP_TICK);
         public static readonly ProfilerMarker WeaponTick = new ProfilerMarker(WEAPON_TICK);
         public static readonly ProfilerMarker WeaponTryFire = new ProfilerMarker(WEAPON_TRY_FIRE);
+        public static readonly ProfilerMarker TargetBatch = new ProfilerMarker(TARGET_BATCH);
+        public static readonly ProfilerMarker TargetBatchJob = new ProfilerMarker(TARGET_BATCH_JOB);
+        public static readonly ProfilerMarker DueBatch = new ProfilerMarker(DUE_BATCH);
+        public static readonly ProfilerMarker DueBatchJob = new ProfilerMarker(DUE_BATCH_JOB);
         public static readonly ProfilerMarker ProjectileGetOrCreate = new ProfilerMarker(PROJECTILE_GET_OR_CREATE);
         public static readonly ProfilerMarker ProjectileInstantiate = new ProfilerMarker(PROJECTILE_INSTANTIATE);
         public static readonly ProfilerMarker ProjectileTurretUpdate = new ProfilerMarker(PROJECTILE_TURRET_UPDATE);
