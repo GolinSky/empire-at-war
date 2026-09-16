@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
@@ -8,8 +9,15 @@ namespace EmpireAtWar.Components.AttackComponent
 {
     public class AttackData
     {
+        public event Action UnitsChanged;
         private readonly IHealthModelObserver _shipUnitsProvider;
         private IHealthCommand HealthCommand { get; }
+
+        public event Action Destroyed
+        {
+            add => _shipUnitsProvider.OnDestroy += value;
+            remove => _shipUnitsProvider.OnDestroy -= value;
+        }
 
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
         public List<IHardPointModel> Units { get; private set; }
@@ -38,10 +46,12 @@ namespace EmpireAtWar.Components.AttackComponent
             if (_shipUnitsProvider.HasUnits)
             {
                 Units = _shipUnitsProvider.GetShipUnits(hardPointType).ToList();
+                UnitsChanged?.Invoke();
                 return Units is { Count: > 0 };
             }
             else
             {
+                UnitsChanged?.Invoke();
                 return false;
             }
         }

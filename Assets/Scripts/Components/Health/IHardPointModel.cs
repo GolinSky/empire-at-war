@@ -7,6 +7,7 @@ namespace EmpireAtWar.Models.Health
     public interface IHardPointModel
     {
         event Action OnHardPointHealthChanged;
+        event Action OnDestroyed;
         HardPointType HardPointType { get; }
         float HealthPercentage { get; }
         int Id { get; }

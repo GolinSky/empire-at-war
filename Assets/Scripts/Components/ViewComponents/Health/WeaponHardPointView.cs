@@ -29,6 +29,9 @@ namespace EmpireAtWar.ViewComponents.Health
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy;
+        public float MaxAttackDistance => _maxAttackDistance;
+        public float MinYaw => yAxisRange.Min;
+        public float MaxYaw => yAxisRange.Max;
 
 
 
@@ -47,20 +50,7 @@ namespace EmpireAtWar.ViewComponents.Health
            
         }
 
-        public bool CanAttack(Vector3 targetPosition)
-        {
-            float distance = Vector3.Distance(targetPosition, transform.position);
-            if (distance > _maxAttackDistance) return false;
-            
-
-            Vector3 direction = targetPosition - transform.position;
-
-            Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-            transform.rotation = lookRotation;
-
-            return yAxisRange.IsInRange(GetCorrectAngle(transform.localEulerAngles.y));
-        }
+        public void ApplyAim(Quaternion worldRotation) => transform.rotation = worldRotation;
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
@@ -152,16 +142,6 @@ namespace EmpireAtWar.ViewComponents.Health
         }
 
 
-        private float GetCorrectAngle(float y)
-        {
-            if(y > 180)
-            {
-                return y - 360;
-            }
-
-            return y;
-        }
-        
         protected override void OnStateUpdated(float healthPercentage)
         {
             base.OnStateUpdated(healthPercentage);
