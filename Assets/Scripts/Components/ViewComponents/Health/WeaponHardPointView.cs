@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
@@ -24,7 +23,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
         private ProjectileEffectPool _effectPool;
         private ProjectileData _projectileData;
-        private Coroutine _attackCoroutine;
+        private CombatAttackCoordinator _attackCoordinator;
 
         private float _maxAttackDistance;
         protected IWeaponPresenter WeaponPresenter { get; private set; }
@@ -38,9 +37,11 @@ namespace EmpireAtWar.ViewComponents.Health
             yAxisRange.SetValue(floatRange);
         }
         
-        public void SetData(ProjectileData projectileData, float maxAttackDistance, IWeaponPresenter weaponPresenter)
+        public void SetData(ProjectileData projectileData, float maxAttackDistance, IWeaponPresenter weaponPresenter,
+            CombatAttackCoordinator attackCoordinator)
         {
             WeaponPresenter = weaponPresenter;
+            _attackCoordinator = attackCoordinator;
             _maxAttackDistance = maxAttackDistance;
             _projectileData = projectileData;
            
@@ -63,21 +64,13 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
-            if (!_sequence.TryStart(out int sequenceGeneration))
-            {
-                return;
-            }
-
-            _attackCoroutine = StartCoroutine(AttackCoroutine(attackData, hardPointModel, sequenceGeneration));
+            _attackCoordinator.BeginSequence(WeaponPresenter, this, attackData, hardPointModel);
         }
 
         public void ReleaseAttackSequence()
         {
-            if (_attackCoroutine != null)
-            {
-                StopCoroutine(_attackCoroutine);
-                _attackCoroutine = null;
-            }
+            if (_attackCoordinator != null)
+                _attackCoordinator.CancelSequence(this, _sequence.Generation);
 
             if (_effectPool != null)
             {
@@ -92,26 +85,16 @@ namespace EmpireAtWar.ViewComponents.Health
             ReleaseAttackSequence();
         }
 
-        private IEnumerator AttackCoroutine(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
+        internal bool TryStartScheduledSequence(out int generation) => _sequence.TryStart(out generation);
+
+        internal int ShotsPerSalvo => Mathf.CeilToInt(_projectileData.ShotsPerSalvo);
+        internal float DelayBetweenShots => _projectileData.DelayBetweenShots;
+        internal bool IsEmitting(int generation) => !IsDestroyed && _sequence.IsEmitting(generation);
+        internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
+
+        internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
         {
-            for (int i = 0; i < _projectileData.ShotsPerSalvo; i++)
-            {
-                if (!_sequence.IsEmitting(sequenceGeneration) || IsDestroyed)
-                {
-                    break;
-                }
-
-                EmitShot(attackData, hardPointModel, sequenceGeneration);
-                yield return new WaitForSeconds(_projectileData.DelayBetweenShots);
-            }
-
-            _sequence.StopEmitting(sequenceGeneration);
-            yield return new WaitWhile(() => _sequence.Generation == sequenceGeneration && _sequence.IsBusy);
-
-            if (_sequence.Generation == sequenceGeneration)
-            {
-                _attackCoroutine = null;
-            }
+            EmitShot(attackData, hardPointModel, sequenceGeneration);
         }
 
         private void EmitShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
@@ -185,6 +168,8 @@ namespace EmpireAtWar.ViewComponents.Health
             if (healthPercentage <= 0f)
             {
                 Destroyed = true;
+                if (_attackCoordinator != null)
+                    _attackCoordinator.CancelSequence(this, _sequence.Generation);
                 _sequence.StopEmitting(_sequence.Generation);
             }
         }

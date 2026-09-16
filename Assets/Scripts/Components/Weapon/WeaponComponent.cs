@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.ViewComponents.Health;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Utilities.ScriptUtils.Time;
 using Zenject;
 
@@ -21,10 +17,9 @@ namespace EmpireAtWar.Components.Weapon
         [SerializeField] private Transform attackOrigin;
         [SerializeField] private bool useWeaponDamageRange;
         
-        private ICoroutineService _coroutineService;
+        private CombatAttackCoordinator _attackCoordinator;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
-        private List<Coroutine> _pendingAttacks = new();
         private AttackData _mainAttackData = null;
         private float _nextFireTime = 0f;
         private int _currentWeaponIndex = 0;
@@ -34,13 +29,14 @@ namespace EmpireAtWar.Components.Weapon
 
 
         [Inject]
-        private void Construct(ICoroutineService coroutineService)
+        private void Construct(CombatAttackCoordinator attackCoordinator)
         {
-            _coroutineService = coroutineService;
+            _attackCoordinator = attackCoordinator;
         }
         
         public void Initialize()
         {
+            _attackCoordinator.Register(this);
             if (useWeaponDamageRange)
             {
                 Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => hardPoint.WeaponType));
@@ -48,7 +44,7 @@ namespace EmpireAtWar.Components.Weapon
 
             foreach (WeaponHardPointView hardPoint in hardPoints)
             {
-                hardPoint.SetData(Model.ProjectileModel.GetData(hardPoint.WeaponType), Model.OptimalAttackRange, this);
+                hardPoint.SetData(Model.ProjectileModel.GetData(hardPoint.WeaponType), Model.OptimalAttackRange, this, _attackCoordinator);
             }
         }
 
@@ -65,18 +61,12 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _isReleased = true;
+            _attackCoordinator.Unregister(this);
             foreach (WeaponHardPointView hardPoint in hardPoints)
             {
                 hardPoint.ReleaseAttackSequence();
             }
 
-            foreach (Coroutine pendingAttack in _pendingAttacks)
-            {
-                _coroutineService.StopCustomCoroutine(pendingAttack);
-                AttackSequenceDiagnostics.RecordCancelledImpact();
-            }
-
-            _pendingAttacks.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
         }
@@ -197,43 +187,23 @@ namespace EmpireAtWar.Components.Weapon
         
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, float attackDelay)
         {
-            if (_isReleased || !IsTargetValid()) return;
-
-            Coroutine attackCoroutine = null;
-            attackCoroutine = _coroutineService.InvokeWithDelay(() =>
-            {
-                Assert.IsNotNull(attackCoroutine);
-                _pendingAttacks.Remove(attackCoroutine);
-
-                if (_isReleased || !IsTargetValid())
-                {
-                    AttackSequenceDiagnostics.RecordCancelledImpact();
-                    return;
-                }
-
-                ApplyDamageInternal(
-                    attackData,
-                    weaponType,
-                    hardPointModel.Id,
-                    GetDistance(hardPointModel.Position));
-                AttackSequenceDiagnostics.RecordAppliedImpact();
-
-            }, attackDelay);
-
-            _pendingAttacks.Add(attackCoroutine);
-            AttackSequenceDiagnostics.RecordScheduledImpact();
-
-            bool IsTargetValid()
-            {
-                if (attackData.IsDestroyed || hardPointModel.IsDestroyed || !attackData.Contains(hardPointModel))
-                {
-                    Debug.LogWarning("Can not attack hardpoint");
-                    return false;
-                }
-
-                return true;
-            }
+            if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
+            _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel, weaponType, attackDelay);
         }
+
+        public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, int targetId)
+        {
+            if (_isReleased || hardPointModel.Id != targetId || !IsTargetValid(attackData, hardPointModel))
+            {
+                return false;
+            }
+
+            ApplyDamageInternal(attackData, weaponType, targetId, GetDistance(hardPointModel.Position));
+            return true;
+        }
+
+        private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>
+            !attackData.IsDestroyed && !hardPointModel.IsDestroyed && attackData.Contains(hardPointModel);
         
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
         {

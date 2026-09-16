@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Selection.Marquee;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
@@ -20,6 +21,8 @@ namespace EmpireAtWar.SceneContext.Skirmish
 
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
+            Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
             
             Container.BindScriptableObject<CameraData>(Repository);
             Container.BindScriptableObject<SharedSelectionData>(Repository);

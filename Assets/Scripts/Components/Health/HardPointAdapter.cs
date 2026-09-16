@@ -15,6 +15,7 @@ namespace EmpireAtWar.Models.Health
         public HardPointType HardPointType => _model.HardPointType;
         public float HealthPercentage => _model.HealthPercentage;
         public int Id => _model.Id;
+        public int Generation => _model.Generation;
         public bool IsDestroyed => _model.IsDestroyed;
         public Vector3 Position => _view.Position;
         public Transform Transform => _view.Transform;

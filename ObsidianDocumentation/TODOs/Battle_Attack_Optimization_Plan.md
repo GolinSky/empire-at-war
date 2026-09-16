@@ -1,7 +1,7 @@
 # Battle attack and projectile optimization plan
 
 - Created: 2026-09-16
-- Status: Phases 1 and 2 implemented; manual battle and performance validation pending. Later phases not started.
+- Status: Phases 1–3 implemented; manual battle and performance validation pending. Later phases not started.
 - Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
 
 The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. This plan does not include quality settings, lighting, shadows, resolution, or general rendering optimization.
@@ -97,13 +97,15 @@ Use one coordinator to batch combat work, with focused state/pool helpers. Do no
 
 ## Phase 3 — Replace per-shot coroutines with a dedicated attack scheduler
 
-- [ ] Introduce a scene-scoped coordinator through existing battle DI. Register/unregister weapon presenters explicitly; support ships and stations that use the same weapon path.
-- [ ] Move salvo progression and delayed damage into reusable state/impact records with a scaled simulation clock. Eliminate per-shot enumerators, delegates, `WaitForSeconds`, `WaitWhile/Any`, and linear removal of coroutine handles.
-- [ ] Use dense active records and a due-time structure suited to the measured workload. Begin with a simple due-time scan or queue; add a heap/time buckets only if evidence justifies it.
-- [ ] Model next shot time, shots remaining, pending impacts and effect completion separately. Keep stable owner/target identifiers plus generation/version checks so reused registrations cannot receive old work.
-- [ ] Use a stable event sequence for equal due times. Revalidate owner and target before committing damage; cancellation removes/invalidates all associated work according to the owner-versus-hardpoint rules. Compute distance-dependent damage from current positions at impact, matching the existing path.
-- [ ] Preserve the existing frame-quantized coroutine behavior deliberately. In particular, decide against silently emitting a catch-up burst after a long frame; document comparisons to the old end-of-frame waits.
-- [ ] Keep this implementation serial first so it becomes the reference for Jobs. Remove the replaced path after parity is demonstrated; avoid maintaining two separate combat rule implementations.
+- [x] Introduce a scene-scoped coordinator through existing battle DI. Register/unregister weapon presenters explicitly; support ships and stations that use the same weapon path.
+- [x] Move salvo progression and delayed damage into reusable state/impact records with a scaled simulation clock. Eliminate per-shot enumerators, delegates, `WaitForSeconds`, `WaitWhile/Any`, and linear removal of coroutine handles.
+- [x] Use dense active records and a due-time structure suited to the measured workload. Begin with a simple due-time scan or queue; add a heap/time buckets only if evidence justifies it.
+- [x] Model next shot time, shots remaining, pending impacts and effect completion separately. Keep stable owner/target identifiers plus generation/version checks so reused registrations cannot receive old work.
+- [x] Use a stable event sequence for equal due times. Revalidate owner and target before committing damage; cancellation removes/invalidates all associated work according to the owner-versus-hardpoint rules. Compute distance-dependent damage from current positions at impact, matching the existing path.
+- [x] Preserve frame-quantized waits deliberately, with no catch-up burst after a long frame. See timing comparison below.
+- [x] Keep this implementation serial first so it becomes the reference for Jobs. Remove the replaced path; avoid maintaining two separate combat rule implementations. Parity validation remains pending.
+
+Phase 3 timing comparison: the old `WaitForSeconds` countdown began at the end of the emitting frame and resumed in the first later frame that met the delay. The scheduler records `Time.time + delay` at emission, allows the next event no earlier than the following frame, and emits at most one shot from each sequence per frame. Impacts are committed in an explicitly early Zenject `LateTick`, after ordinary `Update` firing. The end-of-frame countdown origin and coroutine-versus-`LateTick` commit phase can shift an event by a frame or change same-frame observer visibility. These differences require manual battle parity checks before the review gate can be accepted.
 
 **Review gate:** Shots per salvo, target IDs, impact order/timestamps, cooldowns and cancellation agree with the reference scenario, including pauses and long frames. The attack scheduling path allocates no managed memory per shot after warmup, confirmed by attribution rather than only global GC bytes. Queue size drains after combat/release. Compare scheduler CPU time and p95/p99 against Phase 2 before advancing.
 
@@ -183,7 +185,7 @@ The existing capture command uses a ten-second window; duration itself is not th
 | --- | --- | --- |
 | 1. Readable attack states and busy/cancellation | Implemented; awaiting manual validation | Explicit sequence state and effect leases, owner/hardpoint cancellation, target-hardpoint impact rejection, rocket shared path, and development counters. Unity recompile completed without errors; one filtered EditMode health-model smoke test passed; independent diff review found no material defect. No battle or performance capture was run, so firing/pause/lifecycle parity and CPU/allocation impact remain unverified. |
 | 2. Projectile ownership and reuse | Implemented; awaiting manual validation and measured prewarm calibration | A per-hardpoint pool uses an available stack and active lease map. Idle effects are inactive and retained up to one salvo's capacity; excess effects retire. Active effects detach and drain on owner release. Particle completion waits for live particles as well as the configured busy time. Development counters track created, reused, active, available, returned, retired, expansions, high-water and ownerless-active effects; the existing acquisition profiler marker remains. Independent review found idle-destruction bookkeeping and retained laser target state issues; both were corrected. Unity recompile completed without errors and one filtered EditMode smoke test passed. No battle or performance capture was run at the user's request. `prewarmEffects` defaults to zero until concurrent demand is measured and configured; visual/lifecycle parity and capacity measurements remain unverified. |
-| 3. Serial attack/impact scheduler | Not started | — |
+| 3. Serial attack/impact scheduler | Implemented; awaiting manual parity and performance validation | Scene-scoped serial coordinator now owns salvo and impact records, scaled due times, stable tie order, owner and target generations, and cancellation. Per-shot and salvo coroutines were removed. Unity recompile completed without errors; a filtered three-test EditMode smoke check passed. Independent review identified the changed coroutine-to-late-tick ordering; explicit early late-tick priority was added. No battle, logic-parity run or performance capture was run at the user's request. Timing parity, per-shot allocation attribution, scheduler CPU cost and queue drain remain unverified. |
 | 4. Target iteration and numeric rules | Not started | — |
 | 5A. Jobs + Burst targeting | Not started | — |
 | 5B. Jobs + Burst sequence progression | Not started | — |

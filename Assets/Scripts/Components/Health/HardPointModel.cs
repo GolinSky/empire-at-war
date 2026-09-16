@@ -8,6 +8,7 @@ namespace EmpireAtWar.Models.Health
     public class HardPointModel : PureModel
     {
         public int Id { get; }
+        public int Generation { get; private set; }
         public HardPointType HardPointType { get; }
 
         private float _originHealth;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Models.Health
 
         public void SetHealth(float health)
         {
+            Generation++;
             _originHealth = health;
             _health = health;
             HealthPercentage = health <= 0f ? 0f : 1f;
