@@ -17,7 +17,7 @@ namespace EmpireAtWar.Editor
         public static void Run()
         {
             var report = new StringBuilder();
-            report.AppendLine("Prefab\tRenderer\tType\tMesh\tSubmesh\tMaterial\tShader\tMaterial instancing\tParticle mode\tSRP / instancing blocker\tRepeated renderer references\tInstanced draw evidence");
+            report.AppendLine("Prefab\tRenderer\tType\tMesh\tSubmesh\tMaterial\tShader\tMaterial instancing\tParticle mode\tBlocker\tRepeated renderer references\tSRP Batcher compatibility\tStatic candidate\tInstanced draw evidence");
             var rows = new List<string>();
             var groups = new Dictionary<string, int>();
             AppendFolder(SHIP_FOLDER, null, rows, groups);
@@ -26,11 +26,22 @@ namespace EmpireAtWar.Editor
             foreach (string row in rows)
             {
                 string[] fields = row.Split('\t');
-                string key = fields[3] + "\t" + fields[4] + "\t" + fields[5];
+                string key = fields[2] + "\t" + fields[3] + "\t" + fields[4] + "\t" + fields[5];
+                bool expectedSrpCompatible = fields[6] == "Universal Render Pipeline/Lit"
+                    || fields[6] == "Universal Render Pipeline/Unlit"
+                    || fields[6] == "Universal Render Pipeline/Complex Lit";
+                string srpStatus = expectedSrpCompatible
+                    ? "Expected for URP Lit/Unlit; actual pass unverified"
+                    : "Unverified; inspect shader and Frame Debugger";
+                bool candidate = fields[2] == "MeshRenderer" && fields[3] != "None"
+                    && fields[5] != "None" && groups[key] > 1 && expectedSrpCompatible
+                    && !fields[5].StartsWith("Packages/") && fields[9] == "None";
+                string candidateStatus = candidate ? "Possible; needs scoped comparison" : "No verified candidate";
                 string drawEvidence = fields[2] == "MeshRenderer"
                     ? "Not captured; verify Draw Mesh (Instanced) in Frame Debugger"
                     : "Not applicable to repeated Mesh Renderer instancing";
-                report.Append(row).Append('\t').Append(groups[key]).Append('\t').AppendLine(drawEvidence);
+                report.Append(row).Append('\t').Append(groups[key]).Append('\t').Append(srpStatus)
+                    .Append('\t').Append(candidateStatus).Append('\t').AppendLine(drawEvidence);
             }
 
             string path = Path.GetFullPath(REPORT_PATH);
@@ -66,10 +77,10 @@ namespace EmpireAtWar.Editor
 
                         Material material = laserMaterial.objectReferenceValue as Material;
                         string identity = GetAssetIdentity(material);
-                        string key = "None\t0\t" + identity;
+                        string key = "Runtime LineRenderer\tNone\tN/A\t" + identity;
                         groups.TryGetValue(key, out int count);
                         groups[key] = count + 1;
-                        rows.Add(string.Join("\t", path, component.name, "Runtime LineRenderer", "None", "0", identity,
+                        rows.Add(string.Join("\t", path, component.name, "Runtime LineRenderer", "None", "N/A", identity,
                             material == null || material.shader == null ? "None" : material.shader.name,
                             material != null && material.enableInstancing ? "Enabled" : "Disabled", "N/A",
                             "LineRenderer is created at runtime; material-checkbox mesh instancing is inapplicable"));
@@ -80,7 +91,7 @@ namespace EmpireAtWar.Editor
                 {
                     Mesh mesh = null;
                     string particleMode = "N/A";
-                    string blocker = "SRP compatibility and actual draw path require Frame Debugger inspection";
+                    string blocker = "None";
                     if (renderer is MeshRenderer)
                     {
                         MeshFilter filter = renderer.GetComponent<MeshFilter>();
@@ -114,14 +125,21 @@ namespace EmpireAtWar.Editor
                         Material material = materials[submesh];
                         string meshIdentity = GetAssetIdentity(mesh);
                         string materialIdentity = GetAssetIdentity(material);
-                        string key = meshIdentity + "\t" + submesh + "\t" + materialIdentity;
+                        string actualSubmesh = mesh == null || mesh.subMeshCount == 0
+                            ? "N/A" : Mathf.Min(submesh, mesh.subMeshCount - 1).ToString();
+                        string key = renderer.GetType().Name + "\t" + meshIdentity + "\t" + actualSubmesh + "\t" + materialIdentity;
                         groups.TryGetValue(key, out int count);
                         groups[key] = count + 1;
+                        string materialBlocker = material == null ? "Missing shared material"
+                            : material.shader == null || !material.shader.isSupported ? "Missing or unsupported shader"
+                            : renderer.name.StartsWith("Shield") || path.EndsWith("ReinforcementView.prefab")
+                                ? "Runtime material instances require separate sharing review"
+                                : blocker;
                         rows.Add(string.Join("\t", path, renderer.name, renderer.GetType().Name,
-                            meshIdentity, submesh.ToString(), materialIdentity,
+                            meshIdentity, actualSubmesh, materialIdentity,
                             material == null || material.shader == null ? "None" : material.shader.name,
                             material != null && material.enableInstancing ? "Enabled" : "Disabled",
-                            particleMode, blocker));
+                            particleMode, materialBlocker));
                     }
                 }
             }
