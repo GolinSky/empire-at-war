@@ -68,7 +68,7 @@ namespace EmpireAtWar
             OnBindData();
         }
 
-        private void BindModel()
+        protected virtual void BindModel()
         {
             ModelDependencyBuilder
                 .ConstructBuilder(Container)

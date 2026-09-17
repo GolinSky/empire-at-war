@@ -1,11 +1,15 @@
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Ship;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
+using Zenject;
 
 namespace EmpireAtWar.Entities.Ship.Data
 {
@@ -16,9 +20,11 @@ namespace EmpireAtWar.Entities.Ship.Data
     }
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
-    public class ShipData : Mvc.Data, IShipData, IShipMoveData, IHealthData,
-        IRadarData, IWeaponContext, IUnitDeathAnimationData
+    public class ShipData : Mvc.Data, IModel, IShipModelObserver, IShipData,
+        IShipMoveData, IHealthData, IRadarData, IWeaponContext, IUnitDeathAnimationData
     {
+        [Inject] public ShipType ShipType { get; private set; }
+
         [Header("Ship Settings")]
         [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }

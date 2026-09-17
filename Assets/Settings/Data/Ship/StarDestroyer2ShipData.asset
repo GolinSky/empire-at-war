@@ -16,7 +16,7 @@ MonoBehaviour:
     type: 3}
   <MinMoveCoefficient>k__BackingField: 0.5
   <Speed>k__BackingField: 1.2
-  <Height>k__BackingField: 0
+  <Height>k__BackingField: -5
   <RotationSpeed>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 3
   <BodyRotationMaxAngle>k__BackingField: 15

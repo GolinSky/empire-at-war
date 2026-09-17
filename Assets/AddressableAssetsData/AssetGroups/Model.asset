@@ -25,11 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 092775259e573b543be55d7db56d8849
-    m_Address: StarDestroyer2ShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
     m_Address: EnemyFactionData
     m_ReadOnly: 0
@@ -60,11 +55,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2d4f8dcc8b8133b44802863fc6a27f01
-    m_Address: LucrehulkShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f8acb09e989fe54fbb45ed7510ec287
     m_Address: WeaponDamageData
     m_ReadOnly: 0
@@ -77,11 +67,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38bf9d71cf198ee4c95db7c57cba6be8
     m_Address: MiniMapData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3ba22e215b4787a44ae118a021f83b79
-    m_Address: AcclamatorShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -105,28 +90,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5cb1f21f695b6b6429325e7fed3cf62f
-    m_Address: HeavyDreadnoughtShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
     m_Address: ShipUiData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5efdec56a487ebd429ddded2e410a66d
-    m_Address: RecusantShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 691bb38511b36a64894408d57d5744b9
-    m_Address: ArquitensShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 76e32cae182412b4289ed05333d1fcc7
-    m_Address: MunificentShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -137,11 +102,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84600a7480cad2b46937e09ca1f373d6
     m_Address: DefendPlatformData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 87dc459f3860177409b8eebd6196cc8f
-    m_Address: StarDestroyer1ShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -175,18 +135,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec359ffc69a7a3345aae8f7e9be0dc60
-    m_Address: ProvidenceShipComponentsData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fbbdc831ce20cd7438fbdb30070fa53c
     m_Address: PlanetData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fecf936004296974b821296b00f2065f
-    m_Address: VenatorShipComponentsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
