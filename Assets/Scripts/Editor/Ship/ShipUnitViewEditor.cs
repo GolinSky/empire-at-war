@@ -1,8 +1,4 @@
-﻿using System;
 using System.Linq;
-using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Repository;
-using EmpireAtWar.Ship;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 using UnityEngine;
@@ -12,20 +8,6 @@ namespace EmpireAtWar.Editor.Ship
 {
     public static class ShipUnitViewEditor
     {
-        [MenuItem("Custom/Ships/SetCorrectPosition")]
-        public static void SetCorrectPosition()
-        {
-            AddressableAssetService addressableRepository = new AddressableAssetService();
-
-            string[] shipNames = Enum.GetNames(typeof(ShipType));
-            
-            foreach (string shipName in shipNames)
-            {
-                ShipEntity view = addressableRepository.LoadComponent<ShipEntity>($"{shipName}ShipView");
-                ShipComponentsData model = addressableRepository.Load<ShipComponentsData>($"{shipName}{nameof(ShipComponentsData)}");
-                
-            }
-        }
         [MenuItem("Custom/Ships/SetUpShipUnits")]
         public static void SetUpShipUnits()
         {
@@ -37,14 +19,8 @@ namespace EmpireAtWar.Editor.Ship
                 return;
             }
             
-            string shipType = selectionObject.name.Replace("ShipView", "");
-
             IHardPointProvider[] shipUnits = selectionObject.GetComponentsInChildren<IHardPointProvider>();
-            AddressableAssetService addressableRepository = new AddressableAssetService();
 
-            // ShipComponentsData shipModel = addressableRepository.Load<ShipComponentsData>($"{shipType}ShipComponentsData");
-
-            
             int counter = 0;
             foreach (IHardPointProvider unitProvider in shipUnits)
             {

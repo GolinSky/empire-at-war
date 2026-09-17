@@ -22,13 +22,12 @@ using Zenject;
 
 namespace EmpireAtWar.Ship
 {
-    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipComponentsData>
+    public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipData>
     {
         private ShipType _shipType;
         private PlayerType _playerType;
         private string shipDataPath;
 
-        protected override string ModelPathPrefix => _shipType.ToString();
         protected override string PrefabPathPrefix => _shipType.ToString();
         protected override string PrefabPathPostfix => "View";
 
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Ship
             Container.BindEntityExt(SelectionType.Ship);
 
 
-            Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
             Container.Bind<AudioShipData>()
@@ -71,14 +69,18 @@ namespace EmpireAtWar.Ship
             Container.Bind<WeaponModel>().AsSingle();
         }
 
+        protected override void BindModel()
+        {
+            Container.BindScriptableObject<ShipData>(Repository, path: shipDataPath);
+        }
+
         protected override void BindComponents()
         {
             base.BindComponents();
             Container.BindInitializableExecutionOrder<HealthComponent>(-100);
-            ShipComponentsData model = Container.Resolve<ShipComponentsData>();
             Container.Bind<HealthModel>().AsSingle();
             Container.Bind<ShipMoveModel>().AsSingle();
-            BindBuffer(model.RadarModel);
+            Container.Bind<RadarModel>().AsSingle();
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container
