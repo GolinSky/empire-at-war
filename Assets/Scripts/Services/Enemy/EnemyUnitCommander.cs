@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -38,6 +40,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicDecisionModel _decisionModel;
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly EnemyTaskForceExecutor _taskForceExecutor;
+        private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
+            new Dictionary<IShipEntity, Vector3>();
 
         private float _decisionTimer;
         private bool _hasDecision;
@@ -74,7 +78,7 @@ namespace EmpireAtWar.Services.Enemy
         public void Initialize()
         {
             _shipService.ShipAdded += HandleShipChanged;
-            _shipService.ShipRemoved += HandleShipChanged;
+            _shipService.ShipRemoved += HandleShipRemoved;
             _reinforcementZonesSystem.OwnershipChanged += HandleWorldChanged;
             _entityLocator.EntityAdded += HandleEntityChanged;
             _entityLocator.EntityRemoved += HandleEntityChanged;
@@ -93,7 +97,8 @@ namespace EmpireAtWar.Services.Enemy
         public void LateDispose()
         {
             _shipService.ShipAdded -= HandleShipChanged;
-            _shipService.ShipRemoved -= HandleShipChanged;
+            _shipService.ShipRemoved -= HandleShipRemoved;
+            _zoneExitTargets.Clear();
             _reinforcementZonesSystem.OwnershipChanged -= HandleWorldChanged;
             _entityLocator.EntityAdded -= HandleEntityChanged;
             _entityLocator.EntityRemoved -= HandleEntityChanged;
@@ -106,6 +111,17 @@ namespace EmpireAtWar.Services.Enemy
                 throw new ArgumentNullException(nameof(ship));
             }
 
+            EvaluateAndExecute();
+        }
+
+        private void HandleShipRemoved(IShipEntity ship)
+        {
+            if (ship == null)
+            {
+                throw new ArgumentNullException(nameof(ship));
+            }
+
+            _zoneExitTargets.Remove(ship);
             EvaluateAndExecute();
         }
 
@@ -132,8 +148,41 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContext context = _contextBuilder.Build();
             LastSnapshot = context.Snapshot;
             EnemyStrategicDecision decision = _decisionModel.Evaluate(context.Snapshot);
-            _taskForceExecutor.Execute(decision, context);
+            if (decision.State == EnemyStrategicState.RebuildFleet ||
+                decision.State == EnemyStrategicState.Hold)
+            {
+                MoveShipsOutOfDefaultZone(context.Ships);
+            }
+            else
+            {
+                _taskForceExecutor.Execute(decision, context);
+            }
             PublishDecision(decision);
+        }
+
+        private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)
+        {
+            foreach (IShipEntity ship in ships)
+            {
+                if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
+                        PlayerType.Opponent,
+                        ship.WorldPosition,
+                        ship.NavigationRadius,
+                        out Vector3 exitPosition))
+                {
+                    _zoneExitTargets.Remove(ship);
+                    ship.HoldPosition();
+                    continue;
+                }
+
+                if (!_zoneExitTargets.TryGetValue(ship, out Vector3 target))
+                {
+                    target = exitPosition;
+                    _zoneExitTargets.Add(ship, target);
+                }
+
+                ship.AssignMoveTarget(target);
+            }
         }
 
         private void PublishDecision(EnemyStrategicDecision decision)

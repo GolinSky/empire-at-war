@@ -5,7 +5,6 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -28,9 +27,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     public class EnemyFactionController : Controller<EnemyFactionData>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
     {
         private const float DEFAULT_INCOME = 5f;
-        private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
-        private const float BASE_SPAWN_MIN_RADIUS = 20f;
-        private const float BASE_SPAWN_MAX_RADIUS = 45f;
 
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly IEconomyProvider _economyProvider;
@@ -38,7 +34,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
-        private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly IEntityLocator _entityLocator;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
@@ -66,7 +61,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IReinforcementZonesSystem reinforcementZonesSystem,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            LazyInject<IMapModelObserver> mapModel,
             IEnemyStructurePlacementService structurePlacement,
             IEntityLocator entityLocator) : base(model)
         {
@@ -79,7 +73,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
-            _mapModel = mapModel;
             _structurePlacement = structurePlacement ??
                 throw new ArgumentNullException(nameof(structurePlacement));
             _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
@@ -275,19 +268,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 return position;
             }
 
-            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
-            {
-                position = GeneratePositionNearBase();
-                if (_reinforcementZonesSystem.IsShipSpawnPositionClear(
-                        shipType,
-                        position))
-                {
-                    return position;
-                }
-            }
-
             throw new InvalidOperationException(
-                $"No clear enemy spawn position is available for {shipType}.");
+                $"No clear enemy spawn position is available in an owned zone for {shipType}.");
         }
 
         private Vector3 GenerateMapCoordinates()
@@ -299,18 +281,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             throw new InvalidOperationException(
                 "No clear enemy structure position is available near the station or captured zones.");
-        }
-
-        private Vector3 GeneratePositionNearBase()
-        {
-            Vector2Range sizeRange = _mapModel.Value.SizeRange;
-            Vector3 basePosition = _mapModel.Value.GetStationPosition(Model.FactionType);
-            Vector2 direction = UnityEngine.Random.insideUnitCircle.normalized;
-            float radius = UnityEngine.Random.Range(BASE_SPAWN_MIN_RADIUS, BASE_SPAWN_MAX_RADIUS);
-            return new Vector3(
-                Mathf.Clamp(basePosition.x + direction.x * radius, sizeRange.Min.x, sizeRange.Max.x),
-                0f,
-                Mathf.Clamp(basePosition.z + direction.y * radius, sizeRange.Min.y, sizeRange.Max.y));
         }
 
         public void Initialize()
