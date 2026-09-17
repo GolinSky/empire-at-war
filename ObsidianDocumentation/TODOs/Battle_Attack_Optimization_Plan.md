@@ -1,10 +1,10 @@
 # Battle attack and projectile optimization plan
 
 - Created: 2026-09-16
-- Status: Phases 1–3 implemented. Phase 4 serial targeting changes and Phase 5 Jobs paths implemented; battle parity and performance validation remain pending. Phase 6 static audit implemented; instancing comparison remains pending.
+- Status: Phases 1–3 implemented. Phase 4 serial targeting changes and Phase 5 Jobs paths implemented; battle parity and performance validation remain pending. Phase 6 unit materials prepared, Forward+ / GPU Resident Drawer enabled, and PlanetView shadow reception disabled. Actual instanced-draw evidence and a matched performance comparison remain pending; the latest battle capture still shows GPU pressure.
 - Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
 
-The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. This plan does not include quality settings, lighting, shadows, resolution, or general rendering optimization.
+The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. General quality, lighting, shadows and resolution changes remain outside the original scope. The user's subsequent requests authorize the Phase 6 instancing path and disabling shadow reception only on the PlanetView mesh; all other shadow settings remain unchanged.
 
 ## Evidence and assumptions
 
@@ -148,7 +148,7 @@ This provides a dedicated attack system without requiring a whole-unit or projec
 
 ## Phase 6 — Material/shader checks and selective GPU instancing
 
-### Audit already completed for this plan
+### Initial ship/projectile audit (historical)
 
 Read-only Unity asset inspection covered all **11 prefabs under `Assets/Prefabs/Models/Ships`** (including the reinforcement preview) and **3 projectile prefabs**. It found **49 distinct material asset paths** referenced by existing renderers, with material instancing disabled on each. One path is a model with embedded material data, so this is not a count of all possible material subassets. The dynamically created laser renderer was checked separately through its code and configured material. The current platform supports instancing and SRP Batcher is enabled. These are eligibility findings, not a demonstrated speedup.
 
@@ -164,12 +164,113 @@ Read-only Unity asset inspection covered all **11 prefabs under `Assets/Prefabs/
 ### Implementation and acceptance
 
 - [x] Add an opt-in Editor audit/report listing renderer type, mesh/submesh, shared material identity, shader, material instancing flag, particle render mode and SRP compatibility/blockers. It must report eligibility separately from actual instanced draw evidence.
-- [ ] For compatible repeated unit geometry, compare the existing SRP path with a scoped instancing candidate. Enable instancing only for verified candidate materials and preserve appearance. Do not globally disable SRP Batcher or bulk-toggle every material.
+- [ ] For compatible repeated unit geometry, compare the existing SRP path with an actual instancing path. The 2026-09-17 user request permits preparing supported project-owned unit materials by enabling their instancing flags, independently of this still-pending performance comparison. Do not globally disable SRP Batcher or toggle unsupported/unrelated materials.
 - [ ] Verify actual instanced draws with Frame Debugger and measure CPU submission/frame cost in the same scenario. A checked material flag or lower draw count alone is insufficient acceptance evidence.
 - [x] For current stretched particles and lasers, mark the simple checkbox optimization inapplicable. If a mesh-particle/shader experiment is justified, keep it isolated, preserve stretching/color/softness/beam appearance, and keep it only after a measured benefit. Do not turn this phase into a VFX/rendering rewrite.
 - [x] Import/save only changed assets through official Unity tooling and check for serialization, shader and import errors. Retain a precise list of affected materials/prefabs for rollback.
 
-**Scoped test candidate:** GPU instancing is enabled only on `Assets/Art/Models/Other/sci-fi-lamps/source/glass.mat` (`m_EnableInstancingVariants: 0 → 1`). No prefab, shader, particle, laser, SRP Batcher, or package asset was changed. The shared material appears on repeated lamp meshes in ship prefabs; the audit found 32 renderer/material rows across three mesh/submesh combinations. Unity saved and force-imported the material, then confirmed the flag and shader support. This is ready for a user-run comparison with the previous commit, not an accepted rendering optimization. Use Frame Debugger to check for `Draw Mesh (Instanced)` and compare appearance and CPU submission/frame cost in the same representative scenario. If no benefit is demonstrated, revert this one material change.
+**Initial scoped candidate (historical):** GPU instancing was enabled only on `Assets/Art/Models/Other/sci-fi-lamps/source/glass.mat` (`m_EnableInstancingVariants: 0 → 1`). No prefab, shader, particle, laser, SRP Batcher, or package asset was changed. The shared material appeared on repeated lamp meshes in ship prefabs; the audit found 32 renderer/material rows across three mesh/submesh combinations. Unity saved and force-imported the material, then confirmed the flag and shader support. This established eligibility only; it did not establish actual instanced draws or a performance benefit.
+
+### Review of repeated-unit instancing — 2026-09-17
+
+The intended asset model is **one shared material asset per visual material slot/type, reused by every copy**, not a newly created material per spawned unit. Repeating the same ship, platform or mining facility is a valid instancing workload. Matching material alone is insufficient: grouping also depends on the same mesh, submesh, shader pass/variant and compatible renderer state. A multi-part ship can produce several instanced draws. Reducing a ship to a single material is optional and would require separate texture/UV work where appearances differ; it is not a prerequisite for instancing its repeated parts.
+
+The original Phase 6 had two practical gaps:
+
+- Its audit omitted `Assets/Prefabs/Models/DefendStation`, `MiningFacilities` and `Stations`.
+- A material checkbox comparison did not select a rendering path that actually uses instancing. The effective Editor pipeline is `URP-HighFidelity` (quality level 2, High Fidelity), with Forward rendering, SRP Batcher enabled and GPU Resident Drawer disabled. `URP-Performant` is the default pipeline fallback, not the effective quality override. For compatible ordinary MeshRenderers, SRP Batcher takes priority over conventional GPU instancing. Enabling the checkbox can therefore leave the existing draw path unchanged.
+
+Normal production hulls preserve their serialized shared materials. `ShieldView.Start` obtains unique material instances and animates texture offsets; `UnitSpawnView.Awake` does the same for placement-preview tinting. Those renderers do not satisfy shared-material grouping merely because their source asset has instancing enabled. Keep their appearance intact until a separate shader/property design is verified. Do not blanket-replace these accesses with property blocks: non-instanced properties can block conventional instancing, and property blocks also affect SRP Batcher/GPU Resident Drawer eligibility.
+
+The user's requested material-flag preparation is separate from the performance acceptance gate below. It does not authorize a global SRP Batcher disable, shader migration, material merging, or a quality/rendering-path change.
+
+### Material preparation completed — 2026-09-17
+
+- Inspected **15 unit prefabs**, including the reinforcement preview: **391 MeshRenderers, 534 material slots and 59 distinct material objects**. All 59 use supported URP shaders with instancing support: 46 Lit, 9 Autodesk Interactive, 2 Complex Lit, 1 Unlit and 1 Simple Lit. No null mesh-material references or shader compilation errors were found.
+- Enabled instancing on **52 existing project-owned materials**; the lamp `glass.mat` was already enabled. Each existing material diff changes only `m_EnableInstancingVariants: 0 → 1`.
+- Created **6 shared project-owned copies** in the existing `Assets/Art/Materials` folder: `UnitDefaultLit.mat`, `MiningFacilityHull.mat`, and `Lucrehulk_Shape_019.mat` through `Lucrehulk_Shape_022.mat`. Their effective shader properties, textures/UV transforms, keywords, render queue, GI settings and enabled passes match the originals; instancing is enabled. Original package/model subassets remain untouched.
+- Replaced **13 material-slot references in 5 prefabs**: `HeavyDreadnoughtShipView`, `LucrehulkShipView`, `StarDestroyer2ShipView`, `MiningFacilityView` and `RepublicSpaceStationView`. Copies are shared assets, not per-instance materials. Unity's prefab save also serialized existing default component fields/blank metadata; no gameplay settings were intentionally changed.
+- Result: **all 59 shared material assets referenced by unit MeshRenderers have instancing enabled**. Particle and line renderers remain outside this checkbox-based mesh-instancing scope. Shield and preview runtime material cloning still limits actual sharing.
+- `Tools/Performance/Audit Battle Instancing` now covers all four unit categories plus the 3 projectile prefabs, producing **562 renderer/material rows across 18 prefabs**. A potential candidate no longer requires duplicate references inside the prefab inventory: repetition can come from spawning copies. Shader-name SRP classification in this tool remains advisory, not a shader-pass or draw-call measurement.
+- Setup issue to inspect visually: Venator's `RepublicVenator2/rep_venator_body0_model0/ShieldsVfx` has **2 mesh submeshes but 1 material slot**. This predates the changes and was left intact. Ships are also not single-renderer assets: `StarDestroyer2ShipView` alone has **260 MeshRenderers and 313 material slots**, including inactive hierarchy objects. Material instancing does not collapse all these distinct parts into one ship draw.
+- Unity saved/imported the material and prefab changes. The expanded audit compiled successfully, and post-change shader/import/serialization diagnostics contained no new errors. No Play Mode session, automated test runner, visual comparison or performance benchmark was run.
+
+Local evidence: `Library/UnitInstancingAudit.json` (final inventory), `Library/UnitInstancingAuditBeforeOverrides.json` (initial material identities/flag changes), `Library/UnitInstancingOriginalFlagChanges.txt` (52 modified existing materials), `Library/UnitInstancingMaterialOverrides.json` (6 source-to-copy mappings and 5 prefabs), `Library/UnitInstancingCopyVerification.json` (effective property comparison), and `Library/BattleInstancingAudit.tsv` (repeatable audit). Library files are generated local evidence, not authoritative or tracked documentation.
+
+### User's post-change capture — 2026-09-17 10:14 UTC
+
+**Decision: material preparation verified; fleet GPU instancing and performance improvement are not demonstrated.** Read-only live checks confirm all 59 material flags remain enabled. All five shaders' active subshaders return SRP Batcher compatibility code 0. The prefab inventory has no property blocks or Batching Static flags on its 391 MeshRenderers; runtime shield/preview behavior remains a separate concern.
+
+Effective settings: High Fidelity quality override, `URP-HighFidelity.asset`, Forward renderer, SRP Batcher on, GPU Resident Drawer **Disabled**, GPU occlusion culling off. Apple M2/Metal supports instancing and compute. Unity's `IsGPUResidentDrawerSupportedBySRP` returns **false**, explicitly because the renderer is not Forward+/Deferred+. `EditorGraphicsSettings.batchRendererGroupShaderStrippingMode` is **KeepIfEntitiesGraphics**, rather than the required Keep All for the proposed GPU Resident Drawer path. No project-owned explicit `RenderMeshInstanced`, `RenderMeshIndirect` or `BatchRendererGroup` submission exists in `Assets/Scripts`.
+
+Latest files: `Application.persistentDataPath/BattleCaptures/battle_20260917_101407_564_summary.txt` and matching `.csv`. This is after the material preparation: 502 frames, 10.005 seconds, Unity 6000.4.7f1 Editor, Apple M2, High Fidelity, 2940×1506, time scale 1, VSync 0, target 60 FPS.
+
+| Metric | Average | p95 |
+| --- | ---: | ---: |
+| Frame duration | 19.870 ms | 33.562 ms |
+| CPU main thread | 8.869 ms | 15.976 ms |
+| CPU render thread | 6.050 ms | 6.570 ms |
+| GPU frame | 23.766 ms | 38.042 ms |
+| Triangles | 22.37 million | 44.98 million |
+| SetPass calls | 165.48 | 348 |
+| Managed allocation | 32,359 bytes/frame | 97,989 bytes/frame |
+
+GPU values exist for only **357/502 frames**; timing is asynchronous and CPU timings include waits. The worst frame is 215.099 ms. This is consistent with substantial GPU/rendering pressure in heavier frames, but does not identify a particular shader, shadow pass or material as the cause. Instancing can reduce CPU submission; it does not eliminate the geometry or pixel work of repeated units.
+
+Draw-call and batch counters are unavailable for all 502 frames. Frame Debugger currently retains **0 events**, and the Editor is back in the clean MainMenuScene outside Play Mode. Therefore there is no recorded draw-event proof to reconstruct from this capture. The prior captures have different conditions/workloads and are not a controlled before/after comparison.
+
+Additional observations:
+
+- The capture includes **276 projectile Instantiate marker callbacks** and 621 acquisition callbacks; it includes pool growth, not exclusively warmed reuse. Instantiate time is 0.237 ms average, 0.995 ms p95 and 6.958 ms maximum. These samples are nested under acquisition and must not be added to it.
+- `Battle.Weapon.TryFire` has only 11 callbacks, but source inspection shows it wraps `TryFireWeapon`, the serial path. Normal `CommitTargetSelection` attacks do not emit that marker. Do **not** interpret this as only 11 shots/target selections or compare it with pre-Jobs totals as equivalent coverage. Jobs scheduling/completion is not represented by dedicated CSV columns.
+- High Fidelity uses 4096 main-light shadow resolution, four cascades, 1000 shadow distance, soft shadows, HDR and active full-resolution SSAO. All 15 unit prefabs have zero LODGroups. These are concrete candidates for a GPU pass/geometry investigation, not measured cost attribution. The instancing-disabled outline features are inactive and do not explain the current capture.
+
+**Next controlled experiment:** use Forward+ plus GPU Resident Drawer **Instanced Drawing**, keep SRP Batcher enabled, and set BatchRendererGroup variants to **Keep All**; validate renderer/material eligibility and preserve appearance. Verify actual **Hybrid Batch Group** events in Frame Debugger, then compare the same warmed repeated-unit scene and a representative battle against the existing SRP baseline. This review did not change rendering settings or run a new battle. GPU Resident Drawer and draw evidence: [Unity setup](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/gpu-resident-drawer.html), [performance considerations](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/gpu-resident-drawer-performance.html).
+
+### GPU Resident Drawer enabled and latest battle — 2026-09-17 10:47 UTC
+
+Following the user's instruction to apply an actual instancing path, the active High Fidelity renderer now uses **Forward+**, GPU Resident Drawer **Instanced Drawing**, SRP Batcher **enabled**, and BatchRendererGroup variant stripping **Keep All**. Unity's pipeline compatibility check passes. Forward+ was chosen as the smaller transition from the existing Forward renderer, not as a measured winner over Deferred+. Both clustered paths support GPU Resident Drawer.
+
+Newest capture: `Application.persistentDataPath/BattleCaptures/battle_20260917_104702_273_summary.txt` and matching `.csv`; 458 frames over 10.006 seconds, Unity 6000.4.7f1 Editor, Apple M2, High Fidelity, 2940×1506, time scale 1, VSync 0, target 60.
+
+| Metric | Average | p95 | p99 |
+| --- | ---: | ---: | ---: |
+| Frame duration | 21.786 ms | 40.501 ms | 52.803 ms |
+| CPU main thread | 8.138 ms | 16.053 ms | 17.361 ms |
+| CPU render thread | 3.470 ms | 5.222 ms | 5.607 ms |
+| GPU frame | 28.711 ms | 41.918 ms | 45.654 ms |
+| Triangles | 19.11 million | 44.28 million | 50.51 million |
+| SetPass calls | 147.66 | 312 | 336 |
+| Managed allocation | 20,029 bytes/frame | 38,261 bytes/frame | 56,359 bytes/frame |
+
+65.1% of frames exceed 16.67 ms, and 15.1% exceed 33.33 ms. GPU timings exist for 359/458 frames; draw-call and batch counters remain unavailable. Relative to 10:14, average render-thread time fell 42.6%, while average GPU time rose 20.8% and frame p95 rose 20.7%. The workload differs (about 26 rather than 30 ship callbacks/frame, different pool state), so this does not prove which rendering change caused the difference. It is consistent with reduced CPU submission cost while GPU work remains the limiting concern. The capture cannot prove active instanced draws.
+
+There were **zero projectile Instantiate calls** in this capture. Pool acquisition averaged 0.055 ms (0.131 ms p95); turret updates averaged 0.359 ms (0.481 ms p95). Pool expansion does not explain this run's slow frames. `TryFire` still covers only the serial path; no dedicated Jobs scheduling/completion timing is present.
+
+Deferred+ is a reasonable next matched comparison for a battle with many overlapping lights. Forward+ ignores the old per-object additional-light limit, so the stored limit of 8 no longer bounds per-object lighting work. This is a possible source of additional GPU cost, not a measured attribution. Deferred+ adds G-buffer work, and transparent objects/forward-only shaders still use forward rendering. Neither path merges different ship meshes into one instance group or removes their geometry cost. See [Unity rendering-path comparison](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/rendering-paths-comparison.html) and [Forward+ light limits](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/rendering/forward-rendering-paths.html).
+
+### PlanetView shadow reception — applied after the 10:47 capture
+
+The user clarified: **only the PlanetView mesh / battle background must stop receiving shadows; all other objects remain unchanged**.
+
+- Disabled `receiveShadows` on the explicitly bound planet mesh in both `Corusant.unity` and `Kamino.unity`. Cloud meshes and every shadow-casting setting are unchanged.
+- Their Autodesk Interactive Shader Graphs have shadow reception compiled in and expose no usable per-material receive-shadows switch. Created two project-owned variants in `Assets/Art/Shaders`, `PlanetAutodeskInteractiveNoShadows` and `PlanetAutodeskInteractiveMaskedNoShadows`, and assigned them only to the two planet materials.
+- Generated shader comparison shows only the shader name and `_RECEIVE_SHADOWS_OFF` define differ from the originals, in both Forward and G-buffer passes. Material textures, colors and other properties are unchanged.
+- Unity imported the shaders without shader errors, saved both materials and scenes, and restored the clean MainMenu scene. No new import/serialization errors appeared. No Play Mode session, automated tests or post-change performance capture was run.
+
+Next comparison: run the same warmed mixed-fleet battle/camera with Forward+ and Deferred+, keeping GPU Resident Drawer, resolution, ship composition, lights and other shadow settings identical. Compare GPU/frame p95 and capture Hybrid Batch Group draw evidence. If GPU time remains high, prioritize pass timings and geometry/LOD reduction over additional material flags. No Deferred+ switch or broader shadow/quality changes were applied in this follow-up.
+
+### Corrected comparison procedure
+
+1. Use 100 copies of one production unit type, with the same mesh/material asset references. Compare ships, platforms and mining facilities separately before using a mixed fleet. Keep camera, visibility, resolution, shadows, quality, motion and effects identical between runs.
+2. Record the current SRP Batcher baseline. The checkbox-enabled version is an eligibility/control comparison; if Frame Debugger still shows the SRP path, record **no conventional instanced draws demonstrated**.
+3. For an actual instancing comparison, use an isolated `Graphics.RenderMeshInstanced` submission for the selected repeated geometry, or separately evaluate GPU Resident Drawer with a compatible Forward+/Deferred+ renderer and shader variants. These are subsequent rendering changes, not part of the material-flag preparation. Retain SRP Batcher for unrelated rendering.
+4. Inspect the target mesh/submesh/material draws in Frame Debugger. Conventional instancing should show instanced draws; GPU Resident Drawer uses its BatchRendererGroup path. Check appearance, shadows, shields and placement previews. Measure warmed CPU render submission and frame-time median/p95/p99, plus GPU time when available. Repeat matched captures, then check representative full battles.
+5. Accept only demonstrated improvements without visual regressions. Instancing reduces submission overhead; it does not remove the geometry, pixel shading, transparency or gameplay work of 100 units. Missing GPU measurements are not zero GPU cost.
+
+No representative battle or instanced-draw capture was performed during this review. The inspected Editor scene was the clean `MainMenuScene`, outside Play Mode; its statistics cannot establish battle performance.
+
+The four captures available during the initial review also do not supply a matched instancing comparison: later runs changed time scale, used a 2940×72 Game view, or had different callback/creation counts. TryFire marker coverage also changed with the Jobs path, so its totals alone do not establish comparable firing activity. Draw-call/batch counters were unavailable, and no capture contains Frame Debugger evidence. The historical baseline recorded p95 frame time 21.585 ms, GPU time 22.099 ms and main-thread time 13.056 ms, with p95 triangle count about 12.79 million. This suggests investigating GPU work as well as CPU submission; it does not establish which materials or units caused the cost, or that instancing will remove it.
 
 **Review gate:** Compatibility report has no unsupported assumptions; instancing is visibly active where claimed; appearance is unchanged; representative repeated measurements show a benefit. Otherwise retain the current material path and mark the candidate “no demonstrated benefit” or “incompatible with current renderer.” This phase can legitimately finish without asset changes.
 
@@ -193,7 +294,7 @@ The existing capture command uses a ten-second window; duration itself is not th
 | 4. Target iteration and numeric rules | Serial implementation in progress; parity and measurement pending | Side-effect-free aim, ordered candidate lists, hardpoint invalidation, per-attempt position snapshots and diagnostics are implemented. Shared cross-weapon snapshots await a defined movement/attack update phase. Two filtered EditMode smoke checks (five tests) passed; no battle or performance test was run at the user's request. |
 | 5A. Jobs + Burst targeting | Implemented; parity and crossover measurement pending | Eligible weapon ticks queue ordered candidate spans; one Burst `IJobParallelFor` handles batches of eight or more, followed by stable main-thread commits. Smaller batches and invalidated requests use the serial selector. Persistent native buffers are reused and disposed with the scene coordinator. The first shot now commits in the same frame's early `LateTick` rather than its weapon's `Tick`; exact movement/command ordering and numeric arc parity remain unverified. The threshold is provisional, not measured. |
 | 5B. Jobs + Burst sequence progression | Implemented; parity and crossover measurement pending | One Burst due-state job scans 64 or more pending sequence/impact records; sorted due events reuse the serial main-thread commit path and revalidate event identity after cancellations. Persistent buffers are released on coordinator disposal. The threshold is provisional; managed event lookups and synchronous completion may cost more than the serial scheduler. No battle or performance capture was run. Unity recompile reported no errors, and a filtered three-test EditMode smoke check passed. |
-| 6. Instancing | Scoped material candidate enabled; user visual/performance comparison pending | `Tools/Performance/Audit Battle Instancing` scans 11 ship prefabs and 3 projectile prefabs and writes `Library/BattleInstancingAudit.tsv`. It reports 532 renderer/material rows. Thirty-two rows share three URP Lit mesh/submesh/material combinations using the project-owned `glass.mat`; GPU instancing was enabled on that material alone for testing. The report separately flags stretched particles, the runtime laser line, shield/reinforcement material instances, and unverified shader paths. Unity saved/imported the material and confirmed the flag and shader support without console errors. No battle or performance run was made by the agent at the user's request. Actual instanced draws, appearance parity, and benefit remain unverified. |
+| 6. Instancing | All unit mesh-material flags prepared; actual rendering/performance comparison pending | Audited 15 unit prefabs, 391 MeshRenderers and 59 materials. Enabled 52 existing materials, retained 1 already enabled material, and created 6 property-equivalent shared material copies with 13 slot replacements across 5 prefabs. All 59 referenced mesh materials now have instancing enabled. Expanded the reusable audit to platforms, mining facilities and stations: 562 rows across 18 unit/projectile prefabs. Compile/import/save checks passed. SRP Batcher still takes priority for compatible normal renderers; actual instanced draws, appearance parity and performance benefit remain unverified. See the corrected comparison procedure above. |
 
 ## Source map and execution constraints
 

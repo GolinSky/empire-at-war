@@ -134,8 +134,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 14
 --- !u!1 &5662398556147188990
@@ -693,6 +693,8 @@ MonoBehaviour:
   - {fileID: 6800403265529219671}
   - {fileID: 6651355211618511183}
   - {fileID: 7915906839281216673}
+  attackOrigin: {fileID: 0}
+  useWeaponDamageRange: 0
 --- !u!1 &7771841193365527878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,6 +1373,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3170467807049154485, guid: 4de91b602cd0dd14f958147960261ea5,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c29b50db6ad614f71bfc897aa4b6401d, type: 2}
     - target: {fileID: 4627338026383211134, guid: 4de91b602cd0dd14f958147960261ea5,
         type: 3}
       propertyPath: m_IsActive
