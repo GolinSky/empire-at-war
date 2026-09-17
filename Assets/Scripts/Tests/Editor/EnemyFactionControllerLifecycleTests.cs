@@ -59,7 +59,6 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     unitLimitModel,
                     reinforcementData,
-                    null,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator());
 
@@ -121,7 +120,6 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     unitLimitModel,
                     reinforcementData,
-                    null,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator());
                 ShipUnitRequest request =
@@ -185,7 +183,6 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     null,
                     new EnemyUnitLimitModel(),
-                    null,
                     null,
                     structurePlacement,
                     new OperationalEntityLocator());

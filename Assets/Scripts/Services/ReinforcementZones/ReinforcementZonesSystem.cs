@@ -25,6 +25,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
         int GetOwnedCapturableZoneCount(PlayerType playerType);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
         bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position);
+        bool TryGetDefaultZoneExitPosition(
+            PlayerType playerType,
+            Vector3 shipPosition,
+            float shipRadius,
+            out Vector3 position);
         bool TryGetRandomSpawnPosition(
             PlayerType playerType,
             ShipType shipType,
@@ -285,6 +290,37 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 float radius = Mathf.Max(0f, zone.Radius - _spawnEdgePadding);
                 Vector2 offset = Random.insideUnitCircle * radius;
                 position = zone.Center + new Vector3(offset.x, 0f, offset.y);
+                position.y = 0f;
+                return true;
+            }
+
+            position = default;
+            return false;
+        }
+
+        public bool TryGetDefaultZoneExitPosition(
+            PlayerType playerType,
+            Vector3 shipPosition,
+            float shipRadius,
+            out Vector3 position)
+        {
+            foreach (ReinforcementZonePresenter zone in _zones)
+            {
+                if (zone.Owner != playerType || zone.IsCapturable ||
+                    !zone.Contains(shipPosition))
+                {
+                    continue;
+                }
+
+                Vector3 direction = shipPosition - zone.Center;
+                direction.y = 0f;
+                if (direction.sqrMagnitude <= Mathf.Epsilon)
+                {
+                    direction = Vector3.right;
+                }
+
+                position = zone.Center + direction.normalized *
+                    (zone.Radius + shipRadius + _spawnEdgePadding);
                 position.y = 0f;
                 return true;
             }

@@ -125,6 +125,16 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetDefaultZoneExitPosition(
+                PlayerType playerType,
+                Vector3 shipPosition,
+                float shipRadius,
+                out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetRandomSpawnPosition(
                 PlayerType playerType,
                 ShipType shipType,
