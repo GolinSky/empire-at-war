@@ -1,7 +1,7 @@
 # Battle attack and projectile optimization plan
 
 - Created: 2026-09-16
-- Status: Phases 1–3 implemented. Phase 4 serial targeting changes and Phase 5 Jobs paths implemented; battle parity and performance validation remain pending. Phase 6 experiments have not started.
+- Status: Phases 1–3 implemented. Phase 4 serial targeting changes and Phase 5 Jobs paths implemented; battle parity and performance validation remain pending. Phase 6 static audit implemented; instancing comparison remains pending.
 - Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
 
 The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**. Finish and review each phase before beginning the next. This plan does not include quality settings, lighting, shadows, resolution, or general rendering optimization.
@@ -163,7 +163,7 @@ Read-only Unity asset inspection covered all **11 prefabs under `Assets/Prefabs/
 
 ### Implementation and acceptance
 
-- [ ] Add an opt-in Editor audit/report listing renderer type, mesh/submesh, shared material identity, shader, material instancing flag, particle render mode and SRP compatibility/blockers. It must report eligibility separately from actual instanced draw evidence.
+- [x] Add an opt-in Editor audit/report listing renderer type, mesh/submesh, shared material identity, shader, material instancing flag, particle render mode and SRP compatibility/blockers. It must report eligibility separately from actual instanced draw evidence.
 - [ ] For compatible repeated unit geometry, compare the existing SRP path with a scoped instancing candidate. Enable instancing only for verified candidate materials and preserve appearance. Do not globally disable SRP Batcher or bulk-toggle every material.
 - [ ] Verify actual instanced draws with Frame Debugger and measure CPU submission/frame cost in the same scenario. A checked material flag or lower draw count alone is insufficient acceptance evidence.
 - [ ] For current stretched particles and lasers, mark the simple checkbox optimization inapplicable. If a mesh-particle/shader experiment is justified, keep it isolated, preserve stretching/color/softness/beam appearance, and keep it only after a measured benefit. Do not turn this phase into a VFX/rendering rewrite.
@@ -191,7 +191,7 @@ The existing capture command uses a ten-second window; duration itself is not th
 | 4. Target iteration and numeric rules | Serial implementation in progress; parity and measurement pending | Side-effect-free aim, ordered candidate lists, hardpoint invalidation, per-attempt position snapshots and diagnostics are implemented. Shared cross-weapon snapshots await a defined movement/attack update phase. Two filtered EditMode smoke checks (five tests) passed; no battle or performance test was run at the user's request. |
 | 5A. Jobs + Burst targeting | Implemented; parity and crossover measurement pending | Eligible weapon ticks queue ordered candidate spans; one Burst `IJobParallelFor` handles batches of eight or more, followed by stable main-thread commits. Smaller batches and invalidated requests use the serial selector. Persistent native buffers are reused and disposed with the scene coordinator. The first shot now commits in the same frame's early `LateTick` rather than its weapon's `Tick`; exact movement/command ordering and numeric arc parity remain unverified. The threshold is provisional, not measured. |
 | 5B. Jobs + Burst sequence progression | Implemented; parity and crossover measurement pending | One Burst due-state job scans 64 or more pending sequence/impact records; sorted due events reuse the serial main-thread commit path and revalidate event identity after cancellations. Persistent buffers are released on coordinator disposal. The threshold is provisional; managed event lookups and synchronous completion may cost more than the serial scheduler. No battle or performance capture was run. Unity recompile reported no errors, and a filtered three-test EditMode smoke check passed. |
-| 6. Instancing | Initial audit complete; experiments not started | No asset changes or speedup claimed |
+| 6. Instancing | Opt-in Editor audit implemented; visual/performance comparison pending | `Tools/Performance/Audit Battle Instancing` scans 11 ship prefabs and 3 projectile prefabs and writes `Library/BattleInstancingAudit.tsv`. The report distinguishes static renderer/material eligibility from Frame Debugger draw evidence and flags stretched particles and the runtime laser line as inapplicable to simple mesh instancing. Unity recompile completed without errors and one filtered EditMode smoke test passed. No battle or performance run was made at the user's request, so no material was toggled and no speedup is claimed. |
 
 ## Source map and execution constraints
 
