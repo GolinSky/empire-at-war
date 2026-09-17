@@ -55,8 +55,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
@@ -1029,6 +1029,8 @@ MonoBehaviour:
   - {fileID: 6086846998858921425}
   - {fileID: 6413647430366097125}
   - {fileID: 2892658542979012765}
+  attackOrigin: {fileID: 0}
+  useWeaponDamageRange: 0
 --- !u!1 &7804568030331737293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,6 +1174,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 9b7c3b65d3406f84d8fa8fe27ba2deb3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 099e11d376a584b8fbaecb07ccd26425, type: 2}
+    - target: {fileID: -7635826562936255635, guid: 9b7c3b65d3406f84d8fa8fe27ba2deb3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ffb043d0554c542ebad54aeb5cfe3476, type: 2}
+    - target: {fileID: -7635826562936255635, guid: 9b7c3b65d3406f84d8fa8fe27ba2deb3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b0d8b8bb7142047198d067359442e46f, type: 2}
+    - target: {fileID: -7635826562936255635, guid: 9b7c3b65d3406f84d8fa8fe27ba2deb3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c8dc29ce37c90431b9fdcbcfdd1cde22, type: 2}
     - target: {fileID: 919132149155446097, guid: 9b7c3b65d3406f84d8fa8fe27ba2deb3,
         type: 3}
       propertyPath: m_Name

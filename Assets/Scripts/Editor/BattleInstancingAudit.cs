@@ -10,6 +10,9 @@ namespace EmpireAtWar.Editor
     {
         private const string MENU_PATH = "Tools/Performance/Audit Battle Instancing";
         private const string SHIP_FOLDER = "Assets/Prefabs/Models/Ships";
+        private const string DEFEND_PLATFORM_FOLDER = "Assets/Prefabs/Models/DefendStation";
+        private const string MINING_FACILITY_FOLDER = "Assets/Prefabs/Models/MiningFacilities";
+        private const string STATION_FOLDER = "Assets/Prefabs/Models/Stations";
         private const string PROJECTILE_FOLDER = "Assets/Prefabs/Vfx";
         private const string REPORT_PATH = "Library/BattleInstancingAudit.tsv";
 
@@ -21,6 +24,9 @@ namespace EmpireAtWar.Editor
             var rows = new List<string>();
             var groups = new Dictionary<string, int>();
             AppendFolder(SHIP_FOLDER, null, rows, groups);
+            AppendFolder(DEFEND_PLATFORM_FOLDER, null, rows, groups);
+            AppendFolder(MINING_FACILITY_FOLDER, null, rows, groups);
+            AppendFolder(STATION_FOLDER, null, rows, groups);
             AppendFolder(PROJECTILE_FOLDER, "Projectile", rows, groups);
 
             foreach (string row in rows)
@@ -31,12 +37,12 @@ namespace EmpireAtWar.Editor
                     || fields[6] == "Universal Render Pipeline/Unlit"
                     || fields[6] == "Universal Render Pipeline/Complex Lit";
                 string srpStatus = expectedSrpCompatible
-                    ? "Expected for URP Lit/Unlit; actual pass unverified"
+                    ? "Expected; SRP Batcher takes priority when compatible; actual pass unverified"
                     : "Unverified; inspect shader and Frame Debugger";
                 bool candidate = fields[2] == "MeshRenderer" && fields[3] != "None"
-                    && fields[5] != "None" && groups[key] > 1 && expectedSrpCompatible
+                    && fields[5] != "None" && expectedSrpCompatible
                     && !fields[5].StartsWith("Packages/") && fields[9] == "None";
-                string candidateStatus = candidate ? "Possible; needs scoped comparison" : "No verified candidate";
+                string candidateStatus = candidate ? "Possible when unit is repeated; needs scoped comparison" : "No verified candidate";
                 string drawEvidence = fields[2] == "MeshRenderer"
                     ? "Not captured; verify Draw Mesh (Instanced) in Frame Debugger"
                     : "Not applicable to repeated Mesh Renderer instancing";
