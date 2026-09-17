@@ -170,7 +170,7 @@ namespace EmpireAtWar.Components.Weapon
             WeaponHardPointView weapon = hardPoints[_currentWeaponIndex];
             if (!weapon.IsDestroyed && !weapon.IsBusy)
             {
-                QueueTargetSelection(weapon);
+                _attackCoordinator.QueueTargetSelection(this, weapon);
             }
 
             _currentWeaponIndex++;
@@ -182,7 +182,8 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        private void QueueTargetSelection(WeaponHardPointView weapon)
+        internal IReadOnlyList<TargetSelectionCandidate> CaptureTargetSelection(WeaponHardPointView weapon,
+            out int targetVersion, out Vector3 origin, out Quaternion parentRotation)
         {
             _targetPositions.Clear();
             _targetSelectionCandidates.Clear();
@@ -211,8 +212,10 @@ namespace EmpireAtWar.Components.Weapon
             if (removedInvalidCandidate) _targetVersion++;
 
             Transform weaponTransform = weapon.transform;
-            _attackCoordinator.QueueTargetSelection(this, weapon, _targetVersion, _targetSelectionCandidates,
-                weaponTransform.position, weaponTransform.parent == null ? Quaternion.identity : weaponTransform.parent.rotation);
+            targetVersion = _targetVersion;
+            origin = weaponTransform.position;
+            parentRotation = weaponTransform.parent == null ? Quaternion.identity : weaponTransform.parent.rotation;
+            return _targetSelectionCandidates;
         }
 
         private bool TryFireWeapon(WeaponHardPointView weapon)

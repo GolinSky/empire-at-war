@@ -21,17 +21,22 @@ namespace EmpireAtWar.Services.Timing
             float[] timestamps,
             long[] samples,
             long[] markerSampleCounts,
+            long[] workloadSamples,
             bool[] recorderAvailable,
             string[] metricNames,
             string[] markerNames,
+            string[] workloadNames,
             int firstMarkerMetric,
             BattlePerformanceCaptureMetadata metadata,
             long unavailable)
         {
             Directory.CreateDirectory(directory);
             string prefix = $"battle_{captureStartUtc:yyyyMMdd_HHmmss_fff}";
-            WriteCsv(Path.Combine(directory, $"{prefix}.csv"), frameCount, timestamps, samples, markerSampleCounts, metricNames, firstMarkerMetric, unavailable);
-            WriteSummary(Path.Combine(directory, $"{prefix}_summary.txt"), captureStartUtc, durationSeconds, stopReason, frameCount, samples, markerSampleCounts, recorderAvailable, metricNames, markerNames, firstMarkerMetric, metadata, unavailable);
+            WriteCsv(Path.Combine(directory, $"{prefix}.csv"), frameCount, timestamps, samples, markerSampleCounts,
+                workloadSamples, metricNames, workloadNames, firstMarkerMetric, unavailable);
+            WriteSummary(Path.Combine(directory, $"{prefix}_summary.txt"), captureStartUtc, durationSeconds, stopReason,
+                frameCount, samples, markerSampleCounts, workloadSamples, recorderAvailable, metricNames, markerNames,
+                workloadNames, firstMarkerMetric, metadata, unavailable);
         }
 
         private static void WriteCsv(
@@ -40,7 +45,9 @@ namespace EmpireAtWar.Services.Timing
             float[] timestamps,
             long[] samples,
             long[] markerSampleCounts,
+            long[] workloadSamples,
             string[] metricNames,
+            string[] workloadNames,
             int firstMarkerMetric,
             long unavailable)
         {
@@ -56,6 +63,12 @@ namespace EmpireAtWar.Services.Timing
                     writer.Write(metricNames[i].Replace("_ns", string.Empty));
                     writer.Write("_sample_count");
                 }
+            }
+
+            for (int i = 0; i < workloadNames.Length; i++)
+            {
+                writer.Write(',');
+                writer.Write(workloadNames[i]);
             }
 
             writer.WriteLine();
@@ -78,6 +91,13 @@ namespace EmpireAtWar.Services.Timing
                     }
                 }
 
+                int workloadOffset = frame * workloadNames.Length;
+                for (int workload = 0; workload < workloadNames.Length; workload++)
+                {
+                    writer.Write(',');
+                    writer.Write(workloadSamples[workloadOffset + workload].ToString(CultureInfo.InvariantCulture));
+                }
+
                 writer.WriteLine();
             }
         }
@@ -90,9 +110,11 @@ namespace EmpireAtWar.Services.Timing
             int frameCount,
             long[] samples,
             long[] markerSampleCounts,
+            long[] workloadSamples,
             bool[] recorderAvailable,
             string[] metricNames,
             string[] markerNames,
+            string[] workloadNames,
             int firstMarkerMetric,
             BattlePerformanceCaptureMetadata metadata,
             long unavailable)
@@ -101,6 +123,12 @@ namespace EmpireAtWar.Services.Timing
             report.AppendLine("Battle performance capture");
             report.AppendFormat(CultureInfo.InvariantCulture, "started_utc={0:O}\nframes={1}\nduration_seconds={2:F3}\nstop_reason={3}\n", captureStartUtc, frameCount, durationSeconds, stopReason);
             report.AppendFormat(CultureInfo.InvariantCulture, "unity={0}\nruntime={1}\nquality={2}\nresolution={3}\ntime_scale={4:F3}\nvsync_count={5}\ntarget_frame_rate={6}\ngraphics_device={7}\nprocessor={8}\n", metadata.UnityVersion, metadata.Runtime, metadata.Quality, metadata.Resolution, metadata.TimeScale, metadata.VSyncCount, metadata.TargetFrameRate, metadata.GraphicsDevice, metadata.Processor);
+            report.AppendFormat(CultureInfo.InvariantCulture,
+                "source_revision={0}\nsource_state={1}\nbuild_guid={2}\nscenario={3}\ntarget_variant=automatic\ntarget_job_threshold={4}\ntarget_job_batch_size={5}\ndue_variant=automatic\ndue_job_threshold={6}\ndue_job_batch_size={7}\n",
+                metadata.SourceRevision, metadata.SourceState, metadata.BuildGuid, metadata.Scenario,
+                metadata.TargetThreshold, metadata.TargetBatchSize, metadata.DueThreshold, metadata.DueBatchSize);
+            report.AppendLine("Job schedule and completion markers measure main-thread dispatch and wait; inspect CPU Timeline for worker execution.");
+            report.AppendLine("CSV rows sample the preceding completed Unity frame; completed_unity_frame identifies its combat workload.");
             report.AppendLine("cpu_main_thread and cpu_render_thread include waits. GPU values can arrive later than CPU values.");
             report.AppendLine("unavailable means the recorder or its sample was not collected; it is never a measured zero.");
             report.AppendLine("Editor Play Mode adds profiling and editor overhead. Repeat important captures in a Development Player before changing architecture.");
@@ -110,6 +138,12 @@ namespace EmpireAtWar.Services.Timing
             {
                 AppendMetricSummary(report, metric, frameCount, metricNames.Length, samples, markerSampleCounts, recorderAvailable[metric], metricNames[metric], firstMarkerMetric, unavailable);
             }
+
+            report.AppendFormat(CultureInfo.InvariantCulture, "{0} first={1} last={2}\n",
+                workloadNames[0], workloadSamples[0],
+                workloadSamples[(frameCount - 1) * workloadNames.Length]);
+            for (int workload = 1; workload < workloadNames.Length; workload++)
+                AppendWorkloadSummary(report, workload, frameCount, workloadNames, workloadSamples);
 
             AppendFramePacingSummary(report, frameCount, metricNames.Length, samples);
 
@@ -121,6 +155,22 @@ namespace EmpireAtWar.Services.Timing
             }
 
             File.WriteAllText(path, report.ToString(), Encoding.UTF8);
+        }
+
+        private static void AppendWorkloadSummary(StringBuilder report, int index, int frameCount,
+            string[] workloadNames, long[] workloadSamples)
+        {
+            long total = 0;
+            long maximum = 0;
+            for (int frame = 0; frame < frameCount; frame++)
+            {
+                long value = workloadSamples[frame * workloadNames.Length + index];
+                total += value;
+                if (value > maximum) maximum = value;
+            }
+
+            report.AppendFormat(CultureInfo.InvariantCulture, "{0} total={1} max={2}\n",
+                workloadNames[index], total, maximum);
         }
 
         private static void AppendMetricSummary(
