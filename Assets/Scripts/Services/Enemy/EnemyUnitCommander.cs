@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
@@ -155,6 +156,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             else
             {
+                _zoneExitTargets.Clear();
                 _taskForceExecutor.Execute(decision, context);
             }
             PublishDecision(decision);
@@ -162,26 +164,57 @@ namespace EmpireAtWar.Services.Enemy
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)
         {
+            List<IShipEntity> unassignedShips = new List<IShipEntity>();
+            List<FormationPoint> positions = new List<FormationPoint>();
+            List<float> radii = new List<float>();
+            float maximumRadius = 0f;
             foreach (IShipEntity ship in ships)
             {
+                if (_zoneExitTargets.TryGetValue(ship, out Vector3 target))
+                {
+                    ship.AssignMoveTarget(target);
+                    continue;
+                }
+
                 if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
                         PlayerType.Opponent,
                         ship.WorldPosition,
                         ship.NavigationRadius,
-                        out Vector3 exitPosition))
+                        out _))
                 {
                     _zoneExitTargets.Remove(ship);
                     ship.HoldPosition();
                     continue;
                 }
 
-                if (!_zoneExitTargets.TryGetValue(ship, out Vector3 target))
-                {
-                    target = exitPosition;
-                    _zoneExitTargets.Add(ship, target);
-                }
+                unassignedShips.Add(ship);
+                positions.Add(new FormationPoint(ship.WorldPosition.x, ship.WorldPosition.z));
+                radii.Add(ship.NavigationRadius);
+                maximumRadius = Mathf.Max(maximumRadius, ship.NavigationRadius);
+            }
 
-                ship.AssignMoveTarget(target);
+            if (unassignedShips.Count == 0)
+            {
+                return;
+            }
+
+            float formationClearance = maximumRadius *
+                (2f * Mathf.Ceil(Mathf.Sqrt(unassignedShips.Count)) + 1f);
+            if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
+                    PlayerType.Opponent, unassignedShips[0].WorldPosition,
+                    formationClearance, out Vector3 exitPosition))
+            {
+                throw new InvalidOperationException("An exiting fleet requires its default zone.");
+            }
+
+            List<FormationPoint> destinations = new List<FormationPoint>();
+            FormationModel.CalculateCompactDestinations(positions, radii,
+                new FormationPoint(exitPosition.x, exitPosition.z), destinations);
+            for (int i = 0; i < unassignedShips.Count; i++)
+            {
+                Vector3 target = new Vector3(destinations[i].X, 0f, destinations[i].Z);
+                _zoneExitTargets.Add(unassignedShips[i], target);
+                unassignedShips[i].AssignMoveTarget(target);
             }
         }
 

@@ -114,6 +114,66 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void ExecuteDefendBase_LeavesStationCenterClear()
+        {
+            FakeShip first = new FakeShip(Vector3.zero);
+            FakeShip second = new FakeShip(Vector3.zero);
+            GameObject stationView = new GameObject("Station");
+            stationView.transform.position = new Vector3(160f, 0f, -170f);
+            FakeEntity station = new FakeEntity(1, PlayerType.Opponent,
+                new FakeHealthModel(stationView.transform));
+            EnemyStrategicContext context = new EnemyStrategicContext(default,
+                new IShipEntity[] { first, second }, default, null, null, station);
+            try
+            {
+                new EnemyTaskForceExecutor().Execute(
+                    new EnemyStrategicDecision(EnemyStrategicState.DefendBase, 2, "test"), context);
+
+                Assert.That(Vector3.Distance(first.AssignedMoveTarget, stationView.transform.position),
+                    Is.GreaterThan(first.NavigationRadius));
+                Assert.That(Vector3.Distance(second.AssignedMoveTarget, stationView.transform.position),
+                    Is.GreaterThan(second.NavigationRadius));
+                Assert.That(Vector3.Distance(first.AssignedMoveTarget, second.AssignedMoveTarget),
+                    Is.GreaterThanOrEqualTo(first.NavigationRadius + second.NavigationRadius));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        [Test]
+        public void ExecuteHuntFleet_RemovedShip_DoesNotReassignSurvivorSlots()
+        {
+            FakeShip first = new FakeShip(Vector3.zero);
+            FakeShip second = new FakeShip(Vector3.zero);
+            FakeShip third = new FakeShip(Vector3.zero);
+            GameObject targetView = new GameObject("Target");
+            FakeEntity target = new FakeEntity(1, PlayerType.Player,
+                new FakeHealthModel(targetView.transform));
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor();
+            try
+            {
+                executor.Execute(new EnemyStrategicDecision(EnemyStrategicState.HuntFleet, 3, "test"),
+                    new EnemyStrategicContext(default, new IShipEntity[] { first, second, third },
+                        default, target, null, null));
+                Vector3 secondSlot = second.AssignedAttackOffset;
+                Vector3 thirdSlot = third.AssignedAttackOffset;
+
+                executor.Execute(new EnemyStrategicDecision(EnemyStrategicState.HuntFleet, 2, "test"),
+                    new EnemyStrategicContext(default, new IShipEntity[] { second, third },
+                        default, target, null, null));
+
+                Assert.That(second.AssignedAttackOffset, Is.EqualTo(secondSlot));
+                Assert.That(third.AssignedAttackOffset, Is.EqualTo(thirdSlot));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(targetView);
+            }
+        }
+
         private sealed class FakeGameModel : IGameModelObserver
         {
             public EmpireAtWar.Entities.Planet.PlanetType PlanetType => default;

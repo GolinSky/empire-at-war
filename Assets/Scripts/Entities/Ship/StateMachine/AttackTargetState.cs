@@ -24,10 +24,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 _pursuitDestination;
         private bool _hasPursuitDestination;
         private bool _wasMoving;
+        private bool _isClosingRange;
 
         private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
         private Vector3 MovementTargetPosition => TargetPosition +
-            Vector3.ClampMagnitude(_formationOffset, _weaponComponent.AttackDistance * 0.5f);
+            Vector3.ClampMagnitude(_formationOffset, _weaponComponent.AttackDistance * 0.8f);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             _weaponComponent.AttackDistance * 0.1f);
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new ArgumentNullException(nameof(mainTarget));
             }
 
-            bool targetChanged = !IsTheSameTarget(mainTarget);
+            bool targetChanged = !IsTheSameTarget(mainTarget, formationOffset);
             _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
             formationOffset.y = 0f;
@@ -61,6 +62,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (targetChanged)
             {
                 _hasPursuitDestination = false;
+                _isClosingRange = false;
             }
         }
 
@@ -119,10 +121,59 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _weaponComponent.ResetTarget();
             _hasPursuitDestination = false;
+            _isClosingRange = false;
+        }
+
+        private void UpdateFormationMove()
+        {
+            bool inRange = _weaponComponent.HasEnoughRange(
+                _shipMoveComponent.GetRange(TargetPosition));
+            if (_isClosingRange && inRange)
+            {
+                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                {
+                    _shipMoveComponent.Stop();
+                }
+
+                _shipMoveComponent.LookAtTarget(TargetPosition);
+                return;
+            }
+
+            Vector3 destination = _isClosingRange ? TargetPosition : MovementTargetPosition;
+            float updateDistance = PursuitDestinationUpdateDistance;
+            if (_hasPursuitDestination &&
+                (destination - _pursuitDestination).sqrMagnitude < updateDistance * updateDistance)
+            {
+                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                {
+                    return;
+                }
+
+                if (inRange)
+                {
+                    _shipMoveComponent.LookAtTarget(TargetPosition);
+                    return;
+                }
+
+                // A congested or map-clamped slot can be outside weapon range.
+                // Close the remaining distance through the same reservation allocator.
+                _isClosingRange = true;
+                destination = TargetPosition;
+            }
+
+            _pursuitDestination = destination;
+            _hasPursuitDestination = true;
+            _shipMoveComponent.MoveToPosition(destination, preserveCourse: true);
         }
 
         private void UpdateMoveState()
         {
+            if (_formationOffset.sqrMagnitude > Mathf.Epsilon)
+            {
+                UpdateFormationMove();
+                return;
+            }
+
             if (_wasMoving && !_shipMoveComponent.IsMoving)
             {
                 _hasPursuitDestination = false;

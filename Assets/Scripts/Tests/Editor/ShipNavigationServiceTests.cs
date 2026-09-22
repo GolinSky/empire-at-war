@@ -161,7 +161,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_KeepsDestinationOccupiedByShip()
+        public void Plan_SelectsClearDestinationWhenFinalPositionIsReserved()
         {
             FakeAgent ship = new FakeAgent(
                 Vector3.zero,
@@ -171,16 +171,52 @@ namespace EmpireAtWar.Tests.Movement
                 90f);
             ShipNavigationService service = CreateService();
             Vector3 destination = new Vector3(40f, 0f, 0f);
+            FakeAgent occupyingShip = new FakeAgent(
+                destination,
+                0f,
+                4f,
+                10f,
+                90f);
+            service.Register(occupyingShip, destination);
 
             ShipNavigationPlan plan = Plan(
                 service,
                 ship,
-                destination,
-                new[] { new RadarContact(destination, 10f, true) });
+                destination);
 
             Assert.That(plan.IsStationary, Is.False);
-            Assert.That(plan.Destination, Is.EqualTo(destination));
+            Assert.That(plan.Destination, Is.Not.EqualTo(destination));
             Assert.That(plan.Detour.HasValue, Is.False);
+        }
+
+        [Test]
+        public void TryResolveInitialFinalPosition_ShiftsOccupiedSpawnPosition()
+        {
+            ShipNavigationService service = CreateService();
+            FakeAgent occupyingShip = new FakeAgent(
+                Vector3.zero,
+                0f,
+                4f,
+                10f,
+                90f);
+            FakeAgent incomingShip = new FakeAgent(
+                Vector3.right * 80f,
+                0f,
+                4f,
+                10f,
+                90f);
+            service.Register(occupyingShip, Vector3.zero);
+
+            bool resolved = service.TryResolveInitialFinalPosition(
+                incomingShip,
+                Vector3.zero,
+                _mapRange,
+                0.5f,
+                out Vector3 position);
+
+            Assert.That(resolved, Is.True);
+            Assert.That(position, Is.Not.EqualTo(Vector3.zero));
+            Assert.DoesNotThrow(() => service.Register(incomingShip, position));
         }
 
         [Test]
@@ -201,6 +237,8 @@ namespace EmpireAtWar.Tests.Movement
             ShipNavigationService service = CreateService();
             Vector3 horizontalDestination = Vector3.right * 40f;
             Vector3 verticalDestination = Vector3.forward * 40f;
+            service.Register(horizontalShip, horizontalShip.NavigationPosition);
+            service.Register(verticalShip, verticalShip.NavigationPosition);
 
             ShipNavigationPlan horizontalPlan = service.Plan(
                 horizontalShip,
@@ -270,6 +308,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             FakeAgent ship = new FakeAgent(Vector3.zero, 0f, 5f, 10f, 30f);
             ShipNavigationService service = CreateService();
+            service.Register(ship, ship.NavigationPosition);
 
             ShipNavigationPlan plan = service.Plan(
                 ship,
@@ -307,6 +346,7 @@ namespace EmpireAtWar.Tests.Movement
                 false);
             ShipNavigationService service = CreateService(
                 new[] { obstacle });
+            service.Register(ship, ship.NavigationPosition);
 
             ShipNavigationPlan plan = service.Plan(
                 ship,
@@ -413,6 +453,55 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [Test]
+        public void RepeatedMoveDuringHyperspace_KeepsPendingReservation()
+        {
+            GameObject gameObject = new GameObject(nameof(RepeatedMoveDuringHyperspace_KeepsPendingReservation));
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(gameObject,
+                    out RecordingShipNavigationService navigationService);
+                SetPrivateField(component, "_isNavigationReady", false);
+                Vector3 destination = new Vector3(25f, 0f, 0f);
+                component.MoveToPosition(destination);
+                int cancellations = navigationService.PendingCancellationCount;
+
+                component.MoveToPosition(destination);
+
+                Assert.That(navigationService.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigationService.PendingCancellationCount, Is.EqualTo(cancellations));
+            }
+            finally
+            {
+                Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [Test]
+        public void StopDuringHyperspace_ClearsBlockedOrderAndPendingReservation()
+        {
+            GameObject gameObject = new GameObject(nameof(StopDuringHyperspace_ClearsBlockedOrderAndPendingReservation));
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(gameObject,
+                    out RecordingShipNavigationService navigationService);
+                SetPrivateField(component, "_isNavigationReady", false);
+                SetPrivateField(component, "_pendingTargetPosition", Vector3.right * 25f);
+                SetPrivateField(component, "_blockedTargetPosition", Vector3.right * 25f);
+
+                component.Stop();
+                component.HandleRadarContacts(System.Array.Empty<RadarContact>());
+
+                Assert.That(navigationService.PendingCancellationCount, Is.EqualTo(1));
+                Assert.That(navigationService.PlanCallCount, Is.Zero);
+                Assert.That(component.IsBlocked, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(gameObject);
+            }
+        }
+
         private static ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
@@ -428,6 +517,7 @@ namespace EmpireAtWar.Tests.Movement
             Vector3 destination,
             IReadOnlyList<RadarContact> contacts = null)
         {
+            service.Register(agent, agent.NavigationPosition);
             return service.Plan(
                 agent,
                 Vector3.right,
@@ -598,7 +688,51 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(RecordingShipNavigationService);
             public int PlanCallCount { get; private set; }
+            public int PendingCancellationCount { get; private set; }
             public Vector3 LastDestination { get; private set; }
+
+            public void Register(
+                IShipNavigationAgent agent,
+                Vector3 initialFinalPosition)
+            {
+            }
+
+            public void Unregister(IShipNavigationAgent agent)
+            {
+            }
+
+            public void Stop(IShipNavigationAgent agent)
+            {
+            }
+
+            public void CancelPendingDestination(IShipNavigationAgent agent)
+            {
+                PendingCancellationCount++;
+            }
+
+            public bool IsPositionClear(Vector3 position, float navigationRadius)
+            {
+                return true;
+            }
+
+            public bool IsPositionClear(
+                IShipNavigationAgent agent,
+                Vector3 position,
+                float navigationRadius)
+            {
+                return true;
+            }
+
+            public bool TryResolveInitialFinalPosition(
+                IShipNavigationAgent agent,
+                Vector3 requestedPosition,
+                Vector2Range mapRange,
+                float heightTolerance,
+                out Vector3 resolvedPosition)
+            {
+                resolvedPosition = requestedPosition;
+                return true;
+            }
 
             public ShipNavigationPlan Plan(
                 IShipNavigationAgent agent,
@@ -608,7 +742,8 @@ namespace EmpireAtWar.Tests.Movement
                 float heightTolerance,
                 float clearance,
                 Vector2Range mapRange,
-                bool preserveCourse = false)
+                bool preserveCourse = false,
+                bool reserveAsPending = false)
             {
                 PlanCallCount++;
                 LastDestination = requestedDestination;

@@ -87,12 +87,6 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 throw new ArgumentNullException(nameof(target));
             }
 
-            if (_assignedTarget != null && _assignedTarget.Id == target.Id)
-            {
-                Enable(true);
-                return;
-            }
-
             _assignedTarget = target;
             formationOffset.y = 0f;
             _attackFormationOffset = formationOffset;

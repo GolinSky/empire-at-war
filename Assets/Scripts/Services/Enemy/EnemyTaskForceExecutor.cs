@@ -16,6 +16,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<FormationPoint> _formationDestinations =
             new List<FormationPoint>();
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
+        private readonly Dictionary<IShipEntity, FormationPoint> _battleOffsets =
+            new Dictionary<IShipEntity, FormationPoint>();
+        private readonly List<IShipEntity> _battleShips = new List<IShipEntity>();
+        private GameEntity _battleTarget;
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
@@ -53,7 +57,8 @@ namespace EmpireAtWar.Services.Enemy
                     AssignFormationMove(
                         context.Ships,
                         decision.CommittedShipCount,
-                        context.OwnBase.HealthModel.Transform.position);
+                        context.OwnBase.HealthModel.Transform.position,
+                        context.OwnBase);
                     return;
                 case EnemyStrategicState.RebuildFleet:
                 case EnemyStrategicState.Hold:
@@ -67,16 +72,21 @@ namespace EmpireAtWar.Services.Enemy
         private void AssignFormationMove(
             IReadOnlyList<IShipEntity> ships,
             int committedShipCount,
-            Vector3 target)
+            Vector3 target,
+            GameEntity battleTarget = null)
         {
             int count = Math.Min(committedShipCount, ships.Count);
             FormationPoint targetCenter = new FormationPoint(target.x, target.z);
             BuildFormationInputs(ships, count);
-            FormationModel.CalculateCompactDestinations(
-                _formationPositions,
-                _formationRadii,
-                targetCenter,
-                _formationDestinations);
+            if (battleTarget != null)
+            {
+                CalculateBattleDestinations(ships, count, battleTarget, targetCenter);
+            }
+            else
+            {
+                FormationModel.CalculateCompactDestinations(
+                    _formationPositions, _formationRadii, targetCenter, _formationDestinations);
+            }
             for (int i = 0; i < ships.Count; i++)
             {
                 if (i >= count)
@@ -108,11 +118,7 @@ namespace EmpireAtWar.Services.Enemy
             FormationPoint targetCenter = new FormationPoint(
                 targetPosition.x,
                 targetPosition.z);
-            FormationModel.CalculateCompactDestinations(
-                _formationPositions,
-                _formationRadii,
-                targetCenter,
-                _formationDestinations);
+            CalculateBattleDestinations(ships, count, target, targetCenter);
             for (int i = 0; i < ships.Count; i++)
             {
                 if (i < count)
@@ -129,6 +135,52 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     ships[i].HoldPosition();
                 }
+            }
+        }
+
+        private void CalculateBattleDestinations(
+            IReadOnlyList<IShipEntity> ships,
+            int count,
+            GameEntity target,
+            FormationPoint center)
+        {
+            HashSet<IShipEntity> committed = new HashSet<IShipEntity>();
+            bool rebuild = _battleTarget != target;
+            for (int i = 0; i < count; i++)
+            {
+                committed.Add(ships[i]);
+                rebuild |= !_battleOffsets.ContainsKey(ships[i]);
+            }
+
+            if (rebuild)
+            {
+                _battleOffsets.Clear();
+                BattleFormationModel.CalculateDestinations(
+                    _formationPositions, _formationRadii, default, _formationDestinations);
+                for (int i = 0; i < count; i++)
+                {
+                    _battleOffsets.Add(ships[i], _formationDestinations[i]);
+                }
+            }
+            else
+            {
+                foreach (IShipEntity ship in _battleShips)
+                {
+                    if (!committed.Contains(ship))
+                    {
+                        _battleOffsets.Remove(ship);
+                    }
+                }
+            }
+
+            _battleTarget = target;
+            _battleShips.Clear();
+            _formationDestinations.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                _battleShips.Add(ships[i]);
+                FormationPoint offset = _battleOffsets[ships[i]];
+                _formationDestinations.Add(new FormationPoint(center.X + offset.X, center.Z + offset.Z));
             }
         }
 
