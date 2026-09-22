@@ -8,12 +8,11 @@ Apply project guidance in this order:
 
 1. The active user request and system/developer instructions.
 2. `AGENTS.md` for repository-wide policy and routing.
-3. `.codex/agents/*.toml` for one custom role's operating boundary.
-4. Live source, serialized assets, and current tool output.
-5. Advisory vault notes and generated local artifacts.
+3. Live source, serialized assets, and current tool output.
+4. Advisory vault notes and generated local artifacts.
 
 - `.codex/config.toml` is the canonical Codex MCP and multi-agent defaults file.
-- `.codex/agents/` owns role-specific model, sandbox, and operating restrictions.
+- `.codex/agents-disabled/` stores inactive project-specific subagent roles. Built-in generic agents remain available.
 - `.agents/mcp_config.json`, `.antigravity/mcp_config.json`, and `.gemini/mcp_config.json` mirror local MCP access for their respective agents.
 - `graphify-out/` is generated local state and is never authoritative documentation.
 
@@ -34,23 +33,14 @@ Apply project guidance in this order:
 - Serena MCP is configured only for this repository in `.codex/config.toml`. Never install or register Serena in user/global Codex configuration.
 - Use Serena for live C# symbol work: symbol/file overviews, definitions, callers and references, implementations, diagnostics, symbol-aware renames, and surgical symbol-body edits.
 - Use built-in search/read/patch tools for non-code files, exact text searches, and small line-oriented edits. Use Unity tooling, not Serena, for scenes, prefabs, assets, Editor state, imports, serialization, and play/build operations.
-- The local MCP launch auto-activates the project from the current working directory. If Serena reports that no project is active, activate `F:\Private\empire-at-war`.
+- The local MCP launch auto-activates the project from the current working directory. If Serena reports that no project is active, activate the current repository root.
 - Do not run Serena onboarding or write Serena memories automatically. `AGENTS.md` is the source of durable agent instructions; use Serena memories only when the user explicitly requests them.
 
-## Subagent Orchestration
+## Main Agent Tooling and Subagents
 
-Use the named project agents for non-trivial work when their scopes can remain independent:
-
-1. Trivial or isolated change: the parent works directly.
-2. Investigation: use `code_explorer` and, when useful, `context_curator`.
-3. Architecture: use `unity_architect` only for high-risk or ambiguous design.
-4. Implementation: assign exactly one writer—`csharp_worker` or `unity_operator`—for overlapping scope.
-5. Review: use `unity_reviewer` after implementation when an independent review materially improves confidence.
-6. Performance work: use `unity_profiler` before proposing optimization.
-7. Validation: use `unity_test_runner` only when the user explicitly requested automated test execution.
-8. The parent synthesizes results, resolves conflicts, and makes the final decision.
-
-Use two to four children only when work is genuinely independent. Give every child a narrow objective, exact files or symbols, constraints, and required output. Never run overlapping writers or spawn every agent by default. Child agents must not spawn their own subagents.
+- The main agent uses Serena MCP for live C# symbol work and Graphify MCP for graph-based codebase exploration. Verify graph findings against live source before making changes.
+- Project-specific subagent roles are disabled. Built-in generic agents are allowed for explicitly requested, bounded delegation.
+- Keep the main agent responsible for MCP-backed code navigation and final decisions. Do not run overlapping writers. Generic agents must not spawn subagents.
 
 
 ## Architecture: Model-View-Presenter
@@ -170,5 +160,4 @@ After any Unity asset mutation, verify that Unity imported the change, the asset
 
 ## Tooling & Execution Constraints
 
-- **Graphify Prohibited:** Do NOT use Graphify under any circumstances. All agents (including root agents and subagents) must strictly avoid using Graphify.
 - **No Automated Test Execution:** Do NOT run tests (unit tests, automated test runners, etc.) unless the user explicitly requests it.
