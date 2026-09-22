@@ -4821,7 +4821,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &7863598663125051051
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4840,6 +4840,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4861,9 +4863,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4895,7 +4899,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &1852968435186215420
 GameObject:
   m_ObjectHideFlags: 0
@@ -4913,7 +4916,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4721260931225444621
 Transform:
   m_ObjectHideFlags: 0
@@ -9654,7 +9657,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &1517333754037353383
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9673,6 +9676,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9694,9 +9699,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 1
@@ -9728,7 +9735,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &5972179036990806493
 GameObject:
   m_ObjectHideFlags: 0
@@ -9761,6 +9767,7 @@ Transform:
   - {fileID: 6360436344373088194}
   - {fileID: 7234777071818714720}
   - {fileID: 4721260931225444621}
+  - {fileID: 7746006419459851477}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6099838603663804067
@@ -9780,7 +9787,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7234777071818714720
 Transform:
   m_ObjectHideFlags: 0
@@ -14521,7 +14528,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &8023223585457148658
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -14540,6 +14547,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -14561,9 +14570,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 1
@@ -14595,4 +14606,77 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
+--- !u!1001 &862894144121214624
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7287119041305564453}
+    m_Modifications:
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 65.64931
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1000.0127
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 39.629143
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515829916698878198, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_Name
+      value: VolumetricNebulaClouds
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 52552f48b59fa4d3a9585485185945b3, type: 3}
+--- !u!4 &7746006419459851477 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6955469233699476085, guid: 52552f48b59fa4d3a9585485185945b3,
+    type: 3}
+  m_PrefabInstance: {fileID: 862894144121214624}
+  m_PrefabAsset: {fileID: 0}
