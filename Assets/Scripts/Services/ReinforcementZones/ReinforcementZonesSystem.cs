@@ -41,7 +41,13 @@ namespace EmpireAtWar.Services.ReinforcementZones
     {
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
+        private const int MAX_LAYOUT_ATTEMPTS = 72;
+        private const float ZONE_CLEARANCE = 30f;
+        private const float CAPTURABLE_ZONE_SPACING = 150f;
 
+        // XZ footprint radii about each station's pivot, including its model offset.
+        [SerializeField, Min(0f)] private float republicStationRadius = 135f;
+        [SerializeField, Min(0f)] private float separatistStationRadius = 90f;
         [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
         [SerializeField] private ReinforcementZoneView[] _zoneViews = Array.Empty<ReinforcementZoneView>();
 
@@ -89,26 +95,15 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void Initialize()
         {
             _zones.Clear();
+            ArrangeZones();
             foreach (ReinforcementZoneView view in _zoneViews)
             {
-                if (view == null)
-                {
-                    Debug.LogError("ReinforcementZonesSystem has an unassigned zone view.", this);
-                    continue;
-                }
-
-                AlignDefaultZoneWithOwningStation(view);
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
                     view.StartingOwner,
                     view.IsCapturable,
                     view.CaptureDuration,
                     _data.CaptureSpeedPerNetShip);
                 _zones.Add(new ReinforcementZonePresenter(model, view));
-            }
-
-            if (_zones.Count == 0)
-            {
-                Debug.LogError("ReinforcementZonesSystem requires at least one explicitly assigned zone view.", this);
             }
         }
 
@@ -376,37 +371,165 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return navigationRadius;
         }
 
-        private void AlignDefaultZoneWithOwningStation(ReinforcementZoneView view)
+        private void ArrangeZones()
         {
-            if (view.IsCapturable)
+            if (_zoneViews.Length == 0)
+            {
+                throw new InvalidOperationException("ReinforcementZonesSystem requires assigned zone views.");
+            }
+
+            List<ReinforcementZoneView> placed = new List<ReinforcementZoneView>();
+            List<ReinforcementZoneView> capturable = new List<ReinforcementZoneView>();
+            Vector2 mapCenter = (_mapModel.SizeRange.Min + _mapModel.SizeRange.Max) * 0.5f;
+            float largestRadius = 0f;
+            foreach (ReinforcementZoneView view in _zoneViews)
+            {
+                if (view == null)
+                {
+                    throw new InvalidOperationException("ReinforcementZonesSystem has an unassigned zone view.");
+                }
+
+                if (view.IsCapturable)
+                {
+                    capturable.Add(view);
+                    largestRadius = Mathf.Max(largestRadius, view.Radius);
+                    continue;
+                }
+
+                FactionType faction = view.StartingOwner switch
+                {
+                    PlayerType.Player => _playerFactionType,
+                    PlayerType.Opponent => _opponentFactionType,
+                    _ => throw new InvalidOperationException(
+                        "A non-capturable reinforcement zone must belong to the player or opponent.")
+                };
+                Vector3 station = _mapModel.GetStationPosition(faction);
+                float stationRadius = faction == FactionType.Republic
+                    ? republicStationRadius
+                    : separatistStationRadius;
+                float side = station.x < mapCenter.x ? 1f : -1f;
+                Vector3 center = new Vector3(
+                    station.x + side * (stationRadius + view.Radius + ZONE_CLEARANCE),
+                    view.Center.y,
+                    station.z);
+                if (!IsZonePositionClear(center, view.Radius, placed))
+                {
+                    throw new InvalidOperationException(
+                        $"No room beside the {faction} station for its default reinforcement zone.");
+                }
+
+                view.SetCenter(center);
+                placed.Add(view);
+            }
+
+            if (capturable.Count == 0)
             {
                 return;
             }
 
-            FactionType factionType = view.StartingOwner switch
+            ReinforcementZoneView centralZone = capturable[0];
+            Vector3 centralPosition = new Vector3(mapCenter.x, centralZone.Center.y, mapCenter.y);
+            if (!IsZonePositionClear(centralPosition, largestRadius, placed))
             {
-                PlayerType.Player => _playerFactionType,
-                PlayerType.Opponent => _opponentFactionType,
-                _ => throw new InvalidOperationException(
-                    "A non-capturable reinforcement zone must belong to the player or opponent.")
-            };
-
-            Vector3 center = _mapModel.GetStationPosition(factionType);
-            if (factionType == FactionType.Separatist)
-            {
-                Vector3 direction = _mapModel.GetStationPosition(FactionType.Republic) - center;
-                direction.y = 0f;
-                center += direction.normalized * (view.Radius * 2f + _spawnEdgePadding);
-                center.x = Mathf.Clamp(center.x,
-                    _mapModel.SizeRange.Min.x + view.Radius,
-                    _mapModel.SizeRange.Max.x - view.Radius);
-                center.z = Mathf.Clamp(center.z,
-                    _mapModel.SizeRange.Min.y + view.Radius,
-                    _mapModel.SizeRange.Max.y - view.Radius);
+                throw new InvalidOperationException("The map center must have room for a capturable zone.");
             }
 
-            center.y = view.Center.y;
-            view.SetCenter(center);
+            centralZone.SetCenter(centralPosition);
+            placed.Add(centralZone);
+            if (capturable.Count == 1)
+            {
+                return;
+            }
+
+            float spacing = Mathf.Max(CAPTURABLE_ZONE_SPACING, largestRadius * 2f + ZONE_CLEARANCE);
+            Vector2 mapSize = _mapModel.SizeRange.Max - _mapModel.SizeRange.Min;
+            int extent = Mathf.CeilToInt(Mathf.Max(mapSize.x, mapSize.y) / spacing);
+            List<Vector3> candidates = new List<Vector3>();
+            for (int attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt++)
+            {
+                candidates.Clear();
+                float angle = Random.Range(0f, Mathf.PI * 2f);
+                float cosine = Mathf.Cos(angle);
+                float sine = Mathf.Sin(angle);
+                // A randomly rotated triangular grid keeps uniform neighbor spacing,
+                // with the origin reserved for the central capture zone.
+                for (int row = -extent; row <= extent; row++)
+                {
+                    for (int column = -extent; column <= extent; column++)
+                    {
+                        if (row == 0 && column == 0)
+                        {
+                            continue;
+                        }
+
+                        float x = (column + row * 0.5f) * spacing;
+                        float z = row * Mathf.Sqrt(3f) * 0.5f * spacing;
+                        Vector3 candidate = new Vector3(
+                            mapCenter.x + x * cosine - z * sine,
+                            0f,
+                            mapCenter.y + x * sine + z * cosine);
+                        if (IsZonePositionClear(candidate, largestRadius, placed))
+                        {
+                            candidates.Add(candidate);
+                        }
+                    }
+                }
+
+                if (candidates.Count < capturable.Count - 1)
+                {
+                    continue;
+                }
+
+                candidates.Sort((a, b) =>
+                    (a - centralPosition).sqrMagnitude.CompareTo((b - centralPosition).sqrMagnitude));
+                for (int i = 1; i < capturable.Count; i++)
+                {
+                    Vector3 position = candidates[i - 1];
+                    position.y = capturable[i].Center.y;
+                    capturable[i].SetCenter(position);
+                }
+
+                return;
+            }
+
+            throw new InvalidOperationException(
+                "The map cannot fit its capturable zones at the required uniform spacing.");
+        }
+
+        private bool IsZonePositionClear(
+            Vector3 center, float radius, IReadOnlyList<ReinforcementZoneView> placed)
+        {
+            if (center.x - radius < _mapModel.SizeRange.Min.x ||
+                center.x + radius > _mapModel.SizeRange.Max.x ||
+                center.z - radius < _mapModel.SizeRange.Min.y ||
+                center.z + radius > _mapModel.SizeRange.Max.y)
+            {
+                return false;
+            }
+
+            Vector3 republic = _mapModel.GetStationPosition(FactionType.Republic);
+            Vector3 separatist = _mapModel.GetStationPosition(FactionType.Separatist);
+            float republicClearance = radius + republicStationRadius + ZONE_CLEARANCE;
+            float separatistClearance = radius + separatistStationRadius + ZONE_CLEARANCE;
+            if (new Vector2(center.x - republic.x, center.z - republic.z).sqrMagnitude <
+                    republicClearance * republicClearance ||
+                new Vector2(center.x - separatist.x, center.z - separatist.z).sqrMagnitude <
+                    separatistClearance * separatistClearance)
+            {
+                return false;
+            }
+
+            foreach (ReinforcementZoneView other in placed)
+            {
+                float clearance = radius + other.Radius + ZONE_CLEARANCE;
+                if (new Vector2(center.x - other.Center.x, center.z - other.Center.z).sqrMagnitude <
+                    clearance * clearance)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
