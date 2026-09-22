@@ -19,8 +19,10 @@ namespace EmpireAtWar.Tests.Editor
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
 
-        [Test]
-        public void Initialize_DifferentSelectedFactions_SeparatesSeparatistZoneFromStation()
+        [TestCase(FactionType.Republic, FactionType.Separatist)]
+        [TestCase(FactionType.Separatist, FactionType.Republic)]
+        public void Initialize_DifferentSelectedFactions_KeepsDefaultZonesClear(
+            FactionType playerFaction, FactionType opponentFaction)
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
@@ -44,26 +46,47 @@ namespace EmpireAtWar.Tests.Editor
                     PlayerType.None,
                     true,
                     new Vector3(25f, 0f, 35f));
+                ReinforcementZoneView randomZone = CreateZone(
+                    root.transform,
+                    PlayerType.None,
+                    true,
+                    new Vector3(-65f, 0f, 45f));
                 ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
 
-                SetField(system, "_zoneViews", new[] { playerZone, opponentZone, capturableZone });
+                SetField(system, "_zoneViews", new[] { randomZone, playerZone, opponentZone, capturableZone });
                 SetField(system, "_data", data);
                 SetField(
                     system,
                     "_mapModel",
                     new FakeMapModel(republicStation, separatistStation));
-                SetField(system, "_playerFactionType", FactionType.Separatist);
-                SetField(system, "_opponentFactionType", FactionType.Republic);
+                SetField(system, "_playerFactionType", playerFaction);
+                SetField(system, "_opponentFactionType", opponentFaction);
 
                 system.Initialize();
 
-                Vector3 stationOnMap = new Vector3(160f, 0f, -170f);
-                Assert.That(Vector3.Distance(playerZone.Center, stationOnMap),
-                    Is.GreaterThan(playerZone.Radius * 2f));
-                Assert.That(playerZone.Center.x, Is.LessThan(stationOnMap.x));
-                Assert.That(playerZone.Center.z, Is.GreaterThan(stationOnMap.z));
-                Assert.That(opponentZone.Center, Is.EqualTo(new Vector3(-180f, 0f, 170f)));
-                Assert.That(capturableZone.Center, Is.EqualTo(new Vector3(25f, 0f, 35f)));
+                foreach (ReinforcementZoneView zone in new[] { playerZone, opponentZone })
+                {
+                    FactionType faction = zone == playerZone ? playerFaction : opponentFaction;
+                    Vector3 station = faction == FactionType.Republic ? republicStation : separatistStation;
+                    station.y = zone.Center.y;
+                    float stationRadius = faction == FactionType.Republic ? 135f : 90f;
+                    Assert.That(Vector3.Distance(zone.Center, station),
+                        Is.EqualTo(stationRadius + zone.Radius + 30f).Within(0.01f));
+                    Assert.That(zone.Center.z, Is.EqualTo(station.z));
+                    Assert.That(Mathf.Sign(zone.Center.x - station.x),
+                        Is.EqualTo(station.x < 0f ? 1f : -1f));
+                    Assert.That(Vector3.Distance(zone.Center, capturableZone.Center),
+                        Is.GreaterThanOrEqualTo(zone.Radius + capturableZone.Radius + 30f));
+                    Assert.That(Vector3.Distance(zone.Center, randomZone.Center),
+                        Is.GreaterThanOrEqualTo(zone.Radius + randomZone.Radius + 30f));
+                    Assert.That(Mathf.Abs(zone.Center.x) + zone.Radius, Is.LessThanOrEqualTo(250f));
+                    Assert.That(Mathf.Abs(zone.Center.z) + zone.Radius, Is.LessThanOrEqualTo(250f));
+                }
+                Assert.That(Vector3.Distance(playerZone.Center, opponentZone.Center),
+                    Is.GreaterThanOrEqualTo(playerZone.Radius + opponentZone.Radius + 30f));
+                Assert.That(randomZone.Center, Is.EqualTo(Vector3.zero));
+                Assert.That(Vector3.Distance(capturableZone.Center, randomZone.Center),
+                    Is.EqualTo(150f).Within(0.01f));
             }
             finally
             {
@@ -101,17 +124,18 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                Vector3 capturedPosition = new Vector3(55f, 0f, -55f);
+                ReinforcementZoneView captured = CreateZone(
+                    root.transform, PlayerType.Opponent, true, new Vector3(55f, 0f, -55f));
                 ReinforcementZonesSystem system = CreateSystem(root, data,
                     CreateZone(root.transform, PlayerType.Opponent, false, Vector3.zero),
-                    CreateZone(root.transform, PlayerType.Opponent, true, capturedPosition),
+                    captured,
                     CreateZone(root.transform, PlayerType.Player, true, Vector3.left * 80f),
                     CreateZone(root.transform, PlayerType.None, true, Vector3.right * 80f));
                 List<Vector3> centers = new List<Vector3> { Vector3.one };
 
                 system.CopyOwnedCapturableZoneCenters(PlayerType.Opponent, centers);
 
-                Assert.That(centers, Is.EqualTo(new[] { capturedPosition }));
+                Assert.That(centers, Is.EqualTo(new[] { captured.Center }));
             }
             finally
             {

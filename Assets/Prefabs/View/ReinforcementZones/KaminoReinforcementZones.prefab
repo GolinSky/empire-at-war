@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d007328b9f42124c80cc52a55266491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ReinforcementZones.ReinforcementZonesSystem
+  republicStationRadius: 135
+  separatistStationRadius: 90
   _spawnEdgePadding: 3
   _zoneViews:
   - {fileID: 2224506878029224135}
@@ -65,7 +67,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 160
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
@@ -161,7 +163,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 55
+      value: 124.10675
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
@@ -171,7 +173,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -55
+      value: 84.24674
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
@@ -247,7 +249,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -65
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
@@ -257,7 +259,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
@@ -333,7 +335,7 @@ PrefabInstance:
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -180
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,
         type: 3}

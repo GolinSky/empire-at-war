@@ -27,10 +27,10 @@ namespace EmpireAtWar.Views.ReinforcementZones
         [SerializeField] private Canvas _captureCanvas;
         [SerializeField] private Image _captureProgress;
         [SerializeField] private TMP_Text _statusText;
-        [SerializeField] private Color _neutralColor = new Color(0.7f, 0.7f, 0.7f, 0.25f);
-        [SerializeField] private Color _playerColor = new Color(0.15f, 0.65f, 1f, 0.3f);
-        [SerializeField] private Color _opponentColor = new Color(1f, 0.2f, 0.15f, 0.3f);
-        [SerializeField] private Color _contestedColor = new Color(1f, 0.75f, 0.1f, 0.4f);
+        [SerializeField] private Color _neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
+        [SerializeField] private Color _playerColor = new Color(0.22f, 0.74f, 0.97f, 0.1f);
+        [SerializeField] private Color _opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.1f);
+        [SerializeField] private Color _contestedColor = new Color(1f, 0.75f, 0.1f, 0.14f);
 
         private MaterialPropertyBlock _propertyBlock;
 
@@ -73,8 +73,13 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
             if (_captureProgress != null)
             {
-                _captureProgress.fillAmount = Mathf.Clamp01(captureProgress);
-                Color progressColor = GetColor(capturingPlayer, isContested);
+                float displayedProgress = capturingPlayer == PlayerType.None && owner != PlayerType.None
+                    ? 1f
+                    : Mathf.Clamp01(captureProgress);
+                // Sprite-free Images display progress through their rect width.
+                _captureProgress.rectTransform.anchorMax = new Vector2(displayedProgress, 1f);
+                Color progressColor = GetColor(
+                    capturingPlayer == PlayerType.None ? owner : capturingPlayer, isContested);
                 progressColor.a = 0.95f;
                 _captureProgress.color = progressColor;
             }
@@ -130,15 +135,15 @@ namespace EmpireAtWar.Views.ReinforcementZones
             {
                 int percent = Mathf.RoundToInt(Mathf.Clamp01(captureProgress) * 100f);
                 return capturingPlayer == PlayerType.Player
-                    ? $"PLAYER CAPTURING {percent}%"
-                    : $"ENEMY CAPTURING {percent}%";
+                    ? $"CAPTURING {percent}%"
+                    : $"ENEMY CAPTURE {percent}%";
             }
 
             return owner switch
             {
-                PlayerType.Player => "PLAYER ZONE",
-                PlayerType.Opponent => "ENEMY ZONE",
-                _ => "NEUTRAL ZONE"
+                PlayerType.Player => "ALLIED CONTROL",
+                PlayerType.Opponent => "ENEMY CONTROL",
+                _ => "AWAITING CAPTURE"
             };
         }
     }
