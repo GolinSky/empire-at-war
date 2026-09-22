@@ -1,44 +1,38 @@
 using System;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Views.Game;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public sealed class EndGamePresenter : IDisposable
+    public sealed class EndGamePresenter : IObserver<BattleResult>, IDisposable
     {
-        private readonly IBattleVictoryService _battleVictoryService;
+        private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IEndGameView _view;
         private readonly Action _returnToMenu;
         private bool _isLeaving;
 
         public EndGamePresenter(
-            IBattleVictoryService battleVictoryService,
+            INotifier<BattleResult> battleVictoryNotifier,
             IEndGameView view,
             Action returnToMenu)
         {
-            _battleVictoryService = battleVictoryService ?? throw new ArgumentNullException(nameof(battleVictoryService));
-            _view = view ?? throw new ArgumentNullException(nameof(view));
-            _returnToMenu = returnToMenu ?? throw new ArgumentNullException(nameof(returnToMenu));
+            _battleVictoryNotifier = battleVictoryNotifier;
+            _view = view;
+            _returnToMenu = returnToMenu;
             _view.Hide();
             _view.ReturnToMenuRequested += ReturnToMenu;
-            _battleVictoryService.OutcomeChanged += ShowResult;
-
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
-            {
-                ShowResult(_battleVictoryService.CurrentOutcome);
-            }
+            _battleVictoryNotifier.AddObserver(this);
         }
 
         public void Dispose()
         {
             _view.ReturnToMenuRequested -= ReturnToMenu;
-            _battleVictoryService.OutcomeChanged -= ShowResult;
+            _battleVictoryNotifier.RemoveObserver(this);
         }
 
-        private void ShowResult(BattleOutcome outcome)
+        public void UpdateState(BattleResult result)
         {
-            _view.ShowResult(_battleVictoryService.FinalResult);
+            _view.ShowResult(result);
         }
 
         private void ReturnToMenu()

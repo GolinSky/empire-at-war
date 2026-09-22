@@ -4,7 +4,6 @@ using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -15,24 +14,25 @@ namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
     
-    public class MenuController : Controller<MenuData>, IPauseMenuPresenter, IUserStateNotifier, IInitializable, ILateDisposable
+    public class MenuController : Controller<MenuData>, IPauseMenuPresenter, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
-        private readonly IBattleVictoryService _battleVictoryService;
+        private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IInputService _inputService;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
         private bool _isMenuOpen;
+        private bool _hasBattleEnded;
 
         public MenuController(
             MenuData model,
             IUiService uiService,
             IInputService inputService,
-            IBattleVictoryService battleVictoryService) : base(model)
+            INotifier<BattleResult> battleVictoryNotifier) : base(model)
         {
             _uiService = uiService;
             _inputService = inputService;
-            _battleVictoryService = battleVictoryService;
+            _battleVictoryNotifier = battleVictoryNotifier;
         }
         
         public void Initialize()
@@ -45,11 +45,13 @@ namespace EmpireAtWar.Controllers.Menu
             _ui.Initialize();
             _ui.SetMenuVisible(false);
             _inputService.OnEscapePressed += ToggleMenu;
+            _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
             _inputService.OnEscapePressed -= ToggleMenu;
+            _battleVictoryNotifier.RemoveObserver(this);
             if (_ui != null)
             {
                 _ui.Dispose();
@@ -80,7 +82,7 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void SetMenuOpen(bool isOpen)
         {
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            if (_hasBattleEnded)
             {
                 return;
             }
@@ -90,6 +92,11 @@ namespace EmpireAtWar.Controllers.Menu
             UpdateState(isOpen
                 ? UserNotifierState.InMenu
                 : UserNotifierState.InGame);
+        }
+
+        public void UpdateState(BattleResult result)
+        {
+            _hasBattleEnded = true;
         }
 
         private void UpdateState(UserNotifierState state)
