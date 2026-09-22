@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -24,11 +25,10 @@ namespace EmpireAtWar.Services.Reinforcement
     public interface IReinforcementService
     {
         void TrySpawnReinforcement(string id);
-        void CancelPlacement();
     }
 
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
-        ILateDisposable, IReinforcementChain
+        ILateDisposable, IReinforcementChain, IObserver<BattleResult>
     {
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
         private readonly IEntityLocator _entityLocator;
+        private readonly INotifier<BattleResult> _battleVictoryNotifier;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -48,6 +49,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private SpawnType _currentSpawnType;
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
+        private bool _hasBattleEnded;
 
         public ReinforcementService(
             ReinforcementModel model,
@@ -60,7 +62,8 @@ namespace EmpireAtWar.Services.Reinforcement
             IReinforcementZonesSystem reinforcementZonesSystem,
             FogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
-            IEntityLocator entityLocator)
+            IEntityLocator entityLocator,
+            INotifier<BattleResult> battleVictoryNotifier)
         {
             _model = model;
             _data = data;
@@ -73,19 +76,29 @@ namespace EmpireAtWar.Services.Reinforcement
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
             _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
+            _battleVictoryNotifier = battleVictoryNotifier;
         }
 
         public void Initialize()
         {
             _inputService.OnEndDrag += Interrupt;
+            _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
             _inputService.OnEndDrag -= Interrupt;
+            _battleVictoryNotifier.RemoveObserver(this);
         }
 
-        public void CancelPlacement()
+        public void UpdateState(BattleResult result)
+        {
+            _hasBattleEnded = true;
+            CancelPlacement();
+            _inputService.Block(true);
+        }
+
+        private void CancelPlacement()
         {
             if (!_model.IsTrySpawning)
             {
@@ -187,7 +200,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(string id)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            if (_hasBattleEnded || !_entityLocator.IsStationOperational(PlayerType.Player))
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;

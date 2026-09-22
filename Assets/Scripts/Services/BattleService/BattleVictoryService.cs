@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
@@ -11,19 +11,14 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public interface IBattleVictoryService : IService
-    {
-        event Action<BattleOutcome> OutcomeChanged;
-        BattleOutcome CurrentOutcome { get; }
-        BattleResult FinalResult { get; }
-    }
-
-    public sealed class BattleVictoryService : IBattleVictoryService, ITickable
+    public sealed class BattleVictoryService : IService, INotifier<BattleResult>, ITickable
     {
         private readonly IGameModelObserver _gameModel;
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
         private readonly BattleVictoryModel _victoryModel;
+        private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
+        private BattleResult _finalResult;
 
         public BattleVictoryService(
             IGameModelObserver gameModel,
@@ -31,21 +26,36 @@ namespace EmpireAtWar.Services.Battle
             IEntityLocator entityLocator,
             BattleVictoryModel victoryModel)
         {
-            _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
-            _shipService = shipService ?? throw new ArgumentNullException(nameof(shipService));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
-            _victoryModel = victoryModel ?? throw new ArgumentNullException(nameof(victoryModel));
+            _gameModel = gameModel;
+            _shipService = shipService;
+            _entityLocator = entityLocator;
+            _victoryModel = victoryModel;
         }
 
-        public event Action<BattleOutcome> OutcomeChanged;
-
         public string Id => nameof(BattleVictoryService);
-        public BattleOutcome CurrentOutcome { get; private set; }
-        public BattleResult FinalResult { get; private set; }
+
+        public void AddObserver(IObserver<BattleResult> observer)
+        {
+            if (_observers.Contains(observer))
+            {
+                return;
+            }
+
+            _observers.Add(observer);
+            if (_finalResult != null)
+            {
+                observer.UpdateState(_finalResult);
+            }
+        }
+
+        public void RemoveObserver(IObserver<BattleResult> observer)
+        {
+            _observers.Remove(observer);
+        }
 
         public void Tick()
         {
-            if (CurrentOutcome != BattleOutcome.None)
+            if (_finalResult != null)
             {
                 return;
             }
@@ -95,7 +105,7 @@ namespace EmpireAtWar.Services.Battle
                 return;
             }
 
-            FinalResult = new BattleResult(
+            _finalResult = new BattleResult(
                 outcome,
                 _gameModel.VictoryCondition,
                 _gameModel.PlanetType,
@@ -105,9 +115,11 @@ namespace EmpireAtWar.Services.Battle
                 enemyShipCount,
                 isPlayerBaseAlive,
                 isEnemyBaseAlive);
-            CurrentOutcome = outcome;
             Debug.Log($"[Battle] Outcome={outcome}, VictoryCondition={_gameModel.VictoryCondition}");
-            OutcomeChanged?.Invoke(outcome);
+            foreach (IObserver<BattleResult> observer in _observers)
+            {
+                observer.UpdateState(_finalResult);
+            }
         }
     }
 }

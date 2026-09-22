@@ -12,8 +12,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.Reinforcement;
-using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views.Game;
@@ -23,7 +21,7 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Game
 {
     public class SkirmishOrhestrator : Controller<CoreGameData>, ICoreGameCommand,
-        IObserver<UserNotifierState>, IObserver<ISelectionSubject>, IInitializable, ILateDisposable,
+        IObserver<UserNotifierState>, IObserver<ISelectionSubject>, IObserver<BattleResult>, IInitializable, ILateDisposable,
         ISkirmishRouteNavigation
     {
         private const float SPEED_UP_TIME_SCALE = 4f;
@@ -35,10 +33,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IUiService _uiService;
         private readonly ICameraService _cameraService;
         private readonly IMapModelObserver _mapModel;
-        private readonly IBattleVictoryService _battleVictoryService;
-        private readonly InputServiceImpl _inputService;
-        // PlayerContext installs after the scene's dependency roots are constructed.
-        private readonly LazyInject<IReinforcementService> _reinforcementService;
+        private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly FactionType _playerFactionType;
         private readonly ISelectionService _selectionService;
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes =
@@ -50,6 +45,7 @@ namespace EmpireAtWar.Controllers.Game
         private GameTimeMode _gameTimeMode;
         private EndGamePresenter _endGamePresenter;
         private ISelectionContext _lastSelectionContext;
+        private bool _hasBattleEnded;
 
         public SkirmishOrhestrator(
             CoreGameData model,
@@ -58,9 +54,7 @@ namespace EmpireAtWar.Controllers.Game
             IUiService uiService,
             ICameraService cameraService,
             IMapModelObserver mapModel,
-            IBattleVictoryService battleVictoryService,
-            InputServiceImpl inputService,
-            LazyInject<IReinforcementService> reinforcementService,
+            INotifier<BattleResult> battleVictoryNotifier,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             ISelectionService selectionService) : base(model)
         {
@@ -69,9 +63,7 @@ namespace EmpireAtWar.Controllers.Game
             _uiService = uiService;
             _cameraService = cameraService;
             _mapModel = mapModel;
-            _battleVictoryService = battleVictoryService;
-            _inputService = inputService;
-            _reinforcementService = reinforcementService;
+            _battleVictoryNotifier = battleVictoryNotifier;
             _playerFactionType = playerFactionType;
             _selectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
             _gameTimeMode = GameTimeMode.Common;
@@ -88,16 +80,11 @@ namespace EmpireAtWar.Controllers.Game
             _coreGameUi = ui as CoreGameUi
                 ?? throw new InvalidOperationException(
                     "The core game prefab does not contain CoreGameUi.");
-            _battleVictoryService.OutcomeChanged += HandleBattleEnded;
+            _battleVictoryNotifier.AddObserver(this);
             _endGamePresenter = new EndGamePresenter(
-                _battleVictoryService,
+                _battleVictoryNotifier,
                 _coreGameUi.PrepareEndGameView(_uiService.PopupCanvasTransform),
                 ExitSkirmish);
-
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
-            {
-                HandleBattleEnded(_battleVictoryService.CurrentOutcome);
-            }
 
             foreach (KeyValuePair<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>
                      routesAtPosition in _routes)
@@ -118,7 +105,7 @@ namespace EmpireAtWar.Controllers.Game
         {
             _userStateNotifier.Value.RemoveObserver(this);
             _selectionService.RemoveObserver(this);
-            _battleVictoryService.OutcomeChanged -= HandleBattleEnded;
+            _battleVictoryNotifier.RemoveObserver(this);
             if (_endGamePresenter != null)
             {
                 _endGamePresenter.Dispose();
@@ -274,7 +261,7 @@ namespace EmpireAtWar.Controllers.Game
 
         public void Play()
         {
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            if (_hasBattleEnded)
             {
                 return;
             }
@@ -297,7 +284,7 @@ namespace EmpireAtWar.Controllers.Game
 
         public void SpeedUp()
         {
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            if (_hasBattleEnded)
             {
                 return;
             }
@@ -320,7 +307,7 @@ namespace EmpireAtWar.Controllers.Game
 
         public void ToggleReinforcement()
         {
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            if (_hasBattleEnded)
             {
                 return;
             }
@@ -338,7 +325,7 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
 
-            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            if (_hasBattleEnded)
             {
                 return;
             }
@@ -367,11 +354,10 @@ namespace EmpireAtWar.Controllers.Game
             Model.GameTimeMode = mode;
         }
 
-        private void HandleBattleEnded(BattleOutcome outcome)
+        public void UpdateState(BattleResult result)
         {
+            _hasBattleEnded = true;
             ChangeTime(GameTimeMode.Pause);
-            _reinforcementService.Value.CancelPlacement();
-            _inputService.Block(true);
         }
 
         private void ExitSkirmish()
