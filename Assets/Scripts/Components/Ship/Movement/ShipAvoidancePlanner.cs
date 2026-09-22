@@ -265,7 +265,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             return true;
         }
 
-        private static bool IsPointClear(
+        internal static bool IsPointClear(
             Vector3 point,
             IReadOnlyList<RadarContact> contacts,
             float shipHeight,

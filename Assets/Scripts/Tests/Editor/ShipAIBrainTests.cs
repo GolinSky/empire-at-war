@@ -59,6 +59,19 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(Vector3.zero));
         }
 
+        [Test]
+        public void AssignAttackTarget_SameTarget_UpdatesFormationOffset()
+        {
+            ShipAIBrain brain = CreateBrain();
+            FakeEntity target = new FakeEntity(42, new FakeHealthModel());
+            brain.AssignAttackTarget(target, Vector3.left * 10f);
+
+            brain.AssignAttackTarget(target, Vector3.right * 20f);
+
+            Assert.That(GetPrivateField<Vector3>(brain, "_attackFormationOffset"),
+                Is.EqualTo(Vector3.right * 20f));
+        }
+
         private static ShipAIBrain CreateBrain()
         {
             return new ShipAIBrain(

@@ -55,6 +55,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _hasBroadsideDirection;
         private Vector3? _deferredTargetPosition;
         private Vector3? _blockedTargetPosition;
+        private bool _isNavigationRegistered;
+        private Vector3? _lastRequestedDestination;
+        private Vector3? _lastAcceptedDestination;
 
         public Vector3 NavigationPosition => CurrentViewPosition;
         public float NavigationHeight => Model.Height;
@@ -114,6 +117,18 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _lineRenderer,
                 _lookAtEase,
                 _hyperSpaceEase);
+            if (!_shipNavigationService.TryResolveInitialFinalPosition(
+                    this,
+                    _startPosition,
+                    _mapModel.SizeRange,
+                    HEIGHT_TOLERANCE,
+                    out Vector3 resolvedStartPosition))
+            {
+                throw new InvalidOperationException(
+                    "No clear ship spawn position is available on the map.");
+            }
+
+            _startPosition = resolvedStartPosition;
             Model.ConfigureSpawnPose(
                 ToNumerics(_startPosition),
                 ToNumerics(_stationFacingService.GetRotation(_playerType)),
@@ -121,6 +136,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             transform.rotation = ToUnity(Model.StartRotation);
             transform.position = ToUnity(Model.JumpPosition);
+            _shipNavigationService.Register(
+                this,
+                ToUnity(Model.HyperSpacePosition));
+            _isNavigationRegistered = true;
             _isNavigationReady = false;
             HyperSpaceJump(ToUnity(Model.HyperSpacePosition));
 
@@ -145,6 +164,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _isReleased = true;
+            if (_isNavigationRegistered)
+            {
+                _shipNavigationService.Unregister(this);
+                _isNavigationRegistered = false;
+            }
+
             if (_tweenPlayer != null)
             {
                 _tweenPlayer.Release();
@@ -166,15 +191,41 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
         {
             requestedPosition.y = Model.Height;
-            Vector3 destination = ShipAvoidancePlanner.ClampToMap(
+            Vector3 requestedDestination = ShipAvoidancePlanner.ClampToMap(
                 requestedPosition, _mapModel.SizeRange, NavigationRadius);
-            _deferredTargetPosition = null;
-            _blockedTargetPosition = null;
-            if (Model.HasTargetPosition(ToNumerics(destination)))
+            Vector3 destination = requestedDestination;
+            if (_lastRequestedDestination.HasValue &&
+                _lastAcceptedDestination.HasValue &&
+                _lastRequestedDestination.Value == requestedDestination &&
+                _shipNavigationService.IsPositionClear(
+                    this,
+                    _lastAcceptedDestination.Value,
+                    NavigationRadius))
             {
-                return destination;
+                destination = _lastAcceptedDestination.Value;
             }
 
+            if (Model.HasTargetPosition(ToNumerics(destination)))
+            {
+                if (!_isNavigationReady && _pendingTargetPosition.HasValue &&
+                    !_blockedTargetPosition.HasValue)
+                {
+                    return destination;
+                }
+
+                _deferredTargetPosition = null;
+                _shipNavigationService.CancelPendingDestination(this);
+                if (!_blockedTargetPosition.HasValue)
+                {
+                    return destination;
+                }
+            }
+
+            _deferredTargetPosition = null;
+            _blockedTargetPosition = null;
+            _shipNavigationService.CancelPendingDestination(this);
+
+            _lastRequestedDestination = requestedDestination;
             UpdateTargetPosition(destination, preserveCourse);
             Vector3 appliedDestination = ToUnity(Model.TargetPosition);
             MovementMediator.OnPositionChanged(appliedDestination);
@@ -221,6 +272,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             Model.SetTargetPosition(ToNumerics(CurrentViewPosition));
             StopAllMovement();
+            if (_isNavigationReady)
+            {
+                _shipNavigationService.Stop(this);
+            }
+
             MovementMediator.OnStopped();
         }
 
@@ -289,6 +345,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (!_isNavigationReady)
             {
                 _pendingTargetPosition = null;
+                _deferredTargetPosition = null;
+                _blockedTargetPosition = null;
+                _shipNavigationService.CancelPendingDestination(this);
                 return;
             }
 
@@ -311,6 +370,15 @@ namespace EmpireAtWar.Components.Ship.Movement
                     _pendingTargetPosition = null;
                     UpdateTargetPosition(targetPosition);
                 }
+                else
+                {
+                    Model.SetTargetPosition(ToNumerics(CurrentViewPosition));
+                    if (!_shipNavigationService.IsPositionClear(
+                            this, CurrentViewPosition, NavigationRadius))
+                    {
+                        UpdateTargetPosition(CurrentViewPosition);
+                    }
+                }
             });
         }
 
@@ -318,8 +386,26 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (!_isNavigationReady)
             {
-                _pendingTargetPosition = targetPosition;
-                Model.SetTargetPosition(ToNumerics(targetPosition));
+                ShipNavigationPlan plan = _shipNavigationService.Plan(
+                    this,
+                    transform.forward,
+                    targetPosition,
+                    _navigationContacts,
+                    HEIGHT_TOLERANCE,
+                    NavigationRadius,
+                    _mapModel.SizeRange,
+                    preserveCourse: true,
+                    reserveAsPending: true);
+                if (plan.IsStationary)
+                {
+                    _pendingTargetPosition = targetPosition;
+                    _blockedTargetPosition = targetPosition;
+                    return;
+                }
+
+                _pendingTargetPosition = plan.Destination;
+                _lastAcceptedDestination = plan.Destination;
+                Model.SetTargetPosition(ToNumerics(plan.Destination));
                 return;
             }
 
@@ -376,6 +462,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (plan.IsDeferred)
             {
                 _deferredTargetPosition = requestedDestination;
+                _lastAcceptedDestination = plan.Destination;
                 return;
             }
 
@@ -389,6 +476,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
             _blockedTargetPosition = null;
             _deferredTargetPosition = null;
+            _lastAcceptedDestination = plan.Destination;
 
             if (!Model.HasTargetPosition(ToNumerics(plan.Destination)))
             {
@@ -420,12 +508,26 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.BodyRotationMaxAngle,
                 () =>
                 {
+                    if (_isReleased)
+                    {
+                        return;
+                    }
+
                     if (_deferredTargetPosition.HasValue)
                     {
                         Vector3 deferredTargetPosition =
                             _deferredTargetPosition.Value;
                         _deferredTargetPosition = null;
                         SetTargetPosition(deferredTargetPosition);
+                        return;
+                    }
+
+                    if (!_shipNavigationService.IsPositionClear(
+                            this,
+                            plan.Destination,
+                            NavigationRadius))
+                    {
+                        UpdateTargetPosition(plan.Destination);
                     }
                 });
         }

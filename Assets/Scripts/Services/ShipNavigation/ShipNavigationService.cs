@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -49,6 +50,22 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     public interface IShipNavigationService : IService
     {
+        void Register(IShipNavigationAgent agent, Vector3 initialFinalPosition);
+        void Unregister(IShipNavigationAgent agent);
+        void Stop(IShipNavigationAgent agent);
+        void CancelPendingDestination(IShipNavigationAgent agent);
+        bool IsPositionClear(Vector3 position, float navigationRadius);
+        bool IsPositionClear(
+            IShipNavigationAgent agent,
+            Vector3 position,
+            float navigationRadius);
+        bool TryResolveInitialFinalPosition(
+            IShipNavigationAgent agent,
+            Vector3 requestedPosition,
+            Vector2Range mapRange,
+            float heightTolerance,
+            out Vector3 resolvedPosition);
+
         ShipNavigationPlan Plan(
             IShipNavigationAgent agent,
             Vector3 forward,
@@ -57,14 +74,22 @@ namespace EmpireAtWar.Services.ShipNavigation
             float heightTolerance,
             float clearance,
             Vector2Range mapRange,
-            bool preserveCourse = false);
+            bool preserveCourse = false,
+            bool reserveAsPending = false);
     }
 
     public sealed class ShipNavigationService : Service, IShipNavigationService
     {
+        private const int DESTINATION_CANDIDATE_RING_COUNT = 16;
+        private const int DESTINATION_CANDIDATES_PER_RING = 8;
+
         private readonly List<RadarContact> _mapObstacleContacts =
             new List<RadarContact>();
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
+        private readonly Dictionary<IShipNavigationAgent, int> _registrationIds =
+            new Dictionary<IShipNavigationAgent, int>();
+        private readonly ShipDestinationRegistry _destinationRegistry =
+            new ShipDestinationRegistry();
 
         public ShipNavigationService(
             IMapObstacleContactProvider mapObstacleContactProvider)
@@ -82,45 +107,231 @@ namespace EmpireAtWar.Services.ShipNavigation
             float heightTolerance,
             float clearance,
             Vector2Range mapRange,
-            bool preserveCourse = false)
+            bool preserveCourse = false,
+            bool reserveAsPending = false)
         {
+            if (agent == null)
+            {
+                throw new ArgumentNullException(nameof(agent));
+            }
+
             if (obstacleContacts == null)
             {
                 throw new ArgumentNullException(nameof(obstacleContacts));
             }
 
+            int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts);
 
-            ShipAvoidancePlanner.TryResolveDestination(
-                requestedDestination,
+            float candidateSpacing = agent.NavigationRadius * 2f;
+            for (int candidateIndex = 0;
+                 candidateIndex <=
+                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                 candidateIndex++)
+            {
+                Vector3 candidate = GetDestinationCandidate(
+                    requestedDestination,
+                    candidateSpacing,
+                    candidateIndex);
+                candidate = ShipAvoidancePlanner.ClampToMap(
+                    candidate,
+                    mapRange,
+                    clearance);
+                ShipAvoidancePlanner.TryResolveDestination(
+                    candidate,
+                    origin,
+                    _mapObstacleContacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance,
+                    mapRange,
+                    out Vector3 destination);
+                if (!_destinationRegistry.HasClearance(
+                        registrationId,
+                        ToFormationPoint(destination),
+                        clearance))
+                {
+                    continue;
+                }
+
+                ShipRoutePlan routePlan = ShipRoutePlanner.Build(
+                    agent,
+                    forward,
+                    destination,
+                    _mapObstacleContacts,
+                    heightTolerance,
+                    clearance,
+                    mapRange);
+                if (routePlan.IsStationary ||
+                    !_destinationRegistry.HasClearance(
+                        registrationId,
+                        ToFormationPoint(routePlan.Destination),
+                        clearance))
+                {
+                    continue;
+                }
+
+                bool isDeferred = reserveAsPending ||
+                    (preserveCourse &&
+                     routePlan.TurnDuration > Mathf.Epsilon);
+                if (isDeferred)
+                {
+                    _destinationRegistry.ReservePendingFinalPosition(
+                        registrationId,
+                        ToFormationPoint(routePlan.Destination));
+                }
+                else
+                {
+                    _destinationRegistry.CommitActiveFinalPosition(
+                        registrationId,
+                        ToFormationPoint(routePlan.Destination));
+                }
+
+                float movementDuration =
+                    routePlan.Route.Length /
+                    Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
+                return new ShipNavigationPlan(
+                    routePlan.Destination,
+                    routePlan.Detour,
+                    routePlan.Route,
+                    routePlan.TurnDuration,
+                    movementDuration,
+                    false,
+                    isDeferred);
+            }
+
+            if (!preserveCourse)
+            {
+                _destinationRegistry.Stop(registrationId);
+            }
+
+            ShipBezierRoute stationaryRoute = ShipBezierPath.BuildDirectRoute(
                 origin,
-                _mapObstacleContacts,
-                agent.NavigationHeight,
-                heightTolerance,
-                clearance,
-                mapRange,
-                out Vector3 destination);
-            ShipRoutePlan routePlan = ShipRoutePlanner.Build(
-                agent,
                 forward,
-                destination,
-                _mapObstacleContacts,
-                heightTolerance,
-                clearance,
-                mapRange);
-            float movementDuration =
-                routePlan.Route.Length /
-                Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
-            ShipNavigationPlan plan = new ShipNavigationPlan(
-                routePlan.Destination,
-                routePlan.Detour,
-                routePlan.Route,
-                routePlan.TurnDuration,
-                movementDuration,
-                routePlan.IsStationary,
-                preserveCourse && (routePlan.IsStationary || routePlan.TurnDuration > Mathf.Epsilon));
-            return plan;
+                origin);
+            return new ShipNavigationPlan(
+                origin,
+                null,
+                stationaryRoute,
+                0f,
+                0f,
+                true,
+                preserveCourse || reserveAsPending);
+        }
+
+        public void Register(
+            IShipNavigationAgent agent,
+            Vector3 initialFinalPosition)
+        {
+            if (agent == null)
+            {
+                throw new ArgumentNullException(nameof(agent));
+            }
+
+            if (_registrationIds.ContainsKey(agent))
+            {
+                throw new InvalidOperationException(
+                    "The ship navigation agent is already registered.");
+            }
+
+            int registrationId = _destinationRegistry.Register(
+                () => ToFormationPoint(agent.NavigationPosition),
+                agent.NavigationRadius,
+                ToFormationPoint(initialFinalPosition));
+            _registrationIds.Add(agent, registrationId);
+        }
+
+        public void Unregister(IShipNavigationAgent agent)
+        {
+            int registrationId = GetRegistrationId(agent);
+            _destinationRegistry.Unregister(registrationId);
+            _registrationIds.Remove(agent);
+        }
+
+        public void Stop(IShipNavigationAgent agent)
+        {
+            _destinationRegistry.Stop(GetRegistrationId(agent));
+        }
+
+        public void CancelPendingDestination(IShipNavigationAgent agent)
+        {
+            _destinationRegistry.CancelPendingFinalPosition(
+                GetRegistrationId(agent));
+        }
+
+        public bool IsPositionClear(Vector3 position, float navigationRadius)
+        {
+            return _destinationRegistry.HasClearance(
+                ToFormationPoint(position),
+                navigationRadius);
+        }
+
+        public bool IsPositionClear(
+            IShipNavigationAgent agent,
+            Vector3 position,
+            float navigationRadius)
+        {
+            return _destinationRegistry.HasClearance(
+                GetRegistrationId(agent),
+                ToFormationPoint(position),
+                navigationRadius);
+        }
+
+        public bool TryResolveInitialFinalPosition(
+            IShipNavigationAgent agent,
+            Vector3 requestedPosition,
+            Vector2Range mapRange,
+            float heightTolerance,
+            out Vector3 resolvedPosition)
+        {
+            if (agent == null)
+            {
+                throw new ArgumentNullException(nameof(agent));
+            }
+
+            if (mapRange == null)
+            {
+                throw new ArgumentNullException(nameof(mapRange));
+            }
+
+            BuildNavigationContacts(Array.Empty<RadarContact>());
+            float clearance = agent.NavigationRadius;
+            for (int candidateIndex = 0;
+                 candidateIndex <=
+                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                 candidateIndex++)
+            {
+                Vector3 candidate = GetDestinationCandidate(
+                    requestedPosition,
+                    clearance * 2f,
+                    candidateIndex);
+                candidate = ShipAvoidancePlanner.ClampToMap(
+                    candidate,
+                    mapRange,
+                    clearance);
+                ShipAvoidancePlanner.TryResolveDestination(
+                    candidate,
+                    requestedPosition,
+                    _mapObstacleContacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance,
+                    mapRange,
+                    out Vector3 destination);
+                if (ShipAvoidancePlanner.IsPointClear(destination, _mapObstacleContacts,
+                        agent.NavigationHeight, heightTolerance, clearance) &&
+                    _destinationRegistry.HasClearance(
+                        ToFormationPoint(destination),
+                        clearance))
+                {
+                    resolvedPosition = destination;
+                    return true;
+                }
+            }
+
+            resolvedPosition = default;
+            return false;
         }
 
         private void BuildNavigationContacts(
@@ -160,6 +371,46 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             return false;
+        }
+
+        private int GetRegistrationId(IShipNavigationAgent agent)
+        {
+            if (agent == null)
+            {
+                throw new ArgumentNullException(nameof(agent));
+            }
+
+            if (!_registrationIds.TryGetValue(agent, out int registrationId))
+            {
+                throw new InvalidOperationException(
+                    "The ship navigation agent is not registered.");
+            }
+
+            return registrationId;
+        }
+
+        private static Vector3 GetDestinationCandidate(
+            Vector3 requestedDestination,
+            float spacing,
+            int candidateIndex)
+        {
+            if (candidateIndex == 0)
+            {
+                return requestedDestination;
+            }
+
+            int ring = (candidateIndex - 1) / DESTINATION_CANDIDATES_PER_RING + 1;
+            int slot = (candidateIndex - 1) % DESTINATION_CANDIDATES_PER_RING;
+            float angle = slot * Mathf.PI * 2f / DESTINATION_CANDIDATES_PER_RING;
+            return requestedDestination + new Vector3(
+                Mathf.Cos(angle) * spacing * ring,
+                0f,
+                Mathf.Sin(angle) * spacing * ring);
+        }
+
+        private static FormationPoint ToFormationPoint(Vector3 position)
+        {
+            return new FormationPoint(position.x, position.z);
         }
     }
 }

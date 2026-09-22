@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
@@ -18,7 +20,7 @@ namespace EmpireAtWar.Tests.Editor
             BindingFlags.Instance | BindingFlags.NonPublic;
 
         [Test]
-        public void Initialize_DifferentSelectedFactions_AnchorsDefaultZonesToOwningStations()
+        public void Initialize_DifferentSelectedFactions_SeparatesSeparatistZoneFromStation()
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
@@ -55,7 +57,11 @@ namespace EmpireAtWar.Tests.Editor
 
                 system.Initialize();
 
-                Assert.That(playerZone.Center, Is.EqualTo(new Vector3(160f, 0f, -170f)));
+                Vector3 stationOnMap = new Vector3(160f, 0f, -170f);
+                Assert.That(Vector3.Distance(playerZone.Center, stationOnMap),
+                    Is.GreaterThan(playerZone.Radius * 2f));
+                Assert.That(playerZone.Center.x, Is.LessThan(stationOnMap.x));
+                Assert.That(playerZone.Center.z, Is.GreaterThan(stationOnMap.z));
                 Assert.That(opponentZone.Center, Is.EqualTo(new Vector3(-180f, 0f, 170f)));
                 Assert.That(capturableZone.Center, Is.EqualTo(new Vector3(25f, 0f, 35f)));
             }
@@ -161,6 +167,7 @@ namespace EmpireAtWar.Tests.Editor
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
             SetField(system, "_playerFactionType", FactionType.Republic);
             SetField(system, "_opponentFactionType", FactionType.Separatist);
+            SetField(system, "_shipNavigationService", new FakeShipNavigationService());
             system.Initialize();
             return system;
         }
@@ -191,14 +198,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly Vector3 _republicPosition;
             private readonly Vector3 _separatistPosition;
+            private readonly Vector2Range _sizeRange;
 
             public FakeMapModel(Vector3 republicPosition, Vector3 separatistPosition)
             {
                 _republicPosition = republicPosition;
                 _separatistPosition = separatistPosition;
+                _sizeRange = new Vector2Range();
+                SetRangeValue("<Min>k__BackingField", new Vector2(-250f, -250f));
+                SetRangeValue("<Max>k__BackingField", new Vector2(250f, 250f));
             }
 
-            public Vector2Range SizeRange => default;
+            public Vector2Range SizeRange => _sizeRange;
 
             public Vector3 GetStationPosition(FactionType factionType)
             {
@@ -211,6 +222,76 @@ namespace EmpireAtWar.Tests.Editor
                         factionType,
                         null)
                 };
+            }
+
+            private void SetRangeValue(string fieldName, Vector2 value)
+            {
+                FieldInfo field = _sizeRange.GetType().BaseType?.GetField(
+                    fieldName,
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.That(field, Is.Not.Null);
+                field.SetValue(_sizeRange, value);
+            }
+        }
+
+        private sealed class FakeShipNavigationService : IShipNavigationService
+        {
+            public string Id => nameof(FakeShipNavigationService);
+
+            public void Register(
+                IShipNavigationAgent agent,
+                Vector3 initialFinalPosition)
+            {
+            }
+
+            public void Unregister(IShipNavigationAgent agent)
+            {
+            }
+
+            public void Stop(IShipNavigationAgent agent)
+            {
+            }
+
+            public void CancelPendingDestination(IShipNavigationAgent agent)
+            {
+            }
+
+            public bool IsPositionClear(Vector3 position, float navigationRadius)
+            {
+                return true;
+            }
+
+            public bool IsPositionClear(
+                IShipNavigationAgent agent,
+                Vector3 position,
+                float navigationRadius)
+            {
+                return true;
+            }
+
+            public bool TryResolveInitialFinalPosition(
+                IShipNavigationAgent agent,
+                Vector3 requestedPosition,
+                Vector2Range mapRange,
+                float heightTolerance,
+                out Vector3 resolvedPosition)
+            {
+                resolvedPosition = requestedPosition;
+                return true;
+            }
+
+            public ShipNavigationPlan Plan(
+                IShipNavigationAgent agent,
+                Vector3 forward,
+                Vector3 requestedDestination,
+                IReadOnlyList<RadarContact> obstacleContacts,
+                float heightTolerance,
+                float clearance,
+                Vector2Range mapRange,
+                bool preserveCourse = false,
+                bool reserveAsPending = false)
+            {
+                throw new System.NotSupportedException();
             }
         }
     }

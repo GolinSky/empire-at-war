@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
@@ -8,6 +7,7 @@ using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using Zenject;
@@ -51,6 +51,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IShipService _shipService;
         private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
+        private IShipNavigationService _shipNavigationService;
         private IAssetService _repository;
         private ShipsData _shipsData;
         private FactionType _playerFactionType;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IAssetService repository,
             ShipsData shipsData,
             IMapModelObserver mapModel,
+            IShipNavigationService shipNavigationService,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
@@ -78,6 +80,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 throw new ArgumentNullException(nameof(shipsData));
             _mapModel = mapModel ??
                 throw new ArgumentNullException(nameof(mapModel));
+            _shipNavigationService = shipNavigationService ??
+                throw new ArgumentNullException(nameof(shipNavigationService));
             _playerFactionType = playerFactionType;
             _opponentFactionType = opponentFactionType;
         }
@@ -197,23 +201,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
         {
             float navigationRadius = GetNavigationRadius(shipType);
-            FormationPoint candidate = new FormationPoint(position.x, position.z);
-            foreach (IShipEntity ship in _shipService.Ships)
-            {
-                FormationPoint existing = new FormationPoint(
-                    ship.WorldPosition.x,
-                    ship.WorldPosition.z);
-                if (!FormationModel.HasClearance(
-                        candidate,
-                        navigationRadius,
-                        existing,
-                        ship.NavigationRadius))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return _shipNavigationService.IsPositionClear(
+                position,
+                navigationRadius);
         }
 
         public bool TryGetRandomSpawnPosition(
@@ -312,8 +302,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     continue;
                 }
 
-                Vector3 direction = shipPosition - zone.Center;
-                direction.y = 0f;
+                Vector3 direction = new Vector3(
+                    (_mapModel.SizeRange.Min.x + _mapModel.SizeRange.Max.x) * 0.5f - zone.Center.x,
+                    0f,
+                    (_mapModel.SizeRange.Min.y + _mapModel.SizeRange.Max.y) * 0.5f - zone.Center.z);
                 if (direction.sqrMagnitude <= Mathf.Epsilon)
                 {
                     direction = Vector3.right;
@@ -400,6 +392,19 @@ namespace EmpireAtWar.Services.ReinforcementZones
             };
 
             Vector3 center = _mapModel.GetStationPosition(factionType);
+            if (factionType == FactionType.Separatist)
+            {
+                Vector3 direction = _mapModel.GetStationPosition(FactionType.Republic) - center;
+                direction.y = 0f;
+                center += direction.normalized * (view.Radius * 2f + _spawnEdgePadding);
+                center.x = Mathf.Clamp(center.x,
+                    _mapModel.SizeRange.Min.x + view.Radius,
+                    _mapModel.SizeRange.Max.x - view.Radius);
+                center.z = Mathf.Clamp(center.z,
+                    _mapModel.SizeRange.Min.y + view.Radius,
+                    _mapModel.SizeRange.Max.y - view.Radius);
+            }
+
             center.y = view.Center.y;
             view.SetCenter(center);
         }
