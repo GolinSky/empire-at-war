@@ -30,7 +30,7 @@ namespace EmpireAtWar.Views.Reinforcement
 
     public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor
     {
-        private const string UNIT_CAPACITY_TEXT = "Reinforcement";
+        private const string UNIT_CAPACITY_TEXT = "REINFORCEMENTS";
 
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private Button closeButton;
