@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.Reinforcement
     public interface IReinforcementService
     {
         void TrySpawnReinforcement(string id);
+        void CancelPlacement();
     }
 
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
@@ -82,6 +83,19 @@ namespace EmpireAtWar.Services.Reinforcement
         public void LateDispose()
         {
             _inputService.OnEndDrag -= Interrupt;
+        }
+
+        public void CancelPlacement()
+        {
+            if (!_model.IsTrySpawning)
+            {
+                return;
+            }
+
+            _model.IsTrySpawning = false;
+            _spawnReinforcement.Destroy();
+            _inputService.Block(false);
+            _model.InvokeSpawnShipEvent(false);
         }
 
         private void Interrupt(Vector2 screenPosition)

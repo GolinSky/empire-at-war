@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Battle
     {
         event Action<BattleOutcome> OutcomeChanged;
         BattleOutcome CurrentOutcome { get; }
+        BattleResult FinalResult { get; }
     }
 
     public sealed class BattleVictoryService : IBattleVictoryService, ITickable
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Services.Battle
 
         public string Id => nameof(BattleVictoryService);
         public BattleOutcome CurrentOutcome { get; private set; }
+        public BattleResult FinalResult { get; private set; }
 
         public void Tick()
         {
@@ -93,6 +95,16 @@ namespace EmpireAtWar.Services.Battle
                 return;
             }
 
+            FinalResult = new BattleResult(
+                outcome,
+                _gameModel.VictoryCondition,
+                _gameModel.PlanetType,
+                _gameModel.PlayerFactionType,
+                _gameModel.EnemyFactionType,
+                playerShipCount,
+                enemyShipCount,
+                isPlayerBaseAlive,
+                isEnemyBaseAlive);
             CurrentOutcome = outcome;
             Debug.Log($"[Battle] Outcome={outcome}, VictoryCondition={_gameModel.VictoryCondition}");
             OutcomeChanged?.Invoke(outcome);

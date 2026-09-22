@@ -1,9 +1,10 @@
-﻿using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Commands.Game;
 using System;
 using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
+using MPUIKIT;
 using Utilities.ScriptUtils.EditorSerialization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +19,20 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Button reinforcementButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
+        [SerializeField] private MPImage panelImage;
         
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
         [SerializeField] private Transform miniMapRouteParent;
         [SerializeField] private Transform contentRouteParent;
         [SerializeField] private Transform buildPipelineRouteParent;
+        [SerializeField] private EndGameUi endGameUi;
+
+        public IEndGameView PrepareEndGameView(Transform parent)
+        {
+            endGameUi.SetParent(parent);
+            return endGameUi;
+        }
 
 
         public void Initialize()
@@ -33,6 +42,8 @@ namespace EmpireAtWar.Views.Game
             speedUpButton.onClick.AddListener(Command.SpeedUp);
             reinforcementButton.onClick.AddListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange += UpdateSprites;
+            Model.OnContentVisibilityChanged += HandleContentVisibilityChanged;
+            SetContentPanelVisible(Model.IsContentVisible);
         }
 
         public void LateDispose()
@@ -41,6 +52,20 @@ namespace EmpireAtWar.Views.Game
             speedUpButton.onClick.RemoveListener(Command.SpeedUp);
             reinforcementButton.onClick.RemoveListener(Command.ToggleReinforcement);
             Model.OnGameTimeModeChange -= UpdateSprites;
+            Model.OnContentVisibilityChanged -= HandleContentVisibilityChanged;
+        }
+
+        private void HandleContentVisibilityChanged(bool isVisible)
+        {
+            SetContentPanelVisible(isVisible);
+        }
+
+        private void SetContentPanelVisible(bool isVisible)
+        {
+            if (panelImage != null)
+            {
+                panelImage.enabled = isVisible;
+            }
         }
         
         private void UpdateSprites(GameTimeMode gameTimeMode)
@@ -69,6 +94,11 @@ namespace EmpireAtWar.Views.Game
 
         private void ValidateRouteParents()
         {
+            if (endGameUi == null)
+            {
+                throw new InvalidOperationException($"{nameof(endGameUi)} is not assigned.");
+            }
+
             if (reinforcementButton == null)
             {
                 throw new InvalidOperationException(
@@ -91,6 +121,12 @@ namespace EmpireAtWar.Views.Game
             {
                 throw new InvalidOperationException(
                     $"{nameof(buildPipelineRouteParent)} is not assigned.");
+            }
+
+            if (panelImage == null)
+            {
+                throw new InvalidOperationException(
+                    $"{nameof(panelImage)} is not assigned.");
             }
         }
     }
