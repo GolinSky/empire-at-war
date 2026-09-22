@@ -1,3 +1,4 @@
+using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
@@ -31,6 +32,11 @@ namespace EmpireAtWar
             Container.BindScriptableObject<ReinforcementData>(Repository);
             Container.BindInterfacesAndSelfTo<ReinforcementModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<ReinforcementService>();
+            Container.ParentContainers.Single()
+                .Bind<IReinforcementService>()
+                .FromSubContainerResolve()
+                .ByInstance(Container)
+                .AsSingle();
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
             Container.BindScriptableObject<PlayerFactionData>(Repository);

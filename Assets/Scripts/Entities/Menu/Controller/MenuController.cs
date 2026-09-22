@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.MiniMap;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace EmpireAtWar.Controllers.Menu
     public class MenuController : Controller<MenuData>, IPauseMenuPresenter, IUserStateNotifier, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
+        private readonly IBattleVictoryService _battleVictoryService;
         private readonly IInputService _inputService;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
@@ -24,10 +27,12 @@ namespace EmpireAtWar.Controllers.Menu
         public MenuController(
             MenuData model,
             IUiService uiService,
-            IInputService inputService) : base(model)
+            IInputService inputService,
+            IBattleVictoryService battleVictoryService) : base(model)
         {
             _uiService = uiService;
             _inputService = inputService;
+            _battleVictoryService = battleVictoryService;
         }
         
         public void Initialize()
@@ -75,6 +80,11 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void SetMenuOpen(bool isOpen)
         {
+            if (_battleVictoryService.CurrentOutcome != BattleOutcome.None)
+            {
+                return;
+            }
+
             _isMenuOpen = isOpen;
             _ui.SetMenuVisible(isOpen);
             UpdateState(isOpen
