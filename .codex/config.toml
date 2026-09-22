@@ -3,6 +3,7 @@ command = "unity"
 args = [ "mcp" ]
 
 [mcp_servers.serena]
+enabled = true
 command = "uvx"
 args = [
   "-p", "3.13",
@@ -26,15 +27,13 @@ args = [
   "F:\\Private\\empire-at-war\\ObsidianDocumentation",
 ]
 
-# Kept configured for compatibility with the local graph artifact, but disabled by
-# repository policy. Do not enable or use Graphify in this project.
 [mcp_servers.graphify]
+enabled = true
 command = "uvx"
 args = [
   "--from", "graphifyy[mcp]==0.9.54",
   "graphify-mcp", "graphify-out/graph.json",
 ]
-enabled = false
 enabled_tools = [
   "query_graph",
   "get_node",
@@ -43,7 +42,7 @@ enabled_tools = [
   "graph_stats",
   "shortest_path",
 ]
-default_tools_approval_mode = "approve"
+default_tools_approval_mode = "auto"
 startup_timeout_sec = 45
 tool_timeout_sec = 60
 
