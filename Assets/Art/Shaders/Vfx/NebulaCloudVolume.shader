@@ -6,14 +6,14 @@ Shader "EmpireAtWar/Vfx/Nebula Cloud Volume"
         _ShadowColor ("Deep Dust", Color) = (0.055, 0.065, 0.11, 1)
         _LightColor ("Soft Blue Light", Color) = (0.30, 0.39, 0.47, 1)
         _AccentColor ("Violet Wisps", Color) = (0.38, 0.24, 0.39, 1)
-        _Density ("Cloud Density", Range(0, 20)) = 9
-        _Brightness ("Background Brightness", Range(0, 2)) = 0.8
+        _Density ("Cloud Density", Range(0, 20)) = 8
+        _Brightness ("Background Brightness", Range(0, 2)) = 0.65
         _DriftSpeed ("Internal Drift", Range(0, 0.05)) = 0.003
         _Steps ("Volume Samples", Range(24, 96)) = 64
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent-50" "RenderPipeline"="UniversalPipeline" "DisableBatching"="True" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" "RenderPipeline"="UniversalPipeline" "DisableBatching"="True" }
         Pass
         {
             Name "NebulaVolume"
@@ -80,11 +80,12 @@ Shader "EmpireAtWar/Vfx/Nebula Cloud Volume"
                 float3 b = (q - float3(0.05, -0.06, 0.07)) / float3(0.33, 0.27, 0.27);
                 float3 c = (q - float3(0.29, 0.07, 0.19)) / float3(0.20, 0.29, 0.25);
                 float envelope = max(max(1.0 - dot(a, a), 1.0 - dot(b, b)), 1.0 - dot(c, c));
-                float3 noise = SAMPLE_TEXTURE3D_LOD(_NoiseTex, sampler_NoiseTex, q * 2.7 + drift, 0).rgb;
+                float3 noise = SAMPLE_TEXTURE3D_LOD(_NoiseTex, sampler_NoiseTex, q * 4.0 + drift, 0).rgb;
                 float structure = noise.r * 0.67 + noise.g * 0.23 + noise.b * 0.10;
-                float clouds = smoothstep(0.32, 0.66, structure + envelope * 0.18);
+                float clouds = saturate((structure - 0.40) * 4.5);
+                clouds *= clouds;
                 float lane = q.z - q.x * 0.38 - sin(q.x * 12.0) * 0.045;
-                float dust = lerp(0.28, 1.0, smoothstep(0.012, 0.085, abs(lane)));
+                float dust = lerp(0.08, 1.0, smoothstep(0.012, 0.085, abs(lane)));
                 float boundary = saturate((0.5 - max(max(abs(p.x), abs(p.y)), abs(p.z))) * 18.0);
                 return clouds * saturate(envelope * 2.5) * dust * boundary;
             }
@@ -136,10 +137,10 @@ Shader "EmpireAtWar/Vfx/Nebula Cloud Volume"
                     if (density > 0.002)
                     {
                         float shadow = CloudDensity(p + lightDirection * 0.075);
-                        float light = exp(-shadow * 3.5);
+                        float light = exp(-shadow * 5.0);
                         float violet = smoothstep(-0.25, 0.30, p.x + p.z * 0.5);
                         float3 tint = lerp(_LightColor.rgb, _AccentColor.rgb, violet * 0.70);
-                        float3 color = lerp(_ShadowColor.rgb, tint, 0.22 + light * 0.78) * _Brightness;
+                        float3 color = lerp(_ShadowColor.rgb, tint, 0.12 + light * 0.88) * _Brightness;
                         float opacity = 1.0 - exp(-density * _Density * stepLength);
                         radiance += transmittance * opacity * color;
                         transmittance *= 1.0 - opacity;
