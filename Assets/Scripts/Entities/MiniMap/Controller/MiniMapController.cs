@@ -1,7 +1,6 @@
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
@@ -21,14 +20,13 @@ namespace EmpireAtWar.Controllers.MiniMap
     }
 
     public class MiniMapController : Controller<MiniMapData>, IMiniMapCommand,
-        IInitializable, ILateTickable, ILateDisposable, IObserver<ISelectionSubject>,
+        IInitializable, ILateTickable, ILateDisposable,
         ISkirmishUiRoute
     {
         private readonly ICameraService _cameraService;
         private readonly IInputService _inputService;
         private readonly TimerPoolService _timerPoolService;
         private readonly IUiService _uiService;
-        private readonly ISelectionService _selectionService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private MiniMapUi _miniMapUi;
         private CustomCoroutine _unblockCoroutine;
@@ -40,7 +38,6 @@ namespace EmpireAtWar.Controllers.MiniMap
             IInputService inputService,
             TimerPoolService timerPoolService,
             IUiService uiService,
-            ISelectionService selectionService,
             ISkirmishRouteNavigation routeNavigation,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType) : base(model)
@@ -49,7 +46,6 @@ namespace EmpireAtWar.Controllers.MiniMap
             _inputService = inputService;
             _timerPoolService = timerPoolService;
             _uiService = uiService;
-            _selectionService = selectionService;
             _routeNavigation = routeNavigation;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(playerFactionType));
@@ -59,7 +55,6 @@ namespace EmpireAtWar.Controllers.MiniMap
     
         public void Initialize()
         {
-            _selectionService.AddObserver(this);
             _inputService.OnBlocked += UpdateBlockState;
             LateTick();
             _routeNavigation.RegisterRoute(
@@ -80,7 +75,6 @@ namespace EmpireAtWar.Controllers.MiniMap
 
         public void LateDispose()
         {
-            _selectionService.RemoveObserver(this);
             _inputService.OnBlocked -= UpdateBlockState;
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
@@ -129,14 +123,6 @@ namespace EmpireAtWar.Controllers.MiniMap
             else
             {
                 Model.IsInputBlocked = isBlocked;
-            }
-        }
-        
-        public void UpdateState(ISelectionSubject subject)
-        {
-            if (subject.UpdatedType == PlayerType.Player)
-            {
-                Model.IsInteractive = subject.PlayerSelectionContext.SelectionType != SelectionType.Base;
             }
         }
     }

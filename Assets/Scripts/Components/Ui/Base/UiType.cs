@@ -15,5 +15,6 @@ namespace EmpireAtWar.Ui.Base
         PauseMenu = 7,
         Interaction = 8,
         MainMenu = 9,
+        ShipGroup = 10,
     }
 }
