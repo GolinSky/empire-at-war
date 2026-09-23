@@ -15,8 +15,8 @@ Path aliases in this report: `HOME=/Users/golinsky`, `REPO=/Users/golinsky/Proje
 | Global agent directory | Absent | No personal role files found |
 | Profiles / project overrides | No personal profile files or additional config/instruction files in inspected `Assets/Scripts` subtree | No profile migration justified |
 | Root `CLAUDE.md` / `GEMINI.md` | Absent | No Codex fallback names configured; do not invent adapters |
-| `ObsidianDocumentation/Rules/AGENTS.md` | 61 lines, 5,154 bytes | Partial duplicate plus actual nested instruction candidate for work beneath `Rules` |
-| `ObsidianDocumentation/00_Home.md` and `Rules/README.md` | Read narrowly for routing/integration claims | Advisory documentation; stale integration statements found |
+| `EmpireAtWarDocumentation/Rules/AGENTS.md` | 61 lines, 5,154 bytes | Partial duplicate plus actual nested instruction candidate for work beneath `Rules` |
+| `EmpireAtWarDocumentation/00_Home.md` and `Rules/README.md` | Read narrowly for routing/integration claims | Advisory documentation; stale integration statements found |
 | `.agents`, `.antigravity`, `.gemini` MCP JSON | Three parseable tracked mirrors | Other-client loading not verified; these are not native Codex TOML layers |
 | `~/.codex/rules/default.rules` | Seven explicit allow rules | User execution approvals; source template differs |
 | Standalone hooks | No root, project `.codex`, or global `hooks.json` found | Plugin hooks and global `notify` still exist |
