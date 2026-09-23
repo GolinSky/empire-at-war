@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using EmpireAtWar.Mvc;
 using Zenject;
 
 namespace EmpireAtWar.Services.Settings
@@ -33,11 +32,7 @@ namespace EmpireAtWar.Services.Settings
             }
 
             Application.backgroundLoadingPriority = ThreadPriority.High;
-#if UNITY_EDITOR
-            Application.targetFrameRate = 60;
-#else
-            Application.targetFrameRate = 60;
-#endif
+            Application.targetFrameRate = -1;
         }
 
         public void SetQualityPreset(int index)
