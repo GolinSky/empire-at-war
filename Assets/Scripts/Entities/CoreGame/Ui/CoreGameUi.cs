@@ -1,18 +1,17 @@
 using EmpireAtWar.Commands.Game;
 using System;
-using EmpireAtWar.Commands.SkirmishGame;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using MPUIKIT;
 using Utilities.ScriptUtils.EditorSerialization;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views.Game
 {
-    public class CoreGameUi : BaseUi<ICoreGameModelObserver, ICoreGameCommand>, IInitializable, ILateDisposable
+    public class CoreGameUi : BaseUi, ICoreGameUi
     {
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
@@ -31,7 +30,20 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Transform buildPipelineRouteParent;
         [SerializeField] private EndGameUi endGameUi;
 
+        private ISkirmishSessionModelObserver _model;
+        private ICoreGamePresenter _presenter;
+        private bool _isInitialized;
         private bool _isShipGroupLayout;
+
+        public void SetModel(ISkirmishSessionModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetPresenter(ICoreGamePresenter presenter)
+        {
+            _presenter = presenter;
+        }
 
         public IEndGameView PrepareEndGameView(Transform parent)
         {
@@ -42,29 +54,34 @@ namespace EmpireAtWar.Views.Game
 
         public void Initialize()
         {
-            timeButton.onClick.AddListener(Command.Play);
-            speedUpButton.onClick.AddListener(Command.SpeedUp);
-            reinforcementButton.onClick.AddListener(Command.ToggleReinforcement);
-            Model.OnGameTimeModeChange += UpdateSprites;
-            Model.OnContentVisibilityChanged += HandleContentVisibilityChanged;
-            SetContentPanelVisible(Model.IsContentVisible);
+            timeButton.onClick.AddListener(_presenter.Play);
+            speedUpButton.onClick.AddListener(_presenter.SpeedUp);
+            reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
+            _model.OnGameTimeModeChanged += UpdateSprites;
+            UpdateSprites(_model.GameTimeMode);
+            _isInitialized = true;
         }
 
-        public void LateDispose()
+        public void Dispose()
         {
-            timeButton.onClick.RemoveListener(Command.Play);
-            speedUpButton.onClick.RemoveListener(Command.SpeedUp);
-            reinforcementButton.onClick.RemoveListener(Command.ToggleReinforcement);
-            Model.OnGameTimeModeChange -= UpdateSprites;
-            Model.OnContentVisibilityChanged -= HandleContentVisibilityChanged;
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            timeButton.onClick.RemoveListener(_presenter.Play);
+            speedUpButton.onClick.RemoveListener(_presenter.SpeedUp);
+            reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
+            _model.OnGameTimeModeChanged -= UpdateSprites;
+            _isInitialized = false;
         }
 
-        private void HandleContentVisibilityChanged(bool isVisible)
+        private void OnDestroy()
         {
-            SetContentPanelVisible(isVisible);
+            Dispose();
         }
 
-        private void SetContentPanelVisible(bool isVisible)
+        public void SetContentVisible(bool isVisible)
         {
             panelImage.gameObject.SetActive(isVisible);
         }

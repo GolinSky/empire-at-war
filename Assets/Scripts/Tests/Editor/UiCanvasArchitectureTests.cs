@@ -1,5 +1,8 @@
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Ui.Popups;
+using EmpireAtWar.Presenters.Game;
+using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.Services.UiRouting;
@@ -167,6 +170,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CoreGameUiController_OwnsSkirmishRoutesAndPassiveView()
+        {
+            Assert.That(
+                typeof(ISkirmishRouteNavigation).IsAssignableFrom(typeof(CoreGameUiController)),
+                Is.True);
+            Assert.That(
+                typeof(ISkirmishRouteNavigation).IsAssignableFrom(typeof(SkirmishOrchestrator)),
+                Is.False);
+            Assert.That(typeof(CoreGameUi).BaseType, Is.EqualTo(typeof(BaseUi)));
+            Assert.That(typeof(ICoreGameUi).IsAssignableFrom(typeof(CoreGameUi)), Is.True);
+        }
+
+        [Test]
         public void CoreGameUiPrefab_BindsReinforcementRouteButton()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(
@@ -186,6 +202,57 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(
                     reinforcementButton.objectReferenceValue,
                     Is.SameAs(expectedButton));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void CoreGameUiPrefab_InitializesWithAssignedReferencesAndForwardsButtons()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(CORE_GAME_PREFAB_PATH);
+
+            try
+            {
+                CoreGameUi ui = root.GetComponent<CoreGameUi>();
+                Assert.That(ui, Is.InstanceOf<ICoreGameUi>());
+                SerializedObject serializedUi = new SerializedObject(ui);
+                string[] requiredReferences =
+                {
+                    "canvasGroup", "timeButton", "speedUpButton", "reinforcementButton",
+                    "timeImage", "speedUpImage", "panelImage", "miniMapRouteParent",
+                    "contentRouteParent", "buildPipelineRouteParent", "contentGrid",
+                    "contentSizeFitter", "contentScroll", "endGameUi"
+                };
+                foreach (string field in requiredReferences)
+                {
+                    Assert.That(serializedUi.FindProperty(field).objectReferenceValue,
+                        Is.Not.Null, $"CoreGameUi.{field} must be assigned in the prefab.");
+                }
+
+                SkirmishSessionModel model = new SkirmishSessionModel();
+                CoreGamePresenterStub presenter = new CoreGamePresenterStub();
+                ui.SetModel(model);
+                ui.SetPresenter(presenter);
+                ui.Initialize();
+
+                Assert.That(((Image)serializedUi.FindProperty("timeImage").objectReferenceValue).sprite,
+                    Is.Not.Null);
+                Assert.That(((Image)serializedUi.FindProperty("speedUpImage").objectReferenceValue).sprite,
+                    Is.Not.Null);
+
+                ((Button)serializedUi.FindProperty("timeButton").objectReferenceValue).onClick.Invoke();
+                ((Button)serializedUi.FindProperty("speedUpButton").objectReferenceValue).onClick.Invoke();
+                ((Button)serializedUi.FindProperty("reinforcementButton").objectReferenceValue).onClick.Invoke();
+                Assert.That(presenter.PlayCount, Is.EqualTo(1));
+                Assert.That(presenter.SpeedUpCount, Is.EqualTo(1));
+                Assert.That(presenter.ReinforcementCount, Is.EqualTo(1));
+
+                ui.Dispose();
+                ((Button)serializedUi.FindProperty("timeButton").objectReferenceValue).onClick.Invoke();
+                Assert.That(presenter.PlayCount, Is.EqualTo(1));
             }
             finally
             {
@@ -233,6 +300,17 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(canvas.sortingOrder, Is.EqualTo(expectedSortingOrder));
             Assert.That(actualTransform.GetComponent<CanvasScaler>(), Is.Not.Null);
             Assert.That(actualTransform.GetComponent<GraphicRaycaster>(), Is.Not.Null);
+        }
+
+        private sealed class CoreGamePresenterStub : ICoreGamePresenter
+        {
+            public int PlayCount { get; private set; }
+            public int SpeedUpCount { get; private set; }
+            public int ReinforcementCount { get; private set; }
+
+            public void Play() => PlayCount++;
+            public void SpeedUp() => SpeedUpCount++;
+            public void ToggleReinforcement() => ReinforcementCount++;
         }
     }
 }

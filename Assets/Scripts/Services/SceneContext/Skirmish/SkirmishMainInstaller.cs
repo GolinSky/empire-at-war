@@ -5,6 +5,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
@@ -79,8 +80,9 @@ public class SkirmishMainInstaller : MonoInstaller
             .NonLazy();
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
         
-        Container.BindModel<CoreGameData>(Repository);
+        Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
+        Container.BindInterfacesNonLazyExt<CoreGameUiController>();
         
         Container
             .BindModel<FactionsData>(Repository)

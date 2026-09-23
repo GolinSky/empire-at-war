@@ -205,7 +205,7 @@ Required conditions:
 - Inherit `BaseUi`, not `BaseUi<TModel>` or `BaseUi<TModel, TCommand>`.
 - Do not use Zenject property injection for feature model, presenter, or data dependencies.
 - Provide dependencies through methods before `Initialize()`.
-- Validate all required dependencies at the start of `Initialize()` and throw a clear error if one is missing.
+- Test that the controller supplies dependencies before `Initialize()` and that required prefab references are assigned.
 - Subscribe to model events and Unity controls only in `Initialize()`.
 - Unsubscribe symmetrically in `Dispose()`.
 - Make `Dispose()` safe when called more than once.
@@ -229,10 +229,7 @@ public class FeatureUiController : IFeaturePresenter, IInitializable, ILateDispo
 {
     public void Initialize()
     {
-        BaseUi ui = _uiService.CreateUi(UiType.Feature);
-        _ui = ui as IFeatureUi
-            ?? throw new InvalidOperationException(
-                "The feature prefab does not implement IFeatureUi.");
+        _ui = (IFeatureUi)_uiService.CreateUi(UiType.Feature);
 
         _ui.SetModel(_model);
         _ui.SetPresenter(this);
@@ -250,7 +247,7 @@ public class FeatureUiController : IFeaturePresenter, IInitializable, ILateDispo
 Rules:
 
 - `IUiService.CreateUi` must return the created `BaseUi` so the controller can configure it.
-- Cast to the feature UI interface and fail immediately with a useful prefab error.
+- Cast to the feature UI interface. Verify the prefab component type in an EditMode test.
 - The controller forwards UI requests to the service.
 - The controller does not reimplement gameplay rules.
 - Only one owner creates and initializes this feature UI.

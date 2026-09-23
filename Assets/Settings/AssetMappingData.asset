@@ -189,13 +189,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: CoreGameData
-      value:
-        m_AssetGUID: c7c667c14d310a4499d62638ddd5c2f8
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MenuData
       value:
         m_AssetGUID: cec5011cf91f219438a8b647c98b2398
