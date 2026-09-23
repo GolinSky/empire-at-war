@@ -78,6 +78,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
+                    !(entity.Model is IShipModelObserver) ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command))
                 {
                     continue;
@@ -93,6 +94,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
+                    !(entity.Model is IShipModelObserver) ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {

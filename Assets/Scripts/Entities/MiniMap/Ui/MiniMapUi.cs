@@ -33,7 +33,6 @@ namespace EmpireAtWar.Views.MiniMap
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
         private Vector2Range _mapRange;
-        private bool _isInteractable = true;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         public void Initialize()
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded += AddMark;
             Model.OnMarkerAdded += AddMarker;
             Model.OnMarkerRemoved += RemoveMarker;
-            Model.OnInteractableChanged += ActivateInteraction;
         }
 
         public void LateDispose()
@@ -57,15 +55,7 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded -= AddMark;
             Model.OnMarkerAdded -= AddMarker;
             Model.OnMarkerRemoved -= RemoveMarker;
-            Model.OnInteractableChanged -= ActivateInteraction;
             cameraFootprintView.DOKill();
-        }
-
-        private void ActivateInteraction(bool isActive)
-        {
-            _isInteractable = isActive;
-            mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
-            DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }
 
         private void AddMark(MarkData markData)
@@ -144,7 +134,7 @@ namespace EmpireAtWar.Views.MiniMap
 
         private void MoveCamera(PointerEventData eventData)
         {
-            if (!_isInteractable || Model.IsInputBlocked) return;
+            if (Model.IsInputBlocked) return;
 
             UnityEngine.Camera eventCamera = eventData.pressEventCamera;
             if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position, eventCamera))
@@ -172,7 +162,6 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if(!_isInteractable) return;
             if(Model.IsInputBlocked) return;
 
             DoFade(HIGHLIGHT_MARK_ALPHA, HIGHLIGHT_DURATION);
@@ -181,8 +170,6 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!_isInteractable) return;
-
             mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
             DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }

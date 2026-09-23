@@ -1482,13 +1482,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 89060427212124258}
-  m_Horizontal: 1
-  m_Vertical: 0
+  m_Horizontal: 0
+  m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 0
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 24
   m_Viewport: {fileID: 6181584152270314453}
   m_HorizontalScrollbar: {fileID: 5884873978230398027}
   m_VerticalScrollbar: {fileID: 1101239077407022988}
@@ -2160,6 +2160,9 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: 7165af870280b1d48b34c98e81e129e8, type: 3}
   miniMapRouteParent: {fileID: 2166608681277666659}
   contentRouteParent: {fileID: 89060427212124258}
+  contentGrid: {fileID: 7444074867788366029}
+  contentSizeFitter: {fileID: 9219539525954383480}
+  contentScroll: {fileID: 972563683416304567}
   buildPipelineRouteParent: {fileID: 8537645691187659268}
   endGameUi: {fileID: 7647486351767425378}
 --- !u!225 &8287887705338463486
@@ -2410,8 +2413,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 940945678534877984}
   m_HandleRect: {fileID: 5469590829477310915}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2469,7 +2472,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4171747885681321468}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
   m_Name: 
@@ -3066,11 +3069,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6181584152270314453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0009987091, y: 0}
-  m_SizeDelta: {x: 0, y: -3.795}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &9219539525954383480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3083,8 +3086,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
-  m_VerticalFit: 0
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!114 &7444074867788366029
 MonoBehaviour:
   m_ObjectHideFlags: 0

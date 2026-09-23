@@ -94,6 +94,11 @@ namespace EmpireAtWar.Services.Factions
         {
             if (!_entityLocator.IsStationOperational(PlayerType.Player))
             {
+                if (unitRequest is MiningFacilityUnitRequest ||
+                    unitRequest is DefendPlatformUnitRequest)
+                {
+                    _model.ReleaseStructure(unitRequest);
+                }
                 _purchaseMediator.Value.RevertFlow(unitRequest);
                 return;
             }

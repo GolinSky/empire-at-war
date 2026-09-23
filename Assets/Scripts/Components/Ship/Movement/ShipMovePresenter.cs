@@ -53,6 +53,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         public bool IsBlocked => _model.IsBlocked;
         public float HyperSpaceDuration => _model.HyperSpaceDuration;
 
+        private Vector3 CurrentViewPosition => _view.Position;
+
+        private IShipMovementMediator MovementMediator => _movementMediator;
+
         public ShipMovePresenter(
             ShipMoveModel model,
             IShipMoveView view,
@@ -251,10 +255,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _view.SetSelected(isSelected, IsMoving);
         }
 
-        private Vector3 CurrentViewPosition => _view.Position;
-        private IShipMovementMediator MovementMediator =>
-            _movementMediator ?? throw new InvalidOperationException(
-                $"{nameof(ShipMovePresenter)} requires a movement mediator before receiving commands.");
+
 
         private void LookAt(Vector3 targetPosition)
         {
@@ -468,7 +469,5 @@ namespace EmpireAtWar.Components.Ship.Movement
                     }
                 });
         }
-
-
     }
 }

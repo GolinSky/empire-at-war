@@ -31,6 +31,7 @@ namespace EmpireAtWar.Services.Reinforcement
         ILateDisposable, IReinforcementChain, IObserver<BattleResult>
     {
         private readonly ReinforcementModel _model;
+        private readonly PlayerFactionModel _playerFactionModel;
         private readonly ReinforcementData _data;
         private readonly InputServiceImpl _inputService;
         private readonly ICameraService _cameraService;
@@ -53,6 +54,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public ReinforcementService(
             ReinforcementModel model,
+            PlayerFactionModel playerFactionModel,
             ReinforcementData data,
             InputServiceImpl inputService,
             ICameraService cameraService,
@@ -66,6 +68,7 @@ namespace EmpireAtWar.Services.Reinforcement
             INotifier<BattleResult> battleVictoryNotifier)
         {
             _model = model;
+            _playerFactionModel = playerFactionModel;
             _data = data;
             _inputService = inputService;
             _cameraService = cameraService;
@@ -143,10 +146,16 @@ namespace EmpireAtWar.Services.Reinforcement
                     _model.AddUnitCapacity(_currentShipType);
                     break;
                 case SpawnType.MiningFacility:
-                    _miningFacilityFacade.Create(PlayerType.Player, _currentFacilityType, spawnPosition);
+                    MiningFacilityType facilityType = _currentFacilityType;
+                    var facility = _miningFacilityFacade.Create(PlayerType.Player, facilityType, spawnPosition);
+                    facility.OnRelease += () =>
+                        _playerFactionModel.ReleaseStructure<MiningFacilityUnitRequest>(facilityType.ToString());
                     break;
                 case SpawnType.DefendPlatform:
-                    _defendPlatformFacade.Create(PlayerType.Player, _currentPlatformType, spawnPosition);
+                    DefendPlatformType platformType = _currentPlatformType;
+                    var platform = _defendPlatformFacade.Create(PlayerType.Player, platformType, spawnPosition);
+                    platform.OnRelease += () =>
+                        _playerFactionModel.ReleaseStructure<DefendPlatformUnitRequest>(platformType.ToString());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

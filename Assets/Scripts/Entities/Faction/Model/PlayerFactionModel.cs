@@ -30,6 +30,7 @@ namespace EmpireAtWar.Models.Factions
 
         private readonly PlayerFactionData _data;
         private readonly Dictionary<string, Queue<ProductionQueueItem>> _productionQueues = new();
+        private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
         private int _currentLevel = 1;
@@ -76,6 +77,13 @@ namespace EmpireAtWar.Models.Factions
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
+            if (IsStructureRequest(unitRequest) &&
+                GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
+                unitRequest.FactionData.MaxCount)
+            {
+                return false;
+            }
+
             if (!_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue))
             {
                 return unitRequest.FactionData.MaxCount > 0 &&
@@ -105,6 +113,11 @@ namespace EmpireAtWar.Models.Factions
             }
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
+            if (IsStructureRequest(unitRequest))
+            {
+                var key = (unitRequest.GetType(), unitRequest.Id);
+                _structureCounts[key] = GetStructureCount(unitRequest.GetType(), unitRequest.Id) + 1;
+            }
             NotifyProductionChanged();
         }
 
@@ -117,6 +130,10 @@ namespace EmpireAtWar.Models.Factions
             }
 
             unitRequest = queue.Dequeue().UnitRequest;
+            if (IsStructureRequest(unitRequest))
+            {
+                ReleaseStructure(unitRequest);
+            }
             if (queue.Count == 0)
             {
                 _productionQueues.Remove(id);
@@ -124,6 +141,41 @@ namespace EmpireAtWar.Models.Factions
 
             NotifyProductionChanged();
             return true;
+        }
+
+        public void ReleaseStructure(UnitRequest unitRequest)
+        {
+            ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
+        }
+
+        public void ReleaseStructure<TRequest>(string id) where TRequest : UnitRequest
+        {
+            ReleaseStructure(typeof(TRequest), id);
+        }
+
+        private void ReleaseStructure(Type requestType, string id)
+        {
+            var key = (requestType, id);
+            int count = _structureCounts[key];
+            if (count == 1)
+            {
+                _structureCounts.Remove(key);
+            }
+            else
+            {
+                _structureCounts[key] = count - 1;
+            }
+        }
+
+        private int GetStructureCount(Type requestType, string id)
+        {
+            return _structureCounts.TryGetValue((requestType, id), out int count) ? count : 0;
+        }
+
+        private static bool IsStructureRequest(UnitRequest unitRequest)
+        {
+            return unitRequest is MiningFacilityUnitRequest ||
+                unitRequest is DefendPlatformUnitRequest;
         }
 
         public void Advance(float deltaTime)

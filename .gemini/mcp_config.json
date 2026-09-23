@@ -7,6 +7,16 @@
         "F:\\Private\\empire-at-war\\EmpireAtWarDocumentation"
       ]
     },
+    "graphify": {
+      "command": "uvx",
+      "args": [
+        "--from", "graphifyy[mcp]==0.9.54",
+        "graphify-mcp", "graphify-out/graph.json"
+      ],
+      "env": {
+        "GRAPHIFY_QUERY_LOG_DISABLE": "1"
+      }
+    },
     "unity": {
       "command": "unity",
       "args": [
