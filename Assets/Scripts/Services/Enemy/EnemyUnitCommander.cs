@@ -56,15 +56,13 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor)
         {
-            _shipService = shipService ?? throw new ArgumentNullException(nameof(shipService));
-            _reinforcementZonesSystem = reinforcementZonesSystem ??
-                throw new ArgumentNullException(nameof(reinforcementZonesSystem));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
-            _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
-            _decisionModel = decisionModel ?? throw new ArgumentNullException(nameof(decisionModel));
-            _contextBuilder = contextBuilder ?? throw new ArgumentNullException(nameof(contextBuilder));
-            _taskForceExecutor = taskForceExecutor ??
-                throw new ArgumentNullException(nameof(taskForceExecutor));
+            _shipService = shipService;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _entityLocator = entityLocator;
+            _gameModel = gameModel;
+            _decisionModel = decisionModel;
+            _contextBuilder = contextBuilder;
+            _taskForceExecutor = taskForceExecutor;
         }
 
         public event Action<EnemyStrategicDecision> DecisionChanged;

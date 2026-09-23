@@ -30,10 +30,6 @@ namespace EmpireAtWar.Models.Economy
 
         public EconomyModel(EconomyData data, float startingMoney)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
 
             if (startingMoney <= 0f)
             {

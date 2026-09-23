@@ -77,17 +77,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
-            _shipService = shipService ??
-                throw new ArgumentNullException(nameof(shipService));
-            _data = data ?? throw new ArgumentNullException(nameof(data));
-            _repository = repository ??
-                throw new ArgumentNullException(nameof(repository));
-            _shipsData = shipsData ??
-                throw new ArgumentNullException(nameof(shipsData));
-            _mapModel = mapModel ??
-                throw new ArgumentNullException(nameof(mapModel));
-            _shipNavigationService = shipNavigationService ??
-                throw new ArgumentNullException(nameof(shipNavigationService));
+            _shipService = shipService;
+            _data = data;
+            _repository = repository;
+            _shipsData = shipsData;
+            _mapModel = mapModel;
+            _shipNavigationService = shipNavigationService;
             _playerFactionType = playerFactionType;
             _opponentFactionType = opponentFactionType;
         }

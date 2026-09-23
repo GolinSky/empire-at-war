@@ -34,13 +34,9 @@ namespace EmpireAtWar.Services.Enemy
             IReinforcementZonesSystem zones,
             ILayerService layerService)
         {
-            _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
-            _mapModel = mapModel ?? throw new ArgumentNullException(nameof(mapModel));
-            _zones = zones ?? throw new ArgumentNullException(nameof(zones));
-            if (layerService == null)
-            {
-                throw new ArgumentNullException(nameof(layerService));
-            }
+            _factionModel = factionModel;
+            _mapModel = mapModel;
+            _zones = zones;
 
             _obstacleMask = layerService.GetMask(LayerKey.Player, LayerKey.Enemy, LayerKey.Obstacle);
         }

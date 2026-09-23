@@ -24,10 +24,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public ProjectileEffectPool(BaseTurretView prefab, Transform owner, ProjectileData projectileData,
             float attackDistance, int maxIdle, Action<int> effectCompleted)
         {
-            _prefab = prefab ?? throw new ArgumentNullException(nameof(prefab));
-            _owner = owner ?? throw new ArgumentNullException(nameof(owner));
-            _projectileData = projectileData ?? throw new ArgumentNullException(nameof(projectileData));
-            _effectCompleted = effectCompleted ?? throw new ArgumentNullException(nameof(effectCompleted));
+            _prefab = prefab;
+            _owner = owner;
+            _projectileData = projectileData;
+            _effectCompleted = effectCompleted;
             _attackDistance = attackDistance;
             _maxIdle = maxIdle;
         }

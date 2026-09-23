@@ -53,7 +53,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
-            _layerService = layerService ?? throw new ArgumentNullException(nameof(layerService));
+            _layerService = layerService;
         }
 
         public IModel GetModel()

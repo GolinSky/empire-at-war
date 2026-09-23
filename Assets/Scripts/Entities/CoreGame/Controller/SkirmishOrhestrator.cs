@@ -65,7 +65,7 @@ namespace EmpireAtWar.Controllers.Game
             _mapModel = mapModel;
             _battleVictoryNotifier = battleVictoryNotifier;
             _playerFactionType = playerFactionType;
-            _selectionService = selectionService ?? throw new ArgumentNullException(nameof(selectionService));
+            _selectionService = selectionService;
             _gameTimeMode = GameTimeMode.Common;
             ChangeTime(_gameTimeMode);
         }

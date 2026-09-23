@@ -29,7 +29,7 @@ namespace EmpireAtWar.Ui.Base
         [Inject]
         public void Constructor(UiFacade uiFacade)
         {
-            _uiFacade = uiFacade ?? throw new ArgumentNullException(nameof(uiFacade));
+            _uiFacade = uiFacade;
         }
         
         public BaseUi CreateUi(UiType uiType)

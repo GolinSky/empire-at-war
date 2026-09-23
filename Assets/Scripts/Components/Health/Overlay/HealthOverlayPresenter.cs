@@ -33,15 +33,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             IInputService inputService,
             ICameraService cameraService)
         {
-            _view = view ?? throw new ArgumentNullException(nameof(view));
-            _selectionService = selectionService ??
-                throw new ArgumentNullException(nameof(selectionService));
-            _selectionSubject = selectionSubject ??
-                throw new ArgumentNullException(nameof(selectionSubject));
-            _selectionQuery = selectionQuery ??
-                throw new ArgumentNullException(nameof(selectionQuery));
-            _inputService = inputService ?? throw new ArgumentNullException(nameof(inputService));
-            _cameraService = cameraService ?? throw new ArgumentNullException(nameof(cameraService));
+            _view = view;
+            _selectionService = selectionService;
+            _selectionSubject = selectionSubject;
+            _selectionQuery = selectionQuery;
+            _inputService = inputService;
+            _cameraService = cameraService;
         }
 
         public void Initialize()

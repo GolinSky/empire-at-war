@@ -22,11 +22,9 @@ namespace EmpireAtWar.Presenters.Economy
             IEconomyModelObserver model,
             ISkirmishRouteNavigation routeNavigation)
         {
-            _uiService = uiService ??
-                throw new ArgumentNullException(nameof(uiService));
-            _model = model ?? throw new ArgumentNullException(nameof(model));
-            _routeNavigation = routeNavigation ??
-                throw new ArgumentNullException(nameof(routeNavigation));
+            _uiService = uiService;
+            _model = model;
+            _routeNavigation = routeNavigation;
         }
 
         public void Initialize()

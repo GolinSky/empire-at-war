@@ -21,9 +21,9 @@ namespace EmpireAtWar.Presenters.Cheats
             FactionsData factionsModel,
             ICheatService cheatService)
         {
-            _view = view ?? throw new ArgumentNullException(nameof(view));
-            _factionsModel = factionsModel ?? throw new ArgumentNullException(nameof(factionsModel));
-            _cheatService = cheatService ?? throw new ArgumentNullException(nameof(cheatService));
+            _view = view;
+            _factionsModel = factionsModel;
+            _cheatService = cheatService;
         }
 
         public void Initialize()

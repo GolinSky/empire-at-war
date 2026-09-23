@@ -73,9 +73,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
-            _structurePlacement = structurePlacement ??
-                throw new ArgumentNullException(nameof(structurePlacement));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
+            _structurePlacement = structurePlacement;
+            _entityLocator = entityLocator;
         }
         
 

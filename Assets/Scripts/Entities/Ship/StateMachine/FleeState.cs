@@ -20,13 +20,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             PlayerType playerType,
             IGameModelObserver gameModel)
         {
-            _shipMoveComponent = shipMoveComponent ??
-                throw new ArgumentNullException(nameof(shipMoveComponent));
-            _mapModel = mapModel ?? throw new ArgumentNullException(nameof(mapModel));
-            if (gameModel == null)
-            {
-                throw new ArgumentNullException(nameof(gameModel));
-            }
+            _shipMoveComponent = shipMoveComponent;
+            _mapModel = mapModel;
 
             _factionType = playerType switch
             {

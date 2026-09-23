@@ -55,7 +55,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             State = state;
             CommittedShipCount = committedShipCount;
-            Reason = reason ?? throw new ArgumentNullException(nameof(reason));
+            Reason = reason;
         }
 
         public EnemyStrategicState State { get; }

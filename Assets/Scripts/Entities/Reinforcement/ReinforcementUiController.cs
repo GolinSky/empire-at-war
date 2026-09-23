@@ -27,14 +27,11 @@ namespace EmpireAtWar.Presenters.Reinforcement
             ReinforcementData data,
             ISkirmishRouteNavigation routeNavigation)
         {
-            _uiService = uiService ??
-                throw new ArgumentNullException(nameof(uiService));
-            _reinforcementService = reinforcementService ??
-                throw new ArgumentNullException(nameof(reinforcementService));
-            _model = model ?? throw new ArgumentNullException(nameof(model));
-            _data = data ?? throw new ArgumentNullException(nameof(data));
-            _routeNavigation = routeNavigation ??
-                throw new ArgumentNullException(nameof(routeNavigation));
+            _uiService = uiService;
+            _reinforcementService = reinforcementService;
+            _model = model;
+            _data = data;
+            _routeNavigation = routeNavigation;
         }
 
         public void Initialize()

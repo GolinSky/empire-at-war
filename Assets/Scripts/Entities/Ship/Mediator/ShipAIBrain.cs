@@ -43,7 +43,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IGameModelObserver gameModel)
         {
             _stateMachine = stateMachine;
-            _healthModel = healthModel ?? throw new ArgumentNullException(nameof(healthModel));
+            _healthModel = healthModel;
             _radarComponent = radarComponent;
             _shipMoveComponent = shipMoveComponent;
             _attackTargetState = attackTargetState;

@@ -22,8 +22,8 @@ namespace EmpireAtWar.Services.Popup
 
         public PopupService(PopupUiFacade popupUiFacade, IUiService uiService)
         {
-            _popupUiFacade = popupUiFacade ?? throw new ArgumentNullException(nameof(popupUiFacade));
-            _uiService = uiService ?? throw new ArgumentNullException(nameof(uiService));
+            _popupUiFacade = popupUiFacade;
+            _uiService = uiService;
         }
 
         public void OpenPopup(PopupType popupType)
