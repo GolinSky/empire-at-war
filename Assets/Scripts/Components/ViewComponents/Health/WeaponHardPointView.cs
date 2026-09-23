@@ -5,6 +5,9 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace EmpireAtWar.ViewComponents.Health
 {
@@ -155,6 +158,32 @@ namespace EmpireAtWar.ViewComponents.Health
         }
 
 #if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            const float GIZMO_RADIUS = 2f;
+
+            Quaternion parentRotation = transform.parent == null ? Quaternion.identity : transform.parent.rotation;
+            Vector3 up = parentRotation * Vector3.up;
+            Vector3 forward = parentRotation * Vector3.forward;
+            float minYaw = Mathf.Clamp(MinYaw, -180f, 180f);
+            float maxYaw = Mathf.Clamp(MaxYaw, -180f, 180f);
+            if (maxYaw < minYaw)
+            {
+                return;
+            }
+
+            Vector3 startDirection = Quaternion.AngleAxis(minYaw, up) * forward;
+            Vector3 endDirection = Quaternion.AngleAxis(maxYaw, up) * forward;
+            Color previousColor = Handles.color;
+            Handles.color = new Color(0.2f, 1f, 0.3f, 0.18f);
+            Handles.DrawSolidArc(transform.position, up, startDirection, maxYaw - minYaw, GIZMO_RADIUS);
+            Handles.color = new Color(0.2f, 1f, 0.3f, 0.9f);
+            Handles.DrawWireArc(transform.position, up, startDirection, maxYaw - minYaw, GIZMO_RADIUS);
+            Handles.DrawLine(transform.position, transform.position + startDirection * GIZMO_RADIUS);
+            Handles.DrawLine(transform.position, transform.position + endDirection * GIZMO_RADIUS);
+            Handles.color = previousColor;
+        }
+
         public void SetWeaponType(WeaponType weaponType)
         {
             WeaponType = weaponType;
