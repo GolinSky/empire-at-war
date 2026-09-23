@@ -218,8 +218,7 @@ Edit `Assets/Scripts/Entities/CoreGame/Ui/CoreGameUi.cs`:
 2. Add these private fields: `ISkirmishSessionModelObserver _model;`, `ICoreGamePresenter _presenter;`, and `bool _isInitialized;`.
 3. Add `SetModel` and `SetPresenter` as plain assignments.
 4. In `Initialize()`:
-   - Throw `InvalidOperationException` if `_model` or `_presenter` is null (use the style of `ReinforcementUi`).
-   - Keep the existing content-scroll reference validation.
+   - Cover model and presenter setup and the content-scroll prefab binding in an EditMode test, without runtime null guards.
    - Add the button listeners: `timeButton` calls `_presenter.Play`, `speedUpButton` calls `_presenter.SpeedUp`, and `reinforcementButton` calls `_presenter.ToggleReinforcement`.
    - Subscribe with `_model.OnGameTimeModeChanged += UpdateSprites;`.
    - Call `UpdateSprites(_model.GameTimeMode);` once to render the initial state (fixes the stale-sprite issue).
@@ -252,13 +251,12 @@ Constructor dependencies (assign directly, with no null guards, per `AGENTS.md`)
 Fields: `_routes` (`Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>`), `_routeStates` (`Dictionary<SkirmishUiRoutePosition, bool>`), `ICoreGameUi _ui`, `EndGamePresenter _endGamePresenter`, and `ISelectionContext _lastSelectionContext`.
 
 `Initialize()`, in this order:
-1. `BaseUi ui = _uiService.CreateUi(UiType.CoreGame);`
-2. `_ui = ui as ICoreGameUi ?? throw new InvalidOperationException("The core game prefab does not implement ICoreGameUi.");`
-3. `_ui.SetModel(_sessionModel); _ui.SetPresenter(this); _ui.Initialize();`
-4. `_endGamePresenter = new EndGamePresenter(_battleVictoryNotifier, _ui.PrepareEndGameView(_uiService.PopupCanvasTransform), _skirmishFlow.ExitSkirmish);`
-5. `_selectionService.AddObserver(this);`
-6. Activate every buffered route using `IsRouteActive(position)`. Move this loop over unchanged from the orchestrator.
-7. `UpdateContentVisibility(null);`
+1. `_ui = (ICoreGameUi)_uiService.CreateUi(UiType.CoreGame);` The prefab type is covered by an EditMode test.
+2. `_ui.SetModel(_sessionModel); _ui.SetPresenter(this); _ui.Initialize();`
+3. `_endGamePresenter = new EndGamePresenter(_battleVictoryNotifier, _ui.PrepareEndGameView(_uiService.PopupCanvasTransform), _skirmishFlow.ExitSkirmish);`
+4. `_selectionService.AddObserver(this);`
+5. Activate every buffered route using `IsRouteActive(position)`. Move this loop over unchanged from the orchestrator.
+6. `UpdateContentVisibility(null);`
 
 `LateDispose()`:
 1. `_selectionService.RemoveObserver(this);`
@@ -364,6 +362,7 @@ Update or add EditMode tests. **Run them only if the user asks.**
   - `typeof(ISkirmishRouteNavigation).IsAssignableFrom(typeof(CoreGameUiController))`
   - `!typeof(ISkirmishRouteNavigation).IsAssignableFrom(typeof(SkirmishOrchestrator))`
   - `CoreGameUi` base type is exactly `BaseUi`, and it implements `ICoreGameUi`.
+  - The core game prefab has its required references assigned; setup renders the initial time sprites, forwards button clicks, and removes listeners on disposal.
 - New `SkirmishOrchestratorTests` (pure C#, using fakes for the notifiers, camera, map, and game command) covering:
   - `TogglePause` and `ToggleSpeedUp` transitions (the full truth table in §2, item 5).
   - Both are ignored after `UpdateState(BattleResult)`.

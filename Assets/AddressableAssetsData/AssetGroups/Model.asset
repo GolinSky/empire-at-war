@@ -120,11 +120,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c7c667c14d310a4499d62638ddd5c2f8
-    m_Address: CoreGameData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cec5011cf91f219438a8b647c98b2398
     m_Address: MenuData
     m_ReadOnly: 0
