@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
@@ -10,6 +11,7 @@ namespace EmpireAtWar.Views
     public class ShipGroupUi : BaseUi, IShipGroupUi
     {
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
+        [SerializeField] private ShipAbilityBarUi abilityBar;
 
         private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
         private IShipUiModelObserver _model;
@@ -19,10 +21,13 @@ namespace EmpireAtWar.Views
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
+        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots) =>
+            abilityBar.SetSlots(slots, _presenter.PressAbility);
 
         public void Initialize()
         {
             _model.OnSelectionChanged += UpdateVisibility;
+            abilityBar.SetModel(_model);
             _isInitialized = true;
             UpdateVisibility();
         }

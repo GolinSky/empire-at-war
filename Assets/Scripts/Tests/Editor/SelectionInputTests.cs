@@ -11,6 +11,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.ShipAbilities;
+using Zenject;
 using EmpireAtWar.Views.MiniMap;
 using NUnit.Framework;
 using UnityEngine;
@@ -35,7 +37,8 @@ namespace EmpireAtWar.Tests.Selection
                 inputService,
                 new EntityLocator(),
                 selectionQuery,
-                marqueeSelectionPresenter);
+                marqueeSelectionPresenter,
+                new ShipAbilityService(new ShipAbilityFactory(new DiContainer())));
             FakeSelectionCommand playerCommand =
                 new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand opponentCommand =

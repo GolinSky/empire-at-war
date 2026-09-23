@@ -37,6 +37,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
 
+        public void SetRouteSpeed(float speed) => _routeSpeed = speed;
+
         public ShipMovementTweenPlayer(
             Transform rootTransform,
             Transform bodyTransform,

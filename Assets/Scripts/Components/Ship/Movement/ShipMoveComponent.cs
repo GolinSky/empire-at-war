@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         [SerializeField] private bool logNavigationDecisions;
 
         private ICameraService _cameraService;
+        private CombatModifiers _modifiers;
         private Vector3 _startPosition;
         private PlayerType _playerType;
         private IMapModelObserver _mapModel;
@@ -60,9 +62,10 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector3 startPosition, PlayerType playerType, IMapModelObserver mapModel,
             IStationFacingService stationFacingService,
             IShipNavigationService shipNavigationService, FogOfWarSystem fogOfWarSystem,
-            IRadarModelObserver radarModel)
+            IRadarModelObserver radarModel, CombatModifiers modifiers)
         {
             SetModel(model);
+            _modifiers = modifiers;
             _cameraService = cameraService;
             startPosition.y = Model.Height;
             _startPosition = startPosition;
@@ -81,6 +84,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 throw new InvalidOperationException($"{name} has missing ship movement references.");
             _motion = new ShipMovementTweenPlayer(transform, bodyTransform,
                 lineRenderer, hyperSpaceEase);
+            _modifiers.Changed += UpdateRouteSpeed;
             if (!_shipNavigationService.TryResolveInitialFinalPosition(this,
                     _startPosition, _mapModel.SizeRange, HEIGHT_TOLERANCE,
                     out Vector3 resolvedPosition))
@@ -106,6 +110,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (_isReleased) return;
             _isReleased = true;
+            _modifiers.Changed -= UpdateRouteSpeed;
             if (_isNavigationRegistered)
             {
                 _shipNavigationService.Unregister(this);
@@ -286,5 +291,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                         Plan(plan.Destination);
                 });
         }
+
+        private void UpdateRouteSpeed() => _motion.SetRouteSpeed(Model.Speed);
     }
 }

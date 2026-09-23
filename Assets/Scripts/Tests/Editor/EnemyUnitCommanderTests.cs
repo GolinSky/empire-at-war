@@ -144,6 +144,33 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ExecuteRetreat_MovesEntireFleetTowardOwnBase()
+        {
+            FakeShip first = new FakeShip(Vector3.zero);
+            FakeShip second = new FakeShip(Vector3.right * 10f);
+            GameObject stationView = new GameObject("Station");
+            stationView.transform.position = new Vector3(160f, 0f, -170f);
+            FakeEntity station = new FakeEntity(1, PlayerType.Opponent,
+                new FakeHealthModel(stationView.transform));
+            try
+            {
+                new EnemyTaskForceExecutor().Execute(
+                    new EnemyStrategicDecision(EnemyStrategicState.RetreatValue, 1, "test"),
+                    new EnemyStrategicContext(default,
+                        new IShipEntity[] { first, second }, default, null, null, station));
+
+                Assert.That(first.AssignedMoveTarget, Is.Not.EqualTo(Vector3.zero));
+                Assert.That(second.AssignedMoveTarget, Is.Not.EqualTo(Vector3.zero));
+                Assert.That(first.AssignedAttackTarget, Is.Null);
+                Assert.That(second.AssignedAttackTarget, Is.Null);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        [Test]
         public void ExecuteHuntFleet_RemovedShip_DoesNotReassignSurvivorSlots()
         {
             FakeShip first = new FakeShip(Vector3.zero);

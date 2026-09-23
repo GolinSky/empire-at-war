@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Mvc;
 using NumericsQuaternion = System.Numerics.Quaternion;
 using NumericsVector3 = System.Numerics.Vector3;
@@ -11,9 +12,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         private const float POSITION_TOLERANCE = 0.05f;
         private readonly IShipMoveData _shipMoveData;
+        private readonly CombatModifiers _modifiers;
         private float _speedCoefficient = 1f;
 
-        public float Speed => _shipMoveData.Speed * _speedCoefficient;
+        public float Speed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
         public float Height => _shipMoveData.Height;
         public float RotationSpeed => _shipMoveData.RotationSpeed;
         public float TurnAcceleration => _shipMoveData.TurnAcceleration;
@@ -31,7 +33,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         public NumericsQuaternion StartRotation { get; private set; } = NumericsQuaternion.Identity;
         public NumericsVector3 HyperSpacePosition { get; private set; }
 
-        public ShipMoveModel(IShipMoveData shipMoveData) { _shipMoveData = shipMoveData; }
+        public ShipMoveModel(IShipMoveData shipMoveData, CombatModifiers modifiers)
+        {
+            _shipMoveData = shipMoveData;
+            _modifiers = modifiers;
+        }
 
         public void ConfigureSpawnPose(NumericsVector3 position,
             NumericsQuaternion rotation, bool useHyperSpaceEntry)

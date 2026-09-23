@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private Coroutine _shieldsAnimatedCoroutine;
         private bool _isReleased;
         private IEntityLifecycle _entityLifecycle;
+        private CombatModifiers _modifiers;
         private PlayerType _playerType;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
@@ -70,11 +72,13 @@ namespace EmpireAtWar.Components.Ship.Health
         [Inject]
         private void Construct(
             HealthModel model,
+            CombatModifiers modifiers,
             IEntityLifecycle entityLifecycle,
             PlayerType playerType,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
+            _modifiers = modifiers;
             _entityLifecycle = entityLifecycle;
             _playerType = playerType;
             _viewTransform = viewTransform;
@@ -147,6 +151,7 @@ namespace EmpireAtWar.Components.Ship.Health
             if (!Model.IsLostShieldGenerator && Model.Shields < _originShieldValue &&
                 _refreshShieldsTimer.IsComplete)
             {
+                Model.RegenerateShields(Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier);
                 _refreshShieldsTimer.StartTimer();
             }
         }

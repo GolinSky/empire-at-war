@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
@@ -538,7 +539,7 @@ namespace EmpireAtWar.Tests.Movement
             bool isReady = true)
         {
             navigationService = new RecordingShipNavigationService();
-            ShipMoveModel model = new ShipMoveModel(new FakeShipMoveData());
+            ShipMoveModel model = new ShipMoveModel(new FakeShipMoveData(), new CombatModifiers());
             if (isReady)
             {
                 model.FinishArrival();

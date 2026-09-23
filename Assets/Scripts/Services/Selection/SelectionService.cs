@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IEntityLocator _entityLocator;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IMarqueeSelectionPresenter _marqueeSelectionPresenter;
+        private readonly ShipAbilityService _abilityService;
         private readonly List<IObserver<ISelectionSubject>> _observers =
             new List<IObserver<ISelectionSubject>>();
         private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
@@ -48,12 +50,14 @@ namespace EmpireAtWar.Services.Battle
             IInputService inputService,
             IEntityLocator entityLocator,
             ISelectionQuery selectionQuery,
-            IMarqueeSelectionPresenter marqueeSelectionPresenter)
+            IMarqueeSelectionPresenter marqueeSelectionPresenter,
+            ShipAbilityService abilityService)
         {
             _inputService = inputService;
             _entityLocator = entityLocator;
             _selectionQuery = selectionQuery;
             _marqueeSelectionPresenter = marqueeSelectionPresenter;
+            _abilityService = abilityService;
         }
 
         public void Initialize()
@@ -154,6 +158,11 @@ namespace EmpireAtWar.Services.Battle
             if (_selectionQuery.TryFindAt(touchPosition, out SelectionEntry target) &&
                 target.Entity.PlayerType == PlayerType.Opponent)
             {
+                if (_abilityService.IsWaitingForTarget)
+                {
+                    _abilityService.SubmitTarget(target.Entity);
+                    return;
+                }
                 DispatchAttack(target.Entity);
             }
         }

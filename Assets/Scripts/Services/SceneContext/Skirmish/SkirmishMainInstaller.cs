@@ -20,6 +20,7 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -68,6 +69,9 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesNonLazyExt<MenuController>();
         
         Container.BindScriptableObject<ShipUiData>(Repository);
+        Container.BindScriptableObject<ShipAbilityCatalog>(Repository);
+        Container.Bind<IShipAbilityFactory>().To<ShipAbilityFactory>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ShipAbilityService>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();
         

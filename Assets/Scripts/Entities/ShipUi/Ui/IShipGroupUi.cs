@@ -1,4 +1,6 @@
 using EmpireAtWar.Models.Factions;
+using System.Collections.Generic;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
 using UnityEngine;
@@ -14,6 +16,7 @@ namespace EmpireAtWar.Views
         void Hide();
         void Initialize();
         void Dispose();
+        void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots);
         void ClearGroups();
         void AddGroup(ShipType shipType, Sprite icon, int amount, int visibleEntries);
     }

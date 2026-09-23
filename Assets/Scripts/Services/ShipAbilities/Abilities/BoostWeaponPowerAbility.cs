@@ -1,0 +1,21 @@
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Abilities;
+
+namespace EmpireAtWar.Services.ShipAbilities.Abilities
+{
+    public sealed class BoostWeaponPowerAbility : IShipAbility
+    {
+        private CombatModifiers _modifiers;
+        private CombatStatModifier _modifier;
+
+        public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
+        {
+            _modifiers = caster.Modifiers;
+            _modifier = definition.StatModifier;
+            _modifiers.Add(_modifier);
+        }
+
+        public void Stop() => _modifiers.Remove(_modifier);
+    }
+}

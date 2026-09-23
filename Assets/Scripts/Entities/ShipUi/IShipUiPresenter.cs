@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.ShipAbilities;
 
 namespace EmpireAtWar.Presenters.ShipUi
 {
@@ -6,5 +7,6 @@ namespace EmpireAtWar.Presenters.ShipUi
     {
         void CloseSelection();
         void SelectShipGroup(ShipType shipType);
+        void PressAbility(ShipAbilityId id);
     }
 }

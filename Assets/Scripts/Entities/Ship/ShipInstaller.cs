@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
@@ -8,6 +9,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
@@ -67,6 +69,7 @@ namespace EmpireAtWar.Ship
             }
 
             Container.Bind<WeaponModel>().AsSingle();
+            Container.Bind<CombatModifiers>().AsSingle();
         }
 
         protected override void BindModel()
@@ -113,6 +116,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
+            Container.BindInterfacesExt<ShipAbilityCommand>();
 
             switch (_playerType)
             {

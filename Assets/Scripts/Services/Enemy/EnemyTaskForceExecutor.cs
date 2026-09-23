@@ -60,6 +60,11 @@ namespace EmpireAtWar.Services.Enemy
                         context.OwnBase.HealthModel.Transform.position,
                         context.OwnBase);
                     return;
+                case EnemyStrategicState.RetreatValue:
+                    AssignFormationMove(context.Ships, context.Ships.Count,
+                        context.OwnBase.HealthModel.Transform.position,
+                        context.OwnBase);
+                    return;
                 case EnemyStrategicState.RebuildFleet:
                 case EnemyStrategicState.Hold:
                     HoldAll(context.Ships);

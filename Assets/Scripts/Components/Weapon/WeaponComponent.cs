@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Components.Weapon
         [SerializeField] private bool useWeaponDamageRange;
         
         private CombatAttackCoordinator _attackCoordinator;
+        private CombatModifiers _modifiers;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
@@ -50,9 +52,10 @@ namespace EmpireAtWar.Components.Weapon
 
 
         [Inject]
-        private void Construct(CombatAttackCoordinator attackCoordinator)
+        private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers)
         {
             _attackCoordinator = attackCoordinator;
+            _modifiers = modifiers;
         }
         
         public void Initialize()
@@ -297,14 +300,14 @@ namespace EmpireAtWar.Components.Weapon
 
             weapon.ApplyAim(ToQuaternion(result.SelectedAim));
             weapon.Attack(selectedCandidate.Group, selectedCandidate.Unit);
-            _nextFireTime = Time.time + Model.DelayBetweenAttack;
+            _nextFireTime = Time.time + Model.DelayBetweenAttack * _modifiers.FireDelayMultiplier;
         }
 
         internal void CommitTargetSelectionSerial(WeaponHardPointView weapon)
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
             if (!TryFireWeapon(weapon)) return;
-            _nextFireTime = Time.time + Model.DelayBetweenAttack;
+            _nextFireTime = Time.time + Model.DelayBetweenAttack * _modifiers.FireDelayMultiplier;
         }
 
         private void Subscribe(AttackData group)
@@ -421,7 +424,7 @@ namespace EmpireAtWar.Components.Weapon
         
         private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
         {
-            attackData.ApplyDamage(Model.GetDamage(weaponType,distance), weaponType, id);
+            attackData.ApplyDamage(Model.GetDamage(weaponType,distance) * _modifiers.DamageMultiplier, weaponType, id);
         }
         private float GetDistance(Vector3 targetPosition) =>
             Vector3.Distance(attackOrigin == null ? transform.position : attackOrigin.position, targetPosition);
