@@ -36,7 +36,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isTurningToRoute;
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
-        public bool IsTurningToRoute => _isTurningToRoute;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,

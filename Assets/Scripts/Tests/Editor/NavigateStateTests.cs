@@ -43,7 +43,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(FakeShipMoveComponent);
             public Vector3 CurrentPosition => Vector3.zero;
-            public Transform ViewTransform => null;
             public bool IsMoving => false;
             public bool IsBlocked => false;
             public float NavigationRadius => 1f;
@@ -51,11 +50,6 @@ namespace EmpireAtWar.Tests.Editor
             public float HyperSpaceDuration => 0f;
             public Vector3 LastWorldDestination { get; private set; }
             public int WorldMoveCount { get; private set; }
-
-            public Vector3 CalculateLookDirection(Vector3 targetPosition)
-            {
-                return Vector3.zero;
-            }
 
             public void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false)
             {
