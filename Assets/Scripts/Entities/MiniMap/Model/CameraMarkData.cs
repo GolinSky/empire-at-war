@@ -1,25 +1,21 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace EmpireAtWar.Models.MiniMap
 {
-    public class CameraMarkData : DynamicMarkData
+    public sealed class CameraMarkData
     {
-        private Vector3 _position;
-        
-        public override Vector3 Position
+        private readonly List<(float X, float Z)> _vertices = new List<(float X, float Z)>(10);
+
+        public IReadOnlyList<(float X, float Z)> Vertices => _vertices;
+
+        public void Clear()
         {
-            get
-            {
-                _position = Transform.position;
-                
-                double b = _position.y * Mathf.Sin(Transform.rotation.eulerAngles.x); 
-                _position.z -= (float)b;
-                return _position;
-            }
+            _vertices.Clear();
         }
 
-        public CameraMarkData(Vector3 position, Sprite icon, Transform transform) : base(position, icon, transform)
+        public void AddVertex(float x, float z)
         {
+            _vertices.Add((x, z));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace EmpireAtWar.Controllers.MiniMap
     }
 
     public class MiniMapController : Controller<MiniMapData>, IMiniMapCommand,
-        IInitializable, ILateDisposable, IObserver<ISelectionSubject>,
+        IInitializable, ILateTickable, ILateDisposable, IObserver<ISelectionSubject>,
         ISkirmishUiRoute
     {
         private readonly ICameraService _cameraService;
@@ -61,12 +61,23 @@ namespace EmpireAtWar.Controllers.MiniMap
         {
             _selectionService.AddObserver(this);
             _inputService.OnBlocked += UpdateBlockState;
-            Model.AddMark(MarkType.Camera, _cameraService.CameraTransform);
+            LateTick();
             _routeNavigation.RegisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
                 this);
         }
         
+        public void LateTick()
+        {
+            Model.CameraMark.Clear();
+            var footprint = _cameraService.GetGroundFootprint(Model.MapRange.Min, Model.MapRange.Max);
+            for (int i = 0; i < footprint.Count; i++)
+            {
+                Vector3 point = footprint[i];
+                Model.CameraMark.AddVertex(point.x, point.z);
+            }
+        }
+
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
