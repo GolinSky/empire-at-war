@@ -21,10 +21,6 @@ namespace EmpireAtWar.Services.StationFacing
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
-            if (mapModel == null)
-            {
-                throw new ArgumentNullException(nameof(mapModel));
-            }
 
             Vector3 playerToOpponent =
                 mapModel.GetStationPosition(opponentFactionType) -

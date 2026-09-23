@@ -29,7 +29,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public ShipMoveModel(IShipMoveData shipMoveData)
         {
-            _shipMoveData = shipMoveData ?? throw new ArgumentNullException(nameof(shipMoveData));
+            _shipMoveData = shipMoveData;
         }
 
         public void ConfigureSpawnPose(

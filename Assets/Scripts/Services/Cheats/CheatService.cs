@@ -33,14 +33,11 @@ namespace EmpireAtWar.Services.Cheats
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator)
         {
-            _economyModel = economyModel ?? throw new ArgumentNullException(nameof(economyModel));
-            _reinforcementModel = reinforcementModel ??
-                throw new ArgumentNullException(nameof(reinforcementModel));
-            _shipFacadeFactory = shipFacadeFactory ??
-                throw new ArgumentNullException(nameof(shipFacadeFactory));
-            _reinforcementZonesSystem = reinforcementZonesSystem ??
-                throw new ArgumentNullException(nameof(reinforcementZonesSystem));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
+            _economyModel = economyModel;
+            _reinforcementModel = reinforcementModel;
+            _shipFacadeFactory = shipFacadeFactory;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _entityLocator = entityLocator;
         }
 
         public void AddMoney(float amount)

@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity ownBase)
         {
             Snapshot = snapshot;
-            Ships = ships ?? throw new ArgumentNullException(nameof(ships));
+            Ships = ships;
             CaptureTarget = captureTarget;
             EnemyFleetTarget = enemyFleetTarget;
             EnemyBaseTarget = enemyBaseTarget;
@@ -55,11 +55,10 @@ namespace EmpireAtWar.Services.Enemy
             IEntityLocator entityLocator,
             IGameModelObserver gameModel)
         {
-            _shipService = shipService ?? throw new ArgumentNullException(nameof(shipService));
-            _reinforcementZonesSystem = reinforcementZonesSystem ??
-                throw new ArgumentNullException(nameof(reinforcementZonesSystem));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
-            _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
+            _shipService = shipService;
+            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _entityLocator = entityLocator;
+            _gameModel = gameModel;
         }
 
         public EnemyStrategicContext Build()

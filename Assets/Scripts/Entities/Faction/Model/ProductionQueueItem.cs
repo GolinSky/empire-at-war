@@ -7,7 +7,7 @@ namespace EmpireAtWar.Models.Factions
     {
         public ProductionQueueItem(UnitRequest unitRequest)
         {
-            UnitRequest = unitRequest ?? throw new ArgumentNullException(nameof(unitRequest));
+            UnitRequest = unitRequest;
             RemainingBuildTime = unitRequest.FactionData.BuildTime;
         }
 

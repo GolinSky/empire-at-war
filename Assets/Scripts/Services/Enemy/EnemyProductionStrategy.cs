@@ -45,19 +45,17 @@ namespace EmpireAtWar.Services.Enemy
             IEnemyStructurePlacementService structurePlacementService,
             IEntityLocator entityLocator)
         {
-            _factionModel = factionModel ?? throw new ArgumentNullException(nameof(factionModel));
-            _purchaseProcessor = purchaseProcessor ?? throw new ArgumentNullException(nameof(purchaseProcessor));
-            _requestFactory = requestFactory ?? throw new ArgumentNullException(nameof(requestFactory));
-            _economyModel = economyModel ?? throw new ArgumentNullException(nameof(economyModel));
-            _stateProvider = stateProvider ?? throw new ArgumentNullException(nameof(stateProvider));
-            _gameModel = gameModel ?? throw new ArgumentNullException(nameof(gameModel));
-            _decisionModel = decisionModel ?? throw new ArgumentNullException(nameof(decisionModel));
-            _unitLimitModel = unitLimitModel ?? throw new ArgumentNullException(nameof(unitLimitModel));
-            _reinforcementData = reinforcementData ??
-                throw new ArgumentNullException(nameof(reinforcementData));
-            _structurePlacementService = structurePlacementService ??
-                throw new ArgumentNullException(nameof(structurePlacementService));
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
+            _factionModel = factionModel;
+            _purchaseProcessor = purchaseProcessor;
+            _requestFactory = requestFactory;
+            _economyModel = economyModel;
+            _stateProvider = stateProvider;
+            _gameModel = gameModel;
+            _decisionModel = decisionModel;
+            _unitLimitModel = unitLimitModel;
+            _reinforcementData = reinforcementData;
+            _structurePlacementService = structurePlacementService;
+            _entityLocator = entityLocator;
         }
 
         public void Start()

@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.Factions
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
-            _entityLocator = entityLocator ?? throw new System.ArgumentNullException(nameof(entityLocator));
+            _entityLocator = entityLocator;
         }
 
         public void Initialize()

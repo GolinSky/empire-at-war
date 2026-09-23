@@ -54,10 +54,8 @@ namespace EmpireAtWar.Controllers.ShipUi
             _inputService = inputService;
             _cameraService = cameraService;
             _layerService = layerService;
-            _selectionQuery = selectionQuery ??
-                throw new System.ArgumentNullException(nameof(selectionQuery));
-            _routeNavigation = routeNavigation ??
-                throw new System.ArgumentNullException(nameof(routeNavigation));
+            _selectionQuery = selectionQuery;
+            _routeNavigation = routeNavigation;
         }
 
         public void Initialize()

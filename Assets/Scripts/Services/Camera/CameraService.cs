@@ -51,8 +51,8 @@ namespace EmpireAtWar.Services.Camera
         [Inject]
         public void Constructor(CameraData cameraData, IInputService inputService)
         {
-            _cameraData = cameraData ?? throw new ArgumentNullException(nameof(cameraData));
-            _inputService = inputService ?? throw new ArgumentNullException(nameof(inputService));
+            _cameraData = cameraData;
+            _inputService = inputService;
         }
 
         private void Awake()

@@ -75,7 +75,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
-            _entityLocator = entityLocator ?? throw new ArgumentNullException(nameof(entityLocator));
+            _entityLocator = entityLocator;
             _battleVictoryNotifier = battleVictoryNotifier;
         }
 

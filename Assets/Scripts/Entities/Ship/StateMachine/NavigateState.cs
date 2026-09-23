@@ -15,8 +15,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public NavigateState(IShipMoveComponent shipMoveComponent)
         {
-            _shipMoveComponent = shipMoveComponent ??
-                throw new ArgumentNullException(nameof(shipMoveComponent));
+            _shipMoveComponent = shipMoveComponent;
         }
 
         public void SetWorldDestination(Vector3 destination)

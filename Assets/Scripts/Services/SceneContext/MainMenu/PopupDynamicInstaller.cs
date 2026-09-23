@@ -17,11 +17,9 @@ namespace EmpireAtWar
             PopupType popupType,
             Transform popupParent)
         {
-            _repository = repository ?? throw new System.ArgumentNullException(nameof(repository));
+            _repository = repository;
             _popupType = popupType;
-            _popupParent = popupParent != null
-                ? popupParent
-                : throw new System.ArgumentNullException(nameof(popupParent));
+            _popupParent = popupParent;
         }
     
         public override void InstallBindings()

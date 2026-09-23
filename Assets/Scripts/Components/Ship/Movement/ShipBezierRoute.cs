@@ -52,10 +52,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public ShipBezierRoute(IReadOnlyList<CubicBezierSegment> segments)
         {
-            if (segments == null)
-            {
-                throw new ArgumentNullException(nameof(segments));
-            }
 
             if (segments.Count == 0)
             {

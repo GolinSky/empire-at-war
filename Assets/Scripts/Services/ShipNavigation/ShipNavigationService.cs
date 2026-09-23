@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             Destination = destination;
             Detour = detour;
-            Route = route ?? throw new ArgumentNullException(nameof(route));
+            Route = route;
             TurnDuration = turnDuration;
             MovementDuration = movementDuration;
             IsStationary = isStationary;
@@ -94,9 +94,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public ShipNavigationService(
             IMapObstacleContactProvider mapObstacleContactProvider)
         {
-            _mapObstacleContactProvider = mapObstacleContactProvider ??
-                throw new ArgumentNullException(
-                    nameof(mapObstacleContactProvider));
+            _mapObstacleContactProvider = mapObstacleContactProvider;
         }
 
         public ShipNavigationPlan Plan(

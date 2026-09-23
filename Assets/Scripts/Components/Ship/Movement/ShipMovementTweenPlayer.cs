@@ -34,12 +34,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             Ease lookAtEase,
             Ease hyperSpaceEase)
         {
-            _rootTransform = rootTransform ??
-                throw new ArgumentNullException(nameof(rootTransform));
-            _bodyTransform = bodyTransform ??
-                throw new ArgumentNullException(nameof(bodyTransform));
-            _lineRenderer = lineRenderer ??
-                throw new ArgumentNullException(nameof(lineRenderer));
+            _rootTransform = rootTransform;
+            _bodyTransform = bodyTransform;
+            _lineRenderer = lineRenderer;
             _lookAtEase = lookAtEase;
             _hyperSpaceEase = hyperSpaceEase;
             _bodyRestRotation = _bodyTransform.localRotation;

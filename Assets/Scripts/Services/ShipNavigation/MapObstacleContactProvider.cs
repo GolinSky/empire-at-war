@@ -23,8 +23,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public MapObstacleContactProvider(
             List<IMapObstacleContactSource> sources)
         {
-            _sources = sources ??
-                throw new ArgumentNullException(nameof(sources));
+            _sources = sources;
         }
 
         public void CopyContacts(List<RadarContact> destination)

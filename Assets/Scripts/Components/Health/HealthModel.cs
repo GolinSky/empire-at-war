@@ -35,8 +35,8 @@ namespace EmpireAtWar.Models.Health
 
         public HealthModel(IHealthData data, IDamageCalculator damageCalculator)
         {
-            _data = data ?? throw new ArgumentNullException(nameof(data));
-            _damageCalculator = damageCalculator ?? throw new ArgumentNullException(nameof(damageCalculator));
+            _data = data;
+            _damageCalculator = damageCalculator;
             Armor = data.Armor;
             _armorBaseValue = Armor;
             Shields = data.Shields;

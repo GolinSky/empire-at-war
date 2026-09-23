@@ -24,8 +24,8 @@ namespace EmpireAtWar.Models.Health
 
         public HardPointAdapter(HardPointModel model, IHardPointView view)
         {
-            _model = model ?? throw new ArgumentNullException(nameof(model));
-            _view = view ?? throw new ArgumentNullException(nameof(view));
+            _model = model;
+            _view = view;
             _wasDestroyed = _model.IsDestroyed;
 
             _model.OnHardPointHealthChanged += HandleHealthChanged;

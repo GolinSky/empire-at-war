@@ -25,14 +25,10 @@ namespace EmpireAtWar.Presenters.Factions
             IPlayerFactionModelObserver model,
             ISkirmishRouteNavigation routeNavigation)
         {
-            _uiService = uiService ??
-                throw new ArgumentNullException(nameof(uiService));
-            _factionService = factionService ??
-                throw new ArgumentNullException(nameof(factionService));
-            _model = model ??
-                throw new ArgumentNullException(nameof(model));
-            _routeNavigation = routeNavigation ??
-                throw new ArgumentNullException(nameof(routeNavigation));
+            _uiService = uiService;
+            _factionService = factionService;
+            _model = model;
+            _routeNavigation = routeNavigation;
         }
 
         public void Initialize()
