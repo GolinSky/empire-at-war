@@ -27,6 +27,7 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
+        [SerializeField] private CameraFootprintView cameraFootprintView;
 
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
@@ -37,16 +38,17 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void Initialize()
         {
+            if (cameraFootprintView == null)
+                throw new System.InvalidOperationException("The minimap requires an assigned camera footprint view.");
             _mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
-            AddDynamicMark(Model.CameraMark);
+            cameraFootprintView.SetData(Model.CameraMark, Model.MapRange);
             foreach (MiniMapMarker marker in Model.Markers)
             {
                 AddMarker(marker);
             }
             Model.OnMarkAdded += AddMark;
-            Model.OnDynamicMarkAdded += AddDynamicMark;
             Model.OnMarkerAdded += AddMarker;
             Model.OnMarkerRemoved += RemoveMarker;
             Model.OnInteractableChanged += ActivateInteraction;
@@ -55,10 +57,10 @@ namespace EmpireAtWar.Views.MiniMap
         public void LateDispose()
         {
             Model.OnMarkAdded -= AddMark;
-            Model.OnDynamicMarkAdded -= AddDynamicMark;
             Model.OnMarkerAdded -= AddMarker;
             Model.OnMarkerRemoved -= RemoveMarker;
             Model.OnInteractableChanged -= ActivateInteraction;
+            cameraFootprintView.DOKill();
         }
 
         private void ActivateInteraction(bool isActive)
@@ -78,13 +80,6 @@ namespace EmpireAtWar.Views.MiniMap
                     ? new Color(0.15f, 0.65f, 1f)
                     : new Color(1f, 0.2f, 0.15f);
             }
-            _mapMarkers.Add(view.IconImage);
-        }
-
-        private void AddDynamicMark(DynamicMarkData dynamicMarkData)
-        {
-            MarkView view = Instantiate(Model.MarkViewPrefab);
-            view.SetData(this, iconParent, dynamicMarkData);
             _mapMarkers.Add(view.IconImage);
         }
 
@@ -197,6 +192,7 @@ namespace EmpireAtWar.Views.MiniMap
 
         private void DoFade(float alpha, float duration)
         {
+            cameraFootprintView.DOFade(alpha, duration);
             for (var i = 0; i < _mapMarkers.Count; i++)
             {
                 _mapMarkers[i].DOFade(alpha, duration);

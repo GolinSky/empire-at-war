@@ -91,6 +91,12 @@ namespace EmpireAtWar.Tests.Selection
             Image mapImage = gameObject.GetComponent<Image>();
             mapImage.color = Color.white;
             MiniMapUi miniMapUi = gameObject.GetComponent<MiniMapUi>();
+            GameObject footprintObject = new GameObject("CameraFootprint", typeof(RectTransform));
+            footprintObject.transform.SetParent(gameObject.transform, false);
+            CameraFootprintView footprintView = footprintObject.AddComponent<CameraFootprintView>();
+            FieldInfo footprintField = typeof(MiniMapUi).GetField(
+                "cameraFootprintView",
+                BindingFlags.Instance | BindingFlags.NonPublic);
             FieldInfo mapImageField = typeof(MiniMapUi).GetField(
                 "mapImage",
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -99,11 +105,13 @@ namespace EmpireAtWar.Tests.Selection
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.That(mapImageField, Is.Not.Null);
+            Assert.That(footprintField, Is.Not.Null);
             Assert.That(activateInteractionMethod, Is.Not.Null);
 
             try
             {
                 mapImageField.SetValue(miniMapUi, mapImage);
+                footprintField.SetValue(miniMapUi, footprintView);
                 activateInteractionMethod.Invoke(miniMapUi, new object[] { false });
                 DOTween.Complete(mapImage);
 
@@ -112,6 +120,7 @@ namespace EmpireAtWar.Tests.Selection
             finally
             {
                 DOTween.Kill(mapImage);
+                DOTween.Kill(footprintView);
                 UnityEngine.Object.DestroyImmediate(gameObject);
             }
         }

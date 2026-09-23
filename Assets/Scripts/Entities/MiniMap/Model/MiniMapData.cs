@@ -12,7 +12,6 @@ namespace EmpireAtWar.Models.MiniMap
     {
         event Action<bool> OnInteractableChanged;
         event Action<MarkData> OnMarkAdded;
-        event Action<DynamicMarkData> OnDynamicMarkAdded;
         event Action<MiniMapMarker> OnMarkerAdded;
         event Action<MiniMapMarker> OnMarkerRemoved;
         
@@ -20,7 +19,7 @@ namespace EmpireAtWar.Models.MiniMap
         Vector2Range MapRange { get; }
         MarkData PlayerBase { get; }
         MarkData EnemyBase { get; }
-        DynamicMarkData CameraMark { get;}
+        CameraMarkData CameraMark { get;}
         IReadOnlyList<MiniMapMarker> Markers { get; }
         bool IsInputBlocked { get; }
         Sprite GetIcon(MarkType markType);
@@ -31,13 +30,12 @@ namespace EmpireAtWar.Models.MiniMap
     {
         public event Action<bool> OnInteractableChanged;
         public event Action<MarkData> OnMarkAdded;
-        public event Action<DynamicMarkData> OnDynamicMarkAdded;
         public event Action<MiniMapMarker> OnMarkerAdded;
         public event Action<MiniMapMarker> OnMarkerRemoved;
         public Vector2Range MapRange { get; set; }
         public MarkData PlayerBase { get; private set; }
         public MarkData EnemyBase { get; private set; }
-        public DynamicMarkData CameraMark { get; private set; }
+        public CameraMarkData CameraMark { get; } = new CameraMarkData();
         public IReadOnlyList<MiniMapMarker> Markers => _markers;
 
         private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
@@ -68,17 +66,6 @@ namespace EmpireAtWar.Models.MiniMap
         }
 
         
-        public void AddMark(MarkType markType, Transform transform)
-        {
-            Sprite icon = GetIcon(markType);
-            if (markType == MarkType.Camera)
-            {
-                CameraMark = new CameraMarkData(transform.position, icon, transform);
-                return;
-            }
-            OnMarkAdded?.Invoke(new DynamicMarkData(transform.position, icon, transform));
-        }
-
         public void AddMarker(MiniMapMarker marker)
         {
             _markers.Add(marker);

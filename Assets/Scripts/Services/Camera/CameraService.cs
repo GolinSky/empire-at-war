@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Services.Camera
         float FieldOfView { get; }
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
         Vector2 WorldToScreenPoint(Vector3 position);
+        IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax);
         void MoveTo(Vector3 worldPoint);
     }
 
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Services.Camera
         private Tween _moveTween;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
+        private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
 
         public string Id => nameof(CameraService);
 
@@ -39,6 +42,11 @@ namespace EmpireAtWar.Services.Camera
         public Transform CameraTransform => transform;
         public Vector3 CameraForward => transform.forward;
         public float FieldOfView => _camera.fieldOfView;
+
+        public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
+        {
+            return _frustumProjection.Project(_camera, mapMin, mapMax);
+        }
 
         [Inject]
         public void Constructor(CameraData cameraData, IInputService inputService)
