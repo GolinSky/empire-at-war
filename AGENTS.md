@@ -2,6 +2,10 @@
 
 These instructions apply to every AI coding agent working in this repository, including Codex, Claude, Gemini, and Antigravity agents.
 
+## Final Response
+
+- End each task with a short, plain-language summary of what was done so the user can review it quickly. Include verification results or blockers only when relevant.
+
 ## Authority and Configuration Ownership
 
 Apply project guidance in this order:
