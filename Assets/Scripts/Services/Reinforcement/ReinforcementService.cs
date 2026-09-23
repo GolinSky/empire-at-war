@@ -248,6 +248,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private UnitSpawnView CreateSpawnView(UnitSpawnView prefab)
         {
             UnitSpawnView spawnView = Object.Instantiate(prefab);
+            spawnView.UpdatePosition(spawnView.Position);
             spawnView.SetRotation(_stationFacingService.GetRotation(PlayerType.Player));
             return spawnView;
         }
