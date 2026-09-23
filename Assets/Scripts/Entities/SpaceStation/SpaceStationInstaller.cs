@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -43,6 +44,7 @@ namespace EmpireAtWar.SpaceStation
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
             Container.Bind<WeaponModel>().AsSingle();
+            Container.Bind<CombatModifiers>().AsSingle();
         }
 
         protected override void BindComponents()

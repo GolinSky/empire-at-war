@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Combat;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Models.Health
 
         private readonly IHealthData _data;
         private readonly IDamageCalculator _damageCalculator;
+        private readonly CombatModifiers _modifiers;
         private readonly float _armorBaseValue;
         private readonly float _shieldsBaseValue;
 
@@ -33,10 +35,12 @@ namespace EmpireAtWar.Models.Health
         public bool IsLostShieldGenerator { get; private set; }
         public bool HasUnits => HardPointModels.Any(hardPoint => !hardPoint.IsDestroyed);
 
-        public HealthModel(IHealthData data, IDamageCalculator damageCalculator)
+        public HealthModel(IHealthData data, IDamageCalculator damageCalculator,
+            CombatModifiers modifiers)
         {
             _data = data;
             _damageCalculator = damageCalculator;
+            _modifiers = modifiers;
             Armor = data.Armor;
             _armorBaseValue = Armor;
             Shields = data.Shields;
@@ -93,6 +97,8 @@ namespace EmpireAtWar.Models.Health
                 return;
             }
 
+            damage *= _modifiers.DamageTakenMultiplier;
+            if (damage == 0f) return;
             DamageData damageData = _damageCalculator.GetDamage(weaponType, this, isMoving, damage);
             Shields -= damageData.ShieldDamage;
             Armor -= damageData.ArmorDamage;
@@ -133,7 +139,7 @@ namespace EmpireAtWar.Models.Health
 
         public void RegenerateShields(float value)
         {
-            Shields += value;
+            Shields = Math.Min(_shieldsBaseValue, Shields + value);
             OnValueChanged?.Invoke();
         }
 

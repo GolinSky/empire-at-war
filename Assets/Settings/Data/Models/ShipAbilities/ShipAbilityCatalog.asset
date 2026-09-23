@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a447c3ba6ca3cfa43b447f6961dec380, type: 3}
+  m_Name: ShipAbilityCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog
+  definitions:
+    keyValue:
+    - key: 1
+      value:
+        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        displayName: Proton Beam
+        duration: 8
+        recoveryDelay: 50
+        canCancel: 0
+        requiresEnemyTarget: 1
+        range: 170
+        aiUse: 2
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+        beamDamage: 1500
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 6412485944876309358, guid: 780f1218e5d028940ad44de6c840896d,
+          type: 3}
+        commandRadius: 0
+    - key: 2
+      value:
+        icon: {fileID: 21300000, guid: 5491174c7918a494cb8e2898869953fd, type: 3}
+        displayName: Invulnerability
+        duration: 8
+        recoveryDelay: 60
+        canCancel: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 0
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 0
+    - key: 3
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Boost Shield Power
+        duration: 15
+        recoveryDelay: 40
+        canCancel: 1
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        statModifier:
+          damageMultiplier: 0.75
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.75
+          shieldRegenMultiplier: 2
+          damageTakenMultiplier: 1
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 0
+    - key: 4
+      value:
+        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
+        displayName: Boost Engine Power
+        duration: 12
+        recoveryDelay: 35
+        canCancel: 1
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        statModifier:
+          damageMultiplier: 0.8
+          fireDelayMultiplier: 1
+          speedMultiplier: 1.5
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 0
+    - key: 5
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Boost Weapon Power
+        duration: 12
+        recoveryDelay: 40
+        canCancel: 1
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        statModifier:
+          damageMultiplier: 1.5
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1.25
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 0
+    - key: 6
+      value:
+        icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
+        displayName: Assault
+        duration: 10
+        recoveryDelay: 45
+        canCancel: 0
+        requiresEnemyTarget: 1
+        range: 140
+        aiUse: 2
+        statModifier:
+          damageMultiplier: 2
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 0
+    - key: 7
+      value:
+        icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
+        displayName: Concentrate Fire
+        duration: 12
+        recoveryDelay: 60
+        canCancel: 0
+        requiresEnemyTarget: 1
+        range: 170
+        aiUse: 2
+        statModifier:
+          damageMultiplier: 1.25
+          fireDelayMultiplier: 0.8
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+        beamDamage: 0
+        beamWeaponType: 2
+        beamViewPrefab: {fileID: 0}
+        commandRadius: 200

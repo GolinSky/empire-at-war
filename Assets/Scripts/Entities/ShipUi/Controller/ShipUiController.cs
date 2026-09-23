@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
@@ -28,8 +30,10 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly ILayerService _layerService;
         private readonly ISelectionQuery _selectionQuery;
         private readonly ShipUiModel _model;
+        private readonly ShipAbilityService _abilityService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly List<IMoveCommand> _moveCommands = new List<IMoveCommand>();
+        private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
         private readonly List<float> _formationRadii = new List<float>();
         private readonly List<FormationPoint> _formationDestinations = new List<FormationPoint>();
@@ -47,7 +51,8 @@ namespace EmpireAtWar.Controllers.ShipUi
             ILayerService layerService,
             ISelectionQuery selectionQuery,
             ShipUiModel model,
-            ISkirmishRouteNavigation routeNavigation)
+            ISkirmishRouteNavigation routeNavigation,
+            ShipAbilityService abilityService)
         {
             _uiService = uiService;
             _selectionService = selectionService;
@@ -57,6 +62,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionQuery = selectionQuery;
             _model = model;
             _routeNavigation = routeNavigation;
+            _abilityService = abilityService;
         }
 
         public void Initialize()
@@ -64,6 +70,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.AddObserver(this);
             _inputService.OnInput += HandleInput;
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.Content, this);
+            _abilityService.TargetingChanged += UpdateTargeting;
         }
 
         public void LateDispose()
@@ -71,6 +78,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.RemoveObserver(this);
             _inputService.OnInput -= HandleInput;
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.Content, this);
+            _abilityService.TargetingChanged -= UpdateTargeting;
             if (_shipUi != null)
             {
                 _shipUi.Dispose();
@@ -116,6 +124,12 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.SelectCurrentShipsByType(shipType);
         }
 
+        public void PressAbility(ShipAbilityId id) =>
+            _abilityService.Press(_playerSelectionContext.Entities, id);
+
+        private void UpdateTargeting() => _model.SetPendingAbility(
+            _abilityService.IsWaitingForTarget ? _abilityService.PendingAbilityId : (ShipAbilityId?)null);
+
         public void UpdateState(ISelectionSubject subject)
         {
             if (subject.UpdatedType != PlayerType.Player)
@@ -124,6 +138,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             _playerSelectionContext = subject.PlayerSelectionContext;
+            _abilityService.CancelTargeting();
             UpdateSelection();
         }
 
@@ -150,6 +165,20 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             bool hasGroup = _model.HasShips && _playerSelectionContext.Count > 1;
+
+            _abilitySlots.Clear();
+            if (_model.HasShips)
+            {
+                foreach (var entity in _playerSelectionContext.Entities)
+                {
+                    if (entity.HealthModel.IsDestroyed ||
+                        !entity.TryGetCommand(out IShipAbilityCommand abilityCommand)) continue;
+                    for (int i = 0; i < abilityCommand.Slots.Count; i++)
+                        _abilitySlots.Add(abilityCommand.Slots[i]);
+                }
+            }
+            _shipUi.SetAbilitySlots(_abilitySlots);
+            _shipGroupUi.SetAbilitySlots(_abilitySlots);
 
             _shipGroupUi.ClearGroups();
             if (hasGroup)
@@ -193,6 +222,12 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
+            if (inputType == InputType.ShipInput && _abilityService.IsWaitingForTarget &&
+                !_selectionQuery.TryFindAt(touchPosition, out SelectionEntry _))
+            {
+                _abilityService.CancelTargeting();
+                return;
+            }
             if (inputType == InputType.ShipInput &&
                 HasMovableSelection() &&
                 !IsMapObstacleTap(touchPosition) &&

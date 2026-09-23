@@ -158,6 +158,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.DefendBase));
         }
 
+        [Test]
+        public void OutnumberedFleet_RetreatsToOwnBase()
+        {
+            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium);
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
+                    EnemyAiDifficulty.Medium, 2,
+                    2 + profile.OutnumberedRetreatCount,
+                    profile.MinimumControlledZones, 0));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(2));
+        }
+
         [TestCase(EnemyAiDifficulty.Easy, 7)]
         [TestCase(EnemyAiDifficulty.Medium, 5)]
         [TestCase(EnemyAiDifficulty.Hard, 4)]

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -6,6 +7,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.UnitDeathAnimation;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
@@ -60,5 +62,9 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
         [field: SerializeField] public float Distance { get; private set; }
+
+        [Header("Abilities")]
+        [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();
+        public IReadOnlyList<ShipAbilityId> Abilities => abilities;
     }
 }

@@ -11,7 +11,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         HuntFleet = 2,
         AssaultBase = 3,
         DefendBase = 4,
-        Hold = 5
+        Hold = 5,
+        RetreatValue = 6
     }
 
     public readonly struct EnemyStrategicSnapshot
@@ -118,6 +119,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     EnemyStrategicState.DefendBase,
                     committedShipCount,
                     "A nearby enemy task force threatens the home base.");
+            }
+
+            if (snapshot.HasOwnBase && snapshot.EnemyShipCount - snapshot.OwnShipCount >=
+                profile.OutnumberedRetreatCount)
+            {
+                return new EnemyStrategicDecision(
+                    EnemyStrategicState.RetreatValue,
+                    snapshot.OwnShipCount,
+                    "The fleet is outnumbered and is withdrawing to its base.");
             }
 
             if (snapshot.HasCaptureTarget &&

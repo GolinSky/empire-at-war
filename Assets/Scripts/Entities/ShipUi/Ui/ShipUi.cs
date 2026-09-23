@@ -1,4 +1,6 @@
 using EmpireAtWar.Models.ShipUi;
+using System.Collections.Generic;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -10,6 +12,7 @@ namespace EmpireAtWar.Views
     {
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
+        [SerializeField] private ShipAbilityBarUi abilityBar;
 
         private IShipUiModelObserver _model;
         private IShipUiPresenter _presenter;
@@ -18,10 +21,13 @@ namespace EmpireAtWar.Views
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
+        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots) =>
+            abilityBar.SetSlots(slots, _presenter.PressAbility);
 
         public void Initialize()
         {
             _model.OnSelectionChanged += UpdateVisibility;
+            abilityBar.SetModel(_model);
             disableSelectionButton.onClick.AddListener(_presenter.CloseSelection);
             _isInitialized = true;
             UpdateVisibility();

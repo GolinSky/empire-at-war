@@ -1,4 +1,6 @@
 using EmpireAtWar.Models.ShipUi;
+using System.Collections.Generic;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Presenters.ShipUi;
 using UnityEngine;
 
@@ -13,5 +15,6 @@ namespace EmpireAtWar.Views
         void Hide();
         void Initialize();
         void Dispose();
+        void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots);
     }
 }

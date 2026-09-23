@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
 using NUnit.Framework;
@@ -11,7 +12,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void InitializeHardPoints_DistributesArmorAndNormalizesHealthPercentages()
         {
-            HealthModel model = new HealthModel(new HealthDataStub(100f), new DamageCalculatorStub());
+            HealthModel model = new HealthModel(new HealthDataStub(100f), new DamageCalculatorStub(), new CombatModifiers());
             HardPointModel weapon = new HardPointModel(0, HardPointType.Weapon);
             HardPointModel engine = new HardPointModel(1, HardPointType.Engines);
             HardPointModel shieldGenerator = new HardPointModel(2, HardPointType.ShieldGenerator);
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void InitializeHardPoints_CopiesInputCollection()
         {
-            HealthModel model = new HealthModel(new HealthDataStub(100f), new DamageCalculatorStub());
+            HealthModel model = new HealthModel(new HealthDataStub(100f), new DamageCalculatorStub(), new CombatModifiers());
             List<HardPointModel> hardPoints = new List<HardPointModel>
             {
                 new HardPointModel(0, HardPointType.Weapon),

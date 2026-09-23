@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.MiningFacility
             Container.BindInterfacesTo<EntityComponentData>()
                 .FromInstance(Repository.Load<MiningFacilityData>(nameof(MiningFacilityData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
+            Container.Bind<CombatModifiers>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 

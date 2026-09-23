@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace EmpireAtWar.Models.ShipUi
 
         public bool HasShips { get; private set; }
         public ShipType? SelectedShipType { get; private set; }
+        public ShipAbilityId? PendingAbilityId { get; private set; }
+
+        public void SetPendingAbility(ShipAbilityId? id) => PendingAbilityId = id;
 
         public ShipUiModel(ShipUiData data)
         {

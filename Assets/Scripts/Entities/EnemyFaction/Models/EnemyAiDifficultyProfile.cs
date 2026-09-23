@@ -5,13 +5,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyAiDifficultyProfile
     {
         private static readonly EnemyAiDifficultyProfile _easy =
-            new EnemyAiDifficultyProfile(4f, 1.6f, 0.5f, 0.35f, 2, 1, 1, 0.75f);
+            new EnemyAiDifficultyProfile(4f, 1.6f, 0.5f, 0.35f, 2, 1, 1, 0.75f, 3f, 0.35f, 0.2f);
         private static readonly EnemyAiDifficultyProfile _medium =
-            new EnemyAiDifficultyProfile(2.5f, 1.25f, 0.65f, 0.25f, 3, 1, 1, 1f);
+            new EnemyAiDifficultyProfile(2.5f, 1.25f, 0.65f, 0.25f, 3, 1, 1, 1f, 2f, 0.6f, 0.5f);
         private static readonly EnemyAiDifficultyProfile _hard =
-            new EnemyAiDifficultyProfile(1.25f, 1f, 0.8f, 0.18f, 4, 2, 2, 1.25f);
+            new EnemyAiDifficultyProfile(1.25f, 1f, 0.8f, 0.18f, 4, 2, 2, 1.25f, 1f, 0.85f, 0.8f);
         private static readonly EnemyAiDifficultyProfile _ultraHard =
-            new EnemyAiDifficultyProfile(0.5f, 0.75f, 1f, 0.1f, 6, 3, 2, 1.5f);
+            new EnemyAiDifficultyProfile(0.5f, 0.75f, 1f, 0.1f, 6, 3, 2, 1.5f, 0.5f, 1f, 1f);
 
         public EnemyAiDifficultyProfile(
             float decisionInterval,
@@ -21,7 +21,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int outnumberedRetreatCount,
             int minimumMiningFacilities,
             int minimumControlledZones,
-            float defenseThreatRatio)
+            float defenseThreatRatio,
+            float abilityDecisionInterval,
+            float abilityUseChance,
+            float abilityTargetPrecision)
         {
             DecisionInterval = decisionInterval;
             RequiredAttackRatio = requiredAttackRatio;
@@ -31,6 +34,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             MinimumMiningFacilities = minimumMiningFacilities;
             MinimumControlledZones = minimumControlledZones;
             DefenseThreatRatio = defenseThreatRatio;
+            AbilityDecisionInterval = abilityDecisionInterval;
+            AbilityUseChance = abilityUseChance;
+            AbilityTargetPrecision = abilityTargetPrecision;
         }
 
         public float DecisionInterval { get; }
@@ -41,6 +47,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public int MinimumMiningFacilities { get; }
         public int MinimumControlledZones { get; }
         public float DefenseThreatRatio { get; }
+        public float AbilityDecisionInterval { get; }
+        public float AbilityUseChance { get; }
+        public float AbilityTargetPrecision { get; }
 
         public static EnemyAiDifficultyProfile Get(EnemyAiDifficulty difficulty)
         {

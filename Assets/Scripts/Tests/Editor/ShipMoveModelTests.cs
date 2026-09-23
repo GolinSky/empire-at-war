@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Components.Combat;
 using NUnit.Framework;
 using NumericsQuaternion = System.Numerics.Quaternion;
 using NumericsVector3 = System.Numerics.Vector3;
@@ -11,7 +12,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ConfigureSpawnPose_HyperSpaceEntryFollowsStartRotation()
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             NumericsVector3 destination = new NumericsVector3(12f, 5f, -7f);
             NumericsQuaternion rotation = NumericsQuaternion.CreateFromAxisAngle(
                 NumericsVector3.UnitY,
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Request_DeduplicatesWithinPositionTolerance()
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             model.Request(new NumericsVector3(10f, 0f, 0f));
 
             Assert.That(model.IsSameRequest(new NumericsVector3(9.96f, 0f, 0f)), Is.True);
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Arrival_ExecutesQueuedDestination()
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
 
             model.Request(destination);
@@ -55,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void BlockedDestination_CanBeRetriedAfterRadarUpdate()
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
             model.FinishArrival();
             model.Block(destination);
@@ -72,7 +73,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(MovementPhase.Blocked)]
         public void StopAt_ClearsPendingOrders(MovementPhase phase)
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
             if (phase != MovementPhase.Arriving)
             {
@@ -100,7 +101,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void PursueDuringMovement_DefersUntilPathCompletes()
         {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
             model.FinishArrival();
             model.Accept(new NumericsVector3(10f, 5f, 0f));
             NumericsVector3 pursuit = new NumericsVector3(20f, 5f, 0f);
