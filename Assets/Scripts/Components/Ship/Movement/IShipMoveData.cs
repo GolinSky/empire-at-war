@@ -5,6 +5,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         float Speed { get; }
         float Height { get; }
         float RotationSpeed { get; }
+        float TurnAcceleration { get; }
         float HyperSpaceDuration { get; }
         float BodyRotationMaxAngle { get; }
         float NavigationRadius { get; }

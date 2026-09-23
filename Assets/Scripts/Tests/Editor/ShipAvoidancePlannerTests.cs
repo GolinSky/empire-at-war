@@ -117,11 +117,12 @@ namespace EmpireAtWar.Tests.Movement
             Vector3 detour = new Vector3(20f, 0f, 10f);
             Vector3 destination = new Vector3(50f, 0f, 0f);
 
-            Vector3[] path = ShipBezierPath.BuildAvoidance(
+            Vector3[] path = ShipBezierPath.BuildAvoidanceRoute(
                 origin,
                 Vector3.right,
                 detour,
-                destination);
+                destination,
+                5f).Samples;
 
             Assert.That(path.Length, Is.GreaterThan(3));
             Assert.That(path[0], Is.EqualTo(origin));

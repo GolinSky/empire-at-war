@@ -468,11 +468,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675872bfa3914db5aaf6d0f8c8d65ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Movement.ShipMoveComponent
-  _lookAtEase: 5
-  _hyperSpaceEase: 32
-  _lineRenderer: {fileID: 3530062372041149202}
-  _bodyTransform: {fileID: 8076105261581146544}
-  _logNavigationDecisions: 0
+  hyperSpaceEase: 32
+  lineRenderer: {fileID: 3530062372041149202}
+  bodyTransform: {fileID: 8076105261581146544}
+  logNavigationDecisions: 0
 --- !u!114 &610844954276393758
 MonoBehaviour:
   m_ObjectHideFlags: 0

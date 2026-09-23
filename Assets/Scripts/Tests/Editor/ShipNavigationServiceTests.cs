@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Reflection;
-using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using NUnit.Framework;
 using UnityEngine;
@@ -380,9 +378,9 @@ namespace EmpireAtWar.Tests.Movement
                 nameof(HandleRadarContacts_AfterRelease_DoesNotPlan));
             try
             {
-                ShipMoveComponent component =
-                    gameObject.AddComponent<ShipMoveComponent>();
-                FieldInfo releasedField = typeof(ShipMoveComponent).GetField(
+                ShipMovePresenter component = CreateReadyComponent(
+                    gameObject, out _);
+                FieldInfo releasedField = typeof(ShipMovePresenter).GetField(
                     "_isReleased",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 Assert.That(releasedField, Is.Not.Null);
@@ -405,14 +403,12 @@ namespace EmpireAtWar.Tests.Movement
                 nameof(HandleRadarContacts_WithUnchangedContacts_RetriesBlockedTarget));
             try
             {
-                ShipMoveComponent component = CreateReadyComponent(
+                ShipMovePresenter component = CreateReadyComponent(
                     gameObject,
                     out RecordingShipNavigationService navigationService);
                 Vector3 destination = new Vector3(25f, 0f, 0f);
-                SetPrivateField(
-                    component,
-                    "_blockedTargetPosition",
-                    destination);
+                GetModel(component).BlockDestination(
+                    new System.Numerics.Vector3(destination.x, destination.y, destination.z));
 
                 component.HandleRadarContacts(System.Array.Empty<RadarContact>());
 
@@ -432,12 +428,13 @@ namespace EmpireAtWar.Tests.Movement
                 nameof(SetTargetPosition_RepeatedBlockedDestination_RetriesTarget));
             try
             {
-                ShipMoveComponent component = CreateReadyComponent(
+                ShipMovePresenter component = CreateReadyComponent(
                     gameObject,
                     out RecordingShipNavigationService navigationService);
                 Vector3 destination = new Vector3(25f, 0f, 0f);
-                SetPrivateField(component, "_blockedTargetPosition", destination);
-                MethodInfo setTargetPosition = typeof(ShipMoveComponent).GetMethod(
+                GetModel(component).BlockDestination(
+                    new System.Numerics.Vector3(destination.x, destination.y, destination.z));
+                MethodInfo setTargetPosition = typeof(ShipMovePresenter).GetMethod(
                     "SetTargetPosition",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 Assert.That(setTargetPosition, Is.Not.Null);
@@ -459,9 +456,8 @@ namespace EmpireAtWar.Tests.Movement
             GameObject gameObject = new GameObject(nameof(RepeatedMoveDuringHyperspace_KeepsPendingReservation));
             try
             {
-                ShipMoveComponent component = CreateReadyComponent(gameObject,
-                    out RecordingShipNavigationService navigationService);
-                SetPrivateField(component, "_isNavigationReady", false);
+                ShipMovePresenter component = CreateReadyComponent(gameObject,
+                    out RecordingShipNavigationService navigationService, false);
                 Vector3 destination = new Vector3(25f, 0f, 0f);
                 component.MoveToPosition(destination);
                 int cancellations = navigationService.PendingCancellationCount;
@@ -483,11 +479,10 @@ namespace EmpireAtWar.Tests.Movement
             GameObject gameObject = new GameObject(nameof(StopDuringHyperspace_ClearsBlockedOrderAndPendingReservation));
             try
             {
-                ShipMoveComponent component = CreateReadyComponent(gameObject,
-                    out RecordingShipNavigationService navigationService);
-                SetPrivateField(component, "_isNavigationReady", false);
-                SetPrivateField(component, "_pendingTargetPosition", Vector3.right * 25f);
-                SetPrivateField(component, "_blockedTargetPosition", Vector3.right * 25f);
+                ShipMovePresenter component = CreateReadyComponent(gameObject,
+                    out RecordingShipNavigationService navigationService, false);
+                GetModel(component).QueueDestination(new System.Numerics.Vector3(25f, 0f, 0f));
+                GetModel(component).BlockDestination(new System.Numerics.Vector3(25f, 0f, 0f));
 
                 component.Stop();
                 component.HandleRadarContacts(System.Array.Empty<RadarContact>());
@@ -537,65 +532,80 @@ namespace EmpireAtWar.Tests.Movement
             field.SetValue(_mapRange, value);
         }
 
-        private ShipMoveComponent CreateReadyComponent(
+        private ShipMovePresenter CreateReadyComponent(
             GameObject gameObject,
-            out RecordingShipNavigationService navigationService)
+            out RecordingShipNavigationService navigationService,
+            bool isReady = true)
         {
-            ShipMoveComponent component =
-                gameObject.AddComponent<ShipMoveComponent>();
-            MethodInfo setModel = typeof(MonoComponent<ShipMoveModel>).GetMethod(
-                "SetModel",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-            Assert.That(setModel, Is.Not.Null);
-            setModel.Invoke(
-                component,
-                new object[] { new ShipMoveModel(new FakeShipMoveData()) });
             navigationService = new RecordingShipNavigationService();
-            GameObject bodyObject = new GameObject("Body");
-            bodyObject.transform.SetParent(gameObject.transform);
-            LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
-            System.Type tweenPlayerType = typeof(ShipMoveComponent).Assembly.GetType(
-                "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
-            Assert.That(tweenPlayerType, Is.Not.Null);
-            ConstructorInfo tweenPlayerConstructor = tweenPlayerType.GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                null,
-                new[]
-                {
-                    typeof(Transform),
-                    typeof(Transform),
-                    typeof(LineRenderer),
-                    typeof(Ease),
-                    typeof(Ease)
-                },
-                null);
-            Assert.That(tweenPlayerConstructor, Is.Not.Null);
-            object tweenPlayer = tweenPlayerConstructor.Invoke(new object[]
+            ShipMoveModel model = new ShipMoveModel(new FakeShipMoveData());
+            if (isReady)
             {
-                gameObject.transform,
-                bodyObject.transform,
-                lineRenderer,
-                Ease.Linear,
-                Ease.Linear
-            });
-            SetPrivateField(component, "_mapModel", new FakeMapModel(_mapRange));
+                model.FinishArrival();
+            }
+
+            ShipMovePresenter component = new ShipMovePresenter(
+                model,
+                new FakeShipMoveView(gameObject.transform),
+                null,
+                Vector3.zero,
+                PlayerType.Player,
+                new FakeMapModel(_mapRange),
+                null,
+                navigationService);
             SetPrivateField(component, "_movementMediator", new FakeShipMovementMediator());
-            SetPrivateField(component, "_shipNavigationService", navigationService);
-            SetPrivateField(component, "_tweenPlayer", tweenPlayer);
-            SetPrivateField(component, "_isNavigationReady", true);
             return component;
         }
 
+        private static ShipMoveModel GetModel(ShipMovePresenter component)
+        {
+            FieldInfo field = typeof(ShipMovePresenter).GetField(
+                "_model", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null);
+            return (ShipMoveModel)field.GetValue(component);
+        }
+
         private static void SetPrivateField(
-            ShipMoveComponent component,
+            ShipMovePresenter component,
             string fieldName,
             object value)
         {
-            FieldInfo field = typeof(ShipMoveComponent).GetField(
+            FieldInfo field = typeof(ShipMovePresenter).GetField(
                 fieldName,
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(component, value);
+        }
+
+        private sealed class FakeShipMoveView : IShipMoveView
+        {
+            private readonly Transform _transform;
+
+            public FakeShipMoveView(Transform transform)
+            {
+                _transform = transform;
+            }
+
+            public Vector3 Position => _transform.position;
+            public Vector3 Forward => _transform.forward;
+            public Transform RootTransform => _transform;
+            public Vector3? CurrentPathTangent => null;
+            public bool IsTurningToRoute => false;
+            public string ShipName => "TestShip";
+            public bool LogNavigationDecisions => false;
+
+            public void InitializePlayback() { }
+            public void SetPose(Vector3 position, Quaternion rotation) { }
+            public void PlayHyperSpace(Vector3 destination, float duration,
+                System.Action completed) { }
+            public void PlayPath(ShipNavigationPlan plan, float speed,
+                float rotationSpeed, float turnAcceleration,
+                float maximumBankAngle, System.Action completed) { }
+            public void Face(Vector3 direction, float rotationSpeed,
+                float turnAcceleration, float maximumBankAngle) { }
+            public void StopPath() { }
+            public void SetSelected(bool selected, bool moving) { }
+            public void Tick(float deltaTime) { }
         }
 
         private sealed class FakeAgent : IShipNavigationAgent
@@ -679,6 +689,7 @@ namespace EmpireAtWar.Tests.Movement
             public float Speed => 10f;
             public float Height => 0f;
             public float RotationSpeed => 30f;
+            public float TurnAcceleration => 30f;
             public float HyperSpaceDuration => 1f;
             public float BodyRotationMaxAngle => 10f;
             public float NavigationRadius => 5f;

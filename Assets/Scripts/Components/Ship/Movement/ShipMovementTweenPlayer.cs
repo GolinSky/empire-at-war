@@ -8,36 +8,45 @@ namespace EmpireAtWar.Components.Ship.Movement
 {
     internal sealed class ShipMovementTweenPlayer
     {
-        private const float BODY_STRAIGHTEN_DURATION = 1f;
-        private const float LOOK_DIRECTION_TOLERANCE = 1f;
+        private const float BANK_SMOOTH_TIME = 0.6f;
+        private const float ROUTE_HEADING_TOLERANCE = 1f;
+        private const float MINIMUM_TANGENT_STEP = 0.05f;
+        private const int ROUTE_STEP_SEARCH_ITERATIONS = 8;
 
         private readonly Transform _rootTransform;
         private readonly Transform _bodyTransform;
         private readonly LineRenderer _lineRenderer;
-        private readonly Ease _lookAtEase;
         private readonly Ease _hyperSpaceEase;
         private readonly Quaternion _bodyRestRotation;
 
         private Sequence _translationSequence;
-        private Sequence _rotationSequence;
         private bool _isSelected;
         private Vector3 _lookDirection;
         private bool _hasLookDirection;
         private Vector3? _currentPathTangent;
+        private ShipBezierRoute _route;
+        private Action _pathCompleted;
+        private float _routeProgress;
+        private float _routeSpeed;
+        private float _rotationSpeed;
+        private float _turnAcceleration;
+        private float _maximumBankAngle;
+        private float _angularVelocity;
+        private float _bankVelocity;
+        private bool _isTurningToRoute;
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
+        public bool IsTurningToRoute => _isTurningToRoute;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,
             Transform bodyTransform,
             LineRenderer lineRenderer,
-            Ease lookAtEase,
             Ease hyperSpaceEase)
         {
             _rootTransform = rootTransform;
             _bodyTransform = bodyTransform;
             _lineRenderer = lineRenderer;
-            _lookAtEase = lookAtEase;
             _hyperSpaceEase = hyperSpaceEase;
             _bodyRestRotation = _bodyTransform.localRotation;
             ClearRoute();
@@ -53,6 +62,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void PlayLookAt(
             Vector3 targetDirection,
             float rotationSpeed,
+            float turnAcceleration,
             float maximumBankAngle)
         {
             targetDirection.y = 0f;
@@ -61,56 +71,11 @@ namespace EmpireAtWar.Components.Ship.Movement
                 return;
             }
 
-            targetDirection.Normalize();
-            Vector3 currentDirection = _rootTransform.forward;
-            currentDirection.y = 0f;
-            if (currentDirection.sqrMagnitude > Mathf.Epsilon &&
-                Vector3.Angle(currentDirection, targetDirection) <=
-                LOOK_DIRECTION_TOLERANCE)
-            {
-                return;
-            }
-
-            if (_hasLookDirection &&
-                Vector3.Angle(_lookDirection, targetDirection) <=
-                LOOK_DIRECTION_TOLERANCE)
-            {
-                return;
-            }
-
-            _lookDirection = targetDirection;
+            _lookDirection = targetDirection.normalized;
             _hasLookDirection = true;
-            _rotationSequence.KillExt();
-            _rotationSequence = DOTween.Sequence();
-
-            Quaternion desiredRotation = Quaternion.LookRotation(
-                targetDirection,
-                Vector3.up);
-            float rotationDuration =
-                ShipRotationKinematics.CalculateTurnDuration(
-                    _rootTransform.rotation,
-                    targetDirection,
-                    Mathf.Max(rotationSpeed, Mathf.Epsilon));
-            float bankAngle = ShipRotationKinematics.CalculateLookBankAngle(
-                _rootTransform.rotation,
-                targetDirection,
-                maximumBankAngle);
-            Quaternion bodyTargetRotation =
-                _bodyRestRotation * Quaternion.Euler(0f, 0f, bankAngle);
-
-            _rotationSequence.Append(_rootTransform
-                .DORotateQuaternion(desiredRotation, rotationDuration)
-                .SetEase(Ease.Linear));
-            _rotationSequence.Join(_bodyTransform
-                .DOLocalRotateQuaternion(
-                    bodyTargetRotation,
-                    rotationDuration)
-                .SetEase(_lookAtEase));
-            _rotationSequence.Append(_bodyTransform
-                .DOLocalRotateQuaternion(
-                    _bodyRestRotation,
-                    BODY_STRAIGHTEN_DURATION)
-                .SetEase(_lookAtEase));
+            _rotationSpeed = rotationSpeed;
+            _turnAcceleration = turnAcceleration;
+            _maximumBankAngle = maximumBankAngle;
         }
 
         public void PlayHyperSpace(
@@ -126,6 +91,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                     Vector3.up);
             }
 
+            StopPath();
+            _hasLookDirection = false;
+            _angularVelocity = 0f;
             _translationSequence.KillExt();
             _translationSequence = DOTween.Sequence();
             _translationSequence.Append(_rootTransform
@@ -139,81 +107,156 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void PlayPath(
             ShipNavigationPlan plan,
+            float speed,
             float rotationSpeed,
+            float turnAcceleration,
             float maximumBankAngle,
             Action completed)
         {
-            _hasLookDirection = false;
-            _currentPathTangent = null;
             _translationSequence.KillExt();
-            _rotationSequence.KillExt();
-            _translationSequence = DOTween.Sequence();
+            _hasLookDirection = false;
+            _route = plan.Route;
+            _pathCompleted = completed;
+            _routeProgress = 0f;
+            _routeSpeed = speed;
+            _rotationSpeed = rotationSpeed;
+            _turnAcceleration = turnAcceleration;
+            _maximumBankAngle = maximumBankAngle;
+            _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon;
+            _currentPathTangent = null;
             DisplayRoute(plan.Trajectory);
-
-            if (plan.TurnDuration > Mathf.Epsilon)
-            {
-                Vector3 initialDirection = plan.Route.InitialTangent;
-                Quaternion desiredRotation = Quaternion.LookRotation(
-                    initialDirection,
-                    Vector3.up);
-                float bankAngle =
-                    ShipRotationKinematics.CalculateLookBankAngle(
-                        _rootTransform.rotation,
-                        initialDirection,
-                        maximumBankAngle);
-                Quaternion bodyTargetRotation =
-                    _bodyRestRotation *
-                    Quaternion.Euler(0f, 0f, bankAngle);
-                _translationSequence.Append(_rootTransform
-                    .DORotateQuaternion(
-                        desiredRotation,
-                        plan.TurnDuration)
-                    .SetEase(Ease.Linear));
-                _translationSequence.Join(_bodyTransform
-                    .DOLocalRotateQuaternion(
-                        bodyTargetRotation,
-                        plan.TurnDuration)
-                    .SetEase(_lookAtEase));
-                _translationSequence.AppendCallback(StraightenBody);
-            }
-
-            _translationSequence.Append(DOVirtual.Float(
-                    0f,
-                    1f,
-                    plan.MovementDuration,
-                    progress => ApplyRouteProgress(
-                        plan.Route,
-                        progress,
-                        rotationSpeed,
-                        maximumBankAngle))
-                .SetEase(Ease.Linear));
-            _translationSequence.OnComplete(() =>
-            {
-                ApplyRouteProgress(
-                    plan.Route,
-                    1f,
-                    rotationSpeed,
-                    maximumBankAngle);
-                StraightenBody();
-                ClearRoute();
-                completed?.Invoke();
-            });
         }
 
         public void StopPath()
         {
-            _hasLookDirection = false;
-            _translationSequence.KillExt();
-            StraightenBody();
+            _route = null;
+            _pathCompleted = null;
+            _currentPathTangent = null;
+            _isTurningToRoute = false;
             ClearRoute();
         }
 
         public void Release()
         {
+            StopPath();
             _hasLookDirection = false;
             _translationSequence.KillExt();
-            _rotationSequence.KillExt();
-            ClearRoute();
+        }
+
+public void Tick(float deltaTime)
+        {
+            if (_route != null)
+            {
+                TickRoute(deltaTime);
+            }
+            else if (_hasLookDirection)
+            {
+                StepRotation(_lookDirection, deltaTime);
+            }
+            else
+            {
+                _angularVelocity = Mathf.MoveTowards(
+                    _angularVelocity,
+                    0f,
+                    _turnAcceleration * deltaTime);
+                SmoothBank(deltaTime);
+            }
+        }
+
+        private void TickRoute(float deltaTime)
+        {
+            if (_isTurningToRoute)
+            {
+                StepRotation(_route.InitialTangent, deltaTime);
+                if (Vector3.Angle(
+                        _rootTransform.forward,
+                        _route.InitialTangent) > ROUTE_HEADING_TOLERANCE)
+                {
+                    return;
+                }
+
+                _isTurningToRoute = false;
+            }
+
+            float requestedStep = _routeSpeed * deltaTime /
+                Mathf.Max(_route.Length, Mathf.Epsilon);
+            float nextProgress = Mathf.Min(1f, _routeProgress + requestedStep);
+            float allowedTurn = Mathf.Max(
+                MINIMUM_TANGENT_STEP,
+                Mathf.Abs(_angularVelocity) * deltaTime +
+                0.5f * _turnAcceleration * deltaTime * deltaTime);
+            float low = _routeProgress;
+            float high = nextProgress;
+            _route.EvaluateNormalizedDistance(high, out Vector3 nextTangent);
+            if (Vector3.Angle(_rootTransform.forward, nextTangent) <=
+                allowedTurn + ROUTE_HEADING_TOLERANCE)
+            {
+                low = high;
+            }
+            else
+            {
+                for (int i = 0; i < ROUTE_STEP_SEARCH_ITERATIONS; i++)
+                {
+                    float middle = (low + high) * 0.5f;
+                    _route.EvaluateNormalizedDistance(middle, out Vector3 tangent);
+                    if (Vector3.Angle(_rootTransform.forward, tangent) <=
+                        allowedTurn + ROUTE_HEADING_TOLERANCE)
+                    {
+                        low = middle;
+                    }
+                    else
+                    {
+                        high = middle;
+                    }
+                }
+            }
+
+            _routeProgress = low;
+            _rootTransform.position = _route.EvaluateNormalizedDistance(
+                _routeProgress,
+                out Vector3 routeTangent);
+            _currentPathTangent = routeTangent;
+            StepRotation(routeTangent, deltaTime);
+            if (_routeProgress < 1f - Mathf.Epsilon)
+            {
+                return;
+            }
+
+            Action completed = _pathCompleted;
+            StopPath();
+            completed?.Invoke();
+        }
+
+        private void StepRotation(Vector3 direction, float deltaTime)
+        {
+            _rootTransform.rotation = ShipRotationKinematics.StepYaw(
+                _rootTransform.rotation,
+                direction,
+                ref _angularVelocity,
+                _rotationSpeed,
+                _turnAcceleration,
+                deltaTime);
+            SmoothBank(deltaTime);
+        }
+
+        private void SmoothBank(float deltaTime)
+        {
+            float bank = ShipRotationKinematics.CalculateBankFromYawRate(
+                _angularVelocity,
+                Mathf.Max(_rotationSpeed, Mathf.Epsilon),
+                _maximumBankAngle);
+            float currentBank = Mathf.DeltaAngle(
+                _bodyRestRotation.eulerAngles.z,
+                _bodyTransform.localEulerAngles.z);
+            float smoothedBank = Mathf.SmoothDampAngle(
+                currentBank,
+                bank,
+                ref _bankVelocity,
+                BANK_SMOOTH_TIME,
+                Mathf.Infinity,
+                deltaTime);
+            _bodyTransform.localRotation =
+                _bodyRestRotation * Quaternion.Euler(0f, 0f, smoothedBank);
         }
 
         private void DisplayRoute(Vector3[] waypoints)
@@ -225,57 +268,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             _lineRenderer.enabled = _isSelected && waypoints.Length > 1;
-        }
-
-        private void ApplyRouteProgress(
-            ShipBezierRoute route,
-            float progress,
-            float rotationSpeed,
-            float maximumBankAngle)
-        {
-            Vector3 position = route.EvaluateNormalizedDistance(
-                progress,
-                out Vector3 tangent);
-            _currentPathTangent = tangent;
-            _rootTransform.position = position;
-            RotateAlongRoute(
-                tangent,
-                rotationSpeed,
-                maximumBankAngle);
-        }
-
-        private void RotateAlongRoute(
-            Vector3 tangent,
-            float rotationSpeed,
-            float maximumBankAngle)
-        {
-            Quaternion previousRotation = _rootTransform.rotation;
-            float safeRotationSpeed = Mathf.Max(
-                rotationSpeed,
-                Mathf.Epsilon);
-            float bank = ShipRotationKinematics.CalculateBankAngle(
-                previousRotation,
-                tangent,
-                safeRotationSpeed,
-                Time.deltaTime,
-                maximumBankAngle);
-            _rootTransform.rotation = ShipRotationKinematics.Step(
-                previousRotation,
-                tangent,
-                safeRotationSpeed,
-                Time.deltaTime);
-
-            Quaternion targetBodyRotation =
-                _bodyRestRotation * Quaternion.Euler(0f, 0f, bank);
-            _bodyTransform.localRotation = Quaternion.RotateTowards(
-                _bodyTransform.localRotation,
-                targetBodyRotation,
-                safeRotationSpeed * Time.deltaTime);
-        }
-
-        private void StraightenBody()
-        {
-            _bodyTransform.localRotation = _bodyRestRotation;
         }
 
         private void ClearRoute()

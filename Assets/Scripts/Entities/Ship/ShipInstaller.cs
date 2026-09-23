@@ -93,9 +93,11 @@ namespace EmpireAtWar.Ship
                 .FromComponentsInHierarchy()
                 .AsCached();
 
-            Container.BindInterfacesAndSelfTo<ShipMoveComponent>()
+            Container.BindInterfacesAndSelfTo<ShipMoveView>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+            Container.BindInterfacesAndSelfTo<ShipMovePresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ShipVisionRegistration>().AsSingle();
             Container.BindInterfacesAndSelfTo<RadarComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();

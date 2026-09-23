@@ -43,10 +43,13 @@ namespace EmpireAtWar.Components.Ship.Movement
                         distance * TURNAROUND_RADIUS_FACTOR));
             }
 
-            Vector3 p1 =
-                origin + startDirection * distance * CONTROL_DISTANCE_FACTOR;
-            Vector3 p2 =
-                destination - routeDirection * distance * CONTROL_DISTANCE_FACTOR;
+            float controlDistance = Mathf.Min(
+                distance * 0.5f,
+                Mathf.Max(
+                    distance * CONTROL_DISTANCE_FACTOR,
+                    minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR));
+            Vector3 p1 = origin + startDirection * controlDistance;
+            Vector3 p2 = destination - routeDirection * controlDistance;
             return new ShipBezierRoute(new[]
             {
                 new CubicBezierSegment(origin, p1, p2, destination)
@@ -106,7 +109,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             Vector3 origin,
             Vector3 originForward,
             Vector3 detour,
-            Vector3 destination)
+            Vector3 destination,
+            float minimumTurnRadius)
         {
             Vector3 route = destination - origin;
             route.y = 0f;
@@ -128,51 +132,36 @@ namespace EmpireAtWar.Components.Ship.Movement
                 routeDirection);
             float firstDistance = Vector3.Distance(origin, detour);
             float secondDistance = Vector3.Distance(detour, destination);
+            float firstHandle = Mathf.Min(
+                firstDistance * 0.5f,
+                Mathf.Max(
+                    firstDistance * AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                    minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR));
+            float secondHandle = Mathf.Min(
+                secondDistance * 0.5f,
+                Mathf.Max(
+                    secondDistance * AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                    minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR));
 
             CubicBezierSegment first = new CubicBezierSegment(
                 origin,
                 origin +
                 startDirection *
-                firstDistance *
-                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                firstHandle,
                 detour -
                 detourDirection *
-                firstDistance *
-                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                firstHandle,
                 detour);
             CubicBezierSegment second = new CubicBezierSegment(
                 detour,
                 detour +
                 detourDirection *
-                secondDistance *
-                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                secondHandle,
                 destination -
                 arrivalDirection *
-                secondDistance *
-                AVOIDANCE_CONTROL_DISTANCE_FACTOR,
+                secondHandle,
                 destination);
             return new ShipBezierRoute(new[] { first, second });
-        }
-
-        public static Vector3[] BuildDirect(
-            Vector3 origin,
-            Vector3 originForward,
-            Vector3 destination)
-        {
-            return BuildDirectRoute(origin, originForward, destination).Samples;
-        }
-
-        public static Vector3[] BuildAvoidance(
-            Vector3 origin,
-            Vector3 originForward,
-            Vector3 detour,
-            Vector3 destination)
-        {
-            return BuildAvoidanceRoute(
-                origin,
-                originForward,
-                detour,
-                destination).Samples;
         }
 
         private static Vector3 GetPlanarDirection(

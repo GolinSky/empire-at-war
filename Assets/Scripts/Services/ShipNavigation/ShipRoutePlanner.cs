@@ -67,7 +67,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     origin,
                     forward,
                     avoidancePoint,
-                    destination);
+                    destination,
+                    minimumTurnRadius);
             }
             else
             {
@@ -96,7 +97,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 alternateDetour = calculatedAlternateDetour;
                 ShipBezierRoute alternateRoute = ShipBezierPath.BuildAvoidanceRoute(
-                    origin, forward, calculatedAlternateDetour, destination);
+                    origin, forward, calculatedAlternateDetour, destination,
+                    minimumTurnRadius);
                 if (ShipAvoidancePlanner.IsRouteClear(
                         alternateRoute, contacts, agent.NavigationHeight, heightTolerance, clearance))
                 {
@@ -121,7 +123,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     origin,
                     initialTravelDirection,
                     detour.Value,
-                    destination)
+                    destination,
+                    minimumTurnRadius)
                 : ShipBezierPath.BuildDirectRoute(
                     origin,
                     initialTravelDirection,
@@ -153,7 +156,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     origin,
                     alternateTravelDirection,
                     alternateDetour.Value,
-                    destination);
+                    destination,
+                    minimumTurnRadius);
                 if (ShipAvoidancePlanner.IsRouteClear(
                         route,
                         contacts,

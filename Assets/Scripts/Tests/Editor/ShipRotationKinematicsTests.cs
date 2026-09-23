@@ -17,33 +17,56 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Step_NeverExceedsConfiguredAngularSpeed()
+        public void StepYaw_AcceleratesWithoutExceedingMaxRate()
         {
-            Quaternion result = ShipRotationKinematics.Step(
+            float angularVelocity = 0f;
+            Quaternion result = ShipRotationKinematics.StepYaw(
                 Quaternion.identity,
                 Vector3.back,
+                ref angularVelocity,
                 15f,
+                5f,
                 1f);
 
-            Assert.That(
-                Quaternion.Angle(Quaternion.identity, result),
-                Is.EqualTo(15f).Within(0.01f));
-            Assert.That(
-                Quaternion.Angle(result, Quaternion.LookRotation(Vector3.back)),
-                Is.EqualTo(165f).Within(0.01f));
+            Assert.That(Mathf.Abs(angularVelocity), Is.EqualTo(5f).Within(0.01f));
+            Assert.That(Quaternion.Angle(Quaternion.identity, result),
+                Is.EqualTo(5f).Within(0.01f));
         }
 
         [Test]
-        public void CalculateBankAngle_UsesTurnRateInsteadOfResidualHeadingError()
+        public void StepYaw_ReachesTargetWithoutOvershoot()
         {
-            float bank = ShipRotationKinematics.CalculateBankAngle(
-                Quaternion.identity,
-                Vector3.right,
+            Quaternion rotation = Quaternion.identity;
+            float angularVelocity = 0f;
+            float previousError = 90f;
+            for (int i = 0; i < 500; i++)
+            {
+                rotation = ShipRotationKinematics.StepYaw(
+                    rotation,
+                    Vector3.right,
+                    ref angularVelocity,
+                    30f,
+                    30f,
+                    0.02f);
+                float error = Vector3.Angle(rotation * Vector3.forward,
+                    Vector3.right);
+                Assert.That(error, Is.LessThanOrEqualTo(previousError + 0.01f));
+                Assert.That(Mathf.Abs(angularVelocity), Is.LessThanOrEqualTo(30f));
+                previousError = error;
+            }
+
+            Assert.That(previousError, Is.LessThan(0.1f));
+        }
+
+        [Test]
+        public void CalculateBankFromYawRate_TracksActualTurnRate()
+        {
+            float bank = ShipRotationKinematics.CalculateBankFromYawRate(
+                15f,
                 30f,
-                0.1f,
                 20f);
 
-            Assert.That(Mathf.Abs(bank), Is.EqualTo(20f).Within(0.001f));
+            Assert.That(bank, Is.EqualTo(-10f).Within(0.001f));
         }
 
         [Test]
@@ -57,15 +80,5 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(duration, Is.EqualTo(12f).Within(0.01f));
         }
 
-        [Test]
-        public void CalculateLookBankAngle_ScalesConfiguredMaximumByTurnAngle()
-        {
-            float bank = ShipRotationKinematics.CalculateLookBankAngle(
-                Quaternion.identity,
-                Vector3.right,
-                20f);
-
-            Assert.That(bank, Is.EqualTo(-10f).Within(0.001f));
-        }
     }
 }
