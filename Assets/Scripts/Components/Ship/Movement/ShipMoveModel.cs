@@ -10,20 +10,8 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         private const float POSITION_TOLERANCE = 0.05f;
-
         private readonly IShipMoveData _shipMoveData;
         private float _speedCoefficient = 1f;
-        private bool _hasTargetPosition;
-        private NumericsVector3 _targetPosition;
-        private NumericsVector3? _requestedDestination;
-        private NumericsVector3? _acceptedDestination;
-        private NumericsVector3? _queuedDestination;
-        private NumericsVector3? _deferredDestination;
-        private NumericsVector3? _blockedDestination;
-
-        public event Action<MovementPhase> PhaseChanged;
-        public event Action<NumericsVector3> DestinationAccepted;
-        public event Action Stopped;
 
         public float Speed => _shipMoveData.Speed * _speedCoefficient;
         public float Height => _shipMoveData.Height;
@@ -32,180 +20,97 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float HyperSpaceDuration => _shipMoveData.HyperSpaceDuration;
         public float BodyRotationMaxAngle => _shipMoveData.BodyRotationMaxAngle;
         public float NavigationRadius => _shipMoveData.NavigationRadius;
-        public NumericsVector3 TargetPosition => _targetPosition;
         public MovementPhase Phase { get; private set; } = MovementPhase.Arriving;
-        public bool IsHyperSpaceComplete { get; private set; }
-        public NumericsVector3? RequestedDestination => _requestedDestination;
-        public NumericsVector3? AcceptedDestination => _acceptedDestination;
-        public NumericsVector3? QueuedDestination => _queuedDestination;
-        public NumericsVector3? DeferredDestination => _deferredDestination;
-        public NumericsVector3? BlockedDestination => _blockedDestination;
-        public bool IsBlocked => _blockedDestination.HasValue;
-        public bool IsNavigating => Phase == MovementPhase.Turning ||
-            Phase == MovementPhase.Moving;
+        public NumericsVector3 Destination { get; private set; }
+        public NumericsVector3? PendingDestination { get; private set; }
+        public NumericsVector3? LastRequest { get; private set; }
+        public bool IsMoving => Phase == MovementPhase.Moving ||
+            Phase == MovementPhase.Arriving && PendingDestination.HasValue;
+        public bool IsBlocked => Phase == MovementPhase.Blocked;
         public NumericsVector3 JumpPosition { get; private set; }
         public NumericsQuaternion StartRotation { get; private set; } = NumericsQuaternion.Identity;
         public NumericsVector3 HyperSpacePosition { get; private set; }
 
-        public ShipMoveModel(IShipMoveData shipMoveData)
-        {
-            _shipMoveData = shipMoveData;
-        }
+        public ShipMoveModel(IShipMoveData shipMoveData) { _shipMoveData = shipMoveData; }
 
-        public void ConfigureSpawnPose(
-            NumericsVector3 hyperSpacePosition,
-            NumericsQuaternion startRotation,
-            bool useHyperSpaceEntry)
+        public void ConfigureSpawnPose(NumericsVector3 position,
+            NumericsQuaternion rotation, bool useHyperSpaceEntry)
         {
-            HyperSpacePosition = hyperSpacePosition;
-            StartRotation = startRotation;
+            HyperSpacePosition = position;
+            StartRotation = rotation;
             JumpPosition = useHyperSpaceEntry
-                ? HyperSpacePosition -
-                  NumericsVector3.Transform(NumericsVector3.UnitZ, StartRotation) * OFFSET_HYPERSPACE_JUMP
-                : HyperSpacePosition;
+                ? position - NumericsVector3.Transform(NumericsVector3.UnitZ,
+                    rotation) * OFFSET_HYPERSPACE_JUMP
+                : position;
         }
 
-        public void ApplyMoveCoefficient(float coefficient)
+        public void ApplyMoveCoefficient(float coefficient) => _speedCoefficient = coefficient;
+        public bool IsSameRequest(NumericsVector3 destination) =>
+            LastRequest.HasValue && PositionsEqual(LastRequest.Value, destination);
+        public bool HasDestination(NumericsVector3 destination) =>
+            (Phase != MovementPhase.Arriving || PendingDestination.HasValue) &&
+            PositionsEqual(Destination, destination);
+
+        public void Request(NumericsVector3 destination)
         {
-            _speedCoefficient = coefficient;
+            LastRequest = destination;
+            if (Phase == MovementPhase.Arriving) PendingDestination = destination;
         }
 
-        public bool IsMoving(NumericsVector3 currentPosition)
+        public void Accept(NumericsVector3 destination)
         {
-            return _hasTargetPosition && !PositionsEqual(currentPosition, _targetPosition);
+            Destination = destination;
+            PendingDestination = null;
+            Phase = MovementPhase.Moving;
         }
 
-        public bool HasTargetPosition(NumericsVector3 targetPosition)
+        public void Queue(NumericsVector3 destination)
         {
-            return _hasTargetPosition && PositionsEqual(_targetPosition, targetPosition);
+            Destination = destination;
+            PendingDestination = destination;
         }
 
-        public void SetTargetPosition(NumericsVector3 targetPosition)
+        public void Defer(NumericsVector3 destination) => PendingDestination = destination;
+
+        public void Block(NumericsVector3 destination)
         {
-            _targetPosition = targetPosition;
-            _hasTargetPosition = true;
+            PendingDestination = destination;
+            if (Phase == MovementPhase.Arriving) Destination = destination;
+            else Phase = MovementPhase.Blocked;
         }
 
-        public bool IsSameRequest(NumericsVector3 destination)
+        public NumericsVector3? TakePending()
         {
-            return _requestedDestination.HasValue &&
-                PositionsEqual(_requestedDestination.Value, destination);
-        }
-
-        public void RequestDestination(NumericsVector3 destination)
-        {
-            _requestedDestination = destination;
-            if (!IsHyperSpaceComplete)
-            {
-                _queuedDestination = destination;
-            }
-        }
-
-        public void AcceptDestination(NumericsVector3 destination, bool turning)
-        {
-            _acceptedDestination = destination;
-            _blockedDestination = null;
-            _deferredDestination = null;
-            SetTargetPosition(destination);
-            SetPhase(turning ? MovementPhase.Turning : MovementPhase.Moving);
-            DestinationAccepted?.Invoke(destination);
-        }
-
-        public void QueueDestination(NumericsVector3 destination)
-        {
-            _queuedDestination = destination;
-            _acceptedDestination = destination;
-            SetTargetPosition(destination);
-        }
-
-        public void ReserveDestination(NumericsVector3 destination)
-        {
-            _acceptedDestination = destination;
+            NumericsVector3? pending = PendingDestination;
+            PendingDestination = null;
+            if (Phase == MovementPhase.Blocked) Phase = MovementPhase.Idle;
+            return pending;
         }
 
         public NumericsVector3? FinishArrival()
         {
-            NumericsVector3? queued = _queuedDestination;
-            _queuedDestination = null;
-            IsHyperSpaceComplete = true;
-            SetPhase(MovementPhase.Idle);
-            return queued;
-        }
-
-        public void DeferDestination(NumericsVector3 destination)
-        {
-            _deferredDestination = destination;
-        }
-
-        public NumericsVector3? TakeDeferredDestination()
-        {
-            NumericsVector3? deferred = _deferredDestination;
-            _deferredDestination = null;
-            return deferred;
-        }
-
-        public void BlockDestination(NumericsVector3 destination)
-        {
-            _blockedDestination = destination;
-            _deferredDestination = null;
-            if (IsHyperSpaceComplete)
-            {
-                SetPhase(MovementPhase.Blocked);
-            }
-        }
-
-        public NumericsVector3? TakeBlockedDestination()
-        {
-            NumericsVector3? blocked = _blockedDestination;
-            _blockedDestination = null;
-            return blocked;
-        }
-
-        public void ClearPendingDestinations()
-        {
-            _queuedDestination = null;
-            _deferredDestination = null;
-            _blockedDestination = null;
-        }
-
-        public void StartMoving()
-        {
-            SetPhase(MovementPhase.Moving);
+            NumericsVector3? pending = TakePending();
+            Phase = MovementPhase.Idle;
+            return pending;
         }
 
         public void Arrive(NumericsVector3 position)
         {
-            SetTargetPosition(position);
-            _acceptedDestination = position;
-            SetPhase(MovementPhase.Idle);
+            Destination = position;
+            Phase = MovementPhase.Idle;
         }
 
         public void StopAt(NumericsVector3 position)
         {
-            _queuedDestination = null;
-            _deferredDestination = null;
-            _blockedDestination = null;
-            _requestedDestination = null;
-            Arrive(position);
-            Stopped?.Invoke();
+            PendingDestination = null;
+            LastRequest = null;
+            Destination = position;
+            if (Phase != MovementPhase.Arriving) Phase = MovementPhase.Idle;
         }
 
-        private void SetPhase(MovementPhase phase)
-        {
-            if (Phase == phase)
-            {
-                return;
-            }
-
-            Phase = phase;
-            PhaseChanged?.Invoke(phase);
-        }
-
-        private static bool PositionsEqual(NumericsVector3 first, NumericsVector3 second)
-        {
-            return Math.Abs(first.X - second.X) < POSITION_TOLERANCE &&
-                Math.Abs(first.Y - second.Y) < POSITION_TOLERANCE &&
-                Math.Abs(first.Z - second.Z) < POSITION_TOLERANCE;
-        }
+        private static bool PositionsEqual(NumericsVector3 first, NumericsVector3 second) =>
+            Math.Abs(first.X - second.X) < POSITION_TOLERANCE &&
+            Math.Abs(first.Y - second.Y) < POSITION_TOLERANCE &&
+            Math.Abs(first.Z - second.Z) < POSITION_TOLERANCE;
     }
 }

@@ -28,13 +28,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void IsMoving_UsesPositionTolerance()
+        public void Request_DeduplicatesWithinPositionTolerance()
         {
             ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
-            model.SetTargetPosition(new NumericsVector3(10f, 0f, 0f));
+            model.Request(new NumericsVector3(10f, 0f, 0f));
 
-            Assert.That(model.IsMoving(new NumericsVector3(9.96f, 0f, 0f)), Is.False);
-            Assert.That(model.IsMoving(new NumericsVector3(9.94f, 0f, 0f)), Is.True);
+            Assert.That(model.IsSameRequest(new NumericsVector3(9.96f, 0f, 0f)), Is.True);
+            Assert.That(model.IsSameRequest(new NumericsVector3(9.94f, 0f, 0f)), Is.False);
         }
 
         [Test]
@@ -43,13 +43,13 @@ namespace EmpireAtWar.Tests.Editor
             ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
             NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
 
-            model.RequestDestination(destination);
+            model.Request(destination);
             Assert.That(model.Phase, Is.EqualTo(MovementPhase.Arriving));
             Assert.That(model.FinishArrival(), Is.EqualTo(destination));
-            model.AcceptDestination(destination, true);
+            model.Accept(destination);
 
-            Assert.That(model.Phase, Is.EqualTo(MovementPhase.Turning));
-            Assert.That(model.IsNavigating, Is.True);
+            Assert.That(model.Phase, Is.EqualTo(MovementPhase.Moving));
+            Assert.That(model.IsMoving, Is.True);
         }
 
         [Test]
@@ -58,17 +58,16 @@ namespace EmpireAtWar.Tests.Editor
             ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
             NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
             model.FinishArrival();
-            model.BlockDestination(destination);
+            model.Block(destination);
 
             Assert.That(model.IsBlocked, Is.True);
-            Assert.That(model.TakeBlockedDestination(), Is.EqualTo(destination));
-            model.AcceptDestination(destination, false);
+            Assert.That(model.TakePending(), Is.EqualTo(destination));
+            model.Accept(destination);
             Assert.That(model.Phase, Is.EqualTo(MovementPhase.Moving));
         }
 
         [TestCase(MovementPhase.Arriving)]
         [TestCase(MovementPhase.Idle)]
-        [TestCase(MovementPhase.Turning)]
         [TestCase(MovementPhase.Moving)]
         [TestCase(MovementPhase.Blocked)]
         public void StopAt_ClearsPendingOrders(MovementPhase phase)
@@ -80,22 +79,36 @@ namespace EmpireAtWar.Tests.Editor
                 model.FinishArrival();
             }
 
-            if (phase == MovementPhase.Turning || phase == MovementPhase.Moving)
+            if (phase == MovementPhase.Moving)
             {
-                model.AcceptDestination(destination, phase == MovementPhase.Turning);
+                model.Accept(destination);
             }
             else if (phase == MovementPhase.Blocked)
             {
-                model.BlockDestination(destination);
+                model.Block(destination);
             }
 
-            model.RequestDestination(destination);
+            model.Request(destination);
             model.StopAt(NumericsVector3.Zero);
 
-            Assert.That(model.Phase, Is.EqualTo(MovementPhase.Idle));
-            Assert.That(model.QueuedDestination, Is.Null);
-            Assert.That(model.DeferredDestination, Is.Null);
-            Assert.That(model.BlockedDestination, Is.Null);
+            Assert.That(model.Phase, Is.EqualTo(phase == MovementPhase.Arriving
+                ? MovementPhase.Arriving : MovementPhase.Idle));
+            Assert.That(model.PendingDestination, Is.Null);
+            Assert.That(model.LastRequest, Is.Null);
+        }
+
+        [Test]
+        public void PursueDuringMovement_DefersUntilPathCompletes()
+        {
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub());
+            model.FinishArrival();
+            model.Accept(new NumericsVector3(10f, 5f, 0f));
+            NumericsVector3 pursuit = new NumericsVector3(20f, 5f, 0f);
+
+            model.Defer(pursuit);
+
+            Assert.That(model.IsMoving, Is.True);
+            Assert.That(model.TakePending(), Is.EqualTo(pursuit));
         }
 
         private sealed class ShipMoveDataStub : IShipMoveData

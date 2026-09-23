@@ -25,8 +25,6 @@ namespace EmpireAtWar.Tests.Editor
         private const string LAYER_DATA_PATH = "Assets/Settings/Data/Models/Layer/LayerData.asset";
         private const string SHIP_MOVE_COMPONENT_FULL_NAME =
             "EmpireAtWar.Components.Ship.Movement.ShipMoveComponent";
-        private const string SHIP_MOVE_VIEW_FULL_NAME =
-            "EmpireAtWar.Components.Ship.Movement.ShipMoveView";
 
         private static readonly SerializedReference[] REQUIRED_REFERENCES =
         {
@@ -75,7 +73,7 @@ namespace EmpireAtWar.Tests.Editor
             int zoneSystemCount = 0;
             int zoneViewCount = 0;
             int shipBuildViewCount = 0;
-            int shipMoveViewCount = 0;
+            int shipMoveComponentCount = 0;
 
             foreach (string prefabGuid in prefabGuids)
             {
@@ -93,24 +91,17 @@ namespace EmpireAtWar.Tests.Editor
 
                     SerializedObject serializedComponent = new SerializedObject(component);
                     string componentTypeName = component.GetType().FullName;
-                    if (componentTypeName == SHIP_MOVE_COMPONENT_FULL_NAME ||
-                        componentTypeName == SHIP_MOVE_VIEW_FULL_NAME)
+                    if (componentTypeName == SHIP_MOVE_COMPONENT_FULL_NAME)
                     {
-                        string lineRendererField = componentTypeName == SHIP_MOVE_VIEW_FULL_NAME
-                            ? "lineRenderer"
-                            : "_lineRenderer";
-                        string bodyTransformField = componentTypeName == SHIP_MOVE_VIEW_FULL_NAME
-                            ? "bodyTransform"
-                            : "_bodyTransform";
                         AssertReferenceAssigned(
                             serializedComponent,
-                            lineRendererField,
+                            "lineRenderer",
                             $"{prefabPath}/{component.name}.lineRenderer");
                         AssertReferenceAssigned(
                             serializedComponent,
-                            bodyTransformField,
+                            "bodyTransform",
                             $"{prefabPath}/{component.name}.bodyTransform");
-                        shipMoveViewCount++;
+                        shipMoveComponentCount++;
                     }
 
                     for (int i = 0; i < REQUIRED_REFERENCES.Length; i++)
@@ -159,7 +150,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(zoneSystemCount, Is.GreaterThan(0));
             Assert.That(zoneViewCount, Is.GreaterThan(0));
             Assert.That(shipBuildViewCount, Is.GreaterThan(0));
-            Assert.That(shipMoveViewCount, Is.GreaterThan(0));
+            Assert.That(shipMoveComponentCount, Is.GreaterThan(0));
         }
 
         [Test]
