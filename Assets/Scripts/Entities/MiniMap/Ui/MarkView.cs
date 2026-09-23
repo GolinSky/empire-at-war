@@ -8,6 +8,12 @@ namespace EmpireAtWar.Views.MiniMap
 {
     public class MarkView:MonoBehaviour
     {
+        private const float STATION_SIZE = 18f;
+        private const float SHIP_SIZE = 6f;
+        private const float PLATFORM_SIZE = 14f;
+        private const float ZONE_SIZE_SCALE = 0.65f;
+        private const float ZONE_ALPHA = 0.35f;
+
         [SerializeField] private Image iconImage;
         [SerializeField] private RectTransform rectTransform;
         
@@ -21,6 +27,7 @@ namespace EmpireAtWar.Views.MiniMap
         {
             rectTransform.SetParent(parent, false);
             rectTransform.anchoredPosition = position;
+            rectTransform.sizeDelta = Vector2.one * STATION_SIZE;
             iconImage.sprite = sprite;
         }
         
@@ -44,9 +51,14 @@ namespace EmpireAtWar.Views.MiniMap
             iconImage.sprite = sprite;
             iconImage.raycastTarget = false;
             _marker = marker;
+            rectTransform.sizeDelta = Vector2.one * (marker.MarkType == MarkType.Ship
+                ? SHIP_SIZE
+                : PLATFORM_SIZE);
             if (marker.WorldDiameter > 0f)
             {
                 rectTransform.SetAsFirstSibling();
+                // Preserve zone translucency while minimap hover fades animate the image color.
+                iconImage.canvasRenderer.SetAlpha(ZONE_ALPHA);
             }
 
             RefreshMarker();
@@ -76,7 +88,7 @@ namespace EmpireAtWar.Views.MiniMap
                 new Vector3(_marker.X, 0f, _marker.Z));
             if (_marker.WorldDiameter > 0f)
             {
-                rectTransform.sizeDelta = _miniMapPositionConvector.GetSize(_marker.WorldDiameter);
+                rectTransform.sizeDelta = _miniMapPositionConvector.GetSize(_marker.WorldDiameter) * ZONE_SIZE_SCALE;
             }
 
             Color color = _marker.Relation switch

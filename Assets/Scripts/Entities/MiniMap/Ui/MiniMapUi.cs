@@ -72,6 +72,12 @@ namespace EmpireAtWar.Views.MiniMap
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
+            if (markData == Model.PlayerBase || markData == Model.EnemyBase)
+            {
+                view.IconImage.color = markData == Model.PlayerBase
+                    ? new Color(0.15f, 0.65f, 1f)
+                    : new Color(1f, 0.2f, 0.15f);
+            }
             _mapMarkers.Add(view.IconImage);
         }
 
