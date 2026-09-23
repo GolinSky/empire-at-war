@@ -1,9 +1,8 @@
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
 
-namespace EmpireAtWar.Commands.ShipUi
+namespace EmpireAtWar.Presenters.ShipUi
 {
-    public interface IShipUiCommand : ICommand
+    public interface IShipUiPresenter
     {
         void CloseSelection();
         void SelectShipGroup(ShipType shipType);

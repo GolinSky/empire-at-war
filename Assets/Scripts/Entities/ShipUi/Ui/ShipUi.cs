@@ -1,44 +1,41 @@
-﻿using EmpireAtWar.Commands.ShipUi;
 using EmpireAtWar.Models.ShipUi;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Views
 {
-    public class ShipUi : BaseUi<IShipUiModelObserver, IShipUiCommand>,
-        IInitializable, ILateDisposable
+    public class ShipUi : BaseUi, IShipUi
     {
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
 
-        private bool _hasMovableSelection;
+        private IShipUiModelObserver _model;
+        private IShipUiPresenter _presenter;
+        private bool _isInitialized;
         private bool _isRouteActive = true;
+
+        public void SetModel(IShipUiModelObserver model) => _model = model;
+        public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
 
         public void Initialize()
         {
-            Model.OnSelectionChanged += HandleChangedSelection;
-            disableSelectionButton.onClick.AddListener(CloseSelection);
-        }
-    
-        public void LateDispose()
-        {
-            Model.OnSelectionChanged -= HandleChangedSelection;
-            disableSelectionButton.onClick.RemoveListener(CloseSelection);
-        }
-        
-        private void CloseSelection()
-        {
-            Command.CloseSelection();
-        }
-        
-        private void HandleChangedSelection(bool hasMovableSelection)
-        {
-            _hasMovableSelection = hasMovableSelection;
+            _model.OnSelectionChanged += UpdateVisibility;
+            disableSelectionButton.onClick.AddListener(_presenter.CloseSelection);
+            _isInitialized = true;
             UpdateVisibility();
         }
+
+        public void Dispose()
+        {
+            if (!_isInitialized) return;
+            _model.OnSelectionChanged -= UpdateVisibility;
+            disableSelectionButton.onClick.RemoveListener(_presenter.CloseSelection);
+            _isInitialized = false;
+        }
+
+        private void OnDestroy() => Dispose();
 
         public override void Show()
         {
@@ -56,13 +53,14 @@ namespace EmpireAtWar.Views
 
         private void UpdateVisibility()
         {
-            bool isVisible = _isRouteActive && _hasMovableSelection;
+            bool isVisible = _isRouteActive && _model.HasShips;
             gameObject.SetActive(isVisible);
-            shipIconImage.enabled = isVisible && Model.ShipIcon != null;
-            if (shipIconImage.enabled)
+            if (isVisible && _model.SelectedShipType.HasValue)
             {
-                shipIconImage.sprite = Model.ShipIcon;
+                shipIconImage.sprite = _model.GetShipIcon(_model.SelectedShipType.Value);
             }
+            shipIconImage.enabled = isVisible && _model.SelectedShipType.HasValue &&
+                                    shipIconImage.sprite != null;
         }
     }
 }

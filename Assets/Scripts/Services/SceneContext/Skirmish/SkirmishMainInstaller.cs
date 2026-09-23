@@ -67,7 +67,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindModel<MenuData>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();
         
-        Container.BindModel<ShipUiData>(Repository);
+        Container.BindScriptableObject<ShipUiData>(Repository);
+        Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();
         
         //todo: merge map model with minimap 

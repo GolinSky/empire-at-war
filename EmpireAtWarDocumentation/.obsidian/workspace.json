@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Rules/UI_UX_GUIDELINES.md",
+                "file": "Rules/UI_CODE_BUILD_GUIDE.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "UI_UX_GUIDELINES"
+              "title": "UI_CODE_BUILD_GUIDE"
             }
           }
         ]
@@ -185,8 +185,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "1261212fe2167d70",
+  "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "TODOs/Ship_Abilities_Plan.md",
+    "Rules/UI_UX_GUIDELINES.md",
     "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
     "Rules/UI_CODE_BUILD_GUIDE.md",
     "TODOs/Battle_Attack_Optimization_Plan.md",
@@ -220,8 +222,6 @@
     "Architecture",
     "TODOs/UI_Service_Refactoring.md",
     "TODOs/TODOs.md",
-    "TODOs",
-    "AGENTS.md",
-    "GRAPHIFY_GUIDE.md"
+    "TODOs"
   ]
 }
