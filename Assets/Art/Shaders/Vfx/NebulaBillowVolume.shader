@@ -21,7 +21,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
         {
             Name "CloudScattering"
             Tags { "LightMode"="UniversalForward" }
-            Cull Off
+            // Exit faces cover the volume both outside and inside the box.
+            Cull Front
             ZWrite Off
             ZTest Always
             Blend One OneMinusSrcAlpha
@@ -51,8 +52,9 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             struct VolumeInput
             {
                 float4 screen : SV_POSITION;
-                float3 surface : TEXCOORD0;
-                UNITY_VERTEX_INPUT_INSTANCE_ID
+                float3 eyeOS : TEXCOORD0;
+                float3 rayOS : TEXCOORD1;
+                float3 rayWS : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -60,10 +62,17 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             {
                 VolumeInput volume;
                 UNITY_SETUP_INSTANCE_ID(mesh);
-                UNITY_TRANSFER_INSTANCE_ID(mesh, volume);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(volume);
-                volume.surface = TransformObjectToWorld(mesh.vertex);
-                volume.screen = TransformWorldToHClip(volume.surface);
+                float3 surface = TransformObjectToWorld(mesh.vertex);
+                float3 eyeWS = GetCameraPositionWS();
+                // Keep rays unnormalized so perspective interpolation stays linear.
+                volume.rayWS = -GetWorldSpaceViewDir(surface);
+                if (unity_OrthoParams.w > 0.5)
+                    eyeWS = surface - volume.rayWS * dot(surface - eyeWS, volume.rayWS);
+                // Resolve particle transforms per vertex instead of per fragment.
+                volume.eyeOS = TransformWorldToObject(eyeWS);
+                volume.rayOS = TransformWorldToObjectDir(volume.rayWS, false);
+                volume.screen = TransformWorldToHClip(surface);
                 // Preserve back faces beyond the far clip plane for cameras inside a cloud.
                 #if UNITY_REVERSED_Z
                     volume.screen.z = max(volume.screen.z, volume.screen.w * 0.00001);
@@ -73,30 +82,23 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 return volume;
             }
 
-            float4 ReadCloud(float3 samplePosition)
+            float4 ReadCloud(float3 samplePosition, float phase)
             {
-                float phase = _Time.y * _Flow;
                 float3 curl = sin(samplePosition.yzx * 13.0 + phase + float3(0, 2, 4));
                 samplePosition += curl * 0.009 * saturate(1.0 - length(samplePosition) * 1.6);
                 // R: density; G/B: integrated sun/sky optical depth; A: color variation.
                 return SAMPLE_TEXTURE3D_LOD(_CloudField, sampler_CloudField, samplePosition + 0.5, 0);
             }
 
-            half4 VolumeFragment(VolumeInput volume, FRONT_FACE_TYPE face : FRONT_FACE_SEMANTIC) : SV_Target
+            half4 VolumeFragment(VolumeInput volume) : SV_Target
             {
-                UNITY_SETUP_INSTANCE_ID(volume);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(volume);
-                float3 rayWS = -GetWorldSpaceNormalizeViewDir(volume.surface);
-                float3 eyeWS = GetCameraPositionWS();
-                if (unity_OrthoParams.w > 0.5)
-                    eyeWS = volume.surface - rayWS * dot(volume.surface - eyeWS, rayWS);
-                float3 eye = TransformWorldToObject(eyeWS);
-                bool inside = all(abs(eye) < 0.5);
-                if (IS_FRONT_VFACE(face, true, false) == inside) discard;
-
-                float3 localRay = TransformWorldToObjectDir(rayWS, false);
-                float distanceScale = length(localRay);
-                float3 ray = localRay / distanceScale;
+                float worldRayLength = length(volume.rayWS);
+                float localRayLength = length(volume.rayOS);
+                float3 rayWS = volume.rayWS / worldRayLength;
+                float3 ray = volume.rayOS / localRayLength;
+                float distanceScale = localRayLength / worldRayLength;
+                float3 eye = volume.eyeOS;
                 float3 reciprocalRay = rcp(lerp(-1.0, 1.0, step(0.0, ray)) * max(abs(ray), 0.00001));
                 float3 a = (-0.5 - eye) * reciprocalRay;
                 float3 b = (0.5 - eye) * reciprocalRay;
@@ -109,11 +111,15 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                     sceneDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1.0, sceneDepth);
                 #endif
                 float3 scenePoint = ComputeWorldSpacePosition(uv, sceneDepth, UNITY_MATRIX_I_VP);
-                last = min(last, dot(scenePoint - eyeWS, rayWS) * distanceScale);
+                // Orthographic origins differ from the camera only perpendicular to the ray.
+                last = min(last, dot(scenePoint - GetCameraPositionWS(), rayWS) * distanceScale);
                 if (first >= last) discard;
 
                 int count = clamp((int)_Samples, 32, 128);
                 float stride = (last - first) / count;
+                float3 stepOffset = ray * stride;
+                float stepExtinction = _Extinction * stride;
+                float phase = _Time.y * _Flow;
                 float dither = frac(52.9829189 * frac(dot(volume.screen.xy, float2(0.06711056, 0.00583715))));
                 float3 samplePosition = eye + ray * (first + stride * (0.35 + dither * 0.3));
                 float transmission = 1.0;
@@ -121,7 +127,7 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 [loop]
                 for (int sampleIndex = 0; sampleIndex < count; sampleIndex++)
                 {
-                    float4 cloud = ReadCloud(samplePosition);
+                    float4 cloud = ReadCloud(samplePosition, phase);
                     if (cloud.r > 0.003)
                     {
                         float sunlight = exp(-cloud.g * _LightAbsorption);
@@ -130,14 +136,14 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                         float3 litColor = lerp(tint, _PearlColor.rgb, sunlight * sunlight * 0.55);
                         float3 source = _ShadowColor.rgb * (0.35 + skylight * 0.65);
                         source += litColor * (sunlight + _Ambient * skylight);
-                        float opacity = 1.0 - exp(-cloud.r * _Extinction * stride);
-                        scattering += transmission * opacity * source * _Brightness;
+                        float opacity = 1.0 - exp(-cloud.r * stepExtinction);
+                        scattering += transmission * opacity * source;
                         transmission *= 1.0 - opacity;
                         if (transmission < 0.008) break;
                     }
-                    samplePosition += ray * stride;
+                    samplePosition += stepOffset;
                 }
-                return half4(scattering, 1.0 - transmission);
+                return half4(scattering * _Brightness, 1.0 - transmission);
             }
             ENDHLSL
         }
