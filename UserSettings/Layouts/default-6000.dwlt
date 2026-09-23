@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 0
+    x: 1
     y: 61
     width: 1470
     height: 815
@@ -190,7 +190,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 220.5
+    width: 220
     height: 448
   m_MinSize: {x: 201, y: 226}
   m_MaxSize: {x: 4001, y: 4026}
@@ -214,9 +214,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 220.5
+    x: 220
     y: 0
-    width: 697.5
+    width: 698
     height: 448
   m_MinSize: {x: 202, y: 226}
   m_MaxSize: {x: 4002, y: 4026}
@@ -344,7 +344,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 0
       containerId: overlay-toolbar__top
-      displayed: 0
+      displayed: 1
       id: Unsupported User Elements
       index: 2
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -386,7 +386,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 0
       containerId: overlay-toolbar__top
-      displayed: 1
+      displayed: 0
       id: Services/AI
       index: 5
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -400,7 +400,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 0
       containerId: overlay-toolbar__top
-      displayed: 1
+      displayed: 0
       id: Services/Unity Version Control
       index: 6
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -428,8 +428,8 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 1
       containerId: overlay-toolbar__top
-      displayed: 0
-      id: Editor Utility/Quality
+      displayed: 1
+      id: Editor Controls/Layout
       index: 1
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
@@ -442,8 +442,8 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 1
       containerId: overlay-toolbar__top
-      displayed: 1
-      id: Editor Controls/Layout
+      displayed: 0
+      id: Editor Utility/Quality
       index: 2
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
@@ -540,7 +540,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 2
       containerId: overlay-toolbar__top
-      displayed: 0
+      displayed: 1
       id: EmpireAtWar/Scene Selector
       index: 0
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -557,6 +557,20 @@ MonoBehaviour:
       displayed: 1
       id: SoulsLike/Play Game
       index: 0
+      contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":1053.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
+      floating: 0
+      collapsed: 0
+      snapOffset: {x: 1053, y: 0}
+      snapOffsetDelta: {x: 0, y: 0}
+      snapCorner: 0
+      layout: 4
+      size: {x: 0, y: 0}
+      sizeOverridden: 0
+    - dockPosition: 2
+      containerId: overlay-toolbar__top
+      displayed: 1
+      id: SoulsLike/Scene Selector
+      index: 3
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
@@ -571,20 +585,6 @@ MonoBehaviour:
       displayed: 1
       id: SoulsLike/Fast Play Game
       index: 1
-      contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
-      floating: 0
-      collapsed: 0
-      snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
-      snapCorner: 0
-      layout: 4
-      size: {x: 0, y: 0}
-      sizeOverridden: 0
-    - dockPosition: 2
-      containerId: overlay-toolbar__top
-      displayed: 1
-      id: SoulsLike/Scene Selector
-      index: 3
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
@@ -618,15 +618,15 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Game
-    m_Image: {fileID: 4621777727084837110, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -6423792434712278376, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 221.5
+    x: 221
     y: 24
-    width: 695.5
+    width: 696
     height: 422
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -664,10 +664,10 @@ MonoBehaviour:
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
-    m_HBaseRangeMin: -640
-    m_HBaseRangeMax: 640
-    m_VBaseRangeMin: -360
-    m_VBaseRangeMax: 360
+    m_HBaseRangeMin: -1280
+    m_HBaseRangeMax: 1280
+    m_VBaseRangeMin: -720
+    m_VBaseRangeMax: 720
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -686,22 +686,22 @@ MonoBehaviour:
       x: 0
       y: 21
       width: 695.5
-      height: 401.5
-    m_Scale: {x: 0.5433594, y: 0.5433594}
-    m_Translation: {x: 347.75, y: 200.75}
+      height: 401
+    m_Scale: {x: 0.2716797, y: 0.2716797}
+    m_Translation: {x: 347.75, y: 200.5}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -640
-      y: -369.46082
-      width: 1280
-      height: 738.92163
+      x: -1280
+      y: -738.0014
+      width: 2560
+      height: 1476.0028
     m_MinimalGUI: 1
-  m_defaultScale: 0.5433594
-  m_LastWindowPixelSize: {x: 695.5, y: 422.5}
+  m_defaultScale: 0.2716797
+  m_LastWindowPixelSize: {x: 695.5, y: 422}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -724,7 +724,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Hierarchy
-    m_Image: {fileID: -3734745235275155857, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: 7966133145522015247, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Hierarchy\u200B"
@@ -732,7 +732,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 24
-    width: 219.5
+    width: 219
     height: 422
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Scene
-    m_Image: {fileID: 8634526014445323508, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: 2593428753322112591, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Scene\u200B"
@@ -1321,7 +1321,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -34.306473, y: -99.289734, z: -12.965942}
+    m_Target: {x: 118.91331, y: -17.370127, z: 15.465899}
     speed: 2
     m_Value: {x: -34.306473, y: -99.289734, z: -12.965942}
   m_RenderMode: 0
@@ -1370,11 +1370,11 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: 0.06698521, y: 0.93200326, z: -0.22838262, w: 0.27335888}
+    m_Target: {x: 0.25563273, y: -0.65708613, z: 0.2536503, w: 0.6622292}
     speed: 2
     m_Value: {x: 0.06698521, y: 0.9320033, z: -0.22838263, w: 0.2733589}
   m_Size:
-    m_Target: 150.00256
+    m_Target: 10.409118
     speed: 2
     m_Value: 150.00256
   m_Ortho:
@@ -1426,7 +1426,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Animator
-    m_Image: {fileID: 1711060831702674872, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -1673928668082335149, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Animator\u200B"
@@ -1503,7 +1503,7 @@ MonoBehaviour:
   m_MaxSize: {x: 10000, y: 10000}
   m_TitleContent:
     m_Text: Project
-    m_Image: {fileID: -5179483145760003458, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -5467254957812901981, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Project\u200B"
@@ -1561,7 +1561,47 @@ MonoBehaviour:
       m_Data: 60406
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 60258
+    - m_Data: 79952
+    - m_Data: 80502
+    - m_Data: 81152
+    - m_Data: 81244
+    - m_Data: 85204
+    - m_Data: 85206
+    - m_Data: 85208
+    - m_Data: 85210
+    - m_Data: 85212
+    - m_Data: 85214
+    - m_Data: 85216
+    - m_Data: 85218
+    - m_Data: 85220
+    - m_Data: 85222
+    - m_Data: 85224
+    - m_Data: 85226
+    - m_Data: 85228
+    - m_Data: 85230
+    - m_Data: 85232
+    - m_Data: 85234
+    - m_Data: 85236
+    - m_Data: 85238
+    - m_Data: 85240
+    - m_Data: 85242
+    - m_Data: 85244
+    - m_Data: 85246
+    - m_Data: 85248
+    - m_Data: 85250
+    - m_Data: 85252
+    - m_Data: 85254
+    - m_Data: 85256
+    - m_Data: 85258
+    - m_Data: 85260
+    - m_Data: 85262
+    - m_Data: 85264
+    - m_Data: 85266
+    - m_Data: 85268
+    - m_Data: 85270
+    - m_Data: 85272
+    - m_Data: 85274
+    - m_Data: 85276
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1595,7 +1635,47 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 60258
+    - m_Data: 79952
+    - m_Data: 80502
+    - m_Data: 81152
+    - m_Data: 81244
+    - m_Data: 85204
+    - m_Data: 85206
+    - m_Data: 85208
+    - m_Data: 85210
+    - m_Data: 85212
+    - m_Data: 85214
+    - m_Data: 85216
+    - m_Data: 85218
+    - m_Data: 85220
+    - m_Data: 85222
+    - m_Data: 85224
+    - m_Data: 85226
+    - m_Data: 85228
+    - m_Data: 85230
+    - m_Data: 85232
+    - m_Data: 85234
+    - m_Data: 85236
+    - m_Data: 85238
+    - m_Data: 85240
+    - m_Data: 85242
+    - m_Data: 85244
+    - m_Data: 85246
+    - m_Data: 85248
+    - m_Data: 85250
+    - m_Data: 85252
+    - m_Data: 85254
+    - m_Data: 85256
+    - m_Data: 85258
+    - m_Data: 85260
+    - m_Data: 85262
+    - m_Data: 85264
+    - m_Data: 85266
+    - m_Data: 85268
+    - m_Data: 85270
+    - m_Data: 85272
+    - m_Data: 85274
+    - m_Data: 85276
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1692,7 +1772,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Console
-    m_Image: {fileID: -4950941429401207979, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -4327648978806127646, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Console\u200B"
@@ -1731,7 +1811,7 @@ MonoBehaviour:
   m_MaxSize: {x: 4000, y: 4000}
   m_TitleContent:
     m_Text: Inspector
-    m_Image: {fileID: -440750813802333266, guid: 0000000000000000d000000000000000,
+    m_Image: {fileID: -2667387946076563598, guid: 0000000000000000d000000000000000,
       type: 0}
     m_Tooltip: 
     m_TextWithWhitespace: "Inspector\u200B"

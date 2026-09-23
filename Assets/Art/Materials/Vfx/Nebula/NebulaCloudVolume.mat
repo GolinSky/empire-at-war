@@ -31,14 +31,14 @@ Material:
     m_Floats:
     - _Ambient: 0.2
     - _Brightness: 1
-    - _Extinction: 16
-    - _Flow: 0.018
-    - _LightAbsorption: 14
+    - _Extinction: 30
+    - _Flow: 0.0189
+    - _LightAbsorption: 15
     - _Samples: 80
     m_Colors:
-    - _BodyColor: {r: 0.35, g: 0.58, b: 0.88, a: 1}
-    - _PearlColor: {r: 0.74, g: 0.9, b: 1, a: 1}
-    - _ShadowColor: {r: 0.09, g: 0.12, b: 0.23, a: 1}
-    - _VioletColor: {r: 0.6, g: 0.34, b: 0.7, a: 1}
+    - _BodyColor: {r: 0.3490196, g: 0.38033587, b: 0.8784314, a: 1}
+    - _PearlColor: {r: 0.023584902, g: 0.5898872, b: 1, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _VioletColor: {r: 0.72527444, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
