@@ -30,7 +30,8 @@ namespace EmpireAtWar.Tests.Movement
                 Vector3.zero,
                 Vector3.right,
                 new Vector3(20f, 0f, 10f),
-                new Vector3(40f, 0f, 0f));
+                new Vector3(40f, 0f, 0f),
+                5f);
 
             route.EvaluateNormalizedDistance(0.499f, out Vector3 incoming);
             route.EvaluateNormalizedDistance(0.501f, out Vector3 outgoing);

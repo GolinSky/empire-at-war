@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float Speed { get; private set; }
         [field: SerializeField] public float Height { get; private set; }
         [field: SerializeField] public float RotationSpeed { get; private set; }
+        [field: SerializeField] public float TurnAcceleration { get; private set; }
         [field: SerializeField] public float HyperSpaceDuration { get; private set; }
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         [field: SerializeField] public float NavigationRadius { get; private set; } = 8f;

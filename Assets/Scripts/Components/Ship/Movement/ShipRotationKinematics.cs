@@ -5,8 +5,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 {
     public static class ShipRotationKinematics
     {
-        private const float HALF_TURN_ANGLE = 180f;
-
         public static float CalculateMinimumTurnRadius(
             float speed,
             float degreesPerSecond)
@@ -45,100 +43,58 @@ namespace EmpireAtWar.Components.Ship.Movement
             return Quaternion.Angle(currentRotation, targetRotation) / degreesPerSecond;
         }
 
-        public static float CalculateBankAngle(
-            Quaternion currentRotation,
+        public static Quaternion StepYaw(
+            Quaternion current,
             Vector3 targetDirection,
-            float degreesPerSecond,
-            float deltaTime,
-            float maximumBankAngle)
-        {
-            if (degreesPerSecond <= 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(degreesPerSecond));
-            }
-
-            if (deltaTime < 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(deltaTime));
-            }
-
-            if (maximumBankAngle < 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(maximumBankAngle));
-            }
-
-            if (targetDirection.sqrMagnitude <= Mathf.Epsilon ||
-                deltaTime <= Mathf.Epsilon)
-            {
-                return 0f;
-            }
-
-            float requestedTurn = Vector3.SignedAngle(
-                currentRotation * Vector3.forward,
-                targetDirection,
-                Vector3.up);
-            float maximumTurnStep = degreesPerSecond * deltaTime;
-            float turnRatio = Mathf.Clamp(
-                requestedTurn / maximumTurnStep,
-                -1f,
-                1f);
-            return -turnRatio * maximumBankAngle;
-        }
-
-        public static float CalculateLookBankAngle(
-            Quaternion currentRotation,
-            Vector3 targetDirection,
-            float maximumBankAngle)
-        {
-            if (maximumBankAngle < 0f)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(maximumBankAngle));
-            }
-
-            if (targetDirection.sqrMagnitude <= Mathf.Epsilon)
-            {
-                return 0f;
-            }
-
-            float turnAngle = Vector3.SignedAngle(
-                currentRotation * Vector3.forward,
-                targetDirection,
-                Vector3.up);
-            return -Mathf.Clamp(
-                turnAngle / HALF_TURN_ANGLE,
-                -1f,
-                1f) * maximumBankAngle;
-        }
-
-        public static Quaternion Step(
-            Quaternion currentRotation,
-            Vector3 targetDirection,
-            float degreesPerSecond,
+            ref float angularVelocity,
+            float maxRate,
+            float acceleration,
             float deltaTime)
         {
-            if (degreesPerSecond <= 0f)
+            targetDirection.y = 0f;
+            if (targetDirection.sqrMagnitude <= Mathf.Epsilon || deltaTime <= 0f)
             {
-                throw new ArgumentOutOfRangeException(nameof(degreesPerSecond));
+                return current;
             }
 
-            if (deltaTime < 0f)
-            {
-                throw new ArgumentOutOfRangeException(nameof(deltaTime));
-            }
-
-            if (targetDirection.sqrMagnitude <= Mathf.Epsilon)
-            {
-                return currentRotation;
-            }
-
-            Quaternion targetRotation = Quaternion.LookRotation(
-                targetDirection.normalized,
+            float remainingAngle = Vector3.SignedAngle(
+                current * Vector3.forward,
+                targetDirection,
                 Vector3.up);
-            return Quaternion.RotateTowards(
-                currentRotation,
-                targetRotation,
-                degreesPerSecond * deltaTime);
+            float velocityStep = acceleration * deltaTime;
+            if (Mathf.Abs(remainingAngle) < 0.1f &&
+                Mathf.Abs(angularVelocity) < velocityStep)
+            {
+                angularVelocity = 0f;
+                return Quaternion.LookRotation(targetDirection, Vector3.up);
+            }
+
+            float brakingRate = Mathf.Sqrt(
+                2f * acceleration * Mathf.Abs(remainingAngle));
+            float desiredVelocity = Mathf.Sign(remainingAngle) *
+                Mathf.Min(maxRate, brakingRate);
+            angularVelocity = Mathf.MoveTowards(
+                angularVelocity,
+                desiredVelocity,
+                velocityStep);
+            float yawStep = angularVelocity * deltaTime;
+            if (Mathf.Sign(yawStep) == Mathf.Sign(remainingAngle) &&
+                Mathf.Abs(yawStep) >= Mathf.Abs(remainingAngle))
+            {
+                angularVelocity = 0f;
+                return Quaternion.LookRotation(targetDirection, Vector3.up);
+            }
+
+            return Quaternion.AngleAxis(yawStep, Vector3.up) * current;
+        }
+
+        public static float CalculateBankFromYawRate(
+            float angularVelocity,
+            float maxRate,
+            float maximumBankAngle)
+        {
+            return -maximumBankAngle *
+                Mathf.Clamp(angularVelocity / maxRate, -1f, 1f);
         }
     }
 }
