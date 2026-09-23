@@ -25,10 +25,10 @@ namespace EmpireAtWar.Views.Menu
                 return;
             }
 
-            if (_presenter == null || resumeButton == null || exitButton == null || menuPanel == null)
+            if (_presenter == null)
             {
                 throw new System.InvalidOperationException(
-                    "PauseMenuUi requires its presenter and serialized view references before initialization.");
+                    "PauseMenuUi presenter must be set before initialization.");
             }
 
             exitButton.onClick.AddListener(_presenter.ExitSkirmish);

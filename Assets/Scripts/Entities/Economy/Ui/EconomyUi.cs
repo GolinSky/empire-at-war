@@ -36,11 +36,6 @@ namespace EmpireAtWar.Views.Economy
                 throw new InvalidOperationException("Economy UI model must be set before initialization.");
             }
 
-            if (moneyText == null)
-            {
-                throw new InvalidOperationException("Economy UI money text is not assigned.");
-            }
-
             if (_isInitialized)
             {
                 return;

@@ -86,11 +86,6 @@ namespace EmpireAtWar.Services.Layer
         private void Register(LayerKey key, LayerMask mask)
         {
             int value = mask.value;
-            if (value == 0 || (value & (value - 1)) != 0)
-            {
-                throw new InvalidOperationException($"Layer key '{key}' must map to exactly one Unity layer.");
-            }
-
             int layer = 0;
             while ((value >>= 1) != 0)
             {

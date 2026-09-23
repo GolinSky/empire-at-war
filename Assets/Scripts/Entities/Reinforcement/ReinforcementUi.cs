@@ -153,12 +153,6 @@ namespace EmpireAtWar.Views.Reinforcement
 
         private void SetPanelVisibility(bool isVisible)
         {
-            if (panelCanvasGroup == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(ReinforcementUi)} requires a bound panel {nameof(CanvasGroup)}.");
-            }
-
             panelCanvasGroup.alpha = isVisible ? 1f : 0f;
             panelCanvasGroup.interactable = isVisible;
             panelCanvasGroup.blocksRaycasts = isVisible;

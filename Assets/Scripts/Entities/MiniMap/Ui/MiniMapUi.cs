@@ -38,8 +38,6 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void Initialize()
         {
-            if (cameraFootprintView == null)
-                throw new System.InvalidOperationException("The minimap requires an assigned camera footprint view.");
             _mapRange = Model.MapRange;
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);

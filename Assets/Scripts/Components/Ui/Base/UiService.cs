@@ -22,9 +22,9 @@ namespace EmpireAtWar.Ui.Base
 
         private UiFacade _uiFacade;
 
-        public Transform DefaultCanvasTransform => GetCanvasTransform(defaultCanvas, nameof(defaultCanvas));
-        public Transform DynamicCanvasTransform => GetCanvasTransform(dynamicCanvas, nameof(dynamicCanvas));
-        public Transform PopupCanvasTransform => GetCanvasTransform(popupCanvas, nameof(popupCanvas));
+        public Transform DefaultCanvasTransform => defaultCanvas.transform;
+        public Transform DynamicCanvasTransform => dynamicCanvas.transform;
+        public Transform PopupCanvasTransform => popupCanvas.transform;
 
         [Inject]
         public void Constructor(UiFacade uiFacade)
@@ -52,15 +52,5 @@ namespace EmpireAtWar.Ui.Base
             return _uiFacade.Create(uiType, parent);
         }
 
-        private static Transform GetCanvasTransform(Canvas canvas, string fieldName)
-        {
-            if (canvas == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(UiService)} requires a bound {fieldName} reference.");
-            }
-
-            return canvas.transform;
-        }
     }
 }

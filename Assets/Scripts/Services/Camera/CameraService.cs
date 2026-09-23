@@ -55,15 +55,6 @@ namespace EmpireAtWar.Services.Camera
             _inputService = inputService;
         }
 
-        private void Awake()
-        {
-            if (_camera == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(CameraService)} requires an explicitly assigned camera.");
-            }
-        }
-
         public void Initialize()
         {
             _keyboardInput = Vector2.zero;

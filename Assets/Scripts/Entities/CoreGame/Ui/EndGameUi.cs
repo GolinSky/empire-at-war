@@ -24,14 +24,6 @@ namespace EmpireAtWar.Views.Game
 
         private void Awake()
         {
-            if (outcomeText == null || reasonText == null || battlefieldText == null ||
-                objectiveText == null || playerFactionText == null || enemyFactionText == null ||
-                playerFleetText == null || enemyFleetText == null || playerBaseText == null ||
-                enemyBaseText == null || returnToMenuButton == null)
-            {
-                throw new InvalidOperationException("EndGameUi requires all serialized view references.");
-            }
-
             returnToMenuButton.onClick.AddListener(ReturnToMenu);
         }
 

@@ -89,11 +89,6 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private void BuildCanvas()
         {
             int uiLayer = LayerMask.NameToLayer("UI");
-            if (uiLayer < 0)
-            {
-                throw new InvalidOperationException("The UI layer is required for the health overlay.");
-            }
-
             GameObject canvasObject = new("HealthOverlayCanvas", typeof(RectTransform));
             canvasObject.layer = uiLayer;
             canvasObject.transform.SetParent(transform, false);

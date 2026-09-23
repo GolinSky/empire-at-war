@@ -34,12 +34,6 @@ namespace EmpireAtWar.Ui.Popups
 
         private void SetPopupState(bool state)
         {
-            if (canvasGroup == null)
-            {
-                throw new System.InvalidOperationException(
-                    $"{GetType().Name} requires a bound {nameof(CanvasGroup)}.");
-            }
-
             canvasGroup.alpha = state ? 1f : 0f;
             canvasGroup.interactable = state;
             canvasGroup.blocksRaycasts = state;
