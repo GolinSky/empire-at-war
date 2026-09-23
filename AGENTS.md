@@ -20,7 +20,7 @@ Apply project guidance in this order:
 
 - Never edit, rotate, redact, regenerate, untrack, ignore, delete, or otherwise change Obsidian configuration, credentials, certificates, ports, plugin state, or MCP authentication unless the user explicitly requests an Obsidian configuration change in the active request.
 - Audits, reviews, documentation cleanup, MCP work, and general optimization requests do not grant permission to change Obsidian configuration. Report findings and wait for an explicit request.
-- The local vault MCP server is `empire-vault`, backed by `ObsidianDocumentation` over stdio. Do not start Obsidian or use the retired bearer-token REST bridge.
+- The local vault MCP server is `empire-vault`, backed by `EmpireAtWarDocumentation` over stdio. Do not start Obsidian or use the retired bearer-token REST bridge.
 
 ## Unity Tooling
 

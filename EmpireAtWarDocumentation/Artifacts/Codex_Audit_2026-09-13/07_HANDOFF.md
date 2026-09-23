@@ -10,7 +10,7 @@ Three small documentation patches are ready for review. More consequential confi
 
 ## Repair request template
 
-> Continue from `ObsidianDocumentation/Artifacts/Codex_Audit_2026-09-13`. Re-read current files and hashes before changing anything. Apply only the repair batches I name, preserve newer edits and source-to-install ownership, and keep the current models, test gate, Unity safety and permission preferences. Produce exact diffs, validate using supported installed-client checks and keep a per-batch rollback. Do not run automated tests unless I explicitly request them. Do not change Obsidian configuration or credentials unless I explicitly include that scope in this request.
+> Continue from `EmpireAtWarDocumentation/Artifacts/Codex_Audit_2026-09-13`. Re-read current files and hashes before changing anything. Apply only the repair batches I name, preserve newer edits and source-to-install ownership, and keep the current models, test gate, Unity safety and permission preferences. Produce exact diffs, validate using supported installed-client checks and keep a per-batch rollback. Do not run automated tests unless I explicitly request them. Do not change Obsidian configuration or credentials unless I explicitly include that scope in this request.
 
 This is a template, not authorization. Batch C requires explicitly naming the `empire-vault` configuration change; credential remediation in E is a separate scope. No question or approval request is pending from this audit.
 

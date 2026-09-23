@@ -24,7 +24,7 @@ Evidence paths use aliases defined in [[01_INVENTORY]]. All findings are open: t
 
 ## F03 — P1: A literal credential is present in tracked vault documentation
 
-**Confirmed presence and Git tracking, high confidence.** `REPO/ObsidianDocumentation/00_Home.md:43` contains a literal API credential. Its value is omitted from this report and proposed patches. Lines 41–42 describe the retired REST integration. `git ls-files` confirms the note is tracked.
+**Confirmed presence and Git tracking, high confidence.** `REPO/EmpireAtWarDocumentation/00_Home.md:43` contains a literal API credential. Its value is omitted from this report and proposed patches. Lines 41–42 describe the retired REST integration. `git ls-files` confirms the note is tracked.
 
 **Impact:** reading or publishing the documentation can carry the credential with it. Current validity, remote repository visibility, historical distribution and exploitability were not assessed. This is not a claim that the current stdio server uses it or that an account was compromised.
 
@@ -64,7 +64,7 @@ Evidence paths use aliases defined in [[01_INVENTORY]]. All findings are open: t
 
 ## F07 — P2: Advisory setup documentation contradicts live project decisions
 
-**Confirmed documentation drift, high confidence.** `ObsidianDocumentation/Rules/README.md:3,16–17,48` presents legacy Unity MCP/Graphify as active. `00_Home.md:17,29,41–43` routes toward old Graphify, a partial rules duplicate and retired REST settings. `.codex/agents/README.md:1,20` describes a Sol/high parent while configured parent defaults are Astra/xhigh.
+**Confirmed documentation drift, high confidence.** `EmpireAtWarDocumentation/Rules/README.md:3,16–17,48` presents legacy Unity MCP/Graphify as active. `00_Home.md:17,29,41–43` routes toward old Graphify, a partial rules duplicate and retired REST settings. `.codex/agents/README.md:1,20` describes a Sol/high parent while configured parent defaults are Astra/xhigh.
 
 **Impact:** following the guides can revive retired tooling or change the parent model unnecessarily. The current root AGENTS remains authoritative, and missing repeated rules in the nested note do not cancel inherited rules.
 

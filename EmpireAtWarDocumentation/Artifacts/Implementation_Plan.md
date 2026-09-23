@@ -1,11 +1,11 @@
 # Implementation Plan - Obsidian Vault Integration & MCP Config
 
-Set up an Obsidian Vault in the project (`f:\Private\empire-at-war\ObsidianDocumentation`), construct an organized note index & vault settings, and configure the local Obsidian MCP server for both **Antigravity** and **Codex**.
+Set up an Obsidian Vault in the project (`f:\Private\empire-at-war\EmpireAtWarDocumentation`), construct an organized note index & vault settings, and configure the local Obsidian MCP server for both **Antigravity** and **Codex**.
 
 ## User Review Required
 
 > [!NOTE]
-> - The Obsidian Vault is initialized in `f:\Private\empire-at-war\ObsidianDocumentation`.
+> - The Obsidian Vault is initialized in `f:\Private\empire-at-war\EmpireAtWarDocumentation`.
 > - The Obsidian Local REST API plugin (`obsidian-local-rest-api`) is used by `@oleksandrkucherenko/mcp-obsidian` to allow AI assistants to interact with your vault while Obsidian is running on HTTPS port 27124.
 > - The API key used across Codex and Antigravity: `1c49d8b5597a92eb7b3001058807174c50fab29ebf60feaf509126440e02a9b2`.
 

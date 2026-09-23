@@ -198,7 +198,7 @@
     "sensitive_content_not_copied": false
   },
   {
-    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/00_Home.md",
+    "path": "/Users/golinsky/Projects/empire-at-war/EmpireAtWarDocumentation/00_Home.md",
     "sha256": "c9c9ac33b7ade3f936a9dab291f0bea84a6fc5b57a13e90eed539c07672335b3",
     "bytes": 1482,
     "lines": 43,
@@ -207,7 +207,7 @@
     "sensitive_content_not_copied": true
   },
   {
-    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/Rules/AGENTS.md",
+    "path": "/Users/golinsky/Projects/empire-at-war/EmpireAtWarDocumentation/Rules/AGENTS.md",
     "sha256": "f90128228664fab4a95e922d67122e77d58cab3ab1e7758d9a2d2c418afb2911",
     "bytes": 5154,
     "lines": 61,
@@ -216,7 +216,7 @@
     "sensitive_content_not_copied": false
   },
   {
-    "path": "/Users/golinsky/Projects/empire-at-war/ObsidianDocumentation/Rules/README.md",
+    "path": "/Users/golinsky/Projects/empire-at-war/EmpireAtWarDocumentation/Rules/README.md",
     "sha256": "d2cd3a15ce88e1a64bb38f49e104be4a1ec0c683407ae7a780aa222e0dc9971e",
     "bytes": 2705,
     "lines": 49,
