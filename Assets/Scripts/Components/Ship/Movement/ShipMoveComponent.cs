@@ -98,17 +98,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Initialize()
         {
-            if (_lineRenderer == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(ShipMoveComponent)} requires a serialized line renderer.");
-            }
-
-            if (_bodyTransform == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(ShipMoveComponent)} requires a serialized body transform.");
-            }
 
             _isReleased = false;
             _tweenPlayer = new ShipMovementTweenPlayer(

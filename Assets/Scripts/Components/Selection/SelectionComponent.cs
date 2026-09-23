@@ -44,18 +44,6 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public void Initialize()
         {
-            if (selectedCanvas == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(SelectionComponent)} requires an explicitly assigned selection canvas.");
-            }
-
-            if (selectedImage == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(SelectionComponent)} requires an explicitly assigned selection image.");
-            }
-
             Model.OnSelected += HandleSelection;
             selectedImage.sprite = _sharedSelectionData.SelectionSprite;
         }

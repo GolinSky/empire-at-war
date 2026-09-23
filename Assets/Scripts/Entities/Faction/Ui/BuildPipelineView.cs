@@ -31,12 +31,6 @@ namespace EmpireAtWar.Views.Factions
                 throw new ArgumentNullException(nameof(snapshots));
             }
 
-            if (canvasGroup == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(BuildPipelineView)} requires a bound {nameof(CanvasGroup)}.");
-            }
-
             RemoveMissingPipelines(snapshots);
             foreach (ProductionQueueSnapshot snapshot in snapshots)
             {

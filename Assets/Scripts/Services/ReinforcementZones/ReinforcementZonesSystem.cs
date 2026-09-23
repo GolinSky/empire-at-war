@@ -368,22 +368,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private void ArrangeZones()
         {
-            if (_zoneViews.Length == 0)
-            {
-                throw new InvalidOperationException("ReinforcementZonesSystem requires assigned zone views.");
-            }
-
             List<ReinforcementZoneView> placed = new List<ReinforcementZoneView>();
             List<ReinforcementZoneView> capturable = new List<ReinforcementZoneView>();
             Vector2 mapCenter = (_mapModel.SizeRange.Min + _mapModel.SizeRange.Max) * 0.5f;
             float largestRadius = 0f;
             foreach (ReinforcementZoneView view in _zoneViews)
             {
-                if (view == null)
-                {
-                    throw new InvalidOperationException("ReinforcementZonesSystem has an unassigned zone view.");
-                }
-
                 if (view.IsCapturable)
                 {
                     capturable.Add(view);
@@ -391,13 +381,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     continue;
                 }
 
-                FactionType faction = view.StartingOwner switch
-                {
-                    PlayerType.Player => _playerFactionType,
-                    PlayerType.Opponent => _opponentFactionType,
-                    _ => throw new InvalidOperationException(
-                        "A non-capturable reinforcement zone must belong to the player or opponent.")
-                };
+                FactionType faction = view.StartingOwner == PlayerType.Player
+                    ? _playerFactionType
+                    : _opponentFactionType;
                 Vector3 station = _mapModel.GetStationPosition(faction);
                 float stationRadius = faction == FactionType.Republic
                     ? republicStationRadius

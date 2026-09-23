@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Services.ShipNavigation;
 using UnityEngine;
@@ -15,7 +14,6 @@ namespace EmpireAtWar.Components.Obstacles
         {
             get
             {
-                ValidateDependencies();
                 Bounds bounds = _obstacleCollider.bounds;
                 return new RadarContact(
                     bounds.center,
@@ -24,18 +22,5 @@ namespace EmpireAtWar.Components.Obstacles
             }
         }
 
-        private void Awake()
-        {
-            ValidateDependencies();
-        }
-
-        private void ValidateDependencies()
-        {
-            if (_obstacleCollider == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(MapObstacle)} requires a serialized obstacle collider.");
-            }
-        }
     }
 }

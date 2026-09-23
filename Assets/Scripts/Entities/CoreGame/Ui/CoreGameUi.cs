@@ -37,7 +37,6 @@ namespace EmpireAtWar.Views.Game
 
         public void Initialize()
         {
-            ValidateRouteParents();
             timeButton.onClick.AddListener(Command.Play);
             speedUpButton.onClick.AddListener(Command.SpeedUp);
             reinforcementButton.onClick.AddListener(Command.ToggleReinforcement);
@@ -62,10 +61,7 @@ namespace EmpireAtWar.Views.Game
 
         private void SetContentPanelVisible(bool isVisible)
         {
-            if (panelImage != null)
-            {
-                panelImage.enabled = isVisible;
-            }
+            panelImage.enabled = isVisible;
         }
         
         private void UpdateSprites(GameTimeMode gameTimeMode)
@@ -92,42 +88,6 @@ namespace EmpireAtWar.Views.Game
             }
         }
 
-        private void ValidateRouteParents()
-        {
-            if (endGameUi == null)
-            {
-                throw new InvalidOperationException($"{nameof(endGameUi)} is not assigned.");
-            }
 
-            if (reinforcementButton == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(reinforcementButton)} is not assigned.");
-            }
-
-            if (miniMapRouteParent == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(miniMapRouteParent)} is not assigned.");
-            }
-
-            if (contentRouteParent == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(contentRouteParent)} is not assigned.");
-            }
-
-            if (buildPipelineRouteParent == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(buildPipelineRouteParent)} is not assigned.");
-            }
-
-            if (panelImage == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(panelImage)} is not assigned.");
-            }
-        }
     }
 }

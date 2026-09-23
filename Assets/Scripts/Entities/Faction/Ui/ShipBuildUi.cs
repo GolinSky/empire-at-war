@@ -43,12 +43,6 @@ namespace EmpireAtWar.Views.Factions
                     "Ship build presenter must be set before initialization.");
             }
 
-            if (pipelineView == null)
-            {
-                throw new InvalidOperationException(
-                    $"{nameof(pipelineView)} is not assigned.");
-            }
-
             if (_isInitialized)
             {
                 return;

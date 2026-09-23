@@ -34,12 +34,6 @@ namespace EmpireAtWar.Ui.Base
 
         private void SetVisibility(bool isVisible)
         {
-            if (canvasGroup == null)
-            {
-                throw new InvalidOperationException(
-                    $"{GetType().Name} requires a bound {nameof(CanvasGroup)}.");
-            }
-
             canvasGroup.alpha = isVisible ? 1f : 0f;
             canvasGroup.interactable = isVisible;
             canvasGroup.blocksRaycasts = isVisible;

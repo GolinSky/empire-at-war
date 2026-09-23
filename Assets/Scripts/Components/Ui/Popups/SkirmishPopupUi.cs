@@ -34,11 +34,6 @@ namespace EmpireAtWar.Ui.Popups
         public override void Initialize()
         {
             base.Initialize();
-            if (startingMoneySlider == null)
-            {
-                throw new InvalidOperationException($"{nameof(startingMoneySlider)} is not assigned in {nameof(SkirmishPopupUi)}.");
-            }
-
             startGameButton.onClick.AddListener(OnStartGame);
             SetData<FactionType>(playerFactionDropdown);
             SetData<FactionType>(enemyFactionDropdown);
@@ -100,10 +95,7 @@ namespace EmpireAtWar.Ui.Popups
             startGameButton.onClick.RemoveListener(OnStartGame);
             playerFactionDropdown.onValueChanged.RemoveListener(OnPlayerFactionChanged);
             enemyFactionDropdown.onValueChanged.RemoveListener(OnEnemyFactionChanged);
-            if (startingMoneySlider != null)
-            {
-                startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
-            }
+            startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
         }
 
         private void OnStartGame()
