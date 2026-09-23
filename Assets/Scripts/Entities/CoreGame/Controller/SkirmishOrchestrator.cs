@@ -20,7 +20,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.Game
 {
-    public class SkirmishOrhestrator : Controller<CoreGameData>, ICoreGameCommand,
+    public class SkirmishOrchestrator : Controller<CoreGameData>, ICoreGameCommand,
         IObserver<UserNotifierState>, IObserver<ISelectionSubject>, IObserver<BattleResult>, IInitializable, ILateDisposable,
         ISkirmishRouteNavigation
     {
@@ -36,10 +36,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly FactionType _playerFactionType;
         private readonly ISelectionService _selectionService;
-        private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes =
-            new Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>();
-        private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates =
-            new Dictionary<SkirmishUiRoutePosition, bool>();
+        private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
+        private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
 
         private CoreGameUi _coreGameUi;
         private GameTimeMode _gameTimeMode;
@@ -47,7 +45,7 @@ namespace EmpireAtWar.Controllers.Game
         private ISelectionContext _lastSelectionContext;
         private bool _hasBattleEnded;
 
-        public SkirmishOrhestrator(
+        public SkirmishOrchestrator(
             CoreGameData model,
             LazyInject<IUserStateNotifier> userStateNotifier,
             IGameCommand gameCommand,
@@ -213,6 +211,10 @@ namespace EmpireAtWar.Controllers.Game
 
         private void UpdateContentVisibility(ISelectionContext context)
         {
+            _coreGameUi.SetShipGroupLayout(
+                context != null && context.HasSelectable &&
+                context.SelectionType == SelectionType.Ship && context.Count > 1);
+
             if (!IsRouteActive(SkirmishUiRoutePosition.Content))
             {
                 Model.IsContentVisible = false;
