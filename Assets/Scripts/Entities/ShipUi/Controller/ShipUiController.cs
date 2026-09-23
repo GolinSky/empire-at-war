@@ -14,6 +14,7 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using ShipUiView = EmpireAtWar.Views.ShipUi;
+using ShipGroupUiView = EmpireAtWar.Views.ShipGroupUi;
 using UnityEngine;
 using Zenject;
 
@@ -38,6 +39,8 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         private ISelectionContext _playerSelectionContext;
         private ShipUiView _shipUi;
+        private ShipGroupUiView _shipGroupUi;
+        private bool _isRouteActive;
 
         public ShipUiController(
             ShipUiData model,
@@ -84,20 +87,19 @@ namespace EmpireAtWar.Controllers.ShipUi
                 _shipUi = ui as ShipUiView
                     ?? throw new System.InvalidOperationException(
                         "The ship prefab does not contain ShipUi.");
+                BaseUi groupUi = _uiService.CreateUi(UiType.ShipGroup, parentTransform);
+                _shipGroupUi = groupUi as ShipGroupUiView
+                    ?? throw new System.InvalidOperationException(
+                        "The ship group prefab does not contain ShipGroupUi.");
             }
             else
             {
                 _shipUi.SetParent(parentTransform);
+                _shipGroupUi.SetParent(parentTransform);
             }
 
-            if (isActive)
-            {
-                _shipUi.Show();
-            }
-            else
-            {
-                _shipUi.Hide();
-            }
+            _isRouteActive = isActive;
+            RefreshSelection();
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
@@ -117,6 +119,11 @@ namespace EmpireAtWar.Controllers.ShipUi
             {
                 _selectionService.RemoveSelectable(_playerSelectionContext);
             }
+        }
+
+        public void SelectShipGroup(ShipType shipType)
+        {
+            _selectionService.SelectCurrentShipsByType(shipType);
         }
 
         private void MoveToPosition(Vector2 touchPosition)
@@ -188,16 +195,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             {
                 case PlayerType.Player:
                     _playerSelectionContext = subject.PlayerSelectionContext;
-                    if (_playerSelectionContext.SelectionType == SelectionType.Ship)
-                    {
-                        IShipModelObserver shipModelObserver = _playerSelectionContext.Entity.Model as IShipModelObserver;
-                        if (shipModelObserver != null)
-                        {
-                            Model.ShipIcon = Model.GetShipIcon(shipModelObserver.ShipType);
-                        }
-                    }
-
-                    Model.UpdateSelection(HasMovableSelection());
+                    RefreshSelection();
                     break;
                 case PlayerType.Opponent:
                     break;
@@ -205,6 +203,67 @@ namespace EmpireAtWar.Controllers.ShipUi
                     break;
 
             }
+        }
+
+        private void RefreshSelection()
+        {
+            bool hasMovableSelection = HasMovableSelection();
+            bool hasShips = hasMovableSelection &&
+                            _playerSelectionContext.SelectionType == SelectionType.Ship;
+            bool hasGroup = hasShips && _playerSelectionContext.Count > 1;
+            Model.ShipIcon = null;
+            if (hasShips && !hasGroup &&
+                _playerSelectionContext.Entity.Model is IShipModelObserver selectedShip)
+            {
+                Model.ShipIcon = Model.GetShipIcon(selectedShip.ShipType);
+            }
+
+            if (_shipUi == null)
+            {
+                Model.UpdateSelection(hasShips);
+                return;
+            }
+
+            _shipGroupUi.ClearGroups();
+            if (hasGroup)
+            {
+                SortedDictionary<ShipType, int> groupCounts = new SortedDictionary<ShipType, int>();
+                foreach (var entity in _playerSelectionContext.Entities)
+                {
+                    if (entity.HealthModel.IsDestroyed || !(entity.Model is IShipModelObserver ship))
+                    {
+                        continue;
+                    }
+
+                    groupCounts.TryGetValue(ship.ShipType, out int count);
+                    groupCounts[ship.ShipType] = count + 1;
+                }
+
+                foreach (KeyValuePair<ShipType, int> group in groupCounts)
+                {
+                    int visibleEntries = group.Value <= 4 ? group.Value : 1;
+                    Sprite icon = Model.GetShipIcon(group.Key);
+                    _shipGroupUi.AddGroup(group.Key, icon, group.Value, visibleEntries);
+                }
+            }
+
+            if (_isRouteActive && hasShips && !hasGroup)
+            {
+                _shipUi.Show();
+                _shipGroupUi.Hide();
+            }
+            else if (_isRouteActive && hasGroup)
+            {
+                _shipUi.Hide();
+                _shipGroupUi.Show();
+            }
+            else
+            {
+                _shipUi.Hide();
+                _shipGroupUi.Hide();
+            }
+
+            Model.UpdateSelection(hasShips);
         }
 
         private bool HasMovableSelection()

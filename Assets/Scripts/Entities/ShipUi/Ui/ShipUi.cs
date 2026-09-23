@@ -51,6 +51,7 @@ namespace EmpireAtWar.Views
         {
             _isRouteActive = false;
             base.Hide();
+            UpdateVisibility();
         }
 
         private void UpdateVisibility()

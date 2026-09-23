@@ -100,6 +100,7 @@ The complete and authoritative placement rules are in the **`PROJECT_ORGANIZATIO
 
 When creating, modifying, or refactoring any UI prefab, component, or view:
 - AI agents must read the **`UI_UX_GUIDELINES`** note in the Obsidian Vault in full on demand via the **Obsidian MCP** tool (`vault_read` or `read_note` / `search_notes` for note `"UI_UX_GUIDELINES"`) before touching UI code or prefabs.
+- For new UI features, AI agents must also read the **`UI_CODE_BUILD_GUIDE`** note in the Obsidian Vault before writing code or creating prefabs.
 
 ## Code Simplicity
 

@@ -80,7 +80,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
         
         Container.BindModel<CoreGameData>(Repository);
-        Container.BindInterfacesNonLazyExt<SkirmishOrhestrator>();
+        Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
         
         Container
             .BindModel<FactionsData>(Repository)

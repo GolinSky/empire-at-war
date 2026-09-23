@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Services.Battle
     public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
         void RemoveSelectable(ISelectionContext selectionContext);
+        void SelectCurrentShipsByType(ShipType shipType);
     }
 
     public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
@@ -82,6 +84,29 @@ namespace EmpireAtWar.Services.Battle
             }
 
             ClearSelection(context.PlayerType);
+        }
+
+        public void SelectCurrentShipsByType(ShipType shipType)
+        {
+            _selectionBuffer.Clear();
+            foreach (IEntity entity in _playerSelectionContext.Entities)
+            {
+                if (entity.Model is IShipModelObserver ship &&
+                    ship.ShipType == shipType &&
+                    !entity.HealthModel.IsDestroyed &&
+                    entity.TryGetCommand(out IEntitySelectionCommand command))
+                {
+                    _selectionBuffer.Add(new SelectionEntry(entity, command));
+                }
+            }
+
+            if (_selectionBuffer.Count == 0)
+            {
+                return;
+            }
+
+            _lastTappedEntityId = null;
+            SetSelection(PlayerType.Player, _selectionBuffer);
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)

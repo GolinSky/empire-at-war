@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Battle_Attack_Optimization_Plan.md",
+                "file": "Rules/UI_UX_GUIDELINES.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Battle_Attack_Optimization_Plan"
+              "title": "UI_UX_GUIDELINES"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "batt",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -76,8 +76,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -186,10 +185,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "3a9effa0e3d39806",
+  "active": "1261212fe2167d70",
   "lastOpenFiles": [
-    "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
+    "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
+    "Rules/UI_CODE_BUILD_GUIDE.md",
     "TODOs/Battle_Attack_Optimization_Plan.md",
+    "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
     "Artifacts/Codex_Audit_2026-09-13/02_EFFECTIVE_LOAD_MAP.md",
     "Artifacts/Codex_Audit_2026-09-13/04_MIGRATION_MAP.md",
     "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
@@ -221,8 +222,6 @@
     "TODOs/TODOs.md",
     "TODOs",
     "AGENTS.md",
-    "GRAPHIFY_GUIDE.md",
-    "PROJECT_ORGANIZATION.md",
-    "README.md"
+    "GRAPHIFY_GUIDE.md"
   ]
 }
