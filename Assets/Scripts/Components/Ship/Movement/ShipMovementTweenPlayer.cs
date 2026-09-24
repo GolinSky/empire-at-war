@@ -212,12 +212,16 @@ public void Tick(float deltaTime)
                 }
             }
 
+            // When the turn rate limits the step (e.g. at a sharp waypoint corner)
+            // progress cannot pass the bend until the hull faces the upcoming
+            // tangent, so steer towards it instead of the current one.
+            bool isTurnLimited = low < nextProgress;
             _routeProgress = low;
             _rootTransform.position = _route.EvaluateNormalizedDistance(
                 _routeProgress,
                 out Vector3 routeTangent);
             _currentPathTangent = routeTangent;
-            StepRotation(routeTangent, deltaTime);
+            StepRotation(isTurnLimited ? nextTangent : routeTangent, deltaTime);
             if (_routeProgress < 1f - Mathf.Epsilon)
             {
                 return;

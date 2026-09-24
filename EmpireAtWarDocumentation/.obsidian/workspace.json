@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "unity jobs",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -76,7 +76,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -185,8 +186,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "3a9effa0e3d39806",
+  "active": "1b8f675cc8021f42",
   "lastOpenFiles": [
+    "Rules/UNITY_JOBS_AND_THREADING_RULES.md",
     "TODOs/Ship_Abilities_Plan.md",
     "Rules/UI_UX_GUIDELINES.md",
     "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
@@ -221,7 +223,6 @@
     "Architecture/PROJECT_ORGANIZATION.md",
     "Architecture",
     "TODOs/UI_Service_Refactoring.md",
-    "TODOs/TODOs.md",
     "TODOs"
   ]
 }

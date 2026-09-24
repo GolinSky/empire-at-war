@@ -15,5 +15,4 @@ MonoBehaviour:
   guardFollowRadius: 20
   guardChaseDistance: 120
   huntRetargetInterval: 1
-  retreatCountdown: 5
   stationClearance: 150

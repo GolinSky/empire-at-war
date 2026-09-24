@@ -78,14 +78,6 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         public void Tick()
         {
-            float? remaining = null;
-            foreach (IEntity entity in _selection.PlayerSelectionContext.Entities)
-                if (!entity.HealthModel.IsDestroyed &&
-                    entity.TryGetCommand(out IRetreatCommand command) &&
-                    command.IsRetreatPending &&
-                    (!remaining.HasValue || command.RetreatRemaining < remaining.Value))
-                    remaining = command.RetreatRemaining;
-            _view.SetRetreatCountdown(remaining);
             if (_battleEnded != _session.IsBattleEnded)
             {
                 _battleEnded = _session.IsBattleEnded;
@@ -114,17 +106,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             if (action == UnitActionId.Retreat)
             {
                 _targeting.Cancel();
-                List<IEntity> receivers = Snapshot();
-                bool allPending = true;
-                bool any = false;
-                foreach (IEntity entity in receivers)
-                {
-                    if (!entity.TryGetCommand(out IRetreatCommand command)) continue;
-                    any = true;
-                    allPending &= command.IsRetreatPending;
-                }
-                if (any && allPending) _orders.CancelRetreat(receivers);
-                else _orders.IssueRetreat(receivers);
+                _orders.IssueRetreat(Snapshot());
                 return;
             }
 
@@ -158,11 +140,9 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             foreach (IEntity entity in _selection.PlayerSelectionContext.Entities)
             {
                 if (entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits) continue;
+                // Move has no panel button: moving is the default right-click order.
                 switch (action)
                 {
-                    case UnitActionId.Move:
-                        if (entity.TryGetCommand(out IMoveCommand _)) return true;
-                        break;
                     case UnitActionId.Attack:
                         if (entity.TryGetCommand(out IAttackCommand _) ||
                             entity.TryGetCommand(out IFocusFireCommand _)) return true;
