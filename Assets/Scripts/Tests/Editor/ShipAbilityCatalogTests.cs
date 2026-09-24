@@ -25,6 +25,8 @@ namespace EmpireAtWar.Tests.Editor
                 ShipAbilityDefinition definition = catalog.Get(id);
                 Assert.That(definition, Is.Not.Null, id.ToString());
                 Assert.That(definition.Icon, Is.Not.Null, id.ToString());
+                // Null also means the settings class was renamed or moved without [MovedFrom].
+                Assert.That(definition.Settings, Is.Not.Null, id.ToString());
                 if (definition.RequiresEnemyTarget)
                     Assert.That(definition.Range, Is.GreaterThan(0f), id.ToString());
             }

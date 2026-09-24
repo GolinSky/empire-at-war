@@ -24,17 +24,8 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 170
         aiUse: 2
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 1
-          speedMultiplier: 1
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1
-        beamDamage: 1500
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 6412485944876309358, guid: 780f1218e5d028940ad44de6c840896d,
-          type: 3}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792203
     - key: 2
       value:
         icon: {fileID: 21300000, guid: 5491174c7918a494cb8e2898869953fd, type: 3}
@@ -45,16 +36,8 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 0
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 1
-          speedMultiplier: 1
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 0
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792204
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -65,16 +48,8 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 0
-        statModifier:
-          damageMultiplier: 0.75
-          fireDelayMultiplier: 1
-          speedMultiplier: 0.75
-          shieldRegenMultiplier: 2
-          damageTakenMultiplier: 1
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792205
     - key: 4
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
@@ -85,16 +60,8 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        statModifier:
-          damageMultiplier: 0.8
-          fireDelayMultiplier: 1
-          speedMultiplier: 1.5
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792206
     - key: 5
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
@@ -105,16 +72,8 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        statModifier:
-          damageMultiplier: 1.5
-          fireDelayMultiplier: 1
-          speedMultiplier: 0.8
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1.25
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792207
     - key: 6
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
@@ -125,16 +84,8 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 140
         aiUse: 2
-        statModifier:
-          damageMultiplier: 2
-          fireDelayMultiplier: 0.5
-          speedMultiplier: 1
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
-        commandRadius: 0
+        settings:
+          rid: 7607833764655792208
     - key: 7
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
@@ -145,13 +96,77 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 170
         aiUse: 2
+        settings:
+          rid: 7607833764655792209
+  references:
+    version: 2
+    RefIds:
+    - rid: 7607833764655792203
+      type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        damage: 1500
+        weaponType: 2
+        viewPrefab: {fileID: 6412485944876309358, guid: 780f1218e5d028940ad44de6c840896d,
+          type: 3}
+    - rid: 7607833764655792204
+      type: {class: InvulnerabilitySettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
         statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 0
+    - rid: 7607833764655792205
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 0.75
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.75
+          shieldRegenMultiplier: 2
+          damageTakenMultiplier: 1
+    - rid: 7607833764655792206
+      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 0.8
+          fireDelayMultiplier: 1
+          speedMultiplier: 1.5
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+    - rid: 7607833764655792207
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1.5
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1.25
+    - rid: 7607833764655792208
+      type: {class: AssaultSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 2
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+    - rid: 7607833764655792209
+      type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        allyStatModifier:
           damageMultiplier: 1.25
           fireDelayMultiplier: 0.8
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
-        beamDamage: 0
-        beamWeaponType: 2
-        beamViewPrefab: {fileID: 0}
         commandRadius: 200

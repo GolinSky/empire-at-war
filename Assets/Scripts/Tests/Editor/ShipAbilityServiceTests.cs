@@ -50,6 +50,24 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ZeroRecovery_ReactivatedAbility_ElapsesOncePerAdvance()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory);
+            FakeCommand caster = CreateCaster(recoveryDelay: 0f);
+
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(5f);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+
+            service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
+            service.Advance(1f);
+            Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(4f));
+            service.LateDispose();
+            Assert.That(factory.Created[1].StopCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void Cancel_StopsOnceAndEntersFullRecovery_OnlyWhenAllowed()
         {
             FakeFactory factory = new FakeFactory();
@@ -129,11 +147,12 @@ namespace EmpireAtWar.Tests.Editor
             service.LateDispose();
         }
 
-        private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false)
+        private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false,
+            float recoveryDelay = 6f)
         {
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
             SetField(definition, "duration", 5f);
-            SetField(definition, "recoveryDelay", 6f);
+            SetField(definition, "recoveryDelay", recoveryDelay);
             SetField(definition, "canCancel", canCancel);
             SetField(definition, "requiresEnemyTarget", targeted);
             SetField(definition, "range", 10f);
@@ -150,7 +169,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public readonly List<RecordingAbility> Created = new List<RecordingAbility>();
 
-            public IShipAbility Create(ShipAbilityId id)
+            public IShipAbility Create(ShipAbilityDefinition definition)
             {
                 RecordingAbility ability = new RecordingAbility();
                 Created.Add(ability);

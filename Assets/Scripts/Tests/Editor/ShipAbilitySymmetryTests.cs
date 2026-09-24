@@ -26,18 +26,22 @@ namespace EmpireAtWar.Tests.Editor
         public void StatAbility_StartThenStop_RestoresCasterModifiers(ShipAbilityId id)
         {
             TestCommand caster = new TestCommand(1, PlayerType.Player);
-            ShipAbilityDefinition definition = CreateDefinition();
             IShipAbility ability = id switch
             {
-                ShipAbilityId.Invulnerability => new InvulnerabilityAbility(),
-                ShipAbilityId.BoostShieldPower => new BoostShieldPowerAbility(),
-                ShipAbilityId.BoostEnginePower => new BoostEnginePowerAbility(),
-                ShipAbilityId.BoostWeaponPower => new BoostWeaponPowerAbility(),
-                ShipAbilityId.Assault => new AssaultAbility(),
+                ShipAbilityId.Invulnerability => new InvulnerabilityAbility(
+                    CreateSettings<InvulnerabilitySettings>("statModifier", _testModifier)),
+                ShipAbilityId.BoostShieldPower => new BoostShieldPowerAbility(
+                    CreateSettings<BoostShieldPowerSettings>("statModifier", _testModifier)),
+                ShipAbilityId.BoostEnginePower => new BoostEnginePowerAbility(
+                    CreateSettings<BoostEnginePowerSettings>("statModifier", _testModifier)),
+                ShipAbilityId.BoostWeaponPower => new BoostWeaponPowerAbility(
+                    CreateSettings<BoostWeaponPowerSettings>("statModifier", _testModifier)),
+                ShipAbilityId.Assault => new AssaultAbility(
+                    CreateSettings<AssaultSettings>("statModifier", _testModifier)),
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
 
-            ability.Start(caster, definition, null);
+            ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
             ability.Stop();
             AssertNeutral(caster.Modifiers);
@@ -51,9 +55,12 @@ namespace EmpireAtWar.Tests.Editor
             TestCommand ally = new TestCommand(2, PlayerType.Player);
             entities.AddEntity(caster.Entity);
             entities.AddEntity(ally.Entity);
-            IShipAbility ability = new ConcentrateFireAbility(entities);
+            ConcentrateFireSettings settings = CreateSettings<ConcentrateFireSettings>(
+                "allyStatModifier", _testModifier);
+            SetField(settings, "commandRadius", 100f);
+            IShipAbility ability = new ConcentrateFireAbility(settings, entities);
 
-            ability.Start(caster, CreateDefinition(), null);
+            ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
             Assert.That(ally.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
             ability.Stop();
@@ -61,15 +68,21 @@ namespace EmpireAtWar.Tests.Editor
             AssertNeutral(ally.Modifiers);
         }
 
-        private static ShipAbilityDefinition CreateDefinition()
+        private static readonly CombatStatModifier _testModifier =
+            new CombatStatModifier(1.5f, 0.5f, 1.25f, 2f, 0.75f);
+
+        private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
+            where TSettings : ShipAbilitySettings, new()
         {
-            ShipAbilityDefinition definition = new ShipAbilityDefinition();
-            Type type = typeof(ShipAbilityDefinition);
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            type.GetField("statModifier", flags).SetValue(definition,
-                new CombatStatModifier(1.5f, 0.5f, 1.25f, 2f, 0.75f));
-            type.GetField("commandRadius", flags).SetValue(definition, 100f);
-            return definition;
+            TSettings settings = new TSettings();
+            SetField(settings, modifierField, modifier);
+            return settings;
+        }
+
+        private static void SetField(object instance, string name, object value)
+        {
+            instance.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(instance, value);
         }
 
         private static void AssertNeutral(CombatModifiers modifiers)
