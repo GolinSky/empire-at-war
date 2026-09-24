@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
@@ -8,9 +7,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ship;
@@ -26,18 +22,10 @@ namespace EmpireAtWar.Controllers.ShipUi
     {
         private readonly IUiService _uiService;
         private readonly ISelectionService _selectionService;
-        private readonly IInputService _inputService;
-        private readonly ICameraService _cameraService;
-        private readonly ILayerService _layerService;
-        private readonly ISelectionQuery _selectionQuery;
         private readonly ShipUiModel _model;
         private readonly ShipAbilityService _abilityService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private readonly List<IMoveCommand> _moveCommands = new List<IMoveCommand>();
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
-        private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
-        private readonly List<float> _formationRadii = new List<float>();
-        private readonly List<FormationPoint> _formationDestinations = new List<FormationPoint>();
 
         private ISelectionContext _playerSelectionContext;
         private IShipUi _shipUi;
@@ -47,20 +35,12 @@ namespace EmpireAtWar.Controllers.ShipUi
         public ShipUiController(
             IUiService uiService,
             ISelectionService selectionService,
-            IInputService inputService,
-            ICameraService cameraService,
-            ILayerService layerService,
-            ISelectionQuery selectionQuery,
             ShipUiModel model,
             ISkirmishRouteNavigation routeNavigation,
             ShipAbilityService abilityService)
         {
             _uiService = uiService;
             _selectionService = selectionService;
-            _inputService = inputService;
-            _cameraService = cameraService;
-            _layerService = layerService;
-            _selectionQuery = selectionQuery;
             _model = model;
             _routeNavigation = routeNavigation;
             _abilityService = abilityService;
@@ -69,7 +49,6 @@ namespace EmpireAtWar.Controllers.ShipUi
         public void Initialize()
         {
             _selectionService.AddObserver(this);
-            _inputService.OnInput += HandleInput;
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.Content, this);
             _abilityService.TargetingChanged += UpdateTargeting;
         }
@@ -77,7 +56,6 @@ namespace EmpireAtWar.Controllers.ShipUi
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
-            _inputService.OnInput -= HandleInput;
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.Content, this);
             _abilityService.TargetingChanged -= UpdateTargeting;
             if (_shipUi != null)
@@ -220,84 +198,6 @@ namespace EmpireAtWar.Controllers.ShipUi
                 _shipUi.Hide();
                 _shipGroupUi.Hide();
             }
-        }
-
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
-        {
-            if (inputType == InputType.ShipInput && _abilityService.IsWaitingForTarget &&
-                !_selectionQuery.TryFindAt(touchPosition, out SelectionEntry _))
-            {
-                _abilityService.CancelTargeting();
-                return;
-            }
-            if (inputType == InputType.ShipInput &&
-                HasMovableSelection() &&
-                !IsMapObstacleTap(touchPosition) &&
-                !_selectionQuery.TryFindAt(touchPosition, out SelectionEntry _))
-            {
-                MoveToPosition(touchPosition);
-            }
-        }
-
-        private void MoveToPosition(Vector2 touchPosition)
-        {
-            if (_playerSelectionContext == null)
-            {
-                return;
-            }
-
-            _moveCommands.Clear();
-            _formationPositions.Clear();
-            _formationRadii.Clear();
-            for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
-            {
-                if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
-                    _playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand moveCommand))
-                {
-                    _moveCommands.Add(moveCommand);
-                    _formationPositions.Add(new FormationPoint(
-                        moveCommand.WorldPosition.x,
-                        moveCommand.WorldPosition.z));
-                    _formationRadii.Add(moveCommand.NavigationRadius);
-                }
-            }
-
-            if (_moveCommands.Count == 0)
-            {
-                return;
-            }
-
-            if (_moveCommands.Count == 1)
-            {
-                _moveCommands[0].MoveTo(touchPosition);
-                return;
-            }
-
-            Vector3 targetWorldPosition = _cameraService.GetWorldPoint(
-                touchPosition,
-                _moveCommands[0].WorldPosition);
-            FormationPoint targetCenter = new FormationPoint(targetWorldPosition.x, targetWorldPosition.z);
-            FormationModel.CalculateCompactDestinations(
-                _formationPositions,
-                _formationRadii,
-                targetCenter,
-                _formationDestinations);
-
-            for (int i = 0; i < _moveCommands.Count; i++)
-            {
-                FormationPoint destination = _formationDestinations[i];
-                _moveCommands[i].MoveTo(new Vector3(
-                    destination.X,
-                    _moveCommands[i].WorldPosition.y,
-                    destination.Z));
-            }
-        }
-
-        private bool IsMapObstacleTap(Vector2 screenPosition)
-        {
-            RaycastHit hit = _cameraService.ScreenPointToRay(screenPosition);
-            return hit.collider != null &&
-                   _layerService.IsInLayer(hit.collider.gameObject, LayerKey.Obstacle);
         }
 
         private bool HasMovableSelection()

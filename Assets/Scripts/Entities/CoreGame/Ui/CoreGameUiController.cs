@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
@@ -15,6 +16,7 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Game
 {
     public class CoreGameUiController : ICoreGamePresenter, ISkirmishRouteNavigation,
+        IUnitActionsViewProvider,
         IObserver<ISelectionSubject>, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
@@ -28,6 +30,8 @@ namespace EmpireAtWar.Presenters.Game
         private ICoreGameUi _ui;
         private EndGamePresenter _endGamePresenter;
         private ISelectionContext _lastSelectionContext;
+
+        public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
 
         public CoreGameUiController(
             IUiService uiService,
@@ -183,7 +187,9 @@ namespace EmpireAtWar.Presenters.Game
 
         private void UpdateContentVisibility(ISelectionContext context)
         {
-            _ui.SetShipGroupLayout(
+            _ui.SetContentLayout(
+                context != null && context.HasSelectable &&
+                context.SelectionType == SelectionType.Base,
                 context != null && context.HasSelectable &&
                 context.SelectionType == SelectionType.Ship && context.Count > 1);
 

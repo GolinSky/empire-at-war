@@ -2,24 +2,35 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Ship.Orders;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Services.Enemy
 {
+    /// <summary>
+    /// Global strategy chooses the objective and task-force receivers; ship states and
+    /// the tactical brain execute it. Capture routes use Attack-Move, base defense uses
+    /// Guard, and Hunt is only the fallback when a fleet target is unknown.
+    /// Repeated Retreat decisions preserve the ship's countdown through idempotency.
+    /// </summary>
     public sealed class EnemyTaskForceExecutor
     {
-        private readonly List<FormationPoint> _formationPositions =
-            new List<FormationPoint>();
-        private readonly List<float> _formationRadii = new List<float>();
-        private readonly List<FormationPoint> _formationDestinations =
-            new List<FormationPoint>();
+        private const float CAPTURE_TARGET_EPSILON_SQUARED = 1f;
+        private readonly IUnitOrderService _orders;
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
+        private readonly List<FormationPoint> _positions = new List<FormationPoint>();
+        private readonly List<float> _radii = new List<float>();
+        private readonly List<FormationPoint> _destinations = new List<FormationPoint>();
         private readonly Dictionary<IShipEntity, FormationPoint> _battleOffsets =
             new Dictionary<IShipEntity, FormationPoint>();
-        private readonly List<IShipEntity> _battleShips = new List<IShipEntity>();
         private GameEntity _battleTarget;
+        private Vector3 _captureTarget;
+        private bool _hasCaptureTarget;
+
+        public EnemyTaskForceExecutor(IUnitOrderService orders) => _orders = orders;
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
@@ -28,188 +39,137 @@ namespace EmpireAtWar.Services.Enemy
                 case EnemyStrategicState.CaptureZone:
                     _captureShips.Clear();
                     _captureShips.AddRange(context.Ships);
-                    _captureShips.Sort((first, second) =>
-                        second.NavigationSpeed.CompareTo(first.NavigationSpeed));
-                    AssignFormationMove(
-                        _captureShips,
-                        decision.CommittedShipCount,
-                        context.CaptureTarget);
+                    _captureShips.Sort((a, b) =>
+                        b.NavigationSpeed.CompareTo(a.NavigationSpeed));
+                    int captureCount = Math.Min(decision.CommittedShipCount,
+                        _captureShips.Count);
+                    // Compact slots are recomputed from current positions, so re-issuing
+                    // to ships already attack-moving would reset their engagement.
+                    bool isSameCaptureTarget = _hasCaptureTarget &&
+                        (_captureTarget - context.CaptureTarget).sqrMagnitude <=
+                        CAPTURE_TARGET_EPSILON_SQUARED;
+                    _captureTarget = context.CaptureTarget;
+                    _hasCaptureTarget = true;
+                    List<GameEntity> captureReceivers = isSameCaptureTarget
+                        ? ResolveWithout(context, _captureShips, captureCount,
+                            ShipOrderType.AttackMove)
+                        : Resolve(context, _captureShips, captureCount);
+                    if (captureReceivers.Count > 0)
+                        _orders.IssueAttackMove(captureReceivers, context.CaptureTarget);
+                    StopRemaining(context, _captureShips, captureCount);
                     return;
                 case EnemyStrategicState.HuntFleet:
-                    AssignAttack(
-                        context.Ships,
-                        decision.CommittedShipCount,
+                    IssueAttackOrHunt(context, decision.CommittedShipCount,
                         context.EnemyFleetTarget);
                     return;
                 case EnemyStrategicState.AssaultBase:
-                    AssignAttack(
-                        context.Ships,
-                        decision.CommittedShipCount,
-                        context.EnemyBaseTarget);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount,
+                        context.EnemyBaseTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.DefendBase:
                     if (context.OwnBase == null)
                     {
-                        HoldAll(context.Ships);
+                        StopRemaining(context, context.Ships, 0);
                         return;
                     }
-
-                    AssignFormationMove(
-                        context.Ships,
-                        decision.CommittedShipCount,
-                        context.OwnBase.HealthModel.Transform.position,
-                        context.OwnBase);
+                    int guardCount = Math.Min(decision.CommittedShipCount,
+                        context.Ships.Count);
+                    _orders.IssueGuard(Resolve(context, context.Ships, guardCount),
+                        context.OwnBase, BattleOffsets(context.Ships, guardCount,
+                            context.OwnBase));
+                    StopRemaining(context, context.Ships, guardCount);
                     return;
                 case EnemyStrategicState.RetreatValue:
-                    AssignFormationMove(context.Ships, context.Ships.Count,
-                        context.OwnBase.HealthModel.Transform.position,
-                        context.OwnBase);
+                    // A re-issued Retreat restarts the countdown and stops the ship.
+                    List<GameEntity> retreatReceivers = ResolveWithout(context,
+                        context.Ships, context.Ships.Count, ShipOrderType.Retreat);
+                    if (retreatReceivers.Count > 0) _orders.IssueRetreat(retreatReceivers);
                     return;
-                case EnemyStrategicState.RebuildFleet:
                 case EnemyStrategicState.Hold:
-                    HoldAll(context.Ships);
+                case EnemyStrategicState.RebuildFleet:
+                    StopRemaining(context, context.Ships, 0);
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
         }
 
-        private void AssignFormationMove(
-            IReadOnlyList<IShipEntity> ships,
-            int committedShipCount,
-            Vector3 target,
-            GameEntity battleTarget = null)
+        private void IssueAttackOrHunt(EnemyStrategicContext context,
+            int committed, GameEntity target, bool allowHunt = true)
         {
-            int count = Math.Min(committedShipCount, ships.Count);
-            FormationPoint targetCenter = new FormationPoint(target.x, target.z);
-            BuildFormationInputs(ships, count);
-            if (battleTarget != null)
-            {
-                CalculateBattleDestinations(ships, count, battleTarget, targetCenter);
-            }
+            int count = Math.Min(committed, context.Ships.Count);
+            List<GameEntity> receivers = Resolve(context, context.Ships, count);
+            if (target != null)
+                _orders.IssueAttack(receivers, target,
+                    BattleOffsets(context.Ships, count, target));
+            else if (allowHunt) _orders.IssueHunt(receivers);
             else
             {
-                FormationModel.CalculateCompactDestinations(
-                    _formationPositions, _formationRadii, targetCenter, _formationDestinations);
-            }
-            for (int i = 0; i < ships.Count; i++)
-            {
-                if (i >= count)
-                {
-                    ships[i].HoldPosition();
-                    continue;
-                }
-
-                FormationPoint destination = _formationDestinations[i];
-                ships[i].AssignMoveTarget(new Vector3(destination.X, 0f, destination.Z));
-            }
-        }
-
-        private void AssignAttack(
-            IReadOnlyList<IShipEntity> ships,
-            int committedShipCount,
-            GameEntity target)
-        {
-            if (target == null)
-            {
-                HoldAll(ships);
+                StopRemaining(context, context.Ships, 0);
                 return;
             }
-
-            int count = Math.Min(committedShipCount, ships.Count);
-            BuildFormationInputs(ships, count);
-
-            Vector3 targetPosition = target.HealthModel.Transform.position;
-            FormationPoint targetCenter = new FormationPoint(
-                targetPosition.x,
-                targetPosition.z);
-            CalculateBattleDestinations(ships, count, target, targetCenter);
-            for (int i = 0; i < ships.Count; i++)
-            {
-                if (i < count)
-                {
-                    FormationPoint destination = _formationDestinations[i];
-                    ships[i].AssignAttackTarget(
-                        target,
-                        new Vector3(
-                            destination.X - targetCenter.X,
-                            0f,
-                            destination.Z - targetCenter.Z));
-                }
-                else
-                {
-                    ships[i].HoldPosition();
-                }
-            }
+            StopRemaining(context, context.Ships, count);
         }
 
-        private void CalculateBattleDestinations(
-            IReadOnlyList<IShipEntity> ships,
-            int count,
-            GameEntity target,
-            FormationPoint center)
+        private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
+            int count, GameEntity target)
         {
-            HashSet<IShipEntity> committed = new HashSet<IShipEntity>();
             bool rebuild = _battleTarget != target;
             for (int i = 0; i < count; i++)
-            {
-                committed.Add(ships[i]);
                 rebuild |= !_battleOffsets.ContainsKey(ships[i]);
-            }
-
             if (rebuild)
             {
                 _battleOffsets.Clear();
-                BattleFormationModel.CalculateDestinations(
-                    _formationPositions, _formationRadii, default, _formationDestinations);
+                _positions.Clear();
+                _radii.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    _battleOffsets.Add(ships[i], _formationDestinations[i]);
+                    _positions.Add(new FormationPoint(ships[i].WorldPosition.x,
+                        ships[i].WorldPosition.z));
+                    _radii.Add(ships[i].NavigationRadius);
                 }
+                BattleFormationModel.CalculateDestinations(_positions, _radii,
+                    default, _destinations);
+                for (int i = 0; i < count; i++)
+                    _battleOffsets.Add(ships[i], _destinations[i]);
             }
-            else
-            {
-                foreach (IShipEntity ship in _battleShips)
-                {
-                    if (!committed.Contains(ship))
-                    {
-                        _battleOffsets.Remove(ship);
-                    }
-                }
-            }
-
             _battleTarget = target;
-            _battleShips.Clear();
-            _formationDestinations.Clear();
+            List<Vector3> offsets = new List<Vector3>(count);
             for (int i = 0; i < count; i++)
             {
-                _battleShips.Add(ships[i]);
                 FormationPoint offset = _battleOffsets[ships[i]];
-                _formationDestinations.Add(new FormationPoint(center.X + offset.X, center.Z + offset.Z));
+                offsets.Add(new Vector3(offset.X, 0f, offset.Z));
             }
+            return offsets;
         }
 
-        private void BuildFormationInputs(
-            IReadOnlyList<IShipEntity> ships,
-            int count)
+        private static List<GameEntity> Resolve(EnemyStrategicContext context,
+            IReadOnlyList<IShipEntity> ships, int count)
         {
-            _formationPositions.Clear();
-            _formationRadii.Clear();
+            List<GameEntity> receivers = new List<GameEntity>(count);
             for (int i = 0; i < count; i++)
-            {
-                _formationPositions.Add(new FormationPoint(
-                    ships[i].WorldPosition.x,
-                    ships[i].WorldPosition.z));
-                _formationRadii.Add(ships[i].NavigationRadius);
-            }
+                receivers.Add(context.Receivers[ships[i]]);
+            return receivers;
         }
 
-        private static void HoldAll(IReadOnlyList<IShipEntity> ships)
+        private static List<GameEntity> ResolveWithout(EnemyStrategicContext context,
+            IReadOnlyList<IShipEntity> ships, int count, ShipOrderType runningOrder)
         {
-            foreach (IShipEntity ship in ships)
-            {
-                ship.HoldPosition();
-            }
+            List<GameEntity> receivers = new List<GameEntity>(count);
+            for (int i = 0; i < count; i++)
+                if (ships[i].CurrentOrder != runningOrder)
+                    receivers.Add(context.Receivers[ships[i]]);
+            return receivers;
+        }
+
+        private void StopRemaining(EnemyStrategicContext context,
+            IReadOnlyList<IShipEntity> ships, int start)
+        {
+            List<GameEntity> idleCandidates = new List<GameEntity>();
+            for (int i = start; i < ships.Count; i++)
+                if (ships[i].CurrentOrder != ShipOrderType.None)
+                    idleCandidates.Add(context.Receivers[ships[i]]);
+            if (idleCandidates.Count > 0) _orders.IssueStop(idleCandidates);
         }
     }
 }

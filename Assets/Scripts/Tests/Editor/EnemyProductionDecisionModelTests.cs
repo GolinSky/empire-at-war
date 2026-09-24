@@ -670,6 +670,8 @@ namespace EmpireAtWar.Tests.Editor
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+            public bool TryGetEntity(long entityId, out IEntity entity) =>
+                throw new NotImplementedException();
             public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
             {
                 entity = null;

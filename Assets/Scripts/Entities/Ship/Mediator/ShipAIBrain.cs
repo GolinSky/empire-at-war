@@ -1,12 +1,10 @@
-using System;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
 using Zenject;
 
@@ -16,174 +14,65 @@ namespace EmpireAtWar.Entities.Ship.Mediator
     {
         private readonly StateMachine1 _stateMachine;
         private readonly IHealthModelObserver _healthModel;
-        private readonly IRadarComponent _radarComponent;
-        private readonly IShipMoveComponent _shipMoveComponent;
-        private readonly AttackTargetState _attackTargetState;
-        private readonly IdleState _idleState;
+        private readonly IRadarComponent _radar;
+        private readonly IShipMoveComponent _movement;
         private readonly FleeState _fleeState;
         private readonly ShipAiDecisionModel _decisionModel;
         private readonly IGameModelObserver _gameModel;
-
-        private float _decisionTimer = 0f;
-        private bool _isEnabled = false;
-        private IEntity _assignedTarget;
-        private Vector3 _attackFormationOffset;
+        private readonly ShipOrderModel _orders;
+        private readonly LazyInject<EmpireAtWar.Ship.Ship> _ship;
+        private float _decisionTimer;
+        private bool _isEnabled;
 
         public bool IsFleeing => _stateMachine.CurrentState == _fleeState;
 
-        public ShipAIBrain(
-            StateMachine1 stateMachine,
-            IHealthModelObserver healthModel,
-            IRadarComponent radarComponent,
-            IShipMoveComponent shipMoveComponent,
-            AttackTargetState attackTargetState,
-            IdleState idleState,
-            FleeState fleeState,
-            ShipAiDecisionModel decisionModel,
-            IGameModelObserver gameModel)
+        public ShipAIBrain(StateMachine1 stateMachine,
+            IHealthModelObserver healthModel, IRadarComponent radar,
+            IShipMoveComponent movement, FleeState fleeState,
+            ShipAiDecisionModel decisionModel, IGameModelObserver gameModel,
+            ShipOrderModel orders, LazyInject<EmpireAtWar.Ship.Ship> ship)
         {
             _stateMachine = stateMachine;
             _healthModel = healthModel;
-            _radarComponent = radarComponent;
-            _shipMoveComponent = shipMoveComponent;
-            _attackTargetState = attackTargetState;
-            _idleState = idleState;
+            _radar = radar;
+            _movement = movement;
             _fleeState = fleeState;
             _decisionModel = decisionModel;
             _gameModel = gameModel;
+            _orders = orders;
+            _ship = ship;
         }
 
         public void Enable(bool isEnabled)
         {
             _isEnabled = isEnabled;
-            if (isEnabled)
-            {
-                _decisionTimer = 0f;
-            }
-        }
-
-        public void AssignAttackTarget(IEntity target)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            if (_assignedTarget != null && _assignedTarget.Id == target.Id)
-            {
-                Enable(true);
-                return;
-            }
-
-            AssignAttackTarget(target, Vector3.zero);
-        }
-
-        public void AssignAttackTarget(
-            IEntity target,
-            Vector3 formationOffset)
-        {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            _assignedTarget = target;
-            formationOffset.y = 0f;
-            _attackFormationOffset = formationOffset;
-            Enable(true);
-        }
-
-        public void ClearAssignedTarget()
-        {
-            _assignedTarget = null;
-            _attackFormationOffset = Vector3.zero;
+            if (isEnabled) _decisionTimer = 0f;
         }
 
         public void Tick()
         {
             if (!_isEnabled) return;
-
             _decisionTimer -= Time.deltaTime;
-            if (_decisionTimer > 0) return;
-            _decisionTimer = EnemyAiDifficultyProfile.Get(_gameModel.EnemyDifficulty).DecisionInterval;
+            if (_decisionTimer > 0f) return;
+            _decisionTimer = EnemyAiDifficultyProfile.Get(
+                _gameModel.EnemyDifficulty).DecisionInterval;
 
-            MakeDecision();
-        }
-
-        private void MakeDecision()
-        {
-            for (int i = _radarComponent.Enemies.Count - 1; i >= 0; i--)
-            {
-                var radarEnemyHealth = _radarComponent.Enemies[i].HealthModel;
-                if (radarEnemyHealth.IsDestroyed || !radarEnemyHealth.HasUnits)
-                {
-                    _radarComponent.Enemies.RemoveAt(i);
-                }
-            }
-
-            bool hasAssignedTarget = _assignedTarget != null;
-            bool isAssignedTargetAvailable = hasAssignedTarget &&
-                !_assignedTarget.HealthModel.IsDestroyed &&
-                _assignedTarget.HealthModel.HasUnits;
-            ShipAiDecision decision = _decisionModel.Evaluate(
-                new ShipAiSnapshot(
-                    _healthModel.IsDestroyed,
-                    _healthModel.HasShields,
-                    _healthModel.ShieldPercentage,
-                    _radarComponent.Enemies.Count,
-                    hasAssignedTarget,
-                    isAssignedTargetAvailable,
-                    _shipMoveComponent.IsMoving),
+            bool hasTarget = _orders.Target != null;
+            bool targetAvailable = hasTarget &&
+                !_orders.Target.HealthModel.IsDestroyed &&
+                _orders.Target.HealthModel.HasUnits;
+            ShipAiDecision decision = _decisionModel.Evaluate(new ShipAiSnapshot(
+                _healthModel.IsDestroyed, _healthModel.HasShields,
+                _healthModel.ShieldPercentage, _radar.Enemies.Count,
+                hasTarget, targetAvailable, _movement.IsMoving),
                 _gameModel.EnemyDifficulty);
-
-            if (hasAssignedTarget && !isAssignedTargetAvailable)
+            if (decision == ShipAiDecision.Flee)
             {
-                _assignedTarget = null;
-                _attackFormationOffset = Vector3.zero;
+                if (!IsFleeing) _stateMachine.SetState(_fleeState);
             }
-
-            switch (decision)
+            else if (IsFleeing)
             {
-                case ShipAiDecision.Flee:
-                    SetState(_fleeState);
-                    return;
-                case ShipAiDecision.Attack:
-                    if (!_attackTargetState.IsTheSameTarget(
-                            _assignedTarget,
-                            _attackFormationOffset))
-                    {
-                        _attackTargetState.SetData(
-                            _assignedTarget,
-                            _attackFormationOffset);
-                        _stateMachine.SetState(_attackTargetState);
-                        return;
-                    }
-
-                    SetState(_attackTargetState);
-                    return;
-                case ShipAiDecision.Navigate:
-                    if (IsFleeing)
-                    {
-                        SetState(_idleState);
-                    }
-
-                    return;
-                case ShipAiDecision.Idle:
-                    // Ship completes navigation and clears its pending move order.
-                    if (!(_stateMachine.CurrentState is NavigateState))
-                    {
-                        SetState(_idleState);
-                    }
-
-                    return;
-            }
-        }
-
-        private void SetState(IBaseState state)
-        {
-            if (_stateMachine.CurrentState != state)
-            {
-                _stateMachine.SetState(state);
+                _ship.Value.ResumeOrder();
             }
         }
     }

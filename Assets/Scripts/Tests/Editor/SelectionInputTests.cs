@@ -11,8 +11,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
-using EmpireAtWar.Services.ShipAbilities;
-using Zenject;
 using EmpireAtWar.Views.MiniMap;
 using NUnit.Framework;
 using UnityEngine;
@@ -37,8 +35,7 @@ namespace EmpireAtWar.Tests.Selection
                 inputService,
                 new EntityLocator(),
                 selectionQuery,
-                marqueeSelectionPresenter,
-                new ShipAbilityService(new ShipAbilityFactory(new DiContainer())));
+                marqueeSelectionPresenter);
             FakeSelectionCommand playerCommand =
                 new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand opponentCommand =
@@ -137,6 +134,7 @@ namespace EmpireAtWar.Tests.Selection
             public event Action<Vector2> OnPrimaryDragChanged;
             public event Action<Vector2> OnPrimaryDragEnded;
             public event Action OnEscapePressed;
+            public event Action OnWaypointModifierReleased;
             public event Action OnSelectAllUnitsPressed;
             public event Action OnSelectVisibleUnitsPressed;
             public event Action<bool> OnBlocked;
@@ -147,6 +145,7 @@ namespace EmpireAtWar.Tests.Selection
             public TouchPhase CurrentTouchPhase => TouchPhase.Began;
             public Vector2 TouchPosition => Vector2.zero;
             public bool SupportsHover => true;
+            public bool IsWaypointModifierPressed => false;
             public Vector2 CameraMove => Vector2.zero;
             public int TapCount => 1;
             public string Id { get; set; }

@@ -1,13 +1,9 @@
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.Layer;
-using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
@@ -15,32 +11,26 @@ using Zenject;
 namespace EmpireAtWar.Entities.UnitOrderFeedback
 {
     public sealed class UnitOrderFeedbackUiController : IUnitOrderFeedbackPresenter,
-        IInitializable, ILateTickable, ILateDisposable, IObserver<ISelectionSubject>
+        IInitializable, ILateTickable, ILateDisposable
     {
         private readonly IUiService _uiService;
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
-        private readonly IInputService _inputService;
-        private readonly ISelectionService _selectionService;
-        private readonly ISelectionQuery _selectionQuery;
-        private readonly ILayerService _layerService;
-        private readonly ShipAbilityService _abilityService;
+        private readonly IUnitOrderService _orders;
+        private readonly UnitActionTargetingModel _targeting;
         private IUnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
-        private ISelectionContext _selection;
+        private int _placedWaypointCount;
 
-        public UnitOrderFeedbackUiController(IUiService uiService, ICameraService cameraService,
-            IEntityLocator entityLocator, IInputService inputService, ISelectionService selectionService,
-            ISelectionQuery selectionQuery, ILayerService layerService, ShipAbilityService abilityService)
+        public UnitOrderFeedbackUiController(IUiService uiService,
+            ICameraService cameraService, IEntityLocator entityLocator,
+            IUnitOrderService orders, UnitActionTargetingModel targeting)
         {
             _uiService = uiService;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
-            _inputService = inputService;
-            _selectionService = selectionService;
-            _selectionQuery = selectionQuery;
-            _layerService = layerService;
-            _abilityService = abilityService;
+            _orders = orders;
+            _targeting = targeting;
         }
 
         public void Initialize()
@@ -49,97 +39,54 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 UiType.UnitOrderFeedback, _uiService.DefaultCanvasTransform);
             _ui.SetPresenter(this);
             _ui.Initialize();
-            _inputService.OnInput += HandleInput;
-            _selectionService.AddObserver(this);
+            _orders.OrderIssued += HandleOrder;
+            _targeting.Changed += HandleTargetingChanged;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
         public void LateTick()
         {
-            if (_attackTarget != null)
+            if (_attackTarget == null) return;
+            if (_attackTarget.HealthModel.IsDestroyed)
             {
-                if (_attackTarget.HealthModel.IsDestroyed)
-                {
-                    _ui.StopAttack();
-                    _attackTarget = null;
-                }
-                else
-                {
-                    _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
-                        _attackTarget.HealthModel.Transform.position));
-                }
+                _ui.StopAttack();
+                _attackTarget = null;
             }
-
+            else _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
+                _attackTarget.HealthModel.Transform.position));
         }
 
         public void AttackFeedbackCompleted() => _attackTarget = null;
 
         public void LateDispose()
         {
-            _inputService.OnInput -= HandleInput;
-            _selectionService.RemoveObserver(this);
+            _orders.OrderIssued -= HandleOrder;
+            _targeting.Changed -= HandleTargetingChanged;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _ui.Dispose();
             _attackTarget = null;
         }
 
-        public void UpdateState(ISelectionSubject subject)
+        private void HandleOrder(UnitOrder order)
         {
-            _selection = subject.PlayerSelectionContext;
-            // StationCombatPresenter already responds to enemy-selection changes.
-            if (subject.UpdatedType == PlayerType.Opponent &&
-                subject.EnemySelectionContext.HasSelectable && HasSelectedStationaryWeapon())
+            if (order.Issuer != PlayerType.Player) return;
+            if (order.Action == UnitActionId.Attack && order.Target != null)
             {
-                PlayAttack(subject.EnemySelectionContext.Entity);
+                _attackTarget = order.Target;
+                _ui.PlayAttack(_cameraService.WorldToScreenPoint(
+                    order.Target.HealthModel.Transform.position));
             }
-        }
-
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
-        {
-            if (inputType != InputType.ShipInput || _abilityService.IsWaitingForTarget) return;
-
-            if (_selectionQuery.TryFindAt(screenPosition, out SelectionEntry target))
+            else if (order.Action == UnitActionId.WaypointMove &&
+                     order.Waypoints != null)
             {
-                if (target.Entity.PlayerType == PlayerType.Opponent && HasSelectedCommand<IAttackCommand>())
-                    PlayAttack(target.Entity);
-                return;
+                foreach (Vector3 point in order.Waypoints)
+                    _ui.PlayMovement(_cameraService.WorldToScreenPoint(point));
             }
-
-            if (!HasSelectedCommand<IMoveCommand>()) return;
-            RaycastHit hit = _cameraService.ScreenPointToRay(screenPosition);
-            if (hit.collider != null && _layerService.IsInLayer(hit.collider.gameObject, LayerKey.Obstacle)) return;
-            _ui.PlayMovement(screenPosition);
-        }
-
-        private void PlayAttack(IEntity target)
-        {
-            if (target.HealthModel.IsDestroyed || !target.HealthModel.HasUnits) return;
-            _attackTarget = target;
-            _ui.PlayAttack(_cameraService.WorldToScreenPoint(target.HealthModel.Transform.position));
-        }
-
-        private bool HasSelectedCommand<TCommand>() where TCommand : IEntityCommand
-        {
-            if (_selection == null) return false;
-            foreach (IEntity entity in _selection.Entities)
-            {
-                if (!entity.HealthModel.IsDestroyed && entity.TryGetCommand(out TCommand _)) return true;
-            }
-            return false;
-        }
-
-        private bool HasSelectedStationaryWeapon()
-        {
-            if (_selection == null) return false;
-            foreach (IEntity entity in _selection.Entities)
-            {
-                if (entity.HealthModel.IsDestroyed || entity.TryGetCommand(out IMoveCommand _)) continue;
-                foreach (HardPointModel hardPoint in entity.HealthModel.HardPointModels)
-                {
-                    if (hardPoint.HardPointType == HardPointType.Weapon && !hardPoint.IsDestroyed) return true;
-                }
-            }
-            return false;
+            else if (order.Action == UnitActionId.Move ||
+                     order.Action == UnitActionId.AttackMove ||
+                     order.Action == UnitActionId.Guard ||
+                     order.Action == UnitActionId.Retreat)
+                _ui.PlayMovement(_cameraService.WorldToScreenPoint(order.Point));
         }
 
         private void HandleEntityRemoved(IEntity entity)
@@ -147,6 +94,24 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (entity != _attackTarget) return;
             _ui.StopAttack();
             _attackTarget = null;
+        }
+
+        private void HandleTargetingChanged()
+        {
+            if (_targeting.Pending != UnitActionId.WaypointMove)
+            {
+                _placedWaypointCount = 0;
+                return;
+            }
+
+            int count = _targeting.Waypoints.Count;
+            if (count > _placedWaypointCount)
+            {
+                var point = _targeting.Waypoints[count - 1];
+                _ui.PlayMovement(_cameraService.WorldToScreenPoint(
+                    new Vector3(point.X, 0f, point.Z)));
+            }
+            _placedWaypointCount = count;
         }
     }
 }
