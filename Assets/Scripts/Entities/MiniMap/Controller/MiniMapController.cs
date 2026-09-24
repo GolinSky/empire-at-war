@@ -5,6 +5,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.UiRouting;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Views.MiniMap;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Controllers.MiniMap
     public interface IMiniMapCommand : ICommand
     {
         void MoveTo(Vector3 worldPoint);
+        bool TryOrderMove(Vector3 worldPoint);
     }
 
     public class MiniMapController : Controller<MiniMapData>, IMiniMapCommand,
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly TimerPoolService _timerPoolService;
         private readonly IUiService _uiService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
+        private readonly IPlayerOrderInputHandler _orderInput;
         private MiniMapUi _miniMapUi;
         private CustomCoroutine _unblockCoroutine;
         
@@ -39,6 +42,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             TimerPoolService timerPoolService,
             IUiService uiService,
             ISkirmishRouteNavigation routeNavigation,
+            IPlayerOrderInputHandler orderInput,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType) : base(model)
         {
@@ -47,6 +51,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             _timerPoolService = timerPoolService;
             _uiService = uiService;
             _routeNavigation = routeNavigation;
+            _orderInput = orderInput;
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(playerFactionType));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(opponentFactionType));
@@ -108,6 +113,11 @@ namespace EmpireAtWar.Controllers.MiniMap
         public void MoveTo(Vector3 worldPoint)
         {
             _cameraService.MoveTo(worldPoint);
+        }
+
+        public bool TryOrderMove(Vector3 worldPoint)
+        {
+            return _orderInput.TryIssueMove(worldPoint);
         }
         
         private void UpdateBlockState(bool isBlocked)

@@ -243,6 +243,7 @@ namespace EmpireAtWar.Tests.Editor
             public FakeHandler(UnitActionTargetingModel targeting) { _targeting = targeting; }
             public int FinishCount { get; private set; }
             public void FinishWaypoints() { FinishCount++; _targeting.Cancel(); }
+            public bool TryIssueMove(Vector3 worldPoint) => false;
         }
 
         private sealed class FakeOrders : IUnitOrderService

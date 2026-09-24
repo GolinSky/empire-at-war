@@ -28,6 +28,7 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         [SerializeField] private CameraFootprintView cameraFootprintView;
+        [SerializeField] private MiniMapMoveTargetView moveTargetView;
 
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
@@ -114,12 +115,15 @@ namespace EmpireAtWar.Views.MiniMap
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
+            switch (eventData.button)
             {
-                return;
+                case PointerEventData.InputButton.Left:
+                    MoveCamera(eventData);
+                    break;
+                case PointerEventData.InputButton.Right:
+                    OrderMove(eventData);
+                    break;
             }
-
-            MoveCamera(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -135,11 +139,29 @@ namespace EmpireAtWar.Views.MiniMap
         private void MoveCamera(PointerEventData eventData)
         {
             if (Model.IsInputBlocked) return;
+            if (!TryGetWorldPoint(eventData, out Vector3 worldPoint)) return;
 
+            Command.MoveTo(worldPoint);
+        }
+
+        private void OrderMove(PointerEventData eventData)
+        {
+            if (Model.IsInputBlocked) return;
+            if (!TryGetWorldPoint(eventData, out Vector3 worldPoint)) return;
+
+            if (Command.TryOrderMove(worldPoint))
+            {
+                moveTargetView.Play(GetPosition(worldPoint));
+            }
+        }
+
+        private bool TryGetWorldPoint(PointerEventData eventData, out Vector3 worldPoint)
+        {
+            worldPoint = default;
             UnityEngine.Camera eventCamera = eventData.pressEventCamera;
             if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position, eventCamera))
             {
-                return;
+                return false;
             }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -151,13 +173,12 @@ namespace EmpireAtWar.Views.MiniMap
             float x = Mathf.InverseLerp(MiniMapRect.xMin, MiniMapRect.xMax, localPoint.x);
             float y = Mathf.InverseLerp(MiniMapRect.yMin, MiniMapRect.yMax, localPoint.y);
 
-            Vector3 worldPoint = new Vector3
+            worldPoint = new Vector3
             {
                 x = Mathf.Lerp(_mapRange.Min.x, _mapRange.Max.x, x),
                 z = Mathf.Lerp(_mapRange.Min.y, _mapRange.Max.y, y)
             };
-
-            Command.MoveTo(worldPoint);
+            return true;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
