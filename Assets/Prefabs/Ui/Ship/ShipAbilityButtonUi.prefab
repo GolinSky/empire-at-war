@@ -188,10 +188,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3819496379867737245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 34, y: 34}
+  m_SizeDelta: {x: -8, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5706369116928680985
 CanvasRenderer:
@@ -400,6 +400,7 @@ GameObject:
   - component: {fileID: 6224857030643970280}
   - component: {fileID: 8998038558258408976}
   - component: {fileID: 7781393529263135368}
+  - component: {fileID: 4333302952280616436}
   m_Layer: 5
   m_Name: ShipAbilityButtonUi
   m_TagString: Untagged
@@ -610,6 +611,26 @@ MonoBehaviour:
   cooldownFill: {fileID: 1081435193368007592}
   activeHighlight: {fileID: 7204472508398069273}
   targetingHighlight: {fileID: 8134688379684884667}
+--- !u!114 &4333302952280616436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8341970245074214916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 0
+  m_MinWidth: 24
+  m_MinHeight: 24
+  m_PreferredWidth: 42
+  m_PreferredHeight: 42
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &8519584100480755296
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,10 +663,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3819496379867737245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 34, y: 34}
+  m_SizeDelta: {x: -8, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1878715499942717263
 CanvasRenderer:

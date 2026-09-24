@@ -106,17 +106,13 @@ namespace EmpireAtWar.Views.Game
 
             _isShipGroupLayout = isShipSelection;
             RectTransform content = (RectTransform)contentRouteParent;
+            contentGrid.enabled = !isShipSelection;
             if (isShipSelection)
             {
-                contentGrid.cellSize = new Vector2(332f, 332f);
-                contentGrid.spacing = new Vector2(16f, 0f);
-                contentGrid.padding = new RectOffset(18, 18, 18, 18);
-                contentGrid.constraint = GridLayoutGroup.Constraint.FixedRowCount;
-                contentGrid.constraintCount = 1;
-                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
                 contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
                 content.anchorMin = new Vector2(0f, 0f);
-                content.anchorMax = new Vector2(0f, 1f);
+                content.anchorMax = new Vector2(1f, 1f);
                 content.pivot = new Vector2(0f, 0.5f);
                 content.anchoredPosition = Vector2.zero;
                 content.sizeDelta = Vector2.zero;

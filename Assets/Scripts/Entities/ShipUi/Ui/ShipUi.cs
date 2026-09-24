@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.ShipUi;
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Presenters.ShipUi;
@@ -18,6 +19,8 @@ namespace EmpireAtWar.Views
         private IShipUiPresenter _presenter;
         private bool _isInitialized;
         private bool _isRouteActive = true;
+        private bool _isEntry;
+        private Action _onSelected;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
@@ -28,7 +31,8 @@ namespace EmpireAtWar.Views
         {
             _model.OnSelectionChanged += UpdateVisibility;
             abilityBar.SetModel(_model);
-            disableSelectionButton.onClick.AddListener(_presenter.CloseSelection);
+            _onSelected = _presenter.CloseSelection;
+            disableSelectionButton.onClick.AddListener(HandleSelection);
             _isInitialized = true;
             UpdateVisibility();
         }
@@ -36,10 +40,26 @@ namespace EmpireAtWar.Views
         public void Dispose()
         {
             if (!_isInitialized) return;
-            _model.OnSelectionChanged -= UpdateVisibility;
-            disableSelectionButton.onClick.RemoveListener(_presenter.CloseSelection);
+            if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
+            disableSelectionButton.onClick.RemoveListener(HandleSelection);
             _isInitialized = false;
         }
+
+        public void ConfigureEntry(Sprite icon, IShipUiModelObserver model,
+            ShipUiEntry entry, Action onSelected)
+        {
+            _isEntry = true;
+            _model = model;
+            _onSelected = onSelected;
+            shipIconImage.sprite = icon;
+            shipIconImage.enabled = icon != null;
+            abilityBar.SetModel(model);
+            abilityBar.SetSlots(entry.AbilitySlots, entry.PressAbility);
+            disableSelectionButton.onClick.AddListener(HandleSelection);
+            _isInitialized = true;
+        }
+
+        private void HandleSelection() => _onSelected();
 
         private void OnDestroy() => Dispose();
 
