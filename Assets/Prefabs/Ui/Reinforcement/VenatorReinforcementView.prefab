@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1407098590346028621}
   serializedVersion: 2
   m_LocalRotation: {x: -0.50000006, y: 0.49999994, z: 0.50000006, w: 0.49999994}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0008201599, y: -0.98930264, z: -1.0207291}
   m_LocalScale: {x: 3.2347684, y: 3.2347684, z: 3.2347677}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -59,6 +59,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -81,9 +86,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &7961472581756493746
 BoxCollider:
@@ -152,9 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53526d91b334c8781d9114e878ca360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 5855513130791601436}
-  canBeSpawnedColor: {r: 0.0141509175, g: 1, b: 0.8133026, a: 1}
-  blockedColor: {r: 1, g: 0, b: 0, a: 1}
+  height: 0
 --- !u!54 &2204769058743215675
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -162,10 +167,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3050627953792303388}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
