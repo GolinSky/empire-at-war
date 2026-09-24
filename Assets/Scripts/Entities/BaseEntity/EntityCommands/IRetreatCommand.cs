@@ -6,9 +6,6 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityCommands
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
-        bool IsRetreatPending { get; }
-        float RetreatRemaining { get; }
-        void Retreat(Vector3 destination, float delay);
-        void CancelRetreat();
+        void Retreat(Vector3 destination);
     }
 }

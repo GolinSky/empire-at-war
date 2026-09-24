@@ -19,7 +19,6 @@ namespace EmpireAtWar.Services.UnitOrders
         void IssueWaypointMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> waypoints);
         void IssueHunt(IReadOnlyList<IEntity> receivers);
         void IssueRetreat(IReadOnlyList<IEntity> receivers);
-        void CancelRetreat(IReadOnlyList<IEntity> receivers);
     }
 
 }

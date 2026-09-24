@@ -22,16 +22,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(view, Is.Not.Null);
             SerializedObject data = new SerializedObject(view);
             SerializedProperty buttons = data.FindProperty("buttons");
+            // Move is the default right-click order and has no panel button.
             Assert.That(buttons.arraySize,
-                Is.EqualTo(Enum.GetValues(typeof(UnitActionId)).Length));
-            Assert.That(data.FindProperty("retreatCountdownText").objectReferenceValue,
-                Is.Not.Null);
+                Is.EqualTo(Enum.GetValues(typeof(UnitActionId)).Length - 1));
             HashSet<UnitActionId> seen = new HashSet<UnitActionId>();
             for (int i = 0; i < buttons.arraySize; i++)
             {
                 UnitActionButton action =
                     (UnitActionButton)buttons.GetArrayElementAtIndex(i).objectReferenceValue;
                 Assert.That(action, Is.Not.Null);
+                Assert.That(action.ActionId, Is.Not.EqualTo(UnitActionId.Move));
                 Assert.That(seen.Add(action.ActionId), Is.True,
                     $"Duplicate action: {action.ActionId}");
                 SerializedObject buttonData = new SerializedObject(action);

@@ -83,9 +83,6 @@ namespace EmpireAtWar.Ship
         public float NavigationSpeed => _shipMoveComponent.NavigationSpeed;
         public long EntityId => _entity.Value.Id;
         public ShipOrderType CurrentOrder => _orderModel.Current;
-        public bool IsRetreatPending => _orderModel.Current == ShipOrderType.Retreat &&
-                                        !_orderModel.RetreatStarted;
-        public float RetreatRemaining => _orderModel.RetreatRemaining;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
@@ -179,8 +176,6 @@ namespace EmpireAtWar.Ship
 #endif
             _stateMachine.Update();
             CompleteNavigation();
-            if (_orderModel.AdvanceRetreat(Time.deltaTime) &&
-                !_shipAIBrain.IsFleeing) ResumeOrder();
             if (_orderModel.Current == ShipOrderType.Guard &&
                 _stateMachine.CurrentState == _guardState && _guardState.IsComplete)
                 Stop();
@@ -319,20 +314,15 @@ namespace EmpireAtWar.Ship
             if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_huntState);
         }
 
-        public void Retreat(Vector3 destination, float delay)
+        public void Retreat(Vector3 destination)
         {
             FormationPoint point = ToPoint(destination);
             if (_orderModel.Matches(ShipOrderType.Retreat, point)) return;
-            _orderModel.Replace(ShipOrderType.Retreat, point, retreatDelay: delay);
+            _orderModel.Replace(ShipOrderType.Retreat, point);
             _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
             _weaponComponent.ResetTarget();
-            _shipMoveComponent.Stop();
-            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_idleState);
-        }
-
-        public void CancelRetreat()
-        {
-            if (IsRetreatPending) _orderModel.Clear();
+            _navigateState.SetWorldDestination(destination);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_navigateState);
         }
 
         public void Stop()
@@ -350,16 +340,9 @@ namespace EmpireAtWar.Ship
             {
                 case ShipOrderType.Move:
                 case ShipOrderType.WaypointMove:
+                case ShipOrderType.Retreat:
                     _navigateState.SetWorldDestination(ToVector(_orderModel.Destination));
                     _stateMachine.SetState(_navigateState);
-                    break;
-                case ShipOrderType.Retreat:
-                    if (_orderModel.RetreatStarted)
-                    {
-                        _navigateState.SetWorldDestination(ToVector(_orderModel.Destination));
-                        _stateMachine.SetState(_navigateState);
-                    }
-                    else _stateMachine.SetState(_idleState);
                     break;
                 case ShipOrderType.Attack:
                     if (_orderModel.Target == null ||
@@ -445,8 +428,7 @@ namespace EmpireAtWar.Ship
                 _stateMachine.SetState(_navigateState);
                 return;
             }
-            if (_orderModel.Current != ShipOrderType.Retreat ||
-                _orderModel.RetreatStarted) _orderModel.Clear();
+            _orderModel.Clear();
             _stateMachine.SetState(_idleState);
         }
 

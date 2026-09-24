@@ -135,10 +135,6 @@ namespace EmpireAtWar.Services.UnitOrders
                 Vector3 point = _camera.GetWorldPoint(screen, ReferencePosition(receivers));
                 switch (pending.Value)
                 {
-                    case UnitActionId.Move:
-                        _orders.IssueMove(receivers, point);
-                        _targeting.Cancel();
-                        break;
                     case UnitActionId.AttackMove:
                         _orders.IssueAttackMove(receivers, point);
                         _targeting.Cancel();
