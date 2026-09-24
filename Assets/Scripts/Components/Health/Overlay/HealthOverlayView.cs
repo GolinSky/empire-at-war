@@ -96,15 +96,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             _canvasRect = (RectTransform)canvasObject.transform;
             _canvas = canvasObject.AddComponent<Canvas>();
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            _canvas.sortingOrder = 200;
+            _canvas.sortingOrder = -1;
 
             CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             scaler.matchWidthOrHeight = 0.5f;
-
-            GraphicRaycaster raycaster = canvasObject.AddComponent<GraphicRaycaster>();
-            raycaster.ignoreReversedGraphics = true;
 
             MPImage panelImage = CreateImage(
                 "UnitHealthOverlay",

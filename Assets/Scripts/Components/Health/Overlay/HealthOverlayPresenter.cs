@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -12,12 +11,9 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Health.Overlay
 {
-    public sealed class HealthOverlayPresenter : IInitializable, ILateDisposable, ITickable,
-        IObserver<ISelectionSubject>
+    public sealed class HealthOverlayPresenter : IInitializable, ILateDisposable, ITickable
     {
         private readonly IHealthOverlayView _view;
-        private readonly ISelectionService _selectionService;
-        private readonly ISelectionSubject _selectionSubject;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IInputService _inputService;
         private readonly ICameraService _cameraService;
@@ -27,15 +23,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
         public HealthOverlayPresenter(
             IHealthOverlayView view,
-            ISelectionService selectionService,
-            ISelectionSubject selectionSubject,
             ISelectionQuery selectionQuery,
             IInputService inputService,
             ICameraService cameraService)
         {
             _view = view;
-            _selectionService = selectionService;
-            _selectionSubject = selectionSubject;
             _selectionQuery = selectionQuery;
             _inputService = inputService;
             _cameraService = cameraService;
@@ -48,30 +40,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 throw new InvalidOperationException(
                     "The health overlay view must be initialized before its presenter.");
             }
-
-            _selectionService.AddObserver(this);
-            SetTarget(GetDesiredTarget());
         }
 
         public void LateDispose()
         {
-            _selectionService.RemoveObserver(this);
             SetTarget(null);
-        }
-
-        public void UpdateState(ISelectionSubject value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (!_view.IsAvailable)
-            {
-                return;
-            }
-
-            SetTarget(GetDesiredTarget());
         }
 
         public void Tick()
@@ -81,7 +54,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
                 return;
             }
 
-            IEntity desiredTarget = GetDesiredTarget();
+            IEntity desiredTarget = GetHoveredEntity();
             if (!ReferenceEquals(_target, desiredTarget))
             {
                 SetTarget(desiredTarget);
@@ -108,29 +81,6 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             _view.Show(_cameraService.WorldToScreenPoint(worldPosition));
         }
 
-        private IEntity GetDesiredTarget()
-        {
-            return GetHoveredEntity() ?? GetSelectedEntity();
-        }
-
-        private IEntity GetSelectedEntity()
-        {
-            ISelectionContext latestContext = GetContext(_selectionSubject.UpdatedType);
-            if (IsValid(latestContext?.Entity))
-            {
-                return latestContext.Entity;
-            }
-
-            if (IsValid(_selectionSubject.PlayerSelectionContext.Entity))
-            {
-                return _selectionSubject.PlayerSelectionContext.Entity;
-            }
-
-            return IsValid(_selectionSubject.EnemySelectionContext.Entity)
-                ? _selectionSubject.EnemySelectionContext.Entity
-                : null;
-        }
-
         private IEntity GetHoveredEntity()
         {
             if (!_inputService.SupportsHover ||
@@ -140,19 +90,6 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             }
 
             return IsValid(selection.Entity) ? selection.Entity : null;
-        }
-
-        private ISelectionContext GetContext(PlayerType playerType)
-        {
-            switch (playerType)
-            {
-                case PlayerType.Player:
-                    return _selectionSubject.PlayerSelectionContext;
-                case PlayerType.Opponent:
-                    return _selectionSubject.EnemySelectionContext;
-                default:
-                    return null;
-            }
         }
 
         private void SetTarget(IEntity target)
