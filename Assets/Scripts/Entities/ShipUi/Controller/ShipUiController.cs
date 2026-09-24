@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
@@ -165,42 +166,40 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             bool hasGroup = _model.HasShips && _playerSelectionContext.Count > 1;
-
             _abilitySlots.Clear();
+            _shipGroupUi.ClearGroups();
+            SortedDictionary<ShipType, List<IEntity>> groups = new SortedDictionary<ShipType, List<IEntity>>();
             if (_model.HasShips)
             {
-                foreach (var entity in _playerSelectionContext.Entities)
+                foreach (IEntity entity in _playerSelectionContext.Entities)
                 {
-                    if (entity.HealthModel.IsDestroyed ||
-                        !entity.TryGetCommand(out IShipAbilityCommand abilityCommand)) continue;
-                    for (int i = 0; i < abilityCommand.Slots.Count; i++)
-                        _abilitySlots.Add(abilityCommand.Slots[i]);
+                    if (entity.HealthModel.IsDestroyed || !(entity.Model is IShipModelObserver ship))
+                        continue;
+                    if (entity.TryGetCommand(out IShipAbilityCommand abilityCommand))
+                        _abilitySlots.AddRange(abilityCommand.Slots);
+                    if (!hasGroup) continue;
+                    if (!groups.TryGetValue(ship.ShipType, out List<IEntity> ships))
+                    {
+                        ships = new List<IEntity>();
+                        groups.Add(ship.ShipType, ships);
+                    }
+                    ships.Add(entity);
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
-            _shipGroupUi.SetAbilitySlots(_abilitySlots);
 
-            _shipGroupUi.ClearGroups();
-            if (hasGroup)
+            foreach (KeyValuePair<ShipType, List<IEntity>> group in groups)
             {
-                SortedDictionary<ShipType, int> groupCounts = new SortedDictionary<ShipType, int>();
-                foreach (var entity in _playerSelectionContext.Entities)
+                List<ShipUiEntry> entries = new List<ShipUiEntry>();
+                foreach (IEntity entity in group.Value)
                 {
-                    if (entity.HealthModel.IsDestroyed || !(entity.Model is IShipModelObserver ship))
-                    {
-                        continue;
-                    }
-
-                    groupCounts.TryGetValue(ship.ShipType, out int count);
-                    groupCounts[ship.ShipType] = count + 1;
+                    IEntity[] caster = { entity };
+                    IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetCommand(out IShipAbilityCommand command)
+                        ? command.Slots : System.Array.Empty<ShipAbilitySlot>();
+                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id)));
                 }
-
-                foreach (KeyValuePair<ShipType, int> group in groupCounts)
-                {
-                    int visibleEntries = group.Value <= 4 ? group.Value : 1;
-                    Sprite icon = _model.GetShipIcon(group.Key);
-                    _shipGroupUi.AddGroup(group.Key, icon, group.Value, visibleEntries);
-                }
+                List<IEntity> casters = group.Value;
+                _shipGroupUi.AddGroup(group.Key, entries, id => _abilityService.Press(casters, id));
             }
 
             if (_isRouteActive && _model.HasShips && !hasGroup)
