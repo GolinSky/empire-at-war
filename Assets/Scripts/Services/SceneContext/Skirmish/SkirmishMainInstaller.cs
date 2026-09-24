@@ -8,6 +8,7 @@ using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.UnitOrderFeedback;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Map;
@@ -74,6 +75,9 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<ShipAbilityService>().AsSingle().NonLazy();
         Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();
+        Container.BindInterfacesNonLazyExt<UnitOrderFeedbackUiController>();
+        // Observe input before gameplay consumes or cancels a pending ability target.
+        Container.BindInitializableExecutionOrder<UnitOrderFeedbackUiController>(-100);
         
         //todo: merge map model with minimap 
         Container.BindModel<MapData>(Repository);
