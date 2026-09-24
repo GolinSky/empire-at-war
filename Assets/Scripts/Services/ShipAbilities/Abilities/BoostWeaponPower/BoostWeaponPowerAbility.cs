@@ -4,18 +4,19 @@ using EmpireAtWar.Entities.Ship.Abilities;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class BoostEnginePowerAbility : IShipAbility
+    public sealed class BoostWeaponPowerAbility : IShipAbility
     {
+        private readonly BoostWeaponPowerSettings _settings;
         private CombatModifiers _modifiers;
-        private CombatStatModifier _modifier;
+
+        public BoostWeaponPowerAbility(BoostWeaponPowerSettings settings) { _settings = settings; }
 
         public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
         {
             _modifiers = caster.Modifiers;
-            _modifier = definition.StatModifier;
-            _modifiers.Add(_modifier);
+            _modifiers.Add(_settings.StatModifier);
         }
 
-        public void Stop() => _modifiers.Remove(_modifier);
+        public void Stop() => _modifiers.Remove(_settings.StatModifier);
     }
 }

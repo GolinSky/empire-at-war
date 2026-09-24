@@ -110,7 +110,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                  Vector3.Distance(caster.WorldPosition, target.HealthModel.Transform.position) > definition.Range))
                 return false;
 
-            IShipAbility ability = _factory.Create(id);
+            IShipAbility ability = _factory.Create(definition);
             ability.Start(caster, definition, target);
             slot.Activate(ability);
             _running.Add(slot);
@@ -136,13 +136,12 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (slot.State == ShipAbilityState.Active)
                 {
                     Stop(slot);
-                    if (slot.TimeLeft <= 0f) slot.Ready();
+                    if (slot.TimeLeft > 0f) continue;
                 }
-                else
-                {
-                    slot.Ready();
-                    _running.RemoveAt(i);
-                }
+
+                // A Ready slot must leave the running list, otherwise a re-activation adds it twice.
+                slot.Ready();
+                _running.RemoveAt(i);
             }
         }
 

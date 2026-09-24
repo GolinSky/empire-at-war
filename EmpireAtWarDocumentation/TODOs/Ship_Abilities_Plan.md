@@ -34,9 +34,10 @@ This follows the main ideas of *Clean Architecture* (Robert C. Martin), simplifi
 | **Dependency Rule** (dependencies point inward) | Clean Architecture | Three layers, as rules and folders only (no new asmdefs). **Core rules:** `ShipAbilitySlot`, `CombatModifiers`, `CombatStatModifier`, catalog data. **Use case:** `ShipAbilityService` and the ability classes. **Outer:** UI, views, the enemy AI controller, installers, the factory. Inner code never references outer code. | UI or Unity details leaking into logic; logic that can't be tested |
 | **One use case, one entry point** (input port) | Clean Architecture | The player UI and the enemy AI both go through the same `ShipAbilityService` methods. There is no second way to start an ability. | Player and AI behaving differently, and rules being duplicated in two places |
 | **Humble Object** | Clean Architecture, ch. 23 | `ShipAbilityBarUi`, `ShipAbilityButtonUi` and `ProtonBeamView` only draw and forward input. Every decision is in pure C# that can be tested. | Logic hidden in MonoBehaviours, and bugs that can't be tested |
-| **Plugins and the Main component** | Clean Architecture, ch. 17 & 26 | Abilities are plugins. `ShipAbilityFactory` is the **only** class that knows concrete ability types; it belongs to composition, next to the installers. The service depends only on `IShipAbility` and `IShipAbilityFactory`. | The service growing with every ability; a new ability forcing edits across the codebase |
+| **Plugins and the Main component** | Clean Architecture, ch. 17 & 26 | Abilities are plugins; each one's settings class is the only code that knows its ability type. `ShipAbilityFactory` belongs to composition, next to the installers. The service depends only on `IShipAbility` and `IShipAbilityFactory`. | The service growing with every ability; a new ability forcing edits across the codebase |
 | **Command with undo** | GoF Command | `IShipAbility.Start(...)` / `Stop()`. `Stop` undoes exactly what `Start` did. | Leftover buffs: speed or damage staying changed after the ability ends |
-| **Simple Factory** | GoF, creational | `ShipAbilityFactory.Create(id)` is a `switch` that calls `DiContainer.Instantiate<T>()`. Each ability gets its own services through its constructor, with no DI binding per ability. | A service constructor that keeps growing with every ability's dependencies |
+| **Type Object and Factory Method** (GRASP Creator) | Nystrom; GoF | Each ability owns a typed `XxxSettings : ShipAbilitySettings` class that holds only that ability's numbers. The settings object has the data, so it creates its ability: `CreateAbility(IInstantiator)`. `ShipAbilityFactory` is just `definition.Settings.CreateAbility(_instantiator)`; there is no `switch`. | One definition class that grows with every ability (SRP, ISP, OCP); a service constructor that keeps growing with every ability's dependencies |
+| **Inspector modules** (the Cinemachine idea) | Unity `[SerializeReference]` | `ShipAbilityDefinition.settings` is `[SerializeReference, SubclassSelector]`. The Inspector shows a type dropdown and draws only the chosen settings type's fields. | Designers editing irrelevant fields; data for one ability leaking into all the others |
 | **Value Object** | Fowler, PoEAA | `CombatStatModifier` is an immutable `readonly struct` (serialized fields, read-only properties). | A shared modifier being mutated by accident |
 | **Service Layer / single owner** | Fowler, PoEAA | `ShipAbilityService` is the only class that changes slot state and calls `Start` and `Stop`. | State being changed from several places, and timers counted twice |
 | **Observer** | GoF (already used in the project) | `ShipAbilitySlot.Changed` and `ShipAbilityService.TargetingChanged`. Plain C# events, no `UnityEvent`. | UI polling logic state everywhere |
@@ -49,9 +50,10 @@ This follows the main ideas of *Clean Architecture* (Robert C. Martin), simplifi
 | **Template Method** base class for the stat abilities | It saves a few lines but hides the logic inside a base class. Each ability should read from top to bottom in one file. |
 | **Decorator** or pipeline chain for stats | A product of active multipliers does the same job with no object graph. |
 | **Mediator**, event bus or messaging | Hidden control flow. Direct calls through entity commands can be traced. |
-| Ability registry through **reflection or attributes** | Magic. An explicit factory `switch` is searchable and fails loudly. |
+| Ability registry through **reflection or attributes** | Magic. Each settings class creating its own ability is explicit and searchable. |
 | One **asmdef per layer** | Real enforcement, but heavy for one feature. Keep the layers as rules plus a review checklist; revisit later if they are broken. |
-| **Polymorphic per-ability settings** (`[SerializeReference]`) | More types and fragile serialization. A flat definition with `[Header]` groups is enough. |
+| **Cinemachine-style module *list*** with `GetModule<T>()` | It is `GetComponent` semantics, a hidden runtime lookup that `AGENTS.md` forbids, and a missing module fails only at runtime. The single typed settings slot per ability was chosen instead. |
+| **One ScriptableObject asset per ability** | Survives class renames and needs no drawer, but adds an asset per ability and doesn't give the module feel. This is the fallback if `[SerializeReference]` ever causes trouble. |
 
 ### 1.3 Contracts (read these before writing any ability)
 
@@ -85,9 +87,10 @@ These rules are what protect against intermittent bugs.
 
 Adding a new ability:
 1. Append a value to the `ShipAbilityId` enum.
-2. Write one class that implements `IShipAbility`.
-3. Add one `case` to the factory.
-4. Add one catalog entry.
+2. Create a folder `Abilities/<Name>/` with `<Name>Settings.cs` (its own numbers plus `CreateAbility`) and `<Name>Ability.cs` (receives the settings through its constructor).
+3. Add one catalog entry and pick `<Name>Settings` in the Inspector dropdown.
+
+No shared file changes except the enum.
 
 Nothing else changes (Open/Closed in practice).
 
@@ -105,22 +108,27 @@ The project's type-first folder layout is kept (`Components` / `Entities` / `Ser
 |---|---|
 | `ShipAbilityId.cs` | `enum` with explicit int values that are only ever appended. `None = 0` is not allowed in data. |
 | `ShipAbilityAiUse.cs` | `enum { Defensive, Escape, Offensive }`: when the enemy AI should fire the ability |
-| `ShipAbilityDefinition.cs` | `[Serializable]` class holding all the numbers and assets for one ability (see below) |
+| `ShipAbilityDefinition.cs` | `[Serializable]` class holding the **common** data every ability has, plus one typed settings slot (see below) |
+| `ShipAbilitySettings.cs` | `[Serializable] abstract class` with `abstract IShipAbility CreateAbility(IInstantiator instantiator)`. Each ability feature subclasses it. |
 | `ShipAbilityCatalog.cs` | `ScriptableObject : Mvc.Data` with `DictionaryWrapper<ShipAbilityId, ShipAbilityDefinition>` and `Get(id) => dictionary[id]`. There is no validation in it (C8). |
 
-`ShipAbilityDefinition` fields are grouped with `[Header]`. The dictionary key is the id, so do **not** repeat the id inside the definition. Each ability reads only the groups it needs.
+`ShipAbilityDefinition` holds only what the service, UI and AI need for **every** ability. The dictionary key is the id, so do **not** repeat the id inside the definition.
 
 ```csharp
 [Header("Ui")]        Sprite Icon; string DisplayName;
 [Header("Timing")]    float Duration; float RecoveryDelay; bool CanCancel;
 [Header("Targeting")] bool RequiresEnemyTarget; float Range;
 [Header("Ai")]        ShipAbilityAiUse AiUse;
-[Header("Stats")]     CombatStatModifier StatModifier;      // stat abilities, Assault, ConcentrateFire
-[Header("Beam")]      float BeamDamage; WeaponType BeamWeaponType; ProtonBeamView BeamViewPrefab;
-[Header("Command")]   float CommandRadius;
+[Header("Ability")]   [SerializeReference, SubclassSelector] ShipAbilitySettings Settings;
 ```
 
-`BeamWeaponType` reuses an existing `WeaponType`, such as `HeavyTurboLaser`, so `DamageCalculationData` already has an entry for it. **Do not add a new `WeaponType` value.**
+Ability-specific numbers **never** go into the definition; they go into that ability's settings class (§3.5).
+
+Inspector support:
+- `Assets/Scripts/Components/Utils/SubclassSelectorAttribute.cs` is a `PropertyAttribute`.
+- `Assets/Scripts/Editor/SubclassSelectorDrawer.cs` draws a type dropdown, built from `TypeCache`, over the default managed-reference field.
+
+**Renaming or moving a settings class breaks saved data** unless you add `[UnityEngine.Scripting.APIUpdating.MovedFrom(...)]`. The catalog test fails when any `Settings` is null, so this can't pass silently.
 
 ### 3.2 Core rules in `Assets/Scripts/Components/CombatModifiers/`
 
@@ -147,7 +155,7 @@ Storing a list and recalculating avoids the float drift of repeatedly multiplyin
 | File | Purpose |
 |---|---|
 | `IShipAbility.cs` | `void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target); void Stop();` Add `Tick(float deltaTime)` only when the first ability actually needs it. |
-| `IShipAbilityFactory.cs` | `IShipAbility Create(ShipAbilityId id);` This interface lets service tests pass a fake factory. |
+| `IShipAbilityFactory.cs` | `IShipAbility Create(ShipAbilityDefinition definition);` This interface lets service tests pass a fake factory. |
 | `ShipAbilityService.cs` | The single owner and entry point. It is `ITickable` and `ILateDisposable`, and it is bound in `SkirmishMainInstaller`. |
 
 `ShipAbilityService` API (keep it this small):
@@ -174,66 +182,69 @@ How it behaves:
 - **TryActivate** applies the gameplay rules:
   - The slot must be `Ready` and the caster alive.
   - If a target is required, it must be alive, belong to the opponent and be within `Range`.
-  - Then it calls `_factory.Create(id)` for a fresh instance (C4), calls `Start(...)`, sets the slot to `Active` and sets `TimeLeft = Duration`.
+  - Then it calls `_factory.Create(definition)` for a fresh instance (C4), calls `Start(...)`, sets the slot to `Active` and sets `TimeLeft = Duration`.
 - **Tick** walks a `List<ShipAbilitySlot>` of slots that are `Active` or `Recovering`, and never scans every ship.
   - `Active` → `Recovering` when the time runs out: call `Stop()` and set `TimeLeft = RecoveryDelay`.
   - `Recovering` → `Ready` when the time runs out.
+  - A slot that becomes `Ready` (including `Active` with `RecoveryDelay = 0`) **always leaves the list**. Otherwise re-activating it adds it twice and its timer runs double.
   - If the caster died, call `Stop()` and remove the slot from the list.
 - **Cancel:** call `Stop()` and move the slot to `Recovering` with the full `RecoveryDelay`.
 
-### 3.5 Abilities (plugins) in `Assets/Scripts/Services/ShipAbilities/Abilities/`
+### 3.5 Abilities (plugins) in `Assets/Scripts/Services/ShipAbilities/Abilities/<Name>/`
 
-| File | Dependencies (constructor) |
-|---|---|
-| `InvulnerabilityAbility.cs` | none |
-| `BoostShieldPowerAbility.cs` | none |
-| `BoostEnginePowerAbility.cs` | none |
-| `BoostWeaponPowerAbility.cs` | none |
-| `AssaultAbility.cs` | none (uses the target's and caster's entity commands) |
-| `ProtonBeamAbility.cs` | none (instantiates `definition.BeamViewPrefab`) |
-| `ConcentrateFireAbility.cs` | `IEntityLocator` (or a fleet-level service later) |
-| `ProtonBeamView.cs` | `MonoBehaviour`, Humble Object: `Play(Vector3 from, Transform to, float duration)`. Adapt the growth and hold logic from `Assets/Scripts/Components/LaserGun.cs` into it. Leave `LaserGun` untouched. |
+Each ability is a feature folder with two files that sit side by side: `<Name>Settings.cs` (its own data, and it creates the ability) and `<Name>Ability.cs` (the logic). The ability receives its settings, and any services it needs, through its constructor.
 
-Target shape of a stat ability (the whole class):
+| Folder | Settings fields | Ability constructor |
+|---|---|---|
+| `Invulnerability/` | `CombatStatModifier statModifier` | `(InvulnerabilitySettings)` |
+| `BoostShieldPower/` | `CombatStatModifier statModifier` | `(BoostShieldPowerSettings)` |
+| `BoostEnginePower/` | `CombatStatModifier statModifier` | `(BoostEnginePowerSettings)` |
+| `BoostWeaponPower/` | `CombatStatModifier statModifier` | `(BoostWeaponPowerSettings)` |
+| `Assault/` | `CombatStatModifier statModifier` | `(AssaultSettings)`; uses the caster's `IAttackCommand` |
+| `ProtonBeam/` | `float damage; WeaponType weaponType; ProtonBeamView viewPrefab` | `(ProtonBeamSettings)`; uses the target's `IHealthCommand` |
+| `ConcentrateFire/` | `CombatStatModifier allyStatModifier; float commandRadius` | `(ConcentrateFireSettings, IEntityLocator)` |
+
+- `ProtonBeam/ProtonBeamView.cs` is a `MonoBehaviour` and a Humble Object: `Play(Vector3 from, Transform to, float duration)`.
+- The beam's `weaponType` reuses an existing `WeaponType`, such as `HeavyTurboLaser`, so `DamageCalculationData` already has an entry for it. **Do not add a new `WeaponType` value.**
+
+The whole shape of one feature:
 
 ```csharp
+[Serializable]
+public sealed class BoostEnginePowerSettings : ShipAbilitySettings
+{
+    [SerializeField] private CombatStatModifier statModifier;
+    public CombatStatModifier StatModifier => statModifier;
+
+    public override IShipAbility CreateAbility(IInstantiator instantiator) =>
+        instantiator.Instantiate<BoostEnginePowerAbility>(new object[] { this });
+}
+
 public sealed class BoostEnginePowerAbility : IShipAbility
 {
+    private readonly BoostEnginePowerSettings _settings;
     private CombatModifiers _modifiers;
-    private CombatStatModifier _modifier;
+
+    public BoostEnginePowerAbility(BoostEnginePowerSettings settings) { _settings = settings; }
 
     public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
     {
         _modifiers = caster.Modifiers;
-        _modifier = definition.StatModifier;
-        _modifiers.Add(_modifier);
+        _modifiers.Add(_settings.StatModifier);
     }
 
-    public void Stop() => _modifiers.Remove(_modifier);
+    public void Stop() => _modifiers.Remove(_settings.StatModifier);
 }
 ```
+
+- A required entity command that is missing is a wiring error. Fail with a clear `InvalidOperationException`; never ignore the result of `TryGetCommand`.
+- `Stop` must survive scene unload. Unity may already have destroyed views, so check the Unity object before destroying it (see `ProtonBeamAbility.Stop`).
 
 ### 3.6 Composition in `Assets/Scripts/Services/ShipAbilities/`
 
 | File | Purpose |
 |---|---|
-| `ShipAbilityFactory.cs` | Implements `IShipAbilityFactory` and is the **only** class that knows concrete abilities. It takes a `DiContainer` in its constructor; the factory is part of composition, so it may depend on the container. |
-
-```csharp
-public IShipAbility Create(ShipAbilityId id) => id switch
-{
-    ShipAbilityId.ProtonBeam       => _container.Instantiate<ProtonBeamAbility>(),
-    ShipAbilityId.Invulnerability  => _container.Instantiate<InvulnerabilityAbility>(),
-    ShipAbilityId.BoostShieldPower => _container.Instantiate<BoostShieldPowerAbility>(),
-    ShipAbilityId.BoostEnginePower => _container.Instantiate<BoostEnginePowerAbility>(),
-    ShipAbilityId.BoostWeaponPower => _container.Instantiate<BoostWeaponPowerAbility>(),
-    ShipAbilityId.Assault          => _container.Instantiate<AssaultAbility>(),
-    ShipAbilityId.ConcentrateFire  => _container.Instantiate<ConcentrateFireAbility>(),
-    _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
-};
-```
-
-Keep the `throw` in the last arm. It is not validation; it is the required `switch` default and it fails loudly.
+| `ShipAbilityFactory.cs` | Implements `IShipAbilityFactory`. It takes Zenject's `IInstantiator` and contains a single line: `definition.Settings.CreateAbility(_instantiator)`. It knows **no** concrete ability; each settings class creates its own. |
 
 ### 3.7 UI
 
@@ -338,7 +349,8 @@ Tests replace validation code in the core (C8).
   - A target out of range is rejected and the slot stays Ready.
   - Group press activates only the Ready slots.
 - **Symmetry tests for each ability** (C2): after `Start` followed by `Stop`, the caster's (and, for `ConcentrateFire`, the allies') `CombatModifiers` equal their values before `Start`.
-- `ShipAbilityFactoryTests`: every `ShipAbilityId` except `None` creates an ability. This catches a missing `case`.
+- `ShipAbilityFactoryTests`: every concrete `ShipAbilitySettings` type (found through `TypeCache`) creates a new ability instance on each call.
+- `ShipAbilityServiceTests` also covers the zero-recovery re-activation case: the timer elapses once per `Advance`.
 - `ShipAbilityCatalogTests`, on the real asset:
   - Every id except `None` has an entry and an icon.
   - Every `ShipData.Abilities` id exists in the catalog.
@@ -370,7 +382,8 @@ Tests replace validation code in the core (C8).
 | `ShipAbilitySlot` | Hold the state of one ability on one ship | Change its own state |
 | `CombatModifiers` | Combine the active stat multipliers | Know about abilities |
 | `ShipAbilityService` | Activate, cancel and target abilities; run timers; own the ability lifecycle | Know concrete ability types |
-| `ShipAbilityFactory` | Map id → new ability instance | Hold state |
+| `ShipAbilityFactory` | Ask the definition's settings for a new ability instance | Know concrete abilities or hold state |
+| `XxxSettings` classes | Hold one ability's own numbers and create that ability | Contain gameplay logic |
 | `XxxAbility` classes | Do one feature's logic in `Start` and undo it in `Stop` | Own time, touch slots or reference concrete ship components |
 | `ShipUiController` | Turn the selection into slots, and a button press into `Press` | Contain ability rules |
 | `EnemyShipAbilityController` | Decide when the AI uses abilities, based on difficulty | Bypass `TryActivate` |
@@ -380,6 +393,8 @@ Tests replace validation code in the core (C8).
 
 - Do not merge several abilities into one generic class, even when their code is the same today.
 - Do not add a DI binding per ability, a reflection or attribute registry, an event bus or a base class hierarchy for abilities.
+- Do not put ability-specific fields into `ShipAbilityDefinition`. They belong in that ability's settings class.
+- Do not add a `GetModule<T>()`-style lookup on the definition.
 - Do not put ability logic or timers inside `Ship`, `WeaponComponent` or `HealthComponent`. They only read `CombatModifiers`.
 - Do not put tuning numbers inside ability classes.
 - Do not add validation code (catalog checks, `OnValidate`, guard helpers) to core code. Write a test instead.

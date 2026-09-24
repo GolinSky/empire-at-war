@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
+using UnityEditor;
 using Zenject;
 
 namespace EmpireAtWar.Tests.Editor
@@ -9,20 +10,20 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class ShipAbilityFactoryTests
     {
         [Test]
-        public void EveryAbilityId_CreatesANewAbility()
+        public void EverySettingsType_CreatesANewAbilityEachTime()
         {
             DiContainer container = new DiContainer();
             container.Bind<IEntityLocator>().FromInstance(new EntityLocator());
-            ShipAbilityFactory factory = new ShipAbilityFactory(container);
 
-            foreach (ShipAbilityId id in Enum.GetValues(typeof(ShipAbilityId)))
+            foreach (Type settingsType in TypeCache.GetTypesDerivedFrom<ShipAbilitySettings>())
             {
-                if (id == ShipAbilityId.None) continue;
-                IShipAbility first = factory.Create(id);
-                IShipAbility second = factory.Create(id);
-                Assert.That(first, Is.Not.Null, id.ToString());
-                Assert.That(second, Is.TypeOf(first.GetType()), id.ToString());
-                Assert.That(second, Is.Not.SameAs(first), id.ToString());
+                if (settingsType.IsAbstract) continue;
+                ShipAbilitySettings settings = (ShipAbilitySettings)Activator.CreateInstance(settingsType);
+                IShipAbility first = settings.CreateAbility(container);
+                IShipAbility second = settings.CreateAbility(container);
+                Assert.That(first, Is.Not.Null, settingsType.Name);
+                Assert.That(second, Is.TypeOf(first.GetType()), settingsType.Name);
+                Assert.That(second, Is.Not.SameAs(first), settingsType.Name);
             }
         }
     }

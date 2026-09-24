@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingFactory : IShipAbilityFactory
         {
             public int CreatedCount { get; private set; }
-            public IShipAbility Create(ShipAbilityId id)
+            public IShipAbility Create(ShipAbilityDefinition definition)
             {
                 CreatedCount++;
                 return new RecordingAbility();
