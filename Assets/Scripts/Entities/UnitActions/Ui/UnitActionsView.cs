@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.UnitActions.Ui
@@ -8,7 +7,6 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
     public sealed class UnitActionsView : MonoBehaviour, IUnitActionsView
     {
         [SerializeField] private List<UnitActionButton> buttons;
-        [SerializeField] private TMP_Text retreatCountdownText;
 
         public event Action<UnitActionId> ActionPressed;
 
@@ -20,7 +18,6 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
                 button.Pressed += HandlePressed;
             }
             SetPending(null);
-            SetRetreatCountdown(null);
         }
 
         public void Dispose()
@@ -44,13 +41,6 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
         {
             foreach (UnitActionButton button in buttons)
                 button.SetPending(action == button.ActionId);
-        }
-
-        public void SetRetreatCountdown(float? seconds)
-        {
-            retreatCountdownText.gameObject.SetActive(seconds.HasValue);
-            if (seconds.HasValue)
-                retreatCountdownText.text = Mathf.CeilToInt(seconds.Value).ToString();
         }
 
         private void HandlePressed(UnitActionId action) => ActionPressed?.Invoke(action);

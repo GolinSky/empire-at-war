@@ -15,12 +15,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public FormationPoint Offset { get; private set; }
         public IReadOnlyList<FormationPoint> Waypoints => _waypoints;
         public int WaypointIndex { get; private set; }
-        public float RetreatRemaining { get; private set; }
-        public bool RetreatStarted { get; private set; }
 
         public void Replace(ShipOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
-            IReadOnlyList<FormationPoint> waypoints = null, float retreatDelay = 0f)
+            IReadOnlyList<FormationPoint> waypoints = null)
         {
             Current = type;
             Destination = destination;
@@ -29,8 +27,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _waypoints.Clear();
             if (waypoints != null) _waypoints.AddRange(waypoints);
             WaypointIndex = 0;
-            RetreatRemaining = retreatDelay;
-            RetreatStarted = false;
         }
 
         public void Clear() => Replace(ShipOrderType.None);
@@ -55,16 +51,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
             waypoint = default;
             return false;
-        }
-
-        public bool AdvanceRetreat(float deltaTime)
-        {
-            if (Current != ShipOrderType.Retreat || RetreatStarted) return false;
-            RetreatRemaining -= deltaTime;
-            if (RetreatRemaining > 0f) return false;
-            RetreatRemaining = 0f;
-            RetreatStarted = true;
-            return true;
         }
 
         private static bool Near(FormationPoint first, FormationPoint second)

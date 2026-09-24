@@ -189,7 +189,6 @@ namespace EmpireAtWar.Tests.Editor
                 Record(UnitActionId.Hunt, receivers);
             public void IssueRetreat(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Retreat, receivers);
-            public void CancelRetreat(IReadOnlyList<IEntity> receivers) { }
             private void Record(UnitActionId action, IReadOnlyList<IEntity> receivers,
                 Vector3 point = default, IEntity target = null,
                 IReadOnlyList<Vector3> offsets = null) =>

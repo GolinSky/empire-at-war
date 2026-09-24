@@ -15,8 +15,6 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands
 
         public Vector3 WorldPosition => _ship.WorldPosition;
         public float NavigationRadius => _ship.NavigationRadius;
-        public bool IsRetreatPending => _ship.IsRetreatPending;
-        public float RetreatRemaining => _ship.RetreatRemaining;
 
         public void MoveTo(Vector2 screenPosition) => _ship.MoveTo(screenPosition);
         public void MoveTo(Vector3 worldPosition) => _ship.MoveTo(worldPosition);
@@ -29,8 +27,6 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands
         public void MoveAlong(IReadOnlyList<Vector3> waypoints) =>
             _ship.MoveAlong(waypoints);
         public void Hunt() => _ship.Hunt();
-        public void Retreat(Vector3 destination, float delay) =>
-            _ship.Retreat(destination, delay);
-        public void CancelRetreat() => _ship.CancelRetreat();
+        public void Retreat(Vector3 destination) => _ship.Retreat(destination);
     }
 }

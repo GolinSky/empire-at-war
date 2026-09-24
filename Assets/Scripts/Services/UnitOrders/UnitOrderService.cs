@@ -168,14 +168,8 @@ namespace EmpireAtWar.Services.UnitOrders
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             for (int i = 0; i < commands.Count; i++)
-                commands[i].Retreat(slots[i], _settings.RetreatCountdown);
+                commands[i].Retreat(slots[i]);
             Publish(UnitActionId.Retreat, receivers, commands.Count, point);
-        }
-
-        public void CancelRetreat(IReadOnlyList<IEntity> receivers)
-        {
-            foreach (IRetreatCommand command in Collect<IRetreatCommand>(receivers))
-                command.CancelRetreat();
         }
 
         private bool TryGetRetreatPoint(EmpireAtWar.Models.Factions.PlayerType side,

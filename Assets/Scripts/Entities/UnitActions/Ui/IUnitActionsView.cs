@@ -10,6 +10,5 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
         void SetVisible(bool visible);
         void SetAvailable(UnitActionId action, bool available);
         void SetPending(UnitActionId? action);
-        void SetRetreatCountdown(float? seconds);
     }
 }

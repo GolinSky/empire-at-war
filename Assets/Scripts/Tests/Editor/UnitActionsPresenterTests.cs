@@ -66,7 +66,8 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity ship = Entity(1, null);
             _selection.Select(ship);
             foreach (UnitActionId action in Enum.GetValues(typeof(UnitActionId)))
-                Assert.That(_view.Available[action], Is.True, action.ToString());
+                Assert.That(_view.Available[action], Is.EqualTo(action != UnitActionId.Move),
+                    action.ToString());
             Assert.That(_view.Visible, Is.True);
 
             FakeEntity station = Entity(2,
@@ -88,9 +89,11 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity ship = Entity(1, null);
             _selection.Select(ship);
             _view.Press(UnitActionId.Move);
-            Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.Move));
+            Assert.That(_targeting.Pending, Is.Null);
+            _view.Press(UnitActionId.AttackMove);
+            Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.AttackMove));
             Assert.That(_abilities.CancelCount, Is.EqualTo(1));
-            _view.Press(UnitActionId.Move);
+            _view.Press(UnitActionId.AttackMove);
             Assert.That(_targeting.Pending, Is.Null);
 
             _view.Press(UnitActionId.Guard);
@@ -100,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
             _abilities.StartTargeting();
             Assert.That(_targeting.Pending, Is.Null);
             _abilities.CancelTargeting();
-            _view.Press(UnitActionId.Move);
+            _view.Press(UnitActionId.AttackMove);
             _selection.Select(Entity(2, null));
             Assert.That(_targeting.Pending, Is.Null);
         }
@@ -124,17 +127,10 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void RetreatButton_CancelsOnlyWhenAllCapableReceiversPending()
+        public void RetreatButton_IssuesRetreatImmediately()
         {
             FakeEntity ship = Entity(1, null);
             _selection.Select(ship);
-            ship.Command.IsRetreatPending = true;
-            ship.Command.RetreatRemaining = 2.4f;
-            _presenter.Tick();
-            Assert.That(_view.Countdown, Is.EqualTo(2.4f));
-            _view.Press(UnitActionId.Retreat);
-            Assert.That(_orders.CancelCount, Is.EqualTo(1));
-            ship.Command.IsRetreatPending = false;
             _view.Press(UnitActionId.Retreat);
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Retreat));
         }
@@ -159,14 +155,12 @@ namespace EmpireAtWar.Tests.Editor
                 new Dictionary<UnitActionId, bool>();
             public bool Visible { get; private set; }
             public UnitActionId? Pending { get; private set; }
-            public float? Countdown { get; private set; }
             public void Initialize() { }
             public void Dispose() { }
             public void Press(UnitActionId id) => ActionPressed?.Invoke(id);
             public void SetVisible(bool visible) => Visible = visible;
             public void SetAvailable(UnitActionId id, bool available) => Available[id] = available;
             public void SetPending(UnitActionId? id) => Pending = id;
-            public void SetRetreatCountdown(float? value) => Countdown = value;
         }
 
         private sealed class FakeSelection : ISelectionService, ISelectionContext, ISelectionSubject
@@ -250,7 +244,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
             public UnitActionId? LastAction { get; private set; }
-            public int CancelCount { get; private set; }
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Move;
             public void IssueMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points) => LastAction = UnitActionId.Move;
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
@@ -265,7 +258,6 @@ namespace EmpireAtWar.Tests.Editor
                 IReadOnlyList<Vector3> points) => LastAction = UnitActionId.WaypointMove;
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
-            public void CancelRetreat(IReadOnlyList<IEntity> units) => CancelCount++;
         }
 
         private sealed class FakeSession : ISkirmishSessionModelObserver
@@ -306,8 +298,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
-            public bool IsRetreatPending { get; set; }
-            public float RetreatRemaining { get; set; }
             public void MoveTo(Vector2 point) { }
             public void MoveTo(Vector3 point) { }
             public void Attack(IEntity target, Vector3 offset) { }
@@ -317,8 +307,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Guard(IEntity target, Vector3 offset) { }
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
             public void Hunt() { }
-            public void Retreat(Vector3 point, float delay) { }
-            public void CancelRetreat() { }
+            public void Retreat(Vector3 point) { }
         }
 
         private sealed class FakeHealth : IHealthModelObserver
