@@ -17,6 +17,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         void AddEntity(IEntity entity);
         void RemoveEntity(IEntity entity);
         IEntity GetEntity(long entityId);
+        bool TryGetEntity(long entityId, out IEntity entity);
         bool IsStationOperational(PlayerType playerType);
         
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
@@ -53,6 +54,11 @@ namespace EmpireAtWar.Entities.BaseEntity
                 return _entities[entityId];
             }
             throw new Exception("Not entity found with id: " + entityId);
+        }
+
+        public bool TryGetEntity(long entityId, out IEntity entity)
+        {
+            return _entities.TryGetValue(entityId, out entity);
         }
 
         public bool IsStationOperational(PlayerType playerType)

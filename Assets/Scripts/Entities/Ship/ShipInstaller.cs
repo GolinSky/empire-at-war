@@ -1,4 +1,3 @@
-﻿using EmpireAtWar.Commands.Ship;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
@@ -14,6 +13,7 @@ using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -113,34 +113,31 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
             Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
             Container.BindInterfacesAndSelfTo<NavigateState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AttackMoveState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GuardState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HuntState>().AsSingle();
+            Container.Bind<ShipOrderModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
             Container.BindInterfacesExt<ShipAbilityCommand>();
+            Container.BindInterfacesExt<ShipOrderCommand>();
+            Container.BindInterfacesExt<SelectionCommand>();
+            Container.BindInterfacesExt<HealthCommand>();
 
             switch (_playerType)
             {
                 case PlayerType.Player:
                     {
-                        Container.BindInterfacesExt<PlayerShipCommand>();
                         Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
                             .FromComponentsInHierarchy()
                             .AsCached();
 
-                        //entity commands
-                        Container.BindInterfacesExt<PlayerAttackShipCommand>();
-                        Container.BindInterfacesExt<SelectionCommand>();
-                        Container.BindInterfacesExt<HealthCommand>();
 
                         break;
                     }
                 case PlayerType.Opponent:
                     {
-                        Container.BindInterfacesExt<EnemyShipCommand>();
-                        //entity commands
-                        Container.BindInterfacesExt<EnemyAttackShipCommand>();
-                        Container.BindInterfacesExt<SelectionCommand>();
-                        Container.BindInterfacesExt<HealthCommand>();
 
                         break;
                     }

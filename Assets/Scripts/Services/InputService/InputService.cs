@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.InputService
         public event Action<Vector2> OnPrimaryDragEnded;
         public event Action OnLeftMousePressed;
         public event Action OnEscapePressed;
+        public event Action OnWaypointModifierReleased;
         public event Action OnSelectAllUnitsPressed;
         public event Action OnSelectVisibleUnitsPressed;
         public event Action<float> OnZoom;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Services.InputService
         private bool _pressStartedOverUi;
         private bool _hasDragged;
         private bool _isMousePointer;
+        private bool _wasWaypointModifierPressed;
         private Vector2 _pressPosition;
         private Vector2 _previousPosition;
         private float _previousMagnitude;
@@ -45,6 +47,8 @@ namespace EmpireAtWar.Services.InputService
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
         public bool SupportsHover => Mouse.current != null;
+        public bool IsWaypointModifierPressed => Keyboard.current != null &&
+                                                 Keyboard.current.altKey.isPressed;
         public Vector2 SecondaryTouchPosition => MapActions.SecondaryPosition.ReadValue<Vector2>();
         public Vector2 CameraMove
         {
@@ -189,6 +193,10 @@ namespace EmpireAtWar.Services.InputService
 
         public void Tick()
         {
+            bool modifierPressed = IsWaypointModifierPressed;
+            if (_wasWaypointModifierPressed && !modifierPressed)
+                OnWaypointModifierReleased?.Invoke();
+            _wasWaypointModifierPressed = modifierPressed;
             ProcessEscapeInput();
             ProcessRightMouseCommand();
 

@@ -13,6 +13,7 @@ namespace EmpireAtWar.Services.InputService
         event Action<Vector2> OnPrimaryDragChanged;
         event Action<Vector2> OnPrimaryDragEnded;
         event Action OnEscapePressed;
+        event Action OnWaypointModifierReleased;
         event Action OnSelectAllUnitsPressed;
         event Action OnSelectVisibleUnitsPressed;
         event Action<bool> OnBlocked;
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Services.InputService
         
         Vector2 TouchPosition { get; }
         bool SupportsHover { get; }
+        bool IsWaypointModifierPressed { get; }
         Vector2 CameraMove { get; }
         int TapCount { get; }
 

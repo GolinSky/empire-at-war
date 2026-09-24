@@ -35,7 +35,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Update()
         {
-            if (_engagementTarget != null && !CanEngage(_engagementTarget))
+            if (_engagementTarget != null && !ShipEngagement.CanEngage(
+                    _engagementTarget, _shipMoveComponent, _weaponComponent))
             {
                 _engagementTarget = null;
             }
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 float nearestDistance = float.PositiveInfinity;
                 foreach (IEntity enemy in _radarComponent.Enemies)
                 {
-                    if (!CanEngage(enemy))
+                    if (!ShipEngagement.CanEngage(enemy, _shipMoveComponent, _weaponComponent))
                     {
                         continue;
                     }
@@ -70,12 +71,5 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _engagementTarget = null;
         }
 
-        private bool CanEngage(IEntity enemy)
-        {
-            return !enemy.HealthModel.IsDestroyed &&
-                   enemy.HealthModel.HasUnits &&
-                   _weaponComponent.HasEnoughRange(
-                       _shipMoveComponent.GetRange(enemy.HealthModel.Transform.position));
-        }
     }
 }

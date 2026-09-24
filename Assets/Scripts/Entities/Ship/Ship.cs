@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
@@ -11,11 +12,13 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Mediator;
+using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Timing;
 using UnityEngine;
 using Zenject;
@@ -32,10 +35,8 @@ namespace EmpireAtWar.Ship
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
-
-        void AssignAttackTarget(IEntity target, Vector3 formationOffset);
-        void AssignMoveTarget(Vector3 target);
-        void HoldPosition();
+        long EntityId { get; }
+        ShipOrderType CurrentOrder { get; }
     }
 
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable,
@@ -51,16 +52,20 @@ namespace EmpireAtWar.Ship
         private AttackTargetState _attackTargetState;
         private IdleState _idleState;
         private NavigateState _navigateState;
+        private AttackMoveState _attackMoveState;
+        private GuardState _guardState;
+        private HuntState _huntState;
+        private ShipOrderModel _orderModel;
+        private LazyInject<IEntity> _entity;
         private StateMachine1 _stateMachine;
         private ShipAIBrain _shipAIBrain;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private EntityComponentLifecycle _componentLifecycle;
         private PlayerType _playerType;
-        private Vector3 _opponentMoveTarget;
-        private bool _hasOpponentMoveTarget;
         private bool _isReleased;
         private ILayerService _layerService;
+        private ICameraService _cameraService;
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
 
@@ -76,6 +81,11 @@ namespace EmpireAtWar.Ship
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
         public float NavigationRadius => _shipMoveComponent.NavigationRadius;
         public float NavigationSpeed => _shipMoveComponent.NavigationSpeed;
+        public long EntityId => _entity.Value.Id;
+        public ShipOrderType CurrentOrder => _orderModel.Current;
+        public bool IsRetreatPending => _orderModel.Current == ShipOrderType.Retreat &&
+                                        !_orderModel.RetreatStarted;
+        public float RetreatRemaining => _orderModel.RetreatRemaining;
         IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
@@ -88,6 +98,11 @@ namespace EmpireAtWar.Ship
             AttackTargetState attackTargetState,
             IdleState idleState,
             NavigateState navigateState,
+            AttackMoveState attackMoveState,
+            GuardState guardState,
+            HuntState huntState,
+            ShipOrderModel orderModel,
+            LazyInject<IEntity> entity,
             StateMachine1 stateMachine,
             ShipAIBrain shipAIBrain,
             PlayerType playerType,
@@ -95,6 +110,7 @@ namespace EmpireAtWar.Ship
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
             ILayerService layerService,
+            ICameraService cameraService,
             IUnitDeathAnimationData deathAnimationData,
             IUnitDeathAnimationService deathAnimationService)
         {
@@ -106,6 +122,11 @@ namespace EmpireAtWar.Ship
             _attackTargetState = attackTargetState;
             _idleState = idleState;
             _navigateState = navigateState;
+            _attackMoveState = attackMoveState;
+            _guardState = guardState;
+            _huntState = huntState;
+            _orderModel = orderModel;
+            _entity = entity;
             _stateMachine = stateMachine;
             _shipAIBrain = shipAIBrain;
             _playerType = playerType;
@@ -113,6 +134,7 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent = audioDialogShipComponent;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
+            _cameraService = cameraService;
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
         }
@@ -157,55 +179,21 @@ namespace EmpireAtWar.Ship
 #endif
             _stateMachine.Update();
             CompleteNavigation();
-            ResumeOpponentNavigation();
+            if (_orderModel.AdvanceRetreat(Time.deltaTime) &&
+                !_shipAIBrain.IsFleeing) ResumeOrder();
+            if (_orderModel.Current == ShipOrderType.Guard &&
+                _stateMachine.CurrentState == _guardState && _guardState.IsComplete)
+                Stop();
+            if (_orderModel.Current == ShipOrderType.Hunt &&
+                _stateMachine.CurrentState == _huntState && _huntState.IsComplete)
+                Stop();
+            if (_orderModel.Current == ShipOrderType.Attack &&
+                _stateMachine.CurrentState == _idleState)
+                _orderModel.Clear();
             SynchronizeComponents();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
-        }
-
-        public void AssignAttackTarget(
-            IEntity target,
-            Vector3 formationOffset)
-        {
-            if (_playerType == PlayerType.Opponent)
-            {
-                _hasOpponentMoveTarget = false;
-                _shipAIBrain.AssignAttackTarget(target, formationOffset);
-            }
-        }
-
-        public void AssignMoveTarget(Vector3 target)
-        {
-            if (_playerType == PlayerType.Opponent)
-            {
-                _opponentMoveTarget = target;
-                _hasOpponentMoveTarget = true;
-                _shipAIBrain.ClearAssignedTarget();
-                _shipAIBrain.Enable(true);
-
-                if (!_shipAIBrain.IsFleeing)
-                {
-                    StartOpponentNavigation();
-                }
-            }
-        }
-
-        public void HoldPosition()
-        {
-            if (_playerType != PlayerType.Opponent)
-            {
-                return;
-            }
-
-            _hasOpponentMoveTarget = false;
-            _shipAIBrain.ClearAssignedTarget();
-            _shipAIBrain.Enable(true);
-            if (!_shipAIBrain.IsFleeing &&
-                _stateMachine.CurrentState != _idleState)
-            {
-                _stateMachine.SetState(_idleState);
-            }
         }
 
         public void LateDispose()
@@ -221,9 +209,8 @@ namespace EmpireAtWar.Ship
         private void Release(bool playDeathEffects)
         {
             _isReleased = true;
-            _hasOpponentMoveTarget = false;
+            _orderModel.Clear();
             _shipAIBrain.Enable(false);
-            _shipAIBrain.ClearAssignedTarget();
             if (!_componentLifecycle.Release())
             {
                 return;
@@ -253,16 +240,18 @@ namespace EmpireAtWar.Ship
 
         public void MoveTo(Vector2 screenPosition)
         {
-            _shipAIBrain.Enable(false);
-            _navigateState.SetScreenDestination(screenPosition);
-            _stateMachine.SetState(_navigateState);
+            MoveTo(_cameraService.GetWorldPoint(screenPosition,
+                _shipMoveComponent.CurrentPosition));
         }
 
         public void MoveTo(Vector3 worldPosition)
         {
-            _shipAIBrain.Enable(false);
+            FormationPoint destination = ToPoint(worldPosition);
+            if (_orderModel.Matches(ShipOrderType.Move, destination)) return;
+            _orderModel.Replace(ShipOrderType.Move, destination);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
             _navigateState.SetWorldDestination(worldPosition);
-            _stateMachine.SetState(_navigateState);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_navigateState);
         }
 
         public void Attack(IEntity target, Vector3 formationOffset)
@@ -272,19 +261,137 @@ namespace EmpireAtWar.Ship
                 throw new ArgumentNullException(nameof(target));
             }
 
-            if (ReferenceEquals(
-                    _stateMachine.CurrentState,
-                    _attackTargetState) &&
-                _attackTargetState.IsTheSameTarget(
-                    target,
-                    formationOffset))
-            {
-                return;
-            }
-
-            _shipAIBrain.Enable(false);
+            FormationPoint offset = ToPoint(formationOffset);
+            if (_orderModel.Matches(ShipOrderType.Attack, target: target, offset: offset)) return;
+            _orderModel.Replace(ShipOrderType.Attack, target: target, offset: offset);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
             _attackTargetState.SetData(target, formationOffset);
-            _stateMachine.SetState(_attackTargetState);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_attackTargetState);
+        }
+
+        public void AttackMoveTo(Vector3 destination)
+        {
+            FormationPoint point = ToPoint(destination);
+            if (_orderModel.Matches(ShipOrderType.AttackMove, point)) return;
+            _orderModel.Replace(ShipOrderType.AttackMove, point);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            _attackMoveState.SetDestination(destination);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_attackMoveState);
+        }
+
+        public void Guard(IEntity friendly, Vector3 offset)
+        {
+            FormationPoint formationOffset = ToPoint(offset);
+            if (_orderModel.Matches(ShipOrderType.Guard, target: friendly,
+                    offset: formationOffset)) return;
+            _orderModel.Replace(ShipOrderType.Guard, target: friendly,
+                offset: formationOffset);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            _guardState.SetData(friendly, offset);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_guardState);
+        }
+
+        public void MoveAlong(IReadOnlyList<Vector3> waypoints)
+        {
+            if (waypoints.Count == 0) return;
+            List<FormationPoint> points = new List<FormationPoint>(waypoints.Count);
+            foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
+            bool same = _orderModel.Current == ShipOrderType.WaypointMove &&
+                        _orderModel.Waypoints.Count == points.Count;
+            for (int i = 0; same && i < points.Count; i++)
+            {
+                float x = _orderModel.Waypoints[i].X - points[i].X;
+                float z = _orderModel.Waypoints[i].Z - points[i].Z;
+                same = x * x + z * z <= 0.01f;
+            }
+            if (same) return;
+            _orderModel.Replace(ShipOrderType.WaypointMove, points[0], waypoints: points);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            _navigateState.SetWorldDestination(waypoints[0]);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_navigateState);
+        }
+
+        public void Hunt()
+        {
+            if (_orderModel.Current == ShipOrderType.Hunt) return;
+            _orderModel.Replace(ShipOrderType.Hunt);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_huntState);
+        }
+
+        public void Retreat(Vector3 destination, float delay)
+        {
+            FormationPoint point = ToPoint(destination);
+            if (_orderModel.Matches(ShipOrderType.Retreat, point)) return;
+            _orderModel.Replace(ShipOrderType.Retreat, point, retreatDelay: delay);
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            _weaponComponent.ResetTarget();
+            _shipMoveComponent.Stop();
+            if (!_shipAIBrain.IsFleeing) _stateMachine.SetState(_idleState);
+        }
+
+        public void CancelRetreat()
+        {
+            if (IsRetreatPending) _orderModel.Clear();
+        }
+
+        public void Stop()
+        {
+            _orderModel.Clear();
+            _weaponComponent.ResetTarget();
+            _shipMoveComponent.Stop();
+            _shipAIBrain.Enable(_playerType == PlayerType.Opponent);
+            _stateMachine.SetState(_idleState);
+        }
+
+        public void ResumeOrder()
+        {
+            switch (_orderModel.Current)
+            {
+                case ShipOrderType.Move:
+                case ShipOrderType.WaypointMove:
+                    _navigateState.SetWorldDestination(ToVector(_orderModel.Destination));
+                    _stateMachine.SetState(_navigateState);
+                    break;
+                case ShipOrderType.Retreat:
+                    if (_orderModel.RetreatStarted)
+                    {
+                        _navigateState.SetWorldDestination(ToVector(_orderModel.Destination));
+                        _stateMachine.SetState(_navigateState);
+                    }
+                    else _stateMachine.SetState(_idleState);
+                    break;
+                case ShipOrderType.Attack:
+                    if (_orderModel.Target == null ||
+                        _orderModel.Target.HealthModel.IsDestroyed)
+                    {
+                        Stop();
+                        break;
+                    }
+                    _attackTargetState.SetData(_orderModel.Target, ToVector(_orderModel.Offset));
+                    _stateMachine.SetState(_attackTargetState);
+                    break;
+                case ShipOrderType.AttackMove:
+                    _attackMoveState.SetDestination(ToVector(_orderModel.Destination));
+                    _stateMachine.SetState(_attackMoveState);
+                    break;
+                case ShipOrderType.Guard:
+                    if (_orderModel.Target == null ||
+                        _orderModel.Target.HealthModel.IsDestroyed)
+                    {
+                        Stop();
+                        break;
+                    }
+                    _guardState.SetData(_orderModel.Target, ToVector(_orderModel.Offset));
+                    _stateMachine.SetState(_guardState);
+                    break;
+                case ShipOrderType.Hunt:
+                    _stateMachine.SetState(_huntState);
+                    break;
+                default:
+                    _stateMachine.SetState(_idleState);
+                    break;
+            }
         }
 
         public void HandleNewEnemy(IEntity entity)
@@ -324,40 +431,30 @@ namespace EmpireAtWar.Ship
 
         private void CompleteNavigation()
         {
-            if (_stateMachine.CurrentState != _navigateState ||
-                _shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+            bool navigating = _stateMachine.CurrentState == _navigateState ||
+                              _stateMachine.CurrentState == _attackMoveState &&
+                              !_attackMoveState.IsEngaging;
+            if (!navigating || _shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
             {
                 return;
             }
-
-            _hasOpponentMoveTarget = false;
+            if (_orderModel.Current == ShipOrderType.WaypointMove &&
+                _orderModel.AdvanceWaypoint(out FormationPoint next))
+            {
+                _navigateState.SetWorldDestination(ToVector(next));
+                _stateMachine.SetState(_navigateState);
+                return;
+            }
+            if (_orderModel.Current != ShipOrderType.Retreat ||
+                _orderModel.RetreatStarted) _orderModel.Clear();
             _stateMachine.SetState(_idleState);
         }
 
-        private void ResumeOpponentNavigation()
-        {
-            if (_playerType != PlayerType.Opponent ||
-                !_hasOpponentMoveTarget ||
-                _shipAIBrain.IsFleeing ||
-                _stateMachine.CurrentState != _idleState)
-            {
-                return;
-            }
+        private static FormationPoint ToPoint(Vector3 value) =>
+            new FormationPoint(value.x, value.z);
 
-            StartOpponentNavigation();
-        }
-
-        private void StartOpponentNavigation()
-        {
-            if (_stateMachine.CurrentState == _navigateState &&
-                _navigateState.IsTheSameWorldDestination(_opponentMoveTarget))
-            {
-                return;
-            }
-
-            _navigateState.SetWorldDestination(_opponentMoveTarget);
-            _stateMachine.SetState(_navigateState);
-        }
+        private static Vector3 ToVector(FormationPoint value) =>
+            new Vector3(value.X, 0f, value.Z);
 
         public void OnSelect(bool isActive)
         {

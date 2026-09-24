@@ -1,6 +1,7 @@
 using EmpireAtWar.Commands.Game;
 using System;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
@@ -29,11 +30,16 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private ScrollRect contentScroll;
         [SerializeField] private Transform buildPipelineRouteParent;
         [SerializeField] private EndGameUi endGameUi;
+        [SerializeField] private UnitActionsView unitActionsView;
 
         private ISkirmishSessionModelObserver _model;
         private ICoreGamePresenter _presenter;
         private bool _isInitialized;
+        private bool _hasContentLayout;
+        private bool _isFactionLayout;
         private bool _isShipGroupLayout;
+
+        public IUnitActionsView UnitActionsView => unitActionsView;
 
         public void SetModel(ISkirmishSessionModelObserver model)
         {
@@ -92,11 +98,12 @@ namespace EmpireAtWar.Views.Game
             speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
         }
 
-        public void SetShipGroupLayout(bool isShipSelection)
+        public void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection)
         {
-            if (_isShipGroupLayout == isShipSelection)
+            if (_hasContentLayout && _isFactionLayout == isFactionSelection &&
+                _isShipGroupLayout == isShipGroupSelection)
             {
-                if (isShipSelection)
+                if (isFactionSelection || isShipGroupSelection)
                 {
                     contentScroll.horizontalNormalizedPosition = 0f;
                 }
@@ -104,10 +111,12 @@ namespace EmpireAtWar.Views.Game
                 return;
             }
 
-            _isShipGroupLayout = isShipSelection;
+            _hasContentLayout = true;
+            _isFactionLayout = isFactionSelection;
+            _isShipGroupLayout = isShipGroupSelection;
             RectTransform content = (RectTransform)contentRouteParent;
-            contentGrid.enabled = !isShipSelection;
-            if (isShipSelection)
+            contentGrid.enabled = !isShipGroupSelection;
+            if (isShipGroupSelection)
             {
                 contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
                 contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
@@ -122,20 +131,27 @@ namespace EmpireAtWar.Views.Game
             }
             else
             {
-                contentGrid.cellSize = new Vector2(150f, 150f);
+                contentGrid.cellSize = isFactionSelection
+                    ? new Vector2(150f, 150f)
+                    : new Vector2(300f, 375f);
                 contentGrid.spacing = new Vector2(20f, 20f);
                 contentGrid.padding = new RectOffset(36, 36, 18, 18);
-                contentGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-                contentGrid.constraintCount = 2;
-                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+                contentGrid.constraint = isFactionSelection
+                    ? GridLayoutGroup.Constraint.FixedRowCount
+                    : GridLayoutGroup.Constraint.FixedColumnCount;
+                contentGrid.constraintCount = 1;
+                contentSizeFitter.horizontalFit = isFactionSelection
+                    ? ContentSizeFitter.FitMode.PreferredSize
+                    : ContentSizeFitter.FitMode.Unconstrained;
                 contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
                 content.anchorMin = new Vector2(0f, 1f);
-                content.anchorMax = new Vector2(1f, 1f);
-                content.pivot = new Vector2(0.5f, 1f);
+                content.anchorMax = new Vector2(isFactionSelection ? 0f : 1f, 1f);
+                content.pivot = new Vector2(isFactionSelection ? 0f : 0.5f, 1f);
                 content.anchoredPosition = Vector2.zero;
                 content.sizeDelta = Vector2.zero;
-                contentScroll.horizontal = false;
-                contentScroll.vertical = true;
+                contentScroll.horizontal = isFactionSelection;
+                contentScroll.vertical = !isFactionSelection;
+                contentScroll.horizontalNormalizedPosition = 0f;
                 contentScroll.verticalNormalizedPosition = 1f;
             }
         }

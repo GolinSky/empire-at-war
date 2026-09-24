@@ -2,6 +2,9 @@
 
 ## 📋 Active Tasks
 
+- [x] **Implement unit actions (ship orders)**
+  - **Plan**: [[SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
+
 - [ ] **Optimize battle attacks and projectile reuse**
   - **Plan**: [[Battle_Attack_Optimization_Plan|Phased attack, pooling, Jobs + Burst, and instancing plan]]
   - **Execution**: Complete and analyze each phase before advancing; start with readable attack states and busy/cancellation fixes.

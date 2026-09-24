@@ -125,6 +125,12 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetDefaultZoneExitPosition(
                 PlayerType playerType,
                 Vector3 shipPosition,
@@ -161,6 +167,8 @@ namespace EmpireAtWar.Tests.Editor
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+            public bool TryGetEntity(long entityId, out IEntity entity) =>
+                throw new NotImplementedException();
             public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
             {
                 entity = null;

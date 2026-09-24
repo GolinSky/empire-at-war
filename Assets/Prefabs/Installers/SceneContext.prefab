@@ -195,7 +195,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 002a53bd05d06f142aaa521a4f6d86a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1200625451363976541}
 --- !u!114 &8744064952395461264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +208,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fogOfWarSystem: {fileID: 3633680370215819205}
+  reinforcementZoneData: {fileID: 0}
+  unitOrderSettings: {fileID: 11400000, guid: afce51dcd754fd0469faa3093790d821, type: 2}
 --- !u!1001 &5873742713520836447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -277,12 +278,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3d76f722a2402f42afd45b06e18a7c8, type: 3}
---- !u!20 &1200625451363976541 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 4695780636364179970, guid: e3d76f722a2402f42afd45b06e18a7c8,
-    type: 3}
-  m_PrefabInstance: {fileID: 5873742713520836447}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6555281101098223754 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 827167608673945557, guid: e3d76f722a2402f42afd45b06e18a7c8,

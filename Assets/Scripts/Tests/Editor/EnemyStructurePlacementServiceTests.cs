@@ -176,6 +176,12 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetDefaultZoneExitPosition(
                 PlayerType playerType,
                 Vector3 shipPosition,

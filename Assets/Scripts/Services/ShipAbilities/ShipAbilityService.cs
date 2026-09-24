@@ -7,7 +7,7 @@ using Zenject;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
-    public sealed class ShipAbilityService : ITickable, ILateDisposable
+    public sealed class ShipAbilityService : ITickable, ILateDisposable, IShipAbilityTargeting
     {
         private readonly IShipAbilityFactory _factory;
         private readonly List<ShipAbilitySlot> _running = new List<ShipAbilitySlot>();

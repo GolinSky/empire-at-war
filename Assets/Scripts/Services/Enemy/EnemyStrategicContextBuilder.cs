@@ -22,7 +22,8 @@ namespace EmpireAtWar.Services.Enemy
             Vector3 captureTarget,
             GameEntity enemyFleetTarget,
             GameEntity enemyBaseTarget,
-            GameEntity ownBase)
+            GameEntity ownBase,
+            IReadOnlyDictionary<IShipEntity, GameEntity> receivers = null)
         {
             Snapshot = snapshot;
             Ships = ships;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyFleetTarget = enemyFleetTarget;
             EnemyBaseTarget = enemyBaseTarget;
             OwnBase = ownBase;
+            Receivers = receivers;
         }
 
         public EnemyStrategicSnapshot Snapshot { get; }
@@ -38,6 +40,7 @@ namespace EmpireAtWar.Services.Enemy
         public GameEntity EnemyFleetTarget { get; }
         public GameEntity EnemyBaseTarget { get; }
         public GameEntity OwnBase { get; }
+        public IReadOnlyDictionary<IShipEntity, GameEntity> Receivers { get; }
     }
 
     public sealed class EnemyStrategicContextBuilder
@@ -98,13 +101,18 @@ namespace EmpireAtWar.Services.Enemy
                 ownBase != null,
                 ownedCapturableZoneCount,
                 enemyShipsNearOwnBase);
+            Dictionary<IShipEntity, GameEntity> receivers =
+                new Dictionary<IShipEntity, GameEntity>();
+            foreach (IShipEntity ship in enemyShips)
+                receivers.Add(ship, _entityLocator.GetEntity(ship.EntityId));
             return new EnemyStrategicContext(
                 snapshot,
                 enemyShips,
                 captureTarget,
                 enemyFleetTarget,
                 enemyBaseTarget,
-                ownBase);
+                ownBase,
+                receivers);
         }
 
         private List<IShipEntity> GetShips(PlayerType playerType)
@@ -112,7 +120,10 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> ships = new List<IShipEntity>();
             foreach (IShipEntity ship in _shipService.Ships)
             {
-                if (ship.PlayerType == playerType)
+                // A ship joins IShipService before its entity registers; the
+                // registration raises EntityAdded, which re-evaluates the AI.
+                if (ship.PlayerType == playerType &&
+                    _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                 {
                     ships.Add(ship);
                 }

@@ -9,6 +9,8 @@ using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.UnitOrderFeedback;
+using EmpireAtWar.Entities.UnitActions.Controller;
+using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Map;
@@ -22,6 +24,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -35,6 +38,7 @@ public class SkirmishMainInstaller : MonoInstaller
 {
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
+    [SerializeField] private UnitOrderSettings unitOrderSettings;
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IAssetService Repository { get; }
 
@@ -44,6 +48,10 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromComponentInHierarchy()
             .AsSingle();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
+        Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();
+        Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
+        Container.Bind<UnitActionTargetingModel>().AsSingle();
+        Container.BindInterfacesNonLazyExt<PlayerOrderInputHandler>();
 
         Container.BindInterfacesExt<AttackDataFactory>();
         Container.Bind<BattleVictoryModel>().AsSingle();
@@ -76,8 +84,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();
         Container.BindInterfacesNonLazyExt<UnitOrderFeedbackUiController>();
-        // Observe input before gameplay consumes or cancels a pending ability target.
-        Container.BindInitializableExecutionOrder<UnitOrderFeedbackUiController>(-100);
+        Container.BindInitializableExecutionOrder<PlayerOrderInputHandler>(-100);
         
         //todo: merge map model with minimap 
         Container.BindModel<MapData>(Repository);
@@ -92,6 +99,9 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
         Container.BindInterfacesNonLazyExt<CoreGameUiController>();
+        Container.BindInterfacesNonLazyExt<UnitActionsPresenter>();
+        Container.BindInitializableExecutionOrder<CoreGameUiController>(-200);
+        Container.BindInitializableExecutionOrder<UnitActionsPresenter>(100);
         
         Container
             .BindModel<FactionsData>(Repository)

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
@@ -7,7 +6,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -16,6 +14,8 @@ namespace EmpireAtWar.Services.Battle
 {
     public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
+        ISelectionContext PlayerSelectionContext { get; }
+        ISelectionContext EnemySelectionContext { get; }
         void RemoveSelectable(ISelectionContext selectionContext);
         void SelectCurrentShipsByType(ShipType shipType);
     }
@@ -27,17 +27,9 @@ namespace EmpireAtWar.Services.Battle
         private readonly IEntityLocator _entityLocator;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IMarqueeSelectionPresenter _marqueeSelectionPresenter;
-        private readonly ShipAbilityService _abilityService;
         private readonly List<IObserver<ISelectionSubject>> _observers =
             new List<IObserver<ISelectionSubject>>();
         private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
-        private readonly List<IAttackCommand> _attackCommands = new List<IAttackCommand>();
-        private readonly List<FormationPoint> _attackFormationPositions =
-            new List<FormationPoint>();
-        private readonly List<float> _attackFormationRadii =
-            new List<float>();
-        private readonly List<FormationPoint> _attackFormationOffsets =
-            new List<FormationPoint>();
         private readonly SelectionContext _playerSelectionContext = new SelectionContext(PlayerType.Player);
         private readonly SelectionContext _enemySelectionContext = new SelectionContext(PlayerType.Opponent);
         private long? _lastTappedEntityId;
@@ -50,14 +42,12 @@ namespace EmpireAtWar.Services.Battle
             IInputService inputService,
             IEntityLocator entityLocator,
             ISelectionQuery selectionQuery,
-            IMarqueeSelectionPresenter marqueeSelectionPresenter,
-            ShipAbilityService abilityService)
+            IMarqueeSelectionPresenter marqueeSelectionPresenter)
         {
             _inputService = inputService;
             _entityLocator = entityLocator;
             _selectionQuery = selectionQuery;
             _marqueeSelectionPresenter = marqueeSelectionPresenter;
-            _abilityService = abilityService;
         }
 
         public void Initialize()
@@ -115,12 +105,6 @@ namespace EmpireAtWar.Services.Battle
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
         {
-            if (inputType == InputType.ShipInput)
-            {
-                HandleActionInput(touchPosition);
-                return;
-            }
-
             if (inputType != InputType.Selection)
             {
                 return;
@@ -151,20 +135,6 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(selection.Entity.PlayerType, _selectionBuffer);
-        }
-
-        private void HandleActionInput(Vector2 touchPosition)
-        {
-            if (_selectionQuery.TryFindAt(touchPosition, out SelectionEntry target) &&
-                target.Entity.PlayerType == PlayerType.Opponent)
-            {
-                if (_abilityService.IsWaitingForTarget)
-                {
-                    _abilityService.SubmitTarget(target.Entity);
-                    return;
-                }
-                DispatchAttack(target.Entity);
-            }
         }
 
         private bool TryCollectSameShipType(SelectionEntry selection)
@@ -234,52 +204,6 @@ namespace EmpireAtWar.Services.Battle
             if (_enemySelectionContext.HasSelectable)
             {
                 ClearSelection(PlayerType.Opponent);
-            }
-        }
-
-        private void DispatchAttack(IEntity target)
-        {
-            _attackCommands.Clear();
-            _attackFormationPositions.Clear();
-            _attackFormationRadii.Clear();
-            IReadOnlyList<IEntity> selectedEntities =
-                _playerSelectionContext.Entities;
-            for (int i = 0; i < selectedEntities.Count; i++)
-            {
-                IEntity entity = selectedEntities[i];
-                if (entity.HealthModel.IsDestroyed ||
-                    !entity.TryGetCommand(out IAttackCommand attackCommand))
-                {
-                    continue;
-                }
-
-                _attackCommands.Add(attackCommand);
-                _attackFormationPositions.Add(new FormationPoint(
-                    attackCommand.WorldPosition.x,
-                    attackCommand.WorldPosition.z));
-                _attackFormationRadii.Add(
-                    attackCommand.NavigationRadius);
-            }
-
-            Vector3 targetPosition = target.HealthModel.Transform.position;
-            FormationPoint targetCenter = new FormationPoint(
-                targetPosition.x,
-                targetPosition.z);
-            FormationModel.CalculateCompactDestinations(
-                _attackFormationPositions,
-                _attackFormationRadii,
-                targetCenter,
-                _attackFormationOffsets);
-            for (int i = 0; i < _attackCommands.Count; i++)
-            {
-                FormationPoint destination =
-                    _attackFormationOffsets[i];
-                _attackCommands[i].Attack(
-                    target,
-                    new Vector3(
-                        destination.X - targetCenter.X,
-                        0f,
-                        destination.Z - targetCenter.Z));
             }
         }
 

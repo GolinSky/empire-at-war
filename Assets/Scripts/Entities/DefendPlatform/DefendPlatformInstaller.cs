@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -72,7 +73,8 @@ namespace EmpireAtWar
             //entity commands
             Container
                 .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>();
+                .BindInterfacesExt<HealthCommand>()
+                .BindInterfacesExt<StationaryAttackCommand>();
         }
         
         protected override void OnEntityCreated()

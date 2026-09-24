@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.EntityCommands;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -75,7 +76,8 @@ namespace EmpireAtWar.SpaceStation
             //entity commands
             Container
                 .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>();
+                .BindInterfacesExt<HealthCommand>()
+                .BindInterfacesExt<StationaryAttackCommand>();
         }
         
         
