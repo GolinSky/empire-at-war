@@ -187,6 +187,8 @@ namespace EmpireAtWar.Controllers.ShipUi
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
+            _shipUi.SetHealth(_model.HasShips && !hasGroup
+                ? _playerSelectionContext.Entity.HealthModel : null);
 
             foreach (KeyValuePair<ShipType, List<IEntity>> group in groups)
             {
@@ -196,7 +198,8 @@ namespace EmpireAtWar.Controllers.ShipUi
                     IEntity[] caster = { entity };
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetCommand(out IShipAbilityCommand command)
                         ? command.Slots : System.Array.Empty<ShipAbilitySlot>();
-                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id)));
+                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
+                        entity.HealthModel));
                 }
                 List<IEntity> casters = group.Value;
                 _shipGroupUi.AddGroup(group.Key, entries, id => _abilityService.Press(casters, id));

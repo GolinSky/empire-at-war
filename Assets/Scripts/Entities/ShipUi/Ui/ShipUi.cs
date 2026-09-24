@@ -2,6 +2,7 @@ using EmpireAtWar.Models.ShipUi;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -14,8 +15,11 @@ namespace EmpireAtWar.Views
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private ShipAbilityBarUi abilityBar;
+        [SerializeField] private Image healthFill;
+        [SerializeField] private Image shieldFill;
 
         private IShipUiModelObserver _model;
+        private IHealthModelObserver _health;
         private IShipUiPresenter _presenter;
         private bool _isInitialized;
         private bool _isRouteActive = true;
@@ -26,6 +30,14 @@ namespace EmpireAtWar.Views
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
         public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots) =>
             abilityBar.SetSlots(slots, _presenter.PressAbility);
+
+        public void SetHealth(IHealthModelObserver health)
+        {
+            if (_health != null) _health.OnValueChanged -= UpdateHealth;
+            _health = health;
+            if (_health != null) _health.OnValueChanged += UpdateHealth;
+            UpdateHealth();
+        }
 
         public void Initialize()
         {
@@ -40,6 +52,7 @@ namespace EmpireAtWar.Views
         public void Dispose()
         {
             if (!_isInitialized) return;
+            SetHealth(null);
             if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
             disableSelectionButton.onClick.RemoveListener(HandleSelection);
             _isInitialized = false;
@@ -55,11 +68,18 @@ namespace EmpireAtWar.Views
             shipIconImage.enabled = icon != null;
             abilityBar.SetModel(model);
             abilityBar.SetSlots(entry.AbilitySlots, entry.PressAbility);
+            SetHealth(entry.Health);
             disableSelectionButton.onClick.AddListener(HandleSelection);
             _isInitialized = true;
         }
 
         private void HandleSelection() => _onSelected();
+
+        private void UpdateHealth()
+        {
+            healthFill.fillAmount = _health != null ? _health.ArmorPercentage : 0f;
+            shieldFill.fillAmount = _health != null ? _health.ShieldPercentage : 0f;
+        }
 
         private void OnDestroy() => Dispose();
 
