@@ -90,9 +90,6 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(
                 obstructedPlan.Route.Length,
                 Is.GreaterThan(clearPlan.Route.Length));
-            Assert.That(
-                Mathf.Abs(obstructedPlan.Detour.Value.z),
-                Is.GreaterThanOrEqualTo(20f));
             for (int i = 0; i < obstructedPlan.Trajectory.Length; i++)
             {
                 Vector3 sample = obstructedPlan.Trajectory[i];
@@ -185,7 +182,80 @@ namespace EmpireAtWar.Tests.Movement
 
             Assert.That(plan.IsStationary, Is.False);
             Assert.That(plan.Destination, Is.Not.EqualTo(destination));
-            Assert.That(plan.Detour.HasValue, Is.False);
+            for (int i = 0; i < plan.Trajectory.Length; i++)
+            {
+                Assert.That(
+                    Vector3.Distance(plan.Trajectory[i], destination),
+                    Is.GreaterThanOrEqualTo(7.999f),
+                    $"Trajectory sample {i} crossed the idle ship.");
+            }
+        }
+
+        [Test]
+        public void Plan_RoutesAroundOverlappingObstacleCluster()
+        {
+            RadarContact[] cluster =
+            {
+                new RadarContact(new Vector3(5f, 0f, 14f), 40.8f, false),
+                new RadarContact(new Vector3(7f, 0f, 18f), 39.3f, false),
+                new RadarContact(new Vector3(-22f, 0f, -7f), 39.3f, false),
+                new RadarContact(new Vector3(-2f, 0f, 2f), 31.9f, false)
+            };
+            SetRangeValue("<Min>k__BackingField", new Vector2(-250f, -250f));
+            SetRangeValue("<Max>k__BackingField", new Vector2(250f, 250f));
+            FakeAgent agent = new FakeAgent(
+                new Vector3(30f, 0f, 170f),
+                0f,
+                12f,
+                4.5f,
+                7.5f);
+            ShipNavigationService service = CreateService(cluster);
+            service.Register(agent, agent.NavigationPosition);
+            Vector3 destination = new Vector3(-5f, 0f, -170f);
+
+            ShipNavigationPlan plan = service.Plan(
+                agent,
+                Vector3.back,
+                destination,
+                System.Array.Empty<RadarContact>(),
+                0.5f,
+                agent.NavigationRadius,
+                _mapRange);
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination, Is.EqualTo(destination));
+            Assert.That(
+                ShipAvoidancePlanner.IsRouteClear(
+                    plan.Route,
+                    cluster,
+                    agent.NavigationHeight,
+                    0.5f,
+                    agent.NavigationRadius),
+                Is.True);
+        }
+
+        [Test]
+        public void Plan_StartInsideObstacleClearance_EscapesInsteadOfBlocking()
+        {
+            RadarContact obstacle = new RadarContact(
+                new Vector3(10f, 0f, 0f),
+                8f,
+                false);
+            FakeAgent agent = new FakeAgent(Vector3.zero, 0f, 5f, 10f, 30f);
+            ShipNavigationService service = CreateService(new[] { obstacle });
+            service.Register(agent, agent.NavigationPosition);
+
+            ShipNavigationPlan plan = service.Plan(
+                agent,
+                Vector3.right,
+                new Vector3(60f, 0f, 0f),
+                System.Array.Empty<RadarContact>(),
+                0.5f,
+                agent.NavigationRadius,
+                _mapRange);
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination, Is.EqualTo(new Vector3(60f, 0f, 0f)));
         }
 
         [Test]

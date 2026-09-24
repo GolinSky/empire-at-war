@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -6,7 +7,7 @@ namespace EmpireAtWar.Components.Ship.Movement
     public static class ShipBezierPath
     {
         private const float CONTROL_DISTANCE_FACTOR = 0.35f;
-        private const float AVOIDANCE_CONTROL_DISTANCE_FACTOR = 0.15f;
+        private const float WAYPOINT_CONTROL_DISTANCE_FACTOR = 0.3f;
         private const float QUARTER_CIRCLE_CONTROL_FACTOR = 0.5522848f;
         private const float TURNAROUND_RADIUS_FACTOR = 0.25f;
 
@@ -105,63 +106,74 @@ namespace EmpireAtWar.Components.Ship.Movement
             return new ShipBezierRoute(new[] { first, second, approach });
         }
 
-        public static ShipBezierRoute BuildAvoidanceRoute(
-            Vector3 origin,
+        public static ShipBezierRoute BuildWaypointRoute(
+            IReadOnlyList<Vector3> waypoints,
             Vector3 originForward,
-            Vector3 detour,
-            Vector3 destination,
             float minimumTurnRadius)
         {
-            Vector3 route = destination - origin;
-            route.y = 0f;
-            if (route.sqrMagnitude <= Mathf.Epsilon)
+            if (waypoints.Count < 2)
             {
                 throw new ArgumentException(
-                    "Avoidance route requires different origin and destination positions.");
+                    "A waypoint route requires at least two waypoints.",
+                    nameof(waypoints));
             }
 
-            Vector3 routeDirection = route.normalized;
-            Vector3 startDirection = GetPlanarDirection(
-                originForward,
-                routeDirection);
-            Vector3 arrivalDirection = GetPlanarDirection(
-                destination - detour,
-                routeDirection);
-            Vector3 detourDirection = GetPlanarDirection(
-                destination - origin,
-                routeDirection);
-            float firstDistance = Vector3.Distance(origin, detour);
-            float secondDistance = Vector3.Distance(detour, destination);
-            float firstHandle = Mathf.Min(
-                firstDistance * 0.5f,
-                Mathf.Max(
-                    firstDistance * AVOIDANCE_CONTROL_DISTANCE_FACTOR,
-                    minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR));
-            float secondHandle = Mathf.Min(
-                secondDistance * 0.5f,
-                Mathf.Max(
-                    secondDistance * AVOIDANCE_CONTROL_DISTANCE_FACTOR,
-                    minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR));
+            int lastIndex = waypoints.Count - 1;
+            CubicBezierSegment[] segments = new CubicBezierSegment[lastIndex];
+            for (int i = 0; i < lastIndex; i++)
+            {
+                Vector3 start = waypoints[i];
+                Vector3 end = waypoints[i + 1];
+                Vector3 legDirection = GetPlanarDirection(end - start, originForward);
+                float distance = Vector3.Distance(start, end);
+                Vector3 startTangent = i == 0
+                    ? GetPlanarDirection(originForward, legDirection)
+                    : GetPlanarDirection(end - waypoints[i - 1], legDirection);
+                Vector3 endTangent = i + 1 == lastIndex
+                    ? legDirection
+                    : GetPlanarDirection(waypoints[i + 2] - start, legDirection);
+                float startHandle = i == 0
+                    ? Mathf.Min(
+                        distance * 0.5f,
+                        Mathf.Max(
+                            distance * WAYPOINT_CONTROL_DISTANCE_FACTOR,
+                            minimumTurnRadius * QUARTER_CIRCLE_CONTROL_FACTOR))
+                    : distance * WAYPOINT_CONTROL_DISTANCE_FACTOR;
+                float endHandle = distance * WAYPOINT_CONTROL_DISTANCE_FACTOR;
+                segments[i] = new CubicBezierSegment(
+                    start,
+                    start + startTangent * startHandle,
+                    end - endTangent * endHandle,
+                    end);
+            }
 
-            CubicBezierSegment first = new CubicBezierSegment(
-                origin,
-                origin +
-                startDirection *
-                firstHandle,
-                detour -
-                detourDirection *
-                firstHandle,
-                detour);
-            CubicBezierSegment second = new CubicBezierSegment(
-                detour,
-                detour +
-                detourDirection *
-                secondHandle,
-                destination -
-                arrivalDirection *
-                secondHandle,
-                destination);
-            return new ShipBezierRoute(new[] { first, second });
+            return new ShipBezierRoute(segments);
+        }
+
+        public static ShipBezierRoute BuildPolylineRoute(
+            IReadOnlyList<Vector3> waypoints)
+        {
+            if (waypoints.Count < 2)
+            {
+                throw new ArgumentException(
+                    "A polyline route requires at least two waypoints.",
+                    nameof(waypoints));
+            }
+
+            CubicBezierSegment[] segments =
+                new CubicBezierSegment[waypoints.Count - 1];
+            for (int i = 0; i < segments.Length; i++)
+            {
+                Vector3 start = waypoints[i];
+                Vector3 leg = waypoints[i + 1] - start;
+                segments[i] = new CubicBezierSegment(
+                    start,
+                    start + leg / 3f,
+                    start + leg * (2f / 3f),
+                    waypoints[i + 1]);
+            }
+
+            return new ShipBezierRoute(segments);
         }
 
         private static Vector3 GetPlanarDirection(
