@@ -16,5 +16,6 @@ namespace EmpireAtWar.Ui.Base
         Interaction = 8,
         MainMenu = 9,
         ShipGroup = 10,
+        UnitOrderFeedback = 11,
     }
 }

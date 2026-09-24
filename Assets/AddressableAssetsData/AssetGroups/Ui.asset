@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6983d1c86aa81254bb8283663f433297
+    m_Address: UnitOrderFeedbackUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 77d87142c06b4e141a480ea7991e6cde
     m_Address: ShipGroupUi
     m_ReadOnly: 0
