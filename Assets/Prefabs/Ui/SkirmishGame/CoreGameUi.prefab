@@ -1338,7 +1338,7 @@ MonoBehaviour:
     m_CornerRadius: {x: 0, y: 0, z: 0}
     m_UniformCornerRadius: 0
   m_Rectangle:
-    m_CornerRadius: {x: 0, y: 0, z: 5, w: 0}
+    m_CornerRadius: {x: 0, y: 0, z: 0, w: 0}
     m_UniformCornerRadius: 0
   m_ChamferBox:
     m_ChamferSize: 0
@@ -2237,6 +2237,8 @@ MonoBehaviour:
   miniMapRouteParent: {fileID: 2166608681277666659}
   contentRouteParent: {fileID: 89060427212124258}
   contentGrid: {fileID: 7444074867788366029}
+  factionCellSize: {x: 150, y: 150}
+  shipCellSize: {x: 200, y: 275}
   contentSizeFitter: {fileID: 9219539525954383480}
   contentScroll: {fileID: 972563683416304567}
   buildPipelineRouteParent: {fileID: 8537645691187659268}
@@ -5917,7 +5919,7 @@ MonoBehaviour:
     m_CornerRadius: {x: 0, y: 0, z: 0}
     m_UniformCornerRadius: 0
   m_Rectangle:
-    m_CornerRadius: {x: 0, y: 0, z: 5, w: 5}
+    m_CornerRadius: {x: 0, y: 0, z: 0, w: 5}
     m_UniformCornerRadius: 0
   m_ChamferBox:
     m_ChamferSize: 0

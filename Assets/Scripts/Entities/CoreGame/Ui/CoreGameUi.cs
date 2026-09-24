@@ -26,6 +26,8 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Transform miniMapRouteParent;
         [SerializeField] private Transform contentRouteParent;
         [SerializeField] private GridLayoutGroup contentGrid;
+        [SerializeField] private Vector2 factionCellSize = new Vector2(150f, 150f);
+        [SerializeField] private Vector2 shipCellSize = new Vector2(300f, 375f);
         [SerializeField] private ContentSizeFitter contentSizeFitter;
         [SerializeField] private ScrollRect contentScroll;
         [SerializeField] private Transform buildPipelineRouteParent;
@@ -132,8 +134,8 @@ namespace EmpireAtWar.Views.Game
             else
             {
                 contentGrid.cellSize = isFactionSelection
-                    ? new Vector2(150f, 150f)
-                    : new Vector2(300f, 375f);
+                    ? factionCellSize
+                    : shipCellSize;
                 contentGrid.spacing = new Vector2(20f, 20f);
                 contentGrid.padding = new RectOffset(36, 36, 18, 18);
                 contentGrid.constraint = isFactionSelection
