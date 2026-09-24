@@ -67,6 +67,19 @@ namespace EmpireAtWar.Services.UnitOrders
             _targeting.Cancel();
         }
 
+        public bool TryIssueMove(Vector3 worldPoint)
+        {
+            List<IEntity> receivers = Snapshot();
+            foreach (IEntity receiver in receivers)
+            {
+                if (!receiver.TryGetCommand(out IMoveCommand move)) continue;
+                worldPoint.y = move.WorldPosition.y;
+                _orders.IssueMove(receivers, worldPoint);
+                return true;
+            }
+            return false;
+        }
+
         private void HandleModifierReleased()
         {
             if (_targeting.IsAltPlacement) FinishWaypoints();
