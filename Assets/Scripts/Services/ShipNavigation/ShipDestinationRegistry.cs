@@ -6,6 +6,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     public sealed class ShipDestinationRegistry
     {
+        private const float IDLE_POSITION_TOLERANCE = 1f;
+
         private readonly Dictionary<int, Entry> _entries =
             new Dictionary<int, Entry>();
         private int _nextRegistrationId;
@@ -89,6 +91,23 @@ namespace EmpireAtWar.Services.ShipNavigation
         public void CancelPendingFinalPosition(int registrationId)
         {
             GetEntry(registrationId).PendingFinalPosition = null;
+        }
+
+        public bool IsIdle(int registrationId)
+        {
+            Entry entry = GetEntry(registrationId);
+            if (entry.PendingFinalPosition.HasValue ||
+                !entry.ActiveFinalPosition.HasValue)
+            {
+                return false;
+            }
+
+            FormationPoint current = entry.CurrentPosition();
+            FormationPoint final = entry.ActiveFinalPosition.Value;
+            float deltaX = current.X - final.X;
+            float deltaZ = current.Z - final.Z;
+            return deltaX * deltaX + deltaZ * deltaZ <=
+                   IDLE_POSITION_TOLERANCE * IDLE_POSITION_TOLERANCE;
         }
 
         public void Stop(int registrationId)

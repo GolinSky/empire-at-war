@@ -199,8 +199,6 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 LastPoint { get; private set; }
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
-            public bool IsRetreatPending => false;
-            public float RetreatRemaining => 0f;
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
             public void MoveTo(Vector3 point) => Record(UnitActionId.Move, point);
             public void Attack(IEntity target, Vector3 offset) =>
@@ -213,9 +211,8 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveAlong(IReadOnlyList<Vector3> points) =>
                 Record(UnitActionId.WaypointMove, points[0]);
             public void Hunt() => Record(UnitActionId.Hunt);
-            public void Retreat(Vector3 point, float delay) =>
+            public void Retreat(Vector3 point) =>
                 Record(UnitActionId.Retreat, point);
-            public void CancelRetreat() { }
             private void Record(UnitActionId action, Vector3 point = default)
             { CallCount++; LastAction = action; LastPoint = point; }
         }

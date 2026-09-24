@@ -30,7 +30,7 @@ namespace EmpireAtWar.Tests.Editor
                 model.Replace(order, destination,
                     waypoints: new[] { destination, new FormationPoint(30f, 40f) });
             else if (order == ShipOrderType.Retreat)
-                model.Replace(order, destination, retreatDelay: 5f);
+                model.Replace(order, destination);
             else model.Replace(order);
             FakeMovement movement = new FakeMovement();
             FakeWeapon weapon = new FakeWeapon();
@@ -55,7 +55,6 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(weapon.ResetCount, Is.GreaterThanOrEqualTo(1));
                 Assert.That(movement.StopCount, Is.EqualTo(1));
                 Assert.That(model.AdvanceWaypoint(out _), Is.False);
-                Assert.That(model.AdvanceRetreat(10f), Is.False);
             }
             finally { Object.DestroyImmediate(gameObject); }
         }

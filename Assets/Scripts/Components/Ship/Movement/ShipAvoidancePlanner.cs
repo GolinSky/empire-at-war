@@ -9,7 +9,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     public static class ShipAvoidancePlanner
     {
         private const int DESTINATION_CANDIDATE_COUNT = 24;
-        private const float CURVED_ROUTE_CLEARANCE_FACTOR = 2f;
 
         public static Vector3 ClampToMap(Vector3 point, Vector2Range mapRange, float margin)
         {
@@ -26,96 +25,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             point.x = Mathf.Clamp(point.x, mapRange.Min.x + margin, mapRange.Max.x - margin);
             point.z = Mathf.Clamp(point.z, mapRange.Min.y + margin, mapRange.Max.y - margin);
             return point;
-        }
-
-        public static bool TryCalculateDetour(
-            Vector3 origin,
-            Vector3 destination,
-            IReadOnlyList<RadarContact> contacts,
-            float shipHeight,
-            float heightTolerance,
-            float clearance,
-            Vector2Range mapRange,
-            out Vector3 detour,
-            Vector3? preferredDirection = null,
-            bool alternateSide = false)
-        {
-            if (contacts == null)
-            {
-                throw new ArgumentNullException(nameof(contacts));
-            }
-
-            Vector2 start = new Vector2(origin.x, origin.z);
-            Vector2 end = new Vector2(destination.x, destination.z);
-            Vector2 route = end - start;
-            float routeLength = route.magnitude;
-            if (routeLength <= Mathf.Epsilon)
-            {
-                detour = destination;
-                return false;
-            }
-
-            Vector2 direction = route / routeLength;
-            for (int i = 0; i < contacts.Count; i++)
-            {
-                RadarContact contact = contacts[i];
-                if (contact.IsShip)
-                {
-                    continue;
-                }
-
-                Vector2 center = new Vector2(contact.Position.x, contact.Position.z);
-                float safeRadius = contact.Radius + clearance;
-                float projectedDistance = Mathf.Clamp(Vector2.Dot(center - start, direction), 0f, routeLength);
-                Vector2 closest = start + direction * projectedDistance;
-                if ((center - closest).sqrMagnitude >= safeRadius * safeRadius)
-                {
-                    continue;
-                }
-
-                Vector2 perpendicular = new Vector2(-direction.y, direction.x);
-                float detourRadius =
-                    safeRadius + clearance * CURVED_ROUTE_CLEARANCE_FACTOR;
-                Vector2 left = center + perpendicular * detourRadius;
-                Vector2 right = center - perpendicular * detourRadius;
-                Vector3 leftPoint = ClampToMap(new Vector3(left.x, shipHeight, left.y), mapRange, clearance);
-                Vector3 rightPoint = ClampToMap(new Vector3(right.x, shipHeight, right.y), mapRange, clearance);
-                bool leftIsClear = IsPointClear(
-                    leftPoint,
-                    contacts,
-                    shipHeight,
-                    heightTolerance,
-                    clearance);
-                bool rightIsClear = IsPointClear(
-                    rightPoint,
-                    contacts,
-                    shipHeight,
-                    heightTolerance,
-                    clearance);
-                if (leftIsClear || rightIsClear)
-                {
-                    bool preferLeft = preferredDirection.HasValue
-                        ? Vector3.Dot(preferredDirection.Value, (leftPoint - origin).normalized) >=
-                          Vector3.Dot(preferredDirection.Value, (rightPoint - origin).normalized)
-                        : Vector3.Distance(origin, leftPoint) <= Vector3.Distance(origin, rightPoint);
-                    if (alternateSide)
-                    {
-                        if (!leftIsClear || !rightIsClear)
-                        {
-                            detour = destination;
-                            return false;
-                        }
-
-                        preferLeft = !preferLeft;
-                    }
-
-                    detour = leftIsClear && (!rightIsClear || preferLeft) ? leftPoint : rightPoint;
-                    return true;
-                }
-            }
-
-            detour = destination;
-            return false;
         }
 
         public static bool TryResolveDestination(

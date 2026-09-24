@@ -228,7 +228,6 @@ namespace EmpireAtWar.Tests.Editor
             { LastAction = UnitActionId.WaypointMove; WaypointCount = points.Count; }
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
-            public void CancelRetreat(IReadOnlyList<IEntity> units) { }
         }
 
         private sealed class FakeEntity : IEntity

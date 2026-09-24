@@ -14,7 +14,7 @@ namespace EmpireAtWar.Services.Enemy
     /// Global strategy chooses the objective and task-force receivers; ship states and
     /// the tactical brain execute it. Capture routes use Attack-Move, base defense uses
     /// Guard, and Hunt is only the fallback when a fleet target is unknown.
-    /// Repeated Retreat decisions preserve the ship's countdown through idempotency.
+    /// Ships already retreating are not re-ordered, so their slots stay stable.
     /// </summary>
     public sealed class EnemyTaskForceExecutor
     {
@@ -80,7 +80,8 @@ namespace EmpireAtWar.Services.Enemy
                     StopRemaining(context, context.Ships, guardCount);
                     return;
                 case EnemyStrategicState.RetreatValue:
-                    // A re-issued Retreat restarts the countdown and stops the ship.
+                    // Slots are recomputed from current positions; re-issuing would
+                    // re-path ships that are already on their way.
                     List<GameEntity> retreatReceivers = ResolveWithout(context,
                         context.Ships, context.Ships.Count, ShipOrderType.Retreat);
                     if (retreatReceivers.Count > 0) _orders.IssueRetreat(retreatReceivers);
