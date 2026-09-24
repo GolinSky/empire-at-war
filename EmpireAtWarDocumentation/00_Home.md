@@ -23,6 +23,7 @@ Welcome to the **Empire At War** project documentation vault!
 - [[Rules/AGENTS|AI Agent Rules & Standards]] - Mandatory Shared Instructions, MVP Rules, SOLID/GRASP, Unity Constraints
 - [[Rules/UI_UX_GUIDELINES|UI & UX Recipe Manual]] - Mandatory UI/UX Standards, Button Transition Rules, MPUIKit Guidelines
 - [[Rules/UI_CODE_BUILD_GUIDE|UI Code Build Rule]] - Architecture, prefab, and Addressables workflow for new UI features
+- [[Rules/UNITY_JOBS_AND_THREADING_RULES|Unity Jobs & Threading Rules]] - Burst/Jobs ownership, completion, allocator and audit rules
 - [[Rules/README|Project Overview]] - General Project Readme
 
 ---

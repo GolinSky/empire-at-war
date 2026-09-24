@@ -24,19 +24,39 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void BuildAvoidanceRoute_PreservesTangentAcrossDetour()
+        public void BuildWaypointRoute_PreservesTangentAcrossWaypoint()
         {
-            ShipBezierRoute route = ShipBezierPath.BuildAvoidanceRoute(
-                Vector3.zero,
+            ShipBezierRoute route = ShipBezierPath.BuildWaypointRoute(
+                new[]
+                {
+                    Vector3.zero,
+                    new Vector3(20f, 0f, 10f),
+                    new Vector3(40f, 0f, 0f)
+                },
                 Vector3.right,
-                new Vector3(20f, 0f, 10f),
-                new Vector3(40f, 0f, 0f),
                 5f);
 
             route.EvaluateNormalizedDistance(0.499f, out Vector3 incoming);
             route.EvaluateNormalizedDistance(0.501f, out Vector3 outgoing);
 
             Assert.That(Vector3.Dot(incoming, outgoing), Is.GreaterThan(0.99f));
+            Assert.That(route.Samples[route.Samples.Length - 1],
+                Is.EqualTo(new Vector3(40f, 0f, 0f)));
+        }
+
+        [Test]
+        public void BuildPolylineRoute_FollowsStraightLegs()
+        {
+            Vector3 corner = new Vector3(20f, 0f, 0f);
+            ShipBezierRoute route = ShipBezierPath.BuildPolylineRoute(
+                new[] { Vector3.zero, corner, new Vector3(20f, 0f, 20f) });
+
+            Vector3 firstLeg = route.EvaluateNormalizedDistance(0.25f, out _);
+            Vector3 secondLeg = route.EvaluateNormalizedDistance(0.75f, out _);
+
+            Assert.That(route.Length, Is.EqualTo(40f).Within(0.01f));
+            Assert.That(firstLeg.z, Is.EqualTo(0f).Within(0.01f));
+            Assert.That(secondLeg.x, Is.EqualTo(20f).Within(0.01f));
         }
 
         [Test]

@@ -90,6 +90,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             new Dictionary<IShipNavigationAgent, int>();
         private readonly ShipDestinationRegistry _destinationRegistry =
             new ShipDestinationRegistry();
+        private readonly List<Vector3> _waypoints = new List<Vector3>();
 
         public ShipNavigationService(
             IMapObstacleContactProvider mapObstacleContactProvider)
@@ -121,82 +122,90 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts);
+            AddIdleAgentContacts(agent);
 
-            float candidateSpacing = agent.NavigationRadius * 2f;
-            for (int candidateIndex = 0;
-                 candidateIndex <=
-                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
-                 candidateIndex++)
+            using (ShipPathGrid pathGrid = new ShipPathGrid(
+                       _mapObstacleContacts, clearance, mapRange))
             {
-                Vector3 candidate = GetDestinationCandidate(
-                    requestedDestination,
-                    candidateSpacing,
-                    candidateIndex);
-                candidate = ShipAvoidancePlanner.ClampToMap(
-                    candidate,
-                    mapRange,
-                    clearance);
-                ShipAvoidancePlanner.TryResolveDestination(
-                    candidate,
-                    origin,
-                    _mapObstacleContacts,
-                    agent.NavigationHeight,
-                    heightTolerance,
-                    clearance,
-                    mapRange,
-                    out Vector3 destination);
-                if (!_destinationRegistry.HasClearance(
-                        registrationId,
-                        ToFormationPoint(destination),
-                        clearance))
+                float candidateSpacing = agent.NavigationRadius * 2f;
+                for (int candidateIndex = 0;
+                     candidateIndex <=
+                     DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                     candidateIndex++)
                 {
-                    continue;
-                }
+                    Vector3 candidate = GetDestinationCandidate(
+                        requestedDestination,
+                        candidateSpacing,
+                        candidateIndex);
+                    candidate = ShipAvoidancePlanner.ClampToMap(
+                        candidate,
+                        mapRange,
+                        clearance);
+                    ShipAvoidancePlanner.TryResolveDestination(
+                        candidate,
+                        origin,
+                        _mapObstacleContacts,
+                        agent.NavigationHeight,
+                        heightTolerance,
+                        clearance,
+                        mapRange,
+                        out Vector3 destination);
+                    if (!ShipAvoidancePlanner.IsPointClear(
+                            destination,
+                            _mapObstacleContacts,
+                            agent.NavigationHeight,
+                            heightTolerance,
+                            clearance) ||
+                        !_destinationRegistry.HasClearance(
+                            registrationId,
+                            ToFormationPoint(destination),
+                            clearance))
+                    {
+                        continue;
+                    }
 
-                ShipRoutePlan routePlan = ShipRoutePlanner.Build(
-                    agent,
-                    forward,
-                    destination,
-                    _mapObstacleContacts,
-                    heightTolerance,
-                    clearance,
-                    mapRange);
-                if (routePlan.IsStationary ||
-                    !_destinationRegistry.HasClearance(
-                        registrationId,
-                        ToFormationPoint(routePlan.Destination),
-                        clearance))
-                {
-                    continue;
-                }
+                    ShipRoutePlan routePlan = ShipRoutePlanner.Build(
+                        agent,
+                        forward,
+                        destination,
+                        _mapObstacleContacts,
+                        pathGrid,
+                        _waypoints,
+                        heightTolerance,
+                        clearance);
+                    if (routePlan.IsStationary)
+                    {
+                        continue;
+                    }
 
-                bool isDeferred = reserveAsPending ||
-                    (preserveCourse &&
-                     routePlan.TurnDuration > Mathf.Epsilon);
-                if (isDeferred)
-                {
-                    _destinationRegistry.ReservePendingFinalPosition(
-                        registrationId,
-                        ToFormationPoint(routePlan.Destination));
-                }
-                else
-                {
-                    _destinationRegistry.CommitActiveFinalPosition(
-                        registrationId,
-                        ToFormationPoint(routePlan.Destination));
-                }
+                    bool isDeferred = reserveAsPending ||
+                        (preserveCourse &&
+                         routePlan.TurnDuration > Mathf.Epsilon);
+                    if (isDeferred)
+                    {
+                        _destinationRegistry.ReservePendingFinalPosition(
+                            registrationId,
+                            ToFormationPoint(routePlan.Destination));
+                    }
+                    else
+                    {
+                        _destinationRegistry.CommitActiveFinalPosition(
+                            registrationId,
+                            ToFormationPoint(routePlan.Destination));
+                    }
 
-                float movementDuration =
-                    routePlan.Route.Length /
-                    Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
-                return new ShipNavigationPlan(
-                    routePlan.Destination,
-                    routePlan.Detour,
-                    routePlan.Route,
-                    routePlan.TurnDuration,
-                    movementDuration,
-                    false,
-                    isDeferred);
+                    float movementDuration =
+                        routePlan.Route.Length /
+                        Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
+                    return new ShipNavigationPlan(
+                        routePlan.Destination,
+                        routePlan.Detour,
+                        routePlan.Route,
+                        routePlan.TurnDuration,
+                        movementDuration,
+                        false,
+                        isDeferred);
+                }
             }
 
             if (!preserveCourse)
@@ -343,6 +352,23 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (!contact.IsShip)
                 {
                     AddContactIfUnique(contact);
+                }
+            }
+        }
+
+        // Idle ships are treated as static obstacles for route planning; moving
+        // ships are kept apart by the final-position reservations instead.
+        private void AddIdleAgentContacts(IShipNavigationAgent plannedAgent)
+        {
+            foreach (KeyValuePair<IShipNavigationAgent, int> pair in _registrationIds)
+            {
+                if (pair.Key != plannedAgent &&
+                    _destinationRegistry.IsIdle(pair.Value))
+                {
+                    _mapObstacleContacts.Add(new RadarContact(
+                        pair.Key.NavigationPosition,
+                        pair.Key.NavigationRadius,
+                        false));
                 }
             }
         }
