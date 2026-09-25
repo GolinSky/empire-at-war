@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Models.Factions;
@@ -82,6 +83,7 @@ namespace EmpireAtWar.Tests.Editor
                 SuperWeaponProfile profile = data.GetProfile(type);
                 Assert.That(profile.Weapon.ShotPrefab, Is.Not.Null, type.ToString());
                 Assert.That(profile.Weapon.ShotsPerSalvo, Is.GreaterThan(0), type.ToString());
+                Assert.That(Enum.IsDefined(typeof(WeaponType), profile.Weapon.WeaponType), Is.True, type.ToString());
             }
         }
     }
