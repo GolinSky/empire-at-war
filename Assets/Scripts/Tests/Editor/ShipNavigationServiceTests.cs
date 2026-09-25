@@ -725,6 +725,8 @@ namespace EmpireAtWar.Tests.Movement
             {
             }
 
+            public float GetFiringTurnAngle(Vector3 targetPosition) => 0f;
+
             public void OnStopped()
             {
             }

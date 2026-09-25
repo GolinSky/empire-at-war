@@ -42,6 +42,8 @@ namespace EmpireAtWar.Components.Weapon
         private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<TargetSelectionCandidate> _targetSelectionCandidates = new List<TargetSelectionCandidate>();
+        private readonly List<Vector2> _turnArcs = new List<Vector2>();
+        private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
@@ -145,6 +147,21 @@ namespace EmpireAtWar.Components.Weapon
         public bool HasEnoughRange(float distance)
         {
             return distance <= Model.OptimalAttackRange;
+        }
+
+        public float GetFiringTurnAngle(Vector3 targetPosition)
+        {
+            _turnArcs.Clear();
+            foreach (WeaponHardPoint hardPoint in hardPoints)
+            {
+                if (hardPoint.IsDestroyed) continue;
+                Transform weaponTransform = hardPoint.transform;
+                Quaternion aim = Quaternion.LookRotation(targetPosition - weaponTransform.position, Vector3.up);
+                float localYaw = Mathf.DeltaAngle(0f, (Quaternion.Inverse(weaponTransform.parent.rotation) * aim).eulerAngles.y);
+                _turnArcs.Add(new Vector2(localYaw - hardPoint.MaxYaw, localYaw - hardPoint.MinYaw));
+            }
+
+            return _facingSolver.FindTurn(_turnArcs);
         }
 
         public void ResetTarget()

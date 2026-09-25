@@ -42,8 +42,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IShipMovementMediator _movementMediator;
         private ShipMovementTweenPlayer _motion;
         private readonly List<RadarContact> _navigationContacts = new List<RadarContact>();
-        private Vector3 _lastBroadsideDirection;
-        private bool _hasBroadsideDirection;
         private bool _isNavigationRegistered;
         private bool _isReleased;
 
@@ -165,24 +163,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (!IsMoving)
             {
-                Vector3 direction = targetPosition - transform.position;
-                direction.y = 0f;
-                if (direction.sqrMagnitude > Mathf.Epsilon)
-                {
-                    Vector3 broadside = Vector3.Cross(Vector3.up, direction.normalized);
-                    if (_hasBroadsideDirection &&
-                        Mathf.Abs(Vector3.Dot(transform.forward, broadside)) <= Mathf.Epsilon)
-                    {
-                        if (Vector3.Dot(_lastBroadsideDirection, broadside) < 0f)
-                            broadside = -broadside;
-                    }
-                    else if (Vector3.Dot(transform.forward, broadside) < 0f)
-                        broadside = -broadside;
-                    _lastBroadsideDirection = broadside;
-                    _hasBroadsideDirection = true;
-                    _motion.PlayLookAt(broadside, Model.RotationSpeed,
-                        Model.TurnAcceleration, Model.BodyRotationMaxAngle);
-                }
+                float turn = _movementMediator.GetFiringTurnAngle(targetPosition);
+                Vector3 facing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
+                _motion.PlayLookAt(facing, Model.RotationSpeed,
+                    Model.TurnAcceleration, Model.BodyRotationMaxAngle);
             }
             _movementMediator.OnLookAtTarget(targetPosition);
         }
