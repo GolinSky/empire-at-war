@@ -55,6 +55,10 @@ namespace EmpireAtWar.SceneContext
                 .WithId(PlayerType.Opponent)
                 .FromMethod(()=>Container.Resolve<IEconomyProvider>());
 
+            SceneContext.Container
+                .Bind<IEnemyReinforcementObserver>()
+                .FromMethod(()=>Container.Resolve<IEnemyReinforcementObserver>());
+
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
                 .BindFromNewScriptable<EnemyFactionData>(Repository, PlayerType.Opponent);
