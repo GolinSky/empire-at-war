@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.SuperWeapons;
 using Utilities.ScriptUtils.EditorSerialization;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private DictionaryWrapper<MiningFacilityType, FactionData> miningFactionsData;
         [SerializeField] private DictionaryWrapper<DefendPlatformType, FactionData> defendPlatformWrapper;
         [SerializeField] private DictionaryWrapper<FactionType, FactionResearchWrapper> researchWrapper;
+        [SerializeField] private DictionaryWrapper<SuperWeaponType, FactionData> superWeaponWrapper;
 
         [SerializeField] private FactionData[] levelFactionsData;
                 
@@ -48,6 +50,8 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public Dictionary<DefendPlatformType, FactionData> DefendPlatformDictionary => defendPlatformWrapper.Dictionary;
+
+        public Dictionary<SuperWeaponType, FactionData> SuperWeaponFactionData => superWeaponWrapper.Dictionary;
 
         public Dictionary<ResearchType, ResearchLineData> GetResearchLines(FactionType factionType)
         {

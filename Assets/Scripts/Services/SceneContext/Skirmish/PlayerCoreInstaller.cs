@@ -1,5 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
@@ -49,6 +51,8 @@ namespace EmpireAtWar
                 .BindInterfacesAndSelfTo<FactionResearchModel>()
                 .AsSingle()
                 .WithArguments(playerFactionType);
+            Container.BindInterfacesAndSelfTo<SuperWeaponModel>().AsSingle();
+            Container.BindInterfacesNonLazyExt<SuperWeaponPresenter>();
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();

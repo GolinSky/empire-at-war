@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Game;
@@ -16,7 +17,7 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Game
 {
     public class CoreGameUiController : ICoreGamePresenter, ISkirmishRouteNavigation,
-        IUnitActionsViewProvider,
+        IUnitActionsViewProvider, ISuperWeaponsViewProvider,
         IObserver<ISelectionSubject>, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Presenters.Game
         private ISelectionContext _lastSelectionContext;
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
+        public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
 
         public CoreGameUiController(
             IUiService uiService,
