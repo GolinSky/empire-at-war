@@ -25,18 +25,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 101b5ddd7be8a4245b61329bea6fba64
-    m_Address: EnemyFactionData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1279b80cdfe8b7c4cb98e6c5be05fd16
     m_Address: DamageMatrixData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 17ab4ced609e6054986bf57e44a51fc4
-    m_Address: PlayerFactionData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

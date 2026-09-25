@@ -60,6 +60,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 4118319410730507669}
+  factionUnitPrefab: {fileID: 8771476772782200598, guid: d6ad7d4d3fdd06749bdf9a6e650793fa,
+    type: 3}
 --- !u!114 &9220919144486463678
 MonoBehaviour:
   m_ObjectHideFlags: 0

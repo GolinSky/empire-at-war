@@ -19,13 +19,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject root = new GameObject(nameof(PlayerCoreInstallerTests));
             root.SetActive(false);
-            PlayerFactionData resolvedData = null;
+            FactionsData factionsData = ScriptableObject.CreateInstance<FactionsData>();
             using TestAssetService assets = new TestAssetService();
 
             try
             {
                 DiContainer parent = new DiContainer();
                 parent.Bind<FactionType>().WithId(PlayerType.Player).FromInstance(factionType);
+                parent.Bind<FactionsData>().FromInstance(factionsData);
                 DiContainer container = parent.CreateSubContainer();
                 container.Bind<IAssetService>().FromInstance(assets);
                 container.Bind<Zenject.SceneContext>().FromInstance(root.AddComponent<Zenject.SceneContext>());
@@ -33,7 +34,6 @@ namespace EmpireAtWar.Tests.Editor
                 container.Inject(installer);
 
                 installer.InstallBindings();
-                resolvedData = container.Resolve<PlayerFactionData>();
                 PlayerFactionModel model = container.Resolve<PlayerFactionModel>();
 
                 Assert.That(model.FactionType, Is.EqualTo(factionType));
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                Object.DestroyImmediate(resolvedData);
+                Object.DestroyImmediate(factionsData);
                 Object.DestroyImmediate(root);
             }
         }
@@ -52,7 +52,6 @@ namespace EmpireAtWar.Tests.Editor
             private readonly Dictionary<Type, ScriptableObject> _data = new Dictionary<Type, ScriptableObject>
             {
                 { typeof(ReinforcementData), ScriptableObject.CreateInstance<ReinforcementData>() },
-                { typeof(PlayerFactionData), ScriptableObject.CreateInstance<PlayerFactionData>() },
                 { typeof(EconomyData), ScriptableObject.CreateInstance<EconomyData>() }
             };
 
