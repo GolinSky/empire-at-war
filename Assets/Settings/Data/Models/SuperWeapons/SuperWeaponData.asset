@@ -17,7 +17,7 @@ MonoBehaviour:
     - key: 0
       value:
         weapon:
-          weaponType: 0
+          weaponType: 16
           damageType: 8
           damage: 15000
           shotsPerSalvo: 3
@@ -42,19 +42,19 @@ MonoBehaviour:
     - key: 1
       value:
         weapon:
-          weaponType: 0
+          weaponType: 17
           damageType: 9
           damage: 300
           shotsPerSalvo: 10
           shotInterval: 0.1
           reload: 0
           range: 0
-          shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+          shotPrefab: {fileID: 6462505677978586642, guid: 59849b416528995498064655e1f43bac,
             type: 3}
-          projectileSpeed: 1500
-          color: {r: 0.9, g: 0.93, b: 1, a: 1}
-          size: {x: 0.5, y: 0.5, z: 4}
-        impactSize: 2
+          projectileSpeed: 650
+          color: {r: 1, g: 0.95, b: 0.75, a: 1}
+          size: {x: 1.2, y: 1.2, z: 1.2}
+        impactSize: 3
         stunDuration: 0
         stunModifier:
           damageMultiplier: 1
@@ -67,7 +67,7 @@ MonoBehaviour:
     - key: 2
       value:
         weapon:
-          weaponType: 0
+          weaponType: 18
           damageType: 10
           damage: 6000
           shotsPerSalvo: 1
