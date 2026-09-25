@@ -407,6 +407,9 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent?.HandleAttack(targetPosition);
         }
 
+        public float GetFiringTurnAngle(Vector3 targetPosition) =>
+            _weaponComponent.GetFiringTurnAngle(targetPosition);
+
         public void OnStopped()
         {
             _audioDialogShipComponent?.HandleStopped();
