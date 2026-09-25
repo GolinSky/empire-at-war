@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -71,6 +72,10 @@ namespace EmpireAtWar.SpaceStation
                 .FromComponentsInHierarchy()
                 .AsCached();
             Container.BindInterfacesAndSelfTo<WeaponComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
+            Container.Bind<HangarModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HangarComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
             Container.BindInterfacesAndSelfTo<StationCombatPresenter>().AsSingle();

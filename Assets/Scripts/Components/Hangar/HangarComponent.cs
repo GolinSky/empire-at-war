@@ -12,9 +12,10 @@ namespace EmpireAtWar.Components.Hangar
 {
     /// <summary>
     /// Launches squadrons from a carrier's reserve and escorts them around the carrier.
-    /// Launching stops for good when the hangar hardpoint or the carrier is destroyed.
+    /// Reserve launching stops for good when the hangar hardpoint or the carrier is destroyed.
+    /// A hangar without bays (space stations) only launches squadrons requested through <see cref="Launch"/>.
     /// </summary>
-    public sealed class HangarComponent : MonoComponent<HangarModel>, ITickable, ILateDisposable
+    public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, ITickable, ILateDisposable
     {
         [SerializeField] private Transform launchPoint;
         [SerializeField] private HardPoint hangarHardPoint;
@@ -52,7 +53,7 @@ namespace EmpireAtWar.Components.Hangar
 
             if (Model.TryLaunch(Time.deltaTime, out int bay))
             {
-                Launch(bay);
+                LaunchFromBay(bay);
             }
         }
 
@@ -75,10 +76,17 @@ namespace EmpireAtWar.Components.Hangar
             _launched.Clear();
         }
 
-        private void Launch(int bay)
+        public ISquadron Launch(SquadronType squadronType)
         {
-            ISquadron squadron = _squadronFactory.Create(_playerType, _data.HangarBays[bay].SquadronType,
+            ISquadron squadron = _squadronFactory.Create(_playerType, squadronType,
                 launchPoint.position, launchPoint.rotation);
+            squadron.Guard(_carrier.Value, Vector3.zero);
+            return squadron;
+        }
+
+        private void LaunchFromBay(int bay)
+        {
+            ISquadron squadron = Launch(_data.HangarBays[bay].SquadronType);
             Action handler = null;
             handler = () =>
             {
@@ -88,7 +96,6 @@ namespace EmpireAtWar.Components.Hangar
             };
             squadron.Released += handler;
             _launched.Add((squadron, handler));
-            squadron.Guard(_carrier.Value, Vector3.zero);
         }
     }
 }

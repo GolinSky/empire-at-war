@@ -21,6 +21,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Audio;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Ship
@@ -132,6 +134,12 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
             Container.BindInterfacesExt<ShipAbilityCommand>();
+            AudioShipData audioShipData = Container.Resolve<AudioShipData>();
+            Container.Bind<IShipSfxView>().To<ShipSfxView>()
+                .FromComponentInNewPrefab(audioShipData.ShipSfx.ViewPrefab)
+                .UnderTransform(context => context.Container.ResolveId<Transform>(EntityBindType.ViewTransform))
+                .AsSingle();
+            Container.BindInterfacesTo<ShipSfxPresenter>().AsSingle().NonLazy();
             Container.BindInterfacesExt<ShipOrderCommand>();
             Container.BindInterfacesExt<SelectionCommand>();
             Container.BindInterfacesExt<HealthCommand>();

@@ -120,6 +120,34 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 8128fcc8b8e454e47ab592309d37208e,
               type: 3}
+  squadronFactionDataWrapper:
+    keyValue:
+    - key: 0
+      value:
+        keyValue:
+        - key: 0
+          value:
+            <Name>k__BackingField: Delta-7 Squadron
+            <MaxCount>k__BackingField: 10
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 600
+            <BuildTime>k__BackingField: 5
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: 41429e00e6d997249adaf10dc6d292a6,
+              type: 3}
+    - key: 1
+      value:
+        keyValue:
+        - key: 100
+          value:
+            <Name>k__BackingField: Belbullab-22 Squadron
+            <MaxCount>k__BackingField: 10
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 600
+            <BuildTime>k__BackingField: 5
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: 6475693b4e9a23943aa6f6d43d698437,
+              type: 3}
   miningFactionsData:
     keyValue:
     - key: 0

@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Squadrons;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.ShipUi;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Views
         void Dispose();
         void ClearGroups();
         void AddGroup(ShipType shipType, IReadOnlyList<ShipUiEntry> ships,
+            Action<ShipAbilityId> pressAbility);
+        void AddGroup(SquadronType squadronType, IReadOnlyList<ShipUiEntry> squadrons,
             Action<ShipAbilityId> pressAbility);
     }
 }

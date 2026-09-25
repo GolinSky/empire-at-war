@@ -49,7 +49,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         {
             Vector3 forward = _startRotation * Vector3.forward;
             forward.y = 0f;
-            forward = forward.sqrMagnitude > Mathf.Epsilon ? forward.normalized : Vector3.forward;
+            // Near-vertical launch points can flatten to a vector Unity normalizes to zero.
+            forward.Normalize();
+            forward = forward.sqrMagnitude > 0f ? forward : Vector3.forward;
             NumericsVector3 heading = forward.ToNumerics();
             NumericsVector3 origin = _startPosition.ToNumerics();
             for (int i = 0; i < fighters.Count; i++)

@@ -1,4 +1,6 @@
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Squadrons;
+using System;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.BaseEntity;
@@ -103,6 +105,11 @@ namespace EmpireAtWar.Controllers.ShipUi
             _selectionService.SelectCurrentShipsByType(shipType);
         }
 
+        public void SelectSquadronGroup(SquadronType squadronType)
+        {
+            _selectionService.SelectCurrentSquadronsByType(squadronType);
+        }
+
         public void PressAbility(ShipAbilityId id) =>
             _abilityService.Press(_playerSelectionContext.Entities, id);
 
@@ -126,13 +133,16 @@ namespace EmpireAtWar.Controllers.ShipUi
             bool hasShips = HasMovableSelection() &&
                             _playerSelectionContext.SelectionType == SelectionType.Ship;
             ShipType? selectedShipType = null;
-            if (hasShips && _playerSelectionContext.Count == 1 &&
-                _playerSelectionContext.Entity.Model is IShipModelObserver ship)
+            SquadronType? selectedSquadronType = null;
+            if (hasShips && _playerSelectionContext.Count == 1)
             {
-                selectedShipType = ship.ShipType;
+                if (_playerSelectionContext.Entity.Model is IShipModelObserver ship)
+                    selectedShipType = ship.ShipType;
+                else if (_playerSelectionContext.Entity.Model is ISquadronModelObserver squadron)
+                    selectedSquadronType = squadron.SquadronType;
             }
 
-            _model.UpdateSelection(hasShips, selectedShipType);
+            _model.UpdateSelection(hasShips, selectedShipType, selectedSquadronType);
             RefreshSelection();
         }
 
@@ -147,41 +157,28 @@ namespace EmpireAtWar.Controllers.ShipUi
             _abilitySlots.Clear();
             _shipGroupUi.ClearGroups();
             SortedDictionary<ShipType, List<IEntity>> groups = new SortedDictionary<ShipType, List<IEntity>>();
+            SortedDictionary<SquadronType, List<IEntity>> squadrons = new SortedDictionary<SquadronType, List<IEntity>>();
             if (_model.HasShips)
             {
                 foreach (IEntity entity in _playerSelectionContext.Entities)
                 {
-                    if (entity.HealthModel.IsDestroyed || !(entity.Model is IShipModelObserver ship))
+                    if (entity.HealthModel.IsDestroyed)
                         continue;
                     if (entity.TryGetCommand(out IShipAbilityCommand abilityCommand))
                         _abilitySlots.AddRange(abilityCommand.Slots);
                     if (!hasGroup) continue;
-                    if (!groups.TryGetValue(ship.ShipType, out List<IEntity> ships))
-                    {
-                        ships = new List<IEntity>();
-                        groups.Add(ship.ShipType, ships);
-                    }
-                    ships.Add(entity);
+                    if (entity.Model is IShipModelObserver ship)
+                        AddToGroup(groups, ship.ShipType, entity);
+                    else if (entity.Model is ISquadronModelObserver squadron)
+                        AddToGroup(squadrons, squadron.SquadronType, entity);
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
             _shipUi.SetHealth(_model.HasShips && !hasGroup
                 ? _playerSelectionContext.Entity.HealthModel : null);
 
-            foreach (KeyValuePair<ShipType, List<IEntity>> group in groups)
-            {
-                List<ShipUiEntry> entries = new List<ShipUiEntry>();
-                foreach (IEntity entity in group.Value)
-                {
-                    IEntity[] caster = { entity };
-                    IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetCommand(out IShipAbilityCommand command)
-                        ? command.Slots : System.Array.Empty<ShipAbilitySlot>();
-                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
-                        entity.HealthModel));
-                }
-                List<IEntity> casters = group.Value;
-                _shipGroupUi.AddGroup(group.Key, entries, id => _abilityService.Press(casters, id));
-            }
+            AddSelectionGroups(groups, _shipGroupUi.AddGroup);
+            AddSelectionGroups(squadrons, _shipGroupUi.AddGroup);
 
             if (_isRouteActive && _model.HasShips && !hasGroup)
             {
@@ -197,6 +194,36 @@ namespace EmpireAtWar.Controllers.ShipUi
             {
                 _shipUi.Hide();
                 _shipGroupUi.Hide();
+            }
+        }
+
+        private static void AddToGroup<T>(SortedDictionary<T, List<IEntity>> groups, T type, IEntity entity)
+            where T : struct, Enum
+        {
+            if (!groups.TryGetValue(type, out List<IEntity> entities))
+            {
+                entities = new List<IEntity>();
+                groups.Add(type, entities);
+            }
+            entities.Add(entity);
+        }
+
+        private void AddSelectionGroups<T>(SortedDictionary<T, List<IEntity>> groups,
+            Action<T, IReadOnlyList<ShipUiEntry>, Action<ShipAbilityId>> addGroup) where T : struct, Enum
+        {
+            foreach (KeyValuePair<T, List<IEntity>> group in groups)
+            {
+                List<ShipUiEntry> entries = new List<ShipUiEntry>();
+                foreach (IEntity entity in group.Value)
+                {
+                    IEntity[] caster = { entity };
+                    IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetCommand(out IShipAbilityCommand command)
+                        ? command.Slots : Array.Empty<ShipAbilitySlot>();
+                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
+                        entity.HealthModel));
+                }
+                List<IEntity> casters = group.Value;
+                addGroup(group.Key, entries, id => _abilityService.Press(casters, id));
             }
         }
 
