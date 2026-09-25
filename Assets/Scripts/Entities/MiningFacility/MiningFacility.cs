@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.UnitDeathAnimation;
@@ -27,13 +28,14 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IUnitDeathAnimationData _deathAnimationData;
         private IUnitDeathAnimationService _deathAnimationService;
         private ILayerService _layerService;
+        private IFactionResearchModelObserver _research;
 
         [Inject] private MiningFacilityData RootModel { get; }
 
         public event Action OnRelease;
 
         public string Id => GetType().Name;
-        public float Income => RootModel.Income;
+        public float Income => RootModel.Income * _research.IncomeMultiplier;
 
         [Inject]
         private void Construct(
@@ -44,7 +46,8 @@ namespace EmpireAtWar.Entities.MiningFacility
             List<IMonoComponent> monoComponents,
             IUnitDeathAnimationData deathAnimationData,
             IUnitDeathAnimationService deathAnimationService,
-            ILayerService layerService)
+            ILayerService layerService,
+            IFactionResearchModelObserver research)
         {
             _economyProvider = economyProvider;
             _healthComponent = healthComponent;
@@ -54,6 +57,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             _deathAnimationData = deathAnimationData;
             _deathAnimationService = deathAnimationService;
             _layerService = layerService;
+            _research = research;
         }
 
         public IModel GetModel()
@@ -66,6 +70,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             transform.position = _startPosition;
             _radarComponent.SetPosition(transform.position);
             _economyProvider.AddProvider(this);
+            _research.OnResearchCompleted += HandleResearchCompleted;
         }
 
         public void LateDispose()
@@ -90,11 +95,17 @@ namespace EmpireAtWar.Entities.MiningFacility
                 _deathAnimationService.Play(transform, _deathAnimationData);
             }
 
+            _research.OnResearchCompleted -= HandleResearchCompleted;
             _economyProvider.RemoveProvider(this);
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
             }
+        }
+
+        private void HandleResearchCompleted(ResearchType researchType)
+        {
+            _economyProvider.RecalculateIncome(this);
         }
     }
 }
