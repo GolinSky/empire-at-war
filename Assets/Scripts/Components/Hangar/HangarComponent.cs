@@ -11,9 +11,9 @@ using Zenject;
 namespace EmpireAtWar.Components.Hangar
 {
     /// <summary>
-    /// Launches squadrons from a carrier's reserve and escorts them around the carrier.
-    /// Reserve launching stops for good when the hangar hardpoint or the carrier is destroyed.
-    /// A hangar without bays (space stations) only launches squadrons requested through <see cref="Launch"/>.
+    /// Launches squadrons from a carrier's or space station's reserve and escorts them around it.
+    /// Reserve launching stops for good when the hangar hardpoint or its owner is destroyed.
+    /// <see cref="Launch"/> launches extra squadrons outside the reserve.
     /// </summary>
     public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, ITickable, ILateDisposable
     {
