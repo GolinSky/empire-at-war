@@ -28,7 +28,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public event Action<ShotEffect, int> EffectDestroyed;
 
         public int LeaseId => _leaseId;
-        protected bool HasImpact => _impactPending && _impactSurface != ImpactSurface.None;
+        protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
             DamageType damageType, float size, bool isHit)
@@ -54,8 +54,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (!_impactPending) return;
             CaptureImpact();
             _impactPending = false;
-            _impactTarget = null;
-            _impactPresenter.Play(_impactSurface, position, direction, _impactSize);
+            _impactPresenter.Play(_impactTarget, _impactSurface, position, direction, _impactSize);
+        }
+
+        protected Vector3 ResolveAimPoint(Vector3 origin, Vector3 target)
+        {
+            return _impactTarget == null ? target :
+                _impactPresenter.GetImpactPosition(_impactTarget, _impactDamageType, origin, target);
         }
 
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
@@ -82,6 +87,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             _leaseActive = false;
             OnLeaseCompleted();
+            _impactTarget = null;
             EffectCompleted?.Invoke(this, _leaseId);
 
             if (_retireAfterCompletion)

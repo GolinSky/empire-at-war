@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
@@ -26,13 +25,13 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, ITickable
+        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
 
         private ITimer _refreshShieldsTimer;
-        private Coroutine _shieldsAnimatedCoroutine;
+        private ShieldComponent _shield;
         private bool _isReleased;
         private IEntityLifecycle _entityLifecycle;
         private CombatModifiers _modifiers;
@@ -88,12 +87,12 @@ namespace EmpireAtWar.Components.Ship.Health
             InitializeHardPoints();
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
-            Model.OnValueChanged += UpdateData;
             Model.OnDestroy += HandleDestroy;
 
             if (shieldView != null)
             {
-                _shieldsAnimatedCoroutine = StartCoroutine(AnimateShields());
+                _shield = new ShieldComponent(this, shieldView);
+                _shield.Initialize();
             }
         }
 
@@ -110,12 +109,11 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             _isReleased = true;
-            Model.OnValueChanged -= UpdateData;
             Model.OnDestroy -= HandleDestroy;
 
-            if (_shieldsAnimatedCoroutine != null)
+            if (_shield != null)
             {
-                StopCoroutine(_shieldsAnimatedCoroutine);
+                _shield.Dispose();
             }
 
             if (_hardPointAdapters == null)
@@ -198,25 +196,18 @@ namespace EmpireAtWar.Components.Ship.Health
             Release();
         }
 
-        private IEnumerator AnimateShields()
+        public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType damageType)
         {
-            while (!Model.IsDestroyed && !Model.IsLostShieldGenerator)
-            {
-                if (shieldView.IsVisibleToCamera && Model.Shields > 0f)
-                {
-                    shieldView.AnimateTextureOffset();
-                }
-
-                yield return new WaitForEndOfFrame();
-            }
+            return !_isReleased && _shield != null && Model.AbsorbsDamage(damageType)
+                ? _shield.GetImpactPosition(origin, target)
+                : target;
         }
 
-        private void UpdateData()
+        public bool ShowShieldImpact(Vector3 position)
         {
-            if (shieldView != null)
-            {
-                shieldView.SetActive(Model.Shields > 0f);
-            }
+            if (_shield == null) return false;
+            if (!_isReleased) _shield.ShowImpact(position);
+            return true;
         }
     }
 }

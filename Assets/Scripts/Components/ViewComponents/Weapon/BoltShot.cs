@@ -23,7 +23,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _target = target;
             _aimOffset = aimOffset;
             _start = muzzle.position;
-            _lastAimPoint = target.position + aimOffset;
+            _lastAimPoint = ResolveAimPoint(_start, target.position + aimOffset);
             _startTime = Time.time;
             _flightDistance = Vector3.Distance(_start, _lastAimPoint);
             _travelTime = _flightDistance / profile.ProjectileSpeed;
@@ -62,7 +62,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 #endif
             if (_isFlying)
             {
-                if (_target != null) _lastAimPoint = _target.position + _aimOffset;
+                if (_target != null) _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
                 Vector3 direction = _lastAimPoint - _start;
                 float progress = _travelTime > 0f
                     ? Mathf.Clamp01((Time.time - _startTime) / _travelTime) : 1f;

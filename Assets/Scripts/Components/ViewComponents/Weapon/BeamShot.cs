@@ -46,7 +46,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _currentHoldDuration = hold;
             _startTime = Time.time;
             _lastOrigin = muzzle.position;
-            _lastAimPoint = target.position + aimOffset;
+            _lastAimPoint = ResolveAimPoint(_lastOrigin, target.position + aimOffset);
             beam.positionCount = 2;
             beam.SetPosition(0, _lastOrigin);
             beam.SetPosition(1, _lastOrigin);
@@ -76,7 +76,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             // Keep the last known points when the shooter or the target is destroyed mid-beam.
             if (_muzzle != null) _lastOrigin = _muzzle.position;
-            if (_target != null) _lastAimPoint = _target.position + _aimOffset;
+            if (_target != null) _lastAimPoint = ResolveAimPoint(_lastOrigin, _target.position + _aimOffset);
 
             float elapsed = Time.time - _startTime;
             float growth = Mathf.Clamp01(elapsed / growthDuration);
@@ -89,7 +89,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             {
                 CaptureImpact();
                 _isHitPlaying = true;
-                if (HasImpact) hitEffect.Play(true);
+                if (HasArmorImpact) hitEffect.Play(true);
+                CompleteImpact(end, _lastAimPoint - _lastOrigin);
             }
 
             if (elapsed >= growthDuration + _currentHoldDuration)
@@ -100,8 +101,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void StopBeam()
         {
-            if (_isHitPlaying)
-                CompleteImpact(beam.GetPosition(1), _lastAimPoint - _lastOrigin);
             beam.enabled = false;
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             _muzzle = null;

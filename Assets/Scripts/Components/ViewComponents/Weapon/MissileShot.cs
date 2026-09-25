@@ -25,7 +25,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _target = target;
             _aimOffset = aimOffset;
             _start = muzzle.position;
-            _lastAimPoint = target.position + aimOffset;
+            _lastAimPoint = ResolveAimPoint(_start, target.position + aimOffset);
             _arcNormal = Random.onUnitSphere;
             _startTime = Time.time;
             _travelTime = Vector3.Distance(_start, _lastAimPoint) / profile.ProjectileSpeed;
@@ -55,7 +55,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void Fly()
         {
-            if (_target != null) _lastAimPoint = _target.position + _aimOffset;
+            if (_target != null) _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
 
             Vector3 previousPosition = transform.position;
             float progress = _travelTime > 0f
