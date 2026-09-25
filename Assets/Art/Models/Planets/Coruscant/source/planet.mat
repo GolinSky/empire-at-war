@@ -21,18 +21,24 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: planet
-  m_Shader: {fileID: -6465566751694194690, guid: 673d90c486faf4b80a9ee62ec3eab53a,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_ValidKeywords:
   - _EMISSION
-  m_LightmapFlags: 2
+  - _ENVIRONMENTREFLECTIONS_OFF
+  - _PARALLAXMAP
+  - _RECEIVE_SHADOWS_OFF
+  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+  - _SPECULARHIGHLIGHTS_OFF
+  - _SPECULAR_SETUP
+  m_InvalidKeywords: []
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -40,7 +46,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: b43e4604bc0face478482a7ea48d5a0b, type: 3}
+        m_Texture: {fileID: 2800000, guid: bac6c9c041bb49847bd05a6c3efa54a8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -68,11 +74,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 81f08d62ea3324249818689213becfdc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4cd9dff3f86cc1048ba75c8b3fa839f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: b43e4604bc0face478482a7ea48d5a0b, type: 3}
+        m_Texture: {fileID: 2800000, guid: bac6c9c041bb49847bd05a6c3efa54a8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask0:
@@ -120,7 +126,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
-        m_Texture: {fileID: 2800000, guid: 2b39e9f0f4f905040a9d32eec5ae6fae, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Splat0:
@@ -158,6 +164,7 @@ Material:
     m_Ints: []
     m_Floats:
     - Boolean_8A2B8817: 0
+    - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
@@ -214,11 +221,12 @@ Material:
     - _UseOpacityMap: 1
     - _UseRoughnessMap: 1
     - _WorkflowMode: 0
+    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 18.462992, g: 18.462992, b: 18.462992, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UvOffset: {r: 0, g: 0, b: 0, a: 0}
     - _UvTiling: {r: 1, g: 1, b: 0, a: 0}

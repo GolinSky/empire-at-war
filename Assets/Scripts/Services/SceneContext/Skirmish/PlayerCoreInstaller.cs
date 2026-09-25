@@ -39,11 +39,14 @@ namespace EmpireAtWar
                 .AsSingle();
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
-            Container.BindScriptableObject<PlayerFactionData>(Repository);
             // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
             FactionType playerFactionType = Container.ResolveId<FactionType>(PlayerType.Player);
             Container
                 .BindInterfacesAndSelfTo<PlayerFactionModel>()
+                .AsSingle()
+                .WithArguments(playerFactionType);
+            Container
+                .BindInterfacesAndSelfTo<FactionResearchModel>()
                 .AsSingle()
                 .WithArguments(playerFactionType);
             Container.BindInterfacesNonLazyExt<FactionService>();

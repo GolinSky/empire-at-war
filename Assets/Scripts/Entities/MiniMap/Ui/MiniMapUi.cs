@@ -28,6 +28,7 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         [SerializeField] private CameraFootprintView cameraFootprintView;
+        [SerializeField] private MiniMapObstacleView obstacleView;
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
 
         private List<Image> _mapMarkers = new List<Image>();
@@ -42,6 +43,7 @@ namespace EmpireAtWar.Views.MiniMap
             AddMark(Model.PlayerBase);
             AddMark(Model.EnemyBase);
             cameraFootprintView.SetData(Model.CameraMark, Model.MapRange);
+            obstacleView.SetData(Model.Obstacles, Model.MapRange);
             foreach (MiniMapMarker marker in Model.Markers)
             {
                 AddMarker(marker);
@@ -57,6 +59,7 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkerAdded -= AddMarker;
             Model.OnMarkerRemoved -= RemoveMarker;
             cameraFootprintView.DOKill();
+            obstacleView.DOKill();
         }
 
         private void AddMark(MarkData markData)
@@ -199,6 +202,7 @@ namespace EmpireAtWar.Views.MiniMap
         private void DoFade(float alpha, float duration)
         {
             cameraFootprintView.DOFade(alpha, duration);
+            obstacleView.DOFade(alpha, duration);
             for (var i = 0; i < _mapMarkers.Count; i++)
             {
                 _mapMarkers[i].DOFade(alpha, duration);

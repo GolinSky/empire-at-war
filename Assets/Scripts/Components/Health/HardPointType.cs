@@ -6,5 +6,6 @@
         Engines = 1,
         ShieldGenerator = 2,
         Any = 3,
+        Hangar = 4,
     }
 }

@@ -40,6 +40,8 @@ namespace EmpireAtWar.MiningFacility
                 .FromInstance(Repository.Load<MiningFacilityData>(nameof(MiningFacilityData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
+            Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
+            Container.Decorate<IHealthData>().With<ResearchHealthData>();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
         }
 

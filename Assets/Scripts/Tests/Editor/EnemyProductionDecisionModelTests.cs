@@ -382,22 +382,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(source, Is.Not.Null);
 
             FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
-            EnemyFactionData factionModel =
-                ScriptableObject.CreateInstance<EnemyFactionData>();
             GameData gameModel = ScriptableObject.CreateInstance<GameData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
             try
             {
-                SetBackingField(
-                    factionModel,
-                    "FactionsModel",
-                    factionsModel);
-                SetBackingField(
-                    factionModel,
-                    nameof(EnemyFactionData.FactionType),
-                    FactionType.Republic);
+                EnemyFactionModel factionModel =
+                    new EnemyFactionModel(factionsModel, FactionType.Republic);
                 SetBackingField(
                     reinforcementData,
                     nameof(ReinforcementData.MaxUnitCapacity),
@@ -456,7 +448,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(factionModel);
                 UnityEngine.Object.DestroyImmediate(factionsModel);
                 UnityEngine.Object.DestroyImmediate(gameModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
@@ -464,9 +455,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(5000f, ShipType.Recusant)]
-        [TestCase(1500f, ShipType.Munificent)]
+        [TestCase(1500f, null)]
         [TestCase(0f, null)]
-        public void UltraHardRebuild_SelectsVariedAffordableShipsAndRechecksLosses(
+        public void UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(
             float money,
             ShipType? expectedShip)
         {
@@ -475,19 +466,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(source, Is.Not.Null);
 
             FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
-            EnemyFactionData factionModel =
-                ScriptableObject.CreateInstance<EnemyFactionData>();
             GameData gameModel = ScriptableObject.CreateInstance<GameData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
             try
             {
-                SetBackingField(factionModel, "FactionsModel", factionsModel);
-                SetBackingField(
-                    factionModel,
-                    nameof(EnemyFactionData.FactionType),
-                    FactionType.Separatist);
+                EnemyFactionModel factionModel =
+                    new EnemyFactionModel(factionsModel, FactionType.Separatist);
                 factionModel.CurrentLevel = 5;
                 SetBackingField(
                     reinforcementData,
@@ -555,7 +541,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(factionModel);
                 UnityEngine.Object.DestroyImmediate(factionsModel);
                 UnityEngine.Object.DestroyImmediate(gameModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
@@ -563,7 +548,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static void ReserveEconomicFloor(
-            EnemyFactionData factionModel,
+            EnemyFactionModel factionModel,
             EnemyUnitLimitModel unitLimitModel,
             int minimumMiningFacilities)
         {
@@ -583,7 +568,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static void ReserveDefensePlatform(
-            EnemyFactionData factionModel,
+            EnemyFactionModel factionModel,
             EnemyUnitLimitModel unitLimitModel)
         {
             foreach (KeyValuePair<DefendPlatformType, FactionData> option

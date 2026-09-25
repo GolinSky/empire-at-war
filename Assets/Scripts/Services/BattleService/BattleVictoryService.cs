@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
         private readonly BattleVictoryModel _victoryModel;
+        private readonly LazyInject<IEnemyReinforcementObserver> _enemyReinforcement;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
         private BattleResult _finalResult;
 
@@ -24,12 +26,14 @@ namespace EmpireAtWar.Services.Battle
             IGameModelObserver gameModel,
             IShipService shipService,
             IEntityLocator entityLocator,
-            BattleVictoryModel victoryModel)
+            BattleVictoryModel victoryModel,
+            LazyInject<IEnemyReinforcementObserver> enemyReinforcement)
         {
             _gameModel = gameModel;
             _shipService = shipService;
             _entityLocator = entityLocator;
             _victoryModel = victoryModel;
+            _enemyReinforcement = enemyReinforcement;
         }
 
         public string Id => nameof(BattleVictoryService);
@@ -99,7 +103,8 @@ namespace EmpireAtWar.Services.Battle
                 playerShipCount,
                 enemyShipCount,
                 isPlayerBaseAlive,
-                isEnemyBaseAlive);
+                isEnemyBaseAlive,
+                _enemyReinforcement.Value.HasPendingReinforcement);
             if (outcome == BattleOutcome.None)
             {
                 return;

@@ -1,4 +1,6 @@
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -23,24 +25,31 @@ namespace EmpireAtWar.Components.Ship.Audio
         private TimerPoolService _timerPoolService;
         private IAudioService _audioService;
         private ITimer _alarmTimer;
+        private IWeaponFireEvents _weaponFireEvents;
+        private WeaponAudioPresenter _weaponAudio;
         
         [Inject]
         private void Construct(
             AudioShipModel model,
             AudioShipData data,
             TimerPoolService timerPoolService,
-            IAudioService audioService)
+            IAudioService audioService,
+            IWeaponFireEvents weaponFireEvents,
+            WeaponAudioPresenter weaponAudio)
         {
             SetModel(model);
             _data = data;
             _timerPoolService = timerPoolService;
             _audioService = audioService;
+            _weaponFireEvents = weaponFireEvents;
+            _weaponAudio = weaponAudio;
             _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay);
         }
 
         public void Initialize()
         {
             Model.OnOneShotRequested += PlayOneShot;
+            _weaponFireEvents.ShotEmitted += PlayWeaponShot;
             PlayLoop(_data.GetAmbientClip());
         }
 
@@ -52,6 +61,19 @@ namespace EmpireAtWar.Components.Ship.Audio
         public override void Release()
         {
             Model.OnOneShotRequested -= PlayOneShot;
+            _weaponFireEvents.ShotEmitted -= PlayWeaponShot;
+            _weaponAudio.Release(this);
+        }
+
+        private void PlayWeaponShot(WeaponProfile profile, Transform muzzle)
+        {
+            if (!isActiveAndEnabled) return;
+            _weaponAudio.PlayShot(this, profile, muzzle);
+        }
+
+        private void OnDisable()
+        {
+            if (_weaponAudio != null) _weaponAudio.Release(this);
         }
         
         public void HandleEnemyDetected()

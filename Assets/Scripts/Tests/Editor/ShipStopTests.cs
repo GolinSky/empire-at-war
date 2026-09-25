@@ -78,6 +78,7 @@ namespace EmpireAtWar.Tests.Editor
             public void AddTarget(AttackData data, AttackType type) { }
             public bool HasEnoughRange(float distance) => true;
             public void ResetTarget() => ResetCount++;
+            public float GetFiringTurnAngle(Vector3 targetPosition) => 0f;
             public void Release() { }
         }
 

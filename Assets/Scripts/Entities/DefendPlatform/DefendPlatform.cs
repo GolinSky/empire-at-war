@@ -93,7 +93,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         private void SynchronizeComponents()
         {
-            _healthComponent.SetMovementState(false);
             _radarComponent.SetPosition(transform.position);
         }
     }

@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
     {
         void OnPositionChanged(Vector3 position);
         void OnLookAtTarget(Vector3 targetPosition);
+        float GetFiringTurnAngle(Vector3 targetPosition);
         void OnStopped();
     }
 }

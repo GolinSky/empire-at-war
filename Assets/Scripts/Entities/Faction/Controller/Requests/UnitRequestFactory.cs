@@ -10,6 +10,7 @@ namespace EmpireAtWar.Controllers.Factions
         LevelUnitRequest ConstructUnitRequest(FactionData factionData, int level);
         MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType);
         DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType);
+        ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType);
     }
 
     public class UnitRequestFactory : IUnitRequestFactory
@@ -32,6 +33,11 @@ namespace EmpireAtWar.Controllers.Factions
         public DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType)
         {
             return new DefendPlatformUnitRequest(factionData, platformType);
+        }
+
+        public ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType)
+        {
+            return new ResearchUnitRequest(factionData, researchType);
         }
     }
 }

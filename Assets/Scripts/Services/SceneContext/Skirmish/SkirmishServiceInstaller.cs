@@ -6,21 +6,34 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using Zenject;
+using UnityEngine;
+using EmpireAtWar.ViewComponents.Weapon;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
     public class SkirmishServiceInstaller : MonoInstaller
     {
+        [SerializeField] private ImpactEffectView impactEffectPrefab;
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {
+            Container.Bind<IWeaponAudioView>().To<WeaponAudioView>()
+                .FromComponentInNewPrefab(Repository.Load<AudioShipData>(nameof(AudioShipData)).WeaponAudioPrefab)
+                .AsSingle();
+            Container.BindInterfacesAndSelfTo<WeaponAudioPresenter>().AsSingle().NonLazy();
+            Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
+                .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
+            Container.Bind<ImpactEffectPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
             
@@ -48,7 +61,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container
-                .Bind<IMapObstacleContactSource>()
+                .Bind(typeof(IMapObstacleContactSource), typeof(IMiniMapObstacleSource))
                 .To<MapObstacle>()
                 .FromComponentsInHierarchy()
                 .AsCached();

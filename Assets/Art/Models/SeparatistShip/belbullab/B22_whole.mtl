@@ -1,0 +1,54 @@
+# Blender MTL File: 'CW ships.blend'
+# Material Count: 4
+
+newmtl B22_body
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.500000 B22/Textures/dull_metal_normal-ogl.png
+map_Kd B22/Textures/Belbullab22_Body.png
+map_Ns B22/Textures/dull_metal_roughness.png
+refl B22/Textures/dull_metal_metallic.png
+
+newmtl B22_interior
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.500000 B22/Textures/dull_metal_normal-ogl.png
+map_Kd B22/Textures/Belbullab22_Interior.png
+map_Ns B22/Textures/dull_metal_roughness.png
+refl B22/Textures/dull_metal_metallic.png
+
+newmtl B22_wing
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump -bm 1.500000 B22/Textures/dull_metal_normal-ogl.png
+map_Kd B22/Textures/Belbullab22_Wing.png
+map_Ns B22/Textures/dull_metal_roughness.png
+refl B22/Textures/dull_metal_metallic.png
+
+newmtl VW_transBlack
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.002511 0.004901 0.007179
+Ks 0.007607 0.007607 0.007607
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.701961
+illum 9

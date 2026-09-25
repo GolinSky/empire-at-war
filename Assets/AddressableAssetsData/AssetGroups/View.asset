@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30429bfca42a8474a86d43c1caccc370
+    m_Address: Delta7SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
     m_Address: MiningFacilityView
     m_ReadOnly: 0
@@ -60,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 964d5c815b53d474aad71a194295d7a1
+    m_Address: Belbullab22SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9c0c6e83b6cae5b4891c8397b9e908b5
     m_Address: RepublicSpaceStationView
     m_ReadOnly: 0
@@ -72,6 +82,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a6bf908313ebc194bbd84a33f6988828
     m_Address: LucrehulkShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
+    m_Address: ThrantaShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

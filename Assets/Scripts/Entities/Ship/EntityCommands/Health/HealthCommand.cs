@@ -13,9 +13,9 @@ namespace EmpireAtWar.Entities.Ship.EntityCommands.Health
             _healthComponent = healthComponent;
         }
         
-        public void ApplyDamage(float damage, WeaponType weaponType, int id)
+        public void ApplyDamage(float damage, DamageType damageType, int id)
         {
-            _healthComponent.ApplyDamage(damage, weaponType, id);
+            _healthComponent.ApplyDamage(damage, damageType, id);
         }
     }
 }

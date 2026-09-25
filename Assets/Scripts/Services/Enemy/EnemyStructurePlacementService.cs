@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private const int MAX_RECENT_DESTROYED_POSITIONS = 10;
         private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
 
-        private readonly EnemyFactionData _factionModel;
+        private readonly EnemyFactionModel _factionModel;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IReinforcementZonesSystem _zones;
         private readonly int _obstacleMask;
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
         public EnemyStructurePlacementService(
-            EnemyFactionData factionModel,
+            EnemyFactionModel factionModel,
             LazyInject<IMapModelObserver> mapModel,
             IReinforcementZonesSystem zones,
             ILayerService layerService)

@@ -16,7 +16,8 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IUiService _uiService;
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
-        private readonly PlayerFactionData _data;
+        private readonly IFactionResearchModelObserver _research;
+        private readonly FactionsData _factionsData;
         private readonly IUnitRequestFactory _unitRequestFactory;
         private readonly ISkirmishRouteNavigation _routeNavigation;
 
@@ -26,14 +27,16 @@ namespace EmpireAtWar.Presenters.Factions
             IUiService uiService,
             IFactionService factionService,
             IPlayerFactionModelObserver model,
-            PlayerFactionData data,
+            IFactionResearchModelObserver research,
+            FactionsData factionsData,
             IUnitRequestFactory unitRequestFactory,
             ISkirmishRouteNavigation routeNavigation)
         {
             _uiService = uiService;
             _factionService = factionService;
             _model = model;
-            _data = data;
+            _research = research;
+            _factionsData = factionsData;
             _unitRequestFactory = unitRequestFactory;
             _routeNavigation = routeNavigation;
         }
@@ -73,8 +76,9 @@ namespace EmpireAtWar.Presenters.Factions
 
                 _ui.SetParent(parentTransform);
                 _ui.SetModel(_model);
+                _ui.SetResearch(_research);
                 _ui.SetPresenter(this);
-                _ui.SetData(_data);
+                _ui.SetData(_factionsData);
                 _ui.SetUnitRequestFactory(_unitRequestFactory);
                 _ui.Initialize();
             }
