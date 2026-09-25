@@ -8,6 +8,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitDeathAnimation;
@@ -48,7 +49,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container
-                .Bind<IMapObstacleContactSource>()
+                .Bind(typeof(IMapObstacleContactSource), typeof(IMiniMapObstacleSource))
                 .To<MapObstacle>()
                 .FromComponentsInHierarchy()
                 .AsCached();
