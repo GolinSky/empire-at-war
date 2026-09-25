@@ -22,6 +22,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private WeaponProfile _profile;
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
+        private ImpactEffectPresenter _impactPresenter;
         private float _maxAttackDistance;
         private float _missSpread;
         private float _readyTime;
@@ -39,7 +40,8 @@ namespace EmpireAtWar.ViewComponents.Health
         }
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
-            IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers)
+            IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
+            ImpactEffectPresenter impactPresenter)
         {
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
@@ -47,6 +49,7 @@ namespace EmpireAtWar.ViewComponents.Health
             WeaponPresenter = weaponPresenter;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
+            _impactPresenter = impactPresenter;
         }
 
         public void ApplyAim(Quaternion worldRotation) => transform.rotation = worldRotation;
@@ -90,7 +93,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             bool isHit = WeaponPresenter.RollHit(attackData, _profile);
             Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
-            float duration = GetPool().Play(hardPointModel, aimOffset, sequenceGeneration);
+            float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit);
 
             if (!_sequence.RegisterEffect(sequenceGeneration))
             {
@@ -116,7 +119,8 @@ namespace EmpireAtWar.ViewComponents.Health
                 return _effectPool;
             }
 
-            _effectPool = new ShotEffectPool(_profile, transform, _profile.ShotsPerSalvo, OnTurretEffectCompleted);
+            _effectPool = new ShotEffectPool(_profile, transform, _profile.ShotsPerSalvo,
+                OnTurretEffectCompleted, _impactPresenter);
             _effectPool.Prewarm(prewarmEffects);
             return _effectPool;
         }

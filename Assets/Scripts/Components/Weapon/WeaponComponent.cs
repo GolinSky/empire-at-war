@@ -35,6 +35,7 @@ namespace EmpireAtWar.Components.Weapon
         
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
+        [Inject] private ImpactEffectPresenter _impactPresenter;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
@@ -69,7 +70,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
                 hardPoint.SetData(Model.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, Model.MissSpread,
-                    this, _attackCoordinator, _modifiers);
+                    this, _attackCoordinator, _modifiers, _impactPresenter);
             }
         }
 

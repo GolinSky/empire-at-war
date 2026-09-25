@@ -57,13 +57,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (_target != null) _lastAimPoint = _target.position + _aimOffset;
 
-            float progress = Mathf.Clamp01((Time.time - _startTime) / _travelTime);
+            Vector3 previousPosition = transform.position;
+            float progress = _travelTime > 0f
+                ? Mathf.Clamp01((Time.time - _startTime) / _travelTime) : 1f;
             float distance = Vector3.Distance(_start, _lastAimPoint);
             Vector3 arc = _arcNormal * (Mathf.Sin(progress * Mathf.PI) * arcHeight * distance);
             transform.position = Vector3.Lerp(_start, _lastAimPoint, progress) + arc;
 
             if (progress >= 1f)
             {
+                transform.position = _lastAimPoint;
+                CompleteImpact(_lastAimPoint, _lastAimPoint - previousPosition);
                 _isFlying = false;
                 _target = null;
                 head.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);

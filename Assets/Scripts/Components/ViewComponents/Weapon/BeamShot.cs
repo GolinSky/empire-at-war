@@ -24,6 +24,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Plays the beam outside the shot pool, e.g. from an ability.</summary>
         public void PlayBeam(Transform muzzle, Transform target, float holdDuration)
         {
+            // Ability damage is resolved by its presenter immediately after this call.
+            CaptureImpact();
             StartBeam(muzzle, target, Vector3.zero, holdDuration);
         }
 
@@ -85,8 +87,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             hitEffect.transform.position = end;
             if (growth >= 1f && !_isHitPlaying)
             {
+                CaptureImpact();
                 _isHitPlaying = true;
-                hitEffect.Play(true);
+                if (HasImpact) hitEffect.Play(true);
             }
 
             if (elapsed >= growthDuration + _currentHoldDuration)
@@ -95,8 +98,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
-        private void StopBeam()
+        public void StopBeam()
         {
+            if (_isHitPlaying)
+                CompleteImpact(beam.GetPosition(1), _lastAimPoint - _lastOrigin);
             beam.enabled = false;
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             _muzzle = null;

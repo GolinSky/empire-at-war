@@ -13,15 +13,21 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using Zenject;
+using UnityEngine;
+using EmpireAtWar.ViewComponents.Weapon;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
     public class SkirmishServiceInstaller : MonoInstaller
     {
+        [SerializeField] private ImpactEffectView impactEffectPrefab;
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {
+            Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
+                .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
+            Container.Bind<ImpactEffectPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
             

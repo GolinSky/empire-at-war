@@ -14,23 +14,27 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly Transform _owner;
         private readonly WeaponProfile _profile;
         private readonly int _maxIdle;
+        private readonly ImpactEffectPresenter _impactPresenter;
         private readonly Stack<ShotEffect> _available = new Stack<ShotEffect>();
         private readonly HashSet<ShotEffect> _availableMembers = new HashSet<ShotEffect>();
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
         private Action<int> _effectCompleted;
         private bool _released;
 
-        public ShotEffectPool(WeaponProfile profile, Transform owner, int maxIdle, Action<int> effectCompleted)
+        public ShotEffectPool(WeaponProfile profile, Transform owner, int maxIdle, Action<int> effectCompleted,
+            ImpactEffectPresenter impactPresenter)
         {
             _prefab = profile.ShotPrefab;
             _owner = owner;
             _profile = profile;
             _effectCompleted = effectCompleted;
             _maxIdle = maxIdle;
+            _impactPresenter = impactPresenter;
         }
 
         /// <returns>Seconds until the shot reaches the target.</returns>
-        public float Play(IHardPointModel target, Vector3 aimOffset, int sequenceGeneration)
+        public float Play(AttackData attackData, IHardPointModel target, Vector3 aimOffset,
+            int sequenceGeneration, bool isHit)
         {
             if (_released)
             {
@@ -38,6 +42,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
 
             ShotEffect effect = Acquire();
+            effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType,
+                _profile.Size.x, isHit);
             float duration = effect.Fire(_owner, target.Transform, aimOffset, _profile);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();

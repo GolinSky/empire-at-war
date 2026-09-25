@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Models.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 
@@ -15,11 +16,47 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private bool _leaseActive;
         private int _leaseId;
         private bool _retireAfterCompletion;
+        private ImpactEffectPresenter _impactPresenter;
+        private IHealthModelObserver _impactTarget;
+        private DamageType _impactDamageType;
+        private ImpactSurface _impactSurface;
+        private float _impactSize;
+        private bool _impactPending;
+        private bool _impactCaptured;
 
         public event Action<ShotEffect, int> EffectCompleted;
         public event Action<ShotEffect, int> EffectDestroyed;
 
         public int LeaseId => _leaseId;
+        protected bool HasImpact => _impactPending && _impactSurface != ImpactSurface.None;
+
+        public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
+            DamageType damageType, float size, bool isHit)
+        {
+            _impactPresenter = presenter;
+            _impactTarget = isHit ? target : null;
+            _impactDamageType = damageType;
+            _impactSize = size;
+            _impactPending = isHit;
+            _impactCaptured = false;
+            _impactSurface = ImpactSurface.None;
+        }
+
+        protected void CaptureImpact()
+        {
+            if (!_impactPending || _impactCaptured) return;
+            _impactSurface = _impactPresenter.ResolveSurface(_impactTarget, _impactDamageType);
+            _impactCaptured = true;
+        }
+
+        protected void CompleteImpact(Vector3 position, Vector3 direction)
+        {
+            if (!_impactPending) return;
+            CaptureImpact();
+            _impactPending = false;
+            _impactTarget = null;
+            _impactPresenter.Play(_impactSurface, position, direction, _impactSize);
+        }
 
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
