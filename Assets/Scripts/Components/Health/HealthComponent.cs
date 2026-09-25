@@ -180,8 +180,9 @@ namespace EmpireAtWar.Components.Ship.Health
             for (int index = 0; index < ShipUnits.Count; index++)
             {
                 IHardPoint hardPoint = ShipUnits[index];
+                // Damage is routed by list index, so the model id must be the index, not the serialized view id.
                 HardPointModel hardPointModel = new HardPointModel(
-                    hardPoint.Id,
+                    index,
                     hardPoint.HardPointType);
                 hardPointModels[index] = hardPointModel;
                 _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPoint);
