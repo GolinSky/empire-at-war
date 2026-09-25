@@ -103,6 +103,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b0635126764df796ba6194d27372a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visibilityRadius: 4
+  color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
+  brightness: 2
+  fadeDuration: 1.2
+  waveSpeed: 6
+  waveWidth: 0.8
+  displacementStrength: 0.15
+--- !u!1 &910003187122549278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5116402137377750338}
+  - component: {fileID: 6701423300049640448}
+  m_Layer: 0
+  m_Name: HangarUnit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5116402137377750338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910003187122549278}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3532378421735227117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6701423300049640448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 910003187122549278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  <HardPointType>k__BackingField: 4
+  <Id>k__BackingField: 17
+  spawnDestroyedExplosion: 1
 --- !u!1 &1586550283623642664
 GameObject:
   m_ObjectHideFlags: 0
@@ -5215,6 +5269,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3554477610864420188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 657764077832079962}
+  m_Layer: 0
+  m_Name: LaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &657764077832079962
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3554477610864420188}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3532378421735227117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3566995676016837671
 GameObject:
   m_ObjectHideFlags: 0
@@ -5307,6 +5392,54 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3591212304825913582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3532378421735227117}
+  - component: {fileID: 792582442232258137}
+  m_Layer: 0
+  m_Name: Hangar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3532378421735227117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591212304825913582}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.6, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 657764077832079962}
+  - {fileID: 5116402137377750338}
+  m_Father: {fileID: 773376535087680568}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &792582442232258137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591212304825913582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb836d356ec0424bbfdd93fd3278b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
+  launchPoint: {fileID: 657764077832079962}
+  hangarHardPoint: {fileID: 6701423300049640448}
 --- !u!1 &3749019374561406494
 GameObject:
   m_ObjectHideFlags: 0
@@ -10187,6 +10320,7 @@ Transform:
   - {fileID: 5744379302176795738}
   - {fileID: 4793793392322633965}
   - {fileID: 7694248606540719011}
+  - {fileID: 3532378421735227117}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6788804975210850448
@@ -10405,6 +10539,7 @@ MonoBehaviour:
   - {fileID: 6852928509335582908}
   - {fileID: 5054377183115151904}
   - {fileID: 6341800223163410482}
+  - {fileID: 6701423300049640448}
   shieldView: {fileID: 0}
 --- !u!1 &4159886144691534733
 GameObject:
@@ -15398,6 +15533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 14
+  spawnDestroyedExplosion: 1
 --- !u!1 &5496146784751829218
 GameObject:
   m_ObjectHideFlags: 0
@@ -15473,7 +15609,6 @@ MonoBehaviour:
   - {fileID: 4714089933600182028}
   - {fileID: 4306931013480455252}
   - {fileID: 6341800223163410482}
-  attackOrigin: {fileID: 0}
   useWeaponDamageRange: 0
 --- !u!1 &5649688952789564357
 GameObject:
@@ -20658,6 +20793,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 15
+  spawnDestroyedExplosion: 1
 --- !u!1001 &468733686309944427
 PrefabInstance:
   m_ObjectHideFlags: 0

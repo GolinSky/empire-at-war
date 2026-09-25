@@ -16,5 +16,6 @@
         LaserBeam = 12,
         ConcussionMissile = 13,
         PointDefense = 14,
+        FighterLaser = 15,
     }
 }

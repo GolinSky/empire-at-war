@@ -15,7 +15,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void Emit(ImpactSurface surface, Vector3 position, Vector3 direction, float size)
         {
-            float scale = Mathf.Clamp(size, 0.75f, 2.5f);
+            float scale = Mathf.Clamp(size, 0.2f, 2.5f);
             if (surface == ImpactSurface.Shield)
             {
                 EmitParticle(shieldFlash, position, Vector3.zero, scale * 2f, 0.16f);

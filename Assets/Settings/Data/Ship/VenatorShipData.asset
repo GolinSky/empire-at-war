@@ -59,3 +59,9 @@ MonoBehaviour:
   <Delay>k__BackingField: 0.25
   <Distance>k__BackingField: 200
   abilities: 0100000003000000
+  hangarBays:
+  - squadronType: 0
+    reserve: 6
+    maxActive: 2
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8

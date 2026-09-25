@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
@@ -110,6 +111,14 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<SelectionComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+
+            if (Container.Resolve<ShipData>().HangarBays.Count > 0)
+            {
+                Container.Bind<HangarModel>().AsSingle();
+                Container.BindInterfacesAndSelfTo<HangarComponent>()
+                    .FromComponentInHierarchy()
+                    .AsCached();
+            }
 
             Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();

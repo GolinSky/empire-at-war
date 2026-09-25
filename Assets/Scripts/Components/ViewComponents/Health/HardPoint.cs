@@ -21,6 +21,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private const float MAX_HEALTH = 1f;
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
+        [SerializeField] private bool spawnDestroyedExplosion = true;
         public GameObject GameObject => gameObject;
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
@@ -66,7 +67,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected virtual void OnStateUpdated(float healthPercentage)
         {
-            if (healthPercentage <= 0 && _explosionVfx == null)
+            if (healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
             {
                 _explosionVfx = Instantiate(Repository.LoadComponent<ParticleSystem>(EXPLOSION_VFX_PATH), transform);
                 _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
