@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
 
@@ -26,6 +27,22 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (surface != ImpactSurface.None)
                 _view.Emit(surface, position, direction, size);
+        }
+
+        public Vector3 GetImpactPosition(IHealthModelObserver target, DamageType damageType,
+            Vector3 origin, Vector3 position)
+        {
+            return target is IShieldTarget shield
+                ? shield.GetImpactPosition(origin, position, damageType)
+                : position;
+        }
+
+        public void Play(IHealthModelObserver target, ImpactSurface surface, Vector3 position,
+            Vector3 direction, float size)
+        {
+            if (surface == ImpactSurface.Shield && target is IShieldTarget shield &&
+                shield.ShowShieldImpact(position)) return;
+            Play(surface, position, direction, size);
         }
     }
 }

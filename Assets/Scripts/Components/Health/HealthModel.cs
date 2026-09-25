@@ -65,7 +65,7 @@ namespace EmpireAtWar.Models.Health
             }
 
             damage *= _modifiers.DamageTakenMultiplier;
-            if (HasShields && !_damageMatrix.IsShieldPiercing(damageType))
+            if (AbsorbsDamage(damageType))
             {
                 Shields = Math.Max(0f, Shields - damage * _damageMatrix.GetShieldMultiplier(damageType));
             }
@@ -82,6 +82,12 @@ namespace EmpireAtWar.Models.Health
         {
             Shields = Math.Min(_data.Shields, Shields + value);
             OnValueChanged?.Invoke();
+        }
+
+        public bool AbsorbsDamage(DamageType damageType)
+        {
+            return !IsDestroyed && HasShields && !IsLostShieldGenerator &&
+                   !_damageMatrix.IsShieldPiercing(damageType);
         }
 
         private void DamageHardPoint(HardPointModel hardPoint, float damage)
