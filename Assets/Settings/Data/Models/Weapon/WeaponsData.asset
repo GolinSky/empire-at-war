@@ -163,7 +163,7 @@ MonoBehaviour:
     shotsPerSalvo: 4
     shotInterval: 0.25
     reload: 10
-    range: 175
+    range: 150
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
     projectileSpeed: 35
@@ -171,7 +171,7 @@ MonoBehaviour:
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 6
     damageType: 6
-    damage: 120
+    damage: 90
     shotsPerSalvo: 2
     shotInterval: 0.4
     reload: 12

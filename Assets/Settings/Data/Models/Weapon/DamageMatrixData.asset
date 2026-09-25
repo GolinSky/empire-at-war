@@ -113,10 +113,10 @@ MonoBehaviour:
       fighter: 0.5
       bomber: 0.5
       corvette: 1.5
-      frigate: 1
-      capital: 0.75
-      heavyCapital: 0.6
-      structure: 1
+      frigate: 0.6
+      capital: 0.3
+      heavyCapital: 0.2
+      structure: 0.4
     accuracy:
       fighter: 0.6
       bomber: 0.6
@@ -132,10 +132,10 @@ MonoBehaviour:
       fighter: 0.1
       bomber: 0.1
       corvette: 0.75
-      frigate: 1.25
-      capital: 2
-      heavyCapital: 2.5
-      structure: 2
+      frigate: 1
+      capital: 1.25
+      heavyCapital: 1.5
+      structure: 1.25
     accuracy:
       fighter: 0.05
       bomber: 0.05
