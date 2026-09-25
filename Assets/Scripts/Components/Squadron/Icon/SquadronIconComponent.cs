@@ -1,4 +1,3 @@
-using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
@@ -11,18 +10,24 @@ using Zenject;
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
     /// <summary>
-    /// Floating icon that stands in for the whole squadron above its centroid. It keeps a constant
-    /// on-screen size so tiny fighters stay easy to find and click at any zoom, and it is the squadron's
-    /// click target for selection and attack orders.
+    /// Floating marker that stands in for the whole squadron: a hollow frame with the fighter silhouette,
+    /// drawn slightly above the smoothed squadron centroid. It keeps a constant on-screen size so tiny fighters
+    /// stay easy to find and click at any zoom, and it is the squadron's click target for selection and attack orders.
     /// </summary>
     public sealed class SquadronIconComponent : MonoComponent<SelectionModel>, ISquadronIconCommand,
         IInitializable, ILateTickable, ILateDisposable
     {
         [SerializeField] private Canvas iconCanvas;
-        [SerializeField] private Image iconImage;
-        [Tooltip("Icon width and height in screen pixels.")]
-        [SerializeField, Min(1f)] private float screenSize = 48f;
-        [SerializeField] private float heightOffset = 3f;
+        [SerializeField] private Image frameImage;
+        [SerializeField] private Image silhouetteImage;
+        [Tooltip("Visible marker width and height in screen pixels.")]
+        [SerializeField, Min(1f)] private float screenSize = 32f;
+        [Tooltip("Clickable square width and height in screen pixels.")]
+        [SerializeField, Min(1f)] private float clickSize = 44f;
+        [Tooltip("Screen pixels the marker sits above the squadron centroid.")]
+        [SerializeField] private float screenOffset = 20f;
+        [Tooltip("How fast the marker catches up with the centroid; higher follows fighters more tightly.")]
+        [SerializeField, Min(0.01f)] private float followSharpness = 12f;
         [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);
         [SerializeField] private Color selectedColor = new Color(1f, 0.92f, 0.35f);
         [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
@@ -30,17 +35,15 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private ICameraService _cameraService;
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
-        private Sprite _icon;
+        private Vector3 _anchor;
+        private Vector3 _iconPosition;
         private bool _isReleased;
-
-        private Vector3 IconPosition => transform.position + Vector3.up * heightOffset;
 
         [Inject]
         private void Construct(SelectionModel model, ICameraService cameraService, FogOfWarSystem fogOfWarSystem,
-            PlayerType playerType, FactionsData factionsData, SquadronType squadronType)
+            PlayerType playerType)
         {
             SetModel(model);
-            _icon = factionsData.GetSquadronFactionData(squadronType).Icon;
             _cameraService = cameraService;
             _fogOfWarSystem = fogOfWarSystem;
             _playerType = playerType;
@@ -48,7 +51,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void Initialize()
         {
-            iconImage.sprite = _icon;
+            ((RectTransform)iconCanvas.transform).sizeDelta = Vector2.one * screenSize;
+            _anchor = transform.position;
             Model.OnSelected += UpdateColor;
             UpdateColor(Model.IsSelected);
             LateTick();
@@ -61,30 +65,33 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 return;
             }
 
+            _anchor = Vector3.Lerp(_anchor, transform.position, 1f - Mathf.Exp(-followSharpness * Time.deltaTime));
             iconCanvas.enabled = _playerType == PlayerType.Player || !_fogOfWarSystem.IsHidden(transform.position);
             if (!iconCanvas.enabled)
             {
                 return;
             }
 
-            Vector3 position = IconPosition;
-            float distance = Vector3.Dot(position - _cameraService.CameraPosition, _cameraService.CameraForward);
+            Transform cameraTransform = _cameraService.CameraTransform;
+            float distance = Vector3.Dot(_anchor - _cameraService.CameraPosition, _cameraService.CameraForward);
             float worldPerPixel = 2f * distance * Mathf.Tan(_cameraService.FieldOfView * 0.5f * Mathf.Deg2Rad) /
                                   Screen.height;
-            iconCanvas.transform.SetPositionAndRotation(position, _cameraService.CameraTransform.rotation);
-            iconCanvas.transform.localScale = Vector3.one * (screenSize * worldPerPixel);
+            _iconPosition = _anchor + cameraTransform.up * (screenOffset * worldPerPixel);
+            iconCanvas.transform.SetPositionAndRotation(_iconPosition, cameraTransform.rotation);
+            iconCanvas.transform.localScale = Vector3.one * worldPerPixel;
         }
 
         public bool ContainsScreenPoint(Vector2 screenPoint)
         {
             if (_isReleased || !iconCanvas.enabled ||
-                _cameraService.WorldToViewportPoint(IconPosition).z <= 0f)
+                _cameraService.WorldToViewportPoint(_iconPosition).z <= 0f)
             {
                 return false;
             }
 
-            float radius = screenSize * 0.5f;
-            return (_cameraService.WorldToScreenPoint(IconPosition) - screenPoint).sqrMagnitude <= radius * radius;
+            Vector2 delta = _cameraService.WorldToScreenPoint(_iconPosition) - screenPoint;
+            float halfSize = clickSize * 0.5f;
+            return Mathf.Abs(delta.x) <= halfSize && Mathf.Abs(delta.y) <= halfSize;
         }
 
         public void LateDispose() => Release();
@@ -103,9 +110,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private void UpdateColor(bool isSelected)
         {
-            iconImage.color = _playerType != PlayerType.Player ? enemyColor
+            Color color = _playerType != PlayerType.Player ? enemyColor
                 : isSelected ? selectedColor
                 : friendlyColor;
+            frameImage.color = color;
+            silhouetteImage.color = color;
         }
     }
 }
