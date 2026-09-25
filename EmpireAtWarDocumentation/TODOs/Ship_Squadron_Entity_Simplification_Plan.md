@@ -1,0 +1,37 @@
+# Ship & Squadron entity simplification plan
+
+**Source analysis:** [[Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS]] · **Date:** 2026-09-25 · **Status:** proposal, nothing implemented.
+
+Goal: simple and correct code. Each step is small, independent, behaviour-preserving, and can be merged alone. No new frameworks, event buses or domain-service layers.
+
+Constraint: components stay a single `MonoComponent` each (no Presenter/View split — follow the `RadarComponent` pattern).
+
+## Target rules (write these into AGENTS/Rules after step 3)
+
+1. Outside code talks to a unit only through `IEntity` + `IEntityCommand`.
+2. The entity (`Ship`, `Squadron`) is the only object that connects its components.
+3. Entity → component: method calls on component interfaces.
+4. Component → entity: C# events or read-only observer interfaces. No `SetMediator`, no injecting the entity, no calling sibling components.
+5. Only the entity changes state; states report `IsComplete`.
+
+## Steps
+
+| # | Step | Touches | Verify |
+|---|---|---|---|
+| 1 | Add `Vector3 Position` to `IEntity`; replace the 31 `HealthModel.Transform.position` reads. | `Entity`, callers | compile; same targeting behaviour |
+| 2 | Health no longer releases the entity: remove `IEntityLifecycle` injection from `HealthComponent` / `SquadronHealthComponent`; `Ship` / `Squadron` subscribe to `OnDestroy` and call `Release()`. | Health components, Ship, Squadron, other entities using `IEntityLifecycle` | unit dies once, death FX once |
+| 3 | Replace `SetMediator` with events: `RadarComponent.EnemyDetected / ContactsUpdated`, `SelectionComponent.SelectionChanged`, `ShipMoveComponent.PositionChanged / Stopped / LookingAt`. Inject narrow `IWeaponFacing` into move for `GetFiringTurnAngle`. Delete `IUnitMediator`, `IUnitComponent`, `IShipMovementMediator`. | Radar, Selection, ShipMove, Ship, Squadron, stations if they use mediators | no `Components → Entities.Ship` using; Squadron has no empty methods |
+| 4 | Ship orders: one `StartOrder()` maps `ShipOrderModel.Current` → configured state; order methods call it; `ResumeOrder()` = `StartOrder()`. Flee checked in one place. | `Ship`, `ShipAIBrain` | same order behaviour; 7 duplicated tails removed |
+| 5 | States don't transition: remove `LazyInject<StateMachine1/IdleState>` from `AttackTargetState`; add `IsComplete` to every ship state; `Ship.Tick` handles completion (waypoint advance / Idle) uniformly. Remove `CompleteNavigation` special-case flags. | ship states, `Ship` | attack ends → idle; waypoints still chain |
+| 6 | Move order handling out of `Ship` (e.g. `ShipOrderRunner`: order model + state machine + states + brain gating). `Ship` keeps lifecycle, wiring, death. Target `Ship` < 200 lines. | new class, `Ship`, `ShipInstaller` | `ShipAIBrain` depends on runner interface, not `LazyInject<Ship>` |
+| 7 | Move `ShipOrderModel`, `ShipOrderType` to a neutral namespace (units, not ships). Align Squadron order semantics with Ship (dedupe via `Matches`, `Attack` offset decision). | Orders, Squadron | one documented meaning per order |
+| 8 | Hangar listens to hard point **model** destroyed event instead of polling the `HardPoint` view. | `HangarComponent` | hangar shuts down on destruction |
+| 9 | Cleanup: rename `StateMachine1` → `StateMachine`; remove unused `NavigateState.SetScreenDestination`, `IsTheSameWorldDestination`, `StateMachine1.ExitState`, unused `ShipAiDecision` values if still unused; merge duplicate `if (playDeathEffects)`; pass `deltaTime` into `HuntState` / `ShipAIBrain`. | small | compile |
+| 10 | Split `IShipMoveComponent` by consumer (states need move/look/stop/range; Ship needs the rest). | move interface | compile |
+
+## Explicitly not planned
+
+- No generic event bus, message types, ECS rewrite or hierarchical state machine library.
+- No forced state machine for `Squadron` — its order `switch` + `SquadronPilot` is readable at current size.
+- `FromComponentsInHierarchy` in installers stays until prefab roots get explicit serialized references (separate, low priority).
+- `WeaponComponent` (449 lines) and `CombatAttackCoordinator` (719) need their own review.
