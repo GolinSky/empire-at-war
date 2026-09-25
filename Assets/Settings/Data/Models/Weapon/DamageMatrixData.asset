@@ -165,4 +165,61 @@ MonoBehaviour:
       structure: 1
     vsShield: 1
     shieldPiercing: 0
+  - damageType: 8
+    damage:
+      fighter: 0
+      bomber: 0
+      corvette: 0
+      frigate: 0
+      capital: 0
+      heavyCapital: 0
+      structure: 0
+    accuracy:
+      fighter: 1
+      bomber: 1
+      corvette: 1
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 0
+  - damageType: 9
+    damage:
+      fighter: 1
+      bomber: 1
+      corvette: 1
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 0.5
+    accuracy:
+      fighter: 1
+      bomber: 1
+      corvette: 1
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 0
+    shieldPiercing: 1
+  - damageType: 10
+    damage:
+      fighter: 0.25
+      bomber: 0.25
+      corvette: 0.5
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 0.5
+    accuracy:
+      fighter: 1
+      bomber: 1
+      corvette: 1
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 0
+    shieldPiercing: 1
   missSpread: 6

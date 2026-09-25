@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.Ship.Mediator;
@@ -143,6 +144,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesExt<ShipOrderCommand>();
             Container.BindInterfacesExt<SelectionCommand>();
             Container.BindInterfacesExt<HealthCommand>();
+            Container.BindInterfacesExt<CombatModifiersCommand>();
 
             switch (_playerType)
             {

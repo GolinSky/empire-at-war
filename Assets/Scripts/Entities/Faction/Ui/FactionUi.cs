@@ -134,6 +134,13 @@ namespace EmpireAtWar.Views.Factions
                     data.Key));
             }
 
+            foreach (var data in _factionsData.SuperWeaponFactionData)
+            {
+                AddUi(_unitRequestFactory.ConstructUnitRequest(
+                    data.Value,
+                    data.Key));
+            }
+
             foreach (ResearchType researchType in _research.ResearchTypes)
             {
                 CreateResearchUnit(researchType);

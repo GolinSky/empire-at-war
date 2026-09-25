@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Controllers.Factions
@@ -13,6 +14,7 @@ namespace EmpireAtWar.Controllers.Factions
         MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType);
         DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType);
         ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType);
+        SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType);
     }
 
     public class UnitRequestFactory : IUnitRequestFactory
@@ -45,6 +47,11 @@ namespace EmpireAtWar.Controllers.Factions
         public ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType)
         {
             return new ResearchUnitRequest(factionData, researchType);
+        }
+
+        public SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType)
+        {
+            return new SuperWeaponUnitRequest(factionData, superWeaponType);
         }
     }
 }

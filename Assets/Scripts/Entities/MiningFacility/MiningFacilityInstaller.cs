@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
@@ -69,7 +70,8 @@ namespace EmpireAtWar.MiningFacility
             //entity commands
             Container
                 .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>();
+                .BindInterfacesExt<HealthCommand>()
+                .BindInterfacesExt<CombatModifiersCommand>();
 
         }
         

@@ -2,6 +2,7 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
@@ -32,6 +33,8 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle();
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.BindInterfacesExt<EnemyShipAbilityController>();
+            Container.Bind<SuperWeaponModel>().AsSingle();
+            Container.BindInterfacesExt<EnemySuperWeaponController>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
             Container.BindScriptableObject<ReinforcementData>(Repository);
             

@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Factions;
@@ -49,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(_input, _selection, _query,
-                _camera, null, _abilities, _targeting, _orders);
+                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel());
             _handler.Initialize();
         }
 

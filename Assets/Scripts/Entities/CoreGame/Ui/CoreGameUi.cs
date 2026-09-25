@@ -1,6 +1,7 @@
 using EmpireAtWar.Commands.Game;
 using System;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Services.UiRouting;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Transform buildPipelineRouteParent;
         [SerializeField] private EndGameUi endGameUi;
         [SerializeField] private UnitActionsView unitActionsView;
+        [SerializeField] private SuperWeaponsView superWeaponsView;
 
         private ISkirmishSessionModelObserver _model;
         private ICoreGamePresenter _presenter;
@@ -42,6 +44,7 @@ namespace EmpireAtWar.Views.Game
         private bool _isShipGroupLayout;
 
         public IUnitActionsView UnitActionsView => unitActionsView;
+        public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
 
         public void SetModel(ISkirmishSessionModelObserver model)
         {
@@ -170,6 +173,7 @@ namespace EmpireAtWar.Views.Game
                     return buildPipelineRouteParent;
                 case SkirmishUiRoutePosition.Economy:
                 case SkirmishUiRoutePosition.Reinforcement:
+                case SkirmishUiRoutePosition.SuperWeapon:
                     return transform;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(position), position, null);
