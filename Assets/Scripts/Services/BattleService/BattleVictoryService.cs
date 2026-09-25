@@ -18,7 +18,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
         private readonly BattleVictoryModel _victoryModel;
-        private readonly IEnemyReinforcementObserver _enemyReinforcement;
+        private readonly LazyInject<IEnemyReinforcementObserver> _enemyReinforcement;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
         private BattleResult _finalResult;
 
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.Battle
             IShipService shipService,
             IEntityLocator entityLocator,
             BattleVictoryModel victoryModel,
-            IEnemyReinforcementObserver enemyReinforcement)
+            LazyInject<IEnemyReinforcementObserver> enemyReinforcement)
         {
             _gameModel = gameModel;
             _shipService = shipService;
@@ -104,7 +104,7 @@ namespace EmpireAtWar.Services.Battle
                 enemyShipCount,
                 isPlayerBaseAlive,
                 isEnemyBaseAlive,
-                _enemyReinforcement.HasPendingReinforcement);
+                _enemyReinforcement.Value.HasPendingReinforcement);
             if (outcome == BattleOutcome.None)
             {
                 return;
