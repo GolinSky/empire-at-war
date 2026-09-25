@@ -105,10 +105,9 @@ public class SkirmishMainInstaller : MonoInstaller
         
         Container
             .BindModel<FactionsData>(Repository)
-            .BindModel<WeaponDamageData>(Repository)
-            .BindModel<ProjectilesData>(Repository)
-            .BindModel<LayerData>(Repository)
-            .BindModel<DamageCalculationData>(Repository);
+            .BindModel<WeaponsData>(Repository)
+            .BindModel<DamageMatrixData>(Repository)
+            .BindModel<LayerData>(Repository);
         Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
         Container.BindScriptableObject<ShipsData>(Repository);

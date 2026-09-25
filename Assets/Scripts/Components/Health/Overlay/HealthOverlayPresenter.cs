@@ -156,7 +156,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
         private void UpdateValues(IHealthModelObserver model)
         {
-            _view.SetValues(model.ArmorPercentage, model.ShieldPercentage);
+            _view.SetValues(model.HullPercentage, model.ShieldPercentage);
         }
 
         private static bool IsValid(IEntity entity)

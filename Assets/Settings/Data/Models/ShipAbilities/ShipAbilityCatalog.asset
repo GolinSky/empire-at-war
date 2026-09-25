@@ -105,8 +105,8 @@ MonoBehaviour:
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        damage: 1500
-        weaponType: 2
+        damage: 600
+        damageType: 7
         viewPrefab: {fileID: 6412485944876309358, guid: 780f1218e5d028940ad44de6c840896d,
           type: 3}
     - rid: 7607833764655792204

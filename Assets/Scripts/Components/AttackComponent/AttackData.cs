@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
@@ -20,8 +20,8 @@ namespace EmpireAtWar.Components.AttackComponent
         }
 
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
+        public ShipClass TargetClass => _shipUnitsProvider.ShipClass;
         public List<IHardPointModel> Units { get; private set; }
-        
 
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthCommand healthCommand, HardPointType hardPointType)
         {
@@ -35,9 +35,15 @@ namespace EmpireAtWar.Components.AttackComponent
             return Units.Contains(hardPointModel);
         }
 
-        public void ApplyDamage(float damage, WeaponType weaponType, int id)
+        /// <summary>Destroyed hardpoints are only valid aim points once the whole ship is a wreck.</summary>
+        public bool CanTarget(IHardPointModel hardPointModel)
         {
-            HealthCommand.ApplyDamage(damage, weaponType, id);
+            return !IsDestroyed && (!hardPointModel.IsDestroyed || !_shipUnitsProvider.HasLiveHardPoints);
+        }
+
+        public void ApplyDamage(float damage, DamageType damageType, int id)
+        {
+            HealthCommand.ApplyDamage(damage, damageType, id);
         }
 
         public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
@@ -55,7 +61,7 @@ namespace EmpireAtWar.Components.AttackComponent
                 return false;
             }
         }
-        
+
         public bool SameSource(AttackData other) =>
             HealthCommand != null && HealthCommand == other?.HealthCommand;
     }

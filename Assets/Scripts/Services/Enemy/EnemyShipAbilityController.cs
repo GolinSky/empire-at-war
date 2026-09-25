@@ -98,7 +98,7 @@ namespace EmpireAtWar.Services.Enemy
                 bool bestShip = best.Model is IShipModelObserver;
                 if (candidateShip && !bestShip ||
                     candidateShip == bestShip &&
-                    candidate.HealthModel.ArmorPercentage < best.HealthModel.ArmorPercentage)
+                    candidate.HealthModel.HullPercentage < best.HealthModel.HullPercentage)
                     best = candidate;
             }
             return best;

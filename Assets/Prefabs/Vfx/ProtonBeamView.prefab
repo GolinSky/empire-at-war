@@ -30,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4765734066529814334}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &2081530883223066287
@@ -161,10 +162,90 @@ MonoBehaviour:
   m_GameObject: {fileID: 3731234602428827732}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2091673fb2f41ab4eb43ad6800436bd9, type: 3}
+  m_Script: {fileID: 11500000, guid: eee01b5eda8c4f269677cfd8c7e8c5db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ShipAbilities.Abilities.ProtonBeamView
   beam: {fileID: 2081530883223066287}
-  hitEffectPrefab: {fileID: 992365165172597046, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
-    type: 3}
+  hitEffect: {fileID: 8489688991011068479}
   growthDuration: 0.3
+  holdDuration: 0.5
+--- !u!1001 &5426400663836595550
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6957357693623861886}
+    m_Modifications:
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 992365165172597046, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+        type: 3}
+      propertyPath: m_Name
+      value: HitEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 17a65e70ac12d8e4b839ac0bd03f953b, type: 3}
+--- !u!4 &4765734066529814334 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 679264288381096544, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5426400663836595550}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8489688991011068479 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4512357853715943265, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5426400663836595550}
+  m_PrefabAsset: {fileID: 0}
