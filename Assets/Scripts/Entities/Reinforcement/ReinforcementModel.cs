@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
 
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Models.Reinforcement
         int CurrentUnitCapacity { get; }
         int CapacityLeft { get; }
         bool CanSpawnUnit(ShipType shipType);
+        bool CanSpawnUnit(SquadronType squadronType);
     }
 
     public class ReinforcementModel : PureModel, IReinforcementModelObserver
@@ -26,6 +28,7 @@ namespace EmpireAtWar.Models.Reinforcement
 
         private readonly ReinforcementData _data;
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();
+        private readonly Dictionary<SquadronType, FactionData> _squadronFactionData = new();
 
         private int _currentUnitCapacity;
 
@@ -73,6 +76,29 @@ namespace EmpireAtWar.Models.Reinforcement
             if (!_shipFactionData.ContainsKey(shipUnitRequest.Key))
             {
                 _shipFactionData.Add(shipUnitRequest.Key, shipUnitRequest.FactionData);
+            }
+        }
+
+        public bool CanSpawnUnit(SquadronType squadronType)
+        {
+            return _squadronFactionData[squadronType].UnitCapacity <= CapacityLeft;
+        }
+
+        public void AddUnitCapacity(SquadronType squadronType)
+        {
+            CurrentUnitCapacity += _squadronFactionData[squadronType].UnitCapacity;
+        }
+
+        public void RemoveUnitCapacity(SquadronType squadronType)
+        {
+            CurrentUnitCapacity -= _squadronFactionData[squadronType].UnitCapacity;
+        }
+
+        public void UpdateSquadronData(SquadronUnitRequest squadronUnitRequest)
+        {
+            if (!_squadronFactionData.ContainsKey(squadronUnitRequest.Key))
+            {
+                _squadronFactionData.Add(squadronUnitRequest.Key, squadronUnitRequest.FactionData);
             }
         }
 

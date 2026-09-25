@@ -6,12 +6,14 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -37,6 +39,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly IEntityLocator _entityLocator;
+        private readonly ISquadronLauncher _squadronLauncher;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
             new Dictionary<CustomCoroutine, UnitRequest>();
 
@@ -64,7 +67,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             IEnemyStructurePlacementService structurePlacement,
-            IEntityLocator entityLocator) : base(model)
+            IEntityLocator entityLocator,
+            ISquadronLauncher squadronLauncher) : base(model)
         {
             _shipFacadeFactory = shipFacadeFactory;
             _miningFacilityFacade = miningFacilityFacade;
@@ -77,6 +81,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _reinforcementData = reinforcementData;
             _structurePlacement = structurePlacement;
             _entityLocator = entityLocator;
+            _squadronLauncher = squadronLauncher;
         }
         
 
@@ -118,6 +123,30 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 shipUnitRequest.Key,
                                 GenerateShipCoordinates(shipUnitRequest.Key));
                             ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
+                        });
+                    break;
+                }
+                case SquadronUnitRequest squadronUnitRequest:
+                {
+                    if (!TryReserveUnit(squadronUnitRequest))
+                    {
+                        _purchaseChain.Revert(squadronUnitRequest);
+                        return;
+                    }
+
+                    ScheduleBuild(squadronUnitRequest, () =>
+                        {
+                            ISquadron squadron = _squadronLauncher.LaunchFromStation(
+                                PlayerType,
+                                squadronUnitRequest.Key);
+                            Action handler = null;
+                            handler = () =>
+                            {
+                                squadron.Released -= handler;
+                                ReleaseUnit(squadronUnitRequest);
+                            };
+                            squadron.Released += handler;
+                            squadron.Hunt();
                         });
                     break;
                 }

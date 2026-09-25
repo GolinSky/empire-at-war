@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.NavigationService;
@@ -102,6 +103,7 @@ namespace EmpireAtWar.Editor.Squadrons
             weaponObject.ApplyModifiedPropertiesWithoutUndo();
             SetObjectList(weaponComponent, "hardPoints", guns);
             AddSelectionRing(root.transform, selection);
+            AddWorldIcon(root);
         }
 
         private static FighterView CreateFighter(Transform parent, int index, SquadronViewSpec spec,
@@ -194,6 +196,34 @@ namespace EmpireAtWar.Editor.Squadrons
             selectionObject.FindProperty("selectedImage").objectReferenceValue =
                 image.GetComponent<UnityEngine.UI.Image>();
             selectionObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Adds the floating squadron icon; its sprite comes from the squadron's faction data at runtime.</summary>
+        public static void AddWorldIcon(GameObject root)
+        {
+            SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
+            GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform), typeof(Canvas));
+            canvasObject.transform.SetParent(root.transform, false);
+            RectTransform canvasRect = (RectTransform)canvasObject.transform;
+            canvasRect.sizeDelta = Vector2.one;
+            Canvas canvas = canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+
+            GameObject imageObject = new GameObject("IconImage", typeof(RectTransform), typeof(CanvasRenderer),
+                typeof(UnityEngine.UI.Image));
+            imageObject.transform.SetParent(canvasObject.transform, false);
+            RectTransform imageRect = (RectTransform)imageObject.transform;
+            imageRect.anchorMin = Vector2.zero;
+            imageRect.anchorMax = Vector2.one;
+            imageRect.sizeDelta = Vector2.zero;
+            UnityEngine.UI.Image image = imageObject.GetComponent<UnityEngine.UI.Image>();
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+
+            SerializedObject iconObject = new SerializedObject(icon);
+            iconObject.FindProperty("iconCanvas").objectReferenceValue = canvas;
+            iconObject.FindProperty("iconImage").objectReferenceValue = image;
+            iconObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void SetObjectList<T>(Object target, string propertyName, IReadOnlyList<T> values)

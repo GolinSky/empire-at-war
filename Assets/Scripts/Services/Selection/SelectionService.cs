@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Services.Battle
         ISelectionContext EnemySelectionContext { get; }
         void RemoveSelectable(ISelectionContext selectionContext);
         void SelectCurrentShipsByType(ShipType shipType);
+        void SelectCurrentSquadronsByType(SquadronType squadronType);
     }
 
     public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
@@ -87,6 +89,29 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.Model is IShipModelObserver ship &&
                     ship.ShipType == shipType &&
+                    !entity.HealthModel.IsDestroyed &&
+                    entity.TryGetCommand(out IEntitySelectionCommand command))
+                {
+                    _selectionBuffer.Add(new SelectionEntry(entity, command));
+                }
+            }
+
+            if (_selectionBuffer.Count == 0)
+            {
+                return;
+            }
+
+            _lastTappedEntityId = null;
+            SetSelection(PlayerType.Player, _selectionBuffer);
+        }
+
+        public void SelectCurrentSquadronsByType(SquadronType squadronType)
+        {
+            _selectionBuffer.Clear();
+            foreach (IEntity entity in _playerSelectionContext.Entities)
+            {
+                if (entity.Model is ISquadronModelObserver squadron &&
+                    squadron.SquadronType == squadronType &&
                     !entity.HealthModel.IsDestroyed &&
                     entity.TryGetCommand(out IEntitySelectionCommand command))
                 {

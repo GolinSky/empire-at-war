@@ -111,6 +111,13 @@ namespace EmpireAtWar.Views.Factions
                     data.Key));
             }
 
+            foreach (var data in _factionsData.GetSquadronFactionData(_model.FactionType))
+            {
+                AddUi(_unitRequestFactory.ConstructUnitRequest(
+                    data.Value,
+                    data.Key));
+            }
+
             CreateLevelUnit();
 
             foreach (var data in _factionsData.MiningFactionsData)

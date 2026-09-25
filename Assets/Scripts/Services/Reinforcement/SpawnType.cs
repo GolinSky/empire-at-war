@@ -5,5 +5,6 @@ namespace EmpireAtWar.Services.Reinforcement
         Ship = 0,
         MiningFacility = 1,
         DefendPlatform = 2,
+        Squadron = 3,
     }
 }

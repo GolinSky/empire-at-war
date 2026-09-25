@@ -14,6 +14,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         [SerializeField] private AssetReferenceT<AudioClip> hyperSpaceAudioReference;
         [SerializeField] private RandomAudioClips alarmRandomClips;
         [SerializeField] private RandomAudioClips backgroundClips;
+        [SerializeField] private ShipSfxData shipSfx;
         [Header("Weapon fire")]
         [SerializeField] private WeaponAudioView weaponAudioPrefab;
         [SerializeField] private WeaponAudioProfile[] weaponSounds;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         private AudioClip _hyperSpaceAudioClip;
 
         public WeaponAudioView WeaponAudioPrefab => weaponAudioPrefab;
+        public ShipSfxData ShipSfx => shipSfx;
         public float WeaponMinDistance => weaponMinDistance;
         public float WeaponMaxDistance => weaponMaxDistance;
         public float WeaponZoomReferenceHeight => weaponZoomReferenceHeight;

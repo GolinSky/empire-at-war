@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2639120941477586958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2905650185782976014}
+  m_Layer: 0
+  m_Name: HangarLaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2905650185782976014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2639120941477586958}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2827149078899201729}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4629130983973584352
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +262,6 @@ MonoBehaviour:
   - {fileID: 2275949201521092859}
   - {fileID: 1550829152932821404}
   - {fileID: 1090676735051325938}
-  attackOrigin: {fileID: 2827149078899201729}
   useWeaponDamageRange: 1
 --- !u!1 &8846335593221323487
 GameObject:
@@ -279,6 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
+  spawnDestroyedExplosion: 1
 --- !u!1 &8914769984232844324
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,6 +326,7 @@ GameObject:
   - component: {fileID: 4832025680483339946}
   - component: {fileID: 7452272234364217738}
   - component: {fileID: 1883335095933476815}
+  - component: {fileID: 9157349104637764079}
   m_Layer: 0
   m_Name: SeparatistSpaceStationView
   m_TagString: Untagged
@@ -318,6 +350,7 @@ Transform:
   - {fileID: 7000933390098769264}
   - {fileID: 5527200265022332982}
   - {fileID: 3292419954056869680}
+  - {fileID: 2905650185782976014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &8695780329071329118
@@ -458,6 +491,20 @@ MonoBehaviour:
   - {fileID: 1550829152932821404}
   - {fileID: 1090676735051325938}
   shieldView: {fileID: 0}
+--- !u!114 &9157349104637764079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8914769984232844324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb836d356ec0424bbfdd93fd3278b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
+  launchPoint: {fileID: 2905650185782976014}
+  hangarHardPoint: {fileID: 1620864998972290866}
 --- !u!1001 &497502350874413966
 PrefabInstance:
   m_ObjectHideFlags: 0

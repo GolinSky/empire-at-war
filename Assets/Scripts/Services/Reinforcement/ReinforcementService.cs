@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
@@ -36,6 +37,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly InputServiceImpl _inputService;
         private readonly ICameraService _cameraService;
         private readonly ShipFacadeFactory _shipFacadeFactory;
+        private readonly SquadronFactory _squadronFactory;
         private readonly MiningFacilityFacade _miningFacilityFacade;
         private readonly DefendPlatformFacade _defendPlatformFacade;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
@@ -47,6 +49,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
         private ShipType _currentShipType;
+        private SquadronType _currentSquadronType;
         private SpawnType _currentSpawnType;
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
@@ -59,6 +62,7 @@ namespace EmpireAtWar.Services.Reinforcement
             InputServiceImpl inputService,
             ICameraService cameraService,
             ShipFacadeFactory shipFacadeFactory,
+            SquadronFactory squadronFactory,
             MiningFacilityFacade miningFacilityFacade,
             DefendPlatformFacade defendPlatformFacade,
             IReinforcementZonesSystem reinforcementZonesSystem,
@@ -73,6 +77,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _inputService = inputService;
             _cameraService = cameraService;
             _shipFacadeFactory = shipFacadeFactory;
+            _squadronFactory = squadronFactory;
             _miningFacilityFacade = miningFacilityFacade;
             _defendPlatformFacade = defendPlatformFacade;
             _reinforcementZonesSystem = reinforcementZonesSystem;
@@ -145,6 +150,13 @@ namespace EmpireAtWar.Services.Reinforcement
                     ship.OnRelease += HandleShipDestroying;
                     _model.AddUnitCapacity(_currentShipType);
                     break;
+                case SpawnType.Squadron:
+                    SquadronType squadronType = _currentSquadronType;
+                    Squadron squadron = _squadronFactory.Create(PlayerType.Player, squadronType,
+                        spawnPosition, _stationFacingService.GetRotation(PlayerType.Player));
+                    squadron.Released += () => _model.RemoveUnitCapacity(squadronType);
+                    _model.AddUnitCapacity(squadronType);
+                    break;
                 case SpawnType.MiningFacility:
                     MiningFacilityType facilityType = _currentFacilityType;
                     var facility = _miningFacilityFacade.Create(PlayerType.Player, facilityType, spawnPosition);
@@ -194,6 +206,10 @@ namespace EmpireAtWar.Services.Reinforcement
                     _model.UpdateShipData(shipUnitRequest);
                     _model.AddReinforcement(shipUnitRequest);
                     break;
+                case SquadronUnitRequest squadronUnitRequest:
+                    _model.UpdateSquadronData(squadronUnitRequest);
+                    _model.AddReinforcement(squadronUnitRequest);
+                    break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
                     _model.AddReinforcement(miningFacilityUnitRequest);
                     break;
@@ -218,6 +234,10 @@ namespace EmpireAtWar.Services.Reinforcement
             if (Enum.TryParse(id, out ShipType shipType))
             {
                 TrySpawnShip(shipType);
+            }
+            else if (Enum.TryParse(id, out SquadronType squadronType))
+            {
+                TrySpawnSquadron(squadronType);
             }
             else if (Enum.TryParse(id, out MiningFacilityType facilityType))
             {
@@ -245,6 +265,19 @@ namespace EmpireAtWar.Services.Reinforcement
             _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(shipType));
         }
 
+        private void TrySpawnSquadron(SquadronType squadronType)
+        {
+            if (!_model.CanSpawnUnit(squadronType))
+            {
+                _model.InvokeSpawnShipEvent(false);
+                return;
+            }
+
+            StartSpawnSequence(SpawnType.Squadron);
+            _currentSquadronType = squadronType;
+            _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(squadronType));
+        }
+
         private UnitSpawnView CreateSpawnView(UnitSpawnView prefab)
         {
             UnitSpawnView spawnView = Object.Instantiate(prefab);
@@ -263,7 +296,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private bool IsPlacementValid(Vector3 position)
         {
             return _entityLocator.IsStationOperational(PlayerType.Player) &&
-                (_currentSpawnType == SpawnType.Ship
+                (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
                 ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
                 : !_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position));

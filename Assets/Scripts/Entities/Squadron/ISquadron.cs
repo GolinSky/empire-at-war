@@ -8,5 +8,6 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         event Action Released;
         void Guard(IEntity friendly, Vector3 offset);
+        void Hunt();
     }
 }

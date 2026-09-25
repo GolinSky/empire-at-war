@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Controllers.Factions;
@@ -68,6 +69,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .ByNewGameObjectInstaller<UiInstaller>();
 
         Container.BindInterfacesExt<EntityLocator>();
+        Container.BindInterfacesExt<SquadronLauncher>();
         
         
         //todo: use GameModelObserver.PlayerFactionType directly

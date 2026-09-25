@@ -60,7 +60,8 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new UnavailableStructurePlacement(),
-                    new OperationalEntityLocator());
+                    new OperationalEntityLocator(),
+                    null);
 
                 controller.Initialize();
                 controller.Handle(
@@ -120,7 +121,8 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new UnavailableStructurePlacement(),
-                    new OperationalEntityLocator());
+                    new OperationalEntityLocator(),
+                    null);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 string unitId = $"{request.GetType().FullName}:{request.Id}";
@@ -181,7 +183,8 @@ namespace EmpireAtWar.Tests.Editor
                 new EnemyUnitLimitModel(),
                 null,
                 structurePlacement,
-                new OperationalEntityLocator());
+                new OperationalEntityLocator(),
+                null);
 
             controller.Initialize();
             controller.Initialize();
