@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
@@ -159,7 +160,9 @@ namespace EmpireAtWar.Ship
                     }
                 case PlayerType.Opponent:
                     {
-
+                        Container.BindInterfacesAndSelfTo<FogVisibilityComponent>()
+                            .FromComponentsInHierarchy()
+                            .AsCached();
                         break;
                     }
             }

@@ -352,6 +352,7 @@ GameObject:
   - component: {fileID: 610844954276393758}
   - component: {fileID: 6126908283790093480}
   - component: {fileID: 6364280548870715902}
+  - component: {fileID: 4720638076889477624}
   m_Layer: 0
   m_Name: ProvidenceShipView
   m_TagString: Untagged
@@ -600,6 +601,41 @@ MonoBehaviour:
   - {fileID: 6238289069403358111}
   - {fileID: 2758428850559181635}
   shieldView: {fileID: 8271189283194253625}
+--- !u!114 &4720638076889477624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383908866047400070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 3530062372041149202}
+  - {fileID: 7032009893753730358}
+  - {fileID: 1446201877261544308}
+  - {fileID: 3930570282336629676}
+  hardPoints:
+  - {fileID: 1703437220725225568}
+  - {fileID: 7412672128366562265}
+  - {fileID: 4196232483051505411}
+  - {fileID: 6461027925416237864}
+  - {fileID: 446661469751898550}
+  - {fileID: 8216619273078452993}
+  - {fileID: 8751790896532007645}
+  - {fileID: 2920684144473612798}
+  - {fileID: 1715299266490821257}
+  - {fileID: 196329571885336484}
+  - {fileID: 4051311326726906740}
+  - {fileID: 6195188883714117337}
+  - {fileID: 1622308249098015778}
+  - {fileID: 6031658977657759008}
+  - {fileID: 4600017003600548054}
+  - {fileID: 6238289069403358111}
+  - {fileID: 2758428850559181635}
 --- !u!1 &3465945970353732921
 GameObject:
   m_ObjectHideFlags: 0
@@ -3086,6 +3122,12 @@ PrefabInstance:
       addedObject: {fileID: 7835449841130210889}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ebda68e096499f4a93f35798ef2c8f3, type: 3}
+--- !u!23 &7032009893753730358 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7635826562936255635, guid: 4ebda68e096499f4a93f35798ef2c8f3,
+    type: 3}
+  m_PrefabInstance: {fileID: 8619519766547693147}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8076105261581146544 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4ebda68e096499f4a93f35798ef2c8f3,

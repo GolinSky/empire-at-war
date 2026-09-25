@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 7481609047627630163}
   - component: {fileID: 7194699224708189319}
   - component: {fileID: 4166981062735255513}
+  - component: {fileID: 122418962115332479}
   m_Layer: 0
   m_Name: MunificentShipView
   m_TagString: Untagged
@@ -387,6 +388,34 @@ MonoBehaviour:
   - {fileID: 2332046382789699452}
   - {fileID: 5076323153315440972}
   shieldView: {fileID: 8605334506803800795}
+--- !u!114 &122418962115332479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5651266934280829786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 6177930098472041687}
+  - {fileID: 894832207088223828}
+  - {fileID: 6865471333153544608}
+  - {fileID: 3266166978511449973}
+  - {fileID: 3485545602505991803}
+  - {fileID: 3784444074786861726}
+  - {fileID: 7816365578834819367}
+  - {fileID: 8112101386715020215}
+  - {fileID: 3679682056592292513}
+  hardPoints:
+  - {fileID: 600897578550753641}
+  - {fileID: 4063173650901525246}
+  - {fileID: 7249564750223754445}
+  - {fileID: 2332046382789699452}
+  - {fileID: 5076323153315440972}
 --- !u!1 &6988587151254960236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1336,9 +1365,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64333c4e9ab351f4ba631db128e2cdc2, type: 3}
+--- !u!23 &894832207088223828 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5851756792361267752, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3266166978511449973 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1149181631115322615, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3485545602505991803 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7854750165808566791, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3784444074786861726 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7627834700685248226, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6544910686223586199 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6865471333153544608 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 151298468156026332, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7816365578834819367 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3542019525764746587, guid: 64333c4e9ab351f4ba631db128e2cdc2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6727965435259434108}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8112101386715020215 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3300419246619922379, guid: 64333c4e9ab351f4ba631db128e2cdc2,
     type: 3}
   m_PrefabInstance: {fileID: 6727965435259434108}
   m_PrefabAsset: {fileID: 0}

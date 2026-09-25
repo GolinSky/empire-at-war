@@ -1,6 +1,7 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -72,6 +73,10 @@ namespace EmpireAtWar
             Container.BindInterfacesAndSelfTo<SelectionComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+            if (_playerType == PlayerType.Opponent)
+                Container.BindInterfacesAndSelfTo<FogVisibilityComponent>()
+                    .FromComponentsInHierarchy()
+                    .AsCached();
             
             //entity commands
             Container

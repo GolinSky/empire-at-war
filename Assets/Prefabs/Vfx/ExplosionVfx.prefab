@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 679264288381096544}
   - component: {fileID: 4512357853715943265}
   - component: {fileID: 8945311068636919721}
+  - component: {fileID: 6307781649551483135}
   m_Layer: 0
   m_Name: ExplosionVfx
   m_TagString: Untagged
@@ -4847,7 +4848,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &8945311068636919721
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4863,6 +4864,11 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4884,9 +4890,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4918,7 +4926,25 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
+--- !u!114 &6307781649551483135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992365165172597046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1f77739b775a0d40a2024d0bc51040d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.ExplosionVfx
+  particles: {fileID: 4512357853715943265}
+  renderers:
+  - {fileID: 8945311068636919721}
+  - {fileID: 1580344407696899342}
+  - {fileID: 6319131072980782351}
+  - {fileID: 1921347165668188639}
+  - {fileID: 1921347165668188637}
 --- !u!1 &4359382391685289382
 GameObject:
   m_ObjectHideFlags: 0
@@ -9822,7 +9848,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &6319131072980782351
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9838,6 +9864,11 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9859,9 +9890,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -9893,7 +9926,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!114 &752698828592070460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14702,7 +14734,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &1580344407696899342
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -14718,6 +14750,11 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -14739,9 +14776,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -14773,7 +14812,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!114 &2732896186892252039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14890,6 +14928,18 @@ PrefabInstance:
 --- !u!4 &1921347165652950335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 1732f8aca45b0d1468c617e0b551a5e8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1921347165653075901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &1921347165668188637 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19900000, guid: 1732f8aca45b0d1468c617e0b551a5e8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1921347165653075901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!199 &1921347165668188639 stripped
+ParticleSystemRenderer:
+  m_CorrespondingSourceObject: {fileID: 19900002, guid: 1732f8aca45b0d1468c617e0b551a5e8,
     type: 3}
   m_PrefabInstance: {fileID: 1921347165653075901}
   m_PrefabAsset: {fileID: 0}
