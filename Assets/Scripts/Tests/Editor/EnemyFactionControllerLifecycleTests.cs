@@ -27,8 +27,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
-            EnemyFactionData model =
-                ScriptableObject.CreateInstance<EnemyFactionData>();
+            EnemyFactionModel model =
+                new EnemyFactionModel(null, FactionType.Republic);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -80,7 +80,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(model);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -88,8 +87,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds()
         {
-            EnemyFactionData model =
-                ScriptableObject.CreateInstance<EnemyFactionData>();
+            EnemyFactionModel model =
+                new EnemyFactionModel(null, FactionType.Republic);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -158,7 +157,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(model);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -166,38 +164,31 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Initialize_ResetsStructurePlacementStateOncePerBattle()
         {
-            EnemyFactionData model =
-                ScriptableObject.CreateInstance<EnemyFactionData>();
+            EnemyFactionModel model =
+                new EnemyFactionModel(null, FactionType.Republic);
 
-            try
-            {
-                TrackingStructurePlacement structurePlacement =
-                    new TrackingStructurePlacement();
-                EnemyFactionController controller = new EnemyFactionController(
-                    model,
-                    null,
-                    null,
-                    null,
-                    new TimerPoolService(),
-                    new TrackingEconomyProvider(),
-                    null,
-                    null,
-                    new EnemyUnitLimitModel(),
-                    null,
-                    structurePlacement,
-                    new OperationalEntityLocator());
+            TrackingStructurePlacement structurePlacement =
+                new TrackingStructurePlacement();
+            EnemyFactionController controller = new EnemyFactionController(
+                model,
+                null,
+                null,
+                null,
+                new TimerPoolService(),
+                new TrackingEconomyProvider(),
+                null,
+                null,
+                new EnemyUnitLimitModel(),
+                null,
+                structurePlacement,
+                new OperationalEntityLocator());
 
-                controller.Initialize();
-                controller.Initialize();
+            controller.Initialize();
+            controller.Initialize();
 
-                Assert.That(structurePlacement.ResetCount, Is.EqualTo(1));
+            Assert.That(structurePlacement.ResetCount, Is.EqualTo(1));
 
-                controller.LateDispose();
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(model);
-            }
+            controller.LateDispose();
         }
 
         private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService

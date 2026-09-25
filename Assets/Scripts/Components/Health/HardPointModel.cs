@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
 
@@ -12,11 +12,11 @@ namespace EmpireAtWar.Models.Health
         public HardPointType HardPointType { get; }
 
         private float _originHealth;
-        private float _health;
         public event Action OnHardPointHealthChanged;
         public float HealthPercentage { get; private set; } = 1f;
 
-        public float Health => _health;
+        public float Health { get; private set; }
+        public float HullDamageMultiplier { get; private set; }
         public bool IsDestroyed => HealthPercentage <= 0f;
 
         public HardPointModel(int id, HardPointType hardPointType)
@@ -25,33 +25,21 @@ namespace EmpireAtWar.Models.Health
             HardPointType = hardPointType;
         }
 
-        public void SetHealth(float health)
+        public void SetHealth(float health, float hullDamageMultiplier)
         {
             Generation++;
             _originHealth = health;
-            _health = health;
+            Health = health;
+            HullDamageMultiplier = hullDamageMultiplier;
             HealthPercentage = health <= 0f ? 0f : 1f;
             OnHardPointHealthChanged?.Invoke();
         }
 
         public void ApplyDamage(float damage)
         {
-            _health -= damage;
-            HealthPercentage = _originHealth <= 0f ? 0f : _health / _originHealth;
+            Health = Math.Max(0f, Health - damage);
+            HealthPercentage = _originHealth <= 0f ? 0f : Health / _originHealth;
             OnHardPointHealthChanged?.Invoke();
-        }
-
-        public float TryApplyDamage(float damage)
-        {
-            if (_health >= damage)
-            {
-                ApplyDamage(damage);
-                return 0.0f;
-            }
-
-            float damageLeft = damage - _health;
-            ApplyDamage(_health);
-            return damageLeft;
         }
     }
 }

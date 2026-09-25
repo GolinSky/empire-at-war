@@ -56,20 +56,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: EnemyFactionData
-      value:
-        m_AssetGUID: 101b5ddd7be8a4245b61329bea6fba64
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: PlayerFactionData
-      value:
-        m_AssetGUID: 17ab4ced609e6054986bf57e44a51fc4
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: EconomyData
       value:
         m_AssetGUID: 187f1cf1c603ee8408343a2b1c03b426
@@ -542,6 +528,20 @@ MonoBehaviour:
     - key: ShipAbilityCatalog
       value:
         m_AssetGUID: 31c98b17b46b374458ba8be0c72dff8f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ThrantaShipData
+      value:
+        m_AssetGUID: 5ce2c057b641be14fb1ec8cb5304b8ef
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ThrantaShipView
+      value:
+        m_AssetGUID: d67ee971a66b0ae4b9242ecb0497df01
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

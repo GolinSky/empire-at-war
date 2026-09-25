@@ -14,7 +14,8 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter
+    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
+        IWeaponFireEvents
     {
         private struct TargetCandidate
         {
@@ -30,12 +31,12 @@ namespace EmpireAtWar.Components.Weapon
             public Vector3 Position;
         }
 
-        [SerializeField] private List<WeaponHardPointView> hardPoints;
-        [SerializeField] private Transform attackOrigin;
+        [SerializeField] private List<WeaponHardPoint> hardPoints;
         [SerializeField] private bool useWeaponDamageRange;
         
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
+        [Inject] private ImpactEffectPresenter _impactPresenter;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
@@ -43,12 +44,14 @@ namespace EmpireAtWar.Components.Weapon
         private readonly Dictionary<IHardPointModel, Action> _unitDestroyedHandlers = new Dictionary<IHardPointModel, Action>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<TargetSelectionCandidate> _targetSelectionCandidates = new List<TargetSelectionCandidate>();
+        private readonly List<Vector2> _turnArcs = new List<Vector2>();
+        private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
-        private float _nextFireTime = 0f;
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
         private bool _isReleased;
         public float AttackDistance => Model.OptimalAttackRange;
+        public event Action<WeaponProfile, Transform> ShotEmitted;
 
 
         [Inject]
@@ -66,9 +69,11 @@ namespace EmpireAtWar.Components.Weapon
                 Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => hardPoint.WeaponType));
             }
 
-            foreach (WeaponHardPointView hardPoint in hardPoints)
+            foreach (WeaponHardPoint hardPoint in hardPoints)
             {
-                hardPoint.SetData(Model.ProjectileModel.GetData(hardPoint.WeaponType), Model.OptimalAttackRange, this, _attackCoordinator);
+                hardPoint.SetData(Model.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, Model.MissSpread,
+                    this, _attackCoordinator, _modifiers, _impactPresenter);
+                hardPoint.ShotEmitted += OnShotEmitted;
             }
         }
 
@@ -86,8 +91,9 @@ namespace EmpireAtWar.Components.Weapon
 
             _isReleased = true;
             _attackCoordinator.Unregister(this);
-            foreach (WeaponHardPointView hardPoint in hardPoints)
+            foreach (WeaponHardPoint hardPoint in hardPoints)
             {
+                hardPoint.ShotEmitted -= OnShotEmitted;
                 hardPoint.ReleaseAttackSequence();
             }
 
@@ -105,6 +111,11 @@ namespace EmpireAtWar.Components.Weapon
             _targetPositions.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
+        }
+
+        private void OnShotEmitted(WeaponProfile profile, Transform muzzle)
+        {
+            if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle);
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)
@@ -148,6 +159,21 @@ namespace EmpireAtWar.Components.Weapon
             return distance <= Model.OptimalAttackRange;
         }
 
+        public float GetFiringTurnAngle(Vector3 targetPosition)
+        {
+            _turnArcs.Clear();
+            foreach (WeaponHardPoint hardPoint in hardPoints)
+            {
+                if (hardPoint.IsDestroyed) continue;
+                Transform weaponTransform = hardPoint.transform;
+                Quaternion aim = Quaternion.LookRotation(targetPosition - weaponTransform.position, Vector3.up);
+                float localYaw = Mathf.DeltaAngle(0f, (Quaternion.Inverse(weaponTransform.parent.rotation) * aim).eulerAngles.y);
+                _turnArcs.Add(new Vector2(localYaw - hardPoint.MaxYaw, localYaw - hardPoint.MinYaw));
+            }
+
+            return _facingSolver.FindTurn(_turnArcs);
+        }
+
         public void ResetTarget()
         {
             AttackData previousMain = _mainAttackData;
@@ -164,13 +190,10 @@ namespace EmpireAtWar.Components.Weapon
             if (_isReleased)
                 return;
 
-            if (Time.time < _nextFireTime)
-                return;
-
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
 
-            WeaponHardPointView weapon = hardPoints[_currentWeaponIndex];
+            WeaponHardPoint weapon = hardPoints[_currentWeaponIndex];
             if (!weapon.IsDestroyed && !weapon.IsBusy)
             {
                 _attackCoordinator.QueueTargetSelection(this, weapon);
@@ -185,7 +208,7 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        internal IReadOnlyList<TargetSelectionCandidate> CaptureTargetSelection(WeaponHardPointView weapon,
+        internal IReadOnlyList<TargetSelectionCandidate> CaptureTargetSelection(WeaponHardPoint weapon,
             out int targetVersion, out Vector3 origin, out Quaternion parentRotation)
         {
             _targetPositions.Clear();
@@ -195,7 +218,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
-                if (candidate.Group.IsDestroyed || candidate.Unit.IsDestroyed)
+                if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
@@ -221,7 +244,7 @@ namespace EmpireAtWar.Components.Weapon
             return _targetSelectionCandidates;
         }
 
-        private bool TryFireWeapon(WeaponHardPointView weapon)
+        private bool TryFireWeapon(WeaponHardPoint weapon)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.WeaponTryFire.Auto())
@@ -239,7 +262,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
-                if (candidate.Group.IsDestroyed || candidate.Unit.IsDestroyed)
+                if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
@@ -278,7 +301,7 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        internal void CommitTargetSelection(WeaponHardPointView weapon, int targetVersion,
+        internal void CommitTargetSelection(WeaponHardPoint weapon, int targetVersion,
             WeaponTargetSelectionJob.Result result, TargetSelectionCandidate selectedCandidate)
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
@@ -300,14 +323,12 @@ namespace EmpireAtWar.Components.Weapon
 
             weapon.ApplyAim(ToQuaternion(result.SelectedAim));
             weapon.Attack(selectedCandidate.Group, selectedCandidate.Unit);
-            _nextFireTime = Time.time + Model.DelayBetweenAttack * _modifiers.FireDelayMultiplier;
         }
 
-        internal void CommitTargetSelectionSerial(WeaponHardPointView weapon)
+        internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
         {
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
-            if (!TryFireWeapon(weapon)) return;
-            _nextFireTime = Time.time + Model.DelayBetweenAttack * _modifiers.FireDelayMultiplier;
+            TryFireWeapon(weapon);
         }
 
         private void Subscribe(AttackData group)
@@ -370,10 +391,10 @@ namespace EmpireAtWar.Components.Weapon
         {
             List<IHardPointModel> units = group.Units;
             for (int i = 0; i < units.Count; i++)
-                if (!units[i].IsDestroyed)
+                if (group.CanTarget(units[i]))
                 {
                     _orderedCandidates.Add(new TargetCandidate { Group = group, Unit = units[i] });
-                    if (_unitDestroyedHandlers.ContainsKey(units[i])) continue;
+                    if (units[i].IsDestroyed || _unitDestroyedHandlers.ContainsKey(units[i])) continue;
                     IHardPointModel unit = units[i];
                     Action handler = () => OnUnitDestroyed(unit);
                     _unitDestroyedHandlers.Add(unit, handler);
@@ -381,16 +402,11 @@ namespace EmpireAtWar.Components.Weapon
                 }
         }
 
+        // Rebuild instead of removing one candidate: the last destroyed hardpoint turns the ship into a wreck target.
         private void OnUnitDestroyed(IHardPointModel unit)
         {
-            Action handler = _unitDestroyedHandlers[unit];
-            unit.OnDestroyed -= handler;
-            _unitDestroyedHandlers.Remove(unit);
-            for (int i = _orderedCandidates.Count - 1; i >= 0; i--)
-                if (ReferenceEquals(_orderedCandidates[i].Unit, unit))
-                    _orderedCandidates.RemoveAt(i);
             AttackSequenceDiagnostics.RecordTargetInvalidation();
-            _targetVersion++;
+            RebuildCandidates();
         }
 
         private Vector3 GetTargetPosition(IHardPointModel unit)
@@ -402,32 +418,30 @@ namespace EmpireAtWar.Components.Weapon
             return position;
         }
         
-        public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, float attackDelay)
+        public bool RollHit(AttackData attackData, WeaponProfile profile) =>
+            Model.RollHit(profile.DamageType, attackData.TargetClass);
+
+        public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay)
         {
             if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
-            _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel, weaponType, attackDelay);
+            _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel,
+                profile.Damage * _modifiers.DamageMultiplier, profile.DamageType, attackDelay);
         }
 
-        public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, WeaponType weaponType, int targetId)
+        public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,
+            DamageType damageType, int targetId)
         {
             if (_isReleased || hardPointModel.Id != targetId || !IsTargetValid(attackData, hardPointModel))
             {
                 return false;
             }
 
-            ApplyDamageInternal(attackData, weaponType, targetId, GetDistance(hardPointModel.Position));
+            attackData.ApplyDamage(damage, damageType, targetId);
             return true;
         }
 
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>
-            !attackData.IsDestroyed && !hardPointModel.IsDestroyed && attackData.Contains(hardPointModel);
-        
-        private void ApplyDamageInternal(AttackData attackData, WeaponType weaponType, int id, float distance)
-        {
-            attackData.ApplyDamage(Model.GetDamage(weaponType,distance) * _modifiers.DamageMultiplier, weaponType, id);
-        }
-        private float GetDistance(Vector3 targetPosition) =>
-            Vector3.Distance(attackOrigin == null ? transform.position : attackOrigin.position, targetPosition);
+            attackData.CanTarget(hardPointModel) && attackData.Contains(hardPointModel);
 
         private static Quaternion ToQuaternion(Unity.Mathematics.float4 value) =>
             new Quaternion(value.x, value.y, value.z, value.w);

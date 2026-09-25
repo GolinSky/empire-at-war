@@ -149,8 +149,10 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroy;
             public event Action OnValueChanged;
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
-            public float Armor => 1f;
-            public float ArmorPercentage => 1f;
+            public float Hull => 1f;
+            public ShipClass ShipClass => ShipClass.Capital;
+            public bool HasLiveHardPoints => true;
+            public float HullPercentage => 1f;
             public float Shields => _shieldPercentage;
             public float ShieldPercentage => _shieldPercentage;
             public bool IsDestroyed => false;

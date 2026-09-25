@@ -43,6 +43,12 @@ namespace EmpireAtWar.SceneContext
             Container.BindScriptableObject<EconomyData>(Repository);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Container.Bind<EnemyEconomyDebugView>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle()
+                .NonLazy();
+#endif
 
             
             SceneContext.Container
@@ -55,10 +61,21 @@ namespace EmpireAtWar.SceneContext
                 .WithId(PlayerType.Opponent)
                 .FromMethod(()=>Container.Resolve<IEconomyProvider>());
 
-            ModelDependencyBuilder
-                .ConstructBuilder(Container)
-                .BindFromNewScriptable<EnemyFactionData>(Repository, PlayerType.Opponent);
-            
+            SceneContext.Container
+                .Bind<IEnemyReinforcementObserver>()
+                .FromMethod(()=>Container.Resolve<IEnemyReinforcementObserver>());
+
+            // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
+            FactionType enemyFactionType = Container.ResolveId<FactionType>(PlayerType.Opponent);
+            Container
+                .Bind<EnemyFactionModel>()
+                .AsSingle()
+                .WithArguments(enemyFactionType);
+            Container
+                .BindInterfacesAndSelfTo<FactionResearchModel>()
+                .AsSingle()
+                .WithArguments(enemyFactionType);
+
             
             SceneContext.Container
                 .Bind<IBuildShipChain>()

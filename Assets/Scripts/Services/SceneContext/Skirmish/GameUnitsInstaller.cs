@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.MiningFacility;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ship;
@@ -25,7 +26,13 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
                 .NonLazy();
-    
+
+            Container
+                .BindFactory<PlayerType, SquadronType, Vector3, Quaternion, Squadron, SquadronFactory>()
+                .FromSubContainerResolve()
+                .ByNewContextPrefab<SquadronInstaller>(GetPath<SquadronInstaller>())
+                .NonLazy();
+
             Container
                 .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationFacade>()
                 .FromSubContainerResolve()

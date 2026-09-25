@@ -3,7 +3,9 @@ using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Ship;
 using UnityEngine;
@@ -50,7 +52,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results)
         {
-            if (!(selected.Entity.Model is IShipModelObserver selectedShip))
+            if (!IsUnit(selected.Entity.Model))
             {
                 return;
             }
@@ -61,8 +63,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.Id == selected.Entity.Id ||
                     entity.HealthModel.IsDestroyed ||
                     entity.PlayerType != selected.Entity.PlayerType ||
-                    !(entity.Model is IShipModelObserver ship) ||
-                    ship.ShipType != selectedShip.ShipType ||
+                    !IsSameUnitType(selected.Entity.Model, entity.Model) ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command))
                 {
                     continue;
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
-                    !(entity.Model is IShipModelObserver) ||
+                    !IsUnit(entity.Model) ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command))
                 {
                     continue;
@@ -94,7 +95,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
-                    !(entity.Model is IShipModelObserver) ||
+                    !IsUnit(entity.Model) ||
                     !entity.TryGetCommand(out IEntitySelectionCommand command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {
@@ -152,6 +153,18 @@ namespace EmpireAtWar.Services.Battle
             {
                 results.Add(_marqueeResults[i].Entry);
             }
+        }
+
+        private static bool IsUnit(IModelObserver model) =>
+            model is IShipModelObserver || model is ISquadronModelObserver;
+
+        private static bool IsSameUnitType(IModelObserver first, IModelObserver second)
+        {
+            if (first is IShipModelObserver firstShip)
+                return second is IShipModelObserver secondShip && firstShip.ShipType == secondShip.ShipType;
+            return first is ISquadronModelObserver firstSquadron &&
+                   second is ISquadronModelObserver secondSquadron &&
+                   firstSquadron.SquadronType == secondSquadron.SquadronType;
         }
 
         private readonly struct MarqueeCandidate

@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80570a966a2561e40988d666f78ab288, type: 3}
+  m_Name: DamageMatrixData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.AttackComponent.DamageMatrixData
+  damageTypes:
+  - damageType: 0
+    damage:
+      fighter: 1.5
+      bomber: 1.5
+      corvette: 1
+      frigate: 0.5
+      capital: 0.25
+      heavyCapital: 0.2
+      structure: 0.25
+    accuracy:
+      fighter: 0.8
+      bomber: 0.8
+      corvette: 0.9
+      frigate: 0.95
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 0.5
+    shieldPiercing: 0
+  - damageType: 1
+    damage:
+      fighter: 2
+      bomber: 2
+      corvette: 0.3
+      frigate: 0.1
+      capital: 0.05
+      heavyCapital: 0.05
+      structure: 0.05
+    accuracy:
+      fighter: 0.9
+      bomber: 0.9
+      corvette: 0.9
+      frigate: 0.95
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 0.25
+    shieldPiercing: 0
+  - damageType: 2
+    damage:
+      fighter: 0.3
+      bomber: 0.3
+      corvette: 1
+      frigate: 1
+      capital: 0.9
+      heavyCapital: 0.8
+      structure: 1
+    accuracy:
+      fighter: 0.25
+      bomber: 0.25
+      corvette: 0.6
+      frigate: 0.85
+      capital: 0.95
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 0
+  - damageType: 3
+    damage:
+      fighter: 0.1
+      bomber: 0.1
+      corvette: 0.5
+      frigate: 1
+      capital: 1.25
+      heavyCapital: 1.25
+      structure: 1.25
+    accuracy:
+      fighter: 0.05
+      bomber: 0.05
+      corvette: 0.35
+      frigate: 0.75
+      capital: 0.9
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 0
+  - damageType: 4
+    damage:
+      fighter: 0
+      bomber: 0
+      corvette: 0.1
+      frigate: 0.1
+      capital: 0.1
+      heavyCapital: 0.1
+      structure: 0.1
+    accuracy:
+      fighter: 0.1
+      bomber: 0.1
+      corvette: 0.5
+      frigate: 0.85
+      capital: 0.95
+      heavyCapital: 1
+      structure: 1
+    vsShield: 3
+    shieldPiercing: 0
+  - damageType: 5
+    damage:
+      fighter: 0.5
+      bomber: 0.5
+      corvette: 1.5
+      frigate: 0.6
+      capital: 0.3
+      heavyCapital: 0.2
+      structure: 0.4
+    accuracy:
+      fighter: 0.6
+      bomber: 0.6
+      corvette: 0.9
+      frigate: 0.95
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 1
+  - damageType: 6
+    damage:
+      fighter: 0.1
+      bomber: 0.1
+      corvette: 0.75
+      frigate: 1
+      capital: 1.25
+      heavyCapital: 1.5
+      structure: 1.25
+    accuracy:
+      fighter: 0.05
+      bomber: 0.05
+      corvette: 0.5
+      frigate: 0.9
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 1
+  - damageType: 7
+    damage:
+      fighter: 0.5
+      bomber: 0.5
+      corvette: 1
+      frigate: 1.5
+      capital: 1.5
+      heavyCapital: 1.5
+      structure: 1.5
+    accuracy:
+      fighter: 1
+      bomber: 1
+      corvette: 1
+      frigate: 1
+      capital: 1
+      heavyCapital: 1
+      structure: 1
+    vsShield: 1
+    shieldPiercing: 0
+  missSpread: 6

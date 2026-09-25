@@ -7,12 +7,15 @@
         DualHeavyTurboLaser = 3,
         MediumTurboLaser = 4,
         DualMediumTurboLaser = 5,
-        PhotonTorpedo = 6,
+        ProtonTorpedo = 6,
         DualLaser = 7,
         Laser = 8,
         DualHeavyTurboLaserDby827 = 9,
         IonCannon = 10,
         HeavyIonCannon = 11,
         LaserBeam = 12,
+        ConcussionMissile = 13,
+        PointDefense = 14,
+        FighterLaser = 15,
     }
 }

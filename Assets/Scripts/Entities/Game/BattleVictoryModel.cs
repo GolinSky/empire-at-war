@@ -5,8 +5,6 @@ namespace EmpireAtWar.Entities.Game
 {
     public sealed class BattleVictoryModel : PureModel
     {
-        private bool _hasObservedPlayerFleet;
-        private bool _hasObservedEnemyFleet;
         private bool _hasObservedPlayerBase;
         private bool _hasObservedEnemyBase;
 
@@ -15,7 +13,8 @@ namespace EmpireAtWar.Entities.Game
             int playerShipCount,
             int enemyShipCount,
             bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive)
+            bool isEnemyBaseAlive,
+            bool hasEnemyPendingReinforcement)
         {
             if (playerShipCount < 0)
             {
@@ -27,25 +26,36 @@ namespace EmpireAtWar.Entities.Game
                 throw new ArgumentOutOfRangeException(nameof(enemyShipCount));
             }
 
-            _hasObservedPlayerFleet |= playerShipCount > 0;
-            _hasObservedEnemyFleet |= enemyShipCount > 0;
             _hasObservedPlayerBase |= isPlayerBaseAlive;
             _hasObservedEnemyBase |= isEnemyBaseAlive;
 
             return victoryCondition switch
             {
                 BattleVictoryCondition.DestroyEnemyFleet =>
-                    EvaluateFleetOutcome(playerShipCount, enemyShipCount),
+                    EvaluateFleetOutcome(
+                        playerShipCount,
+                        enemyShipCount,
+                        isPlayerBaseAlive,
+                        isEnemyBaseAlive,
+                        hasEnemyPendingReinforcement),
                 BattleVictoryCondition.DestroyOpponentBase =>
                     EvaluateBaseOutcome(isPlayerBaseAlive, isEnemyBaseAlive),
                 _ => throw new ArgumentOutOfRangeException(nameof(victoryCondition))
             };
         }
 
-        private BattleOutcome EvaluateFleetOutcome(int playerShipCount, int enemyShipCount)
+        // A side is wiped out only when its ships and station are gone; the enemy must also have no
+        // queued reinforcements left. The player cannot deploy reinforcements without a station.
+        private BattleOutcome EvaluateFleetOutcome(
+            int playerShipCount,
+            int enemyShipCount,
+            bool isPlayerBaseAlive,
+            bool isEnemyBaseAlive,
+            bool hasEnemyPendingReinforcement)
         {
-            bool isPlayerDefeated = _hasObservedPlayerFleet && playerShipCount == 0;
-            bool isEnemyDefeated = _hasObservedEnemyFleet && enemyShipCount == 0;
+            bool isPlayerDefeated = _hasObservedPlayerBase && !isPlayerBaseAlive && playerShipCount == 0;
+            bool isEnemyDefeated = _hasObservedEnemyBase && !isEnemyBaseAlive && enemyShipCount == 0 &&
+                !hasEnemyPendingReinforcement;
             return ResolveOutcome(isPlayerDefeated, isEnemyDefeated);
         }
 

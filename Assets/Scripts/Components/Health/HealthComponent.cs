@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
@@ -19,23 +18,20 @@ namespace EmpireAtWar.Components.Ship.Health
 {
     public interface IHealthComponent : IComponent
     {
-        void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId);
+        void ApplyDamage(float damage, DamageType damageType, int shipUnitId);
         bool Equal(IHealthModelObserver modelObserver);
-        void SetMovementState(bool isMoving);
         bool Destroyed { get; }
         IHealthModelObserver HealthModelObserver { get; }
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, ITickable
+        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable
     {
-        [field: SerializeField] public List<HardPointView> ShipUnits { get; set; }
-        [SerializeField] private ShieldView shieldView;
+        [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
+        [SerializeField] private Shield shieldView;
 
         private ITimer _refreshShieldsTimer;
-        private bool _isMoving;
-        private float _originShieldValue;
-        private Coroutine _shieldsAnimatedCoroutine;
+        private ShieldComponent _shield;
         private bool _isReleased;
         private IEntityLifecycle _entityLifecycle;
         private CombatModifiers _modifiers;
@@ -57,14 +53,16 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
+        public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.HardPointModels;
-        public float Armor => Model.Armor;
-        public float ArmorPercentage => Model.ArmorPercentage;
+        public float Hull => Model.Hull;
+        public float HullPercentage => Model.HullPercentage;
         public float Shields => Model.Shields;
         public float ShieldPercentage => Model.ShieldPercentage;
         public bool IsDestroyed => Model.IsDestroyed;
         public bool IsLostShieldGenerator => Model.IsLostShieldGenerator;
         public bool HasUnits => Model.HasUnits;
+        public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
         public PlayerType PlayerType => _playerType;
         public Transform Transform => _viewTransform;
@@ -87,15 +85,14 @@ namespace EmpireAtWar.Components.Ship.Health
         public void Initialize()
         {
             InitializeHardPoints();
-            _originShieldValue = Model.Shields;
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
-            Model.OnValueChanged += UpdateData;
             Model.OnDestroy += HandleDestroy;
 
             if (shieldView != null)
             {
-                _shieldsAnimatedCoroutine = StartCoroutine(AnimateShields());
+                _shield = new ShieldComponent(this, shieldView);
+                _shield.Initialize();
             }
         }
 
@@ -112,12 +109,11 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             _isReleased = true;
-            Model.OnValueChanged -= UpdateData;
             Model.OnDestroy -= HandleDestroy;
 
-            if (_shieldsAnimatedCoroutine != null)
+            if (_shield != null)
             {
-                StopCoroutine(_shieldsAnimatedCoroutine);
+                _shield.Dispose();
             }
 
             if (_hardPointAdapters == null)
@@ -131,14 +127,9 @@ namespace EmpireAtWar.Components.Ship.Health
             }
         }
 
-        public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
+        public void ApplyDamage(float damage, DamageType damageType, int shipUnitId)
         {
-            Model.ApplyDamage(damage, weaponType, _isMoving, shipUnitId);
-        }
-
-        public void SetMovementState(bool isMoving)
-        {
-            _isMoving = isMoving;
+            Model.ApplyDamage(damage, damageType, shipUnitId);
         }
 
         public bool Equal(IHealthModelObserver modelObserver)
@@ -148,7 +139,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public void Tick()
         {
-            if (!Model.IsLostShieldGenerator && Model.Shields < _originShieldValue &&
+            if (!Model.IsLostShieldGenerator && Model.Shields < Model.MaxShields &&
                 _refreshShieldsTimer.IsComplete)
             {
                 Model.RegenerateShields(Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier);
@@ -156,6 +147,10 @@ namespace EmpireAtWar.Components.Ship.Health
             }
         }
 
+        /// <summary>
+        /// Live hardpoints of the requested type (or all live ones when none match).
+        /// Once every hardpoint is destroyed the wrecks stay targetable so the hull can still be finished off.
+        /// </summary>
         public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
         {
             IHardPointModel[] currentHardPoints = _hardPointAdapters
@@ -164,7 +159,7 @@ namespace EmpireAtWar.Components.Ship.Health
                 .ToArray();
             if (currentHardPoints.Length == 0)
             {
-                return null;
+                return _hardPointAdapters.Cast<IHardPointModel>().ToArray();
             }
 
             if (hardPointType == HardPointType.Any ||
@@ -184,12 +179,12 @@ namespace EmpireAtWar.Components.Ship.Health
             _hardPointAdapters = new HardPointAdapter[ShipUnits.Count];
             for (int index = 0; index < ShipUnits.Count; index++)
             {
-                IHardPointView hardPointView = ShipUnits[index];
+                IHardPoint hardPoint = ShipUnits[index];
                 HardPointModel hardPointModel = new HardPointModel(
-                    hardPointView.Id,
-                    hardPointView.HardPointType);
+                    hardPoint.Id,
+                    hardPoint.HardPointType);
                 hardPointModels[index] = hardPointModel;
-                _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPointView);
+                _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPoint);
             }
 
             Model.InitializeHardPoints(hardPointModels);
@@ -201,25 +196,18 @@ namespace EmpireAtWar.Components.Ship.Health
             Release();
         }
 
-        private IEnumerator AnimateShields()
+        public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType damageType)
         {
-            while (!Model.IsDestroyed && !Model.IsLostShieldGenerator)
-            {
-                if (shieldView.IsVisibleToCamera && Model.Shields > 0f)
-                {
-                    shieldView.AnimateTextureOffset();
-                }
-
-                yield return new WaitForEndOfFrame();
-            }
+            return !_isReleased && _shield != null && Model.AbsorbsDamage(damageType)
+                ? _shield.GetImpactPosition(origin, target)
+                : target;
         }
 
-        private void UpdateData()
+        public bool ShowShieldImpact(Vector3 position)
         {
-            if (shieldView != null)
-            {
-                shieldView.SetActive(Model.Shields > 0f);
-            }
+            if (_shield == null) return false;
+            if (!_isReleased) _shield.ShowImpact(position);
+            return true;
         }
     }
 }

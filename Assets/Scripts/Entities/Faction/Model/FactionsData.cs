@@ -13,6 +13,7 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private DictionaryWrapper<FactionType, FactionDataWrapper> factionDataWrapper;
         [SerializeField] private DictionaryWrapper<MiningFacilityType, FactionData> miningFactionsData;
         [SerializeField] private DictionaryWrapper<DefendPlatformType, FactionData> defendPlatformWrapper;
+        [SerializeField] private DictionaryWrapper<FactionType, FactionResearchWrapper> researchWrapper;
 
         [SerializeField] private FactionData[] levelFactionsData;
                 
@@ -27,6 +28,11 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public Dictionary<DefendPlatformType, FactionData> DefendPlatformDictionary => defendPlatformWrapper.Dictionary;
+
+        public Dictionary<ResearchType, ResearchLineData> GetResearchLines(FactionType factionType)
+        {
+            return researchWrapper.Dictionary[factionType].Dictionary;
+        }
 
         public FactionData GetLevelFactionData(int level)
         {

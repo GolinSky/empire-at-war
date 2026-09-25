@@ -46,6 +46,8 @@ namespace EmpireAtWar.SpaceStation
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
             Container.Bind<WeaponModel>().AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
+            Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
+            Container.Decorate<IHealthData>().With<ResearchHealthData>();
         }
 
         protected override void BindComponents()

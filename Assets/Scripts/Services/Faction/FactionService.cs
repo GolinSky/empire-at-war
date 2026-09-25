@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly IEconomyProvider _economyProvider;
         private readonly IEntityLocator _entityLocator;
         private readonly PlayerFactionModel _model;
+        private readonly FactionResearchModel _research;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
         private bool _isInitialized;
@@ -37,12 +38,14 @@ namespace EmpireAtWar.Services.Factions
 
         public FactionService(
             PlayerFactionModel model,
+            FactionResearchModel research,
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyProvider economyProvider,
             IEntityLocator entityLocator)
         {
             _model = model;
+            _research = research;
             Income = DEFAULT_INCOME;
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
@@ -109,6 +112,9 @@ namespace EmpireAtWar.Services.Factions
                     _model.CurrentLevel++;
                     Income = DEFAULT_INCOME * _model.CurrentLevel;
                     _economyProvider.RecalculateIncome(this);
+                    return;
+                case ResearchUnitRequest researchUnitRequest:
+                    _research.Complete(researchUnitRequest.Key);
                     return;
             }
 
