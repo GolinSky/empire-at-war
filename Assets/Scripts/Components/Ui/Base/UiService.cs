@@ -12,6 +12,7 @@ namespace EmpireAtWar.Ui.Base
 
         BaseUi CreateUi(UiType uiType);
         BaseUi CreateUi(UiType uiType, Transform parent);
+        void SetHudVisible(bool isVisible);
     }
     
     public class UiService : MonoBehaviour, IUiService
@@ -50,6 +51,12 @@ namespace EmpireAtWar.Ui.Base
             }
 
             return _uiFacade.Create(uiType, parent);
+        }
+
+        public void SetHudVisible(bool isVisible)
+        {
+            defaultCanvas.enabled = isVisible;
+            dynamicCanvas.enabled = isVisible;
         }
 
     }

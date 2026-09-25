@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.MiniMap;
+using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Services.InputService;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Controllers.Menu
         private readonly IUiService _uiService;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IInputService _inputService;
+        private readonly ICinematicCameraModelObserver _cinematicCameraModel;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
         private bool _isMenuOpen;
@@ -28,11 +30,13 @@ namespace EmpireAtWar.Controllers.Menu
             MenuData model,
             IUiService uiService,
             IInputService inputService,
-            INotifier<BattleResult> battleVictoryNotifier) : base(model)
+            INotifier<BattleResult> battleVictoryNotifier,
+            ICinematicCameraModelObserver cinematicCameraModel) : base(model)
         {
             _uiService = uiService;
             _inputService = inputService;
             _battleVictoryNotifier = battleVictoryNotifier;
+            _cinematicCameraModel = cinematicCameraModel;
         }
         
         public void Initialize()
@@ -77,6 +81,12 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void ToggleMenu()
         {
+            // Escape leaves the cinematic camera instead of opening the menu.
+            if (_cinematicCameraModel.IsActive)
+            {
+                return;
+            }
+
             SetMenuOpen(!_isMenuOpen);
         }
 

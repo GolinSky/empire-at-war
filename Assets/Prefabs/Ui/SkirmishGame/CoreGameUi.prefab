@@ -2678,6 +2678,7 @@ MonoBehaviour:
   timeButton: {fileID: 5382548466387303350}
   speedUpButton: {fileID: 4369815565643574192}
   reinforcementButton: {fileID: 9160219314195454050}
+  videoModeButton: {fileID: 5963299138969234606}
   timeImage: {fileID: 9050232912466798936}
   speedUpImage: {fileID: 8725600740947644431}
   panelImage: {fileID: 3535410989978952748}
@@ -5163,7 +5164,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1696123657329858938}
   m_OnClick:
     m_PersistentCalls:

@@ -9,6 +9,8 @@ using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.CinematicCamera.Controller;
+using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.UnitOrderFeedback;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -105,6 +107,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
         
         Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<CinematicCameraModel>().AsSingle();
+        Container.BindInterfacesExt<CinematicCameraPresenter>();
         Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
         Container.BindInterfacesNonLazyExt<CoreGameUiController>();
         Container.BindInterfacesNonLazyExt<UnitActionsPresenter>();

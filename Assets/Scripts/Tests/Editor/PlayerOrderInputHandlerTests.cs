@@ -200,6 +200,7 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 min, Vector2 max) =>
                 Array.Empty<Vector3>();
             public void MoveTo(Vector3 point) { }
+            public void SetPose(Vector3 position, Quaternion rotation) { }
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting

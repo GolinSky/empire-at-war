@@ -26,3 +26,39 @@ MonoBehaviour:
   <PanDeceleration>k__BackingField: 1750
   <ZoomSpeed>k__BackingField: 200
   <TweenSpeed>k__BackingField: 5
+  <Cinematic>k__BackingField:
+    minShotDuration: 3
+    maxShotDuration: 8
+    destroyedTargetLinger: 1.5
+    activitySampleInterval: 0.5
+    followSharpness: 3
+    wideShotDistanceMultiplier: 2.5
+    damageMemorySeconds: 4
+    damageWeight: 6
+    engagementRadius: 250
+    nearbyEnemyWeight: 1
+    maxCountedEnemies: 5
+    repeatTargetPenalty: 0.35
+    scoreJitter: 0.3
+    classProfiles:
+    - shipClass: 0
+      interestWeight: 1.5
+      framingDistance: 20
+    - shipClass: 1
+      interestWeight: 1.5
+      framingDistance: 20
+    - shipClass: 2
+      interestWeight: 2
+      framingDistance: 45
+    - shipClass: 3
+      interestWeight: 3
+      framingDistance: 70
+    - shipClass: 4
+      interestWeight: 4
+      framingDistance: 110
+    - shipClass: 5
+      interestWeight: 5
+      framingDistance: 170
+    - shipClass: 6
+      interestWeight: 2
+      framingDistance: 200

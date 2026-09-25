@@ -221,7 +221,7 @@ namespace EmpireAtWar.Tests.Editor
                 SerializedObject serializedUi = new SerializedObject(ui);
                 string[] requiredReferences =
                 {
-                    "canvasGroup", "timeButton", "speedUpButton", "reinforcementButton",
+                    "canvasGroup", "timeButton", "speedUpButton", "reinforcementButton", "videoModeButton",
                     "timeImage", "speedUpImage", "panelImage", "miniMapRouteParent",
                     "contentRouteParent", "buildPipelineRouteParent", "contentGrid",
                     "contentSizeFitter", "contentScroll", "endGameUi"
@@ -246,9 +246,11 @@ namespace EmpireAtWar.Tests.Editor
                 ((Button)serializedUi.FindProperty("timeButton").objectReferenceValue).onClick.Invoke();
                 ((Button)serializedUi.FindProperty("speedUpButton").objectReferenceValue).onClick.Invoke();
                 ((Button)serializedUi.FindProperty("reinforcementButton").objectReferenceValue).onClick.Invoke();
+                ((Button)serializedUi.FindProperty("videoModeButton").objectReferenceValue).onClick.Invoke();
                 Assert.That(presenter.PlayCount, Is.EqualTo(1));
                 Assert.That(presenter.SpeedUpCount, Is.EqualTo(1));
                 Assert.That(presenter.ReinforcementCount, Is.EqualTo(1));
+                Assert.That(presenter.CinematicCount, Is.EqualTo(1));
 
                 ui.Dispose();
                 ((Button)serializedUi.FindProperty("timeButton").objectReferenceValue).onClick.Invoke();
@@ -307,10 +309,12 @@ namespace EmpireAtWar.Tests.Editor
             public int PlayCount { get; private set; }
             public int SpeedUpCount { get; private set; }
             public int ReinforcementCount { get; private set; }
+            public int CinematicCount { get; private set; }
 
             public void Play() => PlayCount++;
             public void SpeedUp() => SpeedUpCount++;
             public void ToggleReinforcement() => ReinforcementCount++;
+            public void StartCinematic() => CinematicCount++;
         }
     }
 }
