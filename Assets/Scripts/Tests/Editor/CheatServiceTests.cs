@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Tests.Editor
         private ReinforcementData _reinforcementData;
         private EconomyModel _economyModel;
         private ReinforcementModel _reinforcementModel;
+        private SuperWeaponModel _superWeaponModel;
         private CheatService _service;
 
         [SetUp]
@@ -28,12 +30,14 @@ namespace EmpireAtWar.Tests.Editor
             _reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             _economyModel = new EconomyModel(_economyData, 100f);
             _reinforcementModel = new ReinforcementModel(_reinforcementData);
+            _superWeaponModel = new SuperWeaponModel();
             _service = new CheatService(
                 _economyModel,
                 _reinforcementModel,
                 new ShipFacadeFactory(),
                 new FakeReinforcementZonesSystem(),
-                new OperationalEntityLocator());
+                new OperationalEntityLocator(),
+                _superWeaponModel);
         }
 
         [TearDown]
@@ -84,6 +88,28 @@ namespace EmpireAtWar.Tests.Editor
             bool spawned = _service.ForceSpawnShipAtDefaultZone(request);
 
             Assert.That(spawned, Is.False);
+        }
+
+        [Test]
+        public void GrantSuperWeapon_MakesWeaponReady()
+        {
+            bool granted = _service.GrantSuperWeapon(SuperWeaponType.IonCannon);
+
+            Assert.That(granted, Is.True);
+            Assert.That(_superWeaponModel.GetState(SuperWeaponType.IonCannon),
+                Is.EqualTo(SuperWeaponState.Ready));
+        }
+
+        [Test]
+        public void GrantSuperWeapon_WhileCharging_LeavesChargeAlone()
+        {
+            _superWeaponModel.StartCharging(SuperWeaponType.PlasmaCannon);
+
+            bool granted = _service.GrantSuperWeapon(SuperWeaponType.PlasmaCannon);
+
+            Assert.That(granted, Is.False);
+            Assert.That(_superWeaponModel.GetState(SuperWeaponType.PlasmaCannon),
+                Is.EqualTo(SuperWeaponState.Charging));
         }
 
         private sealed class FakeReinforcementZonesSystem : IReinforcementZonesSystem

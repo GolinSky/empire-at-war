@@ -87,6 +87,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<ShipAbilityService>().AsSingle().NonLazy();
         Container.BindScriptableObject<SuperWeaponData>(Repository);
         Container.Bind<SuperWeaponTargetingModel>().AsSingle();
+        Container.BindInterfacesTo<SuperWeaponOriginRegistry>().AsSingle();
         Container.BindInterfacesExt<SuperWeaponFireService>();
         Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();

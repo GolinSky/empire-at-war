@@ -8145,6 +8145,7 @@ GameObject:
   - component: {fileID: 8797581386183861239}
   - component: {fileID: 8797581386183861241}
   - component: {fileID: 8797581386183861240}
+  - component: {fileID: 8797581386183861242}
   m_Layer: 0
   m_Name: PlanetView
   m_TagString: Untagged
@@ -8814,6 +8815,20 @@ MonoBehaviour:
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
+--- !u!114 &8797581386183861242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2573306495493427844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebedab05fa26b844bac87c3965ebb6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Planet.PlanetSuperWeaponOrigin
+  planetTransform: {fileID: 2768045106496748321}
+  surfaceRadius: 103.915535
 --- !u!4 &9144353121359452204
 Transform:
   m_ObjectHideFlags: 0

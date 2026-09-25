@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace EmpireAtWar.Views.Cheats
         event Action<string> AddMoneyRequested;
         event Action<ShipType> AddReinforcementRequested;
         event Action<ShipType> SpawnForceRequested;
+        event Action<SuperWeaponType> GrantSuperWeaponRequested;
+        event Action GrantAllSuperWeaponsRequested;
 
         void SetShips(IReadOnlyList<ShipType> ships);
         void SetStatus(string status);
@@ -25,11 +28,15 @@ namespace EmpireAtWar.Views.Cheats
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
-        private static readonly string[] TAB_NAMES = { "Economy", "Ships" };
+        private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons" };
+        private static readonly SuperWeaponType[] SUPER_WEAPONS =
+            (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
 
         public event Action<string> AddMoneyRequested;
         public event Action<ShipType> AddReinforcementRequested;
         public event Action<ShipType> SpawnForceRequested;
+        public event Action<SuperWeaponType> GrantSuperWeaponRequested;
+        public event Action GrantAllSuperWeaponsRequested;
 
         private Rect _windowRect = new Rect(
             WINDOW_MARGIN,
@@ -127,9 +134,13 @@ namespace EmpireAtWar.Views.Cheats
             {
                 DrawEconomyTab();
             }
-            else
+            else if (_selectedTab == 1)
             {
                 DrawShipsTab();
+            }
+            else
+            {
+                DrawSuperWeaponsTab();
             }
 
             GUILayout.FlexibleSpace();
@@ -154,6 +165,24 @@ namespace EmpireAtWar.Views.Cheats
             if (GUILayout.Button("Add Money", GUILayout.Height(36f)))
             {
                 AddMoneyRequested?.Invoke(_moneyAmount);
+            }
+        }
+
+        private void DrawSuperWeaponsTab()
+        {
+            GUILayout.Label("Grant a ready-to-fire charge");
+            foreach (SuperWeaponType type in SUPER_WEAPONS)
+            {
+                if (GUILayout.Button(type.ToString(), GUILayout.Height(36f)))
+                {
+                    GrantSuperWeaponRequested?.Invoke(type);
+                }
+            }
+
+            GUILayout.Space(8f);
+            if (GUILayout.Button("Grant All", GUILayout.Height(36f)))
+            {
+                GrantAllSuperWeaponsRequested?.Invoke();
             }
         }
 

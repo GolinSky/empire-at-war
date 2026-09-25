@@ -14,7 +14,7 @@ using Zenject;
 namespace EmpireAtWar.Services.SuperWeapons
 {
     /// <summary>
-    /// Fires superweapons from an off-map point: plays each shot of the salvo, applies its damage on impact,
+    /// Fires superweapons from the scene's origin (the planet): plays each shot of the salvo, applies its damage on impact,
     /// then the area damage and the disable effect of the weapon.
     /// </summary>
     public sealed class SuperWeaponFireService : ISuperWeaponFireService, ITickable, ILateDisposable
@@ -22,16 +22,18 @@ namespace EmpireAtWar.Services.SuperWeapons
         private readonly SuperWeaponData _data;
         private readonly ImpactEffectPresenter _impactPresenter;
         private readonly IEntityLocator _entities;
+        private readonly ISuperWeaponOrigin _origin;
         private readonly List<SuperWeaponSalvo> _salvos = new List<SuperWeaponSalvo>();
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
         public SuperWeaponFireService(SuperWeaponData data, ImpactEffectPresenter impactPresenter,
-            IEntityLocator entities)
+            IEntityLocator entities, ISuperWeaponOrigin origin)
         {
             _data = data;
             _impactPresenter = impactPresenter;
             _entities = entities;
+            _origin = origin;
         }
 
         public bool CanTarget(PlayerType owner, IEntity target)
@@ -46,7 +48,7 @@ namespace EmpireAtWar.Services.SuperWeapons
         public void Fire(SuperWeaponType type, IEntity target)
         {
             Vector3 targetPosition = target.HealthModel.Transform.position;
-            Vector3 originPosition = targetPosition + _data.OriginOffset;
+            Vector3 originPosition = _origin.GetFirePosition(targetPosition);
             GameObject origin = new GameObject($"{type}Origin");
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
