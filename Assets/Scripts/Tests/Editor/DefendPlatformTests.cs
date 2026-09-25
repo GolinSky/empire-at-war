@@ -34,7 +34,6 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(platform.transform.position, Is.EqualTo(startPosition));
                 Assert.That(radarComponent.Position, Is.EqualTo(startPosition));
-                Assert.That(healthComponent.IsMoving, Is.False);
             }
             finally
             {
@@ -56,20 +55,14 @@ namespace EmpireAtWar.Tests.Editor
             public string Id => nameof(HealthComponentStub);
             public bool Destroyed => false;
             public IHealthModelObserver HealthModelObserver => null;
-            public bool IsMoving { get; private set; }
 
-            public void ApplyDamage(float damage, WeaponType weaponType, int shipUnitId)
+            public void ApplyDamage(float damage, DamageType damageType, int shipUnitId)
             {
             }
 
             public bool Equal(IHealthModelObserver modelObserver)
             {
                 return false;
-            }
-
-            public void SetMovementState(bool isMoving)
-            {
-                IsMoving = isMoving;
             }
         }
 

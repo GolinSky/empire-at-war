@@ -1,50 +1,39 @@
-﻿using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Mvc;
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Mvc;
+using UnityEngine;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponModel: PureModel, IWeaponContext
+    public class WeaponModel : PureModel
     {
+        private readonly WeaponsData _weaponsData;
+        private readonly DamageMatrixData _damageMatrix;
 
-        public float DelayBetweenAttack { get; }
         public float OptimalAttackRange { get; private set; } = 100f;
+        public float MissSpread => _damageMatrix.MissSpread;
 
-        public WeaponDamageData WeaponDamageModel { get; }
-        public IProjectileModel ProjectileModel{ get; }
-
-
-        public WeaponModel(IWeaponContext weaponContext, IProjectileModel projectileModel, WeaponDamageData weaponDamageModel)
+        public WeaponModel(WeaponsData weaponsData, DamageMatrixData damageMatrix)
         {
-            ProjectileModel = projectileModel;
-            WeaponDamageModel = weaponDamageModel;
-            DelayBetweenAttack = weaponContext.DelayBetweenAttack;
+            _weaponsData = weaponsData;
+            _damageMatrix = damageMatrix;
         }
+
+        public WeaponProfile GetProfile(WeaponType weaponType) => _weaponsData.GetProfile(weaponType);
+
+        public bool RollHit(DamageType damageType, ShipClass targetClass) =>
+            Random.value < _damageMatrix.GetAccuracy(damageType, targetClass);
 
         public void SetOptimalAttackRange(IEnumerable<WeaponType> weaponTypes)
         {
             float maxAttackDistance = 0f;
-
             foreach (WeaponType weaponType in weaponTypes)
             {
-                float attackDistance = GetAttackDistance(weaponType);
-                if (attackDistance > maxAttackDistance)
-                {
-                    maxAttackDistance = attackDistance;
-                }
+                maxAttackDistance = Mathf.Max(maxAttackDistance, GetProfile(weaponType).Range);
             }
 
             OptimalAttackRange = maxAttackDistance * 0.5f;
-        }
-        
-        public float GetAttackDistance(WeaponType weaponType)
-        {
-            return WeaponDamageModel.GetDamageModel(weaponType).Distance;
-        }
-        
-        public float GetDamage(WeaponType weaponType, float distance)
-        {
-            return WeaponDamageModel.GetDamageModel(weaponType).GetDamage(distance);
         }
     }
 }

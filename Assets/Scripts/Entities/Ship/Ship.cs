@@ -446,7 +446,6 @@ namespace EmpireAtWar.Ship
 
         private void SynchronizeComponents()
         {
-            _healthComponent.SetMovementState(_shipMoveComponent.IsMoving);
             _radarComponent.SetPosition(_shipMoveComponent.CurrentPosition);
         }
 

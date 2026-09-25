@@ -25,15 +25,27 @@ MonoBehaviour:
         <Min>k__BackingField: -360
         <Max>k__BackingField: 360
     <FallDownDuration>k__BackingField: 180
-    <Armor>k__BackingField: 90000
-    <Dexterity>k__BackingField: 0
-    <Shields>k__BackingField: 50000
-    <ShieldRegenerateValue>k__BackingField: 1000
-    <ShieldRegenerateDelay>k__BackingField: 15
+    <ShipClass>k__BackingField: 6
+    <Hull>k__BackingField: 3000
+    <Shields>k__BackingField: 1500
+    <ShieldRegenerateValue>k__BackingField: 45
+    <ShieldRegenerateDelay>k__BackingField: 3
     <ShieldDangerStateRange>k__BackingField:
       <Min>k__BackingField: 0
       <Max>k__BackingField: 0
-    <DelayBetweenAttack>k__BackingField: 0.5
+    hardPointHealth:
+    - hardPointType: 0
+      health: 300
+      hullDamageMultiplier: 1
+    - hardPointType: 1
+      health: 500
+      hullDamageMultiplier: 1
+    - hardPointType: 2
+      health: 500
+      hullDamageMultiplier: 1
+    - hardPointType: 4
+      health: 300
+      hullDamageMultiplier: 1
     <Range>k__BackingField: 87.5
     <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 200

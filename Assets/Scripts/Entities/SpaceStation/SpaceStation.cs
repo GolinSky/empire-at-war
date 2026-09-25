@@ -61,7 +61,6 @@ namespace EmpireAtWar.Entities.SpaceStation
         {
             gameObject.name = $"{_playerType}_SpaceStation";
             transform.position = _startPosition;
-            _healthComponent.SetMovementState(false);
             _radarComponent.SetPosition(transform.position);
 
             if (_playerType == PlayerType.Player)

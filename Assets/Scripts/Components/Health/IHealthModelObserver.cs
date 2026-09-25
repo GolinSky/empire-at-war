@@ -11,14 +11,16 @@ namespace EmpireAtWar.Models.Health
         event Action OnDestroy;
         event Action OnValueChanged;
 
+        ShipClass ShipClass { get; }
         HardPointModel[] HardPointModels { get; }
-        float Armor { get; }
-        float ArmorPercentage { get; }
+        float Hull { get; }
+        float HullPercentage { get; }
         float Shields { get; }
         float ShieldPercentage { get; }
         bool IsDestroyed { get; }
         bool IsLostShieldGenerator { get; }
         bool HasUnits { get; }
+        bool HasLiveHardPoints { get; }
         bool HasShields { get; }
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
         PlayerType PlayerType { get; }

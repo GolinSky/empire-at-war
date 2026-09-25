@@ -77,7 +77,7 @@ namespace EmpireAtWar.Views
 
         private void UpdateHealth()
         {
-            healthFill.fillAmount = _health != null ? _health.ArmorPercentage : 0f;
+            healthFill.fillAmount = _health != null ? _health.HullPercentage : 0f;
             shieldFill.fillAmount = _health != null ? _health.ShieldPercentage : 0f;
         }
 

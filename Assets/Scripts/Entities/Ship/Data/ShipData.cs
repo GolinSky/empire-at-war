@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Entities.Ship.Data
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
     public class ShipData : Mvc.Data, IModel, IShipModelObserver, IShipData,
-        IShipMoveData, IHealthData, IRadarData, IWeaponContext, IUnitDeathAnimationData
+        IShipMoveData, IHealthData, IRadarData, IUnitDeathAnimationData
     {
         [Inject] public ShipType ShipType { get; private set; }
 
@@ -47,16 +47,14 @@ namespace EmpireAtWar.Entities.Ship.Data
         Vector3 IUnitDeathAnimationData.FallDownRotation => FallDownRotation.Value;
 
         [Header("Health Settings")]
-        [field: SerializeField] public float Armor { get; private set; }
-        [field: SerializeField, Range(0f, 1f)] public float Dexterity { get; private set; }
+        [field: SerializeField] public ShipClass ShipClass { get; private set; }
+        [field: SerializeField] public float Hull { get; private set; }
         [field: SerializeField] public float Shields { get; private set; }
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field: SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
-
-        [Header("Attack Settings")]
-        [field: SerializeField] public float AttackDelayBetweenAttack { get; private set; }
-        [field: SerializeField] public float DelayBetweenAttack { get; private set; }
+        [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
+        public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
 
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }

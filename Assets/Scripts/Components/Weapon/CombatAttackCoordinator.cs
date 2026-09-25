@@ -29,7 +29,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             public IWeaponPresenter Owner;
             public int OwnerGeneration;
-            public WeaponHardPointView HardPoint;
+            public WeaponHardPoint HardPoint;
             public int HardPointGeneration;
             public AttackData TargetGroup;
             public IHardPointModel Target;
@@ -47,7 +47,8 @@ namespace EmpireAtWar.Components.Weapon
             public IHardPointModel Target;
             public int TargetId;
             public int TargetGeneration;
-            public WeaponType WeaponType;
+            public float Damage;
+            public DamageType DamageType;
             public float DueTime;
             public int EarliestFrame;
             public long EventSequence;
@@ -58,7 +59,7 @@ namespace EmpireAtWar.Components.Weapon
             public IWeaponPresenter Owner;
             public WeaponComponent Weapon;
             public int OwnerGeneration;
-            public WeaponHardPointView HardPoint;
+            public WeaponHardPoint HardPoint;
             public int TargetVersion;
             public Vector3 Origin;
             public Quaternion ParentRotation;
@@ -118,7 +119,7 @@ namespace EmpireAtWar.Components.Weapon
             }
         }
 
-        public void BeginSequence(IWeaponPresenter owner, WeaponHardPointView hardPoint,
+        public void BeginSequence(IWeaponPresenter owner, WeaponHardPoint hardPoint,
             AttackData targetGroup, IHardPointModel target)
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
@@ -151,7 +152,7 @@ namespace EmpireAtWar.Components.Weapon
             });
         }
 
-        internal void QueueTargetSelection(WeaponComponent weapon, WeaponHardPointView hardPoint)
+        internal void QueueTargetSelection(WeaponComponent weapon, WeaponHardPoint hardPoint)
         {
             if (!_owners.TryGetValue(weapon, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before selecting a target.");
@@ -165,7 +166,7 @@ namespace EmpireAtWar.Components.Weapon
             });
         }
 
-        public void CancelSequence(WeaponHardPointView hardPoint, int generation)
+        public void CancelSequence(WeaponHardPoint hardPoint, int generation)
         {
             for (int i = _sequences.Count - 1; i >= 0; i--)
             {
@@ -178,7 +179,7 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public void ScheduleImpact(IWeaponPresenter owner, AttackData targetGroup,
-            IHardPointModel target, WeaponType weaponType, float delay)
+            IHardPointModel target, float damage, DamageType damageType, float delay)
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before scheduling damage.");
@@ -191,7 +192,8 @@ namespace EmpireAtWar.Components.Weapon
                 Target = target,
                 TargetId = target.Id,
                 TargetGeneration = target.Generation,
-                WeaponType = weaponType,
+                Damage = damage,
+                DamageType = damageType,
                 DueTime = Time.time + delay,
                 EarliestFrame = Time.frameCount + 1,
                 EventSequence = ++_nextEventSequence
@@ -638,7 +640,8 @@ namespace EmpireAtWar.Components.Weapon
                 RemoveImpactAt(index);
                 if (IsRegistered(impact.Owner, impact.OwnerGeneration) &&
                     impact.Target.Generation == impact.TargetGeneration &&
-                    impact.Owner.CommitImpact(impact.TargetGroup, impact.Target, impact.WeaponType, impact.TargetId))
+                    impact.Owner.CommitImpact(impact.TargetGroup, impact.Target, impact.Damage, impact.DamageType,
+                        impact.TargetId))
                     AttackSequenceDiagnostics.RecordAppliedImpact();
                 else
                     AttackSequenceDiagnostics.RecordCancelledImpact();

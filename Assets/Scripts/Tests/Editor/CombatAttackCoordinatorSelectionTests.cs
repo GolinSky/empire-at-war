@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
@@ -26,11 +27,11 @@ namespace EmpireAtWar.Tests.Weapon
                     WeaponComponent weapon = ownerObject.AddComponent<WeaponComponent>();
                     GameObject hardPointObject = new GameObject("HardPoint");
                     hardPointObject.transform.SetParent(ownerObject.transform);
-                    WeaponHardPointView hardPoint = hardPointObject.AddComponent<WeaponHardPointView>();
+                    WeaponHardPoint hardPoint = hardPointObject.AddComponent<WeaponHardPoint>();
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .SetValue(weapon, new List<WeaponHardPointView> { hardPoint });
+                        .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(weapon, new object[] { coordinator });
+                        .Invoke(weapon, new object[] { coordinator, new CombatModifiers() });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
@@ -69,11 +70,11 @@ namespace EmpireAtWar.Tests.Weapon
                 WeaponComponent weapon = ownerObject.AddComponent<WeaponComponent>();
                 GameObject hardPointObject = new GameObject("HardPoint");
                 hardPointObject.transform.SetParent(ownerObject.transform);
-                WeaponHardPointView hardPoint = hardPointObject.AddComponent<WeaponHardPointView>();
+                WeaponHardPoint hardPoint = hardPointObject.AddComponent<WeaponHardPoint>();
                 typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .SetValue(weapon, new List<WeaponHardPointView> { hardPoint });
+                    .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(weapon, new object[] { coordinator });
+                    .Invoke(weapon, new object[] { coordinator, new CombatModifiers() });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();

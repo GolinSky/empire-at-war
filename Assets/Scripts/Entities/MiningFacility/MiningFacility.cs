@@ -64,7 +64,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         public void Initialize()
         {
             transform.position = _startPosition;
-            _healthComponent.SetMovementState(false);
             _radarComponent.SetPosition(transform.position);
             _economyProvider.AddProvider(this);
         }

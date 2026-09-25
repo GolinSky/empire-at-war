@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
-  <MinMoveCoefficient>k__BackingField: 0.5
+  <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 1.5
   <Height>k__BackingField: 0
   <RotationSpeed>k__BackingField: 7.5
@@ -34,16 +34,28 @@ MonoBehaviour:
       <Min>k__BackingField: -360
       <Max>k__BackingField: 360
   <FallDownDuration>k__BackingField: 180
-  <Armor>k__BackingField: 110000
-  <Dexterity>k__BackingField: 0.1
-  <Shields>k__BackingField: 50000
-  <ShieldRegenerateValue>k__BackingField: 5000
-  <ShieldRegenerateDelay>k__BackingField: 10
+  <ShipClass>k__BackingField: 4
+  <Hull>k__BackingField: 5000
+  <Shields>k__BackingField: 3000
+  <ShieldRegenerateValue>k__BackingField: 90
+  <ShieldRegenerateDelay>k__BackingField: 3
   <ShieldDangerStateRange>k__BackingField:
     <Min>k__BackingField: 0.3
     <Max>k__BackingField: 0.5
-  <AttackDelayBetweenAttack>k__BackingField: 0.5
-  <DelayBetweenAttack>k__BackingField: 0.1
+  hardPointHealth:
+  - hardPointType: 0
+    health: 400
+    hullDamageMultiplier: 1
+  - hardPointType: 1
+    health: 600
+    hullDamageMultiplier: 1
+  - hardPointType: 2
+    health: 600
+    hullDamageMultiplier: 1
+  - hardPointType: 4
+    health: 400
+    hullDamageMultiplier: 1
   <Range>k__BackingField: 100
   <Delay>k__BackingField: 0.25
   <Distance>k__BackingField: 200
+  abilities: 

@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1279b80cdfe8b7c4cb98e6c5be05fd16
+    m_Address: DamageMatrixData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17ab4ced609e6054986bf57e44a51fc4
     m_Address: PlayerFactionData
     m_ReadOnly: 0
@@ -47,21 +52,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2510ebd5efb7d064a9f43448fb8e55f0
     m_Address: GameData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b971ad1a3d99dd4590f41be6e6fee50
-    m_Address: ProjectilesData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f8acb09e989fe54fbb45ed7510ec287
-    m_Address: WeaponDamageData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3147ba13197ab094b8cdfa36c3b45a50
-    m_Address: DamageCalculationData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -132,6 +122,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dce26a8d996febd4a8ad15563ab38472
     m_Address: LayerData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecc171837acaaa745aebac563ac53363
+    m_Address: WeaponsData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

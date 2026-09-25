@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
@@ -10,7 +11,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class ProtonBeamAbility : IShipAbility
     {
         private readonly ProtonBeamSettings _settings;
-        private ProtonBeamView _view;
+        private BeamShot _view;
 
         public ProtonBeamAbility(ProtonBeamSettings settings) { _settings = settings; }
 
@@ -20,12 +21,12 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 throw new InvalidOperationException($"{nameof(ProtonBeamAbility)} requires an {nameof(IHealthCommand)} on the target.");
 
             _view = Object.Instantiate(_settings.ViewPrefab);
-            _view.Play(caster.WorldPosition, target.HealthModel.Transform, definition.Duration);
+            _view.PlayBeam(caster.Health.Transform, target.HealthModel.Transform, definition.Duration);
             HardPointModel[] hardPoints = target.HealthModel.HardPointModels;
             for (int i = 0; i < hardPoints.Length; i++)
             {
                 if (hardPoints[i].IsDestroyed) continue;
-                health.ApplyDamage(_settings.Damage, _settings.WeaponType, i);
+                health.ApplyDamage(_settings.Damage, _settings.DamageType, i);
                 break;
             }
         }
