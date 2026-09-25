@@ -22,7 +22,7 @@ MonoBehaviour:
             <Name>k__BackingField: 'Venator '
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 4
-            <Price>k__BackingField: 3000
+            <Price>k__BackingField: 4500
             <BuildTime>k__BackingField: 10
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa,
@@ -31,8 +31,8 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: Arquitens
             <MaxCount>k__BackingField: 20
-            <AvailableLevel>k__BackingField: 2
-            <Price>k__BackingField: 1200
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 3200
             <BuildTime>k__BackingField: 5
             <UnitCapacity>k__BackingField: 2
             <Icon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
@@ -41,8 +41,8 @@ MonoBehaviour:
           value:
             <Name>k__BackingField: Acclamator
             <MaxCount>k__BackingField: 20
-            <AvailableLevel>k__BackingField: 1
-            <Price>k__BackingField: 1500
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 2500
             <BuildTime>k__BackingField: 7
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 2ce1aa3deeeb0a541bb85a35a38c9390,
@@ -52,7 +52,7 @@ MonoBehaviour:
             <Name>k__BackingField: Star destroyer-2
             <MaxCount>k__BackingField: 5
             <AvailableLevel>k__BackingField: 5
-            <Price>k__BackingField: 4500
+            <Price>k__BackingField: 5000
             <BuildTime>k__BackingField: 25
             <UnitCapacity>k__BackingField: 6
             <Icon>k__BackingField: {fileID: 21300000, guid: 71f48afd28fd17340a87652ce16e4712,
@@ -62,7 +62,7 @@ MonoBehaviour:
             <Name>k__BackingField: Heavy Dreadnought
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
-            <Price>k__BackingField: 3200
+            <Price>k__BackingField: 4000
             <BuildTime>k__BackingField: 20
             <UnitCapacity>k__BackingField: 4
             <Icon>k__BackingField: {fileID: 21300000, guid: 003f227a5109a5745879774b3be70886,
@@ -85,7 +85,7 @@ MonoBehaviour:
             <Name>k__BackingField: Providence
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 5
-            <Price>k__BackingField: 3000
+            <Price>k__BackingField: 4500
             <BuildTime>k__BackingField: 20
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 60d91c69afc54ad4fa9b45f6990ff8af,
@@ -95,7 +95,7 @@ MonoBehaviour:
             <Name>k__BackingField: Recusant
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 3
-            <Price>k__BackingField: 2000
+            <Price>k__BackingField: 4000
             <BuildTime>k__BackingField: 15
             <UnitCapacity>k__BackingField: 4
             <Icon>k__BackingField: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f,
@@ -105,7 +105,7 @@ MonoBehaviour:
             <Name>k__BackingField: Munificent
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 1
-            <Price>k__BackingField: 1500
+            <Price>k__BackingField: 2100
             <BuildTime>k__BackingField: 10
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: abf3987a701188747b639680e9203c3e,
@@ -115,7 +115,7 @@ MonoBehaviour:
             <Name>k__BackingField: Lucrehulk
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 4
-            <Price>k__BackingField: 3500
+            <Price>k__BackingField: 5000
             <BuildTime>k__BackingField: 25
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 8128fcc8b8e454e47ab592309d37208e,
