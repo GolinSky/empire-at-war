@@ -1,6 +1,8 @@
 using EmpireAtWar.Utils.Random;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Services.Audio;
 using UnityEngine.AddressableAssets;
 using Zenject;
 
@@ -12,7 +14,26 @@ namespace EmpireAtWar.Components.Ship.Audio
         [SerializeField] private AssetReferenceT<AudioClip> hyperSpaceAudioReference;
         [SerializeField] private RandomAudioClips alarmRandomClips;
         [SerializeField] private RandomAudioClips backgroundClips;
+        [Header("Weapon fire")]
+        [SerializeField] private WeaponAudioView weaponAudioPrefab;
+        [SerializeField] private WeaponAudioProfile[] weaponSounds;
+        [SerializeField] private float weaponMinDistance = 20f;
+        [SerializeField] private float weaponMaxDistance = 120f;
+        [SerializeField] private float weaponZoomReferenceHeight = 180f;
         private AudioClip _hyperSpaceAudioClip;
+
+        public WeaponAudioView WeaponAudioPrefab => weaponAudioPrefab;
+        public float WeaponMinDistance => weaponMinDistance;
+        public float WeaponMaxDistance => weaponMaxDistance;
+        public float WeaponZoomReferenceHeight => weaponZoomReferenceHeight;
+
+        public WeaponAudioProfile GetWeaponSound(WeaponType weaponType)
+        {
+            foreach (WeaponAudioProfile sound in weaponSounds)
+                if (sound.WeaponType == weaponType) return sound;
+
+            throw new System.InvalidOperationException($"Missing weapon audio for {weaponType}.");
+        }
 
         [field:SerializeField] public RandomFloat AlarmDelay { get; private set; }
 
