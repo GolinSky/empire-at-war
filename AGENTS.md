@@ -37,7 +37,7 @@ Apply project guidance in this order:
 - Serena MCP is configured only for this repository in `.codex/config.toml`. Never install or register Serena in user/global Codex configuration.
 - Use Serena for live C# symbol work: symbol/file overviews, definitions, callers and references, implementations, diagnostics, symbol-aware renames, and surgical symbol-body edits.
 - Use built-in search/read/patch tools for non-code files, exact text searches, and small line-oriented edits. Use Unity tooling, not Serena, for scenes, prefabs, assets, Editor state, imports, serialization, and play/build operations.
-- The local MCP launch auto-activates the project from the current working directory. If Serena reports that no project is active, activate the current repository root.
+- Serena uses one shared HTTP backend at `http://127.0.0.1:9122/mcp` for this exact checkout. `Tools/Serena/Start-Serena.ps1` starts it idempotently and activates `empire-at-war`; setup installs a per-user sign-in shortcut. If unavailable, run that launcher and inspect `.serena/service/` logs. Never switch the shared backend to another project or worktree; use a separate backend and endpoint for another checkout. See `Tools/Serena/README.md`.
 - Do not run Serena onboarding or write Serena memories automatically. `AGENTS.md` is the source of durable agent instructions; use Serena memories only when the user explicitly requests them.
 
 ## Main Agent Tooling and Subagents
