@@ -89,4 +89,3 @@ MonoBehaviour:
           damageTakenMultiplier: 1
         areaDamage: 1000
         areaRadius: 30
-  originOffset: {x: 0, y: -250, z: -700}
