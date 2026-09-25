@@ -187,6 +187,8 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "TODOs/Ship_Squadron_Entity_Simplification_Plan.md",
+    "Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS.md",
     "TODOs/Battle GameDesign basics.md",
     "GameDesign/Unit description.md",
     "GameDesign",
@@ -220,8 +222,6 @@
     "00_Home.md",
     "Artifacts",
     "Rules",
-    "Architecture/GRAPHIFY_GUIDE.md",
-    "Architecture/SELECTION_SYSTEM.md",
     "Architecture"
   ]
 }
