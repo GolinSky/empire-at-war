@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
 using EmpireAtWar.Entities.Squadrons;
@@ -36,6 +37,19 @@ namespace EmpireAtWar.Services.Battle
 
         public bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection)
         {
+            // Squadron icons are drawn over the scene, so they win over whatever the ray hits behind them.
+            foreach (IEntity iconEntity in _entityLocator.Entities)
+            {
+                if (!iconEntity.HealthModel.IsDestroyed &&
+                    iconEntity.TryGetCommand(out ISquadronIconCommand icon) &&
+                    icon.ContainsScreenPoint(screenPosition) &&
+                    iconEntity.TryGetCommand(out IEntitySelectionCommand iconSelection))
+                {
+                    selection = new SelectionEntry(iconEntity, iconSelection);
+                    return true;
+                }
+            }
+
             RaycastHit raycastHit = _cameraService.ScreenPointToRay(screenPosition);
             if (raycastHit.collider != null &&
                 _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&

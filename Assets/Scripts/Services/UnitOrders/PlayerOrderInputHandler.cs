@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Factions;
@@ -26,11 +27,12 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IShipAbilityTargeting _abilities;
         private readonly UnitActionTargetingModel _targeting;
         private readonly IUnitOrderService _orders;
+        private readonly SuperWeaponTargetingModel _superWeapons;
 
         public PlayerOrderInputHandler(IInputService input, ISelectionService selection,
             ISelectionQuery query, ICameraService camera, ILayerService layers,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
-            IUnitOrderService orders)
+            IUnitOrderService orders, SuperWeaponTargetingModel superWeapons)
         {
             _input = input;
             _selection = selection;
@@ -40,6 +42,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _abilities = abilities;
             _targeting = targeting;
             _orders = orders;
+            _superWeapons = superWeapons;
         }
 
         public void Initialize()
@@ -90,6 +93,13 @@ namespace EmpireAtWar.Services.UnitOrders
             if (type != InputType.ShipInput) return;
             bool hasUnit = _query.TryFindAt(screen, out SelectionEntry hit);
             IEntity target = hasUnit ? hit.Entity : null;
+            if (_superWeapons.Pending != null)
+            {
+                if (target != null) _superWeapons.Submit(target);
+                else _superWeapons.Cancel();
+                return;
+            }
+
             if (_abilities.IsWaitingForTarget)
             {
                 if (target != null && target.PlayerType == PlayerType.Opponent)

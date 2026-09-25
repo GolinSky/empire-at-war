@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Squadrons;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,8 +25,7 @@ namespace EmpireAtWar.Views
         [SerializeField] private ShipUi entryPrefab;
         [SerializeField] private ShipAbilityBarUi abilityBar;
 
-        private ShipType _shipType;
-        private Action<ShipType> _onClicked;
+        private Action _onClicked;
         private int _shipCount;
         private int _abilityCount;
 
@@ -35,10 +35,21 @@ namespace EmpireAtWar.Views
         public void Configure(ShipType shipType, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility)
         {
-            _shipType = shipType;
+            Configure(shipType.ToString(), icon, ships, model, () => onClicked(shipType), pressAbility);
+        }
+
+        public void Configure(SquadronType squadronType, Sprite icon, IReadOnlyList<ShipUiEntry> squadrons,
+            IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility)
+        {
+            Configure(squadronType.ToString(), icon, squadrons, model, () => onClicked(squadronType), pressAbility);
+        }
+
+        private void Configure(string label, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
+            IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility)
+        {
             _onClicked = onClicked;
             _shipCount = ships.Count;
-            typeLabel.text = $"{shipType}  ×{ships.Count}";
+            typeLabel.text = $"{label}  ×{ships.Count}";
 
             List<ShipAbilitySlot> slots = new List<ShipAbilitySlot>();
             HashSet<ShipAbilityId> abilities = new HashSet<ShipAbilityId>();
@@ -82,6 +93,6 @@ namespace EmpireAtWar.Views
             return Mathf.CeilToInt(_shipCount / (float)rows);
         }
 
-        private void HandleClick() => _onClicked(_shipType);
+        private void HandleClick() => _onClicked();
     }
 }

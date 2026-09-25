@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyProductionStrategy
     {
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
+        private const int SHIPS_PER_SQUADRON = 2;
 
         private readonly EnemyFactionModel _factionModel;
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
@@ -106,6 +108,7 @@ namespace EmpireAtWar.Services.Enemy
             bool hasDefenseOption = canPlaceStructure && hasDefenseSelection;
             bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
 
+            KeyValuePair<SquadronType, FactionData> squadron = default;
             bool isUltraHard = _gameModel.EnemyDifficulty == EnemyAiDifficulty.UltraHard;
             bool hasShipOption = TrySelectShip(
                 shipCount,
@@ -141,8 +144,13 @@ namespace EmpireAtWar.Services.Enemy
                     hasLevelUpOption,
                     canLevelUp));
 
+            bool buildSquadron = category == EnemyProductionCategory.Ship &&
+                                 TrySelectSquadron(shipCount, out squadron) &&
+                                 IsAffordable(squadron.Value);
             UnitRequest request = category switch
             {
+                EnemyProductionCategory.Ship when buildSquadron =>
+                    _requestFactory.ConstructUnitRequest(squadron.Value, squadron.Key),
                 EnemyProductionCategory.Ship =>
                     _requestFactory.ConstructUnitRequest(ship.Value, ship.Key),
                 EnemyProductionCategory.Mining =>
@@ -267,6 +275,47 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     selected = option;
                     bestPriority = priority;
+                    found = true;
+                }
+            }
+
+            return found;
+        }
+
+        /// <summary>Picks the cheapest available squadron while the fleet has fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
+        private bool TrySelectSquadron(
+            int shipCount,
+            out KeyValuePair<SquadronType, FactionData> selected)
+        {
+            selected = default;
+            int squadronCount = 0;
+            foreach (KeyValuePair<SquadronType, FactionData> option
+                     in _factionModel.SquadronFactionData)
+            {
+                squadronCount += _unitLimitModel.GetReservedCount<SquadronUnitRequest>(
+                    option.Key.ToString());
+            }
+
+            if (squadronCount >= shipCount / SHIPS_PER_SQUADRON)
+            {
+                return false;
+            }
+
+            bool found = false;
+            foreach (KeyValuePair<SquadronType, FactionData> option
+                     in _factionModel.SquadronFactionData)
+            {
+                if (!IsAvailable(option.Value) ||
+                    !CanReserve<SquadronUnitRequest>(
+                        option.Key.ToString(),
+                        option.Value))
+                {
+                    continue;
+                }
+
+                if (!found || option.Value.Price < selected.Value.Price)
+                {
+                    selected = option;
                     found = true;
                 }
             }

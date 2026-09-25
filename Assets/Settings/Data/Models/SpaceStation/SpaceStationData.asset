@@ -49,3 +49,17 @@ MonoBehaviour:
     <Range>k__BackingField: 75
     <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 100
+  hangarBays:
+    keyValue:
+    - key: 0
+      value:
+        squadronType: 0
+        reserve: 6
+        maxActive: 2
+    - key: 1
+      value:
+        squadronType: 100
+        reserve: 6
+        maxActive: 2
+  <HangarInitialDelay>k__BackingField: 1
+  <HangarLaunchInterval>k__BackingField: 3

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Views.Cheats;
@@ -33,6 +34,8 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.AddMoneyRequested += AddMoney;
             _view.AddReinforcementRequested += AddReinforcement;
             _view.SpawnForceRequested += SpawnForce;
+            _view.GrantSuperWeaponRequested += GrantSuperWeapon;
+            _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
         }
 
         public void LateDispose()
@@ -40,6 +43,8 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.AddMoneyRequested -= AddMoney;
             _view.AddReinforcementRequested -= AddReinforcement;
             _view.SpawnForceRequested -= SpawnForce;
+            _view.GrantSuperWeaponRequested -= GrantSuperWeapon;
+            _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
         }
 
         private List<ShipType> BuildShipCatalog()
@@ -94,6 +99,27 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(spawned
                 ? $"Spawned {shipType} at the default zone."
                 : "No player-owned reinforcement zone is available.");
+        }
+
+        private void GrantSuperWeapon(SuperWeaponType type)
+        {
+            _view.SetStatus(_cheatService.GrantSuperWeapon(type)
+                ? $"{type} is ready to fire."
+                : $"{type} is already charging or ready.");
+        }
+
+        private void GrantAllSuperWeapons()
+        {
+            Array types = Enum.GetValues(typeof(SuperWeaponType));
+            int granted = 0;
+            foreach (SuperWeaponType type in types)
+            {
+                if (_cheatService.GrantSuperWeapon(type)) granted++;
+            }
+
+            _view.SetStatus(granted == types.Length
+                ? "All superweapons are ready to fire."
+                : $"Granted {granted} of {types.Length}; the rest were already charging or ready.");
         }
 
         private ShipUnitRequest CreateRequest(ShipType shipType)

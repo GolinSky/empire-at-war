@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Services.Cheats
         void AddMoney(float amount);
         void AddShipReinforcement(ShipUnitRequest request);
         bool ForceSpawnShipAtDefaultZone(ShipUnitRequest request);
+        bool GrantSuperWeapon(SuperWeaponType type);
     }
 
     public sealed class CheatService : ICheatService
@@ -25,19 +27,22 @@ namespace EmpireAtWar.Services.Cheats
         private readonly ShipFacadeFactory _shipFacadeFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
+        private readonly SuperWeaponModel _superWeaponModel;
 
         public CheatService(
             EconomyModel economyModel,
             ReinforcementModel reinforcementModel,
             ShipFacadeFactory shipFacadeFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
-            IEntityLocator entityLocator)
+            IEntityLocator entityLocator,
+            SuperWeaponModel superWeaponModel)
         {
             _economyModel = economyModel;
             _reinforcementModel = reinforcementModel;
             _shipFacadeFactory = shipFacadeFactory;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
+            _superWeaponModel = superWeaponModel;
         }
 
         public void AddMoney(float amount)
@@ -89,6 +94,19 @@ namespace EmpireAtWar.Services.Cheats
 
             ship.OnRelease += HandleShipDestroying;
             _reinforcementModel.AddUnitCapacity(request.Key);
+            return true;
+        }
+
+        /// <summary>Makes the weapon ready to fire for free. A weapon already charging or ready is left alone.</summary>
+        public bool GrantSuperWeapon(SuperWeaponType type)
+        {
+            if (!_superWeaponModel.CanPurchase(type))
+            {
+                return false;
+            }
+
+            _superWeaponModel.StartCharging(type);
+            _superWeaponModel.CompleteCharging(type);
             return true;
         }
 

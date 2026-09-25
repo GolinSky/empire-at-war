@@ -1,8 +1,10 @@
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
@@ -69,6 +71,9 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInterfacesAndSelfTo<WeaponComponent>().FromComponentInHierarchy().AsCached();
             Container.BindInterfacesAndSelfTo<RadarComponent>().FromComponentInHierarchy().AsCached();
             Container.BindInterfacesAndSelfTo<SelectionComponent>().FromComponentInHierarchy().AsCached();
+            Container.BindInterfacesAndSelfTo<SquadronIconComponent>().FromComponentInHierarchy().AsCached();
+            if (_playerType == PlayerType.Opponent)
+                Container.BindInterfacesAndSelfTo<FogVisibilityComponent>().FromComponentInHierarchy().AsCached();
 
             Container.BindInterfacesExt<SquadronOrderCommand>();
             Container.BindInterfacesExt<SelectionCommand>();

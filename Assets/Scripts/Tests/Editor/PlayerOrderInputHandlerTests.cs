@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Factions;
@@ -49,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(_input, _selection, _query,
-                _camera, null, _abilities, _targeting, _orders);
+                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel());
             _handler.Initialize();
         }
 
@@ -149,6 +150,7 @@ namespace EmpireAtWar.Tests.Editor
             public ISelectionContext EnemySelectionContext => null;
             public void RemoveSelectable(ISelectionContext context) { }
             public void SelectCurrentShipsByType(ShipType type) { }
+            public void SelectCurrentSquadronsByType(EmpireAtWar.Entities.Squadrons.SquadronType type) { }
             public void AddObserver(IObserver<ISelectionSubject> observer) { }
             public void RemoveObserver(IObserver<ISelectionSubject> observer) { }
         }
@@ -198,6 +200,7 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 min, Vector2 max) =>
                 Array.Empty<Vector3>();
             public void MoveTo(Vector3 point) { }
+            public void SetPose(Vector3 position, Quaternion rotation) { }
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting

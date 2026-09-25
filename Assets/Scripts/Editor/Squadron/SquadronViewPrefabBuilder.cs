@@ -5,12 +5,14 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
+using MPUIKIT;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -32,6 +34,10 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float EDITOR_SLOT_SPACING = 2f;
         private const float TRAIL_TIME = 0.6f;
         private const float TRAIL_WIDTH = 0.16f;
+        private const float ICON_SIZE = 32f;
+        private const float ICON_FRAME_STROKE = 2f;
+        private const float ICON_FRAME_CORNER_RADIUS = 4f;
+        private const float ICON_SILHOUETTE_PADDING = 3f;
 
         [MenuItem("Tools/Squadrons/Build Squadron Views")]
         public static void BuildAll()
@@ -40,12 +46,12 @@ namespace EmpireAtWar.Editor.Squadrons
                 "Assets/Art/Models/RepublicModels/Delta7/Delta7.obj", 5, 0.085f,
                 Vector3.zero, new Vector3(0f, -0.153f, 0f), 0.55f, 0.8f,
                 new[] { new Vector3(-0.2f, 0f, -0.45f), new Vector3(0.2f, 0f, -0.45f) },
-                new Color(0.55f, 0.75f, 1f)));
+                new Color(0.55f, 0.75f, 1f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Silhouette.png"));
             Build(new SquadronViewSpec(SquadronType.Belbullab22,
                 "Assets/Art/Models/SeparatistShip/belbullab/B22_whole.obj", 4, 0.087f,
                 new Vector3(0f, 180f, 0f), new Vector3(0f, -0.034f, -0.07f), 0.7f, 0.9f,
                 new[] { new Vector3(-0.29f, 0f, -0.6f), new Vector3(0.29f, 0f, -0.6f) },
-                new Color(1f, 0.62f, 0.3f)));
+                new Color(1f, 0.62f, 0.3f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
             AssetDatabase.SaveAssets();
         }
 
@@ -102,6 +108,7 @@ namespace EmpireAtWar.Editor.Squadrons
             weaponObject.ApplyModifiedPropertiesWithoutUndo();
             SetObjectList(weaponComponent, "hardPoints", guns);
             AddSelectionRing(root.transform, selection);
+            AddWorldIcon(root, AssetDatabase.LoadAssetAtPath<Sprite>(spec.SilhouettePath));
         }
 
         private static FighterView CreateFighter(Transform parent, int index, SquadronViewSpec spec,
@@ -194,6 +201,51 @@ namespace EmpireAtWar.Editor.Squadrons
             selectionObject.FindProperty("selectedImage").objectReferenceValue =
                 image.GetComponent<UnityEngine.UI.Image>();
             selectionObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>Adds the floating squadron marker: a hollow frame with the fighter silhouette inside.</summary>
+        public static void AddWorldIcon(GameObject root, Sprite silhouette)
+        {
+            SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
+            GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform), typeof(Canvas));
+            canvasObject.transform.SetParent(root.transform, false);
+            RectTransform canvasRect = (RectTransform)canvasObject.transform;
+            canvasRect.sizeDelta = Vector2.one * ICON_SIZE;
+            Canvas canvas = canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+
+            MPImage frame = CreateIconImage<MPImage>("Frame", canvasObject.transform, 0f);
+            frame.DrawShape = DrawShape.Rectangle;
+            frame.StrokeWidth = ICON_FRAME_STROKE;
+            frame.FalloffDistance = 1f;
+            Rectangle rectangle = frame.Rectangle;
+            rectangle.CornerRadius = Vector4.one * ICON_FRAME_CORNER_RADIUS;
+            frame.Rectangle = rectangle;
+
+            UnityEngine.UI.Image silhouetteImage =
+                CreateIconImage<UnityEngine.UI.Image>("Silhouette", canvasObject.transform, ICON_SILHOUETTE_PADDING);
+            silhouetteImage.sprite = silhouette;
+            silhouetteImage.preserveAspect = true;
+
+            SerializedObject iconObject = new SerializedObject(icon);
+            iconObject.FindProperty("iconCanvas").objectReferenceValue = canvas;
+            iconObject.FindProperty("frameImage").objectReferenceValue = frame;
+            iconObject.FindProperty("silhouetteImage").objectReferenceValue = silhouetteImage;
+            iconObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static T CreateIconImage<T>(string name, Transform parent, float padding)
+            where T : UnityEngine.UI.Image
+        {
+            GameObject imageObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(T));
+            imageObject.transform.SetParent(parent, false);
+            RectTransform imageRect = (RectTransform)imageObject.transform;
+            imageRect.anchorMin = Vector2.zero;
+            imageRect.anchorMax = Vector2.one;
+            imageRect.sizeDelta = Vector2.one * (-2f * padding);
+            T image = imageObject.GetComponent<T>();
+            image.raycastTarget = false;
+            return image;
         }
 
         private static void SetObjectList<T>(Object target, string propertyName, IReadOnlyList<T> values)

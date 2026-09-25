@@ -5,5 +5,6 @@ namespace EmpireAtWar.Presenters.Game
         void Play();
         void SpeedUp();
         void ToggleReinforcement();
+        void StartCinematic();
     }
 }

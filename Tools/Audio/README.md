@@ -13,3 +13,44 @@ The pure C# `WeaponAudioBudget` limits playback to eight voices, two per ship, t
 Tune `weaponMinDistance` (20), `weaponMaxDistance` (120), and `weaponZoomReferenceHeight` (180) on `AudioShipData.asset`. Distance is measured from the camera's center ray at the muzzle's height. Volume falls linearly to zero at the outer radius; zoom attenuation uses the square root of the reference-height ratio (0.6 at height 500). Individual weapon levels in `weaponSounds` account for the existing Master mixer's -10 dB attenuation.
 
 The beam cue is 0.8 seconds, matching the current `BeamShot` growth and hold durations. If beam timing changes, regenerate that cue as well. Weapon audio does not change damage, projectile travel, or salvo scheduling.
+
+## Ship abilities and engines
+
+`Assets/Settings/Data/Models/Audio/ShipSfxData.asset` contains all seven ability profiles,
+the engine loop, and acceleration cue. It is referenced by `AudioShipData.asset`.
+Each profile has separate start, execution loop, end, and cooldown-restored clips,
+with independent cue and execution levels. Proton Beam has a stronger execution
+layer; other sustained effects sit below weapons and command dialogue.
+
+The 30 WAVs in `Assets/Audio/SFX/Ships` are original synthesized sounds inspired by
+the mechanical, military sci-fi language of RTS space battles. They do not sample
+Empire at War. Regenerate them with `python Tools/Audio/generate_ship_sfx.py`, then
+import the changed clips in Unity. The generator uses only the Python standard
+library and preserves existing Unity metadata. Clips are mono 44.1 kHz PCM with
+crossfaded loop boundaries and short envelopes on transients.
+
+`ShipInstaller` creates the explicitly wired `ShipSfx.prefab` beneath each ship,
+so all existing ship prefabs receive audio without individual prefab edits.
+Its four AudioSources use the existing Master mixer: one cue source, one engine
+source, and two execution sources matching the maximum concurrent ability slots
+in the current ship data. If ships gain additional slots, add corresponding
+sources to the prefab's `executionSources` array.
+
+`ShipSfxPresenter` observes slot state changes: Active starts the activation cue
+and execution loop; Recovering stops the loop and plays the end cue (including
+cancellation); Recovering → Ready plays the restore cue once for player ships.
+Normal cooldown ticks and initial Ready state produce no sound. Destruction and
+view disable stop all voices and unsubscribe. Sources pause with game time.
+
+`ShipEngineAudioModel` smooths measured sublight speed into engine volume/pitch
+and detects acceleration, including an engine-power boost while moving. A 1.5 s
+surge interval prevents rapid order changes from stacking acceleration sounds.
+Hyperspace movement is excluded. This reactive engine replaces the old constant
+ship ambience; alarm, hyperspace, dialogue and weapon audio keep their existing
+channels.
+
+Playback uses RTS camera-focus distance and stereo pan, with reduced gain when
+zoomed out. Opponent ships hidden by fog are muted. Tune `minDistance`,
+`maxDistance`, `zoomReferenceHeight`, `engineVolume`, and `accelerationVolume` on
+`ShipSfxData.asset`. Ability cues are local to the ship; off-camera/out-of-range
+cooldowns do not become global notifications.

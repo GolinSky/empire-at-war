@@ -101,12 +101,16 @@ namespace EmpireAtWar.Views
         {
             bool isVisible = _isRouteActive && _model.HasShips;
             gameObject.SetActive(isVisible);
-            if (isVisible && _model.SelectedShipType.HasValue)
+            Sprite icon = null;
+            if (isVisible)
             {
-                shipIconImage.sprite = _model.GetShipIcon(_model.SelectedShipType.Value);
+                if (_model.SelectedShipType.HasValue)
+                    icon = _model.GetShipIcon(_model.SelectedShipType.Value);
+                else if (_model.SelectedSquadronType.HasValue)
+                    icon = _model.GetSquadronIcon(_model.SelectedSquadronType.Value);
             }
-            shipIconImage.enabled = isVisible && _model.SelectedShipType.HasValue &&
-                                    shipIconImage.sprite != null;
+            shipIconImage.sprite = icon;
+            shipIconImage.enabled = icon != null;
         }
     }
 }

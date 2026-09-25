@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
@@ -11,6 +12,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.Ship.Mediator;
@@ -21,6 +23,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Audio;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Ship
@@ -132,9 +136,16 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
             Container.BindInterfacesExt<ShipAbilityCommand>();
+            AudioShipData audioShipData = Container.Resolve<AudioShipData>();
+            Container.Bind<IShipSfxView>().To<ShipSfxView>()
+                .FromComponentInNewPrefab(audioShipData.ShipSfx.ViewPrefab)
+                .UnderTransform(context => context.Container.ResolveId<Transform>(EntityBindType.ViewTransform))
+                .AsSingle();
+            Container.BindInterfacesTo<ShipSfxPresenter>().AsSingle().NonLazy();
             Container.BindInterfacesExt<ShipOrderCommand>();
             Container.BindInterfacesExt<SelectionCommand>();
             Container.BindInterfacesExt<HealthCommand>();
+            Container.BindInterfacesExt<CombatModifiersCommand>();
 
             switch (_playerType)
             {
@@ -149,7 +160,9 @@ namespace EmpireAtWar.Ship
                     }
                 case PlayerType.Opponent:
                     {
-
+                        Container.BindInterfacesAndSelfTo<FogVisibilityComponent>()
+                            .FromComponentsInHierarchy()
+                            .AsCached();
                         break;
                     }
             }

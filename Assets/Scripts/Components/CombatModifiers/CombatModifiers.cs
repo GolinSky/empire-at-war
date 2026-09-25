@@ -9,6 +9,14 @@ namespace EmpireAtWar.Components.Combat
 
         public event Action Changed;
 
+        public bool IsIonDisabled { get; private set; }
+
+        public void SetIonDisabled(bool disabled)
+        {
+            IsIonDisabled = disabled;
+            Changed?.Invoke();
+        }
+
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;
         public float SpeedMultiplier { get; private set; } = 1f;

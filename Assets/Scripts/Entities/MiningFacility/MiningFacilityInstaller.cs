@@ -1,9 +1,11 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Extentions;
@@ -65,11 +67,16 @@ namespace EmpireAtWar.MiningFacility
             Container.BindInterfacesAndSelfTo<SelectionComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+            if (_playerType == PlayerType.Opponent)
+                Container.BindInterfacesAndSelfTo<FogVisibilityComponent>()
+                    .FromComponentsInHierarchy()
+                    .AsCached();
             
             //entity commands
             Container
                 .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>();
+                .BindInterfacesExt<HealthCommand>()
+                .BindInterfacesExt<CombatModifiersCommand>();
 
         }
         

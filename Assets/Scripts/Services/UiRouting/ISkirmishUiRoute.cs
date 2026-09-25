@@ -8,7 +8,8 @@ namespace EmpireAtWar.Services.UiRouting
         Content,
         BuildPipeline,
         Economy,
-        Reinforcement
+        Reinforcement,
+        SuperWeapon
     }
 
     public interface ISkirmishUiRoute

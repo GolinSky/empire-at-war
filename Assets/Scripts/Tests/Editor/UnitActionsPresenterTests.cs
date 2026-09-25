@@ -189,6 +189,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             public void RemoveSelectable(ISelectionContext context) { }
             public void SelectCurrentShipsByType(ShipType type) { }
+            public void SelectCurrentSquadronsByType(EmpireAtWar.Entities.Squadrons.SquadronType type) { }
             public void AddObserver(IObserver<ISelectionSubject> observer) => _observers.Add(observer);
             public void RemoveObserver(IObserver<ISelectionSubject> observer) => _observers.Remove(observer);
         }

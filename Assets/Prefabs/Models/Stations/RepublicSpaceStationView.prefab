@@ -683,6 +683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
+  spawnDestroyedExplosion: 1
 --- !u!1 &2446851395583465277
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +849,37 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3187684925384352161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4029083725751294024}
+  m_Layer: 0
+  m_Name: HangarLaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4029083725751294024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3187684925384352161}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 19.1, y: 0, z: -8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4603807269250663179}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3280282883185443766
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,7 +933,6 @@ MonoBehaviour:
   - {fileID: 3338842454457253282}
   - {fileID: 8636718447074006593}
   - {fileID: 5541572143087454584}
-  attackOrigin: {fileID: 4603807269250663179}
   useWeaponDamageRange: 1
 --- !u!1 &3878823890033674953
 GameObject:
@@ -1455,6 +1486,7 @@ GameObject:
   - component: {fileID: 8450382512840613885}
   - component: {fileID: 1280977221910138847}
   - component: {fileID: 8636846628301652099}
+  - component: {fileID: 4922508454177302544}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
   m_TagString: Untagged
@@ -1491,6 +1523,7 @@ Transform:
   - {fileID: 8000202830491400828}
   - {fileID: 3342516571945035308}
   - {fileID: 8628998317442634045}
+  - {fileID: 4029083725751294024}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5745535490289906719
@@ -1572,6 +1605,25 @@ MonoBehaviour:
   - {fileID: 8636718447074006593}
   - {fileID: 5541572143087454584}
   shieldView: {fileID: 0}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 20.61631, y: 3.7444658, z: 8.737103}
+    m_Extent: {x: 16.627937, y: 8.188562, z: 14.503992}
+--- !u!114 &4922508454177302544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb836d356ec0424bbfdd93fd3278b6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
+  launchPoint: {fileID: 4029083725751294024}
+  hangarHardPoint: {fileID: 2124114673325768231}
 --- !u!1001 &4411045628918960048
 PrefabInstance:
   m_ObjectHideFlags: 0

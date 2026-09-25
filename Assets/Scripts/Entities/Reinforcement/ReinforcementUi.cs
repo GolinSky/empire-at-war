@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.Squadrons;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -113,6 +114,10 @@ namespace EmpireAtWar.Views.Reinforcement
                 {
                     ActivateShipUnitUi(result, spawnShipUi);
                 }
+                else if (Enum.TryParse(key, out SquadronType squadronType))
+                {
+                    spawnShipUi.Activate(_model.CanSpawnUnit(squadronType));
+                }
             }
         }
 
@@ -125,6 +130,10 @@ namespace EmpireAtWar.Views.Reinforcement
                 if (Enum.TryParse(entry.Key, out ShipType result))
                 {
                     ActivateShipUnitUi(result, entry.Value);
+                }
+                else if (Enum.TryParse(entry.Key, out SquadronType squadronType))
+                {
+                    entry.Value.Activate(_model.CanSpawnUnit(squadronType));
                 }
             }
         }

@@ -17,5 +17,8 @@
         ConcussionMissile = 13,
         PointDefense = 14,
         FighterLaser = 15,
+        PlanetaryIonCannon = 16,
+        HypervelocityGun = 17,
+        PlasmaCannon = 18,
     }
 }

@@ -1,6 +1,7 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly IEntityLocator _entityLocator;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
+        private readonly SuperWeaponModel _superWeapons;
         private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
         private bool _isInitialized;
@@ -39,6 +41,7 @@ namespace EmpireAtWar.Services.Factions
         public FactionService(
             PlayerFactionModel model,
             FactionResearchModel research,
+            SuperWeaponModel superWeapons,
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyProvider economyProvider,
@@ -46,6 +49,7 @@ namespace EmpireAtWar.Services.Factions
         {
             _model = model;
             _research = research;
+            _superWeapons = superWeapons;
             Income = DEFAULT_INCOME;
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
@@ -102,6 +106,10 @@ namespace EmpireAtWar.Services.Factions
                 {
                     _model.ReleaseStructure(unitRequest);
                 }
+                if (unitRequest is SuperWeaponUnitRequest revertedSuperWeapon)
+                {
+                    _superWeapons.CancelCharging(revertedSuperWeapon.Key);
+                }
                 _purchaseMediator.Value.RevertFlow(unitRequest);
                 return;
             }
@@ -116,6 +124,9 @@ namespace EmpireAtWar.Services.Factions
                 case ResearchUnitRequest researchUnitRequest:
                     _research.Complete(researchUnitRequest.Key);
                     return;
+                case SuperWeaponUnitRequest superWeaponUnitRequest:
+                    _superWeapons.CompleteCharging(superWeaponUnitRequest.Key);
+                    return;
             }
 
             if (_nextChain != null)
@@ -127,7 +138,8 @@ namespace EmpireAtWar.Services.Factions
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
             if (!_entityLocator.IsStationOperational(PlayerType.Player) ||
-                !_model.CanQueueUnit(unitRequest))
+                !_model.CanQueueUnit(unitRequest) ||
+                unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {
                 return;
             }
@@ -139,6 +151,10 @@ namespace EmpireAtWar.Services.Factions
         {
             if (_model.TryCancelCurrentUnit(id, out UnitRequest unitRequest))
             {
+                if (unitRequest is SuperWeaponUnitRequest superWeapon)
+                {
+                    _superWeapons.CancelCharging(superWeapon.Key);
+                }
                 _purchaseMediator.Value.RevertFlow(unitRequest);
             }
         }
@@ -160,6 +176,10 @@ namespace EmpireAtWar.Services.Factions
         public void Handle(UnitRequest unitRequest)
         {
             _model.QueueUnit(unitRequest);
+            if (unitRequest is SuperWeaponUnitRequest superWeapon)
+            {
+                _superWeapons.StartCharging(superWeapon.Key);
+            }
         }
 
         public void UpdateState(ISelectionSubject selectionSubject)

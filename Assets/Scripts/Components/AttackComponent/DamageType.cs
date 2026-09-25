@@ -10,5 +10,8 @@ namespace EmpireAtWar.Components.AttackComponent
         ConcussionMissile = 5,
         ProtonTorpedo = 6,
         Beam = 7,
+        IonCannon = 8,
+        HypervelocityGun = 9,
+        PlasmaCannon = 10,
     }
 }
