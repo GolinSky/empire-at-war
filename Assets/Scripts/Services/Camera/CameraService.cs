@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Camera
         Vector2 WorldToScreenPoint(Vector3 position);
         IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax);
         void MoveTo(Vector3 worldPoint);
+        void SetPose(Vector3 position, Quaternion rotation);
     }
 
     [RequireComponent(typeof(UnityEngine.Camera))]
@@ -116,6 +117,13 @@ namespace EmpireAtWar.Services.Camera
 
             targetCameraPosition.y = CameraPosition.y;
             SetPosition(ClampPosition(targetCameraPosition), false);
+        }
+
+        public void SetPose(Vector3 position, Quaternion rotation)
+        {
+            StopMovement();
+            _keyboardVelocity = Vector2.zero;
+            transform.SetPositionAndRotation(position, rotation);
         }
 
         private void OnSwipe(Vector2 direction)

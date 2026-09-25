@@ -50,7 +50,6 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             Model.OnOneShotRequested += PlayOneShot;
             _weaponFireEvents.ShotEmitted += PlayWeaponShot;
-            PlayLoop(_data.GetAmbientClip());
         }
 
         public void LateDispose()
@@ -111,14 +110,6 @@ namespace EmpireAtWar.Components.Ship.Audio
         private void PlayOneShot(AudioClip clip)
         {
             source.PlayOneShot(clip);
-        }
-
-        private void PlayLoop(AudioClip clip)
-        {
-            source.Stop();
-            source.clip = clip;
-            source.loop = true;
-            source.Play(0);
         }
     }
 }

@@ -546,3 +546,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: SuperWeaponData
+      value:
+        m_AssetGUID: 10f22eac8c754ca45a75fa878f460d6b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

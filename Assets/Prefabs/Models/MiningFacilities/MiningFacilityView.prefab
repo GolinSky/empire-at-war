@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
+  spawnDestroyedExplosion: 1
 --- !u!1 &1295155889020873871
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +326,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b0635126764df796ba6194d27372a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldRenderer: {fileID: 0}
+  visibilityRadius: 4
+  color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
+  brightness: 2
+  fadeDuration: 1.2
+  waveSpeed: 6
+  waveWidth: 0.8
+  displacementStrength: 0.15
 --- !u!1 &5361972980452052922
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,6 +423,7 @@ GameObject:
   - component: {fileID: 2562994139316657033}
   - component: {fileID: 6175106514994132088}
   - component: {fileID: 3390042486601539979}
+  - component: {fileID: 4949378780131669032}
   m_Layer: 0
   m_Name: MiningFacilityView
   m_TagString: Untagged
@@ -514,3 +524,25 @@ MonoBehaviour:
   <ShipUnits>k__BackingField:
   - {fileID: 1754627770004611748}
   shieldView: {fileID: 0}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 0, y: -1.7438259, z: 0}
+    m_Extent: {x: 5.772174, y: 5.8638263, z: 5.998123}
+--- !u!114 &4949378780131669032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 3704989187706422692}
+  - {fileID: 1168712926069147192}
+  hardPoints:
+  - {fileID: 1754627770004611748}

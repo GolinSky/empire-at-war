@@ -1,9 +1,11 @@
 ﻿using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
 using EmpireAtWar.Entities.Ship.EntityCommands.Health;
 using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
 using EmpireAtWar.Entities.Ship.EntityCommands;
@@ -73,12 +75,18 @@ namespace EmpireAtWar.SpaceStation
             Container.BindInterfacesAndSelfTo<WeaponComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+            Container.Bind<IHangarData>().To<StationHangarData>().AsSingle();
+            Container.Bind<HangarModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<HangarComponent>()
+                .FromComponentsInHierarchy()
+                .AsCached();
             Container.BindInterfacesAndSelfTo<StationCombatPresenter>().AsSingle();
             
             //entity commands
             Container
                 .BindInterfacesExt<SelectionCommand>()
                 .BindInterfacesExt<HealthCommand>()
+                .BindInterfacesExt<CombatModifiersCommand>()
                 .BindInterfacesExt<StationaryAttackCommand>();
         }
         

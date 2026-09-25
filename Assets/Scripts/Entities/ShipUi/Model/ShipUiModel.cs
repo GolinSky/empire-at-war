@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Mvc;
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Models.ShipUi
 
         public bool HasShips { get; private set; }
         public ShipType? SelectedShipType { get; private set; }
+        public SquadronType? SelectedSquadronType { get; private set; }
         public ShipAbilityId? PendingAbilityId { get; private set; }
 
         public void SetPendingAbility(ShipAbilityId? id) => PendingAbilityId = id;
@@ -25,10 +27,14 @@ namespace EmpireAtWar.Models.ShipUi
 
         public Sprite GetShipIcon(ShipType shipType) => _data.GetShipIcon(shipType);
 
-        public void UpdateSelection(bool hasShips, ShipType? selectedShipType)
+        public Sprite GetSquadronIcon(SquadronType squadronType) => _data.GetSquadronIcon(squadronType);
+
+        public void UpdateSelection(bool hasShips, ShipType? selectedShipType,
+            SquadronType? selectedSquadronType = null)
         {
             HasShips = hasShips;
             SelectedShipType = selectedShipType;
+            SelectedSquadronType = selectedSquadronType;
             OnSelectionChanged?.Invoke();
         }
     }

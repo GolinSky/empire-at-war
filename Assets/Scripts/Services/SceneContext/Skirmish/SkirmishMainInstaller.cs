@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Controllers.Factions;
@@ -8,6 +9,8 @@ using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Controllers.ShipUi;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.CinematicCamera.Controller;
+using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.UnitOrderFeedback;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -15,6 +18,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -24,6 +28,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Layer;
@@ -68,6 +73,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .ByNewGameObjectInstaller<UiInstaller>();
 
         Container.BindInterfacesExt<EntityLocator>();
+        Container.BindInterfacesExt<SquadronLauncher>();
         
         
         //todo: use GameModelObserver.PlayerFactionType directly
@@ -81,6 +87,10 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindScriptableObject<ShipAbilityCatalog>(Repository);
         Container.Bind<IShipAbilityFactory>().To<ShipAbilityFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ShipAbilityService>().AsSingle().NonLazy();
+        Container.BindScriptableObject<SuperWeaponData>(Repository);
+        Container.Bind<SuperWeaponTargetingModel>().AsSingle();
+        Container.BindInterfacesTo<SuperWeaponOriginRegistry>().AsSingle();
+        Container.BindInterfacesExt<SuperWeaponFireService>();
         Container.BindInterfacesAndSelfTo<ShipUiModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<ShipUiController>();
         Container.BindInterfacesNonLazyExt<UnitOrderFeedbackUiController>();
@@ -97,6 +107,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
         
         Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<CinematicCameraModel>().AsSingle();
+        Container.BindInterfacesExt<CinematicCameraPresenter>();
         Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
         Container.BindInterfacesNonLazyExt<CoreGameUiController>();
         Container.BindInterfacesNonLazyExt<UnitActionsPresenter>();

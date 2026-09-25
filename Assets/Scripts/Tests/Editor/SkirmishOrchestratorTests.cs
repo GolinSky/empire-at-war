@@ -171,6 +171,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector2 WorldToScreenPoint(Vector3 position) => Vector2.zero;
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax) => Array.Empty<Vector3>();
             public void MoveTo(Vector3 worldPoint) { }
+            public void SetPose(Vector3 position, Quaternion rotation) { }
         }
     }
 }

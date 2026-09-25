@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
@@ -16,7 +18,7 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Game
 {
     public class CoreGameUiController : ICoreGamePresenter, ISkirmishRouteNavigation,
-        IUnitActionsViewProvider,
+        IUnitActionsViewProvider, ISuperWeaponsViewProvider,
         IObserver<ISelectionSubject>, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
@@ -24,6 +26,7 @@ namespace EmpireAtWar.Presenters.Game
         private readonly ISkirmishSessionModelObserver _sessionModel;
         private readonly ISkirmishFlow _skirmishFlow;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
+        private readonly ICinematicCameraController _cinematicCamera;
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
 
@@ -32,19 +35,22 @@ namespace EmpireAtWar.Presenters.Game
         private ISelectionContext _lastSelectionContext;
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
+        public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
 
         public CoreGameUiController(
             IUiService uiService,
             ISelectionService selectionService,
             ISkirmishSessionModelObserver sessionModel,
             ISkirmishFlow skirmishFlow,
-            INotifier<BattleResult> battleVictoryNotifier)
+            INotifier<BattleResult> battleVictoryNotifier,
+            ICinematicCameraController cinematicCamera)
         {
             _uiService = uiService;
             _selectionService = selectionService;
             _sessionModel = sessionModel;
             _skirmishFlow = skirmishFlow;
             _battleVictoryNotifier = battleVictoryNotifier;
+            _cinematicCamera = cinematicCamera;
         }
 
         public void Initialize()
@@ -238,6 +244,11 @@ namespace EmpireAtWar.Presenters.Game
 
             SkirmishUiRoutePosition position = SkirmishUiRoutePosition.Reinforcement;
             SetRouteActive(position, !IsRouteActive(position));
+        }
+
+        public void StartCinematic()
+        {
+            _cinematicCamera.Enter();
         }
 
         private void ActivateRoute(

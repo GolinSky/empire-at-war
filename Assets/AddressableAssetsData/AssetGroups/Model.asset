@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10f22eac8c754ca45a75fa878f460d6b
+    m_Address: SuperWeaponData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1279b80cdfe8b7c4cb98e6c5be05fd16
     m_Address: DamageMatrixData
     m_ReadOnly: 0

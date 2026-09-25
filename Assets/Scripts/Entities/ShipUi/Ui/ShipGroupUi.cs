@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Squadrons;
 using System;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
@@ -68,6 +69,17 @@ namespace EmpireAtWar.Views
             ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
             group.Configure(shipType, _model.GetShipIcon(shipType), ships, _model,
                 _presenter.SelectShipGroup, pressAbility);
+            group.gameObject.SetActive(true);
+            _groups.Add(group);
+            _layoutDirty = true;
+        }
+
+        public void AddGroup(SquadronType squadronType, IReadOnlyList<ShipUiEntry> squadrons,
+            Action<ShipAbilityId> pressAbility)
+        {
+            ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+            group.Configure(squadronType, _model.GetSquadronIcon(squadronType), squadrons, _model,
+                _presenter.SelectSquadronGroup, pressAbility);
             group.gameObject.SetActive(true);
             _groups.Add(group);
             _layoutDirty = true;

@@ -29,6 +29,8 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
+        [SerializeField] private IonStunView ionStunPrefab;
+        [SerializeField] private Bounds ionFieldBounds;
 
         private ITimer _refreshShieldsTimer;
         private ShieldComponent _shield;
@@ -38,6 +40,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private PlayerType _playerType;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
+        private IIonStunView _ionStunView;
 
         public event Action OnValueChanged
         {
@@ -88,12 +91,26 @@ namespace EmpireAtWar.Components.Ship.Health
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
             Model.OnDestroy += HandleDestroy;
+            _modifiers.Changed += HandleIonStateChanged;
 
             if (shieldView != null)
             {
                 _shield = new ShieldComponent(this, shieldView);
                 _shield.Initialize();
             }
+        }
+
+        private void HandleIonStateChanged()
+        {
+            if (_ionStunView == null)
+            {
+                if (!_modifiers.IsIonDisabled) return;
+                IonStunView view = Instantiate(ionStunPrefab, _viewTransform);
+                view.Configure(ionFieldBounds);
+                _ionStunView = view;
+            }
+
+            _ionStunView.SetActive(_modifiers.IsIonDisabled);
         }
 
         public void LateDispose()
@@ -110,6 +127,8 @@ namespace EmpireAtWar.Components.Ship.Health
 
             _isReleased = true;
             Model.OnDestroy -= HandleDestroy;
+            _modifiers.Changed -= HandleIonStateChanged;
+            if (_ionStunView != null) _ionStunView.Release();
 
             if (_shield != null)
             {
@@ -180,8 +199,9 @@ namespace EmpireAtWar.Components.Ship.Health
             for (int index = 0; index < ShipUnits.Count; index++)
             {
                 IHardPoint hardPoint = ShipUnits[index];
+                // Damage is routed by list index, so the model id must be the index, not the serialized view id.
                 HardPointModel hardPointModel = new HardPointModel(
-                    hardPoint.Id,
+                    index,
                     hardPoint.HardPointType);
                 hardPointModels[index] = hardPointModel;
                 _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPoint);

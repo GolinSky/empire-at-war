@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.Reinforcement;
@@ -13,6 +14,7 @@ namespace EmpireAtWar.Models.Reinforcement
     public class ReinforcementData : Data
     {
         [SerializeField] private DictionaryWrapper<ShipType, UnitSpawnView> spawnShipWrapper;
+        [SerializeField] private DictionaryWrapper<SquadronType, UnitSpawnView> spawnSquadronWrapper;
         [SerializeField] private DictionaryWrapper<MiningFacilityType, UnitSpawnView> spawnFacilityWrapper;
         [SerializeField] private DictionaryWrapper<DefendPlatformType, UnitSpawnView> defendPlatformWrapper;
 
@@ -37,6 +39,11 @@ namespace EmpireAtWar.Models.Reinforcement
             }
 
             return spawnFacilityWrapper.Dictionary.Values.FirstOrDefault();
+        }
+
+        public UnitSpawnView GetSpawnPrefab(SquadronType squadronType)
+        {
+            return spawnSquadronWrapper.Dictionary[squadronType];
         }
 
         public UnitSpawnView GetSpawnPrefab(DefendPlatformType defendPlatformType)

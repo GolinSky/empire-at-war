@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a6db44b20e9264fb00c69a48fa8c17, type: 3}
+  m_Name: ShipSfxData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Audio.ShipSfxData
+  viewPrefab: {fileID: 6787240530670323890, guid: 86f49a9d4c5a889448acccc24212d5c6,
+    type: 3}
+  abilities:
+  - abilityId: 1
+    startClip: {fileID: 8300000, guid: 80dd32d6735abb544a18326002bb3411, type: 3}
+    executionLoop: {fileID: 8300000, guid: 055d00a28b6d65e4aa73e5419e8539ff, type: 3}
+    endClip: {fileID: 8300000, guid: e58eb5cb3a1ba2f4fa2f9fd257ac7a75, type: 3}
+    restoreClip: {fileID: 8300000, guid: 74fce3ac1fa57114d9d235a7182e3f61, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.2
+  - abilityId: 2
+    startClip: {fileID: 8300000, guid: 1d72cc7526d0017409c8ea0be0d3c971, type: 3}
+    executionLoop: {fileID: 8300000, guid: 4eb46e306629e11449f32f854e3e01c5, type: 3}
+    endClip: {fileID: 8300000, guid: 2da640d71a97f9c4387ab92baee945b7, type: 3}
+    restoreClip: {fileID: 8300000, guid: cee1df925135d394b89872ae904fd83d, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  - abilityId: 3
+    startClip: {fileID: 8300000, guid: 515190c14e0a5b24495c279533e9d587, type: 3}
+    executionLoop: {fileID: 8300000, guid: 66938b94a78349b4da738c050731ebc1, type: 3}
+    endClip: {fileID: 8300000, guid: b1dea434baaa2f9498363391b806d141, type: 3}
+    restoreClip: {fileID: 8300000, guid: 7ae9af26cc105b54283de7a49d8a5c65, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  - abilityId: 4
+    startClip: {fileID: 8300000, guid: 57f061cb89eeb9b4b83c1c9ab259e59f, type: 3}
+    executionLoop: {fileID: 8300000, guid: 4d636b63456c90a4f99f7f4c460a9975, type: 3}
+    endClip: {fileID: 8300000, guid: 0f6ac9fa190ae914fb693b7d8d59673a, type: 3}
+    restoreClip: {fileID: 8300000, guid: 3c661cac560c72242b8fcec805a3df90, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  - abilityId: 5
+    startClip: {fileID: 8300000, guid: c35172a0e81b36348a8eb4e08eb7eedf, type: 3}
+    executionLoop: {fileID: 8300000, guid: 8955e6c914c8a2b489c0aece5c5eec5c, type: 3}
+    endClip: {fileID: 8300000, guid: c8d1e26bcd6b7d14ca9d45310eee0be3, type: 3}
+    restoreClip: {fileID: 8300000, guid: 0f6eed9990cf2554a9a3ec87a72e0077, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  - abilityId: 6
+    startClip: {fileID: 8300000, guid: 24004510269604545be3d77c7335af21, type: 3}
+    executionLoop: {fileID: 8300000, guid: 73faa6cea54d2954c9c6b375414f80b3, type: 3}
+    endClip: {fileID: 8300000, guid: 89d97f7d08d68a64d9cc710aebf7f00b, type: 3}
+    restoreClip: {fileID: 8300000, guid: 3f1260d2129453846a86c2d037d6e796, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  - abilityId: 7
+    startClip: {fileID: 8300000, guid: 024288d8816f19d4abc70615a5edc107, type: 3}
+    executionLoop: {fileID: 8300000, guid: 27185b9dc66a4c64babd4dfdedd94f07, type: 3}
+    endClip: {fileID: 8300000, guid: 8a732a29e619bee48bae4f6b2135c829, type: 3}
+    restoreClip: {fileID: 8300000, guid: 6eec054dfe49ce6478e228003f00cab9, type: 3}
+    cueVolume: 0.5
+    executionVolume: 0.09
+  engineLoop: {fileID: 8300000, guid: aa5595974c8463346852c657c3f27e31, type: 3}
+  accelerationClip: {fileID: 8300000, guid: d4d46927f06f942488989dacb6288519, type: 3}
+  engineVolume: 0.12
+  accelerationVolume: 0.35
+  minDistance: 15
+  maxDistance: 100
+  zoomReferenceHeight: 180
