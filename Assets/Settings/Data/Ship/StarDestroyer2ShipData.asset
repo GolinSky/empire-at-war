@@ -58,4 +58,7 @@ MonoBehaviour:
   <Range>k__BackingField: 100
   <Delay>k__BackingField: 0.25
   <Distance>k__BackingField: 200
-  abilities: 0200000004000000
+  abilities: 01000000
+  hangarBays: []
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8
