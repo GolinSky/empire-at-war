@@ -45,6 +45,10 @@ namespace EmpireAtWar
                 .BindInterfacesAndSelfTo<PlayerFactionModel>()
                 .AsSingle()
                 .WithArguments(playerFactionType);
+            Container
+                .BindInterfacesAndSelfTo<FactionResearchModel>()
+                .AsSingle()
+                .WithArguments(playerFactionType);
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();

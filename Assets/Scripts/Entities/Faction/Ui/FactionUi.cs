@@ -17,6 +17,7 @@ namespace EmpireAtWar.Views.Factions
     public interface IFactionUi
     {
         void SetModel(IPlayerFactionModelObserver model);
+        void SetResearch(IFactionResearchModelObserver research);
         void SetPresenter(IFactionPresenter presenter);
         void SetData(FactionsData factionsData);
         void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
@@ -34,8 +35,12 @@ namespace EmpireAtWar.Views.Factions
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
 
+        private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
+            new Dictionary<ResearchType, FactionUnitUi>();
+
         private FactionUnitUi _levelFactionUnitUi;
         private IPlayerFactionModelObserver _model;
+        private IFactionResearchModelObserver _research;
         private IFactionPresenter _presenter;
         private FactionsData _factionsData;
         private IUnitRequestFactory _unitRequestFactory;
@@ -46,6 +51,11 @@ namespace EmpireAtWar.Views.Factions
         public void SetModel(IPlayerFactionModelObserver model)
         {
             _model = model;
+        }
+
+        public void SetResearch(IFactionResearchModelObserver research)
+        {
+            _research = research;
         }
 
         public void SetPresenter(IFactionPresenter presenter)
@@ -76,7 +86,7 @@ namespace EmpireAtWar.Views.Factions
 
         public void Initialize()
         {
-            if (_model == null || _presenter == null || _factionsData == null ||
+            if (_model == null || _research == null || _presenter == null || _factionsData == null ||
                 _unitRequestFactory == null)
             {
                 throw new InvalidOperationException(
@@ -117,8 +127,14 @@ namespace EmpireAtWar.Views.Factions
                     data.Key));
             }
 
+            foreach (ResearchType researchType in _research.ResearchTypes)
+            {
+                CreateResearchUnit(researchType);
+            }
+
             _model.OnSelectionTypeChanged += HandleSelectionChanged;
             _model.OnLevelUpgraded += UpdateUnits;
+            _research.OnResearchCompleted += UpdateResearchUnit;
             _isInitialized = true;
             RefreshUnitVisibility(_model.SelectionType);
         }
@@ -132,6 +148,7 @@ namespace EmpireAtWar.Views.Factions
 
             _model.OnSelectionTypeChanged -= HandleSelectionChanged;
             _model.OnLevelUpgraded -= UpdateUnits;
+            _research.OnResearchCompleted -= UpdateResearchUnit;
             _isInitialized = false;
         }
 
@@ -163,11 +180,32 @@ namespace EmpireAtWar.Views.Factions
             base.Hide();
         }
 
-        private void AddUi(UnitRequest unitRequest)
+        private FactionUnitUi AddUi(UnitRequest unitRequest)
         {
             FactionUnitUi unitUi = Instantiate(factionUnitPrefab, _unitParent);
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
             _factionUnitsUi.Add(unitUi);
+            return unitUi;
+        }
+
+        private void CreateResearchUnit(ResearchType researchType)
+        {
+            if (_research.TryGetNextTier(researchType, out ResearchTierData tier))
+            {
+                _researchUnitsUi[researchType] = AddUi(
+                    _unitRequestFactory.ConstructUnitRequest(tier.FactionData, researchType));
+            }
+        }
+
+        private void UpdateResearchUnit(ResearchType researchType)
+        {
+            FactionUnitUi unitUi = _researchUnitsUi[researchType];
+            _researchUnitsUi.Remove(researchType);
+            _factionUnitsUi.Remove(unitUi);
+            unitUi.Destroy();
+
+            CreateResearchUnit(researchType);
+            RefreshUnitVisibility(_model.SelectionType);
         }
 
         private void CreateLevelUnit()

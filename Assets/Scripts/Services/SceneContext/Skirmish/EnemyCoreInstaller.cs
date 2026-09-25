@@ -71,6 +71,10 @@ namespace EmpireAtWar.SceneContext
                 .Bind<EnemyFactionModel>()
                 .AsSingle()
                 .WithArguments(enemyFactionType);
+            Container
+                .BindInterfacesAndSelfTo<FactionResearchModel>()
+                .AsSingle()
+                .WithArguments(enemyFactionType);
 
             
             SceneContext.Container

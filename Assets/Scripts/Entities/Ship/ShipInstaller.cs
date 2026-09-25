@@ -70,6 +70,8 @@ namespace EmpireAtWar.Ship
 
             Container.Bind<WeaponModel>().AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
+            Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
+            Container.Decorate<IHealthData>().With<ResearchHealthData>();
         }
 
         protected override void BindModel()
