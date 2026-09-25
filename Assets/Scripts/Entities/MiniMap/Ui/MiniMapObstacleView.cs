@@ -9,10 +9,12 @@ namespace EmpireAtWar.Views.MiniMap
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class MiniMapObstacleView : MaskableGraphic
     {
-        private const int ELLIPSE_SEGMENTS = 32;
+        [SerializeField] private Sprite asteroidIcon;
 
         private IReadOnlyList<MiniMapObstacle> _obstacles;
         private Vector2Range _mapRange;
+
+        public override Texture mainTexture => asteroidIcon.texture;
 
         public void SetData(IReadOnlyList<MiniMapObstacle> obstacles, Vector2Range mapRange)
         {
@@ -39,23 +41,12 @@ namespace EmpireAtWar.Views.MiniMap
                 Vector2 radius = new Vector2(obstacle.RadiusX * scaleX, obstacle.RadiusZ * scaleY);
 
                 int first = vertices.currentVertCount;
-                vertices.AddVert(center, color, Vector2.zero);
-                for (int segment = 0; segment < ELLIPSE_SEGMENTS; segment++)
-                {
-                    float angle = segment * Mathf.PI * 2f / ELLIPSE_SEGMENTS;
-                    vertices.AddVert(
-                        center + new Vector2(Mathf.Cos(angle) * radius.x, Mathf.Sin(angle) * radius.y),
-                        color,
-                        Vector2.zero);
-                }
-
-                for (int segment = 0; segment < ELLIPSE_SEGMENTS; segment++)
-                {
-                    vertices.AddTriangle(
-                        first,
-                        first + 1 + segment,
-                        first + 1 + (segment + 1) % ELLIPSE_SEGMENTS);
-                }
+                vertices.AddVert(center + new Vector2(-radius.x, -radius.y), color, new Vector2(0f, 0f));
+                vertices.AddVert(center + new Vector2(-radius.x, radius.y), color, new Vector2(0f, 1f));
+                vertices.AddVert(center + new Vector2(radius.x, radius.y), color, new Vector2(1f, 1f));
+                vertices.AddVert(center + new Vector2(radius.x, -radius.y), color, new Vector2(1f, 0f));
+                vertices.AddTriangle(first, first + 1, first + 2);
+                vertices.AddTriangle(first, first + 2, first + 3);
             }
         }
     }
