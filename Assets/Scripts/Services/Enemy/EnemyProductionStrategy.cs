@@ -245,7 +245,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
-                if (!IsAffordableAndAvailable(option.Value) ||
+                // Affordability is checked after selection so the AI saves for higher-tier ships.
+                if (!IsAvailable(option.Value) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value))
@@ -306,11 +307,6 @@ namespace EmpireAtWar.Services.Enemy
                 data.MaxCount,
                 data.UnitCapacity,
                 _reinforcementData.MaxUnitCapacity);
-        }
-
-        private bool IsAffordableAndAvailable(FactionData data)
-        {
-            return IsAvailable(data) && IsAffordable(data);
         }
 
         private bool IsAvailable(FactionData data)

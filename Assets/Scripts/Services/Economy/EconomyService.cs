@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.Economy
         private float _commonIncome;
 
         public float Income => DEFAULT_INCOME;
+        public float TotalIncome => _commonIncome;
 
         public EconomyService(EconomyModel model, EconomyData data)
         {
