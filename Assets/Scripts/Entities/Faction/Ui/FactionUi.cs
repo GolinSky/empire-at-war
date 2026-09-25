@@ -241,13 +241,29 @@ namespace EmpireAtWar.Views.Factions
 
         private void UpdateUnits(int level)
         {
+            int unitIndex = _levelFactionUnitUi != null
+                ? _factionUnitsUi.IndexOf(_levelFactionUnitUi)
+                : _factionUnitsUi.Count;
+            int siblingIndex = _levelFactionUnitUi != null
+                ? _levelFactionUnitUi.transform.GetSiblingIndex()
+                : _unitParent.childCount;
+
             if (_levelFactionUnitUi != null)
             {
                 _factionUnitsUi.Remove(_levelFactionUnitUi);
+                _levelFactionUnitUi.SetActive(false);
                 _levelFactionUnitUi.Destroy();
+                _levelFactionUnitUi = null;
             }
 
             CreateLevelUnit();
+            if (_levelFactionUnitUi != null)
+            {
+                _factionUnitsUi.Remove(_levelFactionUnitUi);
+                _factionUnitsUi.Insert(unitIndex, _levelFactionUnitUi);
+                _levelFactionUnitUi.transform.SetSiblingIndex(siblingIndex);
+            }
+
             RefreshUnitVisibility(_model.SelectionType);
         }
 

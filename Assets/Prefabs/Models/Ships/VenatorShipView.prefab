@@ -10193,6 +10193,7 @@ GameObject:
   - component: {fileID: 5034278607031375827}
   - component: {fileID: 9099343971920931525}
   - component: {fileID: 1115088912326920354}
+  - component: {fileID: 1283754632722916796}
   m_Layer: 0
   m_Name: VenatorShipView
   m_TagString: Untagged
@@ -10443,6 +10444,54 @@ MonoBehaviour:
   - {fileID: 6341800223163410482}
   - {fileID: 810153685434030957}
   shieldView: {fileID: 6726589032486533280}
+--- !u!114 &1283754632722916796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 576903172496899927}
+  - {fileID: 3156991302101039615}
+  - {fileID: 910652348408526127}
+  - {fileID: 8143812027280813905}
+  - {fileID: 8073762314301974062}
+  - {fileID: 7504021556642263889}
+  - {fileID: 1191454270007629787}
+  - {fileID: 6080055043469353044}
+  - {fileID: 4297702259995321763}
+  - {fileID: 7256676803284391210}
+  - {fileID: 3016675454295695116}
+  - {fileID: 5516033547723387928}
+  - {fileID: 7413230647160101176}
+  - {fileID: 1947354296347925025}
+  - {fileID: 2724415228439531562}
+  - {fileID: 2561499397476259715}
+  hardPoints:
+  - {fileID: 5805539600596289671}
+  - {fileID: 7319587430659081685}
+  - {fileID: 6024391529670597917}
+  - {fileID: 4435948693078054958}
+  - {fileID: 480853964861437089}
+  - {fileID: 7712950437010518041}
+  - {fileID: 7759192415052020530}
+  - {fileID: 3072555694578085480}
+  - {fileID: 8917034741421043246}
+  - {fileID: 1577275718195777145}
+  - {fileID: 7756765708194923692}
+  - {fileID: 5471302012087759742}
+  - {fileID: 4714089933600182028}
+  - {fileID: 4306931013480455252}
+  - {fileID: 6341800223163410482}
+  - {fileID: 6852928509335582908}
+  - {fileID: 5054377183115151904}
+  - {fileID: 810153685434030957}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0
@@ -21239,6 +21288,24 @@ PrefabInstance:
 --- !u!4 &2645375339977704594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2539180981962564473}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &3016675454295695116 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8439294962765317003, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2539180981962564473}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7256676803284391210 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5154403568607508051, guid: a8119784ae6ec8f4b8c85373be9f09c0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2539180981962564473}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8143812027280813905 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3298787485488903128, guid: a8119784ae6ec8f4b8c85373be9f09c0,
     type: 3}
   m_PrefabInstance: {fileID: 2539180981962564473}
   m_PrefabAsset: {fileID: 0}

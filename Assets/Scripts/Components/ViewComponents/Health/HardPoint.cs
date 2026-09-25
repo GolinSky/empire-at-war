@@ -25,9 +25,11 @@ namespace EmpireAtWar.ViewComponents.Health
         public GameObject GameObject => gameObject;
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
-        private ParticleSystem _explosionVfx;
+        private ExplosionVfx _explosionVfx;
 
         private float _healthPercentage = MAX_HEALTH;
+
+        public event System.Action<ExplosionVfx> ExplosionSpawned;
 
         public Vector3 Position => Transform.position;
         public Transform Transform => transform;
@@ -69,9 +71,10 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
             {
-                _explosionVfx = Instantiate(Repository.LoadComponent<ParticleSystem>(EXPLOSION_VFX_PATH), transform);
+                _explosionVfx = Instantiate(Repository.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
                 _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
                 _explosionVfx.Play();
+                ExplosionSpawned?.Invoke(_explosionVfx);
             }
         }
     }

@@ -653,6 +653,7 @@ GameObject:
   - component: {fileID: 3855780891857059193}
   - component: {fileID: 3845683113570912092}
   - component: {fileID: 8523343445597092706}
+  - component: {fileID: 6930281553757434045}
   m_Layer: 0
   m_Name: AcclamatorShipView
   m_TagString: Untagged
@@ -893,6 +894,36 @@ MonoBehaviour:
   - {fileID: 2493734567307619460}
   - {fileID: 2235957021269889044}
   shieldView: {fileID: 5343788978132841973}
+--- !u!114 &6930281553757434045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8044965249881922621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 4947656017401951597}
+  - {fileID: 7060524419501671730}
+  - {fileID: 3869146714339041649}
+  - {fileID: 4536763028871818398}
+  - {fileID: 5637170337897155631}
+  - {fileID: 2693757955960993265}
+  hardPoints:
+  - {fileID: 8372322827020108633}
+  - {fileID: 2237375456122784398}
+  - {fileID: 2577418579849759132}
+  - {fileID: 5788021083433736437}
+  - {fileID: 5032053248851161415}
+  - {fileID: 773800656101828689}
+  - {fileID: 2493734567307619460}
+  - {fileID: 8219935066806577051}
+  - {fileID: 1014526724357004300}
+  - {fileID: 2235957021269889044}
 --- !u!1 &8703706821001797128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,6 +1753,18 @@ PrefabInstance:
 --- !u!4 &4834521443083230755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 676452b8c7363624cb31c588f1eee23c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4944128711273314760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5637170337897155631 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8455980746522495513, guid: 676452b8c7363624cb31c588f1eee23c,
+    type: 3}
+  m_PrefabInstance: {fileID: 4944128711273314760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7060524419501671730 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -6529912339341296390, guid: 676452b8c7363624cb31c588f1eee23c,
     type: 3}
   m_PrefabInstance: {fileID: 4944128711273314760}
   m_PrefabAsset: {fileID: 0}

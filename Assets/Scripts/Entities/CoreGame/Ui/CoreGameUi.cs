@@ -141,10 +141,15 @@ namespace EmpireAtWar.Views.Game
                     : shipCellSize;
                 contentGrid.spacing = new Vector2(20f, 20f);
                 contentGrid.padding = new RectOffset(36, 36, 18, 18);
+                contentGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+                contentGrid.startAxis = isFactionSelection
+                    ? GridLayoutGroup.Axis.Vertical
+                    : GridLayoutGroup.Axis.Horizontal;
+                contentGrid.childAlignment = TextAnchor.UpperLeft;
                 contentGrid.constraint = isFactionSelection
                     ? GridLayoutGroup.Constraint.FixedRowCount
                     : GridLayoutGroup.Constraint.FixedColumnCount;
-                contentGrid.constraintCount = 1;
+                contentGrid.constraintCount = isFactionSelection ? 2 : 1;
                 contentSizeFitter.horizontalFit = isFactionSelection
                     ? ContentSizeFitter.FitMode.PreferredSize
                     : ContentSizeFitter.FitMode.Unconstrained;
