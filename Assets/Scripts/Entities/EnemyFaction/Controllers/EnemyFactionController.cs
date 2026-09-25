@@ -24,7 +24,8 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic 
-    public class EnemyFactionController : Controller<EnemyFactionData>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider
+    public class EnemyFactionController : Controller<EnemyFactionData>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider,
+        IEnemyReinforcementObserver
     {
         private const float DEFAULT_INCOME = 5f;
 
@@ -48,6 +49,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private PlayerType PlayerType => PlayerType.Opponent;
         public float Income => DEFAULT_INCOME;
+        public bool HasPendingReinforcement => _pendingBuilds.Count > 0;
 
 
         public EnemyFactionController(
@@ -204,17 +206,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest, Action buildAction)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType))
-            {
-                if (unitRequest is ShipUnitRequest)
-                {
-                    _unitLimitModel.CancelShipOrder();
-                }
-                ReleaseUnit(unitRequest);
-                _purchaseChain.Revert(unitRequest);
-                return;
-            }
-
+            // Queued reinforcements still arrive after the station falls so the fleet victory can resolve.
             try
             {
                 buildAction();
