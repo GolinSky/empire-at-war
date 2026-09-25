@@ -75,6 +75,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
+    m_Address: ThrantaShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
     m_Address: SeparatistSpaceStationView
     m_ReadOnly: 0
