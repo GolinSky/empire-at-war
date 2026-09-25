@@ -524,6 +524,11 @@ MonoBehaviour:
   <ShipUnits>k__BackingField:
   - {fileID: 1754627770004611748}
   shieldView: {fileID: 0}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 0, y: -1.7438259, z: 0}
+    m_Extent: {x: 5.772174, y: 5.8638263, z: 5.998123}
 --- !u!114 &4949378780131669032
 MonoBehaviour:
   m_ObjectHideFlags: 0

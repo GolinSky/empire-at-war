@@ -601,6 +601,11 @@ MonoBehaviour:
   - {fileID: 6238289069403358111}
   - {fileID: 2758428850559181635}
   shieldView: {fileID: 8271189283194253625}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: -0.00000023841858, y: 1.4457774, z: 0.9261408}
+    m_Extent: {x: 2.0200036, y: 3.7269697, z: 10.843771}
 --- !u!114 &4720638076889477624
 MonoBehaviour:
   m_ObjectHideFlags: 0

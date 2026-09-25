@@ -73,6 +73,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 stun.TimeLeft -= deltaTime;
                 if (stun.TimeLeft > 0f) continue;
                 stun.Modifiers.Remove(stun.Modifier);
+                stun.Modifiers.SetIonDisabled(false);
                 _stuns.RemoveAt(i);
             }
         }
@@ -86,6 +87,11 @@ namespace EmpireAtWar.Services.SuperWeapons
             }
 
             _salvos.Clear();
+            foreach (SuperWeaponStun stun in _stuns)
+            {
+                stun.Modifiers.Remove(stun.Modifier);
+                stun.Modifiers.SetIonDisabled(false);
+            }
             _stuns.Clear();
         }
 
@@ -137,7 +143,8 @@ namespace EmpireAtWar.Services.SuperWeapons
 
             Vector3 impactPosition = target.HealthModel.Transform.position;
             ApplyDamage(target, profile.Weapon.Damage, profile);
-            if (profile.StunDuration > 0f && target.TryGetCommand(out ICombatModifiersCommand combat))
+            if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
+                target.TryGetCommand(out ICombatModifiersCommand combat))
             {
                 ApplyStun(combat.Modifiers, profile);
             }
@@ -207,6 +214,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             }
 
             modifiers.Add(profile.StunModifier);
+            modifiers.SetIonDisabled(true);
             _stuns.Add(new SuperWeaponStun(modifiers, profile.StunModifier, profile.StunDuration));
         }
     }
