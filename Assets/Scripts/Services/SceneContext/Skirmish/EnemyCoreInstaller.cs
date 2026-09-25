@@ -43,6 +43,12 @@ namespace EmpireAtWar.SceneContext
             Container.BindScriptableObject<EconomyData>(Repository);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Container.Bind<EnemyEconomyDebugView>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle()
+                .NonLazy();
+#endif
 
             
             SceneContext.Container

@@ -464,9 +464,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(5000f, ShipType.Recusant)]
-        [TestCase(1500f, ShipType.Munificent)]
+        [TestCase(1500f, null)]
         [TestCase(0f, null)]
-        public void UltraHardRebuild_SelectsVariedAffordableShipsAndRechecksLosses(
+        public void UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(
             float money,
             ShipType? expectedShip)
         {

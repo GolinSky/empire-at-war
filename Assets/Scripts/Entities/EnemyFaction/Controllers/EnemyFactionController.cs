@@ -48,7 +48,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private bool _isInitialized;
 
         private PlayerType PlayerType => PlayerType.Opponent;
-        public float Income => DEFAULT_INCOME;
+        public float Income => DEFAULT_INCOME * Model.CurrentLevel;
         public bool HasPendingReinforcement => _pendingBuilds.Count > 0;
 
 
@@ -99,6 +99,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             {
                 case LevelUnitRequest levelUnitRequest:
                     Model.CurrentLevel++;
+                    _economyProvider.RecalculateIncome(this);
                   //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
                 case ShipUnitRequest shipUnitRequest:
