@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             Profile = profile;
             Target = target;
             Origin = origin;
+            NextShotTime = profile.FiringDelay;
         }
     }
 }
