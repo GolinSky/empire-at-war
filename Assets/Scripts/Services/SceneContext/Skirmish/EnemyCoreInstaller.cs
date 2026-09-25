@@ -65,10 +65,13 @@ namespace EmpireAtWar.SceneContext
                 .Bind<IEnemyReinforcementObserver>()
                 .FromMethod(()=>Container.Resolve<IEnemyReinforcementObserver>());
 
-            ModelDependencyBuilder
-                .ConstructBuilder(Container)
-                .BindFromNewScriptable<EnemyFactionData>(Repository, PlayerType.Opponent);
-            
+            // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
+            FactionType enemyFactionType = Container.ResolveId<FactionType>(PlayerType.Opponent);
+            Container
+                .Bind<EnemyFactionModel>()
+                .AsSingle()
+                .WithArguments(enemyFactionType);
+
             
             SceneContext.Container
                 .Bind<IBuildShipChain>()

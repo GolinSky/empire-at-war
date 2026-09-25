@@ -15,13 +15,13 @@ namespace EmpireAtWar.Services.Enemy
 
         private IEconomyModelObserver _economyModel;
         private EconomyService _economyService;
-        private EnemyFactionData _factionModel;
+        private EnemyFactionModel _factionModel;
 
         [Inject]
         private void Construct(
             IEconomyModelObserver economyModel,
             EconomyService economyService,
-            EnemyFactionData factionModel)
+            EnemyFactionModel factionModel)
         {
             _economyModel = economyModel;
             _economyService = economyService;

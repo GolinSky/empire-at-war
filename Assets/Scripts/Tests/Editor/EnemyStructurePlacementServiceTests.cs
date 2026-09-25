@@ -19,7 +19,7 @@ namespace EmpireAtWar.Tests.Editor
         private const int OBSTACLE_LAYER = 9;
         private const int DEAD_LAYER = 10;
         private GameObject _root;
-        private EnemyFactionData _faction;
+        private EnemyFactionModel _faction;
         private MapStub _map;
         private ZonesStub _zones;
         private EnemyStructurePlacementService _service;
@@ -28,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
-            _faction = ScriptableObject.CreateInstance<EnemyFactionData>();
+            _faction = new EnemyFactionModel(null, FactionType.Republic);
             _map = new MapStub();
             _zones = new ZonesStub();
             DiContainer container = new DiContainer();
@@ -43,7 +43,6 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             UnityEngine.Object.DestroyImmediate(_root);
-            UnityEngine.Object.DestroyImmediate(_faction);
         }
 
         [Test]

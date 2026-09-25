@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
 
-        private readonly EnemyFactionData _factionModel;
+        private readonly EnemyFactionModel _factionModel;
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.Enemy
         private int _observedReleaseVersion;
 
         public EnemyProductionStrategy(
-            EnemyFactionData factionModel,
+            EnemyFactionModel factionModel,
             IEnemyPurchaseProcessor purchaseProcessor,
             IUnitRequestFactory requestFactory,
             IEconomyModelObserver economyModel,

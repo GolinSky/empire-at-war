@@ -28,7 +28,7 @@ namespace EmpireAtWar.Models.Factions
         public event Action<int> OnLevelUpgraded;
         public event Action<SelectionType> OnSelectionTypeChanged;
 
-        private readonly PlayerFactionData _data;
+        private readonly FactionsData _factionsData;
         private readonly Dictionary<string, Queue<ProductionQueueItem>> _productionQueues = new();
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
@@ -36,10 +36,10 @@ namespace EmpireAtWar.Models.Factions
         private int _currentLevel = 1;
 
         public PlayerFactionModel(
-            PlayerFactionData data,
+            FactionsData factionsData,
             FactionType factionType)
         {
-            _data = data;
+            _factionsData = factionsData;
             FactionType = factionType;
         }
         
@@ -67,7 +67,7 @@ namespace EmpireAtWar.Models.Factions
 
         public FactionData GetCurrentLevelFactionData()
         {
-            return _data.GetLevelFactionData(CurrentLevel);
+            return _factionsData.GetLevelFactionData(CurrentLevel);
         }
 
         public bool CanQueueUnit(UnitRequest unitRequest)

@@ -56,20 +56,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: EnemyFactionData
-      value:
-        m_AssetGUID: 101b5ddd7be8a4245b61329bea6fba64
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: PlayerFactionData
-      value:
-        m_AssetGUID: 17ab4ced609e6054986bf57e44a51fc4
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: EconomyData
       value:
         m_AssetGUID: 187f1cf1c603ee8408343a2b1c03b426

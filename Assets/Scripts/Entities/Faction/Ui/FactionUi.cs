@@ -18,7 +18,7 @@ namespace EmpireAtWar.Views.Factions
     {
         void SetModel(IPlayerFactionModelObserver model);
         void SetPresenter(IFactionPresenter presenter);
-        void SetData(PlayerFactionData data);
+        void SetData(FactionsData factionsData);
         void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
         void SetParent(Transform parent);
         void Show();
@@ -29,13 +29,15 @@ namespace EmpireAtWar.Views.Factions
 
     public class FactionUi : BaseUi, IFactionUi, IFactionView
     {
+        [SerializeField] private FactionUnitUi factionUnitPrefab;
+
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
 
         private FactionUnitUi _levelFactionUnitUi;
         private IPlayerFactionModelObserver _model;
         private IFactionPresenter _presenter;
-        private PlayerFactionData _data;
+        private FactionsData _factionsData;
         private IUnitRequestFactory _unitRequestFactory;
         private Transform _unitParent;
         private bool _isInitialized;
@@ -51,9 +53,9 @@ namespace EmpireAtWar.Views.Factions
             _presenter = presenter;
         }
 
-        public void SetData(PlayerFactionData data)
+        public void SetData(FactionsData factionsData)
         {
-            _data = data;
+            _factionsData = factionsData;
         }
 
         public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
@@ -74,7 +76,7 @@ namespace EmpireAtWar.Views.Factions
 
         public void Initialize()
         {
-            if (_model == null || _presenter == null || _data == null ||
+            if (_model == null || _presenter == null || _factionsData == null ||
                 _unitRequestFactory == null)
             {
                 throw new InvalidOperationException(
@@ -92,7 +94,7 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
-            foreach (var data in _data.GetShipFactionData(_model.FactionType))
+            foreach (var data in _factionsData.GetShipFactionData(_model.FactionType))
             {
                 AddUi(_unitRequestFactory.ConstructUnitRequest(
                     data.Value,
@@ -101,14 +103,14 @@ namespace EmpireAtWar.Views.Factions
 
             CreateLevelUnit();
 
-            foreach (var data in _data.GetMiningFactionData())
+            foreach (var data in _factionsData.MiningFactionsData)
             {
                 AddUi(_unitRequestFactory.ConstructUnitRequest(
                     data.Value,
                     data.Key));
             }
 
-            foreach (var data in _data.GetDefendPlatformData())
+            foreach (var data in _factionsData.DefendPlatformDictionary)
             {
                 AddUi(_unitRequestFactory.ConstructUnitRequest(
                     data.Value,
@@ -163,7 +165,7 @@ namespace EmpireAtWar.Views.Factions
 
         private void AddUi(UnitRequest unitRequest)
         {
-            FactionUnitUi unitUi = Instantiate(_data.FactionUnit, _unitParent);
+            FactionUnitUi unitUi = Instantiate(factionUnitPrefab, _unitParent);
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
             _factionUnitsUi.Add(unitUi);
         }
@@ -176,7 +178,7 @@ namespace EmpireAtWar.Views.Factions
                 return;
             }
 
-            _levelFactionUnitUi = Instantiate(_data.FactionUnit, _unitParent);
+            _levelFactionUnitUi = Instantiate(factionUnitPrefab, _unitParent);
             LevelUnitRequest levelUnitRequest =
                 _unitRequestFactory.ConstructUnitRequest(
                     levelData,
