@@ -74,6 +74,7 @@ namespace EmpireAtWar.SpaceStation
             Container.BindInterfacesAndSelfTo<WeaponComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
+            Container.Bind<IHangarData>().To<StationHangarData>().AsSingle();
             Container.Bind<HangarModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<HangarComponent>()
                 .FromComponentsInHierarchy()
