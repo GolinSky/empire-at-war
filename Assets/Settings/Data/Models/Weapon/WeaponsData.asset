@@ -181,3 +181,15 @@ MonoBehaviour:
     projectileSpeed: 25
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 15
+    damageType: 0
+    damage: 5
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 0.9
+    range: 70
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 140
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
+    size: {x: 0.45, y: 0.45, z: 0.6}

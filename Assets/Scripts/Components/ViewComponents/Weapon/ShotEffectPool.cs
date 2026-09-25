@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Timing;
@@ -10,6 +11,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
 {
     public sealed class ShotEffectPool
     {
+        private const float MIN_IMPACT_SIZE = 0.75f;
+        private const float STRIKECRAFT_IMPACT_SCALE = 0.3f;
+
         private readonly ShotEffect _prefab;
         private readonly Transform _owner;
         private readonly WeaponProfile _profile;
@@ -43,11 +47,20 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             ShotEffect effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType,
-                _profile.Size.x, isHit);
+                GetImpactSize(attackData.TargetClass), isHit);
             float duration = effect.Fire(_owner, target.Transform, aimOffset, _profile);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
+        }
+
+        // Impacts on strikecraft shrink so a flash never dwarfs the fighter it hits.
+        private float GetImpactSize(ShipClass targetClass)
+        {
+            float size = Mathf.Max(_profile.Size.x, MIN_IMPACT_SIZE);
+            return targetClass == ShipClass.Fighter || targetClass == ShipClass.Bomber
+                ? size * STRIKECRAFT_IMPACT_SCALE
+                : size;
         }
 
         private ShotEffect Acquire()

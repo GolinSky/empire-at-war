@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Entities.Ship.Data
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
     public class ShipData : Mvc.Data, IModel, IShipModelObserver, IShipData,
-        IShipMoveData, IHealthData, IRadarData, IUnitDeathAnimationData
+        IShipMoveData, IHealthData, IRadarData, IUnitDeathAnimationData, IHangarData
     {
         [Inject] public ShipType ShipType { get; private set; }
 
@@ -64,5 +65,12 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Abilities")]
         [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();
         public IReadOnlyList<ShipAbilityId> Abilities => abilities;
+
+        [Header("Hangar")]
+        [Tooltip("Squadron bays; a ship with bays needs a HangarComponent on its view prefab.")]
+        [SerializeField] private List<HangarBay> hangarBays = new List<HangarBay>();
+        [field: SerializeField] public float HangarInitialDelay { get; private set; } = 4f;
+        [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
+        public IReadOnlyList<HangarBay> HangarBays => hangarBays;
     }
 }
