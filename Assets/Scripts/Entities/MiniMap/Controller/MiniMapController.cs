@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
@@ -43,6 +44,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             IUiService uiService,
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
+            List<IMiniMapObstacleSource> obstacleSources,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType) : base(model)
         {
@@ -55,6 +57,15 @@ namespace EmpireAtWar.Controllers.MiniMap
             Model.MapRange = mapModel.SizeRange;            
             Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(playerFactionType));
             Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(opponentFactionType));
+            foreach (IMiniMapObstacleSource obstacleSource in obstacleSources)
+            {
+                Bounds bounds = obstacleSource.WorldBounds;
+                Model.AddObstacle(new MiniMapObstacle(
+                    bounds.center.x,
+                    bounds.center.z,
+                    bounds.extents.x,
+                    bounds.extents.z));
+            }
         }
 
     
@@ -117,6 +128,8 @@ namespace EmpireAtWar.Controllers.MiniMap
 
         public bool TryOrderMove(Vector3 worldPoint)
         {
+            // Match world input: taps on an obstacle are not move targets.
+            if (Model.IsObstacleAt(worldPoint)) return false;
             return _orderInput.TryIssueMove(worldPoint);
         }
         
