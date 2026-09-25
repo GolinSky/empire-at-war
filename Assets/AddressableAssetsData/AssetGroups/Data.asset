@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ce2c057b641be14fb1ec8cb5304b8ef
+    m_Address: ThrantaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94fb1f4b8f76e8a45baec9d3df1e378a
     m_Address: AcclamatorShipData
     m_ReadOnly: 0
