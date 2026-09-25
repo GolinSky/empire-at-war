@@ -18,6 +18,7 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Button timeButton;
         [SerializeField] private Button speedUpButton;
         [SerializeField] private Button reinforcementButton;
+        [SerializeField] private Button videoModeButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
         [SerializeField] private MPImage panelImage;
@@ -68,6 +69,7 @@ namespace EmpireAtWar.Views.Game
             timeButton.onClick.AddListener(_presenter.Play);
             speedUpButton.onClick.AddListener(_presenter.SpeedUp);
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
+            videoModeButton.onClick.AddListener(_presenter.StartCinematic);
             _model.OnGameTimeModeChanged += UpdateSprites;
             UpdateSprites(_model.GameTimeMode);
             _isInitialized = true;
@@ -83,6 +85,7 @@ namespace EmpireAtWar.Views.Game
             timeButton.onClick.RemoveListener(_presenter.Play);
             speedUpButton.onClick.RemoveListener(_presenter.SpeedUp);
             reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
+            videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
             _model.OnGameTimeModeChanged -= UpdateSprites;
             _isInitialized = false;
         }

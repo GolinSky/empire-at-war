@@ -15,5 +15,6 @@ namespace EmpireAtWar.Services.Camera
         [field: SerializeField] public float PanDeceleration { get; private set; }
         [field: SerializeField] public float ZoomSpeed { get; private set; }
         [field: SerializeField] public float TweenSpeed { get; private set; }
+        [field: SerializeField] public CinematicCameraSettings Cinematic { get; private set; } = new();
     }
 }
