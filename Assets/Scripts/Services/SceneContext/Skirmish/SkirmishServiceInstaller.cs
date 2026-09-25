@@ -6,6 +6,8 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Models.MiniMap;
@@ -25,6 +27,10 @@ namespace EmpireAtWar.SceneContext.Skirmish
 
         public override void InstallBindings()
         {
+            Container.Bind<IWeaponAudioView>().To<WeaponAudioView>()
+                .FromComponentInNewPrefab(Repository.Load<AudioShipData>(nameof(AudioShipData)).WeaponAudioPrefab)
+                .AsSingle();
+            Container.BindInterfacesAndSelfTo<WeaponAudioPresenter>().AsSingle().NonLazy();
             Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
                 .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
             Container.Bind<ImpactEffectPresenter>().AsSingle();

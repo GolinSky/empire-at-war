@@ -14,7 +14,8 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter
+    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
+        IWeaponFireEvents
     {
         private struct TargetCandidate
         {
@@ -50,6 +51,7 @@ namespace EmpireAtWar.Components.Weapon
         private int _targetVersion;
         private bool _isReleased;
         public float AttackDistance => Model.OptimalAttackRange;
+        public event Action<WeaponProfile, Transform> ShotEmitted;
 
 
         [Inject]
@@ -71,6 +73,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 hardPoint.SetData(Model.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, Model.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter);
+                hardPoint.ShotEmitted += OnShotEmitted;
             }
         }
 
@@ -90,6 +93,7 @@ namespace EmpireAtWar.Components.Weapon
             _attackCoordinator.Unregister(this);
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
+                hardPoint.ShotEmitted -= OnShotEmitted;
                 hardPoint.ReleaseAttackSequence();
             }
 
@@ -107,6 +111,11 @@ namespace EmpireAtWar.Components.Weapon
             _targetPositions.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
+        }
+
+        private void OnShotEmitted(WeaponProfile profile, Transform muzzle)
+        {
+            if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle);
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)

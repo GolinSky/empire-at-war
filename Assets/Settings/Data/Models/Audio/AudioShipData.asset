@@ -26,6 +26,68 @@ MonoBehaviour:
     array:
     - {fileID: 8300000, guid: e9a2976f1d814bc458cb99b45d6126fc, type: 3}
     - {fileID: 8300000, guid: 484059bbbb6e8b44d92e293db7d8e0e5, type: 3}
+  weaponAudioPrefab: {fileID: 3281123267688763307, guid: bc9d2a4fb594f7b4e9360976cba1d520,
+    type: 3}
+  weaponSounds:
+  - weaponType: 1
+    clip: {fileID: 8300000, guid: bebb4b70a3cc30c4f87ff8c51fca782c, type: 3}
+    loop: 1
+    volume: 0.65
+  - weaponType: 2
+    clip: {fileID: 8300000, guid: 4fcc89434c096bf41a30d9844878e71a, type: 3}
+    loop: 0
+    volume: 0.8
+  - weaponType: 3
+    clip: {fileID: 8300000, guid: 4fcc89434c096bf41a30d9844878e71a, type: 3}
+    loop: 0
+    volume: 0.82
+  - weaponType: 4
+    clip: {fileID: 8300000, guid: bebb4b70a3cc30c4f87ff8c51fca782c, type: 3}
+    loop: 1
+    volume: 0.68
+  - weaponType: 5
+    clip: {fileID: 8300000, guid: bebb4b70a3cc30c4f87ff8c51fca782c, type: 3}
+    loop: 1
+    volume: 0.7
+  - weaponType: 6
+    clip: {fileID: 8300000, guid: 6dab3b6c102d8564ea8e59f648e37048, type: 3}
+    loop: 0
+    volume: 0.85
+  - weaponType: 7
+    clip: {fileID: 8300000, guid: 76998f4094c8aeb42b110626cfe558a3, type: 3}
+    loop: 1
+    volume: 0.6
+  - weaponType: 8
+    clip: {fileID: 8300000, guid: 76998f4094c8aeb42b110626cfe558a3, type: 3}
+    loop: 1
+    volume: 0.55
+  - weaponType: 9
+    clip: {fileID: 8300000, guid: 4fcc89434c096bf41a30d9844878e71a, type: 3}
+    loop: 0
+    volume: 0.85
+  - weaponType: 10
+    clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+    loop: 1
+    volume: 0.65
+  - weaponType: 11
+    clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+    loop: 1
+    volume: 0.72
+  - weaponType: 12
+    clip: {fileID: 8300000, guid: 55597371c8efaf74fb79d6b8802adb36, type: 3}
+    loop: 0
+    volume: 0.6
+  - weaponType: 13
+    clip: {fileID: 8300000, guid: 6692cd64c37110249bfb8cdef4654894, type: 3}
+    loop: 0
+    volume: 0.75
+  - weaponType: 14
+    clip: {fileID: 8300000, guid: 447b2e361efb8124c95fa1a4aa5e6e77, type: 3}
+    loop: 1
+    volume: 0.45
+  weaponMinDistance: 20
+  weaponMaxDistance: 120
+  weaponZoomReferenceHeight: 180
   <AlarmDelay>k__BackingField:
     <Min>k__BackingField: 45
     <Max>k__BackingField: 90

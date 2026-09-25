@@ -13,6 +13,8 @@ namespace EmpireAtWar.ViewComponents.Health
 {
     public class WeaponHardPoint : HardPoint
     {
+        public event System.Action<WeaponProfile, Transform> ShotEmitted;
+
         [SerializeField] private FloatRange yAxisRange;
         [SerializeField] private int prewarmEffects;
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
@@ -101,6 +103,7 @@ namespace EmpireAtWar.ViewComponents.Health
             }
 
             _sequence.RecordShotEmission(sequenceGeneration);
+            if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform);
             if (isHit)
             {
                 WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration);
