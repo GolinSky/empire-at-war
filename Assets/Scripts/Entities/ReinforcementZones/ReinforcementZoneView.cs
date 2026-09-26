@@ -14,6 +14,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
         float CaptureDuration { get; }
 
         void SetCenter(Vector3 center);
+        void SetVisibility(bool isVisible, bool showCaptureUi);
         void Render(PlayerType owner, PlayerType capturingPlayer, float captureProgress, bool isContested);
     }
 
@@ -27,10 +28,10 @@ namespace EmpireAtWar.Views.ReinforcementZones
         [SerializeField] private Canvas _captureCanvas;
         [SerializeField] private Image _captureProgress;
         [SerializeField] private TMP_Text _statusText;
-        [SerializeField] private Color _neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
-        [SerializeField] private Color _playerColor = new Color(0.22f, 0.74f, 0.97f, 0.1f);
-        [SerializeField] private Color _opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.1f);
-        [SerializeField] private Color _contestedColor = new Color(1f, 0.75f, 0.1f, 0.14f);
+        [SerializeField] private Color _neutralColor = new Color(0.48f, 0.55f, 0.62f, 0.08f);
+        [SerializeField] private Color _playerColor = new Color(0.18f, 0.53f, 0.68f, 0.1f);
+        [SerializeField] private Color _opponentColor = new Color(0.68f, 0.27f, 0.29f, 0.1f);
+        [SerializeField] private Color _contestedColor = new Color(0.73f, 0.56f, 0.23f, 0.1f);
 
         private MaterialPropertyBlock _propertyBlock;
 
@@ -88,11 +89,12 @@ namespace EmpireAtWar.Views.ReinforcementZones
             {
                 _statusText.text = GetStatus(owner, capturingPlayer, captureProgress, isContested);
             }
+        }
 
-            if (_captureCanvas != null)
-            {
-                _captureCanvas.enabled = _isCapturable;
-            }
+        public void SetVisibility(bool isVisible, bool showCaptureUi)
+        {
+            _sphereRenderer.enabled = isVisible;
+            _captureCanvas.gameObject.SetActive(showCaptureUi);
         }
 
         private void LateUpdate()

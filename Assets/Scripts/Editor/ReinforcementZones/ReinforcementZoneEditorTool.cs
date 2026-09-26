@@ -146,22 +146,24 @@ namespace EmpireAtWar.Editor.ReinforcementZones
             }
 
             GameObject root = new GameObject("ReinforcementZone");
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.name = "SphereRenderer";
-            sphere.transform.SetParent(root.transform, false);
-            sphere.transform.localScale = new Vector3(ZONE_RADIUS * 2f, 0.2f, ZONE_RADIUS * 2f);
-            Object.DestroyImmediate(sphere.GetComponent<SphereCollider>());
+            GameObject circle = new GameObject("SphereRenderer");
+            circle.transform.SetParent(root.transform, false);
+            circle.transform.localPosition = new Vector3(0f, -2f, 0f);
+            circle.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            circle.transform.localScale = new Vector3(ZONE_RADIUS * 2f, ZONE_RADIUS * 2f, 1f);
+            circle.AddComponent<MeshFilter>().sharedMesh = Resources.GetBuiltinResource<Mesh>("Quad.fbx");
 
-            MeshRenderer sphereRenderer = sphere.GetComponent<MeshRenderer>();
-            sphereRenderer.sharedMaterial = material;
-            sphereRenderer.shadowCastingMode = ShadowCastingMode.Off;
-            sphereRenderer.receiveShadows = false;
+            MeshRenderer circleRenderer = circle.AddComponent<MeshRenderer>();
+            circleRenderer.sharedMaterial = material;
+            circleRenderer.shadowCastingMode = ShadowCastingMode.Off;
+            circleRenderer.receiveShadows = false;
 
             Canvas canvas = CreateWorldCanvas(root.transform, out Image progress, out TMP_Text status);
+            canvas.gameObject.SetActive(false);
             ReinforcementZoneView view = root.AddComponent<ReinforcementZoneView>();
             SerializedObject serializedView = new SerializedObject(view);
             serializedView.FindProperty("_radius").floatValue = ZONE_RADIUS;
-            serializedView.FindProperty("_sphereRenderer").objectReferenceValue = sphereRenderer;
+            serializedView.FindProperty("_sphereRenderer").objectReferenceValue = circleRenderer;
             serializedView.FindProperty("_captureCanvas").objectReferenceValue = canvas;
             serializedView.FindProperty("_captureProgress").objectReferenceValue = progress;
             serializedView.FindProperty("_statusText").objectReferenceValue = status;
@@ -169,6 +171,7 @@ namespace EmpireAtWar.Editor.ReinforcementZones
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, PREFAB_PATH);
             Object.DestroyImmediate(root);
+            AssetDatabase.SaveAssets();
             return prefab;
         }
 
@@ -235,24 +238,11 @@ namespace EmpireAtWar.Editor.ReinforcementZones
                 return material;
             }
 
-            Shader shader = Shader.Find("Universal Render Pipeline/Unlit");
-            if (shader == null)
-            {
-                throw new MissingReferenceException("Universal Render Pipeline/Unlit shader was not found.");
-            }
-
-            material = new Material(shader)
-            {
-                name = "ReinforcementZone",
-                renderQueue = (int)RenderQueue.Transparent
-            };
-            material.SetFloat("_Surface", 1f);
-            material.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
-            material.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
-            material.SetFloat("_ZWrite", 0f);
-            material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-            material.SetColor("_BaseColor", new Color(0.7f, 0.7f, 0.7f, 0.25f));
+            Shader shader = AssetDatabase.LoadAssetAtPath<Shader>(
+                "Assets/Art/Shaders/Vfx/ReinforcementZone.shader");
+            material = new Material(shader) { name = "ReinforcementZone" };
             AssetDatabase.CreateAsset(material, MATERIAL_PATH);
+            AssetDatabase.SaveAssets();
             return material;
         }
 
