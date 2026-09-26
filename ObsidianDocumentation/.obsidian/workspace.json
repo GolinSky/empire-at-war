@@ -1,24 +1,20 @@
 {
   "main": {
-    "id": "3aa47cfc3e6e7d4c",
+    "id": "66268bc00cefc04c",
     "type": "split",
     "children": [
       {
-        "id": "5e039beddf47410f",
+        "id": "e7ba668a427baafd",
         "type": "tabs",
         "children": [
           {
-            "id": "3a9effa0e3d39806",
+            "id": "8e6fce50c42af4c1",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Architecture/UI_REFACTORING_PLAYBOOK.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "UI_REFACTORING_PLAYBOOK"
+              "title": "New tab"
             }
           }
         ]
@@ -27,15 +23,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "58dd88ad572a187e",
+    "id": "d7dfbac893f24746",
     "type": "split",
     "children": [
       {
-        "id": "ec38b283e582c6eb",
+        "id": "7a6179a3bbeee4ff",
         "type": "tabs",
         "children": [
           {
-            "id": "1261212fe2167d70",
+            "id": "f464b21aee91ffd8",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -50,7 +46,7 @@
             }
           },
           {
-            "id": "1b8f675cc8021f42",
+            "id": "a6fbd70ef4982bf1",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -67,11 +63,14 @@
             }
           },
           {
-            "id": "5be3c86d638522f1",
+            "id": "e725d6861897abae",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {},
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
             }
@@ -83,20 +82,19 @@
     "width": 300
   },
   "right": {
-    "id": "5211f2974bfd8b63",
+    "id": "4a3bb32270bcc8d8",
     "type": "split",
     "children": [
       {
-        "id": "dc435504be2288d1",
+        "id": "fe655768e1d5bb96",
         "type": "tabs",
         "children": [
           {
-            "id": "92d39a77b6916fd3",
+            "id": "b4a7fa16abd3e818",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "TODOs.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,25 +104,24 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for TODOs"
+              "title": "Backlinks"
             }
           },
           {
-            "id": "84c6880ef92d6d46",
+            "id": "b80f0be271701334",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "TODOs.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from TODOs"
+              "title": "Outgoing links"
             }
           },
           {
-            "id": "7b47ac3e6da55453",
+            "id": "98acd9cd5a653459",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -139,7 +136,7 @@
             }
           },
           {
-            "id": "aed57d7aed180308",
+            "id": "1e727c1e6913918e",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -153,18 +150,17 @@
             }
           },
           {
-            "id": "2cc537182e3ba957",
+            "id": "b0352ac77bfd1b14",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "TODOs.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of TODOs"
+              "title": "Outline"
             }
           }
         ]
@@ -185,43 +181,6 @@
       "bases:Create new base": false
     }
   },
-  "active": "3a9effa0e3d39806",
-  "lastOpenFiles": [
-    "Rules/UI_UX_GUIDELINES.md",
-    "GameDesign/Unit description.md",
-    "TODOs/Ship_Squadron_Entity_Simplification_Plan.md",
-    "Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS.md",
-    "TODOs/Battle GameDesign basics.md",
-    "GameDesign",
-    "TODOs/Empire at War, Republic at War combat — short version.md",
-    "Rules/UI_CODE_BUILD_GUIDE.md",
-    "Rules/UNITY_JOBS_AND_THREADING_RULES.md",
-    "TODOs/Ship_Abilities_Plan.md",
-    "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
-    "TODOs/Battle_Attack_Optimization_Plan.md",
-    "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
-    "Artifacts/Codex_Audit_2026-09-13/02_EFFECTIVE_LOAD_MAP.md",
-    "Artifacts/Codex_Audit_2026-09-13/04_MIGRATION_MAP.md",
-    "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
-    "Artifacts/Codex_Audit_2026-09-13/inventory.json",
-    "Artifacts/Codex_Audit_2026-09-13/patches/README.md",
-    "Artifacts/Codex_Audit_2026-09-13/patches/003-macos-receiver-instructions.patch",
-    "Artifacts/Codex_Audit_2026-09-13/patches/002-parent-model-documentation.patch",
-    "Artifacts/Codex_Audit_2026-09-13/patches/001-serena-recovery-path.patch",
-    "Artifacts/Codex_Audit_2026-09-13/patches",
-    "Artifacts/Codex_Audit_2026-09-13/07_HANDOFF.md",
-    "Artifacts/Codex_Audit_2026-09-13/06_ROLLBACK.md",
-    "Artifacts/Codex_Audit_2026-09-13/05_VALIDATION.md",
-    "Artifacts/Codex_Audit_2026-09-13/03_FINDINGS.md",
-    "Artifacts/Codex_Audit_2026-09-13/00_SCOPE_AND_ENVIRONMENT.md",
-    "Artifacts/Codex_Audit_2026-09-13",
-    "Artifacts/Implementation_Plan.md",
-    "Artifacts/Walkthrough.md",
-    "Rules/AGENTS.md",
-    "Rules/README.md",
-    "00_Home.md",
-    "Artifacts",
-    "Rules",
-    "Architecture"
-  ]
+  "active": "8e6fce50c42af4c1",
+  "lastOpenFiles": []
 }
