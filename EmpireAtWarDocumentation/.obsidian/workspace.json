@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesign/Unit description.md",
+                "file": "Architecture/UI_REFACTORING_PLAYBOOK.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Unit description"
+              "title": "UI_REFACTORING_PLAYBOOK"
             }
           }
         ]
@@ -187,16 +187,16 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "Rules/UI_UX_GUIDELINES.md",
+    "GameDesign/Unit description.md",
     "TODOs/Ship_Squadron_Entity_Simplification_Plan.md",
     "Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS.md",
     "TODOs/Battle GameDesign basics.md",
-    "GameDesign/Unit description.md",
     "GameDesign",
     "TODOs/Empire at War, Republic at War combat — short version.md",
     "Rules/UI_CODE_BUILD_GUIDE.md",
     "Rules/UNITY_JOBS_AND_THREADING_RULES.md",
     "TODOs/Ship_Abilities_Plan.md",
-    "Rules/UI_UX_GUIDELINES.md",
     "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
     "TODOs/Battle_Attack_Optimization_Plan.md",
     "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
