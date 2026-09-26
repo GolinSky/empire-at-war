@@ -48,7 +48,7 @@ MonoBehaviour:
   <Id>k__BackingField: 6
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
+    <Min>k__BackingField: -160
     <Max>k__BackingField: 20
   prewarmEffects: 0
   <WeaponType>k__BackingField: 10
@@ -5272,8 +5272,8 @@ MonoBehaviour:
   <Id>k__BackingField: 3
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: 20
+    <Max>k__BackingField: 160
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2555742839084269029
@@ -5324,8 +5324,8 @@ MonoBehaviour:
   <Id>k__BackingField: 4
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: -160
+    <Max>k__BackingField: -20
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2658406548458037585
@@ -5584,8 +5584,8 @@ MonoBehaviour:
   <Id>k__BackingField: 5
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: 20
+    <Max>k__BackingField: 160
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &4853151127803243110
@@ -5636,7 +5636,7 @@ MonoBehaviour:
   <Id>k__BackingField: 7
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
+    <Min>k__BackingField: -160
     <Max>k__BackingField: 20
   prewarmEffects: 0
   <WeaponType>k__BackingField: 13
@@ -10524,8 +10524,8 @@ MonoBehaviour:
   <Id>k__BackingField: 0
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: -160
+    <Max>k__BackingField: -20
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &5084208675793561418
@@ -15497,8 +15497,8 @@ MonoBehaviour:
   <Id>k__BackingField: 1
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: 20
+    <Max>k__BackingField: 160
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &6392916215814024927
@@ -15624,8 +15624,8 @@ MonoBehaviour:
   <Id>k__BackingField: 2
   spawnDestroyedExplosion: 1
   yAxisRange:
-    <Min>k__BackingField: -200
-    <Max>k__BackingField: 20
+    <Min>k__BackingField: -160
+    <Max>k__BackingField: -20
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &7279719978521675581
