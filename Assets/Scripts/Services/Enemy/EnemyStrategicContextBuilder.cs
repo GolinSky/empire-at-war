@@ -11,6 +11,7 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -158,7 +159,7 @@ namespace EmpireAtWar.Services.Enemy
                 return 0;
             }
 
-            Vector3 basePosition = ownBase.HealthModel.Transform.position;
+            Vector3 basePosition = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
             float threatRadiusSquared = threatRadius * threatRadius;
             int count = 0;
             foreach (IShipEntity ship in ships)
@@ -189,7 +190,7 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                float distance = (entity.HealthModel.Transform.position - origin).sqrMagnitude;
+                float distance = (entity.GetFacade<IEntityTransformFacade>().Transform.position - origin).sqrMagnitude;
                 if (distance < closestDistance)
                 {
                     closest = entity;

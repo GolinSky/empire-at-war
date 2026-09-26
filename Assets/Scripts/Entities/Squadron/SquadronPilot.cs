@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Utils;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
@@ -136,7 +137,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Largest distance from the target's centre to any of its hardpoints.</summary>
         public static float GetRadius(IEntity entity)
         {
-            Vector3 center = entity.HealthModel.Transform.position;
+            Vector3 center = entity.GetFacade<IEntityTransformFacade>().Transform.position;
             float radius = MIN_TARGET_RADIUS;
             foreach (IHardPointModel unit in entity.HealthModel.GetShipUnits(HardPointType.Any))
             {
@@ -227,7 +228,7 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 if (!_flight.IsAlive(i)) continue;
                 Vector3 aimPoint = _aimUnits.Length == 0
-                    ? _target.HealthModel.Transform.position
+                    ? _target.GetFacade<IEntityTransformFacade>().Transform.position
                     : _aimUnits[rank % _aimUnits.Length].Position;
                 System.Numerics.Vector3 steering = _maneuvers[i].Resolve(
                     _flight.GetPosition(i).ToNumerics(), _flight.GetForward(i).ToNumerics(),

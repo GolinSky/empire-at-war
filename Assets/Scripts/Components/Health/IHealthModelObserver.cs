@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 
 namespace EmpireAtWar.Models.Health
 {
@@ -24,6 +23,5 @@ namespace EmpireAtWar.Models.Health
         bool HasShields { get; }
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
         PlayerType PlayerType { get; }
-        Transform Transform { get; }
     }
 }

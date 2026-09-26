@@ -6,10 +6,10 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
-using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -80,10 +80,10 @@ namespace EmpireAtWar
             
             //entity commands
             Container
-                .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>()
-                .BindInterfacesExt<CombatModifiersCommand>()
-                .BindInterfacesExt<StationaryAttackCommand>();
+                .BindInterfacesExt<SelectionFacade>()
+                .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<CombatModifiersFacade>()
+                .BindInterfacesExt<StationaryAttackFacade>();
         }
         
         protected override void OnEntityCreated()

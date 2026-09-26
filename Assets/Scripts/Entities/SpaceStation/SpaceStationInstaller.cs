@@ -5,10 +5,10 @@ using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
-using EmpireAtWar.Entities.Ship.EntityCommands;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -84,10 +84,10 @@ namespace EmpireAtWar.SpaceStation
             
             //entity commands
             Container
-                .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>()
-                .BindInterfacesExt<CombatModifiersCommand>()
-                .BindInterfacesExt<StationaryAttackCommand>();
+                .BindInterfacesExt<SelectionFacade>()
+                .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<CombatModifiersFacade>()
+                .BindInterfacesExt<StationaryAttackFacade>();
         }
         
         

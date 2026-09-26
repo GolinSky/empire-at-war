@@ -5,9 +5,9 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -74,9 +74,9 @@ namespace EmpireAtWar.MiningFacility
             
             //entity commands
             Container
-                .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>()
-                .BindInterfacesExt<CombatModifiersCommand>();
+                .BindInterfacesExt<SelectionFacade>()
+                .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<CombatModifiersFacade>();
 
         }
         

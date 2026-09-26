@@ -12,23 +12,23 @@ namespace EmpireAtWar.Services.Player
 
     public class PlayerService : Service, IInitializable, IPlayerService
     {
-        private readonly SpaceStationFacade _spaceStationViewFacade;
+        private readonly SpaceStationFactory _spaceStationFactory;
         private readonly LazyInject<IMapModelObserver> _mapModel;
 
         [Inject(Id = PlayerType.Player)]
         private FactionType FactionType { get; }
         
         public PlayerService(
-            SpaceStationFacade spaceStationViewFacade,
+            SpaceStationFactory spaceStationFactory,
             LazyInject<IMapModelObserver> mapModel)
         {
-            _spaceStationViewFacade = spaceStationViewFacade;
+            _spaceStationFactory = spaceStationFactory;
             _mapModel = mapModel;
         }
 
         public void Initialize()
         {
-            _spaceStationViewFacade.Create(
+            _spaceStationFactory.Create(
                 PlayerType.Player,
                 FactionType,
                 _mapModel.Value.GetStationPosition(FactionType));

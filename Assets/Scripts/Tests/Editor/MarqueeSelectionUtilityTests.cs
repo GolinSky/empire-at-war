@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Selection
             Assert.That(context.SelectionType, Is.EqualTo(SelectionType.None));
         }
 
-        private sealed class FakeSelectionCommand : IEntitySelectionCommand
+        private sealed class FakeSelectionCommand : IEntitySelectionFacade
         {
             public FakeSelectionCommand(SelectionType selectionType)
             {
@@ -109,9 +109,9 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeEntity : GameEntity
         {
-            private readonly IEntitySelectionCommand _selectionCommand;
+            private readonly IEntitySelectionFacade _selectionCommand;
 
-            public FakeEntity(long id, IEntitySelectionCommand selectionCommand)
+            public FakeEntity(long id, IEntitySelectionFacade selectionCommand)
             {
                 Id = id;
                 _selectionCommand = selectionCommand;
@@ -122,8 +122,11 @@ namespace EmpireAtWar.Tests.Selection
             public IHealthModelObserver HealthModel => null;
             public PlayerType PlayerType => EmpireAtWar.Models.Factions.PlayerType.Player;
 
-            public bool TryGetCommand<TCommand>(out TCommand entityCommand)
-                where TCommand : IEntityCommand
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand entityCommand)
+                where TCommand : IEntityFacade
             {
                 if (_selectionCommand is TCommand command)
                 {

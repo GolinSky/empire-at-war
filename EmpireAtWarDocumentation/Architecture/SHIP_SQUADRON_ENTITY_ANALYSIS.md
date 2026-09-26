@@ -5,7 +5,7 @@ Static source review only. No code, assets or tests were changed or run.
 
 **Yardstick:** simple, readable, correct code. SOLID / GRASP / GoF / Clean Architecture are used as checklists, not as goals. No use-case interactors, domain services or extra layers are recommended here.
 
-Follow-up plan: [[TODOs/Ship_Squadron_Entity_Simplification_Plan]]
+Follow-up plan: [[TODOs/Ship_Squadron_Entity_Simplification_Plan]]. **Implemented 2026-09-26**: the findings below describe the code before that change. See the plan's execution record.
 
 ---
 

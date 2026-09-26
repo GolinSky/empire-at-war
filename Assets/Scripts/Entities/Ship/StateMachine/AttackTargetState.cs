@@ -3,11 +3,10 @@ using System;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
@@ -15,18 +14,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     {
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
-        private readonly IShipMoveComponent _shipMoveComponent;
-        private readonly LazyInject<StateMachine1> _stateMachine;
-        private readonly LazyInject<IdleState> _idleState;
+        private readonly IShipMovement _shipMoveComponent;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
+        private Transform _mainTargetTransform;
         private Vector3 _formationOffset;
         private Vector3 _pursuitDestination;
         private bool _hasPursuitDestination;
         private bool _wasMoving;
         private bool _isClosingRange;
 
-        private Vector3 TargetPosition => _mainTarget.Transform.position;// REFACTOR THIS
+        private Vector3 TargetPosition => _mainTargetTransform.position;
         private Vector3 MovementTargetPosition => TargetPosition +
             Vector3.ClampMagnitude(_formationOffset, _weaponComponent.AttackDistance * 0.8f);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
@@ -36,16 +34,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
             IWeaponComponent weaponComponent,
-            IShipMoveComponent shipMoveComponent,
-            LazyInject<StateMachine1> stateMachine,
-            LazyInject<IdleState> idleState)
+            IShipMovement shipMoveComponent)
         {
             _attackDataFactory = attackDataFactory;
             _weaponComponent = weaponComponent;
             _shipMoveComponent = shipMoveComponent;
-            _stateMachine = stateMachine;
-            _idleState = idleState;
         }
+
+        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits;
 
         public void SetData(IEntity mainTarget, Vector3 formationOffset)
         {
@@ -57,6 +53,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             bool targetChanged = !IsTheSameTarget(mainTarget, formationOffset);
             _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
+            _mainTargetTransform = _mainTargetEntity.GetFacade<IEntityTransformFacade>().Transform;
             formationOffset.y = 0f;
             _formationOffset = formationOffset;
             if (targetChanged)
@@ -93,7 +90,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new InvalidOperationException("AttackTargetState requires a target before Enter.");
             }
 
-            if (_mainTargetEntity.TryGetCommand(out IHealthCommand healthCommand))
+            if (_mainTargetEntity.TryGetFacade(out IHealthFacade healthFacade))
             {
                 AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
                 _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
@@ -102,15 +99,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
-            if (_mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits)
+            if (IsComplete)
             {
-                _weaponComponent.ResetTarget();
-                _mainTarget = null;
-                _mainTargetEntity = null;
-                _hasPursuitDestination = false;
-                _stateMachine.Value.SetState(_idleState.Value);
                 return;
             }
 

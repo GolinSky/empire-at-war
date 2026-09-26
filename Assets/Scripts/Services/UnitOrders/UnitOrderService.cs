@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
-            List<IMoveCommand> commands = Collect<IMoveCommand>(receivers);
+            List<IMoveFacade> commands = Collect<IMoveFacade>(receivers);
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             for (int i = 0; i < commands.Count; i++) commands[i].MoveTo(slots[i]);
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Services.UnitOrders
             for (int i = 0; i < receivers.Count; i++)
             {
                 if (!IsAlive(receivers[i]) ||
-                    !receivers[i].TryGetCommand(out IMoveCommand command)) continue;
+                    !receivers[i].TryGetFacade(out IMoveFacade command)) continue;
                 command.MoveTo(destinations[i]);
                 issued++;
             }
@@ -55,8 +55,8 @@ namespace EmpireAtWar.Services.UnitOrders
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
         {
             if (target == null || !IsAlive(target)) return;
-            List<IAttackCommand> commands = Collect<IAttackCommand>(receivers);
-            Vector3 point = target.HealthModel.Transform.position;
+            List<IAttackFacade> commands = Collect<IAttackFacade>(receivers);
+            Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             List<Vector3> offsets = new List<Vector3>(slots.Count);
@@ -74,24 +74,24 @@ namespace EmpireAtWar.Services.UnitOrders
             foreach (IEntity receiver in receivers)
             {
                 if (!IsAlive(receiver)) continue;
-                if (receiver.TryGetCommand(out IAttackCommand attack))
+                if (receiver.TryGetFacade(out IAttackFacade attack))
                 {
                     attack.Attack(target, offsets[movingIndex++]);
                     issued++;
                 }
-                else if (receiver.TryGetCommand(out IFocusFireCommand focus))
+                else if (receiver.TryGetFacade(out IFocusFireFacade focus))
                 {
                     focus.FocusFire(target);
                     issued++;
                 }
             }
             Publish(UnitActionId.Attack, receivers, issued,
-                target.HealthModel.Transform.position, target);
+                target.GetFacade<IEntityTransformFacade>().Transform.position, target);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
-            List<IAttackMoveCommand> commands = Collect<IAttackMoveCommand>(receivers);
+            List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers);
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(slots[i]);
@@ -100,19 +100,19 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void IssueStop(IReadOnlyList<IEntity> receivers)
         {
-            List<IStopCommand> commands = Collect<IStopCommand>(receivers);
-            foreach (IStopCommand command in commands) command.Stop();
+            List<IStopFacade> commands = Collect<IStopFacade>(receivers);
+            foreach (IStopFacade command in commands) command.Stop();
             Publish(UnitActionId.Stop, receivers, commands.Count, default);
         }
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly)
         {
             if (friendly == null || !IsAlive(friendly)) return;
-            List<IGuardCommand> commands = new List<IGuardCommand>();
+            List<IGuardFacade> commands = new List<IGuardFacade>();
             foreach (IEntity receiver in receivers)
                 if (IsAlive(receiver) && receiver.Id != friendly.Id &&
-                    receiver.TryGetCommand(out IGuardCommand command)) commands.Add(command);
-            Vector3 point = friendly.HealthModel.Transform.position;
+                    receiver.TryGetFacade(out IGuardFacade command)) commands.Add(command);
+            Vector3 point = friendly.GetFacade<IEntityTransformFacade>().Transform.position;
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             List<Vector3> offsets = new List<Vector3>(slots.Count);
@@ -128,17 +128,17 @@ namespace EmpireAtWar.Services.UnitOrders
             int index = 0;
             foreach (IEntity receiver in receivers)
                 if (IsAlive(receiver) && receiver.Id != friendly.Id &&
-                    receiver.TryGetCommand(out IGuardCommand command))
+                    receiver.TryGetFacade(out IGuardFacade command))
                     command.Guard(friendly, offsets[index++]);
             Publish(UnitActionId.Guard, receivers, index,
-                friendly.HealthModel.Transform.position, friendly);
+                friendly.GetFacade<IEntityTransformFacade>().Transform.position, friendly);
         }
 
         public void IssueWaypointMove(IReadOnlyList<IEntity> receivers,
             IReadOnlyList<Vector3> waypoints)
         {
             if (waypoints.Count == 0) return;
-            List<IWaypointMoveCommand> commands = Collect<IWaypointMoveCommand>(receivers);
+            List<IWaypointMoveFacade> commands = Collect<IWaypointMoveFacade>(receivers);
             List<Vector3> slots = Compact(commands, waypoints[0],
                 command => command.WorldPosition, command => command.NavigationRadius);
             for (int i = 0; i < commands.Count; i++)
@@ -154,14 +154,14 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void IssueHunt(IReadOnlyList<IEntity> receivers)
         {
-            List<IHuntCommand> commands = Collect<IHuntCommand>(receivers);
-            foreach (IHuntCommand command in commands) command.Hunt();
+            List<IHuntFacade> commands = Collect<IHuntFacade>(receivers);
+            foreach (IHuntFacade command in commands) command.Hunt();
             Publish(UnitActionId.Hunt, receivers, commands.Count, default);
         }
 
         public void IssueRetreat(IReadOnlyList<IEntity> receivers)
         {
-            List<IRetreatCommand> commands = Collect<IRetreatCommand>(receivers);
+            List<IRetreatFacade> commands = Collect<IRetreatFacade>(receivers);
             if (commands.Count == 0) return;
             if (!TryGetRetreatPoint(receivers[0].PlayerType, out Vector3 point))
                 throw new InvalidOperationException("No retreat destination exists for the receivers.");
@@ -179,7 +179,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 if (entity.PlayerType != side ||
                     !(entity.Model is ISpaceStationModelObserver) || !IsAlive(entity)) continue;
-                Vector3 station = entity.HealthModel.Transform.position;
+                Vector3 station = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_zones.TryGetDefaultZoneCenter(side, out Vector3 zone))
                     throw new InvalidOperationException(
                         "The operational station has no default reinforcement zone.");
@@ -192,11 +192,11 @@ namespace EmpireAtWar.Services.UnitOrders
         }
 
         private static List<TCommand> Collect<TCommand>(IReadOnlyList<IEntity> receivers)
-            where TCommand : IEntityCommand
+            where TCommand : IEntityFacade
         {
             List<TCommand> commands = new List<TCommand>();
             foreach (IEntity entity in receivers)
-                if (IsAlive(entity) && entity.TryGetCommand(out TCommand command))
+                if (IsAlive(entity) && entity.TryGetFacade(out TCommand command))
                     commands.Add(command);
             return commands;
         }

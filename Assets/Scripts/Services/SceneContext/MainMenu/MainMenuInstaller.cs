@@ -18,7 +18,7 @@ namespace EmpireAtWar
                 .AsSingle()
                 .NonLazy();
             Container
-                .BindFactory<UiType, Transform, BaseUi, UiFacade>()
+                .BindFactory<UiType, Transform, BaseUi, UiFactory>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<UiInstaller>();
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
@@ -144,26 +144,26 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
                 switch (action)
                 {
                     case UnitActionId.Attack:
-                        if (entity.TryGetCommand(out IAttackCommand _) ||
-                            entity.TryGetCommand(out IFocusFireCommand _)) return true;
+                        if (entity.TryGetFacade(out IAttackFacade _) ||
+                            entity.TryGetFacade(out IFocusFireFacade _)) return true;
                         break;
                     case UnitActionId.AttackMove:
-                        if (entity.TryGetCommand(out IAttackMoveCommand _)) return true;
+                        if (entity.TryGetFacade(out IAttackMoveFacade _)) return true;
                         break;
                     case UnitActionId.Stop:
-                        if (entity.TryGetCommand(out IStopCommand _)) return true;
+                        if (entity.TryGetFacade(out IStopFacade _)) return true;
                         break;
                     case UnitActionId.Guard:
-                        if (entity.TryGetCommand(out IGuardCommand _)) return true;
+                        if (entity.TryGetFacade(out IGuardFacade _)) return true;
                         break;
                     case UnitActionId.WaypointMove:
-                        if (entity.TryGetCommand(out IWaypointMoveCommand _)) return true;
+                        if (entity.TryGetFacade(out IWaypointMoveFacade _)) return true;
                         break;
                     case UnitActionId.Hunt:
-                        if (entity.TryGetCommand(out IHuntCommand _)) return true;
+                        if (entity.TryGetFacade(out IHuntFacade _)) return true;
                         break;
                     case UnitActionId.Retreat:
-                        if (entity.TryGetCommand(out IRetreatCommand _)) return true;
+                        if (entity.TryGetFacade(out IRetreatFacade _)) return true;
                         break;
                 }
             }

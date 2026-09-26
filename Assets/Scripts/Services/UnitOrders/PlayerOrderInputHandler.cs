@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IEntity> receivers = Snapshot();
             foreach (IEntity receiver in receivers)
             {
-                if (!receiver.TryGetCommand(out IMoveCommand move)) continue;
+                if (!receiver.TryGetFacade(out IMoveFacade move)) continue;
                 worldPoint.y = move.WorldPosition.y;
                 _orders.IssueMove(receivers, worldPoint);
                 return true;
@@ -113,7 +113,7 @@ namespace EmpireAtWar.Services.UnitOrders
             if (_targeting.Pending == null && _input.IsWaypointModifierPressed)
             {
                 foreach (IEntity receiver in receivers)
-                    if (receiver.TryGetCommand(out IWaypointMoveCommand _))
+                    if (receiver.TryGetFacade(out IWaypointMoveFacade _))
                     {
                         _targeting.Start(UnitActionId.WaypointMove, altPlacement: true);
                         break;
@@ -132,7 +132,7 @@ namespace EmpireAtWar.Services.UnitOrders
             if (pending == UnitActionId.Guard)
             {
                 if (target != null && target.PlayerType == PlayerType.Player &&
-                    target.TryGetCommand(out IEntitySelectionCommand _))
+                    target.TryGetFacade(out IEntitySelectionFacade _))
                 {
                     _orders.IssueGuard(receivers, target);
                     _targeting.Cancel();
@@ -176,8 +176,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private static Vector3 ReferencePosition(IReadOnlyList<IEntity> receivers)
         {
             foreach (IEntity receiver in receivers)
-                if (receiver.TryGetCommand(out IMoveCommand move)) return move.WorldPosition;
-            return receivers[0].HealthModel.Transform.position;
+                if (receiver.TryGetFacade(out IMoveFacade move)) return move.WorldPosition;
+            return receivers[0].GetFacade<IEntityTransformFacade>().Transform.position;
         }
 
         private static bool IsEnemy(IEntity entity) =>

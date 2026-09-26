@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Utils;
@@ -30,7 +29,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         [SerializeField] private Transform bodyTransform;
         [SerializeField] private bool logNavigationDecisions;
 
-        private ICameraService _cameraService;
         private CombatModifiers _modifiers;
         private Vector3 _startPosition;
         private PlayerType _playerType;
@@ -39,11 +37,15 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IShipNavigationService _shipNavigationService;
         private FogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
-        private IShipMovementMediator _movementMediator;
+        private IWeaponFacing _weaponFacing;
         private ShipMovementTweenPlayer _motion;
         private readonly List<RadarContact> _navigationContacts = new List<RadarContact>();
         private bool _isNavigationRegistered;
         private bool _isReleased;
+
+        public event Action<Vector3> DestinationChanged;
+        public event Action<Vector3> LookingAt;
+        public event Action Stopped;
 
         public Vector3 NavigationPosition => transform.position;
         public float NavigationHeight => Model.Height;
@@ -56,15 +58,15 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float HyperSpaceDuration => Model.HyperSpaceDuration;
 
         [Inject]
-        private void Construct(ShipMoveModel model, ICameraService cameraService,
+        private void Construct(ShipMoveModel model,
             Vector3 startPosition, PlayerType playerType, IMapModelObserver mapModel,
             IStationFacingService stationFacingService,
             IShipNavigationService shipNavigationService, FogOfWarSystem fogOfWarSystem,
-            IRadarModelObserver radarModel, CombatModifiers modifiers)
+            IRadarModelObserver radarModel, CombatModifiers modifiers, IWeaponFacing weaponFacing)
         {
+            _weaponFacing = weaponFacing;
             SetModel(model);
             _modifiers = modifiers;
-            _cameraService = cameraService;
             startPosition.y = Model.Height;
             _startPosition = startPosition;
             _playerType = playerType;
@@ -119,15 +121,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             _motion.Release();
         }
 
-        public void SetMediator(IShipMovementMediator mediator) => _movementMediator = mediator;
-
-        public void MoveToPositionOnScreen(Vector2 screenPosition)
-        {
-            Vector3 position = _cameraService.GetWorldPoint(screenPosition, transform.position);
-            position.y = Model.Height;
-            SetTargetPosition(position);
-        }
-
         public void MoveToPosition(Vector3 position, bool preserveCourse = false) =>
             SetTargetPosition(position, preserveCourse);
 
@@ -155,7 +148,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             Model.TakePending();
             Plan(destination, preserveCourse);
             Vector3 applied = Model.Destination.ToUnity();
-            _movementMediator.OnPositionChanged(applied);
+            DestinationChanged?.Invoke(applied);
             return applied;
         }
 
@@ -163,12 +156,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (!IsMoving)
             {
-                float turn = _movementMediator.GetFiringTurnAngle(targetPosition);
+                float turn = _weaponFacing.GetFiringTurnAngle(targetPosition);
                 Vector3 facing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
                 _motion.PlayLookAt(facing, Model.RotationSpeed,
                     Model.TurnAcceleration, Model.BodyRotationMaxAngle);
             }
-            _movementMediator.OnLookAtTarget(targetPosition);
+            LookingAt?.Invoke(targetPosition);
         }
 
         public float GetRange(Vector3 targetPosition) =>
@@ -184,7 +177,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Stop(this);
             }
             else _shipNavigationService.CancelPendingDestination(this);
-            _movementMediator.OnStopped();
+            Stopped?.Invoke();
         }
 
         public void ApplyMoveCoefficient(float coefficient)
@@ -266,7 +259,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                     if (deferred.HasValue)
                     {
                         Plan(deferred.Value.ToUnity());
-                        _movementMediator.OnPositionChanged(Model.Destination.ToUnity());
+                        DestinationChanged?.Invoke(Model.Destination.ToUnity());
                         return;
                     }
                     Model.Arrive(transform.position.ToNumerics());

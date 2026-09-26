@@ -36,10 +36,10 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ReinforcementData _data;
         private readonly InputServiceImpl _inputService;
         private readonly ICameraService _cameraService;
-        private readonly ShipFacadeFactory _shipFacadeFactory;
+        private readonly ShipFactory _shipFactory;
         private readonly SquadronFactory _squadronFactory;
-        private readonly MiningFacilityFacade _miningFacilityFacade;
-        private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly MiningFacilityFactory _miningFacilityFactory;
+        private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
@@ -61,10 +61,10 @@ namespace EmpireAtWar.Services.Reinforcement
             ReinforcementData data,
             InputServiceImpl inputService,
             ICameraService cameraService,
-            ShipFacadeFactory shipFacadeFactory,
+            ShipFactory shipFactory,
             SquadronFactory squadronFactory,
-            MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade,
+            MiningFacilityFactory miningFacilityFactory,
+            DefendPlatformFactory defendPlatformFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             FogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
@@ -76,10 +76,10 @@ namespace EmpireAtWar.Services.Reinforcement
             _data = data;
             _inputService = inputService;
             _cameraService = cameraService;
-            _shipFacadeFactory = shipFacadeFactory;
+            _shipFactory = shipFactory;
             _squadronFactory = squadronFactory;
-            _miningFacilityFacade = miningFacilityFacade;
-            _defendPlatformFacade = defendPlatformFacade;
+            _miningFacilityFactory = miningFacilityFactory;
+            _defendPlatformFactory = defendPlatformFactory;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
@@ -146,7 +146,7 @@ namespace EmpireAtWar.Services.Reinforcement
             switch (_currentSpawnType)
             {
                 case SpawnType.Ship:
-                    ShipEntity ship = _shipFacadeFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
+                    ShipEntity ship = _shipFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
                     ship.OnRelease += HandleShipDestroying;
                     _model.AddUnitCapacity(_currentShipType);
                     break;
@@ -159,13 +159,13 @@ namespace EmpireAtWar.Services.Reinforcement
                     break;
                 case SpawnType.MiningFacility:
                     MiningFacilityType facilityType = _currentFacilityType;
-                    var facility = _miningFacilityFacade.Create(PlayerType.Player, facilityType, spawnPosition);
+                    var facility = _miningFacilityFactory.Create(PlayerType.Player, facilityType, spawnPosition);
                     facility.OnRelease += () =>
                         _playerFactionModel.ReleaseStructure<MiningFacilityUnitRequest>(facilityType.ToString());
                     break;
                 case SpawnType.DefendPlatform:
                     DefendPlatformType platformType = _currentPlatformType;
-                    var platform = _defendPlatformFacade.Create(PlayerType.Player, platformType, spawnPosition);
+                    var platform = _defendPlatformFactory.Create(PlayerType.Player, platformType, spawnPosition);
                     platform.OnRelease += () =>
                         _playerFactionModel.ReleaseStructure<DefendPlatformUnitRequest>(platformType.ToString());
                     break;

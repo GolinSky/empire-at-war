@@ -11,6 +11,7 @@ using ViewComponents;
 using Zenject;
 using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
 using Random = System.Random;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
@@ -193,7 +194,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 return;
             }
 
-            Transform target = entity.HealthModel.Transform;
+            Transform target = entity.GetFacade<IEntityTransformFacade>().Transform;
             _anchorPosition = target.position;
             _anchorRotation = target.rotation;
         }
@@ -209,7 +210,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                     continue;
                 }
 
-                Vector3 position = entity.HealthModel.Transform.position;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (entity.PlayerType != PlayerType.Player && _fogOfWarSystem.IsHidden(position))
                 {
                     continue;

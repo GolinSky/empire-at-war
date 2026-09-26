@@ -4,7 +4,7 @@ using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Controller;
@@ -71,7 +71,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_view.Visible, Is.True);
 
             FakeEntity station = Entity(2,
-                new[] { typeof(IFocusFireCommand), typeof(IStopCommand) });
+                new[] { typeof(IFocusFireFacade), typeof(IStopFacade) });
             _selection.Select(station);
             Assert.That(_view.Available[UnitActionId.Attack], Is.True);
             Assert.That(_view.Available[UnitActionId.Stop], Is.True);
@@ -174,7 +174,7 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerType UpdatedType => PlayerType.Player;
             public IEntity Entity => _entities.Count > 0 ? _entities[0] : null;
             public IReadOnlyList<IEntity> Entities => _entities;
-            public IEntitySelectionCommand SelectionCommand => null;
+            public IEntitySelectionFacade SelectionFacade => null;
             public SelectionType SelectionType => SelectionType.Ship;
             public bool HasSelectable => _entities.Count > 0;
             public int Count => _entities.Count;
@@ -283,19 +283,22 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel { get; }
             public PlayerType PlayerType => PlayerType.Player;
             public FakeCommand Command { get; }
-            public bool TryGetCommand<TCommand>(out TCommand command)
-                where TCommand : IEntityCommand
-            {
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand command)
+                where TCommand : IEntityFacade
+            { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 if (_allowed == null || _allowed.Contains(typeof(TCommand)))
-                { command = (TCommand)(IEntityCommand)Command; return true; }
+                { command = (TCommand)(IEntityFacade)Command; return true; }
                 command = default;
                 return false;
             }
         }
 
-        private sealed class FakeCommand : IMoveCommand, IAttackCommand,
-            IAttackMoveCommand, IStopCommand, IGuardCommand, IWaypointMoveCommand,
-            IHuntCommand, IRetreatCommand, IFocusFireCommand
+        private sealed class FakeCommand : IMoveFacade, IAttackFacade,
+            IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
+            IHuntFacade, IRetreatFacade, IFocusFireFacade
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
@@ -311,7 +314,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Retreat(Vector3 point) { }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public FakeHealth(Transform transform) { Transform = transform; }
             public event Action OnDestroy;

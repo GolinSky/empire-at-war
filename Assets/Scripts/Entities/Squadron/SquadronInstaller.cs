@@ -7,17 +7,17 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
-using EmpireAtWar.Entities.Ship.Orders;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Entities.Squadrons.Data;
-using EmpireAtWar.Entities.Squadrons.EntityCommands;
+using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.NavigationService;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.Bind<SquadronFlightModel>().AsSingle();
             Container.Bind<RadarModel>().AsSingle();
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
-            Container.Bind<ShipOrderModel>().AsSingle();
+            Container.Bind<UnitOrderModel>().AsSingle();
             Container.Bind<SquadronPilot>().AsSingle();
             Container.Bind<SquadronTargetSelector>().AsSingle();
 
@@ -75,9 +75,9 @@ namespace EmpireAtWar.Entities.Squadrons
             if (_playerType == PlayerType.Opponent)
                 Container.BindInterfacesAndSelfTo<FogVisibilityComponent>().FromComponentInHierarchy().AsCached();
 
-            Container.BindInterfacesExt<SquadronOrderCommand>();
-            Container.BindInterfacesExt<SelectionCommand>();
-            Container.BindInterfacesExt<HealthCommand>();
+            Container.BindInterfacesExt<SquadronOrderFacade>();
+            Container.BindInterfacesExt<SelectionFacade>();
+            Container.BindInterfacesExt<HealthFacade>();
         }
 
         protected override void OnEntityCreated()

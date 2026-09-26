@@ -1,6 +1,6 @@
 # Ship & Squadron entity simplification plan
 
-**Source analysis:** [[Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS]] · **Date:** 2026-09-25 · **Status:** proposal, nothing implemented.
+**Source analysis:** [[Architecture/SHIP_SQUADRON_ENTITY_ANALYSIS]] · **Date:** 2026-09-25 · **Status:** implemented 2026-09-26 (see Execution record). Not committed; no tests run.
 
 Goal: simple and correct code. Each step is small, independent, behaviour-preserving, and can be merged alone. No new frameworks, event buses or domain-service layers.
 
@@ -36,3 +36,39 @@ Constraint: components stay a single `MonoComponent` each (no Presenter/View spl
 - No forced state machine for `Squadron` — its order `switch` + `SquadronPilot` is readable at current size.
 - `FromComponentsInHierarchy` in installers stays until prefab roots get explicit serialized references (separate, low priority).
 - `WeaponComponent` (449 lines) and `CombatAttackCoordinator` (719) need their own review.
+
+
+## Execution record — 2026-09-26
+
+All steps were implemented on branch `fix/battle-related-bugs`. The working tree is uncommitted. Unity compiles with zero errors, and the Console shows no errors. **Automated tests and Play Mode were not run.**
+
+**User decisions applied:**
+- `IEntity` gets no position.
+- `IHardPointModel` keeps its `Transform` for now.
+- Entity commands are renamed to facades.
+
+| # | Result |
+|---|---|
+| 0 | Renamed the Zenject factories: `SpaceStationFacade` → `SpaceStationFactory`, `DefendPlatformFacade` → `DefendPlatformFactory`, `MiningFacilityFacade` → `MiningFacilityFactory`, `ShipFacadeFactory` → `ShipFactory` and `UiFacade` → `UiFactory`. Renamed `IEntityCommand` → `IEntityFacade`, `TryGetCommand` → `TryGetFacade`, all entity `I…Command`/`…Command` → `…Facade`, and the `EntityCommands` folders and namespaces → `EntityFacades`. The files were moved together with their `.meta` files, so the GUIDs are kept. None of these types is serialized. |
+| 1 | Removed `Transform` from `IHealthModelObserver`. Added `IEntityTransformFacade` and `EntityTransformFacade`, bound once in `EntityInstaller` from `ViewTransform`. Added fail-fast `IEntity.GetFacade<T>()` next to `TryGetFacade`. Replaced 39 cross-entity reads plus the proton-beam caster read. `AttackTargetState` and `GuardState` cache the order target's Transform in `SetData`. |
+| 2 | Deleted `IEntityLifecycle`. The health components only raise `OnDestroy`. `Ship`, `Squadron`, `SpaceStation`, `DefendPlatform` and `MiningFacility` subscribe in `Initialize` and release themselves. |
+| 3 | Deleted `IUnitMediator`, `IUnitComponent` and `IShipMovementMediator`. The radar has a new `ContactsUpdated` event; new enemies arrive through `Enemies.ItemAdded`, the same pattern as `StationCombatPresenter`. Selection is observed through `ISelectionModelObserver.OnSelected`. Movement raises `DestinationChanged`, `LookingAt` and `Stopped`, and reads the firing angle through the new one-method `IWeaponFacing`. No `Components → Entities.Ship` using remains. `Squadron` has no empty methods. |
+| 4–6 | New `ShipOrderRunner` owns the order model, state machine, states and flee override. Order methods record the order and call `StartOrder()`, which also replaces `ResumeOrder`. `Tick` handles flee and completion: the next waypoint, otherwise Idle. `ShipAIBrain` only decides `IsFleeing`; it has no state machine, no `LazyInject<Ship>`, and `deltaTime` is passed in. `ShipOrderFacade` talks to the runner. `Ship` went from 463 to 247 lines. The under-200 target is not met: the rest is the `IShipEntity` interface in the same file plus event wiring. |
+| 5 | `IBaseState` is now `IsComplete / Enter / Tick(deltaTime) / Exit`. States never switch states; `AttackTargetState` lost its lazy state-machine and idle references. |
+| 7 | `ShipOrderModel`/`ShipOrderType` → `UnitOrderModel`/`UnitOrderType` in `Entities/BaseEntity/Orders`, GUIDs kept. Added `UnitOrderModel.MatchesWaypoints`. `Squadron` now ignores repeated Move, AttackMove, Attack, Waypoint and Retreat orders, like `Ship`. Squadrons deliberately ignore the attack formation offset because fighters swarm, and a comment says so. |
+| 8 | `HangarComponent` finds its hangar `IHardPointModel` at `Initialize` by matching the serialized view's transform, and shuts down on `OnDestroyed`. It no longer polls the view. All 6 hangar prefabs were checked: their hangar hard point is in `HealthComponent.ShipUnits`. |
+| 9 | `StateMachine1` → `ShipStateMachine`. The name `StateMachine` would clash with the namespace of the same name. Removed `ExitState`, the `NavigateState` screen-destination API, `IShipMoveComponent.MoveToPositionOnScreen` and the now-unused camera injection in `ShipMoveComponent`. Merged the duplicate `if (playDeathEffects)` in `Ship`. **Kept** `ShipAiDecision.Navigate/Attack`: the decision model and its tests still produce them. |
+| 10 | Split out `IShipMovement`, the 8 members that states, runner, brain, facade and SFX need. `IShipMoveComponent : IShipMovement` adds the entity-only members. |
+
+**Rules** were added to `AGENTS.md` → *Entity Communication*.
+
+**Behaviour notes to verify in play:**
+- A completed Guard or Hunt order now goes to Idle like every other order. It no longer calls an explicit `Stop()`, so the "stopped" voice line plays only if the ship was actually moving.
+- An explicit Stop while the AI is fleeing keeps fleeing. Before, it stopped the ship, and the next brain decision fled again.
+- A health component no longer releases itself on death; its entity releases it through `EntityComponentLifecycle`.
+
+**Tests were updated to compile, not run:**
+- `ShipStopTests` now tests `ShipOrderRunner.Stop`.
+- The test fakes implement `GetFacade`, and their fake health doubles as the transform facade.
+- `NavigateStateTests` and `DefendPlatformTests` were adjusted.
+- `ShipNavigationServiceTests` uses the new `Construct` signature.

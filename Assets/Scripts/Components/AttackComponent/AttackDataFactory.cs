@@ -1,6 +1,6 @@
 ﻿using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Components.AttackComponent
@@ -13,11 +13,11 @@ namespace EmpireAtWar.Components.AttackComponent
     {
         public AttackData ConstructData(IEntity entity, HardPointType hardPointType = HardPointType.Any)
         {
-            if (entity.TryGetCommand(out IHealthCommand healthCommand))
+            if (entity.TryGetFacade(out IHealthFacade healthFacade))
             {
                 AttackData attackData = new AttackData(
                     entity.HealthModel,
-                    healthCommand,
+                    healthFacade,
                     hardPointType);
                 return attackData;
             }
