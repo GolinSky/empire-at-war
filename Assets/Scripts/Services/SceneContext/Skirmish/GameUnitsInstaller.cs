@@ -44,7 +44,13 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
                 .NonLazy();
-            
+
+            Container
+                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, AsteroidMiningFacilityFactory>()
+                .FromSubContainerResolve()
+                .ByNewContextPrefab<AsteroidMiningFacilityInstaller>(GetPath<AsteroidMiningFacilityInstaller>())
+                .NonLazy();
+
             Container
                 .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFactory>()
                 .FromSubContainerResolve()

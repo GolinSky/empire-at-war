@@ -26,6 +26,8 @@ using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
@@ -53,6 +55,10 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromComponentInHierarchy()
             .AsSingle();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
+        Container.BindInterfacesAndSelfTo<CaptureSitesSystem>()
+            .FromComponentInHierarchy()
+            .AsSingle();
+        Container.BindScriptableObject<CaptureSiteData>(Repository);
         Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();
         Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
         Container.Bind<UnitActionTargetingModel>().AsSingle();

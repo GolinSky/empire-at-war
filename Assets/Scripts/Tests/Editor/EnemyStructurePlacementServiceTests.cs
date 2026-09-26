@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -36,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
             _service = new EnemyStructurePlacementService(_faction,
                 new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                _zones, new LayersStub());
+                _zones, new NoCaptureSites(), new LayersStub());
         }
 
         [TearDown]
@@ -202,6 +203,19 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+        }
+
+        private sealed class NoCaptureSites : ICaptureSitesSystem
+        {
+            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
+
+            public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public bool TryBuildOnOwnedSite(PlayerType playerType) => false;
         }
     }
 }

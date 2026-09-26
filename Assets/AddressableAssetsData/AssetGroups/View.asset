@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b70c9c30de88af48a0ad58a72d76f4b
+    m_Address: AsteroidMiningFacilityView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 964d5c815b53d474aad71a194295d7a1
     m_Address: Belbullab22SquadronView
     m_ReadOnly: 0

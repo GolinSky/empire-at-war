@@ -10,6 +10,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
@@ -41,6 +42,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
         private readonly IEntityLocator _entityLocator;
@@ -66,6 +68,7 @@ namespace EmpireAtWar.Services.Reinforcement
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
+            ICaptureSitesSystem captureSites,
             FogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
             IEntityLocator entityLocator,
@@ -81,6 +84,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
             _reinforcementZonesSystem = reinforcementZonesSystem;
+            _captureSites = captureSites;
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
             _entityLocator = entityLocator;
@@ -299,7 +303,8 @@ namespace EmpireAtWar.Services.Reinforcement
                 (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
                 ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
                 : !_fogOfWarSystem.IsHidden(position) &&
-                  !_reinforcementZonesSystem.IsPositionInAnyZone(position));
+                  !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&
+                  !_captureSites.IsPositionInAnySite(position));
         }
     }
 }

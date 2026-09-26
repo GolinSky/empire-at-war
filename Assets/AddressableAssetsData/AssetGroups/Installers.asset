@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9402d6872adfe54ea7f83e4efa23f9b
+    m_Address: AsteroidMiningFacilityInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d1015cfc037add141aca99418c39b590
     m_Address: DefendPlatformInstaller
     m_ReadOnly: 0
