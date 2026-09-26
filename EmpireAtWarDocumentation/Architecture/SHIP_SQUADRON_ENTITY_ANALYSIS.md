@@ -14,7 +14,7 @@ Follow-up plan: [[TODOs/Ship_Squadron_Entity_Simplification_Plan]]
 | Question | Answer |
 |---|---|
 | Do components reference other components? | **Mostly no, with 6 exceptions.** The entity (`Ship` / `Squadron`) is the hub and holds every component. But some components still inject siblings, sibling models, or the entity itself (back-reference). See §3. |
-| Is there a unified system to exchange data and behaviour between components? | **No.** There are **8 different channels** (DI of siblings, `SetMediator` callbacks, entity commands, C# events, observable models, per-tick polling, shared container models, `HealthModel.Transform` reach-through). Each one is reasonable alone; together nobody knows which to use. See §4. |
+| Is there a unified system to exchange data and behaviour between components? | **Between entities: yes.** `Entity` + `EntityLocator` + entity facades. **Inside an entity: no.** There are **8 different channels** (DI of siblings, `SetMediator` callbacks, entity commands, C# events, observable models, per-tick polling, shared container models, `HealthModel.Transform` reach-through). Each one is reasonable alone; together nobody knows which to use. See §4. |
 | Is there a clear, clean state machine? | **Ship: partially. Squadron: no state machine (switch on order type + pilot mode enum).** Ship has a correct tiny `StateMachine1`, but transitions are triggered from **4 places**, orders and states are two sources of truth, and states need `SetData` before `SetState`. See §5. |
 
 ---
@@ -77,7 +77,7 @@ Rule of thumb used here: *a component may **read** sibling state through a read-
 
 Also noted:
 - `IShipMoveComponent` has 15 members mixing movement, selection highlight (`HandleSelection`), radar contacts, speed modifier and mediator wiring → **fat interface (ISP)**.
-- `entity.HealthModel.Transform.position` appears **31 times**. Position is reached through the health model (Law of Demeter / GRASP *Information Expert*). `IEntity` should expose `Position` itself.
+- `HealthModel.Transform` is read **38 times** (revised 2026-09-26). Health has nothing to do with location; `IHealthModelObserver.Transform` exists only so other code can find where an entity is. Remove it from the health contract. **Do not** move it onto `IEntity`: `IEntity` is pure C# identity + facades, and position belongs to the Unity layer. See §4.1.
 - Installers use `FromComponentsInHierarchy` (15 uses) and `EntityLocator` uses `GetComponentInParent`. This conflicts with the AGENTS rule "no implicit lookups", but it is centralized in installers — low priority. If changed, use `[SerializeField]` fields on the entity prefab root + `FromInstance`.
 
 ---
@@ -93,11 +93,38 @@ Also noted:
 | E. Observable models | `RadarModel.Enemies` (`ObservableList`), `IHealthModelObserver` | ✅ read-only state |
 | F. Per-tick push/poll | `Ship.SynchronizeComponents()` pushes position into radar; hangar polls view | ❌ read directly or use events |
 | G. Shared container objects | `CombatModifiers`, `WeaponModel` | ✅ fine |
-| H. Reach-through | `entity.HealthModel.Transform` | ❌ add `IEntity.Position` |
+| H. Reach-through | `entity.HealthModel.Transform` | ❌ replace with a transform facade (§4.1) |
+
+### Entity ↔ entity: already unified
+
+`Entity` + `EntityLocator` + entity facades (today called `IEntityCommand`) **is** the unified system for communication **between** entities. Channels A–G above are about communication **inside** one entity. Keep the two levels separate.
+
+### 4.1 Where the position should come from (checked 2026-09-26)
+
+The view `Transform` is already injectable inside each entity context: `DynamicEntityInstaller` binds it as `[Inject(Id = EntityBindType.ViewTransform)] Transform` (7 consumers, including `HealthComponent`, `SquadronHealthComponent` and `ShipAbilityCommand`). **For a unit's own position, inject that Transform.** Nothing on `IEntity` is needed.
+
+But all 38 `HealthModel.Transform` reads are about **another** entity: a target, a friendly unit to guard, a radar contact, a hunt candidate or an order receiver. The caller holds an `IEntity` from the locator, radar or order model, and cannot have that entity's Transform injected. Some callers need the live `Transform`, not a `Vector3`: camera follow, squadron escort anchor, proton beam, super-weapon homing.
+
+Split of the 38 reads:
+- Ship states: 16
+- Squadron: 6
+- Order and AI services: 9
+- Abilities and super weapon: 5
+- Radar: 1
+- Cinematic camera: 1
+
+**Fix:** use the entity-to-entity system that already exists. Add a transform facade, resolved like the other facades:
+- `IEntityTransformFacade { Transform Transform { get; } }`, implemented by a small class that receives the injected `ViewTransform`.
+- Bind it once in `EntityInstaller`, so every entity type gets it without per-installer work.
+- Callers resolve it once, when they pick a target, and keep the `Transform`. They must not resolve it every frame, because `TryGetCommand` is a linear scan.
+
+This keeps `IEntity` free of Unity types. Unity types stay in the Unity layer, and cross-entity access goes through one path.
+
+The same smell exists on `IHardPointModel.Transform`: a "pure" model contract exposes a Unity `Transform` through `HardPointAdapter`. Review it separately.
 
 ### Proposed unified rule (3 channels, nothing new to build)
 
-1. **Outside → entity:** only `IEntity` + `IEntityCommand` (already true).
+1. **Outside → entity:** only `IEntity` + entity facades via the locator (already true).
 2. **Entity → component:** entity/states call methods on component interfaces (commands down).
 3. **Component → entity:** C# events or read-only observer interfaces (notifications up). **No** `SetMediator`, **no** injecting the entity, **no** sibling commands.
 
@@ -138,25 +165,25 @@ No state machine; `UpdateOrder()` is a `switch` on `ShipOrderType` with `_engage
 
 ## 6. Principle checklist
 
-| Principle | Status | Evidence / note |
-|---|---|---|
-| **SRP** | ❌ `Ship` | MonoBehaviour + `IController`, `IShipEntity`, `ITickable`, `IUnitMediator`, `IShipMovementMediator`, `IEntityLifecycle`; 23 constructor deps; orders, AI gating, death FX, audio forwarding, engine damage, radar sync. >200 lines rule triggered (463). Split **order/state handling** out; keep `Ship` as lifecycle + wiring. |
-| | ⚠️ | `WeaponComponent` (449) and `CombatAttackCoordinator` (719) also exceed 200 lines — separate review. |
-| **OCP** | ❌ | Adding one order touches: new `I…Command`, `ShipOrderType`, `Ship` method + `ResumeOrder` switch + `Tick` checks, `ShipOrderCommand`, `Squadron` + `UpdateOrder` + `ResumeCourse`, `SquadronOrderCommand`. The `StartOrder()` mapping reduces it to 1 place per entity. |
-| **LSP** | ⚠️ | `Squadron : IUnitMediator` with empty `HandleRadarContacts` / `OnSelect`. |
-| **ISP** | ⚠️ | `IShipMoveComponent` (15 members), `IUnitMediator`. `ShipOrderCommand` implementing 8 tiny command interfaces is **fine** — it is the ISP-friendly side. |
-| **DIP** | ⚠️ | `ShipAIBrain` → `LazyInject<Ship>` (concrete + lazy to hide cycle); `ShipOrderCommand` → concrete `Ship`; `Components/*` → `Entities.Ship.Mediator` (low-level depends on high-level). |
-| **GRASP Controller** | ✅ | `Ship` / `Squadron` receive system events. Overloaded, but correct role. |
-| **GRASP Information Expert** | ⚠️ | Position via `HealthModel.Transform`; engine-damage slowdown handled in `Ship` by scanning hard points instead of health/move owning it. |
-| **GRASP Low coupling / High cohesion** | ⚠️ | Good inside squadron (pilot / selector / flight). Ship spreads one concept (current order) across 4 classes. |
-| **GRASP Pure Fabrication** | ✅ | `SquadronPilot`, `SquadronTargetSelector`, `ShipEngagement`, `AttackDataFactory`. |
-| **GoF State** | ⚠️ | Present but states trigger their own transitions and need pre-configuration. |
-| **GoF Mediator** | ⚠️ | `Ship` is the mediator, but components also bypass it (§3 #1, #3). |
-| **GoF Observer** | ✅ | C# events + observable models, consistent with AGENTS. |
-| **GoF Command** | ℹ️ | `IEntityCommand` types are really *capability interfaces* (a facade per ability), not request objects. Naming is fine to keep; just don't expect undo/queueing semantics. |
-| **GoF Factory** | ✅ | `SquadronFactory`, `AttackDataFactory`, installers. |
-| **Clean Arch – dependency rule** | ⚠️ | Pure models are good. Violations: component namespace depends on entity namespace; states/brain read `Time.deltaTime`. No need for more layers. |
-| **Fail fast / no silent null** | ⚠️ | `_audioDialogShipComponent?.` (5×, optional by player type — acceptable but a no-op `NullDialog` bound for opponents would be cleaner) and `_mediator?.OnSelect` in `SelectionComponent`. |
+| Principle                              | Status   | Evidence / note                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **SRP**                                | ❌ `Ship` | MonoBehaviour + `IController`, `IShipEntity`, `ITickable`, `IUnitMediator`, `IShipMovementMediator`, `IEntityLifecycle`; 23 constructor deps; orders, AI gating, death FX, audio forwarding, engine damage, radar sync. >200 lines rule triggered (463). Split **order/state handling** out; keep `Ship` as lifecycle + wiring. |
+|                                        | ⚠️       | `WeaponComponent` (449) and `CombatAttackCoordinator` (719) also exceed 200 lines — separate review.                                                                                                                                                                                                                            |
+| **OCP**                                | ❌        | Adding one order touches: new `I…Command`, `ShipOrderType`, `Ship` method + `ResumeOrder` switch + `Tick` checks, `ShipOrderCommand`, `Squadron` + `UpdateOrder` + `ResumeCourse`, `SquadronOrderCommand`. The `StartOrder()` mapping reduces it to 1 place per entity.                                                         |
+| **LSP**                                | ⚠️       | `Squadron : IUnitMediator` with empty `HandleRadarContacts` / `OnSelect`.                                                                                                                                                                                                                                                       |
+| **ISP**                                | ⚠️       | `IShipMoveComponent` (15 members), `IUnitMediator`. `ShipOrderCommand` implementing 8 tiny command interfaces is **fine** — it is the ISP-friendly side.                                                                                                                                                                        |
+| **DIP**                                | ⚠️       | `ShipAIBrain` → `LazyInject<Ship>` (concrete + lazy to hide cycle); `ShipOrderCommand` → concrete `Ship`; `Components/*` → `Entities.Ship.Mediator` (low-level depends on high-level).                                                                                                                                          |
+| **GRASP Controller**                   | ✅        | `Ship` / `Squadron` receive system events. Overloaded, but correct role.                                                                                                                                                                                                                                                        |
+| **GRASP Information Expert**           | ⚠️       | Position via `HealthModel.Transform`; engine-damage slowdown handled in `Ship` by scanning hard points instead of health/move owning it.                                                                                                                                                                                        |
+| **GRASP Low coupling / High cohesion** | ⚠️       | Good inside squadron (pilot / selector / flight). Ship spreads one concept (current order) across 4 classes.                                                                                                                                                                                                                    |
+| **GRASP Pure Fabrication**             | ✅        | `SquadronPilot`, `SquadronTargetSelector`, `ShipEngagement`, `AttackDataFactory`.                                                                                                                                                                                                                                               |
+| **GoF State**                          | ⚠️       | Present but states trigger their own transitions and need pre-configuration.                                                                                                                                                                                                                                                    |
+| **GoF Mediator**                       | ⚠️       | `Ship` is the mediator, but components also bypass it (§3 #1, #3).                                                                                                                                                                                                                                                              |
+| **GoF Observer**                       | ✅        | C# events + observable models, consistent with AGENTS.                                                                                                                                                                                                                                                                          |
+| **GoF Command → Facade** | ℹ️ | `IEntityCommand` types are not GoF Commands: they are not request objects and have no execute, undo or queue. They are **Facades**: each one is a small, stable interface over part of the entity. `ShipOrderCommand` hides `Ship`, the state machine and the order model. `HealthCommand` hides `IHealthComponent`. `ShipAbilityCommand` exposes slots and stats. **Rename to Facade** (plan step 0). Name clash to fix first: `SpaceStationFacade`, `DefendPlatformFacade`, `MiningFacilityFacade` and `ShipFacadeFactory` are Zenject `PlaceholderFactory` types, not facades. Rename them to `*Factory`. Out of scope: the non-entity `*Command` interfaces (`ISelectionCommand`, `IGameCommand`, `IPopupCommand`, `IHangarCommand`, `ISquadronIconCommand`). |
+| **GoF Factory**                        | ✅        | `SquadronFactory`, `AttackDataFactory`, installers.                                                                                                                                                                                                                                                                             |
+| **Clean Arch – dependency rule**       | ⚠️       | Pure models are good. Violations: component namespace depends on entity namespace; states/brain read `Time.deltaTime`. No need for more layers.                                                                                                                                                                                 |
+| **Fail fast / no silent null**         | ⚠️       | `_audioDialogShipComponent?.` (5×, optional by player type — acceptable but a no-op `NullDialog` bound for opponents would be cleaner) and `_mediator?.OnSelect` in `SelectionComponent`.                                                                                                                                       |
 
 ---
 
