@@ -31,6 +31,14 @@ namespace EmpireAtWar.Components.AttackComponent
             HealthFacade = healthFacade;
         }
 
+        /// <summary>Focuses fire on one hardpoint the player picked explicitly.</summary>
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, IHardPointModel hardPoint)
+        {
+            _shipUnitsProvider = shipUnitsProvider;
+            Units = new List<IHardPointModel> { hardPoint };
+            HealthFacade = healthFacade;
+        }
+
         public bool Contains(IHardPointModel hardPointModel)
         {
             return Units.Contains(hardPointModel);

@@ -250,6 +250,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
+                int hardPointId) => LastAction = UnitActionId.Attack;
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;

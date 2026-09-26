@@ -86,6 +86,7 @@ namespace EmpireAtWar.SpaceStation
             Container
                 .BindInterfacesExt<SelectionFacade>()
                 .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<HardPointsFacade>()
                 .BindInterfacesExt<CombatModifiersFacade>()
                 .BindInterfacesExt<StationaryAttackFacade>();
         }

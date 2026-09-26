@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 251202eef97355e48b97bd3a9f486718
+    m_Address: HardPointOverlayData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2ced7bd7afed0b240873462f8f4fcd41
     m_Address: StarDestroyer2ShipData
     m_ReadOnly: 0

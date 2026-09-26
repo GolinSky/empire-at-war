@@ -1,6 +1,7 @@
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
@@ -63,6 +64,10 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
         Container.Bind<UnitActionTargetingModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<PlayerOrderInputHandler>();
+        Container.BindScriptableObject<HardPointOverlayData>(Repository);
+        Container.BindInterfacesAndSelfTo<HardPointOverlayModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<HardPointOverlayView>().FromNewComponentOnNewGameObject().AsSingle();
+        Container.BindInterfacesAndSelfTo<HardPointOverlayPresenter>().AsSingle().NonLazy();
 
         Container.BindInterfacesExt<AttackDataFactory>();
         Container.Bind<BattleVictoryModel>().AsSingle();

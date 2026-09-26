@@ -76,6 +76,7 @@ namespace EmpireAtWar.MiningFacility
             Container
                 .BindInterfacesExt<SelectionFacade>()
                 .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<HardPointsFacade>()
                 .BindInterfacesExt<CombatModifiersFacade>();
 
         }

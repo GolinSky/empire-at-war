@@ -98,6 +98,14 @@ namespace EmpireAtWar.Entities.Ship.Orders
             Issue(UnitOrderType.Attack, target: target, offset: offset);
         }
 
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset)
+        {
+            FormationPoint offset = ToPoint(formationOffset);
+            if (_orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
+                    targetHardPointId: hardPointId)) return;
+            Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
+        }
+
         public void AttackMoveTo(Vector3 destination)
         {
             FormationPoint point = ToPoint(destination);
@@ -143,9 +151,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         private void Issue(UnitOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
-            IReadOnlyList<FormationPoint> waypoints = null)
+            IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
-            _orders.Replace(type, destination, target, offset, waypoints);
+            _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
             _brain.Enable(_isAiControlled);
             StartOrder();
         }
@@ -169,7 +177,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
                         break;
                     }
 
-                    _attackTargetState.SetData(_orders.Target, ToVector(_orders.Offset));
+                    _attackTargetState.SetData(_orders.Target, ToVector(_orders.Offset),
+                        _orders.TargetHardPointId);
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:

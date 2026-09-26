@@ -174,6 +174,9 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
                 IReadOnlyList<Vector3> offsets) =>
                 Record(UnitActionId.Attack, receivers, target: target, offsets: offsets);
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target,
+                int hardPointId) =>
+                Record(UnitActionId.Attack, receivers, target: target);
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
                 Record(UnitActionId.AttackMove, receivers, point);
             public void IssueStop(IReadOnlyList<IEntity> receivers) =>
