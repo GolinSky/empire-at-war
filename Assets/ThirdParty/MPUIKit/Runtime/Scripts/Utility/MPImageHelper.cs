@@ -251,14 +251,16 @@ namespace UnityEngine.UI.MPUIKIT {
 
         private static Vector4 GetDrawingDimensions(bool shouldPreserveAspect, Sprite activeSprite, Canvas canvas,
             RectTransform rectTransform) {
-            var padding = activeSprite == null ? Vector4.zero : Sprites.DataUtility.GetPadding(activeSprite);
-            var size = activeSprite == null
-                ? new Vector2(rectTransform.rect.width, rectTransform.rect.height)
-                : new Vector2(activeSprite.rect.width, activeSprite.rect.height);
+            Rect r = GetPixelAdjustedRect(canvas, rectTransform);
+            // Procedural images have no sprite padding; rounding a sub-unit rect would divide by zero.
+            if (activeSprite == null)
+                return new Vector4(r.xMin, r.yMin, r.xMax, r.yMax);
+
+            var padding = Sprites.DataUtility.GetPadding(activeSprite);
+            var size = new Vector2(activeSprite.rect.width, activeSprite.rect.height);
 
             if (size.x <= 0) size.x = 1;
             if (size.y <= 0) size.y = 1;
-            Rect r = GetPixelAdjustedRect(canvas, rectTransform);
             //Debug.Log(string.Format("r:{2}, size:{0}, padding:{1}", size, padding, r));
 
             int spriteW = Mathf.RoundToInt(size.x);
