@@ -20,6 +20,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly UnitActionTargetingModel _targeting;
         private IUnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
+        private Vector3? _movementPoint;
         private int _placedWaypointCount;
 
         public UnitOrderFeedbackUiController(IUiService uiService,
@@ -46,6 +47,9 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         public void LateTick()
         {
+            if (_movementPoint.HasValue)
+                _ui.SetMovementPosition(_cameraService.WorldToScreenPoint(_movementPoint.Value));
+
             if (_attackTarget == null) return;
             if (_attackTarget.HealthModel.IsDestroyed)
             {
@@ -58,6 +62,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         public void AttackFeedbackCompleted() => _attackTarget = null;
 
+        public void MovementFeedbackCompleted() => _movementPoint = null;
+
         public void LateDispose()
         {
             _orders.OrderIssued -= HandleOrder;
@@ -65,6 +71,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _ui.Dispose();
             _attackTarget = null;
+            _movementPoint = null;
         }
 
         private void HandleOrder(UnitOrder order)
@@ -80,13 +87,19 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                      order.Waypoints != null)
             {
                 foreach (Vector3 point in order.Waypoints)
-                    _ui.PlayMovement(_cameraService.WorldToScreenPoint(point));
+                    PlayMovement(point);
             }
             else if (order.Action == UnitActionId.Move ||
                      order.Action == UnitActionId.AttackMove ||
                      order.Action == UnitActionId.Guard ||
                      order.Action == UnitActionId.Retreat)
-                _ui.PlayMovement(_cameraService.WorldToScreenPoint(order.Point));
+                PlayMovement(order.Point);
+        }
+
+        private void PlayMovement(Vector3 worldPoint)
+        {
+            _movementPoint = worldPoint;
+            _ui.PlayMovement(_cameraService.WorldToScreenPoint(worldPoint));
         }
 
         private void HandleEntityRemoved(IEntity entity)
@@ -108,8 +121,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (count > _placedWaypointCount)
             {
                 var point = _targeting.Waypoints[count - 1];
-                _ui.PlayMovement(_cameraService.WorldToScreenPoint(
-                    new Vector3(point.X, 0f, point.Z)));
+                PlayMovement(new Vector3(point.X, 0f, point.Z));
             }
             _placedWaypointCount = count;
         }
