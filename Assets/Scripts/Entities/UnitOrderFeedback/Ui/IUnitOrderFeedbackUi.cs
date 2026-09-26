@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         void PlayAttack(Vector2 screenPosition);
         void PlayMovement(Vector2 screenPosition);
         void SetAttackPosition(Vector2 screenPosition);
+        void SetMovementPosition(Vector2 screenPosition);
         void StopAttack();
         void Dispose();
     }
