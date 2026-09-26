@@ -1,4 +1,6 @@
+using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
 using MPUIKIT;
 using TMPro;
@@ -16,6 +18,8 @@ namespace EmpireAtWar.Editor.CaptureSites
     {
         private const float SITE_RADIUS = 40f;
         private const int UI_LAYER = 5;
+        private const int OBSTACLE_LAYER = 9;
+        private const string MINI_MAP_DATA_PATH = "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset";
         private const string PREFAB_FOLDER = "Assets/Prefabs/View/CaptureSites";
         private const string SITE_PREFAB_PATH = PREFAB_FOLDER + "/CaptureSite.prefab";
         private const string DATA_FOLDER = "Assets/Settings/Data/Models/CaptureSites";
@@ -47,6 +51,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             EnsureFolder(PREFAB_FOLDER);
             EnsureFolder(DATA_FOLDER);
             BuildData();
+            AddMiniMapIcon();
             GameObject sitePrefab = BuildSitePrefab();
             foreach ((string scenePath, string prefabPath) in MAPS)
             {
@@ -54,6 +59,69 @@ namespace EmpireAtWar.Editor.CaptureSites
             }
 
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>Applies rock obstacles and the minimap icon to the existing site assets without rebuilding them.</summary>
+        [MenuItem("Tools/Empire At War/Capture Sites/Apply Obstacles And Mini Map Icon")]
+        public static void ApplyObstaclesAndMiniMapIcon()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(SITE_PREFAB_PATH);
+            AddRockObstacles(root.transform.Find("AsteroidRocks"));
+            PrefabUtility.SaveAsPrefabAsset(root, SITE_PREFAB_PATH);
+            PrefabUtility.UnloadPrefabContents(root);
+            AddMiniMapIcon();
+            AssetDatabase.SaveAssets();
+        }
+
+        private static void AddRockObstacles(Transform rocks)
+        {
+            // Registered MapObstacles steer ship navigation and draw on the minimap.
+            foreach (Transform rock in rocks)
+            {
+                if (rock.GetComponent<MapObstacle>() != null)
+                {
+                    continue;
+                }
+
+                rock.gameObject.layer = OBSTACLE_LAYER;
+                MeshCollider collider = rock.gameObject.AddComponent<MeshCollider>();
+                collider.sharedMesh = rock.GetComponent<MeshFilter>().sharedMesh;
+                MapObstacle obstacle = rock.gameObject.AddComponent<MapObstacle>();
+                SerializedObject serializedObstacle = new SerializedObject(obstacle);
+                serializedObstacle.FindProperty("_obstacleCollider").objectReferenceValue = collider;
+                serializedObstacle.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
+        private static void AddMiniMapIcon()
+        {
+            // Sites reuse the mining facility icon, tinted by owner like other markers.
+            ScriptableObject data = AssetDatabase.LoadAssetAtPath<ScriptableObject>(MINI_MAP_DATA_PATH);
+            SerializedObject serializedData = new SerializedObject(data);
+            SerializedProperty entries = serializedData.FindProperty("<MarkWrapper>k__BackingField")
+                .FindPropertyRelative("keyValue");
+            Object icon = null;
+            for (int i = 0; i < entries.arraySize; i++)
+            {
+                SerializedProperty entry = entries.GetArrayElementAtIndex(i);
+                int key = entry.FindPropertyRelative("key").intValue;
+                if (key == (int)MarkType.CaptureSite)
+                {
+                    return;
+                }
+
+                if (key == (int)MarkType.MiningFacility)
+                {
+                    icon = entry.FindPropertyRelative("value").objectReferenceValue;
+                }
+            }
+
+            entries.arraySize++;
+            SerializedProperty siteEntry = entries.GetArrayElementAtIndex(entries.arraySize - 1);
+            siteEntry.FindPropertyRelative("key").intValue = (int)MarkType.CaptureSite;
+            siteEntry.FindPropertyRelative("value").objectReferenceValue = icon;
+            serializedData.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(data);
         }
 
         private static void BuildData()
@@ -82,7 +150,9 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static GameObject BuildSitePrefab()
         {
             GameObject root = new GameObject("CaptureSite");
-            AsteroidMiningFacilityAssetBuilder.InstantiateModel(root.transform, "AsteroidRocks", keepRocks: true);
+            GameObject rocks = AsteroidMiningFacilityAssetBuilder.InstantiateModel(
+                root.transform, "AsteroidRocks", keepRocks: true);
+            AddRockObstacles(rocks.transform);
             Transform framework = BuildFramework(root.transform);
             MeshRenderer ring = BuildRing(root.transform);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status,

@@ -26,7 +26,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasEnemyBaseTarget,
             bool hasOwnBase,
             int ownedCapturableZoneCount,
-            int enemyShipsNearOwnBase)
+            int enemyShipsNearOwnBase,
+            bool hasThreatenedSite = false)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasOwnBase = hasOwnBase;
             OwnedCapturableZoneCount = ownedCapturableZoneCount;
             EnemyShipsNearOwnBase = enemyShipsNearOwnBase;
+            HasThreatenedSite = hasThreatenedSite;
         }
 
         public BattleVictoryCondition VictoryCondition { get; }
@@ -48,6 +50,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasOwnBase { get; }
         public int OwnedCapturableZoneCount { get; }
         public int EnemyShipsNearOwnBase { get; }
+        public bool HasThreatenedSite { get; }
     }
 
     public readonly struct EnemyStrategicDecision
@@ -128,6 +131,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     EnemyStrategicState.RetreatValue,
                     snapshot.OwnShipCount,
                     "The fleet is outnumbered and is withdrawing to its base.");
+            }
+
+            if (snapshot.HasThreatenedSite)
+            {
+                return new EnemyStrategicDecision(
+                    EnemyStrategicState.CaptureZone,
+                    committedShipCount,
+                    "Enemy ships are contesting an owned capture site.");
             }
 
             if (snapshot.HasCaptureTarget &&

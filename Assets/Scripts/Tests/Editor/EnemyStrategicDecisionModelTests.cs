@@ -27,6 +27,27 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ThreatenedCaptureSite_IsDefendedBeforeHuntingFleet()
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
+                BattleVictoryCondition.DestroyEnemyFleet,
+                EnemyAiDifficulty.Hard,
+                5,
+                3,
+                true,
+                true,
+                false,
+                2,
+                0,
+                true);
+
+            EnemyStrategicDecision decision = model.Evaluate(snapshot);
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        [Test]
         public void BaseObjective_AssaultsWhenDifficultyThresholdIsMet()
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
