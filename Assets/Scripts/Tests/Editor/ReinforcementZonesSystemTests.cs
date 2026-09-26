@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Ship;
@@ -61,6 +62,7 @@ namespace EmpireAtWar.Tests.Editor
                     new FakeMapModel(republicStation, separatistStation));
                 SetField(system, "_playerFactionType", playerFaction);
                 SetField(system, "_opponentFactionType", opponentFaction);
+                SetField(system, "_captureSites", new NoCaptureSites());
 
                 system.Initialize();
 
@@ -191,6 +193,7 @@ namespace EmpireAtWar.Tests.Editor
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
             SetField(system, "_playerFactionType", FactionType.Republic);
             SetField(system, "_opponentFactionType", FactionType.Separatist);
+            SetField(system, "_captureSites", new NoCaptureSites());
             SetField(system, "_shipNavigationService", new FakeShipNavigationService());
             system.Initialize();
             return system;
@@ -321,6 +324,19 @@ namespace EmpireAtWar.Tests.Editor
             {
                 throw new System.NotSupportedException();
             }
+        }
+
+        private sealed class NoCaptureSites : ICaptureSitesSystem
+        {
+            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
+
+            public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public bool TryBuildOnOwnedSite(PlayerType playerType) => false;
         }
     }
 }

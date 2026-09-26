@@ -9,6 +9,7 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
@@ -67,6 +68,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
         private IAssetService _repository;
+        private ICaptureSitesSystem _captureSites;
         private ShipsData _shipsData;
         private FactionType _playerFactionType;
         private FactionType _opponentFactionType;
@@ -85,6 +87,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IInputService inputService,
+            ICaptureSitesSystem captureSites,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
@@ -97,6 +100,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _inputService = inputService;
+            _captureSites = captureSites;
             _playerFactionType = playerFactionType;
             _opponentFactionType = opponentFactionType;
         }
@@ -530,6 +534,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     republicClearance * republicClearance ||
                 new Vector2(center.x - separatist.x, center.z - separatist.z).sqrMagnitude <
                     separatistClearance * separatistClearance)
+            {
+                return false;
+            }
+
+            if (_captureSites.IsPositionInAnySite(center, radius + ZONE_CLEARANCE))
             {
                 return false;
             }

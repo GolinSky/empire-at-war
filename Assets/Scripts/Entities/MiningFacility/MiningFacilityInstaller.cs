@@ -39,7 +39,7 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.MiningFacility);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<MiningFacilityData>(nameof(MiningFacilityData)).ComponentData);
+                .FromInstance(Repository.Load<MiningFacilityData>(ModelPathPrefix + nameof(MiningFacilityData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
             Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();

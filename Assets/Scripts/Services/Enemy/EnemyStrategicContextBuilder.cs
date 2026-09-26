@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -50,17 +51,20 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
+            ICaptureSitesSystem captureSites,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel)
         {
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
+            _captureSites = captureSites;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
         }
@@ -71,10 +75,7 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> playerShips = GetShips(PlayerType.Player);
             FormationPoint fleetCenter = CalculateFleetCenter(enemyShips);
             Vector3 origin = new Vector3(fleetCenter.X, 0f, fleetCenter.Z);
-            bool hasCaptureTarget = _reinforcementZonesSystem.TryGetCaptureTarget(
-                PlayerType.Opponent,
-                origin,
-                out Vector3 captureTarget);
+            bool hasCaptureTarget = TryGetClosestCaptureTarget(origin, out Vector3 captureTarget);
             GameEntity enemyBaseTarget = FindClosestEntity<ISpaceStationModelObserver>(
                 PlayerType.Player,
                 origin);
@@ -114,6 +115,19 @@ namespace EmpireAtWar.Services.Enemy
                 enemyBaseTarget,
                 ownBase,
                 receivers);
+        }
+
+        private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
+        {
+            bool hasZone = _reinforcementZonesSystem.TryGetCaptureTarget(
+                PlayerType.Opponent, origin, out Vector3 zoneTarget);
+            bool hasSite = _captureSites.TryGetCaptureTarget(
+                PlayerType.Opponent, origin, out Vector3 siteTarget);
+            captureTarget = hasSite && (!hasZone ||
+                (siteTarget - origin).sqrMagnitude < (zoneTarget - origin).sqrMagnitude)
+                ? siteTarget
+                : zoneTarget;
+            return hasZone || hasSite;
         }
 
         private List<IShipEntity> GetShips(PlayerType playerType)
