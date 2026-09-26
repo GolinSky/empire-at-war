@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Services.Popup;
+using EmpireAtWar.Entities.MenuUi.Popups;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
@@ -9,18 +9,18 @@ namespace EmpireAtWar.Entities.MenuUi
     public class MenuUiController : IMenuUiPresenter, ILateDisposable
     {
         private readonly IUiService _uiService;
-        private readonly IPopupService _popupService;
+        private readonly IMainMenuPopupPresenter _popupPresenter;
         private readonly MenuUiModel _model;
         
         private IMenuUiView _ui;
 
         public MenuUiController(
             IUiService uiService, 
-            IPopupService popupService, 
+            IMainMenuPopupPresenter popupPresenter,
             MenuUiModel model)
         {
             _uiService = uiService;
-            _popupService = popupService;
+            _popupPresenter = popupPresenter;
             _model = model;
         }
 
@@ -42,12 +42,12 @@ namespace EmpireAtWar.Entities.MenuUi
 
         public void StartDemo()
         {
-            _popupService.OpenPopup(PopupType.SkirmishGameSetUp);
+            _popupPresenter.OpenSkirmish();
         }
 
         public void OpenOptions()
         {
-            _popupService.OpenPopup(PopupType.Settings);
+            _popupPresenter.OpenSettings();
         }
 
         public void ExitApplication()
