@@ -337,6 +337,18 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public bool TryBuildOnOwnedSite(PlayerType playerType) => false;
+
+            public bool TryGetThreatenedSite(PlayerType owner, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public bool TryGetRaidTarget(PlayerType attacker, Vector3 origin, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
         }
     }
 }

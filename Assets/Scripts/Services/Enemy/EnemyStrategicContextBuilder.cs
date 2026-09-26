@@ -75,7 +75,12 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> playerShips = GetShips(PlayerType.Player);
             FormationPoint fleetCenter = CalculateFleetCenter(enemyShips);
             Vector3 origin = new Vector3(fleetCenter.X, 0f, fleetCenter.Z);
-            bool hasCaptureTarget = TryGetClosestCaptureTarget(origin, out Vector3 captureTarget);
+            // Defending an owned site outranks new captures; raiding an operational site is the fallback.
+            bool hasThreatenedSite = _captureSites.TryGetThreatenedSite(
+                PlayerType.Opponent, out Vector3 captureTarget);
+            bool hasCaptureTarget = hasThreatenedSite ||
+                TryGetClosestCaptureTarget(origin, out captureTarget) ||
+                _captureSites.TryGetRaidTarget(PlayerType.Opponent, origin, out captureTarget);
             GameEntity enemyBaseTarget = FindClosestEntity<ISpaceStationModelObserver>(
                 PlayerType.Player,
                 origin);
@@ -102,7 +107,8 @@ namespace EmpireAtWar.Services.Enemy
                 enemyBaseTarget != null,
                 ownBase != null,
                 ownedCapturableZoneCount,
-                enemyShipsNearOwnBase);
+                enemyShipsNearOwnBase,
+                hasThreatenedSite);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in enemyShips)

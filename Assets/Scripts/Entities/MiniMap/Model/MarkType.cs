@@ -11,5 +11,6 @@
         DefendPlatform = 6,
         MiningFacility = 7,
         ReinforcementZone = 8,
+        CaptureSite = 9,
     }
 }

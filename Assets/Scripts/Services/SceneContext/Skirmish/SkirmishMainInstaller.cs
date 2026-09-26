@@ -111,6 +111,10 @@ public class SkirmishMainInstaller : MonoInstaller
             .AsSingle()
             .NonLazy();
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
+        Container.BindInterfacesAndSelfTo<CaptureSiteMiniMapPresenter>()
+            .AsSingle()
+            .NonLazy();
+        Container.BindInitializableExecutionOrder<CaptureSiteMiniMapPresenter>(100);
         
         Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
         Container.BindInterfacesAndSelfTo<CinematicCameraModel>().AsSingle();

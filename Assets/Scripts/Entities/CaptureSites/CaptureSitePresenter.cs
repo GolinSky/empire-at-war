@@ -33,6 +33,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public SiteFacilityCost Cost => _cost;
         public Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
+        public bool IsRevealed { get; private set; }
+        public bool IsOperational => _model.State == CaptureSiteState.Operational;
 
         public void Dispose()
         {
@@ -83,6 +85,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void SetVisibility(bool isVisible, bool isHovered, bool canPlayerAffordBuild)
         {
+            IsRevealed = isVisible;
             // The build option only appears after the player selects their empty site.
             bool showBuildOption = isVisible && _isSelected && CanPlayerBuild;
             bool isActive = _model.CapturingPlayer != PlayerType.None || _model.IsContested ||

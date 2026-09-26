@@ -46,6 +46,32 @@ namespace EmpireAtWar.Editor.CaptureSites
             AssetDatabase.SaveAssets();
         }
 
+        /// <summary>Gives the original mining facility the same impact-only shield as ships.</summary>
+        [MenuItem("Tools/Empire At War/Capture Sites/Fix Mining Facility Shield")]
+        public static void FixMiningFacilityShield()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(SOURCE_VIEW_PATH);
+            Transform body = root.transform.Find("Sphere");
+            Object.DestroyImmediate(body.Find("ShieldView").gameObject);
+            Renderer bodyRenderer = body.GetComponent<Renderer>();
+            Shield shield = BuildShield(root.transform, GetLocalBounds(root.transform, new[] { bodyRenderer }));
+
+            SerializedObject fog = new SerializedObject(root.GetComponent<FogVisibilityComponent>());
+            SerializedProperty renderers = fog.FindProperty("renderers");
+            renderers.arraySize = 2;
+            renderers.GetArrayElementAtIndex(0).objectReferenceValue = bodyRenderer;
+            renderers.GetArrayElementAtIndex(1).objectReferenceValue = shield.GetComponent<Renderer>();
+            fog.ApplyModifiedPropertiesWithoutUndo();
+
+            SerializedObject health = new SerializedObject(root.GetComponent<HealthComponent>());
+            health.FindProperty("shieldView").objectReferenceValue = shield;
+            health.ApplyModifiedPropertiesWithoutUndo();
+
+            PrefabUtility.SaveAsPrefabAsset(root, SOURCE_VIEW_PATH);
+            PrefabUtility.UnloadPrefabContents(root);
+            AssetDatabase.SaveAssets();
+        }
+
         public static bool IsAsteroidRock(string partName)
         {
             return partName.StartsWith("Sphere");

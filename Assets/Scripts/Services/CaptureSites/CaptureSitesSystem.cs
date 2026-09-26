@@ -52,6 +52,8 @@ namespace EmpireAtWar.Services.CaptureSites
             _opponentBuilder = opponentBuilder;
         }
 
+        public IReadOnlyList<CaptureSitePresenter> Sites => _sites;
+
         public void Initialize()
         {
             foreach (CaptureSiteView view in siteViews)
@@ -153,11 +155,58 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
+        public bool TryGetThreatenedSite(PlayerType owner, out Vector3 position)
+        {
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                if (site.Owner == owner && HasHostileShips(site, owner))
+                {
+                    position = site.Center;
+                    position.y = 0f;
+                    return true;
+                }
+            }
+
+            position = default;
+            return false;
+        }
+
+        public bool TryGetRaidTarget(PlayerType attacker, Vector3 origin, out Vector3 position)
+        {
+            CaptureSitePresenter closestSite = null;
+            float closestDistance = float.MaxValue;
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                if (!site.IsOperational || site.Owner == attacker)
+                {
+                    continue;
+                }
+
+                float distance = (site.Center - origin).sqrMagnitude;
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestSite = site;
+                }
+            }
+
+            if (closestSite == null)
+            {
+                position = default;
+                return false;
+            }
+
+            position = closestSite.Center;
+            position.y = 0f;
+            return true;
+        }
+
         public bool TryBuildOnOwnedSite(PlayerType playerType)
         {
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (site.Owner == playerType && site.CanStartConstruction)
+                // Paying for a site that hostile ships are about to take would waste the credits.
+                if (site.Owner == playerType && site.CanStartConstruction && !HasHostileShips(site, playerType))
                 {
                     return TryStartConstruction(site);
                 }
@@ -248,6 +297,12 @@ namespace EmpireAtWar.Services.CaptureSites
                     opponentShips++;
                 }
             }
+        }
+
+        private bool HasHostileShips(CaptureSitePresenter site, PlayerType owner)
+        {
+            CountShips(site, out int playerShips, out int opponentShips);
+            return owner == PlayerType.Player ? opponentShips > 0 : playerShips > 0;
         }
 
         private ISiteFacilityBuilder GetBuilder(PlayerType playerType)
