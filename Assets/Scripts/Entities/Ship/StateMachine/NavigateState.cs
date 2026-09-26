@@ -7,35 +7,21 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public sealed class NavigateState : IBaseState
     {
-        private readonly IShipMoveComponent _shipMoveComponent;
-        private Vector3 _worldDestination;
-        private Vector2 _screenDestination;
-        private bool _useScreenDestination;
+        private readonly IShipMovement _shipMoveComponent;
+        private Vector3 _destination;
         private bool _hasPendingDestination;
 
-        public NavigateState(IShipMoveComponent shipMoveComponent)
+        public NavigateState(IShipMovement shipMoveComponent)
         {
             _shipMoveComponent = shipMoveComponent;
         }
 
+        public bool IsComplete => !_shipMoveComponent.IsMoving && !_shipMoveComponent.IsBlocked;
+
         public void SetWorldDestination(Vector3 destination)
         {
-            _worldDestination = destination;
-            _useScreenDestination = false;
+            _destination = destination;
             _hasPendingDestination = true;
-        }
-
-        public void SetScreenDestination(Vector2 destination)
-        {
-            _screenDestination = destination;
-            _useScreenDestination = true;
-            _hasPendingDestination = true;
-        }
-
-        public bool IsTheSameWorldDestination(Vector3 destination)
-        {
-            return !_useScreenDestination &&
-                   (_worldDestination - destination).sqrMagnitude <= Mathf.Epsilon;
         }
 
         public void Enter()
@@ -45,19 +31,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new InvalidOperationException("NavigateState requires a destination before Enter.");
             }
 
-            if (_useScreenDestination)
-            {
-                _shipMoveComponent.MoveToPositionOnScreen(_screenDestination);
-            }
-            else
-            {
-                _shipMoveComponent.MoveToPosition(_worldDestination);
-            }
-
+            _shipMoveComponent.MoveToPosition(_destination);
             _hasPendingDestination = false;
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
         }
 

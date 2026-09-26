@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
             _service = new CheatService(
                 _economyModel,
                 _reinforcementModel,
-                new ShipFacadeFactory(),
+                new ShipFactory(),
                 new FakeReinforcementZonesSystem(),
                 new OperationalEntityLocator(),
                 _superWeaponModel);

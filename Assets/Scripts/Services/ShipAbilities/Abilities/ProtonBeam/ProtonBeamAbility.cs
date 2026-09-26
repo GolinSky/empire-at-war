@@ -1,7 +1,7 @@
 using System;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -22,14 +22,14 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _impactPresenter = impactPresenter;
         }
 
-        public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
+        public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
-            if (!target.TryGetCommand(out IHealthCommand health))
-                throw new InvalidOperationException($"{nameof(ProtonBeamAbility)} requires an {nameof(IHealthCommand)} on the target.");
+            if (!target.TryGetFacade(out IHealthFacade health))
+                throw new InvalidOperationException($"{nameof(ProtonBeamAbility)} requires an {nameof(IHealthFacade)} on the target.");
 
             _view = Object.Instantiate(_settings.ViewPrefab);
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _settings.DamageType, 1.5f, true);
-            _view.PlayBeam(caster.Health.Transform, target.HealthModel.Transform, definition.Duration);
+            _view.PlayBeam(caster.Entity.GetFacade<IEntityTransformFacade>().Transform, target.GetFacade<IEntityTransformFacade>().Transform, definition.Duration);
             HardPointModel[] hardPoints = target.HealthModel.HardPointModels;
             for (int i = 0; i < hardPoints.Length; i++)
             {

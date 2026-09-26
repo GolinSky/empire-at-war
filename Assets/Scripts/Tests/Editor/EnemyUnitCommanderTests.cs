@@ -4,7 +4,6 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -14,6 +13,8 @@ using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         public void CaptureZone_CommitsFastestShipAndStopsOnlyBusyRemainder()
         {
             FakeShip slow = new FakeShip(1, Vector3.zero) { NavigationSpeed = 1f,
-                CurrentOrder = ShipOrderType.Attack };
+                CurrentOrder = UnitOrderType.Attack };
             FakeShip fast = new FakeShip(2, Vector3.right) { NavigationSpeed = 4f };
             FakeOrderService orders = new FakeOrderService();
             EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast });
@@ -106,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
         public void RetreatValue_DoesNotReissueRetreatToRetreatingShips()
         {
             FakeShip retreating = new FakeShip(1, Vector3.zero)
-                { CurrentOrder = ShipOrderType.Retreat };
+                { CurrentOrder = UnitOrderType.Retreat };
             FakeShip fresh = new FakeShip(2, Vector3.right);
             FakeOrderService orders = new FakeOrderService();
 
@@ -128,7 +129,7 @@ namespace EmpireAtWar.Tests.Editor
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 EnemyStrategicState.CaptureZone, 1, "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
-            ship.CurrentOrder = ShipOrderType.AttackMove;
+            ship.CurrentOrder = UnitOrderType.AttackMove;
             orders.Calls.Clear();
 
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
@@ -155,7 +156,7 @@ namespace EmpireAtWar.Tests.Editor
             public float NavigationRadius => 5f;
             public float NavigationSpeed { get; set; } = 1f;
             public long EntityId { get; }
-            public ShipOrderType CurrentOrder { get; set; }
+            public UnitOrderType CurrentOrder { get; set; }
         }
 
         private sealed class FakeOrderService : IUnitOrderService
@@ -221,11 +222,19 @@ namespace EmpireAtWar.Tests.Editor
             public EmpireAtWar.Mvc.IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerType PlayerType { get; }
-            public bool TryGetCommand<TCommand>(out TCommand command)
-                where TCommand : IEntityCommand { command = default; return false; }
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand command)
+                where TCommand : IEntityFacade
+            {
+                if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
+                command = default;
+                return false;
+            }
         }
 
-        private sealed class FakeHealthModel : IHealthModelObserver
+        private sealed class FakeHealthModel : IHealthModelObserver, IEntityTransformFacade
         {
             public FakeHealthModel(Transform transform) { Transform = transform; }
             public event Action OnDestroy;

@@ -3,7 +3,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -42,12 +42,12 @@ namespace EmpireAtWar.Services.SuperWeapons
                    !target.HealthModel.IsDestroyed && target.HealthModel.HasUnits &&
                    target.HealthModel.ShipClass != ShipClass.Fighter &&
                    target.HealthModel.ShipClass != ShipClass.Bomber &&
-                   target.TryGetCommand(out IHealthCommand _);
+                   target.TryGetFacade(out IHealthFacade _);
         }
 
         public void Fire(SuperWeaponType type, IEntity target)
         {
-            Vector3 targetPosition = target.HealthModel.Transform.position;
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             Vector3 originPosition = _origin.GetFirePosition(targetPosition);
             GameObject origin = new GameObject($"{type}Origin");
             origin.transform.SetPositionAndRotation(originPosition,
@@ -128,7 +128,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
                 profile.ImpactSize, true);
-            float travelTime = shot.Fire(salvo.Origin, salvo.Target.HealthModel.Transform, Vector3.zero,
+            float travelTime = shot.Fire(salvo.Origin, salvo.Target.GetFacade<IEntityTransformFacade>().Transform, Vector3.zero,
                 profile.Weapon);
             shot.RetireAfterCompletion();
             salvo.ImpactTimes.Add(travelTime);
@@ -141,10 +141,10 @@ namespace EmpireAtWar.Services.SuperWeapons
             IEntity target = salvo.Target;
             if (target.HealthModel.IsDestroyed) return;
 
-            Vector3 impactPosition = target.HealthModel.Transform.position;
+            Vector3 impactPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             ApplyDamage(target, profile.Weapon.Damage, profile);
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
-                target.TryGetCommand(out ICombatModifiersCommand combat))
+                target.TryGetFacade(out ICombatModifiersFacade combat))
             {
                 ApplyStun(combat.Modifiers, profile);
             }
@@ -163,7 +163,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             {
                 if (entity == target || entity.PlayerType != target.PlayerType ||
                     entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
-                    Vector3.Distance(center, entity.HealthModel.Transform.position) > profile.AreaRadius)
+                    Vector3.Distance(center, entity.GetFacade<IEntityTransformFacade>().Transform.position) > profile.AreaRadius)
                     continue;
                 _areaTargets.Add(entity);
             }
@@ -176,7 +176,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         private static void ApplyDamage(IEntity entity, float damage, SuperWeaponProfile profile)
         {
-            if (!entity.TryGetCommand(out IHealthCommand health)) return;
+            if (!entity.TryGetFacade(out IHealthFacade health)) return;
             health.ApplyDamage(damage, profile.Weapon.DamageType, PickHardPoint(entity.HealthModel));
         }
 

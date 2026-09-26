@@ -22,7 +22,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         public override void InstallBindings()
         {
             Container
-                .BindFactory<PlayerType, ShipType, Vector3, ShipEntity, ShipFacadeFactory>()
+                .BindFactory<PlayerType, ShipType, Vector3, ShipEntity, ShipFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
                 .NonLazy();
@@ -34,19 +34,19 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationFacade>()
+                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, MiningFacilityFacade>()
+                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, MiningFacilityFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
                 .NonLazy();
             
             Container
-                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFacade>()
+                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();

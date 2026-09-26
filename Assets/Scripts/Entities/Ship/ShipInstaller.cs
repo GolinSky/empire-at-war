@@ -11,10 +11,10 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Entities.Ship.EntityCommands;
-using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
@@ -26,6 +26,7 @@ using EmpireAtWar.Services.NavigationService;
 using EmpireAtWar.Services.Audio;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Ship
 {
@@ -124,28 +125,29 @@ namespace EmpireAtWar.Ship
                     .AsCached();
             }
 
-            Container.BindInterfacesAndSelfTo<StateMachine1>().AsSingle();
+            Container.Bind<ShipStateMachine>().AsSingle();
             Container.BindInterfacesAndSelfTo<AttackTargetState>().AsSingle();
             Container.BindInterfacesAndSelfTo<IdleState>().AsSingle();
             Container.BindInterfacesAndSelfTo<NavigateState>().AsSingle();
             Container.BindInterfacesAndSelfTo<AttackMoveState>().AsSingle();
             Container.BindInterfacesAndSelfTo<GuardState>().AsSingle();
             Container.BindInterfacesAndSelfTo<HuntState>().AsSingle();
-            Container.Bind<ShipOrderModel>().AsSingle();
+            Container.Bind<UnitOrderModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<ShipAIBrain>().AsSingle();
+            Container.Bind<ShipAIBrain>().AsSingle();
+            Container.Bind<ShipOrderRunner>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
-            Container.BindInterfacesExt<ShipAbilityCommand>();
+            Container.BindInterfacesExt<ShipAbilityFacade>();
             AudioShipData audioShipData = Container.Resolve<AudioShipData>();
             Container.Bind<IShipSfxView>().To<ShipSfxView>()
                 .FromComponentInNewPrefab(audioShipData.ShipSfx.ViewPrefab)
                 .UnderTransform(context => context.Container.ResolveId<Transform>(EntityBindType.ViewTransform))
                 .AsSingle();
             Container.BindInterfacesTo<ShipSfxPresenter>().AsSingle().NonLazy();
-            Container.BindInterfacesExt<ShipOrderCommand>();
-            Container.BindInterfacesExt<SelectionCommand>();
-            Container.BindInterfacesExt<HealthCommand>();
-            Container.BindInterfacesExt<CombatModifiersCommand>();
+            Container.BindInterfacesExt<ShipOrderFacade>();
+            Container.BindInterfacesExt<SelectionFacade>();
+            Container.BindInterfacesExt<HealthFacade>();
+            Container.BindInterfacesExt<CombatModifiersFacade>();
 
             switch (_playerType)
             {

@@ -7,12 +7,12 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
-using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -187,7 +187,7 @@ namespace EmpireAtWar.Services.Enemy
                         out _))
                 {
                     _zoneExitTargets.Remove(ship);
-                    if (ship.CurrentOrder != ShipOrderType.None)
+                    if (ship.CurrentOrder != UnitOrderType.None)
                         _orders.IssueStop(new[] { _entityLocator.GetEntity(ship.EntityId) });
                     continue;
                 }

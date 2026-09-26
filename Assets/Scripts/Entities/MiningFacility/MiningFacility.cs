@@ -18,7 +18,7 @@ namespace EmpireAtWar.Entities.MiningFacility
     }
 
     public class MiningFacility : MonoBehaviour, IController, IMiningFacilityCommand, IIncomeProvider,
-        IInitializable, ILateDisposable, IEntityLifecycle
+        IInitializable, ILateDisposable
     {
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
@@ -67,6 +67,7 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         public void Initialize()
         {
+            _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
             _radarComponent.SetPosition(transform.position);
             _economyProvider.AddProvider(this);
@@ -78,13 +79,11 @@ namespace EmpireAtWar.Entities.MiningFacility
             Release(false);
         }
 
-        public void Release()
-        {
-            Release(true);
-        }
+        private void HandleDestroyed() => Release(true);
 
         private void Release(bool playDeathEffects)
         {
+            _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
             if (!_componentLifecycle.Release())
             {
                 return;

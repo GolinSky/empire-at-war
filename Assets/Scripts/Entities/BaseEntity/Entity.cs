@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -9,7 +10,8 @@ namespace EmpireAtWar.Entities.BaseEntity
     public interface IEntity
     {
         long Id { get; }
-        bool TryGetCommand<TCommand>(out TCommand entityCommand) where TCommand : IEntityCommand;
+        bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade;
+        TFacade GetFacade<TFacade>() where TFacade : IEntityFacade;
         IModelObserver Model { get; }
         IHealthModelObserver HealthModel { get; }
         
@@ -18,7 +20,7 @@ namespace EmpireAtWar.Entities.BaseEntity
     
     public class Entity: IEntity, IInitializable, ILateDisposable
     {
-        private readonly IEntityCommand[] _commands;
+        private readonly IEntityFacade[] _facades;
         private readonly IEntityLocator _entityLocator;
         public long Id { get;  }
         
@@ -28,13 +30,13 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public Entity(
             long id,
-            IEntityCommand[] commands,
+            IEntityFacade[] facades,
             IUnitModelObserver modelObserver,
             IHealthModelObserver healthModel,
             IEntityLocator entityLocator,
             PlayerType playerType)
         {
-            _commands = commands;
+            _facades = facades;
             _entityLocator = entityLocator;
             PlayerType = playerType;
             Id = id;
@@ -42,19 +44,29 @@ namespace EmpireAtWar.Entities.BaseEntity
             HealthModel = healthModel;
         }
         
-        public bool TryGetCommand<TCommand>(out TCommand destinationCommand) where TCommand : IEntityCommand
+        public bool TryGetFacade<TFacade>(out TFacade destinationFacade) where TFacade : IEntityFacade
         {
-            destinationCommand = default;
-            foreach (IEntityCommand entityCommand in _commands)
+            destinationFacade = default;
+            foreach (IEntityFacade entityFacade in _facades)
             {
-                if (entityCommand is TCommand foundCommand)
+                if (entityFacade is TFacade foundFacade)
                 {
-                    destinationCommand = foundCommand;
+                    destinationFacade = foundFacade;
                     return true;
                 }
             }
             
             return false;
+        }
+
+        public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade
+        {
+            if (TryGetFacade(out TFacade facade))
+            {
+                return facade;
+            }
+
+            throw new InvalidOperationException($"Entity {Id} has no {typeof(TFacade).Name}.");
         }
 
         public void Initialize()

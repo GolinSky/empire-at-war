@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Timing;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -10,11 +9,13 @@ using UnityEngine.Rendering;
 using Utilities.ScriptUtils.Time;
 using EmpireAtWar.Services.Layer;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Components.Radar
 {
-    public interface IRadarComponent : IComponent, IUnitComponent
+    public interface IRadarComponent : IComponent
     {
+        event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
         ObservableList<IEntity> Enemies { get; }
         void SetPosition(Vector3 position);
     }
@@ -30,10 +31,10 @@ namespace EmpireAtWar.Components.Radar
         private Collider[] _overlapHits = new Collider[INITIAL_HIT_LIMIT];
         private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
         private readonly List<RadarContact> _contacts = new List<RadarContact>();
-        private IUnitMediator _unitMediator;
         private ILayerService _layerService;
         private Vector3 _position;
         private bool _isReleased;
+        public event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService)
@@ -88,7 +89,7 @@ namespace EmpireAtWar.Components.Radar
                         !entity.HealthModel.IsDestroyed)
                     {
                         if (entity.PlayerType != Model.PlayerType && entity.HealthModel.HasUnits &&
-                            (entity.HealthModel.Transform.position - _position).sqrMagnitude <=
+                            (entity.GetFacade<IEntityTransformFacade>().Transform.position - _position).sqrMagnitude <=
                             Model.Range * Model.Range)
                         {
                             _detectedEnemies.Add(entity);
@@ -125,10 +126,9 @@ namespace EmpireAtWar.Components.Radar
                     }
 
                     Model.Enemies.Add(entity);
-                    _unitMediator?.HandleNewEnemy(entity);
                 }
 
-                _unitMediator?.HandleRadarContacts(_contacts);
+                ContactsUpdated?.Invoke(_contacts);
                 _timer.StartTimer();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 }
@@ -155,11 +155,6 @@ namespace EmpireAtWar.Components.Radar
                 int newSize = Math.Min(_overlapHits.Length * 2, MAX_HIT_LIMIT);
                 Array.Resize(ref _overlapHits, newSize);
             }
-        }
-
-        public void SetMediator(IUnitMediator unitMediator)
-        {
-            _unitMediator = unitMediator;
         }
 
         public override void Release()

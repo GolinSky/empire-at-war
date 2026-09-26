@@ -18,7 +18,7 @@ namespace EmpireAtWar.Services.Enemy
         
         private Vector3 _stationPosition;
         private SpaceStationEntity _spaceStation;
-        private readonly SpaceStationFacade _spaceStationViewFacade;
+        private readonly SpaceStationFactory _spaceStationFactory;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly EnemyProductionStrategy _productionStrategy;
 
@@ -27,18 +27,18 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
-            SpaceStationFacade spaceStationViewFacade,
+            SpaceStationFactory spaceStationFactory,
             EnemyProductionStrategy productionStrategy)
         {
             _mapModel = mapModel;
-            _spaceStationViewFacade = spaceStationViewFacade;
+            _spaceStationFactory = spaceStationFactory;
             _productionStrategy = productionStrategy;
         }
         
         public void Initialize()
         {
             _stationPosition = _mapModel.Value.GetStationPosition(FactionType);
-            _spaceStation = _spaceStationViewFacade.Create(PlayerType.Opponent, FactionType, _stationPosition);
+            _spaceStation = _spaceStationFactory.Create(PlayerType.Opponent, FactionType, _stationPosition);
             _productionStrategy.Start();
         }
         
