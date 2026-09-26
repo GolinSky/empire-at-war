@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable
+        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable, IHardPointsSource
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
@@ -66,6 +66,8 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
         public PlayerType PlayerType => _playerType;
+        public IReadOnlyList<IHardPointStatus> HardPoints => _hardPointAdapters;
+        public float MaxShields => Model.MaxShields;
 
         [Inject]
         private void Construct(

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -50,7 +51,8 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(_input, _selection, _query,
-                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel());
+                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel(),
+                new HardPointOverlayModel());
             _handler.Initialize();
         }
 
@@ -222,6 +224,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
+                int hardPointId) => LastAction = UnitActionId.Attack;
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -55,6 +56,23 @@ namespace EmpireAtWar.Services.UnitOrders
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
         {
             if (target == null || !IsAlive(target)) return;
+            IssueAttack(receivers, target, AttackOffsets(receivers, target));
+        }
+
+        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
+            IReadOnlyList<Vector3> offsets)
+        {
+            IssueAttack(receivers, target, offsets, UnitOrderModel.NO_HARD_POINT);
+        }
+
+        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId)
+        {
+            if (target == null || !IsAlive(target)) return;
+            IssueAttack(receivers, target, AttackOffsets(receivers, target), hardPointId);
+        }
+
+        private List<Vector3> AttackOffsets(IReadOnlyList<IEntity> receivers, IEntity target)
+        {
             List<IAttackFacade> commands = Collect<IAttackFacade>(receivers);
             Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
             List<Vector3> slots = Compact(commands, point,
@@ -62,19 +80,29 @@ namespace EmpireAtWar.Services.UnitOrders
             List<Vector3> offsets = new List<Vector3>(slots.Count);
             foreach (Vector3 slot in slots)
                 offsets.Add(new Vector3(slot.x - point.x, 0f, slot.z - point.z));
-            IssueAttack(receivers, target, offsets);
+            return offsets;
         }
 
-        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
-            IReadOnlyList<Vector3> offsets)
+        // Receivers without hardpoint targeting (squadrons) attack the whole ship.
+        private void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
+            IReadOnlyList<Vector3> offsets, int hardPointId)
         {
             if (target == null || !IsAlive(target)) return;
+            bool targetsHardPoint = hardPointId != UnitOrderModel.NO_HARD_POINT;
             int movingIndex = 0;
             int issued = 0;
             foreach (IEntity receiver in receivers)
             {
                 if (!IsAlive(receiver)) continue;
-                if (receiver.TryGetFacade(out IAttackFacade attack))
+                if (targetsHardPoint && receiver.TryGetFacade(out IHardPointAttackFacade hardPointAttack))
+                {
+                    Vector3 offset = receiver.TryGetFacade(out IAttackFacade _)
+                        ? offsets[movingIndex++]
+                        : Vector3.zero;
+                    hardPointAttack.AttackHardPoint(target, hardPointId, offset);
+                    issued++;
+                }
+                else if (receiver.TryGetFacade(out IAttackFacade attack))
                 {
                     attack.Attack(target, offsets[movingIndex++]);
                     issued++;
@@ -86,7 +114,8 @@ namespace EmpireAtWar.Services.UnitOrders
                 }
             }
             Publish(UnitActionId.Attack, receivers, issued,
-                target.GetFacade<IEntityTransformFacade>().Transform.position, target);
+                target.GetFacade<IEntityTransformFacade>().Transform.position, target,
+                targetHardPointId: hardPointId);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)
@@ -227,11 +256,11 @@ namespace EmpireAtWar.Services.UnitOrders
 
         private void Publish(UnitActionId action, IReadOnlyList<IEntity> receivers,
             int count, Vector3 point, IEntity target = null,
-            IReadOnlyList<Vector3> waypoints = null)
+            IReadOnlyList<Vector3> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
             if (count > 0)
                 OrderIssued?.Invoke(new UnitOrder(action, receivers[0].PlayerType,
-                    point, target, waypoints));
+                    point, target, waypoints, targetHardPointId));
         }
     }
 }

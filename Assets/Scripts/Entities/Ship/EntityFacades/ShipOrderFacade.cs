@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.EntityFacades
 {
-    public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade,
+    public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
         IHuntFacade, IRetreatFacade
     {
@@ -27,6 +27,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void MoveTo(Vector3 worldPosition) => _orders.MoveTo(worldPosition);
         public void Attack(IEntity target, Vector3 formationOffset) =>
             _orders.Attack(target, formationOffset);
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>
+            _orders.AttackHardPoint(target, hardPointId, formationOffset);
         public void AttackMoveTo(Vector3 worldPosition) =>
             _orders.AttackMoveTo(worldPosition);
         public void Stop() => _orders.Stop();

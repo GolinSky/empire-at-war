@@ -8,6 +8,7 @@ namespace EmpireAtWar.Components.AttackComponent
     public interface IAttackDataFactory
     {
         AttackData ConstructData(IEntity entity, HardPointType hardPointType = HardPointType.Any);
+        AttackData ConstructHardPointData(IEntity entity, int hardPointId);
     }
     public class AttackDataFactory: IAttackDataFactory
     {
@@ -22,6 +23,14 @@ namespace EmpireAtWar.Components.AttackComponent
                 return attackData;
             }
             return null;
+        }
+
+        public AttackData ConstructHardPointData(IEntity entity, int hardPointId)
+        {
+            return new AttackData(
+                entity.HealthModel,
+                entity.GetFacade<IHealthFacade>(),
+                entity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId]);
         }
     }
 }

@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private Transform _mainTargetTransform;
+        private IHardPointModel _focusedHardPoint;
         private Vector3 _formationOffset;
         private Vector3 _pursuitDestination;
         private bool _hasPursuitDestination;
@@ -43,7 +45,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits;
 
-        public void SetData(IEntity mainTarget, Vector3 formationOffset)
+        public void SetData(IEntity mainTarget, Vector3 formationOffset, int hardPointId)
         {
             if (mainTarget == null)
             {
@@ -54,6 +56,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
             _mainTargetTransform = _mainTargetEntity.GetFacade<IEntityTransformFacade>().Transform;
+            _focusedHardPoint = hardPointId == UnitOrderModel.NO_HARD_POINT
+                ? null
+                : _mainTargetEntity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId];
             formationOffset.y = 0f;
             _formationOffset = formationOffset;
             if (targetChanged)
@@ -65,7 +70,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void SetData(IEntity mainTarget)
         {
-            SetData(mainTarget, Vector3.zero);
+            SetData(mainTarget, Vector3.zero, UnitOrderModel.NO_HARD_POINT);
         }
 
         public bool IsTheSameTarget(IEntity entity)
@@ -92,7 +97,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_mainTargetEntity.TryGetFacade(out IHealthFacade healthFacade))
             {
-                AttackData attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
+                AttackData attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
+                    ? _attackDataFactory.ConstructData(_mainTargetEntity)
+                    : _attackDataFactory.ConstructHardPointData(_mainTargetEntity, _focusedHardPoint.Id);
                 _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
                 UpdateMoveState();
             }
@@ -104,6 +111,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (IsComplete)
             {
                 return;
+            }
+
+            // Once the chosen hardpoint is gone the order keeps going against the whole ship.
+            if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)
+            {
+                _focusedHardPoint = null;
+                _weaponComponent.AddTarget(_attackDataFactory.ConstructData(_mainTargetEntity), AttackType.MainTarget);
             }
 
             UpdateMoveState();

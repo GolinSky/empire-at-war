@@ -147,6 +147,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesExt<ShipOrderFacade>();
             Container.BindInterfacesExt<SelectionFacade>();
             Container.BindInterfacesExt<HealthFacade>();
+            Container.BindInterfacesExt<HardPointsFacade>();
             Container.BindInterfacesExt<CombatModifiersFacade>();
 
             switch (_playerType)

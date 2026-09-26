@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -28,11 +29,13 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly UnitActionTargetingModel _targeting;
         private readonly IUnitOrderService _orders;
         private readonly SuperWeaponTargetingModel _superWeapons;
+        private readonly IHardPointHoverObserver _hardPointHover;
 
         public PlayerOrderInputHandler(IInputService input, ISelectionService selection,
             ISelectionQuery query, ICameraService camera, ILayerService layers,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
-            IUnitOrderService orders, SuperWeaponTargetingModel superWeapons)
+            IUnitOrderService orders, SuperWeaponTargetingModel superWeapons,
+            IHardPointHoverObserver hardPointHover)
         {
             _input = input;
             _selection = selection;
@@ -43,6 +46,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _targeting = targeting;
             _orders = orders;
             _superWeapons = superWeapons;
+            _hardPointHover = hardPointHover;
         }
 
         public void Initialize()
@@ -91,8 +95,11 @@ namespace EmpireAtWar.Services.UnitOrders
         private void HandleInput(InputType type, TouchPhase phase, Vector2 screen)
         {
             if (type != InputType.ShipInput) return;
-            bool hasUnit = _query.TryFindAt(screen, out SelectionEntry hit);
-            IEntity target = hasUnit ? hit.Entity : null;
+            // A hardpoint marker wins over the hull or whatever else is under it.
+            bool hasHardPoint = _hardPointHover.TryGetHovered(out IEntity hardPointOwner, out int hardPointId);
+            SelectionEntry hit = default;
+            bool hasUnit = hasHardPoint || _query.TryFindAt(screen, out hit);
+            IEntity target = hasHardPoint ? hardPointOwner : hasUnit ? hit.Entity : null;
             if (_superWeapons.Pending != null)
             {
                 if (target != null) _superWeapons.Submit(target);
@@ -124,7 +131,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 if (IsEnemy(target))
                 {
-                    _orders.IssueAttack(receivers, target);
+                    IssueAttack(receivers, target, hasHardPoint, hardPointId);
                     _targeting.Cancel();
                 }
                 return;
@@ -156,10 +163,16 @@ namespace EmpireAtWar.Services.UnitOrders
                 return;
             }
 
-            if (IsEnemy(target)) _orders.IssueAttack(receivers, target);
+            if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
             else if (!hasUnit && !IsObstacle(screen))
                 _orders.IssueMove(receivers,
                     _camera.GetWorldPoint(screen, ReferencePosition(receivers)));
+        }
+
+        private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId)
+        {
+            if (hasHardPoint) _orders.IssueHardPointAttack(receivers, target, hardPointId);
+            else _orders.IssueAttack(receivers, target);
         }
 
         private List<IEntity> Snapshot()
