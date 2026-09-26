@@ -1,6 +1,4 @@
-using EmpireAtWar.Services.Popup;
-using EmpireAtWar.Ui.Popups;
-using UnityEngine;
+using EmpireAtWar.Entities.MenuUi.Popups;
 using Zenject;
 
 namespace EmpireAtWar
@@ -9,14 +7,9 @@ namespace EmpireAtWar
     {
         public override void InstallBindings()
         {
-            Container
-                .BindInterfacesTo<PopupService>()
-                .AsSingle();
-        
-            Container
-                .BindFactory<PopupType, Transform, PopupUi, PopupUiFacade>()
-                .FromSubContainerResolve()
-                .ByNewGameObjectInstaller<PopupDynamicInstaller>();
+            Container.Bind<SkirmishPopupModel>().AsSingle();
+            Container.Bind<SettingsPopupModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PopupUiController>().AsSingle();
         }
     }
 }

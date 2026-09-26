@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.MenuUi.Popups;
 using EmpireAtWar.Ui.Popups;
 using NUnit.Framework;
 using TMPro;
@@ -48,6 +49,9 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(root.transform.Find("Background/StartingMoneyField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
 
+                var model = new SkirmishPopupModel();
+                popup.SetModel(model);
+                popup.SetPresenter(new SkirmishPopupPresenterStub(model));
                 popup.Initialize();
                 Assert.That(
                     playerFactionDropdown.value,
@@ -66,12 +70,34 @@ namespace EmpireAtWar.Tests.Editor
                     playerFactionDropdown.value,
                     Is.EqualTo((int)FactionType.Republic));
 
-                popup.LateDispose();
+                popup.Dispose();
             }
             finally
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private sealed class SkirmishPopupPresenterStub : ISkirmishPopupPresenter
+        {
+            private readonly SkirmishPopupModel _model;
+
+            public SkirmishPopupPresenterStub(SkirmishPopupModel model)
+            {
+                _model = model;
+            }
+
+            public void CloseSkirmish() { }
+            public void StartGame() { }
+            public void SelectPlayerFaction(int index) =>
+                _model.SelectPlayerFaction((FactionType)index);
+            public void SelectEnemyFaction(int index) =>
+                _model.SelectEnemyFaction((FactionType)index);
+            public void SelectPlanet(int index) { }
+            public void SelectVictoryCondition(int index) { }
+            public void SelectEnemyDifficulty(int index) { }
+            public void SelectStartingMoney(float amount) =>
+                _model.SelectStartingMoney(amount);
         }
     }
 }
