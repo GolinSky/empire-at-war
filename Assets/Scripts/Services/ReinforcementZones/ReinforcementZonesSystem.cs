@@ -8,8 +8,11 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
+using ViewComponents;
 using Zenject;
 using Random = UnityEngine.Random;
 
@@ -45,6 +48,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private const int MAX_LAYOUT_ATTEMPTS = 72;
         private const float ZONE_CLEARANCE = 30f;
         private const float CAPTURABLE_ZONE_SPACING = 150f;
+        private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
 
         // XZ footprint radii about each station's pivot, including its model offset.
         [SerializeField, Min(0f)] private float republicStationRadius = 135f;
@@ -56,6 +60,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly Dictionary<ShipType, float> _shipNavigationRadii =
             new Dictionary<ShipType, float>();
         private IShipService _shipService;
+        private FogOfWarSystem _fogOfWarSystem;
+        private ICameraService _cameraService;
+        private IInputService _inputService;
         private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
@@ -75,6 +82,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ShipsData shipsData,
             IMapModelObserver mapModel,
             IShipNavigationService shipNavigationService,
+            FogOfWarSystem fogOfWarSystem,
+            ICameraService cameraService,
+            IInputService inputService,
             [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
             [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
         {
@@ -84,6 +94,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _shipsData = shipsData;
             _mapModel = mapModel;
             _shipNavigationService = shipNavigationService;
+            _fogOfWarSystem = fogOfWarSystem;
+            _cameraService = cameraService;
+            _inputService = inputService;
             _playerFactionType = playerFactionType;
             _opponentFactionType = opponentFactionType;
         }
@@ -131,6 +144,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 {
                     OwnershipChanged?.Invoke();
                 }
+
+                // The circle stays visible; labels and minimap markers require current vision.
+                bool isRevealed = !_fogOfWarSystem.IsHidden(zone.Center, MINIMUM_ZONE_VISIBILITY);
+                bool isHovered = isRevealed && _inputService.SupportsHover &&
+                    zone.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, zone.Center));
+                zone.SetVisibility(isRevealed, isHovered);
             }
         }
 

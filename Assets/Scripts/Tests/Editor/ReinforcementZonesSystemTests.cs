@@ -206,6 +206,10 @@ namespace EmpireAtWar.Tests.Editor
             gameObject.transform.SetParent(parent);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
+            SetField(view, "_sphereRenderer", gameObject.AddComponent<MeshRenderer>());
+            GameObject captureUi = new GameObject("CaptureUi", typeof(RectTransform));
+            captureUi.transform.SetParent(gameObject.transform);
+            SetField(view, "_captureCanvas", captureUi.AddComponent<Canvas>());
             SetField(view, "_startingOwner", owner);
             SetField(view, "_isCapturable", isCapturable);
             return view;
