@@ -1,25 +1,19 @@
 using System;
-using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Entities.MenuUi.Popups;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace EmpireAtWar.Ui.Popups
 {
-    public class SkirmishPopupUi : PopupUi
+    public class SkirmishPopupUi : BaseUi, ISkirmishPopupUi
     {
-        private const float MIN_STARTING_MONEY = 500f;
-        private const float MAX_STARTING_MONEY = 10000f;
-        private const float DEFAULT_STARTING_MONEY = 2000f;
-        private const float MONEY_STEP = 500f;
-        private const FactionType DEFAULT_PLAYER_FACTION = FactionType.Republic;
-        private const FactionType DEFAULT_ENEMY_FACTION = FactionType.Separatist;
-
+        [SerializeField] private Button closeButton;
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
         [SerializeField] private TMP_Dropdown enemyFactionDropdown;
@@ -29,24 +23,50 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private Slider startingMoneySlider;
         [SerializeField] private TMP_Text startingMoneyText;
 
-        [Inject] private IGameCommand GameCommand { get; }
+        private ISkirmishPopupModelObserver _model;
+        private ISkirmishPopupPresenter _presenter;
+        private bool _isInitialized;
 
-        public override void Initialize()
+        public void SetModel(ISkirmishPopupModelObserver model)
         {
-            base.Initialize();
-            startGameButton.onClick.AddListener(OnStartGame);
+            _model = model;
+        }
+
+        public void SetPresenter(ISkirmishPopupPresenter presenter)
+        {
+            _presenter = presenter;
+        }
+
+        public void Initialize()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            if (_model == null || _presenter == null)
+            {
+                throw new InvalidOperationException("Skirmish popup dependencies must be set before initialization.");
+            }
+
             SetData<FactionType>(playerFactionDropdown);
             SetData<FactionType>(enemyFactionDropdown);
-            playerFactionDropdown.value = (int)DEFAULT_PLAYER_FACTION;
-            enemyFactionDropdown.value = (int)DEFAULT_ENEMY_FACTION;
-            playerFactionDropdown.RefreshShownValue();
-            enemyFactionDropdown.RefreshShownValue();
-            playerFactionDropdown.onValueChanged.AddListener(OnPlayerFactionChanged);
-            enemyFactionDropdown.onValueChanged.AddListener(OnEnemyFactionChanged);
             SetData<PlanetType>(planetsDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
             SetData<EnemyAiDifficulty>(enemyDifficultyDropdown);
             SetStartingMoneySliderData();
+            Render();
+
+            _model.Changed += Render;
+            closeButton.onClick.AddListener(_presenter.CloseSkirmish);
+            startGameButton.onClick.AddListener(_presenter.StartGame);
+            playerFactionDropdown.onValueChanged.AddListener(_presenter.SelectPlayerFaction);
+            enemyFactionDropdown.onValueChanged.AddListener(_presenter.SelectEnemyFaction);
+            planetsDropdown.onValueChanged.AddListener(_presenter.SelectPlanet);
+            victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
+            enemyDifficultyDropdown.onValueChanged.AddListener(_presenter.SelectEnemyDifficulty);
+            startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
+            _isInitialized = true;
         }
 
         private void SetData<TEnum>(TMP_Dropdown dropdown)
@@ -63,84 +83,50 @@ namespace EmpireAtWar.Ui.Popups
 
         private void SetStartingMoneySliderData()
         {
-            startingMoneySlider.minValue = MIN_STARTING_MONEY;
-            startingMoneySlider.maxValue = MAX_STARTING_MONEY;
-            startingMoneySlider.value = DEFAULT_STARTING_MONEY;
-            startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
-            UpdateStartingMoneyText(startingMoneySlider.value);
+            startingMoneySlider.minValue = _model.MinStartingMoney;
+            startingMoneySlider.maxValue = _model.MaxStartingMoney;
         }
 
         private void OnStartingMoneySliderChanged(float rawValue)
         {
-            float snappedValue = Mathf.Round(rawValue / MONEY_STEP) * MONEY_STEP;
-            if (Mathf.Abs(startingMoneySlider.value - snappedValue) > 0.01f)
-            {
-                startingMoneySlider.value = snappedValue;
-            }
-
-            UpdateStartingMoneyText(snappedValue);
+            _presenter.SelectStartingMoney(rawValue);
         }
 
-        private void UpdateStartingMoneyText(float amount)
+        private void Render()
         {
-            if (startingMoneyText != null)
-            {
-                startingMoneyText.text = $"${(int)amount:N0}";
-            }
+            playerFactionDropdown.SetValueWithoutNotify((int)_model.PlayerFaction);
+            enemyFactionDropdown.SetValueWithoutNotify((int)_model.EnemyFaction);
+            planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
+            victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
+            enemyDifficultyDropdown.SetValueWithoutNotify((int)_model.EnemyDifficulty);
+            startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
+            playerFactionDropdown.RefreshShownValue();
+            enemyFactionDropdown.RefreshShownValue();
+            startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
         }
 
-        public override void LateDispose()
+        public void Dispose()
         {
-            base.LateDispose();
-            startGameButton.onClick.RemoveListener(OnStartGame);
-            playerFactionDropdown.onValueChanged.RemoveListener(OnPlayerFactionChanged);
-            enemyFactionDropdown.onValueChanged.RemoveListener(OnEnemyFactionChanged);
-            startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
-        }
-
-        private void OnStartGame()
-        {
-            KeepFactionsDifferent(playerFactionDropdown, enemyFactionDropdown);
-            GameCommand
-                .StartGame(
-                    GetEnum<FactionType>(playerFactionDropdown.captionText.text),
-                    GetEnum<FactionType>(enemyFactionDropdown.captionText.text),
-                    GetEnum<PlanetType>(planetsDropdown.captionText.text),
-                    GetEnum<BattleVictoryCondition>(victoryConditionDropdown.captionText.text),
-                    GetEnum<EnemyAiDifficulty>(enemyDifficultyDropdown.captionText.text),
-                    startingMoneySlider.value);
-        }
-
-        private void OnPlayerFactionChanged(int _)
-        {
-            KeepFactionsDifferent(playerFactionDropdown, enemyFactionDropdown);
-        }
-
-        private void OnEnemyFactionChanged(int _)
-        {
-            KeepFactionsDifferent(enemyFactionDropdown, playerFactionDropdown);
-        }
-
-        private static void KeepFactionsDifferent(
-            TMP_Dropdown changedDropdown,
-            TMP_Dropdown otherDropdown)
-        {
-            if (changedDropdown.value != otherDropdown.value)
+            if (!_isInitialized)
             {
                 return;
             }
 
-            if (otherDropdown.options.Count < 2)
-            {
-                throw new InvalidOperationException(
-                    "Skirmish setup requires at least two factions.");
-            }
-
-            otherDropdown.value =
-                (changedDropdown.value + 1) % otherDropdown.options.Count;
-            otherDropdown.RefreshShownValue();
+            _model.Changed -= Render;
+            closeButton.onClick.RemoveListener(_presenter.CloseSkirmish);
+            startGameButton.onClick.RemoveListener(_presenter.StartGame);
+            playerFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectPlayerFaction);
+            enemyFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyFaction);
+            planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
+            victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
+            enemyDifficultyDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyDifficulty);
+            startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
+            _isInitialized = false;
         }
 
-        private TEnum GetEnum<TEnum>(string text) where TEnum : struct => Enum.Parse<TEnum>(text);
+        private void OnDestroy()
+        {
+            Dispose();
+        }
     }
 }

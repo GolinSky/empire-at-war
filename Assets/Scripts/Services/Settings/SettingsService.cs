@@ -5,17 +5,7 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Settings
 {
-    public interface ISettingsService: IService
-    {
-        
-    }
-
-    public interface ISettingsCommand:ICommand
-    {
-        void SetQualityPreset(int index);
-    }
-
-    public class SettingsService : Service, ISettingsService, IInitializable, ISettingsCommand
+    public class SettingsService : Service, ISettingsService, IInitializable
     {
         private const string QUALITY_PRESET_KEY = "QualityPreset";
 
@@ -41,6 +31,16 @@ namespace EmpireAtWar.Services.Settings
             QualitySettings.SetQualityLevel(index);
             PlayerPrefs.SetString(QUALITY_PRESET_KEY, presetName);
             PlayerPrefs.Save();
+        }
+
+        public string[] GetQualityPresets()
+        {
+            return QualitySettings.names;
+        }
+
+        public int GetCurrentQualityPresetIndex()
+        {
+            return QualitySettings.GetQualityLevel();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
     {
         private const float ATTACK_FADE_IN = 0.09f;
         private const float ATTACK_SETTLE = 0.22f;
-        private const float ATTACK_FADE_START = 0.30f;
-        private const float ATTACK_FADE_OUT = 0.28f;
+        private const float ATTACK_FADE_START = 0.46f;
+        private const float ATTACK_FADE_OUT = 0.32f;
         private const float WAVE_DURATION = 0.68f;
         private const float ECHO_DELAY = 0.12f;
 
@@ -18,6 +18,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private RectTransform attackAnchor;
         [SerializeField] private RectTransform movementAnchor;
         [SerializeField] private Image attackImage;
+        [SerializeField] private Image attackRing;
+        [SerializeField] private Image attackPulse;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
 
@@ -40,11 +42,27 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             SetPosition(attackAnchor, screenPosition);
             attackAnchor.gameObject.SetActive(true);
             SetAlpha(attackImage, 0f);
-            attackImage.rectTransform.localScale = Vector3.one * 1.3f;
+            SetAlpha(attackRing, 0f);
+            SetAlpha(attackPulse, 0f);
+            attackImage.rectTransform.localScale = Vector3.one * 1.45f;
+            attackImage.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 12f);
+            attackRing.rectTransform.localScale = Vector3.one * 0.7f;
+            attackRing.rectTransform.localRotation = Quaternion.identity;
+            attackPulse.rectTransform.localScale = Vector3.one * 0.5f;
             _attackSequence = DOTween.Sequence()
                 .Append(attackImage.DOFade(1f, ATTACK_FADE_IN).SetEase(Ease.OutQuad))
-                .Insert(0f, attackImage.rectTransform.DOScale(1f, ATTACK_SETTLE).SetEase(Ease.OutCubic))
+                .Insert(0f, attackImage.rectTransform.DOScale(1f, ATTACK_SETTLE).SetEase(Ease.OutBack))
+                .Insert(0f, attackImage.rectTransform.DOLocalRotate(Vector3.zero, ATTACK_SETTLE)
+                    .SetEase(Ease.OutCubic))
+                .Insert(0.04f, attackRing.DOFade(0.8f, ATTACK_FADE_IN))
+                .Insert(0.04f, attackRing.rectTransform.DOScale(1f, ATTACK_SETTLE).SetEase(Ease.OutCubic))
+                .Insert(0f, attackRing.rectTransform.DOLocalRotate(new Vector3(0f, 0f, -135f),
+                    ATTACK_FADE_START + ATTACK_FADE_OUT).SetEase(Ease.OutQuad))
+                .Insert(0.06f, attackPulse.DOFade(0.75f, ATTACK_FADE_IN))
+                .Insert(0.06f, attackPulse.rectTransform.DOScale(1.55f, WAVE_DURATION).SetEase(Ease.OutQuad))
+                .Insert(0.15f, attackPulse.DOFade(0f, 0.55f).SetEase(Ease.InQuad))
                 .Insert(ATTACK_FADE_START, attackImage.DOFade(0f, ATTACK_FADE_OUT).SetEase(Ease.InQuad))
+                .Insert(ATTACK_FADE_START, attackRing.DOFade(0f, ATTACK_FADE_OUT).SetEase(Ease.InQuad))
                 .Insert(ATTACK_FADE_START, attackImage.rectTransform.DOScale(1.08f, ATTACK_FADE_OUT)
                     .SetEase(Ease.InQuad))
                 .SetUpdate(true)
@@ -72,10 +90,13 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             {
                 _movementSequence = null;
                 movementAnchor.gameObject.SetActive(false);
+                _presenter.MovementFeedbackCompleted();
             });
         }
 
         public void SetAttackPosition(Vector2 screenPosition) => SetPosition(attackAnchor, screenPosition);
+
+        public void SetMovementPosition(Vector2 screenPosition) => SetPosition(movementAnchor, screenPosition);
 
         public void StopAttack()
         {

@@ -1,6 +1,5 @@
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Controllers.Game;
-using EmpireAtWar.Ui.Popups;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Presenters.Economy;
@@ -28,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             "Assets/Prefabs/Ui/Reinforcement/ReinforcementUi.prefab";
         private const string SHIP_BUILD_PREFAB_PATH =
             "Assets/Prefabs/Ui/Factions/ShipBuildUi.prefab";
-        private const int EXPECTED_SCREEN_PREFAB_COUNT = 11;
+        private const int EXPECTED_SCREEN_PREFAB_COUNT = 14;
 
         [Test]
         public void UiScreenPrefabs_UseBoundCanvasGroupsWithoutLocalCanvases()
@@ -43,10 +42,8 @@ namespace EmpireAtWar.Tests.Editor
                 string prefabPath = AssetDatabase.GUIDToAssetPath(prefabGuid);
                 GameObject root = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
                 BaseUi baseUi = root.GetComponent<BaseUi>();
-                PopupUi popupUi = root.GetComponent<PopupUi>();
-                MonoBehaviour screen = baseUi != null ? baseUi : popupUi;
 
-                if (screen == null)
+                if (baseUi == null)
                 {
                     continue;
                 }
@@ -63,7 +60,7 @@ namespace EmpireAtWar.Tests.Editor
                     Is.Not.Null,
                     $"{prefabPath} requires a root CanvasGroup.");
 
-                SerializedObject serializedScreen = new SerializedObject(screen);
+                SerializedObject serializedScreen = new SerializedObject(baseUi);
                 Assert.That(
                     serializedScreen.FindProperty("canvasGroup").objectReferenceValue,
                     Is.SameAs(canvasGroup),

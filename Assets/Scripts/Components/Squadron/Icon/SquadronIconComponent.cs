@@ -11,8 +11,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 {
     /// <summary>
     /// Floating marker that stands in for the whole squadron: a hollow frame with the fighter silhouette,
-    /// drawn slightly above the smoothed squadron centroid. It keeps a constant on-screen size so tiny fighters
-    /// stay easy to find and click at any zoom, and it is the squadron's click target for selection and attack orders.
+    /// drawn slightly above the smoothed squadron centroid. Its screen size follows camera zoom so tiny fighters
+    /// stay easy to find and click, and it is the squadron's click target for selection and attack orders.
     /// </summary>
     public sealed class SquadronIconComponent : MonoComponent<SelectionModel>, ISquadronIconCommand,
         IInitializable, ILateTickable, ILateDisposable
@@ -20,11 +20,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private Canvas iconCanvas;
         [SerializeField] private Image frameImage;
         [SerializeField] private Image silhouetteImage;
-        [Tooltip("Visible marker width and height in screen pixels.")]
+        [Tooltip("Visible marker width and height in screen pixels at the midpoint of camera zoom.")]
         [SerializeField, Min(1f)] private float screenSize = 32f;
-        [Tooltip("Clickable square width and height in screen pixels.")]
+        [Tooltip("Clickable square width and height in screen pixels at the midpoint of camera zoom.")]
         [SerializeField, Min(1f)] private float clickSize = 44f;
-        [Tooltip("Screen pixels the marker sits above the squadron centroid.")]
+        [Tooltip("Screen pixels the marker sits above the squadron centroid at the midpoint of camera zoom.")]
         [SerializeField] private float screenOffset = 20f;
         [Tooltip("How fast the marker catches up with the centroid; higher follows fighters more tightly.")]
         [SerializeField, Min(0.01f)] private float followSharpness = 12f;
@@ -33,18 +33,21 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
 
         private ICameraService _cameraService;
+        private CameraData _cameraData;
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
         private Vector3 _anchor;
         private Vector3 _iconPosition;
         private bool _isReleased;
+        private float _zoomScale;
 
         [Inject]
-        private void Construct(SelectionModel model, ICameraService cameraService, FogOfWarSystem fogOfWarSystem,
-            PlayerType playerType)
+        private void Construct(SelectionModel model, ICameraService cameraService, CameraData cameraData,
+            FogOfWarSystem fogOfWarSystem, PlayerType playerType)
         {
             SetModel(model);
             _cameraService = cameraService;
+            _cameraData = cameraData;
             _fogOfWarSystem = fogOfWarSystem;
             _playerType = playerType;
         }
@@ -76,9 +79,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             float distance = Vector3.Dot(_anchor - _cameraService.CameraPosition, _cameraService.CameraForward);
             float worldPerPixel = 2f * distance * Mathf.Tan(_cameraService.FieldOfView * 0.5f * Mathf.Deg2Rad) /
                                   Screen.height;
-            _iconPosition = _anchor + cameraTransform.up * (screenOffset * worldPerPixel);
+            float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max,
+                _cameraService.CameraPosition.y);
+            _zoomScale = Mathf.Lerp(1.5f, 0.5f, zoom);
+            _iconPosition = _anchor + cameraTransform.up * (screenOffset * _zoomScale * worldPerPixel);
             iconCanvas.transform.SetPositionAndRotation(_iconPosition, cameraTransform.rotation);
-            iconCanvas.transform.localScale = Vector3.one * worldPerPixel;
+            iconCanvas.transform.localScale = Vector3.one * (worldPerPixel * _zoomScale);
         }
 
         public bool ContainsScreenPoint(Vector2 screenPoint)
@@ -90,7 +96,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
 
             Vector2 delta = _cameraService.WorldToScreenPoint(_iconPosition) - screenPoint;
-            float halfSize = clickSize * 0.5f;
+            float halfSize = clickSize * _zoomScale * 0.5f;
             return Mathf.Abs(delta.x) <= halfSize && Mathf.Abs(delta.y) <= halfSize;
         }
 
@@ -114,7 +120,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 : isSelected ? selectedColor
                 : friendlyColor;
             frameImage.color = color;
-            silhouetteImage.color = color;
+            silhouetteImage.color = Color.white;
         }
     }
 }
