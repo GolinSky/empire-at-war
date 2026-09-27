@@ -56,6 +56,12 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();
+
+            Container
+                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, AsteroidDefendPlatformFactory>()
+                .FromSubContainerResolve()
+                .ByNewContextPrefab<AsteroidDefendPlatformInstaller>(GetPath<AsteroidDefendPlatformInstaller>())
+                .NonLazy();
         }
         
         private GameObject GetPath<T>()

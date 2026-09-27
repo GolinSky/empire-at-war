@@ -1,9 +1,11 @@
 using System;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
+using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.Services.CaptureSites
@@ -13,15 +15,18 @@ namespace EmpireAtWar.Services.CaptureSites
         private readonly PlayerType _playerType;
         private readonly EconomyModel _economyModel;
         private readonly AsteroidMiningFacilityFactory _miningFacilityFactory;
+        private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
 
         public SiteFacilityBuilder(
             PlayerType playerType,
             EconomyModel economyModel,
-            AsteroidMiningFacilityFactory miningFacilityFactory)
+            AsteroidMiningFacilityFactory miningFacilityFactory,
+            AsteroidDefendPlatformFactory battleAsteroidFactory)
         {
             _playerType = playerType;
             _economyModel = economyModel;
             _miningFacilityFactory = miningFacilityFactory;
+            _battleAsteroidFactory = battleAsteroidFactory;
         }
 
         public bool CanAfford(float price)
@@ -42,6 +47,11 @@ namespace EmpireAtWar.Services.CaptureSites
                     MiningFacilityEntity facility = _miningFacilityFactory.Create(
                         _playerType, MiningFacilityType.AsteroidMiner, position);
                     facility.OnRelease += onDestroyed;
+                    break;
+                case SiteFacilityType.BattleAsteroid:
+                    DefendPlatformEntity battleAsteroid = _battleAsteroidFactory.Create(
+                        _playerType, DefendPlatformType.BattleAsteroid, position);
+                    battleAsteroid.OnRelease += onDestroyed;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(facilityType), facilityType, null);

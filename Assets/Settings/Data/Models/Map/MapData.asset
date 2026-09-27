@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a69ee65742d4f0082ab6a9acd806118, type: 3}
   m_Name: MapData
   m_EditorClassIdentifier: 
-  models: []
   stationPositionWrapper:
     keyValue:
     - key: 0
@@ -20,5 +19,5 @@ MonoBehaviour:
     - key: 1
       value: {x: 160, y: -40, z: -170}
   <SizeRange>k__BackingField:
-    <Min>k__BackingField: {x: -250, y: -250}
-    <Max>k__BackingField: {x: 250, y: 250}
+    <Min>k__BackingField: {x: -300, y: -300}
+    <Max>k__BackingField: {x: 300, y: 300}

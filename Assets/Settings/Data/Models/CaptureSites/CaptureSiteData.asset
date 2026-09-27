@@ -19,4 +19,9 @@ MonoBehaviour:
         <Name>k__BackingField: Asteroid Mine
         <Price>k__BackingField: 600
         <BuildTime>k__BackingField: 25
+    - key: 1
+      value:
+        <Name>k__BackingField: Battle Asteroid
+        <Price>k__BackingField: 800
+        <BuildTime>k__BackingField: 30
   <CaptureSpeedPerNetShip>k__BackingField: 1
