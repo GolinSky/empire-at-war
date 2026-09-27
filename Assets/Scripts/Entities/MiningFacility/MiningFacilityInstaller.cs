@@ -5,9 +5,9 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Entities.Ship.EntityCommands.Combat;
-using EmpireAtWar.Entities.Ship.EntityCommands.Health;
-using EmpireAtWar.Entities.Ship.EntityCommands.Selection;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -39,7 +39,7 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.MiningFacility);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<MiningFacilityData>(nameof(MiningFacilityData)).ComponentData);
+                .FromInstance(Repository.Load<MiningFacilityData>(ModelPathPrefix + nameof(MiningFacilityData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
             Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
@@ -74,9 +74,10 @@ namespace EmpireAtWar.MiningFacility
             
             //entity commands
             Container
-                .BindInterfacesExt<SelectionCommand>()
-                .BindInterfacesExt<HealthCommand>()
-                .BindInterfacesExt<CombatModifiersCommand>();
+                .BindInterfacesExt<SelectionFacade>()
+                .BindInterfacesExt<HealthFacade>()
+                .BindInterfacesExt<HardPointsFacade>()
+                .BindInterfacesExt<CombatModifiersFacade>();
 
         }
         

@@ -7,6 +7,7 @@ namespace ViewComponents
     public class FogOfWarSystem : MonoBehaviour
     {
         private const float HISTORIC_VISIBILITY = 0.35f;
+        private const int MAX_TEXTURE_RESOLUTION = 512;
 
         
         [SerializeField] private MeshFilter meshFilter;
@@ -52,6 +53,13 @@ namespace ViewComponents
         private List<VisionSource> _activeSources = new List<VisionSource>();
         private float _timer;
         private Material _fogMaterial;
+
+        /// <summary>Stretches the fog plane and its mask for a larger battlefield; call before Start.</summary>
+        public void ScaleArea(float scale)
+        {
+            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(scale, 1f, scale));
+            textureResolution = Mathf.Min(MAX_TEXTURE_RESOLUTION, Mathf.RoundToInt(textureResolution * scale));
+        }
 
         // Base visibility for areas we've already explored (if keepHistory is true)
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Components.AttackComponent
@@ -11,7 +11,7 @@ namespace EmpireAtWar.Components.AttackComponent
     {
         public event Action UnitsChanged;
         private readonly IHealthModelObserver _shipUnitsProvider;
-        private IHealthCommand HealthCommand { get; }
+        private IHealthFacade HealthFacade { get; }
 
         public event Action Destroyed
         {
@@ -24,11 +24,19 @@ namespace EmpireAtWar.Components.AttackComponent
         public IHealthModelObserver TargetHealth => _shipUnitsProvider;
         public List<IHardPointModel> Units { get; private set; }
 
-        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthCommand healthCommand, HardPointType hardPointType)
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType)
         {
             _shipUnitsProvider = shipUnitsProvider;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
-            HealthCommand = healthCommand;
+            HealthFacade = healthFacade;
+        }
+
+        /// <summary>Focuses fire on one hardpoint the player picked explicitly.</summary>
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, IHardPointModel hardPoint)
+        {
+            _shipUnitsProvider = shipUnitsProvider;
+            Units = new List<IHardPointModel> { hardPoint };
+            HealthFacade = healthFacade;
         }
 
         public bool Contains(IHardPointModel hardPointModel)
@@ -44,7 +52,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public void ApplyDamage(float damage, DamageType damageType, int id)
         {
-            HealthCommand.ApplyDamage(damage, damageType, id);
+            HealthFacade.ApplyDamage(damage, damageType, id);
         }
 
         public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
@@ -64,6 +72,6 @@ namespace EmpireAtWar.Components.AttackComponent
         }
 
         public bool SameSource(AttackData other) =>
-            HealthCommand != null && HealthCommand == other?.HealthCommand;
+            HealthFacade != null && HealthFacade == other?.HealthFacade;
     }
 }

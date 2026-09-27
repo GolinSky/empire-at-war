@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Factions;
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeEntity ship = Entity(1, PlayerType.Player);
             FakeEntity station = Entity(2, PlayerType.Player,
-                new[] { typeof(IFocusFireCommand), typeof(IStopCommand) });
+                new[] { typeof(IFocusFireFacade), typeof(IStopFacade) });
             FakeEntity facility = Entity(3, PlayerType.Player, Array.Empty<Type>());
             FakeEntity enemy = Entity(4, PlayerType.Opponent);
 
@@ -177,12 +177,15 @@ namespace EmpireAtWar.Tests.Editor
             public FakeHealth Health { get; }
             public IHealthModelObserver HealthModel => Health;
             public FakeCommand Command { get; }
-            public bool TryGetCommand<TCommand>(out TCommand command)
-                where TCommand : IEntityCommand
-            {
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand command)
+                where TCommand : IEntityFacade
+            { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 if (_commands == null || _commands.Contains(typeof(TCommand)))
                 {
-                    command = (TCommand)(IEntityCommand)Command;
+                    command = (TCommand)(IEntityFacade)Command;
                     return true;
                 }
                 command = default;
@@ -190,9 +193,9 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeCommand : IMoveCommand, IAttackCommand,
-            IAttackMoveCommand, IStopCommand, IGuardCommand, IWaypointMoveCommand,
-            IHuntCommand, IRetreatCommand, IFocusFireCommand
+        private sealed class FakeCommand : IMoveFacade, IAttackFacade,
+            IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
+            IHuntFacade, IRetreatFacade, IFocusFireFacade
         {
             public int CallCount { get; set; }
             public UnitActionId LastAction { get; private set; }
@@ -217,7 +220,7 @@ namespace EmpireAtWar.Tests.Editor
             { CallCount++; LastAction = action; LastPoint = point; }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public FakeHealth(Transform transform) { Transform = transform; }
             public bool IsDestroyedValue { get; set; }

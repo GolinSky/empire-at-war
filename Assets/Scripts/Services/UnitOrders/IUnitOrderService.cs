@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.UnitOrders
         void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations);
         void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target);
         void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets);
+        void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId);
         void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point);
         void IssueStop(IReadOnlyList<IEntity> receivers);
         void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly);

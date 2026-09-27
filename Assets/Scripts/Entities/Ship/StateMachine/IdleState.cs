@@ -3,18 +3,19 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class IdleState : IBaseState
     {
-        private readonly IShipMoveComponent _shipMoveComponent;
+        private readonly IShipMovement _shipMoveComponent;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IRadarComponent _radarComponent;
         private IEntity _engagementTarget;
 
         public IdleState(
-            IShipMoveComponent shipMoveComponent,
+            IShipMovement shipMoveComponent,
             IWeaponComponent weaponComponent,
             IRadarComponent radarComponent)
         {
@@ -22,6 +23,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent = weaponComponent;
             _radarComponent = radarComponent;
         }
+
+        public bool IsComplete => false;
 
         public void Enter()
         {
@@ -33,7 +36,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent.ResetTarget();
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
             if (_engagementTarget != null && !ShipEngagement.CanEngage(
                     _engagementTarget, _shipMoveComponent, _weaponComponent))
@@ -51,7 +54,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                         continue;
                     }
 
-                    float distance = _shipMoveComponent.GetRange(enemy.HealthModel.Transform.position);
+                    float distance = _shipMoveComponent.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
                     if (distance < nearestDistance)
                     {
                         nearestDistance = distance;
@@ -62,7 +65,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget != null)
             {
-                _shipMoveComponent.LookAtTarget(_engagementTarget.HealthModel.Transform.position);
+                _shipMoveComponent.LookAtTarget(_engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position);
             }
         }
 

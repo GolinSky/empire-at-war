@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyFactionModel _factionModel;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IReinforcementZonesSystem _zones;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly int _obstacleMask;
         private readonly List<Vector3> _capturedZoneCenters = new List<Vector3>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
@@ -32,11 +34,13 @@ namespace EmpireAtWar.Services.Enemy
             EnemyFactionModel factionModel,
             LazyInject<IMapModelObserver> mapModel,
             IReinforcementZonesSystem zones,
+            ICaptureSitesSystem captureSites,
             ILayerService layerService)
         {
             _factionModel = factionModel;
             _mapModel = mapModel;
             _zones = zones;
+            _captureSites = captureSites;
 
             _obstacleMask = layerService.GetMask(LayerKey.Player, LayerKey.Enemy, LayerKey.Obstacle);
         }
@@ -98,6 +102,7 @@ namespace EmpireAtWar.Services.Enemy
                         candidate.z + STRUCTURE_CLEARANCE > bounds.Max.y ||
                         IsNearRecentDestroyedPosition(candidate) ||
                         _zones.IsPositionInAnyZone(candidate, STRUCTURE_CLEARANCE) ||
+                        _captureSites.IsPositionInAnySite(candidate, STRUCTURE_CLEARANCE) ||
                         Physics.CheckSphere(candidate, STRUCTURE_CLEARANCE,
                             _obstacleMask, QueryTriggerInteraction.Ignore))
                     {

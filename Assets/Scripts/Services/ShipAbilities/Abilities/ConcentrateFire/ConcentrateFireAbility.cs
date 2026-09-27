@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
 
@@ -19,13 +19,13 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _entities = entities;
         }
 
-        public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
+        public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.PlayerType != caster.Entity.PlayerType || entity.HealthModel.IsDestroyed ||
-                    !entity.TryGetCommand(out IShipAbilityCommand ally) ||
-                    !entity.TryGetCommand(out IAttackCommand attack) ||
+                    !entity.TryGetFacade(out IShipAbilityFacade ally) ||
+                    !entity.TryGetFacade(out IAttackFacade attack) ||
                     Vector3.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)
                     continue;
 

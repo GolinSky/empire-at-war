@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
@@ -216,7 +216,7 @@ namespace EmpireAtWar.Presenters.Game
             for (int i = 0; i < context.Entities.Count; i++)
             {
                 if (!context.Entities[i].HealthModel.IsDestroyed &&
-                    context.Entities[i].TryGetCommand(out IMoveCommand _))
+                    context.Entities[i].TryGetFacade(out IMoveFacade _))
                 {
                     return true;
                 }

@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Squadrons
                 if (entity.PlayerType == playerType &&
                     entity.Model is ISpaceStationModelObserver &&
                     !entity.HealthModel.IsDestroyed &&
-                    entity.TryGetCommand(out IHangarCommand hangar))
+                    entity.TryGetFacade(out IHangarCommand hangar))
                 {
                     return hangar.Launch(squadronType);
                 }

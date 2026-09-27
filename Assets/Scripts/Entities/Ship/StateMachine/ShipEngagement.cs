@@ -2,17 +2,18 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public static class ShipEngagement
     {
-        public static bool CanEngage(IEntity enemy, IShipMoveComponent movement,
+        public static bool CanEngage(IEntity enemy, IShipMovement movement,
             IWeaponComponent weapon)
         {
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
                    weapon.HasEnoughRange(movement.GetRange(
-                       enemy.HealthModel.Transform.position));
+                       enemy.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// destination, using the same threshold as AttackTargetState.
         /// Returns the pursuit destination currently in use.
         /// </summary>
-        public static Vector3 Pursue(IShipMoveComponent movement, IWeaponComponent weapon,
+        public static Vector3 Pursue(IShipMovement movement, IWeaponComponent weapon,
             Vector3 target, Vector3 pursuitDestination)
         {
             float updateDistance = Mathf.Max(movement.NavigationRadius,

@@ -4,6 +4,7 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         //republic
         Delta7 = 0,
+        AWing = 1,
 
         //separatist
         Belbullab22 = 100,

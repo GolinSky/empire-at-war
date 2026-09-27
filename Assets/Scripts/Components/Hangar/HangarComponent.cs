@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
@@ -15,7 +17,8 @@ namespace EmpireAtWar.Components.Hangar
     /// Reserve launching stops for good when the hangar hardpoint or its owner is destroyed.
     /// <see cref="Launch"/> launches extra squadrons outside the reserve.
     /// </summary>
-    public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, ITickable, ILateDisposable
+    public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, IInitializable, ITickable,
+        ILateDisposable
     {
         [SerializeField] private Transform launchPoint;
         [SerializeField] private HardPoint hangarHardPoint;
@@ -26,17 +29,38 @@ namespace EmpireAtWar.Components.Hangar
         private SquadronFactory _squadronFactory;
         private PlayerType _playerType;
         private LazyInject<IEntity> _carrier;
+        private IHealthModelObserver _health;
+        private IHardPointModel _hangarUnit;
         private bool _isReleased;
 
         [Inject]
         private void Construct(HangarModel model, IHangarData data, SquadronFactory squadronFactory,
-            PlayerType playerType, LazyInject<IEntity> carrier)
+            PlayerType playerType, LazyInject<IEntity> carrier, IHealthModelObserver health)
         {
             SetModel(model);
             _data = data;
             _squadronFactory = squadronFactory;
             _playerType = playerType;
             _carrier = carrier;
+            _health = health;
+        }
+
+        public void Initialize()
+        {
+            foreach (IHardPointModel unit in _health.GetShipUnits(HardPointType.Any))
+            {
+                if (unit.Transform == hangarHardPoint.transform)
+                {
+                    _hangarUnit = unit;
+                }
+            }
+
+            if (_hangarUnit == null)
+            {
+                throw new InvalidOperationException($"{name}: hangar hardpoint is not one of the health hardpoints.");
+            }
+
+            _hangarUnit.OnDestroyed += Model.Shutdown;
         }
 
         public void Tick()
@@ -44,11 +68,6 @@ namespace EmpireAtWar.Components.Hangar
             if (_isReleased)
             {
                 return;
-            }
-
-            if (hangarHardPoint.IsDestroyed)
-            {
-                Model.Shutdown();
             }
 
             if (Model.TryLaunch(Time.deltaTime, out int bay))
@@ -67,6 +86,7 @@ namespace EmpireAtWar.Components.Hangar
             }
 
             _isReleased = true;
+            _hangarUnit.OnDestroyed -= Model.Shutdown;
             Model.Shutdown();
             foreach ((ISquadron squadron, Action handler) in _launched)
             {

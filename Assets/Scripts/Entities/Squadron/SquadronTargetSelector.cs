@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 using ViewComponents;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 IEntity candidate = candidates[i];
                 if (!IsValidEnemy(candidate)) continue;
-                float distance = (candidate.HealthModel.Transform.position - center).sqrMagnitude;
+                float distance = (candidate.GetFacade<IEntityTransformFacade>().Transform.position - center).sqrMagnitude;
                 if (distance > radius * radius) continue;
                 float score = Score(candidate, distance);
                 if (score >= bestScore && best != null) continue;
@@ -51,7 +52,7 @@ namespace EmpireAtWar.Entities.Squadrons
             foreach (IEntity candidate in _entityLocator.Entities)
             {
                 if (!IsValidEnemy(candidate)) continue;
-                Vector3 position = candidate.HealthModel.Transform.position;
+                Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (_side == PlayerType.Player &&
                     _fogOfWarSystem.GetVisibilityAtPosition(position) < VISIBLE_THRESHOLD) continue;
                 float score = Score(candidate, (position - origin).sqrMagnitude);

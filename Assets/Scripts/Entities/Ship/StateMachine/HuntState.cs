@@ -7,12 +7,13 @@ using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 using ViewComponents;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public sealed class HuntState : IBaseState
     {
-        private readonly IShipMoveComponent _movement;
+        private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private float _retargetTimer;
         private Vector3 _pursuitDestination;
 
-        public HuntState(IShipMoveComponent movement, IWeaponComponent weapon,
+        public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
             FogOfWarSystem fog, UnitOrderSettings settings, PlayerType side)
         {
@@ -44,9 +45,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             FindTarget();
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
-            _retargetTimer -= Time.deltaTime;
+            _retargetTimer -= deltaTime;
             if (_retargetTimer <= 0f || _target == null ||
                 _target.HealthModel.IsDestroyed)
             {
@@ -55,7 +56,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             if (_target == null) return;
-            Vector3 target = _target.HealthModel.Transform.position;
+            Vector3 target = _target.GetFacade<IEntityTransformFacade>().Transform.position;
             if (ShipEngagement.CanEngage(_target, _movement, _weapon))
             {
                 if (_movement.IsMoving) _movement.Stop();
@@ -79,7 +80,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 if (entity.PlayerType == _side || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits) continue;
-                Vector3 position = entity.HealthModel.Transform.position;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (_side == PlayerType.Player && _fog.GetVisibilityAtPosition(position) < 0.5f)
                     continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
@@ -95,7 +96,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _weapon.AddTarget(_attackDataFactory.ConstructData(_target),
                     AttackType.MainTarget);
-                _pursuitDestination = _target.HealthModel.Transform.position;
+                _pursuitDestination = _target.GetFacade<IEntityTransformFacade>().Transform.position;
                 _movement.MoveToPosition(_pursuitDestination);
             }
         }

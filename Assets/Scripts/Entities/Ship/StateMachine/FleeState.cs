@@ -10,12 +10,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class FleeState : IBaseState
     {
-        private readonly IShipMoveComponent _shipMoveComponent;
+        private readonly IShipMovement _shipMoveComponent;
         private readonly IMapModelObserver _mapModel;
         private readonly FactionType _factionType;
 
         public FleeState(
-            IShipMoveComponent shipMoveComponent,
+            IShipMovement shipMoveComponent,
             IMapModelObserver mapModel,
             PlayerType playerType,
             IGameModelObserver gameModel)
@@ -34,13 +34,15 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             };
         }
 
+        public bool IsComplete => false;
+
         public void Enter()
         {
             Vector3 safePosition = _mapModel.GetStationPosition(_factionType);
             _shipMoveComponent.MoveToPosition(safePosition);
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
         }
 

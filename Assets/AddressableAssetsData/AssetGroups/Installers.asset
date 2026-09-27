@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Installers
   m_GUID: 6fb2ca6d5bc2e0f429cf54bc19d92fe2
   m_SerializeEntries:
+  - m_GUID: 902633263ac036548bdbe737a6a7515d
+    m_Address: AsteroidDefendPlatformInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b68ebe0d40d378f4c936e357035d799d
     m_Address: MiningFacilityInstaller
     m_ReadOnly: 0
@@ -22,6 +27,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c6751126098e6404ab308cdd43135bc6
     m_Address: ShipInstaller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9402d6872adfe54ea7f83e4efa23f9b
+    m_Address: AsteroidMiningFacilityInstaller
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

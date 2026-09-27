@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Mvc;
@@ -63,6 +64,14 @@ namespace EmpireAtWar.SceneContext
                 .Bind<IEconomyProvider>()
                 .WithId(PlayerType.Opponent)
                 .FromMethod(()=>Container.Resolve<IEconomyProvider>());
+
+            Container.Bind<ISiteFacilityBuilder>().To<SiteFacilityBuilder>().AsSingle()
+                .WithArguments(PlayerType.Opponent);
+            Container.BindInterfacesExt<EnemySiteConstructionController>();
+            SceneContext.Container
+                .Bind<ISiteFacilityBuilder>()
+                .WithId(PlayerType.Opponent)
+                .FromMethod(() => Container.Resolve<ISiteFacilityBuilder>());
 
             SceneContext.Container
                 .Bind<IEnemyReinforcementObserver>()

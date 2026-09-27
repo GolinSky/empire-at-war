@@ -31,7 +31,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 5f;
 
-        private readonly ShipFacadeFactory _shipFacadeFactory;
+        private readonly ShipFactory _shipFactory;
         private readonly IEconomyProvider _economyProvider;
         private readonly IPurchaseChain _purchaseChain;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
@@ -45,8 +45,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
 
         private IChainHandler<UnitRequest> _nextChain;
-        private readonly MiningFacilityFacade _miningFacilityFacade;
-        private readonly DefendPlatformFacade _defendPlatformFacade;
+        private readonly MiningFacilityFactory _miningFacilityFactory;
+        private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly TimerPoolService _timerPoolService;
         private bool _isInitialized;
 
@@ -57,9 +57,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public EnemyFactionController(
             EnemyFactionModel model,
-            ShipFacadeFactory shipFacadeFactory,
-            MiningFacilityFacade miningFacilityFacade,
-            DefendPlatformFacade defendPlatformFacade,
+            ShipFactory shipFactory,
+            MiningFacilityFactory miningFacilityFactory,
+            DefendPlatformFactory defendPlatformFactory,
             TimerPoolService timerPoolService,
             IEconomyProvider economyProvider,
             IPurchaseChain purchaseChain,
@@ -70,9 +70,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IEntityLocator entityLocator,
             ISquadronLauncher squadronLauncher) : base(model)
         {
-            _shipFacadeFactory = shipFacadeFactory;
-            _miningFacilityFacade = miningFacilityFacade;
-            _defendPlatformFacade = defendPlatformFacade;
+            _shipFactory = shipFactory;
+            _miningFacilityFactory = miningFacilityFactory;
+            _defendPlatformFactory = defendPlatformFactory;
             _timerPoolService = timerPoolService;
             _economyProvider = economyProvider;
             _purchaseChain = purchaseChain;
@@ -118,7 +118,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     _unitLimitModel.RecordShipOrder();
                     ScheduleBuild(shipUnitRequest, () =>
                         {
-                            ShipEntity ship = _shipFacadeFactory.Create(
+                            ShipEntity ship = _shipFactory.Create(
                                 PlayerType,
                                 shipUnitRequest.Key,
                                 GenerateShipCoordinates(shipUnitRequest.Key));
@@ -161,7 +161,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ScheduleBuild(miningFacilityUnitRequest, () =>
                         {
                             Vector3 position = GenerateMapCoordinates();
-                            MiningFacilityEntity facility = _miningFacilityFacade.Create(
+                            MiningFacilityEntity facility = _miningFacilityFactory.Create(
                                 PlayerType,
                                 miningFacilityUnitRequest.Key,
                                 position);
@@ -185,7 +185,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ScheduleBuild(defendPlatformUnitRequest, () =>
                         {
                             Vector3 position = GenerateMapCoordinates();
-                            DefendPlatformEntity platform = _defendPlatformFacade.Create(
+                            DefendPlatformEntity platform = _defendPlatformFactory.Create(
                                 PlayerType,
                                 defendPlatformUnitRequest.Key,
                                 position);

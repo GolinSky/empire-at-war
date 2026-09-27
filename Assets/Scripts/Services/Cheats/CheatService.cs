@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Cheats
     {
         private readonly EconomyModel _economyModel;
         private readonly ReinforcementModel _reinforcementModel;
-        private readonly ShipFacadeFactory _shipFacadeFactory;
+        private readonly ShipFactory _shipFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly SuperWeaponModel _superWeaponModel;
@@ -32,14 +32,14 @@ namespace EmpireAtWar.Services.Cheats
         public CheatService(
             EconomyModel economyModel,
             ReinforcementModel reinforcementModel,
-            ShipFacadeFactory shipFacadeFactory,
+            ShipFactory shipFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
             SuperWeaponModel superWeaponModel)
         {
             _economyModel = economyModel;
             _reinforcementModel = reinforcementModel;
-            _shipFacadeFactory = shipFacadeFactory;
+            _shipFactory = shipFactory;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
             _superWeaponModel = superWeaponModel;
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.Cheats
             }
 
             _reinforcementModel.UpdateShipData(request);
-            ShipEntity ship = _shipFacadeFactory.Create(PlayerType.Player, request.Key, spawnPosition);
+            ShipEntity ship = _shipFactory.Create(PlayerType.Player, request.Key, spawnPosition);
             if (ship == null)
             {
                 throw new InvalidOperationException($"Failed to create ship {request.Key}.");

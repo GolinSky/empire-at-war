@@ -11,6 +11,7 @@ using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Factions;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Player;
@@ -61,6 +62,15 @@ namespace EmpireAtWar
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
             Container.BindInterfacesNonLazyExt<EconomyUiController>();
+
+            Container.Bind<ISiteFacilityBuilder>().To<SiteFacilityBuilder>().AsSingle()
+                .WithArguments(PlayerType.Player);
+            Container.ParentContainers.Single()
+                .Bind<ISiteFacilityBuilder>()
+                .WithId(PlayerType.Player)
+                .FromSubContainerResolve()
+                .ByInstance(Container)
+                .AsSingle();
 
             Container.BindInterfacesExt<CheatService>();
             Container

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -50,7 +51,8 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(_input, _selection, _query,
-                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel());
+                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel(),
+                new HardPointOverlayModel());
             _handler.Initialize();
         }
 
@@ -140,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
             public string Id => nameof(FakeSelection);
             public IEntity Entity { get; }
             public IReadOnlyList<IEntity> Entities => new[] { Entity };
-            public IEntitySelectionCommand SelectionCommand => null;
+            public IEntitySelectionFacade SelectionFacade => null;
             public SelectionType SelectionType => SelectionType.Ship;
             public bool HasSelectable => true;
             public int Count => 1;
@@ -222,6 +224,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
+                int hardPointId) => LastAction = UnitActionId.Attack;
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;
@@ -241,13 +245,16 @@ namespace EmpireAtWar.Tests.Editor
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerType PlayerType { get; }
-            public bool TryGetCommand<TCommand>(out TCommand command)
-                where TCommand : IEntityCommand
-            {
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand command)
+                where TCommand : IEntityFacade
+            { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
                 if (PlayerType == PlayerType.Player &&
-                    typeof(TCommand) == typeof(IWaypointMoveCommand))
+                    typeof(TCommand) == typeof(IWaypointMoveFacade))
                 {
-                    command = (TCommand)(IEntityCommand)new FakeWaypointCommand();
+                    command = (TCommand)(IEntityFacade)new FakeWaypointCommand();
                     return true;
                 }
                 command = default;
@@ -255,14 +262,14 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeWaypointCommand : IWaypointMoveCommand
+        private sealed class FakeWaypointCommand : IWaypointMoveFacade
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 1f;
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public FakeHealth(Transform transform) { Transform = transform; }
             public event Action OnDestroy;

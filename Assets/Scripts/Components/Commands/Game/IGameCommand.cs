@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 
@@ -12,6 +13,7 @@ namespace EmpireAtWar.Commands.Game
             FactionType playerFactionType,
             FactionType enemyFactionType,
             PlanetType planetType,
+            MapSize mapSize,
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty enemyDifficulty,
             float startingMoney);

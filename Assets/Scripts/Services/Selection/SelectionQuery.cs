@@ -3,7 +3,7 @@ using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -41,9 +41,9 @@ namespace EmpireAtWar.Services.Battle
             foreach (IEntity iconEntity in _entityLocator.Entities)
             {
                 if (!iconEntity.HealthModel.IsDestroyed &&
-                    iconEntity.TryGetCommand(out ISquadronIconCommand icon) &&
+                    iconEntity.TryGetFacade(out ISquadronIconCommand icon) &&
                     icon.ContainsScreenPoint(screenPosition) &&
-                    iconEntity.TryGetCommand(out IEntitySelectionCommand iconSelection))
+                    iconEntity.TryGetFacade(out IEntitySelectionFacade iconSelection))
                 {
                     selection = new SelectionEntry(iconEntity, iconSelection);
                     return true;
@@ -54,7 +54,7 @@ namespace EmpireAtWar.Services.Battle
             if (raycastHit.collider != null &&
                 _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&
                 !entity.HealthModel.IsDestroyed &&
-                entity.TryGetCommand(out IEntitySelectionCommand command))
+                entity.TryGetFacade(out IEntitySelectionFacade command))
             {
                 selection = new SelectionEntry(entity, command);
                 return true;
@@ -78,7 +78,7 @@ namespace EmpireAtWar.Services.Battle
                     entity.HealthModel.IsDestroyed ||
                     entity.PlayerType != selected.Entity.PlayerType ||
                     !IsSameUnitType(selected.Entity.Model, entity.Model) ||
-                    !entity.TryGetCommand(out IEntitySelectionCommand command))
+                    !entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     continue;
                 }
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
                     !IsUnit(entity.Model) ||
-                    !entity.TryGetCommand(out IEntitySelectionCommand command))
+                    !entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     continue;
                 }
@@ -110,7 +110,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
                     !IsUnit(entity.Model) ||
-                    !entity.TryGetCommand(out IEntitySelectionCommand command) ||
+                    !entity.TryGetFacade(out IEntitySelectionFacade command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {
                     continue;
@@ -139,7 +139,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.PlayerType != PlayerType.Player ||
                     entity.HealthModel.IsDestroyed ||
-                    !entity.TryGetCommand(out IEntitySelectionCommand command) ||
+                    !entity.TryGetFacade(out IEntitySelectionFacade command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {
                     continue;

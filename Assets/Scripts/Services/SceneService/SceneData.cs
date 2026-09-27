@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using EmpireAtWar.Entities.Planet;
 using UnityEngine;
 using EmpireAtWar.Mvc;
 using UnityEngine.SceneManagement;
@@ -19,12 +18,6 @@ namespace EmpireAtWar.Services.SceneService
         
         [SerializeField] private DictionaryWrapper<SceneType, SceneReference> scenesWrapper;
         private Dictionary<SceneType, SceneReference> SceneDictionary => scenesWrapper.Dictionary;
-        
-        private readonly Dictionary<PlanetType, SceneType> _planetScenes = new Dictionary<PlanetType, SceneType>
-        {
-            {  PlanetType.Coruscant, SceneType.Coruscant },
-            {  PlanetType.Kamino, SceneType.Kamino }
-        };
 
         public SceneReference GetScene(SceneType sceneType)
         {
@@ -34,16 +27,6 @@ namespace EmpireAtWar.Services.SceneService
             }
 
             return null;
-        }
-        
-        public SceneReference GetScene(PlanetType planetType)
-        {
-            if (!_planetScenes.TryGetValue(planetType, out SceneType sceneType))
-            {
-                Debug.LogError($"No scene type for {planetType}");
-            }
-
-            return GetScene(sceneType);
         }
 
         public SceneType GetCurrentScene()

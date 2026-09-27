@@ -16,6 +16,7 @@ namespace EmpireAtWar.Models.Health
         public float HealthPercentage { get; private set; } = 1f;
 
         public float Health { get; private set; }
+        public float MaxHealth => _originHealth;
         public float HullDamageMultiplier { get; private set; }
         public bool IsDestroyed => HealthPercentage <= 0f;
 

@@ -1,7 +1,7 @@
 using System;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -102,7 +102,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
             ISelectionPositionProvider targetPositionProvider = null;
             if (target != null)
             {
-                if (!target.TryGetCommand(out IEntitySelectionCommand selectionCommand) ||
+                if (!target.TryGetFacade(out IEntitySelectionFacade selectionCommand) ||
                     !(selectionCommand is ISelectionPositionProvider positionProvider))
                 {
                     throw new InvalidOperationException(

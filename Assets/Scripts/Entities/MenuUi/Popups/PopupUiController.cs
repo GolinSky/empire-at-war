@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Settings;
@@ -94,6 +95,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
                 _skirmishModel.PlayerFaction,
                 _skirmishModel.EnemyFaction,
                 _skirmishModel.Planet,
+                _skirmishModel.MapSize,
                 _skirmishModel.VictoryCondition,
                 _skirmishModel.EnemyDifficulty,
                 _skirmishModel.StartingMoney);
@@ -112,6 +114,11 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         public void SelectPlanet(int index)
         {
             _skirmishModel.SelectPlanet((PlanetType)index);
+        }
+
+        public void SelectMapSize(int index)
+        {
+            _skirmishModel.SelectMapSize((MapSize)index);
         }
 
         public void SelectVictoryCondition(int index)

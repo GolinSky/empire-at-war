@@ -20,6 +20,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         public override void InstallBindings()
         {
             Container.BindInterfacesNonLazyExt<Entity>();
+            Container.BindInterfacesExt<EntityTransformFacade>();
             Container.BindInterfacesAndSelfTo<ViewEntity>().FromNewComponentOn(_entity.gameObject).AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<MiniMapUnitMarkerPresenter>().AsSingle().NonLazy();
 

@@ -4,5 +4,6 @@
     {
         CommonMiner = 0,
         BattleMiner = 1,
+        AsteroidMiner = 2,
     }
 }

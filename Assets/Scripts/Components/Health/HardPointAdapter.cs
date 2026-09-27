@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.Health
 {
-    public sealed class HardPointAdapter : IHardPointModel, IDisposable
+    public sealed class HardPointAdapter : IHardPointStatus, IDisposable
     {
         private readonly HardPointModel _model;
         private readonly IHardPoint _view;
@@ -16,6 +16,8 @@ namespace EmpireAtWar.Models.Health
 
         public HardPointType HardPointType => _model.HardPointType;
         public float HealthPercentage => _model.HealthPercentage;
+        public float Health => _model.Health;
+        public float MaxHealth => _model.MaxHealth;
         public int Id => _model.Id;
         public int Generation => _model.Generation;
         public bool IsDestroyed => _model.IsDestroyed;

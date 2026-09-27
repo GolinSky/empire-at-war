@@ -6,23 +6,25 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public sealed class GuardState : IBaseState
     {
-        private readonly IShipMoveComponent _movement;
+        private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly UnitOrderSettings _settings;
         private IEntity _friendly;
+        private Transform _friendlyTransform;
         private IEntity _engagementTarget;
         private Vector3 _offset;
         private bool _isReturning;
         private Vector3 _pursuitDestination;
 
-        public GuardState(IShipMoveComponent movement, IWeaponComponent weapon,
+        public GuardState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory,
             UnitOrderSettings settings)
         {
@@ -38,18 +40,19 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void SetData(IEntity friendly, Vector3 offset)
         {
             _friendly = friendly;
+            _friendlyTransform = friendly.GetFacade<IEntityTransformFacade>().Transform;
             _offset = offset;
             _isReturning = false;
         }
 
         public void Enter() => Follow();
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
             if (IsComplete) return;
-            Vector3 home = _friendly.HealthModel.Transform.position + _offset;
+            Vector3 home = _friendlyTransform.position + _offset;
             if (Vector3.Distance(_movement.CurrentPosition,
-                    _friendly.HealthModel.Transform.position) > _settings.GuardChaseDistance)
+                    _friendlyTransform.position) > _settings.GuardChaseDistance)
                 _isReturning = true;
             if (_engagementTarget != null &&
                 (_isReturning || _engagementTarget.HealthModel.IsDestroyed ||
@@ -67,11 +70,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 foreach (IEntity enemy in _radar.Enemies)
                 {
                     if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits ||
-                        Vector3.Distance(enemy.HealthModel.Transform.position, home) >
+                        Vector3.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
                         _settings.GuardChaseDistance) continue;
                     _engagementTarget = enemy;
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
-                    _pursuitDestination = enemy.HealthModel.Transform.position;
+                    _pursuitDestination = enemy.GetFacade<IEntityTransformFacade>().Transform.position;
                     _movement.MoveToPosition(_pursuitDestination, preserveCourse: true);
                     break;
                 }
@@ -79,7 +82,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget != null)
             {
-                Vector3 target = _engagementTarget.HealthModel.Transform.position;
+                Vector3 target = _engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
                     if (_movement.IsMoving) _movement.Stop();
@@ -100,6 +103,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         }
 
         private void Follow() => _movement.MoveToPosition(
-            _friendly.HealthModel.Transform.position + _offset);
+            _friendlyTransform.position + _offset);
     }
 }

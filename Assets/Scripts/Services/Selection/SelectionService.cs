@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.Model is IShipModelObserver ship &&
                     ship.ShipType == shipType &&
                     !entity.HealthModel.IsDestroyed &&
-                    entity.TryGetCommand(out IEntitySelectionCommand command))
+                    entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     _selectionBuffer.Add(new SelectionEntry(entity, command));
                 }
@@ -113,7 +113,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.Model is ISquadronModelObserver squadron &&
                     squadron.SquadronType == squadronType &&
                     !entity.HealthModel.IsDestroyed &&
-                    entity.TryGetCommand(out IEntitySelectionCommand command))
+                    entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     _selectionBuffer.Add(new SelectionEntry(entity, command));
                 }

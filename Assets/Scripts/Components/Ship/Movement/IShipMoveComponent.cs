@@ -1,27 +1,21 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
-    public interface IShipMoveComponent : IComponent
+    /// <summary>Movement as the owning ship entity sees it: behaviour API plus wiring and notifications.</summary>
+    public interface IShipMoveComponent : IComponent, IShipMovement
     {
-        Vector3 CurrentPosition { get; }
-        bool IsMoving { get; }
-        bool IsBlocked { get; }
-        float NavigationRadius { get; }
+        event Action<Vector3> DestinationChanged;
+        event Action<Vector3> LookingAt;
+        event Action Stopped;
         float NavigationSpeed { get; }
-        void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
-        void MoveToPositionOnScreen(Vector2 targetPosition);
-        void LookAtTarget(Vector3 targetPosition);
-        float GetRange(Vector3 targetPosition);
-        void Stop();
+        float HyperSpaceDuration { get; }
         void ApplyMoveCoefficient(float coefficient);
         void HandleSelection(bool isSelected);
         void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
-        void SetMediator(IShipMovementMediator mediator);
-        float HyperSpaceDuration { get; }
     }
 }

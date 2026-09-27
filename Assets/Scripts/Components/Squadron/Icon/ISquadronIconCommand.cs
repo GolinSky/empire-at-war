@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
-    public interface ISquadronIconCommand : IEntityCommand
+    public interface ISquadronIconCommand : IEntityFacade
     {
         bool ContainsScreenPoint(Vector2 screenPoint);
     }

@@ -1,10 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -37,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                Object.DestroyImmediate(gameObject);
+                UnityEngine.Object.DestroyImmediate(gameObject);
             }
         }
 
@@ -54,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(HealthComponentStub);
             public bool Destroyed => false;
-            public IHealthModelObserver HealthModelObserver => null;
+            public IHealthModelObserver HealthModelObserver { get; } = new HealthModelStub();
 
             public void ApplyDamage(float damage, DamageType damageType, int shipUnitId)
             {
@@ -66,19 +68,35 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        private sealed class HealthModelStub : IHealthModelObserver
+        {
+            public event Action OnDestroy;
+            public event Action OnValueChanged;
+            public ShipClass ShipClass => ShipClass.Structure;
+            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public float Hull => 1f;
+            public float HullPercentage => 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsDestroyed => false;
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => true;
+            public bool HasLiveHardPoints => true;
+            public bool HasShields => false;
+            public PlayerType PlayerType => PlayerType.Player;
+            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
+        }
+
         private sealed class RadarComponentStub : IRadarComponent
         {
             public string Id => nameof(RadarComponentStub);
+            public event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
             public ObservableList<EmpireAtWar.Entities.BaseEntity.IEntity> Enemies => null;
             public Vector3 Position { get; private set; }
 
             public void SetPosition(Vector3 position)
             {
                 Position = position;
-            }
-
-            public void SetMediator(IUnitMediator mediator)
-            {
             }
         }
     }

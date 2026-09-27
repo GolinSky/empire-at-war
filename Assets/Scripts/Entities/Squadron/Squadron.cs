@@ -4,13 +4,10 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
-using EmpireAtWar.Entities.Ship.Mediator;
-using EmpireAtWar.Entities.Ship.Orders;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -18,8 +15,10 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
@@ -28,7 +27,7 @@ namespace EmpireAtWar.Entities.Squadrons
     /// through <see cref="SquadronPilot"/>, and weapons fire whenever a nose lines up with an enemy.
     /// </summary>
     public sealed class Squadron : MonoBehaviour, IController, ISquadron, IInitializable, ITickable,
-        ILateDisposable, IUnitMediator, IEntityLifecycle
+        ILateDisposable
     {
         private const float RELEASED_CONTEXT_LIFETIME = 6f;
 
@@ -36,8 +35,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private IHealthComponent _health;
         private IRadarComponent _radar;
         private IWeaponComponent _weapon;
-        private ISelectionComponent _selection;
-        private ShipOrderModel _orders;
+        private UnitOrderModel _orders;
         private SquadronPilot _pilot;
         private SquadronTargetSelector _targetSelector;
         private IAttackDataFactory _attackDataFactory;
@@ -61,7 +59,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
         [Inject]
         private void Construct(ISquadronFlightComponent flight, IHealthComponent health, IRadarComponent radar,
-            IWeaponComponent weapon, ISelectionComponent selection, ShipOrderModel orders, SquadronPilot pilot,
+            IWeaponComponent weapon, UnitOrderModel orders, SquadronPilot pilot,
             SquadronTargetSelector targetSelector, IAttackDataFactory attackDataFactory,
             ICameraService cameraService, ILayerService layerService, UnitOrderSettings orderSettings,
             GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents)
@@ -70,7 +68,6 @@ namespace EmpireAtWar.Entities.Squadrons
             _health = health;
             _radar = radar;
             _weapon = weapon;
-            _selection = selection;
             _orders = orders;
             _pilot = pilot;
             _targetSelector = targetSelector;
@@ -87,10 +84,10 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public void Initialize()
         {
-            _radar.SetMediator(this);
-            _selection.SetMediator(this);
+            _health.HealthModelObserver.OnDestroy += HandleDestroyed;
+            _radar.Enemies.ItemAdded += HandleEnemyAdded;
             // A hangar issues its guard order right after creation, before the fighters have spawned.
-            if (_orders.Current == ShipOrderType.Guard) EscortGuarded();
+            if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
             _radar.SetPosition(_flight.Centroid);
         }
@@ -110,28 +107,32 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public void LateDispose() => Release(false);
 
-        public void Release() => Release(true);
+        private void HandleDestroyed() => Release(true);
 
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _flight.Centroid));
 
         public void MoveTo(Vector3 worldPosition)
         {
-            _orders.Replace(ShipOrderType.Move, ToPoint(worldPosition));
+            if (_orders.Matches(UnitOrderType.Move, ToPoint(worldPosition))) return;
+            _orders.Replace(UnitOrderType.Move, ToPoint(worldPosition));
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
 
         public void Attack(IEntity target, Vector3 formationOffset)
         {
-            if (!SquadronTargetSelector.IsAlive(target)) return;
-            _orders.Replace(ShipOrderType.Attack, target: target);
+            // Fighters swarm the target, so a formation offset has no meaning for squadrons.
+            if (!SquadronTargetSelector.IsAlive(target) ||
+                _orders.Matches(UnitOrderType.Attack, target: target)) return;
+            _orders.Replace(UnitOrderType.Attack, target: target);
             Engage(target);
         }
 
         public void AttackMoveTo(Vector3 worldPosition)
         {
-            _orders.Replace(ShipOrderType.AttackMove, ToPoint(worldPosition));
+            if (_orders.Matches(UnitOrderType.AttackMove, ToPoint(worldPosition))) return;
+            _orders.Replace(UnitOrderType.AttackMove, ToPoint(worldPosition));
             Disengage();
             _pilot.FlyTo(worldPosition);
         }
@@ -139,8 +140,8 @@ namespace EmpireAtWar.Entities.Squadrons
         public void Guard(IEntity friendly, Vector3 offset)
         {
             if (!SquadronTargetSelector.IsAlive(friendly) ||
-                _orders.Matches(ShipOrderType.Guard, target: friendly)) return;
-            _orders.Replace(ShipOrderType.Guard, target: friendly);
+                _orders.Matches(UnitOrderType.Guard, target: friendly)) return;
+            _orders.Replace(UnitOrderType.Guard, target: friendly);
             Disengage();
             EscortGuarded();
         }
@@ -150,21 +151,23 @@ namespace EmpireAtWar.Entities.Squadrons
             if (waypoints.Count == 0) return;
             List<FormationPoint> points = new List<FormationPoint>(waypoints.Count);
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
-            _orders.Replace(ShipOrderType.WaypointMove, points[0], waypoints: points);
+            if (_orders.MatchesWaypoints(points)) return;
+            _orders.Replace(UnitOrderType.WaypointMove, points[0], waypoints: points);
             Disengage();
             _pilot.FlyTo(waypoints[0]);
         }
 
         public void Hunt()
         {
-            if (_orders.Current == ShipOrderType.Hunt) return;
-            _orders.Replace(ShipOrderType.Hunt);
+            if (_orders.Current == UnitOrderType.Hunt) return;
+            _orders.Replace(UnitOrderType.Hunt);
             _huntRetargetTimer = 0f;
         }
 
         public void Retreat(Vector3 destination)
         {
-            _orders.Replace(ShipOrderType.Retreat, ToPoint(destination));
+            if (_orders.Matches(UnitOrderType.Retreat, ToPoint(destination))) return;
+            _orders.Replace(UnitOrderType.Retreat, ToPoint(destination));
             Disengage();
             _pilot.FlyTo(destination);
         }
@@ -176,46 +179,39 @@ namespace EmpireAtWar.Entities.Squadrons
             _pilot.Loiter(_flight.Centroid);
         }
 
-        public void HandleNewEnemy(IEntity entity)
+        private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
         {
-            if (entity.HealthModel.HasUnits && entity.TryGetCommand(out IHealthCommand healthCommand))
+            IEntity entity = args.item;
+            if (entity.HealthModel.HasUnits && entity.TryGetFacade(out IHealthFacade healthFacade))
             {
-                _weapon.AddTarget(new AttackData(entity.HealthModel, healthCommand, HardPointType.Any),
+                _weapon.AddTarget(new AttackData(entity.HealthModel, healthFacade, HardPointType.Any),
                     AttackType.Base);
             }
-        }
-
-        public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts)
-        {
-        }
-
-        public void OnSelect(bool isActive)
-        {
         }
 
         private void UpdateOrder()
         {
             switch (_orders.Current)
             {
-                case ShipOrderType.Attack:
+                case UnitOrderType.Attack:
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
                     break;
-                case ShipOrderType.Hunt:
+                case UnitOrderType.Hunt:
                     UpdateHunt();
                     break;
-                case ShipOrderType.Guard:
+                case UnitOrderType.Guard:
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
-                    else DefendArea(_orders.Target.HealthModel.Transform.position);
+                    else DefendArea(_orders.Target.GetFacade<IEntityTransformFacade>().Transform.position);
                     break;
-                case ShipOrderType.AttackMove:
+                case UnitOrderType.AttackMove:
                     DefendArea(_flight.Centroid);
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();
                     break;
-                case ShipOrderType.Move:
-                case ShipOrderType.Retreat:
+                case UnitOrderType.Move:
+                case UnitOrderType.Retreat:
                     if (_pilot.HasArrived) _orders.Clear();
                     break;
-                case ShipOrderType.WaypointMove:
+                case UnitOrderType.WaypointMove:
                     if (!_pilot.HasArrived) break;
                     if (_orders.AdvanceWaypoint(out FormationPoint next)) _pilot.FlyTo(ToVector(next));
                     else _orders.Clear();
@@ -256,10 +252,10 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             switch (_orders.Current)
             {
-                case ShipOrderType.Guard:
+                case UnitOrderType.Guard:
                     EscortGuarded();
                     break;
-                case ShipOrderType.AttackMove:
+                case UnitOrderType.AttackMove:
                     _pilot.FlyTo(ToVector(_orders.Destination));
                     break;
                 default:
@@ -271,7 +267,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private void EscortGuarded()
         {
             IEntity friendly = _orders.Target;
-            _pilot.Escort(friendly.HealthModel.Transform, SquadronPilot.GetRadius(friendly));
+            _pilot.Escort(friendly.GetFacade<IEntityTransformFacade>().Transform, SquadronPilot.GetRadius(friendly));
         }
 
         private void Engage(IEntity target)
@@ -292,12 +288,14 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private void Release(bool destroyed)
         {
+            _health.HealthModelObserver.OnDestroy -= HandleDestroyed;
             if (_isReleased)
             {
                 return;
             }
 
             _isReleased = true;
+            _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _orders.Clear();
             _engaged = null;
             _componentLifecycle.Release();

@@ -619,9 +619,9 @@ namespace EmpireAtWar.Tests.Movement
             MethodInfo construct = typeof(ShipMoveComponent).GetMethod("Construct",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
-            construct.Invoke(component, new object[] { model, null, Vector3.zero,
+            construct.Invoke(component, new object[] { model, Vector3.zero,
                 PlayerType.Player, new FakeMapModel(_mapRange), null,
-                navigationService, null, null });
+                navigationService, null, null, null, null });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
             Assert.That(motionType, Is.Not.Null);
@@ -630,7 +630,6 @@ namespace EmpireAtWar.Tests.Movement
                 null, new object[] { gameObject.transform, gameObject.transform,
                     gameObject.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear }, null);
             SetPrivateField(component, "_motion", motion);
-            SetPrivateField(component, "_movementMediator", new FakeShipMovementMediator());
             return component;
         }
 
@@ -715,22 +714,6 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
-        private sealed class FakeShipMovementMediator : IShipMovementMediator
-        {
-            public void OnPositionChanged(Vector3 position)
-            {
-            }
-
-            public void OnLookAtTarget(Vector3 targetPosition)
-            {
-            }
-
-            public float GetFiringTurnAngle(Vector3 targetPosition) => 0f;
-
-            public void OnStopped()
-            {
-            }
-        }
 
         private sealed class FakeShipMoveData : IShipMoveData
         {

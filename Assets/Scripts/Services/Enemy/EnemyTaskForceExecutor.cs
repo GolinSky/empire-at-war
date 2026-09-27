@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Services.Enemy
                     _hasCaptureTarget = true;
                     List<GameEntity> captureReceivers = isSameCaptureTarget
                         ? ResolveWithout(context, _captureShips, captureCount,
-                            ShipOrderType.AttackMove)
+                            UnitOrderType.AttackMove)
                         : Resolve(context, _captureShips, captureCount);
                     if (captureReceivers.Count > 0)
                         _orders.IssueAttackMove(captureReceivers, context.CaptureTarget);
@@ -83,7 +83,7 @@ namespace EmpireAtWar.Services.Enemy
                     // Slots are recomputed from current positions; re-issuing would
                     // re-path ships that are already on their way.
                     List<GameEntity> retreatReceivers = ResolveWithout(context,
-                        context.Ships, context.Ships.Count, ShipOrderType.Retreat);
+                        context.Ships, context.Ships.Count, UnitOrderType.Retreat);
                     if (retreatReceivers.Count > 0) _orders.IssueRetreat(retreatReceivers);
                     return;
                 case EnemyStrategicState.Hold:
@@ -154,7 +154,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private static List<GameEntity> ResolveWithout(EnemyStrategicContext context,
-            IReadOnlyList<IShipEntity> ships, int count, ShipOrderType runningOrder)
+            IReadOnlyList<IShipEntity> ships, int count, UnitOrderType runningOrder)
         {
             List<GameEntity> receivers = new List<GameEntity>(count);
             for (int i = 0; i < count; i++)
@@ -168,7 +168,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             List<GameEntity> idleCandidates = new List<GameEntity>();
             for (int i = start; i < ships.Count; i++)
-                if (ships[i].CurrentOrder != ShipOrderType.None)
+                if (ships[i].CurrentOrder != UnitOrderType.None)
                     idleCandidates.Add(context.Receivers[ships[i]]);
             if (idleCandidates.Count > 0) _orders.IssueStop(idleCandidates);
         }

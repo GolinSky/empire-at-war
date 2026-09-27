@@ -8,6 +8,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -39,7 +40,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.PlayerType != PlayerType.Opponent || entity.HealthModel.IsDestroyed ||
-                    !entity.TryGetCommand(out IShipAbilityCommand caster)) continue;
+                    !entity.TryGetFacade(out IShipAbilityFacade caster)) continue;
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private void TryUse(IShipAbilityCommand caster, ShipAbilitySlot slot,
+        private void TryUse(IShipAbilityFacade caster, ShipAbilitySlot slot,
             EnemyAiDifficultyProfile profile)
         {
             ShipAbilityDefinition definition = slot.Definition;
@@ -76,13 +77,13 @@ namespace EmpireAtWar.Services.Enemy
             _abilities.TryActivate(caster, slot.Id, target);
         }
 
-        private void CollectTargets(IShipAbilityCommand caster, float range)
+        private void CollectTargets(IShipAbilityFacade caster, float range)
         {
             _targets.Clear();
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.PlayerType == caster.Entity.PlayerType || entity.HealthModel.IsDestroyed ||
-                    Vector3.Distance(caster.WorldPosition, entity.HealthModel.Transform.position) > range)
+                    Vector3.Distance(caster.WorldPosition, entity.GetFacade<IEntityTransformFacade>().Transform.position) > range)
                     continue;
                 _targets.Add(entity);
             }

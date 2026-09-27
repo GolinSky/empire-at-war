@@ -4,7 +4,7 @@ using System.Reflection;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(modifiers.DamageTakenMultiplier, Is.EqualTo(1f));
         }
 
-        private sealed class TestCommand : IShipAbilityCommand, IAttackCommand
+        private sealed class TestCommand : IShipAbilityFacade, IAttackFacade
         {
             public TestCommand(long id, PlayerType playerType)
             {
@@ -131,9 +131,12 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel { get; }
             public PlayerType PlayerType { get; }
 
-            public bool TryGetCommand<TCommand>(out TCommand entityCommand)
-                where TCommand : IEntityCommand
-            {
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand entityCommand)
+                where TCommand : IEntityFacade
+            { if (HealthModel is TCommand transformFacade) { entityCommand = transformFacade; return true; }
                 if (_command is TCommand matching)
                 {
                     entityCommand = matching;
@@ -144,7 +147,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public event Action OnDestroy;
             public event Action OnValueChanged;

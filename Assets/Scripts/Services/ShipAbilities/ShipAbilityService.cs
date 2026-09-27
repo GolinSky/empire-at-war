@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             bool cancel = false;
             for (int i = 0; i < casters.Count; i++)
             {
-                if (casters[i].TryGetCommand(out IShipAbilityCommand command) &&
+                if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
                     FindSlot(command, id) is ShipAbilitySlot slot &&
                     slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
                 {
@@ -37,7 +38,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             {
                 for (int i = 0; i < casters.Count; i++)
                 {
-                    if (casters[i].TryGetCommand(out IShipAbilityCommand command) &&
+                    if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
                         FindSlot(command, id) is ShipAbilitySlot slot &&
                         slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
                         Stop(slot);
@@ -49,7 +50,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             ShipAbilityDefinition definition = null;
             for (int i = 0; i < casters.Count; i++)
             {
-                if (casters[i].TryGetCommand(out IShipAbilityCommand command) &&
+                if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
                     FindSlot(command, id) is ShipAbilitySlot slot &&
                     slot.State == ShipAbilityState.Ready && !command.Health.IsDestroyed)
                 {
@@ -72,7 +73,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             CancelTargeting();
             for (int i = 0; i < casters.Count; i++)
             {
-                if (casters[i].TryGetCommand(out IShipAbilityCommand command))
+                if (casters[i].TryGetFacade(out IShipAbilityFacade command))
                     TryActivate(command, id, null);
             }
         }
@@ -83,7 +84,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             bool activated = false;
             for (int i = 0; i < _pendingCasters.Count; i++)
             {
-                if (_pendingCasters[i].TryGetCommand(out IShipAbilityCommand command))
+                if (_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command))
                     activated |= TryActivate(command, PendingAbilityId, target);
             }
             if (activated) CancelTargeting();
@@ -98,7 +99,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             TargetingChanged?.Invoke();
         }
 
-        public bool TryActivate(IShipAbilityCommand caster, ShipAbilityId id, IEntity target)
+        public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
             ShipAbilitySlot slot = FindSlot(caster, id);
             if (slot == null || slot.State != ShipAbilityState.Ready || caster.Health.IsDestroyed)
@@ -107,7 +108,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (definition.RequiresEnemyTarget &&
                 (target == null || target.HealthModel.IsDestroyed ||
                  target.PlayerType == caster.Entity.PlayerType ||
-                 Vector3.Distance(caster.WorldPosition, target.HealthModel.Transform.position) > definition.Range))
+                 Vector3.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
                 return false;
 
             IShipAbility ability = _factory.Create(definition);
@@ -162,7 +163,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             ability.Stop();
         }
 
-        private static ShipAbilitySlot FindSlot(IShipAbilityCommand caster, ShipAbilityId id)
+        private static ShipAbilitySlot FindSlot(IShipAbilityFacade caster, ShipAbilityId id)
         {
             for (int i = 0; i < caster.Slots.Count; i++)
                 if (caster.Slots[i].Id == id) return caster.Slots[i];

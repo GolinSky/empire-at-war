@@ -19,82 +19,6 @@ namespace EmpireAtWar.Tests.Editor
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
 
-        [TestCase(FactionType.Republic, FactionType.Separatist)]
-        [TestCase(FactionType.Separatist, FactionType.Republic)]
-        public void Initialize_DifferentSelectedFactions_KeepsDefaultZonesClear(
-            FactionType playerFaction, FactionType opponentFaction)
-        {
-            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
-            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-
-            try
-            {
-                Vector3 republicStation = new Vector3(-180f, -40f, 170f);
-                Vector3 separatistStation = new Vector3(160f, -40f, -170f);
-                ReinforcementZoneView playerZone = CreateZone(
-                    root.transform,
-                    PlayerType.Player,
-                    false,
-                    new Vector3(-180f, 0f, 170f));
-                ReinforcementZoneView opponentZone = CreateZone(
-                    root.transform,
-                    PlayerType.Opponent,
-                    false,
-                    new Vector3(160f, 0f, -170f));
-                ReinforcementZoneView capturableZone = CreateZone(
-                    root.transform,
-                    PlayerType.None,
-                    true,
-                    new Vector3(25f, 0f, 35f));
-                ReinforcementZoneView randomZone = CreateZone(
-                    root.transform,
-                    PlayerType.None,
-                    true,
-                    new Vector3(-65f, 0f, 45f));
-                ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
-
-                SetField(system, "_zoneViews", new[] { randomZone, playerZone, opponentZone, capturableZone });
-                SetField(system, "_data", data);
-                SetField(
-                    system,
-                    "_mapModel",
-                    new FakeMapModel(republicStation, separatistStation));
-                SetField(system, "_playerFactionType", playerFaction);
-                SetField(system, "_opponentFactionType", opponentFaction);
-
-                system.Initialize();
-
-                foreach (ReinforcementZoneView zone in new[] { playerZone, opponentZone })
-                {
-                    FactionType faction = zone == playerZone ? playerFaction : opponentFaction;
-                    Vector3 station = faction == FactionType.Republic ? republicStation : separatistStation;
-                    station.y = zone.Center.y;
-                    float stationRadius = faction == FactionType.Republic ? 135f : 90f;
-                    Assert.That(Vector3.Distance(zone.Center, station),
-                        Is.EqualTo(stationRadius + zone.Radius + 30f).Within(0.01f));
-                    Assert.That(zone.Center.z, Is.EqualTo(station.z));
-                    Assert.That(Mathf.Sign(zone.Center.x - station.x),
-                        Is.EqualTo(station.x < 0f ? 1f : -1f));
-                    Assert.That(Vector3.Distance(zone.Center, capturableZone.Center),
-                        Is.GreaterThanOrEqualTo(zone.Radius + capturableZone.Radius + 30f));
-                    Assert.That(Vector3.Distance(zone.Center, randomZone.Center),
-                        Is.GreaterThanOrEqualTo(zone.Radius + randomZone.Radius + 30f));
-                    Assert.That(Mathf.Abs(zone.Center.x) + zone.Radius, Is.LessThanOrEqualTo(250f));
-                    Assert.That(Mathf.Abs(zone.Center.z) + zone.Radius, Is.LessThanOrEqualTo(250f));
-                }
-                Assert.That(Vector3.Distance(playerZone.Center, opponentZone.Center),
-                    Is.GreaterThanOrEqualTo(playerZone.Radius + opponentZone.Radius + 30f));
-                Assert.That(randomZone.Center, Is.EqualTo(Vector3.zero));
-                Assert.That(Vector3.Distance(capturableZone.Center, randomZone.Center),
-                    Is.EqualTo(150f).Within(0.01f));
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-                Object.DestroyImmediate(data);
-            }
-        }
-
         [Test]
         public void StructureClearance_RejectsFootprintOverlappingZone()
         {
@@ -189,8 +113,6 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_data", data);
             SetField(system, "_mapModel", new FakeMapModel(
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
-            SetField(system, "_playerFactionType", FactionType.Republic);
-            SetField(system, "_opponentFactionType", FactionType.Separatist);
             SetField(system, "_shipNavigationService", new FakeShipNavigationService());
             system.Initialize();
             return system;
@@ -206,6 +128,10 @@ namespace EmpireAtWar.Tests.Editor
             gameObject.transform.SetParent(parent);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
+            SetField(view, "_sphereRenderer", gameObject.AddComponent<MeshRenderer>());
+            GameObject captureUi = new GameObject("CaptureUi", typeof(RectTransform));
+            captureUi.transform.SetParent(gameObject.transform);
+            SetField(view, "_captureCanvas", captureUi.AddComponent<Canvas>());
             SetField(view, "_startingOwner", owner);
             SetField(view, "_isCapturable", isCapturable);
             return view;

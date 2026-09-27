@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.NavigationService;
 
@@ -18,7 +18,7 @@ namespace EmpireAtWar.Services.Battle
     {
         IEntity Entity { get; }
         IReadOnlyList<IEntity> Entities { get; }
-        IEntitySelectionCommand SelectionCommand { get; }
+        IEntitySelectionFacade SelectionFacade { get; }
         SelectionType SelectionType { get; }
         bool HasSelectable { get; }
         int Count { get; }
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Services.Battle
 
         public IEntity Entity => _entries.Count > 0 ? _entries[0].Entity : null;
         public IReadOnlyList<IEntity> Entities => _readOnlyEntities;
-        public IEntitySelectionCommand SelectionCommand =>
+        public IEntitySelectionFacade SelectionFacade =>
             _entries.Count > 0 ? _entries[0].Command : null;
         public SelectionType SelectionType { get; private set; } = SelectionType.None;
         public bool HasSelectable => _entries.Count > 0;
@@ -170,13 +170,13 @@ namespace EmpireAtWar.Services.Battle
 
     public readonly struct SelectionEntry
     {
-        public SelectionEntry(IEntity entity, IEntitySelectionCommand command)
+        public SelectionEntry(IEntity entity, IEntitySelectionFacade command)
         {
             Entity = entity;
             Command = command;
         }
 
         public IEntity Entity { get; }
-        public IEntitySelectionCommand Command { get; }
+        public IEntitySelectionFacade Command { get; }
     }
 }
