@@ -3,7 +3,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 
 namespace EmpireAtWar.Models.ShipUi
 {
@@ -14,7 +13,5 @@ namespace EmpireAtWar.Models.ShipUi
         ShipType? SelectedShipType { get; }
         SquadronType? SelectedSquadronType { get; }
         ShipAbilityId? PendingAbilityId { get; }
-        Sprite GetShipIcon(ShipType shipType);
-        Sprite GetSquadronIcon(SquadronType squadronType);
     }
 }

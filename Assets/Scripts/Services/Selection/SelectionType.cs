@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Services.NavigationService
+﻿namespace EmpireAtWar.Services.Selection
 {
     public enum SelectionType
     {

@@ -14,7 +14,7 @@ using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -49,7 +49,10 @@ namespace EmpireAtWar.Entities.Squadrons
 
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-            Container.Bind<WeaponModel>().AsSingle();
+            Container.Bind<WeaponModel>()
+                .FromMethod(context => new WeaponModel(
+                    context.Container.Resolve<EmpireAtWar.Components.AttackComponent.DamageMatrixData>().CopyAccuracy()))
+                .AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
         }
 

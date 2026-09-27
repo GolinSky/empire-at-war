@@ -125,7 +125,7 @@ namespace EmpireAtWar.Tests.Editor
                     null);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
-                string unitId = $"{request.GetType().FullName}:{request.Id}";
+                UnitLimitKey unitId = UnitLimitKey.From(request);
                 Assert.That(
                     unitLimitModel.TryReserve(unitId, 1, 1, 10),
                     Is.True);

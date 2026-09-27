@@ -11,14 +11,12 @@ namespace EmpireAtWar.Presenters.MiniMap
     /// </summary>
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable
     {
-        private readonly MiniMapData _miniMapData;
         private readonly CaptureSitesSystem _captureSitesSystem;
-        private readonly Dictionary<CaptureSitePresenter, MiniMapMarker> _markers =
-            new Dictionary<CaptureSitePresenter, MiniMapMarker>();
+        private readonly MiniMapMarkerCollection<CaptureSitePresenter> _markers;
 
         public CaptureSiteMiniMapPresenter(MiniMapData miniMapData, CaptureSitesSystem captureSitesSystem)
         {
-            _miniMapData = miniMapData;
+            _markers = new MiniMapMarkerCollection<CaptureSitePresenter>(miniMapData);
             _captureSitesSystem = captureSitesSystem;
         }
 
@@ -30,13 +28,12 @@ namespace EmpireAtWar.Presenters.MiniMap
                 marker.SetPosition(site.Center.x, site.Center.z);
                 marker.SetVisible(true);
                 _markers.Add(site, marker);
-                _miniMapData.AddMarker(marker);
             }
         }
 
         public void LateTick()
         {
-            foreach (KeyValuePair<CaptureSitePresenter, MiniMapMarker> pair in _markers)
+            foreach (KeyValuePair<CaptureSitePresenter, MiniMapMarker> pair in _markers.Pairs)
             {
                 RefreshMarker(pair.Key, pair.Value);
             }
@@ -44,11 +41,6 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void LateDispose()
         {
-            foreach (MiniMapMarker marker in _markers.Values)
-            {
-                _miniMapData.RemoveMarker(marker);
-            }
-
             _markers.Clear();
         }
 

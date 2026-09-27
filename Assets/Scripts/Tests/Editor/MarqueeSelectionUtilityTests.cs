@@ -6,7 +6,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using NUnit.Framework;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 

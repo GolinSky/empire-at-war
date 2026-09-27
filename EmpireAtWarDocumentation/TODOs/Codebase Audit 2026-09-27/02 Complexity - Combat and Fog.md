@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Complexity — Combat and fog
+
+> [!info] Implementation update
+> C3 and C4 implemented: target-selection batch and buffers extracted; owner checks/event ordering retained; fog projection unified, component lookups removed, sharedMesh used and serialized renderer bound.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 

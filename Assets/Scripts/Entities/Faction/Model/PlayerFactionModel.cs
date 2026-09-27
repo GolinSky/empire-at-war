@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Factions

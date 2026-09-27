@@ -207,7 +207,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             FactionData factionData = unitRequest.FactionData;
             return _unitLimitModel.TryReserve(
-                GetUnitLimitId(unitRequest),
+                UnitLimitKey.From(unitRequest),
                 factionData.MaxCount,
                 factionData.UnitCapacity,
                 _reinforcementData.MaxUnitCapacity);
@@ -216,13 +216,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private void ReleaseUnit(UnitRequest unitRequest)
         {
             _unitLimitModel.Release(
-                GetUnitLimitId(unitRequest),
+                UnitLimitKey.From(unitRequest),
                 unitRequest.FactionData.UnitCapacity);
-        }
-
-        private static string GetUnitLimitId(UnitRequest unitRequest)
-        {
-            return $"{unitRequest.GetType().FullName}:{unitRequest.Id}";
         }
 
         private void ScheduleBuild(UnitRequest unitRequest, Action buildAction)

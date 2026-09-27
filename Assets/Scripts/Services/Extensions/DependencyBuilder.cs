@@ -8,7 +8,6 @@ namespace EmpireAtWar.Extentions
         private string _postfixPath;
         
         protected DiContainer Container { get; private set; }
-        protected string PathToFile { get; private set; }
 
 
         protected DependencyBuilder(DiContainer container)
@@ -16,12 +15,6 @@ namespace EmpireAtWar.Extentions
             Container = container;
         }
         
-        public TInheritor BuildPathToFile(string customName) 
-        {
-            PathToFile = customName;
-            return this as TInheritor;
-        }
-
         public TInheritor AppendToPath(string prefix, string postfix)
         {
             _prefixPath = prefix ?? string.Empty;
@@ -29,12 +22,9 @@ namespace EmpireAtWar.Extentions
             return this as TInheritor;
         }
 
-        protected void ConstructName<T>()
+        protected string ConstructName<T>()
         {
-            if (PathToFile == null || PathToFile.Equals(string.Empty))
-            {
-                PathToFile = $"{_prefixPath}{typeof(T).Name}{_postfixPath}";
-            }
+            return $"{_prefixPath}{typeof(T).Name}{_postfixPath}";
         }
 
     }

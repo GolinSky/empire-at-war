@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 namespace EmpireAtWar.Models.ShipUi
 {
     [CreateAssetMenu(fileName = nameof(ShipUiData), menuName = "Data/ShipUiData")]
-    public class ShipUiData : Data
+    public class ShipUiData : Data, IShipIconProvider
     {
         [FormerlySerializedAs("shipUiWrapper")] [SerializeField] private DictionaryWrapper<ShipType, Sprite> shipIconWrapper;
         [SerializeField] private DictionaryWrapper<SquadronType, Sprite> squadronIconWrapper;

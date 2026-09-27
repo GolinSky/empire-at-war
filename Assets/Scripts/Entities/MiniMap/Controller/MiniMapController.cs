@@ -4,7 +4,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;

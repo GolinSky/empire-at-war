@@ -11,6 +11,7 @@ namespace ViewComponents
 
         
         [SerializeField] private MeshFilter meshFilter;
+        [SerializeField] private Renderer fogRenderer;
         [Header("Fog Map Settings")]
         [Tooltip("Resolution of the dynamic mask texture")]
         public int textureResolution = 256;
@@ -65,45 +66,18 @@ namespace ViewComponents
 
         private void Start()
         {
-            Renderer r = GetComponent<Renderer>();
-            if (r != null)
+            Bounds meshBounds = meshFilter.sharedMesh.bounds;
+            if (autoDetectBounds)
             {
-                if (autoDetectBounds)
-                {
-                    // Use local bounds instead of world bounds
-                    // This way we calculate map boundaries relative to the plane regardless of rotation/scale
-                    mapCenter = r.bounds.center;
-
-                    // We measure local size using the attached object's scale and base mesh bounds
-                    if (r is MeshRenderer meshRenderer && meshRenderer.GetComponent<MeshFilter>() != null)
-                    {
-                        Bounds meshBounds = meshRenderer.GetComponent<MeshFilter>().mesh.bounds;
-                        mapWorldSize = new Vector2(
-                            meshBounds.size.x * Mathf.Abs(transform.lossyScale.x),
-                            meshBounds.size.z * Mathf.Abs(transform.lossyScale.z));
-
-                        if (mapWorldSize.y < 0.1f)
-                            mapWorldSize.y = meshBounds.size.y * Mathf.Abs(transform.lossyScale.y);
-                    }
-                    else
-                    {
-                        // Fallback
-                        float sizeX = Mathf.Abs(transform.lossyScale.x) * 10f;
-                        float sizeZ = Mathf.Abs(transform.lossyScale.z) * 10f;
-                        mapWorldSize = new Vector2(sizeX, sizeZ);
-                    }
-
-                    Debug.Log($"[FogOfWarSystem] Auto-detected relative: Center {mapCenter}, Size {mapWorldSize}");
-                }
-
-                _fogMaterial = r.material;
-            }
-            else
-            {
-                Debug.LogWarning("FogOfWarSystem needs to be on an object with a Renderer.");
+                mapCenter = fogRenderer.bounds.center;
+                mapWorldSize = new Vector2(
+                    meshBounds.size.x * Mathf.Abs(transform.lossyScale.x),
+                    meshBounds.size.z * Mathf.Abs(transform.lossyScale.z));
+                if (mapWorldSize.y < 0.1f)
+                    mapWorldSize.y = meshBounds.size.y * Mathf.Abs(transform.lossyScale.y);
             }
 
-            // Using RGBA32 is fully compatible everywhere compared to R8
+            _fogMaterial = fogRenderer.material;
             _fogTexture = new Texture2D(textureResolution, textureResolution, TextureFormat.RGBA32, false);
             _fogTexture.wrapMode = TextureWrapMode.Clamp;
             _fogTexture.filterMode = FilterMode.Bilinear;
@@ -111,7 +85,6 @@ namespace ViewComponents
             int totalPixels = textureResolution * textureResolution;
             _fogPixels = new Color[totalPixels];
             _targetPixels = new Color[totalPixels];
-
             for (int i = 0; i < totalPixels; i++)
             {
                 _fogPixels[i] = Color.black;
@@ -120,11 +93,7 @@ namespace ViewComponents
 
             _fogTexture.SetPixels(_fogPixels);
             _fogTexture.Apply();
-
-            if (_fogMaterial != null)
-            {
-                _fogMaterial.SetTexture("_MainTex", _fogTexture);
-            }
+            _fogMaterial.SetTexture("_MainTex", _fogTexture);
         }
 
         private void Update()
@@ -172,45 +141,10 @@ namespace ViewComponents
             // Paint circles for each active vision source in the target pixel array
             foreach (var source in _activeSources)
             {
-                // Transform the world-space target into the LOCAL space of the Fog Grid
-                // This completely solves negative scale and rotated plane mapping issues.
-                Vector3 localPos = transform.InverseTransformPoint(source.transform.position);
-
-                // Local space plane (Assuming standard Unity Plane/Quad where XY or XZ are the surface bounds [-5, 5])
-                // We map local.x to U and local.z (or y, if rotated) to V.
-                // Unity default planes are 10x10 in local space, Quads are 1x1.
-                // We normalize this to a 0.0 to 1.0 coordinate system mapped on the grid.
-
-                // Assuming standard center pivot (0,0) and normalized width/height (-0.5 to 0.5)
-                // We need to account for Mesh bounds difference (Plane = 10, Quad = 1)
-                float localBoundsExtents = 5f; // For Unity Plane. (Quad is 0.5f)
-                if (meshFilter != null && meshFilter.mesh != null)
-                {
-                    localBoundsExtents = meshFilter.mesh.bounds.extents.x;
-                }
-
-                // Map local position to 0-1 range. Extents are e.g. [-5, 5], so we add 5 and divide by 10.
-                float normalizedX = (localPos.x + localBoundsExtents) / (localBoundsExtents * 2f);
-
-                // If it's a Quad facing forward, local Z might be 0, so we use local Y instead.
-                float localDepth = (Mathf.Abs(localPos.z) < 0.001f && Mathf.Abs(localPos.y) > 0.001f) ? localPos.y : localPos.z;
-                float normalizedZ = (localDepth + localBoundsExtents) / (localBoundsExtents * 2f);
-
-                // Unity's default Plane mesh has UVs inverted relative to local space.
-                // Flip axes to match the shader's UV sampling.
-                if (flipX) normalizedX = 1f - normalizedX;
-                if (flipZ) normalizedZ = 1f - normalizedZ;
-
-                Vector2 normalizedPos = new Vector2(normalizedX, normalizedZ);
-
-                // Discard rendering outside the texture boundaries to save processing
-                if (normalizedPos.x < 0f || normalizedPos.x > 1f || normalizedPos.y < 0f || normalizedPos.y > 1f)
-                    continue;
-
-
-                // Get the center pixel based on current resolution
-                int px = Mathf.RoundToInt(normalizedPos.x * textureResolution);
-                int py = Mathf.RoundToInt(normalizedPos.y * textureResolution);
+                Vector2Int pixel = PositionToPixel(source.transform.position, out bool inside);
+                if (!inside) continue;
+                int px = pixel.x;
+                int py = pixel.y;
 
                 // Determine radius length in pixels along each axis
                 // Prevent division by zero
@@ -295,21 +229,11 @@ namespace ViewComponents
             _activeSources.RemoveAll(s => s.transform == targetTransform);
         }
 
-        /// <summary>
-        /// Checks the current fog density at a specific world coordinate.
-        /// Useful for disabling the rendering of enemy ships that fall into unseen fog areas!
-        /// Returns 1.0 if fully revealed, 0.0 if not.
-        /// </summary>
-        public float GetVisibilityAtPosition(Vector3 worldPos)
+        private Vector2Int PositionToPixel(Vector3 worldPos, out bool inside)
         {
             Vector3 localPos = transform.InverseTransformPoint(worldPos);
 
-            float localBoundsExtents = 5f;
-            MeshFilter mf = GetComponent<MeshFilter>();
-            if (mf != null && mf.mesh != null)
-            {
-                localBoundsExtents = mf.mesh.bounds.extents.x;
-            }
+            float localBoundsExtents = meshFilter.sharedMesh.bounds.extents.x;
 
             float normalizedX = (localPos.x + localBoundsExtents) / (localBoundsExtents * 2f);
             float localDepth = (Mathf.Abs(localPos.z) < 0.001f && Mathf.Abs(localPos.y) > 0.001f) ? localPos.y : localPos.z;
@@ -318,8 +242,21 @@ namespace ViewComponents
             if (flipX) normalizedX = 1f - normalizedX;
             if (flipZ) normalizedZ = 1f - normalizedZ;
 
-            int px = Mathf.Clamp(Mathf.RoundToInt(normalizedX * textureResolution), 0, textureResolution - 1);
-            int py = Mathf.Clamp(Mathf.RoundToInt(normalizedZ * textureResolution), 0, textureResolution - 1);
+            inside = normalizedX >= 0f && normalizedX <= 1f && normalizedZ >= 0f && normalizedZ <= 1f;
+            return new Vector2Int(Mathf.RoundToInt(normalizedX * textureResolution),
+                Mathf.RoundToInt(normalizedZ * textureResolution));
+        }
+
+        /// <summary>
+        /// Checks the current fog density at a specific world coordinate.
+        /// Useful for disabling the rendering of enemy ships that fall into unseen fog areas!
+        /// Returns 1.0 if fully revealed, 0.0 if not.
+        /// </summary>
+        public float GetVisibilityAtPosition(Vector3 worldPos)
+        {
+            Vector2Int pixel = PositionToPixel(worldPos, out _);
+            int px = Mathf.Clamp(pixel.x, 0, textureResolution - 1);
+            int py = Mathf.Clamp(pixel.y, 0, textureResolution - 1);
 
             return _fogPixels[py * textureResolution + px].r;
         }

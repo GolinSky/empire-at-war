@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Reuse — Combat and radar boundaries
+
+> [!info] Implementation update
+> R1 and R2 implemented: weapon rules accept plain accuracy/range/roll values; radar's unused masks are deleted and dependencies are constructor-injected. Existing ObservableList remains; radar is not claimed to be completely Unity-free.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
@@ -23,13 +28,13 @@ scope: read-only source review
 
 **Future verification:** preserve hit threshold, accuracy matrix and half-max-range calculation. Do not introduce a project-wide randomness service without another real consumer.
 
-## R2 — RadarModel owns Unity layer selection
-**Priority:** P2 · **Confidence:** confirmed MVP boundary issue.
+## R2 — Remove dead radar masks and hidden injection
+**Priority:** P2 · **Confidence:** confirmed unused members.
 
-**Evidence:** [Assets/Scripts/Components/Radar/RadarModel.cs:19](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Radar/RadarModel.cs#L19) exposes LayerMask through the observer; the model injects LayerData and picks friendly/enemy masks from player identity.
+The original audit proposed moving layer-mask resolution, but RadarModel.LayerMask and EnemyLayerMask had no readers. RadarComponent already uses ILayerService.
 
-**Solution:** move physics-mask resolution into the radar Unity adapter or existing LayerService. Keep range, delay, contacts and ownership rules in a pure model. The entity continues to wire its own components; a new helper must not become a backchannel for commanding sibling components.
+**Implemented:** deleted both masks and LayerData dependency; removed dead comments/imports; constructor-injected IRadarData and PlayerType. Station/platform/mining installers now construct RadarModel instead of injecting serialized empty instances, and the obsolete serialized model properties were removed from those data classes. IRadarData and IRadarModelObserver have separate files.
 
-**Reuse:** the existing layer service is the natural shared boundary for physics filtering. Avoid adding another service that duplicates it.
+The existing Unity ObservableList contract is retained; no claim that every radar dependency is now engine-independent.
 
-**Future verification:** player/opponent masks remain identical, contact filtering stays unchanged, and model-facing contracts no longer require UnityEngine. Read-only contact access is preferable where mutation is currently exposed.
+**Verification:** compilation succeeds. No radar runtime test was run.

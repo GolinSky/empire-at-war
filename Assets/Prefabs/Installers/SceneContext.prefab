@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ViewComponents.FogOfWarSystem
   meshFilter: {fileID: 2777577976553343944}
+  fogRenderer: {fileID: 8093512405509483612}
   textureResolution: 1024
   autoDetectBounds: 1
   mapWorldSize: {x: 500, y: 500}

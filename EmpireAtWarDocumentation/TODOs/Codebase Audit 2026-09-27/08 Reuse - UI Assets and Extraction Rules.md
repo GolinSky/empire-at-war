@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Reuse — UI assets and extraction rules
+
+> [!info] Implementation update
+> R3 implemented using injected IShipIconProvider backed by existing ShipUiData; selection model and observer no longer expose Sprite lookup.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
@@ -39,4 +44,4 @@ Extract when there are actual shared consumers or a clear dependency boundary. D
 4. Refactor larger systems one at a time: C2–C4.
 5. Perform L1–L4 cleanup independently of behavior changes.
 
-All checks described in these notes are future acceptance criteria. No tests, Unity commands, imports, scene changes or source edits were performed.
+The original audit performed no mutations. Implementation now exists as recorded in the linked results; unexecuted checks below remain future acceptance criteria.

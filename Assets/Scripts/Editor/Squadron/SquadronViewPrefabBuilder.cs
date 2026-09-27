@@ -8,7 +8,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;

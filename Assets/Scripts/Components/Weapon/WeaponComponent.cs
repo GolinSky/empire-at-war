@@ -36,6 +36,8 @@ namespace EmpireAtWar.Components.Weapon
         
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
+        private WeaponsData _weaponsData;
+        private DamageMatrixData _damageMatrix;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
@@ -55,10 +57,13 @@ namespace EmpireAtWar.Components.Weapon
 
 
         [Inject]
-        private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers)
+        private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
+            WeaponsData weaponsData, DamageMatrixData damageMatrix)
         {
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
+            _weaponsData = weaponsData;
+            _damageMatrix = damageMatrix;
         }
         
         public void Initialize()
@@ -66,12 +71,12 @@ namespace EmpireAtWar.Components.Weapon
             _attackCoordinator.Register(this);
             if (useWeaponDamageRange)
             {
-                Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => hardPoint.WeaponType));
+                Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => _weaponsData.GetProfile(hardPoint.WeaponType).Range));
             }
 
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
-                hardPoint.SetData(Model.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, Model.MissSpread,
+                hardPoint.SetData(_weaponsData.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
@@ -419,7 +424,7 @@ namespace EmpireAtWar.Components.Weapon
         }
         
         public bool RollHit(AttackData attackData, WeaponProfile profile) =>
-            Model.RollHit(profile.DamageType, attackData.TargetClass);
+            Model.RollHit(profile.DamageType, attackData.TargetClass, UnityEngine.Random.value);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay)
         {

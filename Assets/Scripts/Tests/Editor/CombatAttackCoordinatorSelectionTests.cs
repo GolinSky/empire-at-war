@@ -31,19 +31,18 @@ namespace EmpireAtWar.Tests.Weapon
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(weapon, new object[] { coordinator, new CombatModifiers() });
+                        .Invoke(weapon, new object[] { coordinator, new CombatModifiers(), null, null });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
 
                 owners[0].transform.SetPositionAndRotation(new Vector3(3f, 4f, 5f),
                     Quaternion.Euler(0f, 40f, 0f));
-                typeof(CombatAttackCoordinator).GetMethod("CaptureTargetSelections",
-                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(coordinator, null);
+                object batch = GetTargetSelectionBatch(coordinator);
+                batch.GetType().GetMethod("CaptureTargetSelections",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(batch, null);
 
-                IList requests = (IList)typeof(CombatAttackCoordinator)
-                    .GetField("_targetSelectionRequests", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .GetValue(coordinator);
+                IList requests = GetRequests(coordinator);
                 object firstRequest = requests[0];
                 Vector3 origin = (Vector3)firstRequest.GetType().GetField("Origin").GetValue(firstRequest);
                 Quaternion parentRotation = (Quaternion)firstRequest.GetType()
@@ -74,16 +73,14 @@ namespace EmpireAtWar.Tests.Weapon
                 typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(weapon, new object[] { coordinator, new CombatModifiers() });
+                    .Invoke(weapon, new object[] { coordinator, new CombatModifiers(), null, null });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();
 
                 coordinator.LateTick();
 
-                IList requests = (IList)typeof(CombatAttackCoordinator)
-                    .GetField("_targetSelectionRequests", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .GetValue(coordinator);
+                IList requests = GetRequests(coordinator);
                 Assert.That(requests.Count, Is.Zero);
             }
             finally
@@ -91,6 +88,20 @@ namespace EmpireAtWar.Tests.Weapon
                 Object.DestroyImmediate(ownerObject);
                 coordinator.Dispose();
             }
+        }
+        private static object GetTargetSelectionBatch(CombatAttackCoordinator coordinator)
+        {
+            return typeof(CombatAttackCoordinator)
+                .GetField("_targetSelection", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(coordinator);
+        }
+
+        private static IList GetRequests(CombatAttackCoordinator coordinator)
+        {
+            object batch = GetTargetSelectionBatch(coordinator);
+            return (IList)batch.GetType()
+                .GetField("_targetSelectionRequests", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(batch);
         }
     }
 }

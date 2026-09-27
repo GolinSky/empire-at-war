@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;

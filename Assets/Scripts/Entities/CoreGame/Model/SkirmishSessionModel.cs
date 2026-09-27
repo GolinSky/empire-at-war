@@ -8,12 +8,12 @@ namespace EmpireAtWar.Models.SkirmishGame
     {
         public event Action<GameTimeMode> OnGameTimeModeChanged;
 
-        public GameTimeMode GameTimeMode { get; private set; } = GameTimeMode.Common;
+        public GameTimeMode EffectiveTimeMode { get; private set; } = GameTimeMode.Common;
         public bool IsBattleEnded { get; private set; }
 
         public void SetGameTimeMode(GameTimeMode mode)
         {
-            GameTimeMode = mode;
+            EffectiveTimeMode = mode;
             OnGameTimeModeChanged?.Invoke(mode);
         }
 

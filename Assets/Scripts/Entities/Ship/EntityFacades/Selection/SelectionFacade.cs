@@ -1,6 +1,6 @@
 ﻿using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.EntityFacades.Selection

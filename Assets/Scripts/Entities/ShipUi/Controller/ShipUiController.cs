@@ -9,7 +9,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;

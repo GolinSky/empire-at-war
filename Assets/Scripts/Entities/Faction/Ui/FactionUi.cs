@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Presenters.Factions;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 

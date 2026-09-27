@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Structure — Placement and type files
+
+> [!info] Implementation update
+> L3 and L4 implemented: SelectionType relocated/namespace updated, empty NavigationService removed, vendor code moved with metadata/license material, listed types split.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 

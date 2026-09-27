@@ -3,25 +3,26 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Complexity — State and input
 
+> [!info] Implementation update
+> C1 and C2 implemented: menu close restores requested time, controls are blocked in menus, effective mode is explicit, and UI hit testing/gesture state are extracted.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
-## C1 — Make time-state ownership explicit
-**Priority:** P2 · **Confidence:** confirmed design complexity; not a demonstrated bug.
+## C1 — Restore requested time after menu close
+**Priority:** P1 · **Confidence:** confirmed source-level bug.
 
-**Evidence:** [Assets/Scripts/Entities/CoreGame/Controller/SkirmishOrchestrator.cs:62](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/CoreGame/Controller/SkirmishOrchestrator.cs#L62) stores `_gameTimeMode`, while `ChangeTime` writes the effective mode into `SkirmishSessionModel`. Menu notifications apply Pause/Common without changing the private field. [Assets/Scripts/Tests/Editor/SkirmishOrchestratorTests.cs:93](file:///F:/Private/empire-at-war/Assets/Scripts/Tests/Editor/SkirmishOrchestratorTests.cs#L93) explicitly expects this separation in `MenuPause_DoesNotChangeStoredMode`. This test was read, not run.
+The original audit understated this issue. Menu close forced Common while the private stored mode remained SpeedUp or Pause. After closing the menu, speed/pause controls needed an extra press and manual pause was lost.
 
-**Why it matters:** callers must infer whether a mode means requested speed or effective simulation state. A simple “remove duplicate field” fix could break intentional menu behavior.
+**Implemented:** `_requestedTimeMode` stores the user's choice; `SkirmishSessionModel.EffectiveTimeMode` exposes applied simulation state. Menu close applies the requested mode. Pause/speed-up presses are ignored while the menu is open. The existing menu-pause test is preserved; two new cases cover restoring SpeedUp and Pause and the next toggle.
 
-**Solution:** name requested and effective modes explicitly. Keep speed preference and pause reasons in the session model; let the orchestrator coordinate transitions and a small time adapter apply the resulting scale. First document whether leaving a menu restores Common or the previous speed; preserve the existing rule until a behavior change is approved. Add an adapter only as part of this refactor, not a general clock framework.
-
-**Future verification:** characterize speed → menu → return → speed toggle, manual pause → menu → return, and battle end. Do not change the existing menu semantics accidentally.
-
-**Scope restraint:** the current orchestrator is about 153 lines; the older [[TODOs/SkirmishOrchestrator_Refactoring_Plan]] is not evidence that it still needs a wholesale rewrite.
+**Verification:** compiled, not executed in Unity's test runner.
 
 ## C2 — InputService handles several independent jobs
 **Priority:** P2 · **Confidence:** confirmed responsibility mix.

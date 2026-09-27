@@ -1,4 +1,4 @@
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Commands

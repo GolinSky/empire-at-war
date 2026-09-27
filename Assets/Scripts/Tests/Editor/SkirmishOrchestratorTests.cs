@@ -72,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
                 _orchestrator.TogglePause();
             }
 
-            Assert.That(_model.GameTimeMode, Is.EqualTo(expectedMode));
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(expectedMode));
             Assert.That(Time.timeScale, Is.EqualTo(expectedScale));
         }
 
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Tests.Editor
             _orchestrator.ToggleSpeedUp();
 
             Assert.That(_model.IsBattleEnded, Is.True);
-            Assert.That(_model.GameTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
             Assert.That(Time.timeScale, Is.Zero);
         }
 
@@ -95,12 +95,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             _orchestrator.ToggleSpeedUp();
             _orchestrator.UpdateState(UserNotifierState.InMenu);
-            Assert.That(_model.GameTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
             Assert.That(Time.timeScale, Is.Zero);
 
             _orchestrator.TogglePause();
 
-            Assert.That(_model.GameTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
             Assert.That(Time.timeScale, Is.Zero);
         }
 
@@ -111,9 +111,29 @@ namespace EmpireAtWar.Tests.Editor
 
             _orchestrator.ExitSkirmish();
 
-            Assert.That(_model.GameTimeMode, Is.EqualTo(GameTimeMode.Common));
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Common));
             Assert.That(Time.timeScale, Is.EqualTo(1f));
             Assert.That(_gameCommand.ExitCount, Is.EqualTo(1));
+        }
+
+        [TestCase(GameTimeMode.SpeedUp, 4f)]
+        [TestCase(GameTimeMode.Pause, 0f)]
+        public void MenuClose_RestoresRequestedModeAndNextToggleWorks(GameTimeMode requestedMode, float scale)
+        {
+            SetStoredMode(requestedMode);
+            _orchestrator.UpdateState(UserNotifierState.InMenu);
+            _orchestrator.TogglePause();
+            _orchestrator.ToggleSpeedUp();
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
+
+            _orchestrator.UpdateState(UserNotifierState.InGame);
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(requestedMode));
+            Assert.That(Time.timeScale, Is.EqualTo(scale));
+
+            if (requestedMode == GameTimeMode.SpeedUp) _orchestrator.ToggleSpeedUp();
+            else _orchestrator.TogglePause();
+            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Common));
+            Assert.That(Time.timeScale, Is.EqualTo(1f));
         }
 
         private void SetStoredMode(GameTimeMode mode)

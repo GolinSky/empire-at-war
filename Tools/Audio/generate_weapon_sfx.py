@@ -4,12 +4,10 @@ Run from any directory: python Tools/Audio/generate_weapon_sfx.py
 No recordings, third-party samples, or network services are used.
 """
 
-import array
 import math
 from pathlib import Path
 import random
-import sys
-import wave
+from wav_writer import write_wav
 
 
 SAMPLE_RATE = 44100
@@ -84,17 +82,7 @@ def beam():
 
 
 def write_clip(name, samples, peak=0.7):
-    mean = sum(samples) / len(samples)
-    samples = [x - mean for x in samples]
-    scale = peak / max(abs(x) for x in samples)
-    pcm = array.array("h", (round(x * scale * 32767) for x in samples))
-    if sys.byteorder != "little":
-        pcm.byteswap()
-    with wave.open(str(OUTPUT / (name + ".wav")), "wb") as output:
-        output.setnchannels(1)
-        output.setsampwidth(2)
-        output.setframerate(SAMPLE_RATE)
-        output.writeframes(pcm.tobytes())
+    samples, scale = write_wav(OUTPUT / f"{name}.wav", samples, peak, SAMPLE_RATE)
     rms = math.sqrt(sum((x * scale) ** 2 for x in samples) / len(samples))
     seam = abs(samples[0] - samples[-1]) * scale
     print(f"{name}: {len(samples) / SAMPLE_RATE:.2f}s, peak {peak:.2f}, RMS {rms:.3f}, seam {seam:.4f}")

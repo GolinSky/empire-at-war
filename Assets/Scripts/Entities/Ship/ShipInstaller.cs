@@ -22,7 +22,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Audio;
 using UnityEngine;
 using Zenject;
@@ -74,7 +74,10 @@ namespace EmpireAtWar.Ship
                 Container.Bind<IAudioShipDialogModelObserver>().To<AudioShipDialogModel>().FromResolve();
             }
 
-            Container.Bind<WeaponModel>().AsSingle();
+            Container.Bind<WeaponModel>()
+                .FromMethod(context => new WeaponModel(
+                    context.Container.Resolve<EmpireAtWar.Components.AttackComponent.DamageMatrixData>().CopyAccuracy()))
+                .AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
             Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
             Container.Decorate<IHealthData>().With<ResearchHealthData>();
