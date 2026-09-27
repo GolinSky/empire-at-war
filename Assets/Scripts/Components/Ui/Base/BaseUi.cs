@@ -47,11 +47,4 @@ namespace EmpireAtWar.Ui.Base
         [Inject]
         public TModel Model { get; }
     }
-
-    public abstract class BaseUi<TModel, TCommand> : BaseUi<TModel>
-        where TModel : IModelObserver
-        where TCommand : ICommand
-    {
-        [Inject] protected TCommand Command { get; }
-    }
 }
