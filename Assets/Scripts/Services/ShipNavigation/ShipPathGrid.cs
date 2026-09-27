@@ -97,13 +97,19 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         /// <summary>
-        /// True only when the flood has already run and cannot reach the point's cell;
-        /// a blocked cell has no flood cost, so it counts as unreachable too.
+        /// True only when the flood has already run and cannot reach the cell a route
+        /// to the point would end on. Matches <see cref="TryFindPath"/>: a point inside
+        /// the grid's inflation (e.g. snapped to an obstacle edge) uses its nearest walkable cell.
         /// </summary>
         public bool IsKnownUnreachable(Vector3 position)
         {
-            return _isFlooded &&
-                float.IsPositiveInfinity(_costSoFar[_cells.GetCell(new float2(position.x, position.z))]);
+            if (!_isFlooded)
+            {
+                return false;
+            }
+
+            int cell = _cells.FindNearestWalkableCell(_blocked, new float2(position.x, position.z));
+            return cell < 0 || float.IsPositiveInfinity(_costSoFar[cell]);
         }
 
         /// <summary>The reachable grid node closest to <paramref name="position"/>.</summary>
