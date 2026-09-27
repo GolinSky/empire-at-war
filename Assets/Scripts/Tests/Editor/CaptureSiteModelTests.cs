@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TickConstruction_AfterBuildTime_BecomesOperationalAndLocksCapture()
         {
             CaptureSiteModel model = CreateOwnedSite(PlayerType.Player);
-            model.StartConstruction(20f);
+            model.StartConstruction(SiteFacilityType.Mining, 20f);
 
             Assert.That(model.TickConstruction(10f), Is.False);
             Assert.That(model.TickConstruction(10f), Is.True);
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TickCapture_EnemyTakesSiteUnderConstruction_CancelsBuild()
         {
             CaptureSiteModel model = CreateOwnedSite(PlayerType.Player);
-            model.StartConstruction(20f);
+            model.StartConstruction(SiteFacilityType.Mining, 20f);
             model.TickConstruction(10f);
 
             Assert.That(model.TickCapture(CAPTURE_DURATION, 0, 1), Is.True);
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ReleaseFacility_DestroyedFacility_ReturnsSiteToNeutral()
         {
             CaptureSiteModel model = CreateOwnedSite(PlayerType.Opponent);
-            model.StartConstruction(1f);
+            model.StartConstruction(SiteFacilityType.Mining, 1f);
             model.TickConstruction(1f);
 
             model.ReleaseFacility();
