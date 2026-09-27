@@ -71,16 +71,15 @@ namespace EmpireAtWar.Entities.Map.Generation
                 Mathf.Lerp(min.y + inset.y, max.y - inset.y, (float)random.NextDouble()));
         }
 
-        /// <summary>Node radius plus the clearance and, for walled nodes, room for the asteroid ring.</summary>
+        /// <summary>Node radius plus the clearance and, for pocketed nodes, room for the asteroid pocket.</summary>
         public float GetOuterRadius(MapNode node, MapSizeSettings size)
         {
-            return GetOuterRadius(node.Radius, node.IsWalled, size);
+            return GetOuterRadius(node.Radius, node.HasPocket, size);
         }
 
-        private float GetOuterRadius(float radius, bool isWalled, MapSizeSettings size)
+        private float GetOuterRadius(float radius, bool hasPocket, MapSizeSettings size)
         {
-            float wallRoom = isWalled ? _settings.ObstacleFootprint * size.ObstacleScale.Max : 0f;
-            return radius + _settings.ZoneClearance + wallRoom;
+            return radius + _settings.ZoneClearance + (hasPocket ? size.PocketThickness : 0f);
         }
 
         private void AddDefaultZones(IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
@@ -121,7 +120,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 float zSide = Mathf.Sign(center.z - station.Position.z);
                 Vector3 direction = new Vector3(xSide * Mathf.Sin(turn), 0f, zSide * Mathf.Cos(turn));
                 Vector3 position = station.Position + direction * (station.Radius + outer + gap);
-                // Large asteroid rings can outgrow the station's edge distance; pull the mine inside.
+                // Thick asteroid pockets can outgrow the station's edge distance; pull the mine inside.
                 position = new Vector3(
                     Mathf.Clamp(position.x, size.Bounds.Min.x + outer, size.Bounds.Max.x - outer),
                     0f,
@@ -246,8 +245,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach (MapNode node in nodes)
             {
-                // Point spacing leaves road room between two asteroid rings; default zones have none.
-                float spacing = node.IsWalled ? size.PointSpacing : 0f;
+                // Point spacing leaves lane room between two asteroid pockets; default zones have none.
+                float spacing = node.HasPocket ? size.PointSpacing : 0f;
                 if (MapGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
                 {
                     return false;

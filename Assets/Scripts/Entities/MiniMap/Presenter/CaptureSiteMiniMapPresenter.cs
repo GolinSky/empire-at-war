@@ -6,7 +6,9 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
-    /// <summary>Marks revealed capture sites by owner; a built facility shows its own unit marker instead.</summary>
+    /// <summary>
+    /// Marks every capture site with its last seen owner; a facility seen built shows its own unit marker instead.
+    /// </summary>
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable
     {
         private readonly MiniMapData _miniMapData;
@@ -25,8 +27,9 @@ namespace EmpireAtWar.Presenters.MiniMap
             foreach (CaptureSitePresenter site in _captureSitesSystem.Sites)
             {
                 MiniMapMarker marker = new MiniMapMarker(MarkType.CaptureSite, site.Owner);
+                marker.SetPosition(site.Center.x, site.Center.z);
+                marker.SetVisible(true);
                 _markers.Add(site, marker);
-                RefreshMarker(site, marker);
                 _miniMapData.AddMarker(marker);
             }
         }
@@ -51,9 +54,11 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private static void RefreshMarker(CaptureSitePresenter site, MiniMapMarker marker)
         {
-            marker.SetPosition(site.Center.x, site.Center.z);
-            marker.SetRelation(site.Owner);
-            marker.SetVisible(site.IsRevealed && !site.IsOperational);
+            if (site.IsRevealed)
+            {
+                marker.SetRelation(site.Owner);
+                marker.SetVisible(!site.IsOperational);
+            }
         }
     }
 }

@@ -90,7 +90,8 @@ namespace EmpireAtWar.Entities.CaptureSites
             bool showBuildOption = isVisible && _isSelected && CanPlayerBuild;
             bool isActive = _model.CapturingPlayer != PlayerType.None || _model.IsContested ||
                 _model.State == CaptureSiteState.Constructing;
-            _view.SetVisibility(isVisible, isHovered || isActive || showBuildOption);
+            // The ring is known terrain; ownership details need current vision.
+            _view.SetVisibility(true, isVisible && (isHovered || isActive || showBuildOption));
             _view.SetBuildOption(showBuildOption, canPlayerAffordBuild, _buildLabel);
         }
 

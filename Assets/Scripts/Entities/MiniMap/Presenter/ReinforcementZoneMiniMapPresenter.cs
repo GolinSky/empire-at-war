@@ -27,8 +27,11 @@ namespace EmpireAtWar.Presenters.MiniMap
             foreach (ReinforcementZonePresenter zone in _reinforcementZonesSystem.Zones)
             {
                 MiniMapMarker marker = new MiniMapMarker(MarkType.ReinforcementZone, zone.Owner);
+                // Zones are known terrain: always drawn, with the owner from the last sighting.
+                marker.SetPosition(zone.Center.x, zone.Center.z);
+                marker.SetWorldDiameter(zone.Radius * 2f);
+                marker.SetVisible(true);
                 _markers.Add(zone, marker);
-                RefreshMarker(zone, marker);
                 _miniMapData.AddMarker(marker);
             }
         }
@@ -55,10 +58,10 @@ namespace EmpireAtWar.Presenters.MiniMap
             ReinforcementZonePresenter zone,
             MiniMapMarker marker)
         {
-            marker.SetPosition(zone.Center.x, zone.Center.z);
-            marker.SetRelation(zone.Owner);
-            marker.SetVisible(zone.IsRevealed);
-            marker.SetWorldDiameter(zone.Radius * 2f);
+            if (zone.IsRevealed)
+            {
+                marker.SetRelation(zone.Owner);
+            }
         }
     }
 }

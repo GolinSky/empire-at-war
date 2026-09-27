@@ -5,32 +5,32 @@ using Random = System.Random;
 namespace EmpireAtWar.Entities.Map.Generation
 {
     /// <summary>
-    /// Connects every node with a spanning tree, adds a few extra loops, mirrors each road for
-    /// point symmetry, and bends every road so no route runs straight between two nodes.
+    /// Connects every node with a spanning tree, adds a few extra loops, mirrors each lane for
+    /// point symmetry, and bends every lane so no route runs straight between two nodes.
     /// </summary>
-    public sealed class RoadNetworkBuilder
+    public sealed class LaneNetworkBuilder
     {
-        private const int MAX_EXTRA_ROAD_DEGREE = 3;
+        private const int MAX_EXTRA_LANE_DEGREE = 3;
         // Crossing-prone edges stay possible for connectivity but lose to Gabriel edges.
         private const float NON_GABRIEL_WEIGHT = 3f;
 
         private readonly MapGenerationSettings _settings;
 
-        public RoadNetworkBuilder(MapGenerationSettings settings)
+        public LaneNetworkBuilder(MapGenerationSettings settings)
         {
             _settings = settings;
         }
 
-        public List<MapRoad> Build(IReadOnlyList<MapNode> nodes, IReadOnlyList<MapStation> stations, Random random)
+        public List<MapLane> Build(IReadOnlyList<MapNode> nodes, IReadOnlyList<MapStation> stations, Random random)
         {
             bool[,] isGabriel = BuildGabrielGraph(nodes, stations);
             bool[,] isConnected = new bool[nodes.Count, nodes.Count];
             int[] degree = new int[nodes.Count];
-            List<MapRoad> roads = new List<MapRoad>();
+            List<MapLane> lanes = new List<MapLane>();
 
             foreach ((int from, int to) in BuildSpanningTree(nodes, isGabriel))
             {
-                AddWithMirror(from, to, nodes, isConnected, degree, random, roads);
+                AddWithMirror(from, to, nodes, isConnected, degree, random, lanes);
             }
 
             for (int from = 0; from < nodes.Count; from++)
@@ -38,17 +38,17 @@ namespace EmpireAtWar.Entities.Map.Generation
                 for (int to = from + 1; to < nodes.Count; to++)
                 {
                     if (!isGabriel[from, to] || isConnected[from, to] ||
-                        degree[from] >= MAX_EXTRA_ROAD_DEGREE || degree[to] >= MAX_EXTRA_ROAD_DEGREE ||
-                        random.NextDouble() >= _settings.ExtraRoadChance)
+                        degree[from] >= MAX_EXTRA_LANE_DEGREE || degree[to] >= MAX_EXTRA_LANE_DEGREE ||
+                        random.NextDouble() >= _settings.ExtraLaneChance)
                     {
                         continue;
                     }
 
-                    AddWithMirror(from, to, nodes, isConnected, degree, random, roads);
+                    AddWithMirror(from, to, nodes, isConnected, degree, random, lanes);
                 }
             }
 
-            return roads;
+            return lanes;
         }
 
         // An edge is Gabriel when no other node or station lies inside the circle spanning it,
@@ -129,23 +129,23 @@ namespace EmpireAtWar.Entities.Map.Generation
             bool[,] isConnected,
             int[] degree,
             Random random,
-            List<MapRoad> roads)
+            List<MapLane> lanes)
         {
-            // Point reflection flips the road's normal together with its direction,
+            // Point reflection flips the lane's normal together with its direction,
             // so the same signed bend yields the mirrored shape.
-            float bend = ((float)random.NextDouble() * 2f - 1f) * _settings.RoadBend;
-            AddRoad(from, to, bend, nodes, isConnected, degree, roads);
-            AddRoad(nodes[from].Mirror, nodes[to].Mirror, bend, nodes, isConnected, degree, roads);
+            float bend = ((float)random.NextDouble() * 2f - 1f) * _settings.LaneBend;
+            AddLane(from, to, bend, nodes, isConnected, degree, lanes);
+            AddLane(nodes[from].Mirror, nodes[to].Mirror, bend, nodes, isConnected, degree, lanes);
         }
 
-        private static void AddRoad(
+        private static void AddLane(
             int from,
             int to,
             float bend,
             IReadOnlyList<MapNode> nodes,
             bool[,] isConnected,
             int[] degree,
-            List<MapRoad> roads)
+            List<MapLane> lanes)
         {
             if (from == to || isConnected[from, to])
             {
@@ -163,7 +163,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             direction.y = 0f;
             Vector3 normal = new Vector3(-direction.z, 0f, direction.x);
             Vector3 bendPoint = (start + end) * 0.5f + normal * bend;
-            roads.Add(new MapRoad(new[] { start, bendPoint, end }));
+            lanes.Add(new MapLane(new[] { start, bendPoint, end }));
         }
     }
 }

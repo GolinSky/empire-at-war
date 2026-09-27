@@ -342,11 +342,18 @@ MonoBehaviour:
     type: 3}
   battleSitePrefab: {fileID: 3985789703454499298, guid: 069e7efc0ad60934d87d3b1c4b8dfb91,
     type: 3}
-  obstaclePrefab: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
+  fieldVolumePrefab: {fileID: 5619553855839390232, guid: 5af77b7930af4364d87f6f5f18dfc96d,
     type: 3}
+  largeRockPrefab: {fileID: 2467161084561664123, guid: ade65fec19a5ebe498e05e93e877a914,
+    type: 3}
+  mediumRockPrefab: {fileID: 6435219502882593906, guid: 00537eec4918f6d4f99ff1e8efb27a17,
+    type: 3}
+  debrisRockPrefabs:
+  - {fileID: 6222195773559426323, guid: 24dfb3b9a9a00f54388bccc87ace3e5a, type: 3}
+  - {fileID: 264167406920498710, guid: 69d687e443d80ec4f8c6c3cc7eb0f559, type: 3}
   zoneRoot: {fileID: 3597779277289790180}
   siteRoot: {fileID: 7593169863859123632}
-  obstacleRoot: {fileID: 6769320644097990905}
+  fieldRoot: {fileID: 6769320644097990905}
   borderLine: {fileID: 5965768392532275115}
   borderHeight: 0
   fogOfWarSystem: {fileID: 3633680370215819205}
@@ -433,7 +440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6769320644097990905}
   m_Layer: 0
-  m_Name: Obstacles
+  m_Name: AsteroidFields
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
