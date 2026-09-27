@@ -36,7 +36,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public event Action BuildPressed;
 
         public Vector3 Center => transform.position;
-        public float Radius => radius;
+        public float Radius => radius * Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));
         public float CaptureDuration => captureDuration;
         public SiteFacilityType FacilityType => facilityType;
         public IReadOnlyList<MapObstacle> RockObstacles => rockObstacles;
