@@ -5205,5 +5205,5 @@ MonoBehaviour:
   impactFlash: {fileID: 1943345853698642964}
   flightDuration: 0.85
   pulseLength: 22
-  flashSize: 32
+  flashSize: 96
   flashDuration: 0.3
