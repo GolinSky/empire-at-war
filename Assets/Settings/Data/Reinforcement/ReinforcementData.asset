@@ -55,6 +55,9 @@ MonoBehaviour:
     - key: 100
       value: {fileID: 6212059282449992695, guid: a0f0f836d24c5aa49996d4a12fef975e,
         type: 3}
+    - key: 1
+      value: {fileID: 3621392222067079062, guid: abebbdc804678f442885c7c817a9e1f6,
+        type: 3}
   spawnFacilityWrapper:
     keyValue:
     - key: 0

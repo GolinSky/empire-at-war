@@ -1,0 +1,33 @@
+--------------------------------------------------------------
+A-Wing Starfighter  (STAR WARS - Episode VI)
+--------------------------------------------------------------
+Cinema 4D (Release 9.0) Version + New Textures
+--------------------------------------------------------------
+
+I made some new textures for it.
+For any questions about this converwsion: muepper@tiscali.de
+
+MTFBWY
+	André Müller
+
+***************************************************************
+Original mesh credits:
+
+StarWars A-wing by Staffan Norling. The head of the pilot was 
+created by Chris Wikoff (wikoff@earthlink.net)
+
+May be freely distributed (but please send me a mail).
+This document must be distributed with the mesh.
+
+Made in 3D Studio MAX R2.0. 
+The round part of the hull was created out of a quad-patch. 
+Then the rest of the hull was created with Cap-Holes and 
+edit mesh. Most of the details are primitives + edit mesh. 
+
+Mail me: fem56@hotmail.com
+***************************************************************
+
+Star Wars is registered for LucasFilm & LucasArts
+
+Please visit SCIFI 3D <www.theforce.net/scifi3d/>
+for rules governing use, display of credit, and copyright information.

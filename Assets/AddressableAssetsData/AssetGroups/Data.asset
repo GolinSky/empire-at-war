@@ -50,6 +50,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50a4afef4140c954388c457fa534d53b
+    m_Address: AWingSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56be5b5e32a4f5040bdc4427106e8535
     m_Address: ShipsData
     m_ReadOnly: 0
