@@ -7,6 +7,7 @@ using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
+using Zenject;
 
 namespace EmpireAtWar.Views
 {
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Views
 
         private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
         private IShipUiModelObserver _model;
+        private IShipIconProvider _icons;
         private IShipUiPresenter _presenter;
         private RectTransform _content;
         private RectTransform _viewport;
@@ -28,6 +30,9 @@ namespace EmpireAtWar.Views
         private bool _layoutDirty;
         private bool _isInitialized;
         private bool _isRouteActive = true;
+
+        [Inject]
+        public void Construct(IShipIconProvider icons) => _icons = icons;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
@@ -67,7 +72,7 @@ namespace EmpireAtWar.Views
             Action<ShipAbilityId> pressAbility)
         {
             ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
-            group.Configure(shipType, _model.GetShipIcon(shipType), ships, _model,
+            group.Configure(shipType, _icons.GetShipIcon(shipType), ships, _model,
                 _presenter.SelectShipGroup, pressAbility);
             group.gameObject.SetActive(true);
             _groups.Add(group);
@@ -78,7 +83,7 @@ namespace EmpireAtWar.Views
             Action<ShipAbilityId> pressAbility)
         {
             ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
-            group.Configure(squadronType, _model.GetSquadronIcon(squadronType), squadrons, _model,
+            group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), squadrons, _model,
                 _presenter.SelectSquadronGroup, pressAbility);
             group.gameObject.SetActive(true);
             _groups.Add(group);

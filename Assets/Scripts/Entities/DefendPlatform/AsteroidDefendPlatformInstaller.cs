@@ -5,7 +5,7 @@ namespace EmpireAtWar
     {
         private const string ASTEROID_PREFIX = "Asteroid";
 
-        protected override string ModelPathPrefix => ASTEROID_PREFIX;
-        protected override string PrefabPathPrefix => ASTEROID_PREFIX;
+        protected override string DataPath => ASTEROID_PREFIX + base.DataPath;
+        protected override string PrefabPath => ASTEROID_PREFIX + base.PrefabPath;
     }
 }

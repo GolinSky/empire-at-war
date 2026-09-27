@@ -13,9 +13,9 @@ namespace EmpireAtWar.Components.Weapon
 {
     public sealed class CombatAttackCoordinator : ILateTickable, IDisposable
     {
-        internal const int JOB_SELECTION_THRESHOLD = 8;
+        internal const int JOB_SELECTION_THRESHOLD = TargetSelectionBatch.JOB_SELECTION_THRESHOLD;
         internal const int JOB_PROGRESSION_THRESHOLD = 64;
-        internal const int TARGET_JOB_BATCH_SIZE = 1;
+        internal const int TARGET_JOB_BATCH_SIZE = TargetSelectionBatch.TARGET_JOB_BATCH_SIZE;
         internal const int DUE_JOB_BATCH_SIZE = 32;
 
         private struct DueEvent
@@ -54,43 +54,26 @@ namespace EmpireAtWar.Components.Weapon
             public long EventSequence;
         }
 
-        private struct TargetSelectionRequest
-        {
-            public IWeaponPresenter Owner;
-            public WeaponComponent Weapon;
-            public int OwnerGeneration;
-            public WeaponHardPoint HardPoint;
-            public int TargetVersion;
-            public Vector3 Origin;
-            public Quaternion ParentRotation;
-            public int CandidateStart;
-            public int CandidateCount;
-        }
-
-        private struct TargetSelectionCandidateRecord
-        {
-            public WeaponComponent.TargetSelectionCandidate Candidate;
-        }
-
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
         private readonly List<ImpactRecord> _impacts = new List<ImpactRecord>();
-        private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
-        private readonly List<TargetSelectionCandidateRecord> _targetSelectionCandidates = new List<TargetSelectionCandidateRecord>();
         private readonly List<DueEvent> _dueEvents = new List<DueEvent>();
         private static readonly Comparison<DueEvent> _compareDueEvents = CompareDueEvents;
-        private NativeArray<WeaponTargetSelectionJob.Input> _targetSelectionInputs;
-        private NativeArray<Unity.Mathematics.float3> _targetSelectionPositions;
-        private NativeArray<WeaponTargetSelectionJob.Result> _targetSelectionResults;
         private NativeArray<AttackDueJob.Input> _dueInputs;
         private NativeArray<byte> _dueResults;
         private int _nextOwnerGeneration;
         private long _nextEventSequence;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private int _lastTargetCandidateCount;
         private int _lastDueFlaggedCount;
         private int _dueCommittedCount;
 #endif
+
+        private readonly TargetSelectionBatch _targetSelection;
+
+        public CombatAttackCoordinator()
+        {
+            _targetSelection = new TargetSelectionBatch(IsRegistered);
+        }
 
         public int PendingSequences => _sequences.Count;
         public int PendingImpacts => _impacts.Count;
@@ -157,13 +140,7 @@ namespace EmpireAtWar.Components.Weapon
             if (!_owners.TryGetValue(weapon, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before selecting a target.");
 
-            _targetSelectionRequests.Add(new TargetSelectionRequest
-            {
-                Owner = weapon,
-                Weapon = weapon,
-                OwnerGeneration = ownerGeneration,
-                HardPoint = hardPoint
-            });
+            _targetSelection.Queue(weapon, hardPoint, ownerGeneration);
         }
 
         public void CancelSequence(WeaponHardPoint hardPoint, int generation)
@@ -204,21 +181,20 @@ namespace EmpireAtWar.Components.Weapon
         public void LateTick()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int targetRequests = _targetSelectionRequests.Count;
-            int targetInputCapacity = _targetSelectionInputs.IsCreated ? _targetSelectionInputs.Length : 0;
-            int targetPositionCapacity = _targetSelectionPositions.IsCreated ? _targetSelectionPositions.Length : 0;
-            int targetResultCapacity = _targetSelectionResults.IsCreated ? _targetSelectionResults.Length : 0;
+            int targetRequests = _targetSelection.RequestCount;
+            int targetInputCapacity = _targetSelection.InputCapacity;
+            int targetPositionCapacity = _targetSelection.PositionCapacity;
+            int targetResultCapacity = _targetSelection.ResultCapacity;
             int dueInputCapacityBefore = _dueInputs.IsCreated ? _dueInputs.Length : 0;
             int dueResultCapacityBefore = _dueResults.IsCreated ? _dueResults.Length : 0;
             long fallbackCount = AttackSequenceDiagnostics.TargetSelectionFallbacks;
-            _lastTargetCandidateCount = 0;
             _lastDueFlaggedCount = 0;
             _dueCommittedCount = 0;
 #endif
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.TargetBatch.Auto())
 #endif
-            ProcessTargetSelections();
+            _targetSelection.Process();
 
             float now = Time.time;
             int frame = Time.frameCount;
@@ -244,16 +220,16 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (BattlePerformanceCapture.IsCapturing)
             {
-                int currentTargetInputCapacity = _targetSelectionInputs.IsCreated ? _targetSelectionInputs.Length : 0;
-                int currentTargetPositionCapacity = _targetSelectionPositions.IsCreated ? _targetSelectionPositions.Length : 0;
-                int currentTargetResultCapacity = _targetSelectionResults.IsCreated ? _targetSelectionResults.Length : 0;
+                int currentTargetInputCapacity = _targetSelection.InputCapacity;
+                int currentTargetPositionCapacity = _targetSelection.PositionCapacity;
+                int currentTargetResultCapacity = _targetSelection.ResultCapacity;
                 int dueInputCapacity = _dueInputs.IsCreated ? _dueInputs.Length : 0;
                 int dueResultCapacity = _dueResults.IsCreated ? _dueResults.Length : 0;
                 BattlePerformanceCapture.RecordCombatWorkload(new BattlePerformanceCapture.CombatWorkload
                 {
                     CompletedUnityFrame = frame,
                     TargetRequests = targetRequests,
-                    TargetCandidates = _lastTargetCandidateCount,
+                    TargetCandidates = _targetSelection.LastCandidateCount,
                     TargetSerialCalls = targetRequests > 0 && targetRequests < JOB_SELECTION_THRESHOLD ? 1 : 0,
                     TargetJobCalls = targetRequests >= JOB_SELECTION_THRESHOLD ? 1 : 0,
                     TargetFallbacks = (int)(AttackSequenceDiagnostics.TargetSelectionFallbacks - fallbackCount),
@@ -285,203 +261,14 @@ namespace EmpireAtWar.Components.Weapon
             _impacts.Clear();
             _sequences.Clear();
             _owners.Clear();
-            _targetSelectionRequests.Clear();
-            _targetSelectionCandidates.Clear();
+            _targetSelection.Dispose();
             _dueEvents.Clear();
-            if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
-            if (_targetSelectionPositions.IsCreated) _targetSelectionPositions.Dispose();
-            if (_targetSelectionResults.IsCreated) _targetSelectionResults.Dispose();
             if (_dueInputs.IsCreated) _dueInputs.Dispose();
             if (_dueResults.IsCreated) _dueResults.Dispose();
         }
 
         private bool IsRegistered(IWeaponPresenter owner, int generation) =>
             _owners.TryGetValue(owner, out int currentGeneration) && currentGeneration == generation;
-
-        private void ProcessTargetSelections()
-        {
-            if (_targetSelectionRequests.Count == 0) return;
-
-            CaptureTargetSelections();
-
-            if (_targetSelectionRequests.Count < JOB_SELECTION_THRESHOLD)
-            {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.TargetBatchSerial.Auto())
-#endif
-                {
-                    for (int i = 0; i < _targetSelectionRequests.Count; i++)
-                    {
-                        TargetSelectionRequest request = _targetSelectionRequests[i];
-                        if (IsRegistered(request.Owner, request.OwnerGeneration))
-                            ApplyTargetSelection(request, EvaluateTargetSelectionSerial(request));
-                    }
-                }
-
-                _targetSelectionRequests.Clear();
-                _targetSelectionCandidates.Clear();
-                return;
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            long selectionStart = System.Diagnostics.Stopwatch.GetTimestamp();
-            using (BattleProfilerMarkers.TargetBatchPrepare.Auto())
-#endif
-            {
-                EnsureTargetSelectionCapacity(_targetSelectionRequests.Count, _targetSelectionCandidates.Count);
-                for (int i = 0; i < _targetSelectionRequests.Count; i++)
-                {
-                    TargetSelectionRequest request = _targetSelectionRequests[i];
-                    _targetSelectionInputs[i] = new WeaponTargetSelectionJob.Input
-                    {
-                        Origin = new Unity.Mathematics.float3(request.Origin.x, request.Origin.y, request.Origin.z),
-                        ParentRotation = new Unity.Mathematics.quaternion(request.ParentRotation.x, request.ParentRotation.y,
-                            request.ParentRotation.z, request.ParentRotation.w),
-                        MaxDistance = request.HardPoint.MaxAttackDistance,
-                        MinYaw = request.HardPoint.MinYaw,
-                        MaxYaw = request.HardPoint.MaxYaw,
-                        CandidateStart = request.CandidateStart,
-                        CandidateCount = request.CandidateCount
-                    };
-                }
-
-                for (int i = 0; i < _targetSelectionCandidates.Count; i++)
-                {
-                    Vector3 position = _targetSelectionCandidates[i].Candidate.Position;
-                    _targetSelectionPositions[i] = new Unity.Mathematics.float3(position.x, position.y, position.z);
-                }
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.TargetBatchJob.Auto())
-#endif
-            {
-                WeaponTargetSelectionJob job = new WeaponTargetSelectionJob
-                {
-                    Inputs = _targetSelectionInputs,
-                    CandidatePositions = _targetSelectionPositions,
-                    Results = _targetSelectionResults
-                };
-                JobHandle handle;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.TargetBatchSchedule.Auto())
-#endif
-                    handle = job.Schedule(_targetSelectionRequests.Count, TARGET_JOB_BATCH_SIZE);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.TargetBatchComplete.Auto())
-#endif
-                    handle.Complete();
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.TargetBatchApply.Auto())
-#endif
-            {
-                for (int i = 0; i < _targetSelectionRequests.Count; i++)
-                {
-                    TargetSelectionRequest request = _targetSelectionRequests[i];
-                    if (!IsRegistered(request.Owner, request.OwnerGeneration)) continue;
-                    ApplyTargetSelection(request, _targetSelectionResults[i]);
-                }
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            AttackSequenceDiagnostics.RecordTargetSelectionBatchTime(selectionStart, _targetSelectionRequests.Count);
-#endif
-            _targetSelectionRequests.Clear();
-            _targetSelectionCandidates.Clear();
-        }
-
-        private void CaptureTargetSelections()
-        {
-            // Capture every request at one LateTick boundary before either selection path commits.
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.TargetBatchCapture.Auto())
-#endif
-            {
-                for (int i = 0; i < _targetSelectionRequests.Count; i++)
-                {
-                    TargetSelectionRequest request = _targetSelectionRequests[i];
-                    if (!IsRegistered(request.Owner, request.OwnerGeneration)) continue;
-
-                    IReadOnlyList<WeaponComponent.TargetSelectionCandidate> candidates =
-                        request.Weapon.CaptureTargetSelection(request.HardPoint, out request.TargetVersion,
-                            out request.Origin, out request.ParentRotation);
-                    request.CandidateStart = _targetSelectionCandidates.Count;
-                    request.CandidateCount = candidates.Count;
-                    for (int candidateIndex = 0; candidateIndex < candidates.Count; candidateIndex++)
-                        _targetSelectionCandidates.Add(new TargetSelectionCandidateRecord { Candidate = candidates[candidateIndex] });
-                    _targetSelectionRequests[i] = request;
-                }
-            }
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _lastTargetCandidateCount = _targetSelectionCandidates.Count;
-#endif
-        }
-
-        private WeaponTargetSelectionJob.Result EvaluateTargetSelectionSerial(TargetSelectionRequest request)
-        {
-            WeaponTargetSelectionJob.Result result = new WeaponTargetSelectionJob.Result { CandidateIndex = -1 };
-            for (int i = request.CandidateStart; i < request.CandidateStart + request.CandidateCount; i++)
-            {
-                result.Visited++;
-                bool canAttack = WeaponTargetSelector.TryCalculateAim(
-                    _targetSelectionCandidates[i].Candidate.Position, request.Origin, request.ParentRotation,
-                    request.HardPoint.MaxAttackDistance, request.HardPoint.MinYaw, request.HardPoint.MaxYaw,
-                    out Quaternion aim, out bool inRange);
-                if (inRange)
-                {
-                    result.HasInRangeAim = 1;
-                    result.LastInRangeAim = new Unity.Mathematics.float4(aim.x, aim.y, aim.z, aim.w);
-                }
-
-                if (!canAttack) continue;
-                result.CandidateIndex = i;
-                result.SelectedAim = new Unity.Mathematics.float4(aim.x, aim.y, aim.z, aim.w);
-                break;
-            }
-
-            return result;
-        }
-
-        private void ApplyTargetSelection(TargetSelectionRequest request, WeaponTargetSelectionJob.Result result)
-        {
-            AttackSequenceDiagnostics.RecordCandidateVisits(result.Visited);
-            if (result.RequiresSerialFallback != 0)
-            {
-                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
-                result = EvaluateTargetSelectionSerial(request);
-                AttackSequenceDiagnostics.RecordCandidateVisits(result.Visited);
-            }
-
-            if (result.CandidateIndex >= 0 &&
-                (result.CandidateIndex < request.CandidateStart ||
-                 result.CandidateIndex >= request.CandidateStart + request.CandidateCount))
-            {
-                AttackSequenceDiagnostics.RecordTargetSelectionFallback();
-                request.Weapon.CommitTargetSelectionSerial(request.HardPoint);
-                return;
-            }
-
-            request.Weapon.CommitTargetSelection(request.HardPoint, request.TargetVersion, result,
-                result.CandidateIndex < 0 ? default : _targetSelectionCandidates[result.CandidateIndex].Candidate);
-        }
-
-        private void EnsureTargetSelectionCapacity(int requestCount, int candidateCount)
-        {
-            EnsureTargetSelectionBuffer(ref _targetSelectionInputs, requestCount);
-            EnsureTargetSelectionBuffer(ref _targetSelectionResults, requestCount);
-            EnsureTargetSelectionBuffer(ref _targetSelectionPositions, candidateCount);
-        }
-
-        private static void EnsureTargetSelectionBuffer<T>(ref NativeArray<T> buffer, int requiredCapacity) where T : struct
-        {
-            if (buffer.IsCreated && buffer.Length >= requiredCapacity) return;
-            if (buffer.IsCreated) buffer.Dispose();
-            int capacity = 8;
-            while (capacity < requiredCapacity) capacity *= 2;
-            buffer = new NativeArray<T>(capacity, Allocator.Persistent);
-        }
 
         internal void ProcessDueEventsSerial(float now, int frame)
         {
@@ -520,8 +307,8 @@ namespace EmpireAtWar.Components.Weapon
             using (BattleProfilerMarkers.DueBatchPrepare.Auto())
 #endif
             {
-                EnsureTargetSelectionBuffer(ref _dueInputs, recordCount);
-                EnsureTargetSelectionBuffer(ref _dueResults, recordCount);
+                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _dueInputs, recordCount);
+                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _dueResults, recordCount);
 
                 for (int i = 0; i < sequenceCount; i++)
                 {

@@ -16,16 +16,16 @@ namespace EmpireAtWar.Entities.Map.Generation
         private readonly MapGenerationSettings _settings;
         private readonly StationPlacer _stationPlacer;
         private readonly PointOfInterestPlacer _pointOfInterestPlacer;
-        private readonly RoadNetworkBuilder _roadNetworkBuilder;
-        private readonly ObstacleWallBuilder _obstacleWallBuilder;
+        private readonly LaneNetworkBuilder _laneNetworkBuilder;
+        private readonly AsteroidFieldBuilder _asteroidFieldBuilder;
 
         public MapLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
         {
             _settings = settings;
             _stationPlacer = new StationPlacer(settings);
             _pointOfInterestPlacer = new PointOfInterestPlacer(settings, radii);
-            _roadNetworkBuilder = new RoadNetworkBuilder(settings);
-            _obstacleWallBuilder = new ObstacleWallBuilder(settings);
+            _laneNetworkBuilder = new LaneNetworkBuilder(settings);
+            _asteroidFieldBuilder = new AsteroidFieldBuilder(settings);
         }
 
         public MapLayout Generate(
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                     continue;
                 }
 
-                List<MapRoad> roads = _roadNetworkBuilder.Build(nodes, stations, random);
+                List<MapLane> lanes = _laneNetworkBuilder.Build(nodes, stations, random);
                 return new MapLayout(
                     size.Bounds,
                     new Dictionary<FactionType, Vector3>
@@ -58,8 +58,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                     _pointOfInterestPlacer.PlacePlanet(size, random),
                     CreateZones(nodes),
                     CreateSites(nodes),
-                    roads,
-                    _obstacleWallBuilder.Build(size, stations, nodes, roads, random));
+                    lanes,
+                    _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random));
             }
 
             throw new InvalidOperationException(

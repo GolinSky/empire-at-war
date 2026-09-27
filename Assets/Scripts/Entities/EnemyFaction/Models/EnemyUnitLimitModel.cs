@@ -5,8 +5,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public sealed class EnemyUnitLimitModel : PureModel
     {
-        private readonly Dictionary<string, int> _reservedCounts =
-            new Dictionary<string, int>();
+        private readonly Dictionary<UnitLimitKey, int> _reservedCounts =
+            new Dictionary<UnitLimitKey, int>();
 
         public int CurrentUnitCapacity { get; private set; }
         public int ShipOrdersCount { get; private set; }
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         }
 
         public bool TryReserve(
-            string unitId,
+            UnitLimitKey unitId,
             int maxCount,
             int unitCapacity,
             int maxUnitCapacity)
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         }
 
         public bool CanReserve(
-            string unitId,
+            UnitLimitKey unitId,
             int maxCount,
             int unitCapacity,
             int maxUnitCapacity)
@@ -56,13 +56,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int maxUnitCapacity)
         {
             return CanReserve(
-                $"{typeof(TRequest).FullName}:{requestId}",
+                UnitLimitKey.For<TRequest>(requestId),
                 maxCount,
                 unitCapacity,
                 maxUnitCapacity);
         }
 
-        public void Release(string unitId, int unitCapacity)
+        public void Release(UnitLimitKey unitId, int unitCapacity)
         {
             int reservedCount = GetReservedCount(unitId);
             if (reservedCount == 0)
@@ -85,14 +85,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             ReleaseVersion++;
         }
 
-        public int GetReservedCount(string unitId)
+        public int GetReservedCount(UnitLimitKey unitId)
         {
             return _reservedCounts.TryGetValue(unitId, out int count) ? count : 0;
         }
 
         public int GetReservedCount<TRequest>(string requestId)
         {
-            return GetReservedCount($"{typeof(TRequest).FullName}:{requestId}");
+            return GetReservedCount(UnitLimitKey.For<TRequest>(requestId));
         }
 
         public void Reset()

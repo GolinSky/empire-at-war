@@ -4,7 +4,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         Arriving,
         Idle,
-        Moving,
-        Blocked
+        Moving
     }
 }

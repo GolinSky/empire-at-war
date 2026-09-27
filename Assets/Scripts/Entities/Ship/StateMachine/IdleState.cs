@@ -28,7 +28,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Enter()
         {
-            if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+            if (_shipMoveComponent.IsMoving)
             {
                 _shipMoveComponent.Stop();
             }

@@ -11,11 +11,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public interface ISpaceStationCommand : ICommand
-    {
-    }
-
-    public class SpaceStation : MonoBehaviour, IController, ISpaceStationCommand, IInitializable, ILateDisposable
+    public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
@@ -65,7 +61,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
             if (_playerType == PlayerType.Player)
             {
-                _fogOfWarSystem.RegisterVisionSource(transform, 180f);
+                _fogOfWarSystem.RegisterVisionSource(transform, 900f);
             }
         }
 

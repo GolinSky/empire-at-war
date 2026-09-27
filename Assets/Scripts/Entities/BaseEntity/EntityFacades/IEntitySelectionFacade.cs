@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Services.NavigationService;
+﻿using EmpireAtWar.Services.Selection;
 
 namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {

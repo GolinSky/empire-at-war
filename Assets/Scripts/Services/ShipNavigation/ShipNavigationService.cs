@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -125,59 +126,19 @@ namespace EmpireAtWar.Services.ShipNavigation
             AddIdleAgentContacts(agent);
 
             using (ShipPathGrid pathGrid = new ShipPathGrid(
-                       _mapObstacleContacts, clearance, mapRange))
+                       _mapObstacleContacts, clearance, mapRange, origin))
             {
-                float candidateSpacing = agent.NavigationRadius * 2f;
-                for (int candidateIndex = 0;
-                     candidateIndex <=
-                     DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
-                     candidateIndex++)
+                // An unreachable order is not a failure: the ship heads for the
+                // reachable spot closest to what was asked for.
+                if (TryPlanNear(agent, registrationId, forward, requestedDestination,
+                        pathGrid, heightTolerance, clearance, mapRange,
+                        out ShipRoutePlan routePlan) ||
+                    pathGrid.TryGetNearestReachable(requestedDestination,
+                        agent.NavigationHeight, out Vector3 nearestReachable) &&
+                    TryPlanNear(agent, registrationId, forward, nearestReachable,
+                        pathGrid, heightTolerance, clearance, mapRange,
+                        out routePlan))
                 {
-                    Vector3 candidate = GetDestinationCandidate(
-                        requestedDestination,
-                        candidateSpacing,
-                        candidateIndex);
-                    candidate = ShipAvoidancePlanner.ClampToMap(
-                        candidate,
-                        mapRange,
-                        clearance);
-                    ShipAvoidancePlanner.TryResolveDestination(
-                        candidate,
-                        origin,
-                        _mapObstacleContacts,
-                        agent.NavigationHeight,
-                        heightTolerance,
-                        clearance,
-                        mapRange,
-                        out Vector3 destination);
-                    if (!ShipAvoidancePlanner.IsPointClear(
-                            destination,
-                            _mapObstacleContacts,
-                            agent.NavigationHeight,
-                            heightTolerance,
-                            clearance) ||
-                        !_destinationRegistry.HasClearance(
-                            registrationId,
-                            ToFormationPoint(destination),
-                            clearance))
-                    {
-                        continue;
-                    }
-
-                    ShipRoutePlan routePlan = ShipRoutePlanner.Build(
-                        agent,
-                        forward,
-                        destination,
-                        _mapObstacleContacts,
-                        pathGrid,
-                        _waypoints,
-                        heightTolerance,
-                        clearance);
-                    if (routePlan.IsStationary)
-                    {
-                        continue;
-                    }
-
                     bool isDeferred = reserveAsPending ||
                         (preserveCourse &&
                          routePlan.TurnDuration > Mathf.Epsilon);
@@ -185,13 +146,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                     {
                         _destinationRegistry.ReservePendingFinalPosition(
                             registrationId,
-                            ToFormationPoint(routePlan.Destination));
+                            ToPoint(routePlan.Destination));
                     }
                     else
                     {
                         _destinationRegistry.CommitActiveFinalPosition(
                             registrationId,
-                            ToFormationPoint(routePlan.Destination));
+                            ToPoint(routePlan.Destination));
                     }
 
                     float movementDuration =
@@ -227,6 +188,94 @@ namespace EmpireAtWar.Services.ShipNavigation
                 preserveCourse || reserveAsPending);
         }
 
+        // Destination candidates ring out from the center; reachability of each is
+        // answered by the single flood of the path grid, so failures cost no search.
+        // Within the first ring that holds a valid candidate the shortest route wins,
+        // so a blocked order ends on the ship's side of the obstacle, not the far one.
+        private bool TryPlanNear(
+            IShipNavigationAgent agent,
+            int registrationId,
+            Vector3 forward,
+            Vector3 center,
+            ShipPathGrid pathGrid,
+            float heightTolerance,
+            float clearance,
+            Vector2Range mapRange,
+            out ShipRoutePlan routePlan)
+        {
+            Vector3 origin = agent.NavigationPosition;
+            float candidateSpacing = agent.NavigationRadius * 2f;
+            bool isFound = false;
+            routePlan = default;
+            for (int candidateIndex = 0;
+                 candidateIndex <=
+                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                 candidateIndex++)
+            {
+                if (isFound && IsFirstInRing(candidateIndex))
+                {
+                    return true;
+                }
+
+                Vector3 candidate = GetDestinationCandidate(
+                    center,
+                    candidateSpacing,
+                    candidateIndex);
+                candidate = ShipAvoidancePlanner.ClampToMap(
+                    candidate,
+                    mapRange,
+                    clearance);
+                ShipAvoidancePlanner.TryResolveDestination(
+                    candidate,
+                    origin,
+                    _mapObstacleContacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance,
+                    mapRange,
+                    out Vector3 destination);
+                if (!ShipAvoidancePlanner.IsPointClear(
+                        destination,
+                        _mapObstacleContacts,
+                        agent.NavigationHeight,
+                        heightTolerance,
+                        clearance) ||
+                    !_destinationRegistry.HasClearance(
+                        registrationId,
+                        ToPoint(destination),
+                        clearance) ||
+                    pathGrid.IsKnownUnreachable(destination))
+                {
+                    continue;
+                }
+
+                ShipRoutePlan candidatePlan = ShipRoutePlanner.Build(
+                    agent,
+                    forward,
+                    destination,
+                    _mapObstacleContacts,
+                    pathGrid,
+                    _waypoints,
+                    heightTolerance,
+                    clearance);
+                if (!candidatePlan.IsStationary &&
+                    (!isFound || candidatePlan.Route.Length < routePlan.Route.Length))
+                {
+                    routePlan = candidatePlan;
+                    isFound = true;
+                }
+            }
+
+            return isFound;
+        }
+
+        // Ring 0 is the requested point itself; each later ring starts a new slot cycle.
+        private static bool IsFirstInRing(int candidateIndex)
+        {
+            return candidateIndex > 0 &&
+                   (candidateIndex - 1) % DESTINATION_CANDIDATES_PER_RING == 0;
+        }
+
         public void Register(
             IShipNavigationAgent agent,
             Vector3 initialFinalPosition)
@@ -243,9 +292,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             int registrationId = _destinationRegistry.Register(
-                () => ToFormationPoint(agent.NavigationPosition),
+                () => ToPoint(agent.NavigationPosition),
                 agent.NavigationRadius,
-                ToFormationPoint(initialFinalPosition));
+                ToPoint(initialFinalPosition));
             _registrationIds.Add(agent, registrationId);
         }
 
@@ -269,8 +318,11 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public bool IsPositionClear(Vector3 position, float navigationRadius)
         {
-            return _destinationRegistry.HasClearance(
-                ToFormationPoint(position),
+            BuildNavigationContacts(Array.Empty<RadarContact>());
+            return ShipAvoidancePlanner.IsPointClear(position, _mapObstacleContacts,
+                       position.y, 0f, navigationRadius) &&
+                   _destinationRegistry.HasClearance(
+                ToPoint(position),
                 navigationRadius);
         }
 
@@ -281,7 +333,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             return _destinationRegistry.HasClearance(
                 GetRegistrationId(agent),
-                ToFormationPoint(position),
+                ToPoint(position),
                 navigationRadius);
         }
 
@@ -329,7 +381,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (ShipAvoidancePlanner.IsPointClear(destination, _mapObstacleContacts,
                         agent.NavigationHeight, heightTolerance, clearance) &&
                     _destinationRegistry.HasClearance(
-                        ToFormationPoint(destination),
+                        ToPoint(destination),
                         clearance))
                 {
                     resolvedPosition = destination;
@@ -430,11 +482,6 @@ namespace EmpireAtWar.Services.ShipNavigation
                 Mathf.Cos(angle) * spacing * ring,
                 0f,
                 Mathf.Sin(angle) * spacing * ring);
-        }
-
-        private static FormationPoint ToFormationPoint(Vector3 position)
-        {
-            return new FormationPoint(position.x, position.z);
         }
     }
 }

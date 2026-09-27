@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Services.InputService;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.Bind<ImpactEffectPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
+            Container.BindInterfacesAndSelfTo<RangeDebugModel>().AsSingle();
             
             Container.BindScriptableObject<CameraData>(Repository);
             Container.BindScriptableObject<SharedSelectionData>(Repository);
@@ -59,6 +61,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container
+                .BindInterfacesExt<UiHitTest>()
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
                 .BindInterfacesExt<MapObstacleContactProvider>()

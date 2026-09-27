@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.Hangar;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ship;
@@ -16,7 +15,6 @@ namespace EmpireAtWar.Entities.SpaceStation
     public class SpaceStationData:Data, IModel, ISpaceStationModelObserver
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
-        [field:SerializeField] public RadarModel RadarModel { get; private set; }
 
         [Header("Hangar")]
         [Tooltip("Squadron bay of each faction's station; lost squadrons are replaced from its reserve.")]

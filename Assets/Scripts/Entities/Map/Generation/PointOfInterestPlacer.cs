@@ -33,7 +33,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             nodes.Clear();
             Vector3 center = MapGeometry.GetCenter(size.Bounds);
-            AddDefaultZones(stations, center, nodes);
+            AddDefaultZones(size, stations, center, nodes);
             if (!TryAddHomeMining(size, stations, center, difficulty, random, nodes))
             {
                 return false;
@@ -52,11 +52,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 nodes.Add(centralZone);
             }
 
-            return TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2,
-                    size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.MiningSite, (size.MiningSiteCount - 2) / 2,
+            // Reserve the larger facility pockets before placing reinforcement zones.
+            return TryAddPairs(MapNodeKind.MiningSite, (size.MiningSiteCount - 2) / 2,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2,
+                    size, stations, center, random, nodes) &&
+                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2,
                     size, stations, center, random, nodes);
         }
 
@@ -71,26 +72,27 @@ namespace EmpireAtWar.Entities.Map.Generation
                 Mathf.Lerp(min.y + inset.y, max.y - inset.y, (float)random.NextDouble()));
         }
 
-        /// <summary>Node radius plus the clearance and, for walled nodes, room for the asteroid ring.</summary>
+        /// <summary>Node radius plus the clearance and, for pocketed nodes, room for the asteroid pocket.</summary>
         public float GetOuterRadius(MapNode node, MapSizeSettings size)
         {
-            return GetOuterRadius(node.Radius, node.IsWalled, size);
+            return GetOuterRadius(node.Radius, node.HasPocket, size);
         }
 
-        private float GetOuterRadius(float radius, bool isWalled, MapSizeSettings size)
+        private float GetOuterRadius(float radius, bool hasPocket, MapSizeSettings size)
         {
-            float wallRoom = isWalled ? _settings.ObstacleFootprint * size.ObstacleScale.Max : 0f;
-            return radius + _settings.ZoneClearance + wallRoom;
+            return radius + _settings.ZoneClearance + (hasPocket ? size.PocketThickness : 0f);
         }
 
-        private void AddDefaultZones(IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
+        private void AddDefaultZones(
+            MapSizeSettings size, IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
         {
             foreach (MapStation station in stations)
             {
                 // The zone sits beside its station on the side facing the map center.
                 float side = station.Position.x < center.x ? 1f : -1f;
+                float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
                 Vector3 position = new Vector3(
-                    station.Position.x + side * (station.Radius + _radii.Zone + _settings.ZoneClearance),
+                    station.Position.x + side * offset,
                     0f,
                     station.Position.z);
                 nodes.Add(new MapNode(MapNodeKind.DefaultZone, position, _radii.Zone, station.Owner));
@@ -121,7 +123,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 float zSide = Mathf.Sign(center.z - station.Position.z);
                 Vector3 direction = new Vector3(xSide * Mathf.Sin(turn), 0f, zSide * Mathf.Cos(turn));
                 Vector3 position = station.Position + direction * (station.Radius + outer + gap);
-                // Large asteroid rings can outgrow the station's edge distance; pull the mine inside.
+                // Thick asteroid pockets can outgrow the station's edge distance; pull the mine inside.
                 position = new Vector3(
                     Mathf.Clamp(position.x, size.Bounds.Min.x + outer, size.Bounds.Max.x - outer),
                     0f,
@@ -246,8 +248,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach (MapNode node in nodes)
             {
-                // Point spacing leaves road room between two asteroid rings; default zones have none.
-                float spacing = node.IsWalled ? size.PointSpacing : 0f;
+                // Point spacing leaves lane room between two asteroid pockets; default zones have none.
+                float spacing = node.HasPocket ? size.PointSpacing : 0f;
                 if (MapGeometry.Distance(position, node.Center) < outer + GetOuterRadius(node, size) + spacing)
                 {
                     return false;

@@ -16,16 +16,16 @@ namespace EmpireAtWar.Entities.Map
             Vector3 planetPosition,
             IReadOnlyList<ZoneSpot> zones,
             IReadOnlyList<SiteSpot> sites,
-            IReadOnlyList<MapRoad> roads,
-            IReadOnlyList<ObstacleSpot> obstacles)
+            IReadOnlyList<MapLane> lanes,
+            IReadOnlyList<AsteroidField> fields)
         {
             SizeRange = sizeRange;
             _stationPositions = stationPositions;
             PlanetPosition = planetPosition;
             Zones = zones;
             Sites = sites;
-            Roads = roads;
-            Obstacles = obstacles;
+            Lanes = lanes;
+            Fields = fields;
         }
 
         public Vector2Range SizeRange { get; }
@@ -33,8 +33,8 @@ namespace EmpireAtWar.Entities.Map
         public Vector3 PlanetPosition { get; }
         public IReadOnlyList<ZoneSpot> Zones { get; }
         public IReadOnlyList<SiteSpot> Sites { get; }
-        public IReadOnlyList<MapRoad> Roads { get; }
-        public IReadOnlyList<ObstacleSpot> Obstacles { get; }
+        public IReadOnlyList<MapLane> Lanes { get; }
+        public IReadOnlyList<AsteroidField> Fields { get; }
 
         public Vector3 GetStationPosition(FactionType factionType)
         {

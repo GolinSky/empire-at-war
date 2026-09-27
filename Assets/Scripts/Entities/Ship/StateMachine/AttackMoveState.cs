@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _attackDataFactory = attackDataFactory;
         }
 
-        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving && !_movement.IsBlocked;
+        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving;
         public void SetDestination(Vector3 destination) => _destination = destination;
 
         public void Enter()

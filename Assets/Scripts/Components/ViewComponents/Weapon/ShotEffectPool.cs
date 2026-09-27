@@ -141,7 +141,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             foreach (ShotEffect effect in _active.Keys)
             {
-                effect.transform.SetParent(null, true);
                 effect.RetireAfterCompletion();
             }
         }

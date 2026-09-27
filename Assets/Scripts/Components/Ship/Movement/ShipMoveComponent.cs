@@ -54,7 +54,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public Vector3 CurrentPosition => transform.position;
         public bool IsMoving => Model.IsMoving;
-        public bool IsBlocked => Model.IsBlocked;
         public float HyperSpaceDuration => Model.HyperSpaceDuration;
 
         [Inject]
@@ -140,7 +139,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                     Model.PendingDestination.HasValue)
                     return destination;
                 _shipNavigationService.CancelPendingDestination(this);
-                if (!Model.IsBlocked && !Model.PendingDestination.HasValue)
+                if (!Model.PendingDestination.HasValue)
                     return destination;
             }
             _shipNavigationService.CancelPendingDestination(this);
@@ -196,11 +195,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             _navigationContacts.Clear();
             for (int i = 0; i < contacts.Count; i++)
                 if (!contacts[i].IsShip) _navigationContacts.Add(contacts[i]);
-            if (Model.IsBlocked)
-            {
-                NumericsVector3? blocked = Model.TakePending();
-                if (blocked.HasValue) Plan(blocked.Value.ToUnity());
-            }
         }
 
         private void FinishHyperSpaceJump()
@@ -224,8 +218,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                     transform.forward, destination, _navigationContacts, HEIGHT_TOLERANCE,
                     NavigationRadius, _mapModel.SizeRange,
                     preserveCourse: true, reserveAsPending: true);
-                if (pendingPlan.IsStationary) Model.Block(destination.ToNumerics());
-                else Model.Queue(pendingPlan.Destination.ToNumerics());
+                // Nothing is reachable from the jump point yet; plan again once the jump lands.
+                Model.Queue((pendingPlan.IsStationary ? destination : pendingPlan.Destination)
+                    .ToNumerics());
                 return;
             }
             destination.y = transform.position.y;
@@ -238,7 +233,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Debug.Log($"[ShipNavigation] Ship={name}, Detour={plan.Detour.HasValue}, " +
                     $"Turn={plan.TurnDuration:F2}s, Move={plan.MovementDuration:F2}s, " +
                     $"Radius={NavigationRadius:F1}, Speed={NavigationSpeed:F1}, " +
-                    $"TurnSpeed={NavigationRotationSpeed:F1}, Blocked={plan.IsStationary}");
+                    $"TurnSpeed={NavigationRotationSpeed:F1}, Stationary={plan.IsStationary}");
             if (plan.IsDeferred)
             {
                 Model.Defer(destination.ToNumerics());
@@ -246,8 +241,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             if (plan.IsStationary)
             {
+                // Nowhere reachable to go: the ship holds position instead of retrying.
                 _motion.StopPath();
-                Model.Block(destination.ToNumerics());
+                Model.Arrive(transform.position.ToNumerics());
                 return;
             }
             Model.Accept(plan.Destination.ToNumerics());

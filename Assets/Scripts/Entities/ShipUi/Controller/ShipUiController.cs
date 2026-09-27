@@ -9,7 +9,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly ShipUiModel _model;
         private readonly ShipAbilityService _abilityService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
+        private readonly ICameraService _cameraService;
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
 
         private ISelectionContext _playerSelectionContext;
@@ -39,13 +41,15 @@ namespace EmpireAtWar.Controllers.ShipUi
             ISelectionService selectionService,
             ShipUiModel model,
             ISkirmishRouteNavigation routeNavigation,
-            ShipAbilityService abilityService)
+            ShipAbilityService abilityService,
+            ICameraService cameraService)
         {
             _uiService = uiService;
             _selectionService = selectionService;
             _model = model;
             _routeNavigation = routeNavigation;
             _abilityService = abilityService;
+            _cameraService = cameraService;
         }
 
         public void Initialize()
@@ -99,6 +103,11 @@ namespace EmpireAtWar.Controllers.ShipUi
                 _selectionService.RemoveSelectable(_playerSelectionContext);
             }
         }
+
+        public void FocusSelection() => FocusEntity(_playerSelectionContext.Entity);
+
+        private void FocusEntity(IEntity entity) =>
+            _cameraService.MoveTo(entity.GetFacade<IMoveFacade>().WorldPosition);
 
         public void SelectShipGroup(ShipType shipType)
         {
@@ -220,7 +229,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
                     entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
-                        entity.HealthModel));
+                        entity.HealthModel, () => FocusEntity(entity)));
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, entries, id => _abilityService.Press(casters, id));

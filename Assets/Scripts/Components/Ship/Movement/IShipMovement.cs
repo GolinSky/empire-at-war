@@ -7,7 +7,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         Vector3 CurrentPosition { get; }
         bool IsMoving { get; }
-        bool IsBlocked { get; }
         float NavigationRadius { get; }
         void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
         void LookAtTarget(Vector3 targetPosition);

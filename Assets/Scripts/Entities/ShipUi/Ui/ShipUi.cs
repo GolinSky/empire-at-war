@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
+using Zenject;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Views
@@ -14,17 +15,23 @@ namespace EmpireAtWar.Views
     {
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
+        [SerializeField] private Button focusButton;
         [SerializeField] private ShipAbilityBarUi abilityBar;
         [SerializeField] private Image healthFill;
         [SerializeField] private Image shieldFill;
 
         private IShipUiModelObserver _model;
+        private IShipIconProvider _icons;
         private IHealthModelObserver _health;
         private IShipUiPresenter _presenter;
         private bool _isInitialized;
         private bool _isRouteActive = true;
         private bool _isEntry;
         private Action _onSelected;
+        private Action _onFocused;
+
+        [Inject]
+        public void Construct(IShipIconProvider icons) => _icons = icons;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
@@ -44,7 +51,9 @@ namespace EmpireAtWar.Views
             _model.OnSelectionChanged += UpdateVisibility;
             abilityBar.SetModel(_model);
             _onSelected = _presenter.CloseSelection;
+            _onFocused = _presenter.FocusSelection;
             disableSelectionButton.onClick.AddListener(HandleSelection);
+            focusButton.onClick.AddListener(HandleFocus);
             _isInitialized = true;
             UpdateVisibility();
         }
@@ -55,6 +64,7 @@ namespace EmpireAtWar.Views
             SetHealth(null);
             if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
             disableSelectionButton.onClick.RemoveListener(HandleSelection);
+            focusButton.onClick.RemoveListener(HandleFocus);
             _isInitialized = false;
         }
 
@@ -64,16 +74,19 @@ namespace EmpireAtWar.Views
             _isEntry = true;
             _model = model;
             _onSelected = onSelected;
+            _onFocused = entry.Focus;
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;
             abilityBar.SetModel(model);
             abilityBar.SetSlots(entry.AbilitySlots, entry.PressAbility);
             SetHealth(entry.Health);
             disableSelectionButton.onClick.AddListener(HandleSelection);
+            focusButton.onClick.AddListener(HandleFocus);
             _isInitialized = true;
         }
 
         private void HandleSelection() => _onSelected();
+        private void HandleFocus() => _onFocused();
 
         private void UpdateHealth()
         {
@@ -105,9 +118,9 @@ namespace EmpireAtWar.Views
             if (isVisible)
             {
                 if (_model.SelectedShipType.HasValue)
-                    icon = _model.GetShipIcon(_model.SelectedShipType.Value);
+                    icon = _icons.GetShipIcon(_model.SelectedShipType.Value);
                 else if (_model.SelectedSquadronType.HasValue)
-                    icon = _model.GetSquadronIcon(_model.SelectedSquadronType.Value);
+                    icon = _icons.GetSquadronIcon(_model.SelectedSquadronType.Value);
             }
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;

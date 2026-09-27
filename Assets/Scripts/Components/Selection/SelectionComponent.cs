@@ -1,9 +1,8 @@
 using System;
-using EmpireAtWar.Commands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -21,7 +20,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         void SetActive(bool isActive);
     }
 
-    public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent, ISelectionCommand,
+    public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
         IInitializable, ILateDisposable
     {
         [SerializeField] private SelectionType selectionType;

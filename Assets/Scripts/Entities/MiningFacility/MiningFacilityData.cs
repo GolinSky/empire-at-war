@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -15,7 +14,6 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacilityData : Data, IModel, IMiningFacilityModelObserver
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
-        [field:SerializeField] public RadarModel RadarModel { get; private set; }
 
         [field:SerializeField] public float Income { get; private set; }
     }

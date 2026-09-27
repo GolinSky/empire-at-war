@@ -587,9 +587,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.Fail("Expected at least one defense platform option.");
         }
 
-        private static string GetUnitId<TRequest>(string requestId)
+        private static UnitLimitKey GetUnitId<TRequest>(string requestId)
         {
-            return $"{typeof(TRequest).FullName}:{requestId}";
+            return UnitLimitKey.For<TRequest>(requestId);
         }
 
         private static void SetBackingField<T>(

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
@@ -15,6 +16,15 @@ namespace EmpireAtWar.Components.AttackComponent
         private Dictionary<DamageType, DamageTypeProfile> _profiles;
 
         public float MissSpread => missSpread;
+
+        public IReadOnlyDictionary<(DamageType, ShipClass), float> CopyAccuracy()
+        {
+            var accuracy = new Dictionary<(DamageType, ShipClass), float>();
+            foreach (DamageTypeProfile profile in damageTypes)
+                foreach (ShipClass shipClass in Enum.GetValues(typeof(ShipClass)))
+                    accuracy.Add((profile.DamageType, shipClass), profile.Accuracy[shipClass]);
+            return accuracy;
+        }
 
         public float GetDamageMultiplier(DamageType damageType, ShipClass shipClass) =>
             GetProfile(damageType).Damage[shipClass];

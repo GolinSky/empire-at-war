@@ -13,15 +13,6 @@ using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public interface ISelectionService : IService, INotifier<ISelectionSubject>
-    {
-        ISelectionContext PlayerSelectionContext { get; }
-        ISelectionContext EnemySelectionContext { get; }
-        void RemoveSelectable(ISelectionContext selectionContext);
-        void SelectCurrentShipsByType(ShipType shipType);
-        void SelectCurrentSquadronsByType(SquadronType squadronType);
-    }
-
     public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
         ISelectionSubject
     {

@@ -3,29 +3,10 @@ using System.Collections.ObjectModel;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public interface ISelectionSubject
-    {
-        ISelectionContext PlayerSelectionContext { get; }
-        ISelectionContext EnemySelectionContext { get; }
-        PlayerType UpdatedType { get; }
-    }
-
-    public interface ISelectionContext
-    {
-        IEntity Entity { get; }
-        IReadOnlyList<IEntity> Entities { get; }
-        IEntitySelectionFacade SelectionFacade { get; }
-        SelectionType SelectionType { get; }
-        bool HasSelectable { get; }
-        int Count { get; }
-        PlayerType PlayerType { get; }
-        bool Contains(IEntity entity);
-    }
-
     public sealed class SelectionContext : ISelectionContext
     {
         private readonly List<SelectionEntry> _entries = new List<SelectionEntry>();
@@ -166,17 +147,5 @@ namespace EmpireAtWar.Services.Battle
 
             return false;
         }
-    }
-
-    public readonly struct SelectionEntry
-    {
-        public SelectionEntry(IEntity entity, IEntitySelectionFacade command)
-        {
-            Entity = entity;
-            Command = command;
-        }
-
-        public IEntity Entity { get; }
-        public IEntitySelectionFacade Command { get; }
     }
 }
