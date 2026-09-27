@@ -20,7 +20,7 @@ MonoBehaviour:
     <Max>k__BackingField: {x: 50, y: 100}
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 60
-    <Max>k__BackingField: 500
+    <Max>k__BackingField: 940
   <PanSpeed>k__BackingField: 500
   <PanAcceleration>k__BackingField: 1250
   <PanDeceleration>k__BackingField: 1750
