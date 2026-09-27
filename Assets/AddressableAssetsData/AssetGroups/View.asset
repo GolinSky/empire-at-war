@@ -45,6 +45,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d44f10b3ab53e947a8cc7b8987fc7f4
+    m_Address: AWingSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fe00dc9b94303b489d883da86697685
     m_Address: StarDestroyer2ShipView
     m_ReadOnly: 0
