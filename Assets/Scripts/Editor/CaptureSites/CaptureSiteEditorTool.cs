@@ -14,6 +14,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     public static class CaptureSiteEditorTool
     {
         private const float SITE_RADIUS = 40f;
+        private const float SITE_SCALE = 5f;
         private const int UI_LAYER = 5;
         private const int OBSTACLE_LAYER = 9;
         private const string MINI_MAP_DATA_PATH = "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset";
@@ -24,10 +25,15 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string DATA_PATH = DATA_FOLDER + "/CaptureSiteData.asset";
         private const string RING_MATERIAL_PATH = "Assets/Art/Materials/ReinforcementZones/ReinforcementZone.mat";
         private const string HOLOGRAM_MATERIAL_PATH = "Assets/Art/Materials/Hologram.mat";
-        private static readonly Color BUTTON_COLOR = new Color32(0x25, 0x63, 0xEB, 0xFF);
-        private static readonly Color BUTTON_OUTLINE_COLOR = new Color32(0x60, 0xA5, 0xFA, 0xFF);
-        private static readonly Color TRACK_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xD9);
+        private static readonly Color PANEL_COLOR = new Color32(0x08, 0x0C, 0x14, 0xF5);
+        private static readonly Color PANEL_OUTLINE_COLOR = new Color32(0x1F, 0x87, 0xE6, 0xD9);
+        private static readonly Color CARD_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xFF);
+        private static readonly Color CARD_OUTLINE_COLOR = new Color32(0x60, 0xA5, 0xFA, 0xFF);
+        private static readonly Color CARD_DISABLED_COLOR = new Color32(0x80, 0x80, 0x80, 0x80);
+        private static readonly Color TRACK_COLOR = new Color32(0x18, 0x22, 0x32, 0xF2);
         private static readonly Color TEXT_COLOR = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
+        private static readonly Color LABEL_COLOR = new Color32(0x94, 0xA3, 0xB8, 0xFF);
+        private static readonly Color VALUE_COLOR = new Color32(0x38, 0xBD, 0xF8, 0xFF);
 
         [MenuItem("Tools/Empire At War/Capture Sites/Build Sites")]
         public static void Build()
@@ -38,11 +44,18 @@ namespace EmpireAtWar.Editor.CaptureSites
             EnsureFolder(DATA_FOLDER);
             BuildData();
             AddMiniMapIcon();
-            BuildSitePrefab(SiteFacilityType.Mining, SITE_PREFAB_PATH,
-                parent => AsteroidMiningFacilityAssetBuilder.InstantiateModel(parent, "Machinery", keepRocks: false));
-            BuildSitePrefab(SiteFacilityType.BattleAsteroid, BATTLE_SITE_PREFAB_PATH,
-                parent => BattleAsteroidAssetBuilder.InstantiateCannons(parent, "Cannons"));
+            BuildSitePrefabs();
+        }
 
+        /// <summary>
+        /// Rebuilds only the site prefabs. Both map slots share one layout: the owner picks the facility after capture.
+        /// </summary>
+        [MenuItem("Tools/Empire At War/Capture Sites/Rebuild Site Prefabs")]
+        public static void BuildSitePrefabs()
+        {
+            EnsureFolder(PREFAB_FOLDER);
+            BuildSitePrefab(SITE_PREFAB_PATH);
+            BuildSitePrefab(BATTLE_SITE_PREFAB_PATH);
             AssetDatabase.SaveAssets();
         }
 
@@ -145,28 +158,40 @@ namespace EmpireAtWar.Editor.CaptureSites
             cost.FindPropertyRelative("<BuildTime>k__BackingField").floatValue = buildTime;
         }
 
-        private static GameObject BuildSitePrefab(SiteFacilityType facilityType, string prefabPath,
-            System.Func<Transform, GameObject> instantiateFacilityModel)
+        private static GameObject BuildSitePrefab(string prefabPath)
         {
             GameObject root = new GameObject(System.IO.Path.GetFileNameWithoutExtension(prefabPath));
+            root.transform.localScale = Vector3.one * SITE_SCALE;
             GameObject rocks = AsteroidMiningFacilityAssetBuilder.InstantiateModel(
                 root.transform, "AsteroidRocks", keepRocks: true);
-            Transform framework = BuildFramework(root.transform, instantiateFacilityModel);
+            Transform miningFramework = BuildFramework(root.transform, "MiningFramework",
+                parent => AsteroidMiningFacilityAssetBuilder.InstantiateModel(parent, "Machinery", keepRocks: false));
+            Transform battleFramework = BuildFramework(root.transform, "BattleAsteroidFramework",
+                parent => BattleAsteroidAssetBuilder.InstantiateCannons(parent, "Cannons"));
             MeshRenderer ring = BuildRing(root.transform);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status,
-                out Button button, out TMP_Text buttonLabel);
+                out GameObject buildOptions, out SiteFacilityOptionView[] options);
 
             CaptureSiteView view = root.AddComponent<CaptureSiteView>();
             SerializedObject serializedView = new SerializedObject(view);
-            serializedView.FindProperty("facilityType").enumValueIndex = (int)facilityType;
             serializedView.FindProperty("radius").floatValue = SITE_RADIUS;
             serializedView.FindProperty("ringRenderer").objectReferenceValue = ring;
-            serializedView.FindProperty("constructionFramework").objectReferenceValue = framework;
+            SerializedProperty frameworks = serializedView.FindProperty("constructionFrameworks")
+                .FindPropertyRelative("keyValue");
+            frameworks.arraySize = 2;
+            SetFramework(frameworks.GetArrayElementAtIndex(0), SiteFacilityType.Mining, miningFramework);
+            SetFramework(frameworks.GetArrayElementAtIndex(1), SiteFacilityType.BattleAsteroid, battleFramework);
             serializedView.FindProperty("statusCanvas").objectReferenceValue = canvas;
             serializedView.FindProperty("progressFill").objectReferenceValue = progress;
             serializedView.FindProperty("statusText").objectReferenceValue = status;
-            serializedView.FindProperty("buildButton").objectReferenceValue = button;
-            serializedView.FindProperty("buildLabel").objectReferenceValue = buttonLabel;
+            serializedView.FindProperty("buildOptions").objectReferenceValue = buildOptions;
+            SerializedProperty optionsProperty = serializedView.FindProperty("facilityOptions");
+            optionsProperty.arraySize = options.Length;
+            for (int i = 0; i < options.Length; i++)
+            {
+                optionsProperty.GetArrayElementAtIndex(i).objectReferenceValue = options[i];
+            }
+
             serializedView.ApplyModifiedPropertiesWithoutUndo();
             AddRockObstacles(view, rocks.transform);
 
@@ -175,10 +200,17 @@ namespace EmpireAtWar.Editor.CaptureSites
             return prefab;
         }
 
-        private static Transform BuildFramework(Transform parent, System.Func<Transform, GameObject> instantiateFacilityModel)
+        private static void SetFramework(SerializedProperty entry, SiteFacilityType facilityType, Transform framework)
+        {
+            entry.FindPropertyRelative("key").enumValueIndex = (int)facilityType;
+            entry.FindPropertyRelative("value").objectReferenceValue = framework;
+        }
+
+        private static Transform BuildFramework(Transform parent, string name,
+            System.Func<Transform, GameObject> instantiateFacilityModel)
         {
             // Pivot at the facility base so the scaffold rises from the rock as construction progresses.
-            GameObject framework = new GameObject("ConstructionFramework");
+            GameObject framework = new GameObject(name);
             framework.transform.SetParent(parent, false);
             GameObject facilityModel = instantiateFacilityModel(framework.transform);
             Renderer[] renderers = facilityModel.GetComponentsInChildren<Renderer>();
@@ -219,44 +251,89 @@ namespace EmpireAtWar.Editor.CaptureSites
         }
 
         private static Canvas BuildCanvas(Transform parent, out Image progress, out TMP_Text status,
-            out Button button, out TMP_Text buttonLabel)
+            out GameObject buildOptions, out SiteFacilityOptionView[] options)
         {
             GameObject canvasObject = new GameObject("StatusCanvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasObject.layer = UI_LAYER;
             RectTransform canvasTransform = (RectTransform)canvasObject.transform;
             canvasTransform.SetParent(parent, false);
-            canvasTransform.sizeDelta = new Vector2(320f, 150f);
+            // Bottom pivot: the view scales the panel to a constant screen size, growing up from above the rock.
+            canvasTransform.pivot = new Vector2(0.5f, 0f);
+            canvasTransform.sizeDelta = new Vector2(560f, 330f);
             canvasTransform.localPosition = new Vector3(0f, 16f, 0f);
-            canvasTransform.localScale = Vector3.one * 0.08f;
+            canvasTransform.localScale = Vector3.one * (0.08f / SITE_SCALE);
             Canvas canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.overrideSorting = true;
             canvas.sortingOrder = 100;
             canvasObject.GetComponent<CanvasScaler>().dynamicPixelsPerUnit = 10f;
 
-            status = CreateText("Status", canvasTransform, new Vector2(0f, 0.72f), Vector2.one, 30f);
+            MPImage statusPanel = CreatePanel("StatusPanel", canvasTransform, PANEL_COLOR, PANEL_OUTLINE_COLOR, 16f);
+            SetRect(statusPanel.rectTransform, new Vector2(0f, 0.72f), Vector2.one);
+            status = CreateText("Status", statusPanel.rectTransform, new Vector2(0.04f, 0.36f),
+                new Vector2(0.96f, 0.96f), 40f, TEXT_COLOR);
             status.text = "NEUTRAL SITE";
 
-            MPImage track = CreateImage("ProgressTrack", canvasTransform, TRACK_COLOR, 1f);
-            SetRect(track.rectTransform, new Vector2(0.05f, 0.52f), new Vector2(0.95f, 0.68f));
+            MPImage track = CreateImage("ProgressTrack", statusPanel.rectTransform, TRACK_COLOR, 1f);
+            SetRect(track.rectTransform, new Vector2(0.04f, 0.14f), new Vector2(0.96f, 0.3f));
             progress = CreateImage("ProgressFill", track.rectTransform, TEXT_COLOR, 1f);
             SetRect(progress.rectTransform, Vector2.zero, Vector2.one);
 
-            MPImage buttonImage = CreateImage("BuildButton", canvasTransform, BUTTON_COLOR, 10f);
-            SetRect(buttonImage.rectTransform, new Vector2(0.1f, 0.02f), new Vector2(0.9f, 0.44f));
-            buttonImage.raycastTarget = true;
-            buttonImage.OutlineWidth = 1.5f;
-            buttonImage.OutlineColor = BUTTON_OUTLINE_COLOR;
-            button = buttonImage.gameObject.AddComponent<Button>();
-            button.transition = Selectable.Transition.ColorTint;
-            button.targetGraphic = buttonImage;
-            buttonLabel = CreateText("Label", buttonImage.rectTransform, Vector2.zero, Vector2.one, 22f);
-            buttonLabel.text = "BUILD";
-            buttonImage.gameObject.SetActive(false);
+            MPImage optionsPanel = CreatePanel("BuildOptions", canvasTransform, PANEL_COLOR, PANEL_OUTLINE_COLOR, 16f);
+            SetRect(optionsPanel.rectTransform, Vector2.zero, new Vector2(1f, 0.69f));
+            options = new[]
+            {
+                BuildOptionCard(optionsPanel.rectTransform, SiteFacilityType.Mining, "+ CREDIT INCOME",
+                    new Vector2(0.03f, 0.05f), new Vector2(0.485f, 0.95f)),
+                BuildOptionCard(optionsPanel.rectTransform, SiteFacilityType.BattleAsteroid, "DEFENSE PLATFORM",
+                    new Vector2(0.515f, 0.05f), new Vector2(0.97f, 0.95f)),
+            };
+            buildOptions = optionsPanel.gameObject;
+            buildOptions.SetActive(false);
 
             canvasObject.SetActive(false);
             return canvas;
+        }
+
+        private static SiteFacilityOptionView BuildOptionCard(Transform parent, SiteFacilityType facilityType,
+            string role, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            MPImage card = CreatePanel($"{facilityType}Option", parent, CARD_COLOR, CARD_OUTLINE_COLOR, 10f);
+            SetRect(card.rectTransform, anchorMin, anchorMax);
+            card.raycastTarget = true;
+            Button button = card.gameObject.AddComponent<Button>();
+            button.transition = Selectable.Transition.ColorTint;
+            button.targetGraphic = card;
+            ColorBlock colors = button.colors;
+            colors.disabledColor = CARD_DISABLED_COLOR;
+            button.colors = colors;
+
+            TMP_Text nameText = CreateText("Name", card.rectTransform, new Vector2(0.06f, 0.6f),
+                new Vector2(0.94f, 0.94f), 34f, TEXT_COLOR);
+            TMP_Text roleText = CreateText("Role", card.rectTransform, new Vector2(0.06f, 0.38f),
+                new Vector2(0.94f, 0.58f), 24f, LABEL_COLOR);
+            roleText.text = role;
+            TMP_Text costText = CreateText("Cost", card.rectTransform, new Vector2(0.06f, 0.08f),
+                new Vector2(0.94f, 0.36f), 30f, VALUE_COLOR);
+
+            SiteFacilityOptionView option = card.gameObject.AddComponent<SiteFacilityOptionView>();
+            SerializedObject serializedOption = new SerializedObject(option);
+            serializedOption.FindProperty("facilityType").enumValueIndex = (int)facilityType;
+            serializedOption.FindProperty("button").objectReferenceValue = button;
+            serializedOption.FindProperty("nameText").objectReferenceValue = nameText;
+            serializedOption.FindProperty("costText").objectReferenceValue = costText;
+            serializedOption.ApplyModifiedPropertiesWithoutUndo();
+            return option;
+        }
+
+        private static MPImage CreatePanel(string name, Transform parent, Color color, Color outlineColor,
+            float cornerRadius)
+        {
+            MPImage panel = CreateImage(name, parent, color, cornerRadius);
+            panel.OutlineWidth = 1.5f;
+            panel.OutlineColor = outlineColor;
+            return panel;
         }
 
         private static MPImage CreateImage(string name, Transform parent, Color color, float cornerRadius)
@@ -276,7 +353,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         }
 
         private static TMP_Text CreateText(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax,
-            float fontSize)
+            float fontSize, Color color)
         {
             GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
             textObject.layer = UI_LAYER;
@@ -289,7 +366,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             text.fontSizeMax = fontSize;
             text.fontStyle = FontStyles.Bold;
             text.alignment = TextAlignmentOptions.Center;
-            text.color = TEXT_COLOR;
+            text.color = color;
             text.raycastTarget = false;
             return text;
         }

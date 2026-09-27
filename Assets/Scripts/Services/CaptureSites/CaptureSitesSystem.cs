@@ -36,6 +36,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private LazyInject<ISiteFacilityBuilder> _playerBuilder;
         private LazyInject<ISiteFacilityBuilder> _opponentBuilder;
         private CaptureSitePresenter _selectedSite;
+        private Predicate<float> _canPlayerAfford;
 
         [Inject]
         private void Construct(
@@ -67,11 +68,12 @@ namespace EmpireAtWar.Services.CaptureSites
             foreach (CaptureSiteView view in _siteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(view.CaptureDuration, _data.CaptureSpeedPerNetShip);
-                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data.GetCost(view.FacilityType));
+                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data);
                 site.BuildRequested += HandleBuildRequested;
                 _sites.Add(site);
             }
 
+            _canPlayerAfford = price => _playerBuilder.Value.CanAfford(price);
             _inputService.OnInput += HandleInput;
             _inputService.OnEscapePressed += ClearSelection;
         }
@@ -116,9 +118,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
                 bool isHovered = isVisible && _inputService.SupportsHover &&
                     site.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, site.Center));
-                bool canPlayerAfford = site.Owner == PlayerType.Player &&
-                    _playerBuilder.Value.CanAfford(site.Cost.Price);
-                site.SetVisibility(isVisible, isHovered, canPlayerAfford);
+                site.SetVisibility(isVisible, isHovered, _canPlayerAfford);
             }
         }
 
@@ -222,7 +222,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 // Paying for a site that hostile units are about to take would waste the credits.
                 if (site.Owner == playerType && site.CanStartConstruction && !HasHostileUnits(site, playerType))
                 {
-                    return TryStartConstruction(site);
+                    return TryStartConstruction(site, ChooseFacilityType(playerType));
                 }
             }
 
@@ -267,17 +267,42 @@ namespace EmpireAtWar.Services.CaptureSites
             _selectedSite = null;
         }
 
-        private void HandleBuildRequested(CaptureSitePresenter site)
+        private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
         {
             if (site.Owner == PlayerType.Player && site.CanStartConstruction)
             {
-                TryStartConstruction(site);
+                TryStartConstruction(site, facilityType);
             }
         }
 
-        private bool TryStartConstruction(CaptureSitePresenter site)
+        /// <summary>Keeps a side's facilities balanced: builds whichever type it owns fewer of, mining first.</summary>
+        private SiteFacilityType ChooseFacilityType(PlayerType playerType)
         {
-            if (!GetBuilder(site.Owner).TrySpend(site.Cost.Price))
+            int miningCount = 0;
+            int battleAsteroidCount = 0;
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                if (site.Owner != playerType || !site.HasFacility)
+                {
+                    continue;
+                }
+
+                if (site.FacilityType == SiteFacilityType.Mining)
+                {
+                    miningCount++;
+                }
+                else
+                {
+                    battleAsteroidCount++;
+                }
+            }
+
+            return battleAsteroidCount < miningCount ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
+        }
+
+        private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType)
+        {
+            if (!GetBuilder(site.Owner).TrySpend(site.GetCost(facilityType).Price))
             {
                 return false;
             }
@@ -287,7 +312,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 _selectedSite = null;
             }
 
-            site.StartConstruction();
+            site.StartConstruction(facilityType);
             return true;
         }
 

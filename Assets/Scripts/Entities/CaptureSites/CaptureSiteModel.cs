@@ -4,7 +4,8 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Entities.CaptureSites
 {
     /// <summary>
-    /// Neutral → Owned → Constructing → Operational; losing the facility returns the site to Neutral.
+    /// Neutral → Owned → Constructing → Operational; the owner picks the facility when construction starts
+    /// and losing the facility returns the site to Neutral.
     /// An operational facility locks the site: it must be destroyed before the site can be captured.
     /// </summary>
     public sealed class CaptureSiteModel : PureModel
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
         public PlayerType CapturingPlayer { get; private set; } = PlayerType.None;
         public float CaptureProgress { get; private set; }
+        public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }
         public bool IsContested { get; private set; }
         public bool IsCapturable => State != CaptureSiteState.Operational;
@@ -78,8 +80,9 @@ namespace EmpireAtWar.Entities.CaptureSites
             return true;
         }
 
-        public void StartConstruction(float buildDuration)
+        public void StartConstruction(SiteFacilityType facilityType, float buildDuration)
         {
+            FacilityType = facilityType;
             _buildDuration = buildDuration;
             ConstructionProgress = 0f;
             State = CaptureSiteState.Constructing;
