@@ -26,6 +26,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 60
           <Max>k__BackingField: 150
+        <DefaultZoneGap>k__BackingField: 0
         <PlanetScale>k__BackingField: 3
         <LaneWidth>k__BackingField: 500
         <MinLaneWidth>k__BackingField: 360
@@ -49,6 +50,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 60
           <Max>k__BackingField: 360
+        <DefaultZoneGap>k__BackingField: 0
         <PlanetScale>k__BackingField: 4.2
         <LaneWidth>k__BackingField: 510
         <MinLaneWidth>k__BackingField: 360
@@ -72,6 +74,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 240
           <Max>k__BackingField: 1350
+        <DefaultZoneGap>k__BackingField: 240
         <PlanetScale>k__BackingField: 10.5
         <LaneWidth>k__BackingField: 500
         <MinLaneWidth>k__BackingField: 360

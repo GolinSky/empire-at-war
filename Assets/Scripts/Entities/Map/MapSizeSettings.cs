@@ -18,6 +18,8 @@ namespace EmpireAtWar.Entities.Map
         public float PointSpacing { get; private set; }
         [field: SerializeField, Tooltip("Gap between the station footprint and its home mining site, Easy (Min) to hardest (Max).")]
         public FloatRange HomeMiningGap { get; private set; }
+        [field: SerializeField, Min(0f), Tooltip("Extra gap between the station footprint and its default reinforcement zone.")]
+        public float DefaultZoneGap { get; private set; }
         [field: SerializeField, Min(0.01f)] public float PlanetScale { get; private set; } = 1f;
 
         [field: FormerlySerializedAs("<RoadWidth>k__BackingField"), SerializeField, Min(1f),
