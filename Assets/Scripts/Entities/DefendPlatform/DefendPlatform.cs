@@ -11,8 +11,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable, ITickable,
-        IEntityLifecycle
+    public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable, ITickable
     {
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
@@ -54,6 +53,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         public void Initialize()
         {
+            _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
             SynchronizeComponents();
         }
@@ -68,13 +68,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
             Release(false);
         }
 
-        public void Release()
-        {
-            Release(true);
-        }
+        private void HandleDestroyed() => Release(true);
 
         private void Release(bool playDeathEffects)
         {
+            _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
             if (!_componentLifecycle.Release())
             {
                 return;

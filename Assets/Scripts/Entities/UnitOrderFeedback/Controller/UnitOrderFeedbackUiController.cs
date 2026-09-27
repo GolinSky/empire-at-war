@@ -7,6 +7,7 @@ using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.UnitOrderFeedback
 {
@@ -57,7 +58,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 _attackTarget = null;
             }
             else _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
-                _attackTarget.HealthModel.Transform.position));
+                _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
         public void AttackFeedbackCompleted() => _attackTarget = null;
@@ -81,7 +82,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             {
                 _attackTarget = order.Target;
                 _ui.PlayAttack(_cameraService.WorldToScreenPoint(
-                    order.Target.HealthModel.Transform.position));
+                    order.Target.GetFacade<IEntityTransformFacade>().Transform.position));
             }
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)

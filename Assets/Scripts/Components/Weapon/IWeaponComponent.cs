@@ -1,6 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Mvc;
-using UnityEngine;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -9,7 +8,6 @@ namespace EmpireAtWar.Components.Weapon
         void AddTarget(AttackData attackData, AttackType attackType);
         bool HasEnoughRange(float distance);
         void ResetTarget();
-        float GetFiringTurnAngle(Vector3 targetPosition);
         float AttackDistance { get; }
     }
 }

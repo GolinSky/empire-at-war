@@ -15,8 +15,7 @@ namespace EmpireAtWar.Entities.SpaceStation
     {
     }
 
-    public class SpaceStation : MonoBehaviour, IController, ISpaceStationCommand, IInitializable, ILateDisposable,
-        IEntityLifecycle
+    public class SpaceStation : MonoBehaviour, IController, ISpaceStationCommand, IInitializable, ILateDisposable
     {
         private FogOfWarSystem _fogOfWarSystem;
         private PlayerType _playerType;
@@ -59,6 +58,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         public void Initialize()
         {
+            _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             gameObject.name = $"{_playerType}_SpaceStation";
             transform.position = _startPosition;
             _radarComponent.SetPosition(transform.position);
@@ -74,13 +74,11 @@ namespace EmpireAtWar.Entities.SpaceStation
             Release(false);
         }
 
-        public void Release()
-        {
-            Release(true);
-        }
+        private void HandleDestroyed() => Release(true);
 
         private void Release(bool playDeathAnimation)
         {
+            _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
             if (!_componentLifecycle.Release())
             {
                 return;

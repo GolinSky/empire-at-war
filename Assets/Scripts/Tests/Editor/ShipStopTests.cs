@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Movement.Formation;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Mediator;
@@ -12,61 +9,48 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
 using NUnit.Framework;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Tests.Editor
 {
     public sealed class ShipStopTests
     {
-        [TestCase(ShipOrderType.WaypointMove)]
-        [TestCase(ShipOrderType.Retreat)]
-        [TestCase(ShipOrderType.Attack)]
-        public void Stop_ClearsOrderAndMainTargetAndEntersIdle(ShipOrderType order)
+        [TestCase(UnitOrderType.WaypointMove)]
+        [TestCase(UnitOrderType.Retreat)]
+        [TestCase(UnitOrderType.Attack)]
+        public void Stop_ClearsOrderAndMainTargetAndEntersIdle(UnitOrderType order)
         {
-            GameObject gameObject = new GameObject("ShipStopTest");
-            EmpireAtWar.Ship.Ship ship = gameObject.AddComponent<EmpireAtWar.Ship.Ship>();
-            ShipOrderModel model = new ShipOrderModel();
+            UnitOrderModel model = new UnitOrderModel();
             FormationPoint destination = new FormationPoint(10f, 20f);
-            if (order == ShipOrderType.WaypointMove)
+            if (order == UnitOrderType.WaypointMove)
                 model.Replace(order, destination,
                     waypoints: new[] { destination, new FormationPoint(30f, 40f) });
-            else if (order == ShipOrderType.Retreat)
+            else if (order == UnitOrderType.Retreat)
                 model.Replace(order, destination);
             else model.Replace(order);
             FakeMovement movement = new FakeMovement();
             FakeWeapon weapon = new FakeWeapon();
             IdleState idle = new IdleState(movement, weapon, null);
-            StateMachine1 stateMachine = new StateMachine1();
+            ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
-            Set(ship, "_orderModel", model);
-            Set(ship, "_shipMoveComponent", movement);
-            Set(ship, "_weaponComponent", weapon);
-            Set(ship, "_idleState", idle);
-            Set(ship, "_stateMachine", stateMachine);
-            Set(ship, "_playerType", PlayerType.Player);
-            Set(ship, "_shipAIBrain", new ShipAIBrain(null, null, null,
-                null, null, null, null, null, null));
+            ShipAIBrain brain = new ShipAIBrain(null, null, movement, null, null, model);
+            ShipOrderRunner runner = new ShipOrderRunner(model, stateMachine, brain, movement, weapon,
+                null, idle, null, null, null, null, null, null, PlayerType.Player);
 
-            try
-            {
-                ship.Stop();
+            runner.Stop();
 
-                Assert.That(model.Current, Is.EqualTo(ShipOrderType.None));
-                Assert.That(stateMachine.CurrentState, Is.SameAs(idle));
-                Assert.That(weapon.ResetCount, Is.GreaterThanOrEqualTo(1));
-                Assert.That(movement.StopCount, Is.EqualTo(1));
-                Assert.That(model.AdvanceWaypoint(out _), Is.False);
-            }
-            finally { Object.DestroyImmediate(gameObject); }
+            Assert.That(model.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(stateMachine.CurrentState, Is.SameAs(idle));
+            Assert.That(weapon.ResetCount, Is.GreaterThanOrEqualTo(1));
+            Assert.That(movement.StopCount, Is.EqualTo(1));
+            Assert.That(model.AdvanceWaypoint(out _), Is.False);
         }
-
-        private static void Set(object target, string name, object value) =>
-            typeof(EmpireAtWar.Ship.Ship).GetField(name,
-                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);
 
         private sealed class PassiveState : IBaseState
         {
+            public bool IsComplete => false;
             public void Enter() { }
-            public void Update() { }
+            public void Tick(float deltaTime) { }
             public void Exit() { }
         }
 
@@ -78,29 +62,20 @@ namespace EmpireAtWar.Tests.Editor
             public void AddTarget(AttackData data, AttackType type) { }
             public bool HasEnoughRange(float distance) => true;
             public void ResetTarget() => ResetCount++;
-            public float GetFiringTurnAngle(Vector3 targetPosition) => 0f;
             public void Release() { }
         }
 
-        private sealed class FakeMovement : IShipMoveComponent
+        private sealed class FakeMovement : IShipMovement
         {
-            public string Id => nameof(FakeMovement);
             public Vector3 CurrentPosition => Vector3.zero;
             public bool IsMoving => false;
             public bool IsBlocked => false;
             public float NavigationRadius => 1f;
-            public float NavigationSpeed => 1f;
-            public float HyperSpaceDuration => 0f;
             public int StopCount { get; private set; }
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }
-            public void MoveToPositionOnScreen(Vector2 position) { }
             public void LookAtTarget(Vector3 position) { }
             public float GetRange(Vector3 position) => 0f;
             public void Stop() => StopCount++;
-            public void ApplyMoveCoefficient(float coefficient) { }
-            public void HandleSelection(bool selected) { }
-            public void HandleRadarContacts(IReadOnlyList<RadarContact> contacts) { }
-            public void SetMediator(IShipMovementMediator mediator) { }
         }
     }
 }

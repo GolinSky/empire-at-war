@@ -6,11 +6,13 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -49,17 +51,20 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
+            ICaptureSitesSystem captureSites,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel)
         {
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
+            _captureSites = captureSites;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
         }
@@ -70,10 +75,12 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> playerShips = GetShips(PlayerType.Player);
             FormationPoint fleetCenter = CalculateFleetCenter(enemyShips);
             Vector3 origin = new Vector3(fleetCenter.X, 0f, fleetCenter.Z);
-            bool hasCaptureTarget = _reinforcementZonesSystem.TryGetCaptureTarget(
-                PlayerType.Opponent,
-                origin,
-                out Vector3 captureTarget);
+            // Defending an owned site outranks new captures; raiding an operational site is the fallback.
+            bool hasThreatenedSite = _captureSites.TryGetThreatenedSite(
+                PlayerType.Opponent, out Vector3 captureTarget);
+            bool hasCaptureTarget = hasThreatenedSite ||
+                TryGetClosestCaptureTarget(origin, out captureTarget) ||
+                _captureSites.TryGetRaidTarget(PlayerType.Opponent, origin, out captureTarget);
             GameEntity enemyBaseTarget = FindClosestEntity<ISpaceStationModelObserver>(
                 PlayerType.Player,
                 origin);
@@ -100,7 +107,8 @@ namespace EmpireAtWar.Services.Enemy
                 enemyBaseTarget != null,
                 ownBase != null,
                 ownedCapturableZoneCount,
-                enemyShipsNearOwnBase);
+                enemyShipsNearOwnBase,
+                hasThreatenedSite);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in enemyShips)
@@ -113,6 +121,19 @@ namespace EmpireAtWar.Services.Enemy
                 enemyBaseTarget,
                 ownBase,
                 receivers);
+        }
+
+        private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
+        {
+            bool hasZone = _reinforcementZonesSystem.TryGetCaptureTarget(
+                PlayerType.Opponent, origin, out Vector3 zoneTarget);
+            bool hasSite = _captureSites.TryGetCaptureTarget(
+                PlayerType.Opponent, origin, out Vector3 siteTarget);
+            captureTarget = hasSite && (!hasZone ||
+                (siteTarget - origin).sqrMagnitude < (zoneTarget - origin).sqrMagnitude)
+                ? siteTarget
+                : zoneTarget;
+            return hasZone || hasSite;
         }
 
         private List<IShipEntity> GetShips(PlayerType playerType)
@@ -158,7 +179,7 @@ namespace EmpireAtWar.Services.Enemy
                 return 0;
             }
 
-            Vector3 basePosition = ownBase.HealthModel.Transform.position;
+            Vector3 basePosition = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
             float threatRadiusSquared = threatRadius * threatRadius;
             int count = 0;
             foreach (IShipEntity ship in ships)
@@ -189,7 +210,7 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                float distance = (entity.HealthModel.Transform.position - origin).sqrMagnitude;
+                float distance = (entity.GetFacade<IEntityTransformFacade>().Transform.position - origin).sqrMagnitude;
                 if (distance < closestDistance)
                 {
                     closest = entity;

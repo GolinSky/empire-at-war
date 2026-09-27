@@ -74,6 +74,16 @@ Use patterns only when their complexity is justified:
 - **Observer:** Model-to-Presenter communication through C# events or `System.Action`; use asynchronous primitives such as UniTask only when the workflow is genuinely asynchronous. Do not use `UnityEvent` in Models.
 - **Factory:** Entity, prefab, or VFX creation when instantiation details should be encapsulated.
 
+## Entity Communication
+
+- **Between entities:** use only `IEntity`, `IEntityLocator`, and entity facades (`IEntityFacade`, resolved with `TryGetFacade` / `GetFacade`). `IEntity` holds no Unity types. Another entity's Transform comes from `IEntityTransformFacade`. A unit's own Transform is injected with `EntityBindType.ViewTransform`.
+- **Inside an entity:** the entity class (for example `Ship` or `Squadron`) is the only object that connects its components.
+  - The entity calls methods on its components' interfaces.
+  - Components report to the entity through C# events or read-only observer interfaces.
+  - A component may read a sibling through a narrow read-only interface, such as `IWeaponFacing` or `IRadarModelObserver`, but never commands it.
+  - Components never use `SetMediator`-style callbacks and never inject their owning entity.
+- **Ship state:** only `ShipOrderRunner` changes ship state. States report `IsComplete` and never switch states themselves.
+
 ## Unity Constraints & Error Handling
 
 - Use PascalCase for types, methods, properties, and public members.

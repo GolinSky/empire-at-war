@@ -15,7 +15,7 @@ using Zenject;
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
-        IWeaponFireEvents
+        IWeaponFireEvents, IWeaponFacing
     {
         private struct TargetCandidate
         {

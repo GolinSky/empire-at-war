@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.MenuUi.Popups;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private TMP_Dropdown playerFactionDropdown;
         [SerializeField] private TMP_Dropdown enemyFactionDropdown;
         [SerializeField] private TMP_Dropdown planetsDropdown;
+        [SerializeField] private TMP_Dropdown mapSizeDropdown;
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private TMP_Dropdown enemyDifficultyDropdown;
         [SerializeField] private Slider startingMoneySlider;
@@ -52,6 +54,7 @@ namespace EmpireAtWar.Ui.Popups
             SetData<FactionType>(playerFactionDropdown);
             SetData<FactionType>(enemyFactionDropdown);
             SetData<PlanetType>(planetsDropdown);
+            SetData<MapSize>(mapSizeDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
             SetData<EnemyAiDifficulty>(enemyDifficultyDropdown);
             SetStartingMoneySliderData();
@@ -63,6 +66,7 @@ namespace EmpireAtWar.Ui.Popups
             playerFactionDropdown.onValueChanged.AddListener(_presenter.SelectPlayerFaction);
             enemyFactionDropdown.onValueChanged.AddListener(_presenter.SelectEnemyFaction);
             planetsDropdown.onValueChanged.AddListener(_presenter.SelectPlanet);
+            mapSizeDropdown.onValueChanged.AddListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
             enemyDifficultyDropdown.onValueChanged.AddListener(_presenter.SelectEnemyDifficulty);
             startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
@@ -97,6 +101,7 @@ namespace EmpireAtWar.Ui.Popups
             playerFactionDropdown.SetValueWithoutNotify((int)_model.PlayerFaction);
             enemyFactionDropdown.SetValueWithoutNotify((int)_model.EnemyFaction);
             planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
+            mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             enemyDifficultyDropdown.SetValueWithoutNotify((int)_model.EnemyDifficulty);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
@@ -118,6 +123,7 @@ namespace EmpireAtWar.Ui.Popups
             playerFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectPlayerFaction);
             enemyFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyFaction);
             planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
+            mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
             enemyDifficultyDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyDifficulty);
             startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);

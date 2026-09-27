@@ -5,19 +5,20 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public sealed class AttackMoveState : IBaseState
     {
-        private readonly IShipMoveComponent _movement;
+        private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
         private IEntity _engagementTarget;
         private Vector3 _destination;
 
-        public AttackMoveState(IShipMoveComponent movement, IWeaponComponent weapon,
+        public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory)
         {
             _movement = movement;
@@ -26,7 +27,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _attackDataFactory = attackDataFactory;
         }
 
-        public bool IsEngaging => _engagementTarget != null;
+        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving && !_movement.IsBlocked;
         public void SetDestination(Vector3 destination) => _destination = destination;
 
         public void Enter()
@@ -35,7 +36,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _movement.MoveToPosition(_destination);
         }
 
-        public void Update()
+        public void Tick(float deltaTime)
         {
             if (_engagementTarget != null &&
                 (!_radar.Enemies.Contains(_engagementTarget) ||
@@ -60,7 +61,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget != null)
             {
-                Vector3 target = _engagementTarget.HealthModel.Transform.position;
+                Vector3 target = _engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
                     if (_movement.IsMoving) _movement.Stop();

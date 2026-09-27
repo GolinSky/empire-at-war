@@ -21,14 +21,14 @@ namespace EmpireAtWar.Ui.Base
         [SerializeField] private Canvas dynamicCanvas;
         [SerializeField] private Canvas popupCanvas;
 
-        private UiFacade _uiFacade;
+        private UiFactory _uiFacade;
 
         public Transform DefaultCanvasTransform => defaultCanvas.transform;
         public Transform DynamicCanvasTransform => dynamicCanvas.transform;
         public Transform PopupCanvasTransform => popupCanvas.transform;
 
         [Inject]
-        public void Constructor(UiFacade uiFacade)
+        public void Constructor(UiFactory uiFacade)
         {
             _uiFacade = uiFacade;
         }

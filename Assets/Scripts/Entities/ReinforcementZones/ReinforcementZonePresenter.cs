@@ -14,10 +14,12 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
             _model = model;
             _view = view;
             Render();
+            SetVisibility(false, false);
         }
 
         public PlayerType Owner => _model.Owner;
         public bool IsCapturable => _view.IsCapturable;
+        public bool IsRevealed { get; private set; }
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
 
@@ -26,6 +28,14 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
             bool ownerChanged = _model.Tick(deltaTime, playerShipCount, opponentShipCount);
             Render();
             return ownerChanged;
+        }
+
+        public void SetVisibility(bool isRevealed, bool isHovered)
+        {
+            IsRevealed = isRevealed;
+            bool showCaptureUi = IsCapturable &&
+                (isHovered || _model.CapturingPlayer != PlayerType.None || _model.IsContested);
+            _view.SetVisibility(true, isRevealed && showCaptureUi);
         }
 
         public bool Contains(UnityEngine.Vector3 position)

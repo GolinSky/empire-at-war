@@ -15,8 +15,8 @@ namespace EmpireAtWar.Services.Audio
         // Remembered terrain remains at 0.35 visibility without revealing enemy activity.
         private const float MIN_ENEMY_VISIBILITY = 0.5f;
         private readonly IShipSfxView _view;
-        private readonly IShipAbilityCommand _abilities;
-        private readonly IShipMoveComponent _movement;
+        private readonly IShipAbilityFacade _abilities;
+        private readonly IShipMovement _movement;
         private readonly ShipMoveModel _movementModel;
         private readonly IShipMoveData _movementData;
         private readonly ICameraService _camera;
@@ -29,8 +29,8 @@ namespace EmpireAtWar.Services.Audio
         private bool _paused;
         private bool _disposed;
 
-        public ShipSfxPresenter(IShipSfxView view, IShipAbilityCommand abilities,
-            IShipMoveComponent movement, ShipMoveModel movementModel, IShipMoveData movementData,
+        public ShipSfxPresenter(IShipSfxView view, IShipAbilityFacade abilities,
+            IShipMovement movement, ShipMoveModel movementModel, IShipMoveData movementData,
             ICameraService camera, FogOfWarSystem fog, AudioShipData data)
         {
             _view = view;

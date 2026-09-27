@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -25,7 +24,7 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable
+        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable, IHardPointsSource
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
@@ -35,7 +34,6 @@ namespace EmpireAtWar.Components.Ship.Health
         private ITimer _refreshShieldsTimer;
         private ShieldComponent _shield;
         private bool _isReleased;
-        private IEntityLifecycle _entityLifecycle;
         private CombatModifiers _modifiers;
         private PlayerType _playerType;
         private Transform _viewTransform;
@@ -68,19 +66,18 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
         public PlayerType PlayerType => _playerType;
-        public Transform Transform => _viewTransform;
+        public IReadOnlyList<IHardPointStatus> HardPoints => _hardPointAdapters;
+        public float MaxShields => Model.MaxShields;
 
         [Inject]
         private void Construct(
             HealthModel model,
             CombatModifiers modifiers,
-            IEntityLifecycle entityLifecycle,
             PlayerType playerType,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
             _modifiers = modifiers;
-            _entityLifecycle = entityLifecycle;
             _playerType = playerType;
             _viewTransform = viewTransform;
         }
@@ -90,7 +87,6 @@ namespace EmpireAtWar.Components.Ship.Health
             InitializeHardPoints();
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
-            Model.OnDestroy += HandleDestroy;
             _modifiers.Changed += HandleIonStateChanged;
 
             if (shieldView != null)
@@ -126,7 +122,6 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             _isReleased = true;
-            Model.OnDestroy -= HandleDestroy;
             _modifiers.Changed -= HandleIonStateChanged;
             if (_ionStunView != null) _ionStunView.Release();
 
@@ -208,12 +203,6 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             Model.InitializeHardPoints(hardPointModels);
-        }
-
-        private void HandleDestroy()
-        {
-            _entityLifecycle.Release();
-            Release();
         }
 
         public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType damageType)

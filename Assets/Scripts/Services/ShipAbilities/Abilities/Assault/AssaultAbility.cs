@@ -1,7 +1,7 @@
 using System;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
 
@@ -14,10 +14,10 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public AssaultAbility(AssaultSettings settings) { _settings = settings; }
 
-        public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
+        public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
-            if (!caster.Entity.TryGetCommand(out IAttackCommand attack))
-                throw new InvalidOperationException($"{nameof(AssaultAbility)} requires an {nameof(IAttackCommand)} on the caster.");
+            if (!caster.Entity.TryGetFacade(out IAttackFacade attack))
+                throw new InvalidOperationException($"{nameof(AssaultAbility)} requires an {nameof(IAttackFacade)} on the caster.");
 
             _modifiers = caster.Modifiers;
             _modifiers.Add(_settings.StatModifier);

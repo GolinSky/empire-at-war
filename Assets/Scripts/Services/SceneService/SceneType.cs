@@ -4,8 +4,7 @@
     {
         MainMenu = 0,
         Loading = 2,
-        Coruscant = 1,
-        Kamino = 3,
+        Battle = 4,
         
         Undefined = 999,
     }

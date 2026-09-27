@@ -2,7 +2,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons;
 using System;
 using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Entities.BaseEntity.EntityCommands;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
@@ -164,7 +164,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                 {
                     if (entity.HealthModel.IsDestroyed)
                         continue;
-                    if (entity.TryGetCommand(out IShipAbilityCommand abilityCommand))
+                    if (entity.TryGetFacade(out IShipAbilityFacade abilityCommand))
                         _abilitySlots.AddRange(abilityCommand.Slots);
                     if (!hasGroup) continue;
                     if (entity.Model is IShipModelObserver ship)
@@ -217,7 +217,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                 foreach (IEntity entity in group.Value)
                 {
                     IEntity[] caster = { entity };
-                    IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetCommand(out IShipAbilityCommand command)
+                    IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
                     entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
                         entity.HealthModel));
@@ -237,7 +237,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             for (int i = 0; i < _playerSelectionContext.Entities.Count; i++)
             {
                 if (!_playerSelectionContext.Entities[i].HealthModel.IsDestroyed &&
-                    _playerSelectionContext.Entities[i].TryGetCommand(out IMoveCommand _))
+                    _playerSelectionContext.Entities[i].TryGetFacade(out IMoveFacade _))
                 {
                     return true;
                 }

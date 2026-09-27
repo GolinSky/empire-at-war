@@ -11,7 +11,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public BoostShieldPowerAbility(BoostShieldPowerSettings settings) { _settings = settings; }
 
-        public void Start(IShipAbilityCommand caster, ShipAbilityDefinition definition, IEntity target)
+        public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _modifiers = caster.Modifiers;
             _modifiers.Add(_settings.StatModifier);

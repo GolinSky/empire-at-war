@@ -3,7 +3,8 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Ui.Popups;
 using EmpireAtWar.Views.Economy;
@@ -37,6 +38,20 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(UiService), "dynamicCanvas"),
             new SerializedReference(typeof(UiService), "popupCanvas"),
             new SerializedReference(typeof(SkirmishPopupUi), "startingMoneySlider"),
+            new SerializedReference(typeof(SkirmishPopupUi), "mapSizeDropdown"),
+            new SerializedReference(typeof(MapLayoutView), "zonePrefab"),
+            new SerializedReference(typeof(MapLayoutView), "miningSitePrefab"),
+            new SerializedReference(typeof(MapLayoutView), "battleSitePrefab"),
+            new SerializedReference(typeof(MapLayoutView), "obstaclePrefab"),
+            new SerializedReference(typeof(MapLayoutView), "zoneRoot"),
+            new SerializedReference(typeof(MapLayoutView), "siteRoot"),
+            new SerializedReference(typeof(MapLayoutView), "obstacleRoot"),
+            new SerializedReference(typeof(MapLayoutView), "borderLine"),
+            new SerializedReference(typeof(MapLayoutView), "fogOfWarSystem"),
+            new SerializedReference(typeof(MapInstaller), "settings"),
+            new SerializedReference(typeof(MapInstaller), "mapLayoutView"),
+            new SerializedReference(typeof(MapInstaller), "reinforcementZonesSystem"),
+            new SerializedReference(typeof(MapInstaller), "captureSitesSystem"),
             new SerializedReference(typeof(SkirmishPopupUi), "closeButton"),
             new SerializedReference(typeof(SettingsPopupUi), "closeButton"),
             new SerializedReference(typeof(SettingsPopupUi), "qualitySettingsDropdown"),
@@ -72,7 +87,6 @@ namespace EmpireAtWar.Tests.Editor
                 "t:Prefab",
                 new[] { PREFAB_FOLDER });
             int[] referenceCounts = new int[REQUIRED_REFERENCES.Length];
-            int zoneSystemCount = 0;
             int zoneViewCount = 0;
             int shipBuildViewCount = 0;
             int shipMoveComponentCount = 0;
@@ -121,12 +135,6 @@ namespace EmpireAtWar.Tests.Editor
                         referenceCounts[i]++;
                     }
 
-                    if (component is ReinforcementZonesSystem)
-                    {
-                        AssertZoneViewsAssigned(serializedComponent, prefabPath);
-                        zoneSystemCount++;
-                    }
-
                     if (component is ReinforcementZoneView)
                     {
                         AssertNonCapturableZoneOwnerAssigned(serializedComponent, prefabPath);
@@ -149,7 +157,6 @@ namespace EmpireAtWar.Tests.Editor
                     $"No prefab contains {REQUIRED_REFERENCES[i].ComponentType.Name}.");
             }
 
-            Assert.That(zoneSystemCount, Is.GreaterThan(0));
             Assert.That(zoneViewCount, Is.GreaterThan(0));
             Assert.That(shipBuildViewCount, Is.GreaterThan(0));
             Assert.That(shipMoveComponentCount, Is.GreaterThan(0));
@@ -176,24 +183,6 @@ namespace EmpireAtWar.Tests.Editor
             SerializedProperty property = serializedObject.FindProperty(fieldName);
             Assert.That(property, Is.Not.Null, location);
             Assert.That(property.objectReferenceValue, Is.Not.Null, location);
-        }
-
-        private static void AssertZoneViewsAssigned(
-            SerializedObject serializedSystem,
-            string prefabPath)
-        {
-            SerializedProperty zoneViews = serializedSystem.FindProperty("_zoneViews");
-            Assert.That(zoneViews, Is.Not.Null, $"{prefabPath}._zoneViews");
-            Assert.That(zoneViews.isArray, Is.True, $"{prefabPath}._zoneViews");
-            Assert.That(zoneViews.arraySize, Is.GreaterThan(0), $"{prefabPath}._zoneViews");
-
-            for (int i = 0; i < zoneViews.arraySize; i++)
-            {
-                Assert.That(
-                    zoneViews.GetArrayElementAtIndex(i).objectReferenceValue,
-                    Is.Not.Null,
-                    $"{prefabPath}._zoneViews[{i}]");
-            }
         }
 
         private static void AssertNonCapturableZoneOwnerAssigned(

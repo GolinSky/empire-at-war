@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Commands;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
@@ -16,7 +15,7 @@ namespace EmpireAtWar.Components.Ship.Selection
         Vector3 WorldPosition { get; }
     }
 
-    public interface ISelectionComponent : IComponent, IUnitComponent
+    public interface ISelectionComponent : IComponent
     {
         Vector3 WorldPosition { get; }
         void SetActive(bool isActive);
@@ -29,7 +28,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         [SerializeField] private Canvas selectedCanvas;
         [SerializeField] private Image selectedImage;
 
-        private IUnitMediator _mediator;
         private bool _canBeSelected = true;
         private SharedSelectionData _sharedSelectionData;
 
@@ -85,12 +83,6 @@ namespace EmpireAtWar.Components.Ship.Selection
             }
 
             Model.IsSelected = isActive;
-            _mediator?.OnSelect(isActive);
-        }
-
-        public void SetMediator(IUnitMediator mediator)
-        {
-            _mediator = mediator;
         }
 
         private void HandleSelection(bool isActive)

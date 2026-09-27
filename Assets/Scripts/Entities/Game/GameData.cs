@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace EmpireAtWar.Entities.Game
     public interface IGameModelObserver : IModelObserver
     {
         PlanetType PlanetType { get; }
+        MapSize MapSize { get; }
         FactionType PlayerFactionType { get; }
         FactionType EnemyFactionType { get; }
         BattleVictoryCondition VictoryCondition { get; }
@@ -21,6 +23,7 @@ namespace EmpireAtWar.Entities.Game
     {
         public GameMode GameMode { get; set; }
         public PlanetType PlanetType { get; set; }
+        public MapSize MapSize { get; set; }
         public FactionType PlayerFactionType { get; set; }
         public FactionType EnemyFactionType { get; set; } = FactionType.Separatist;
         public BattleVictoryCondition VictoryCondition { get; set; } = BattleVictoryCondition.DestroyEnemyFleet;

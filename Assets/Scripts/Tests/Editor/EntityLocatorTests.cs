@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using NUnit.Framework;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -50,8 +51,11 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel => null;
             public PlayerType PlayerType => PlayerType.Player;
 
-            public bool TryGetCommand<TCommand>(out TCommand entityCommand)
-                where TCommand : IEntityCommand
+            public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
+            { TryGetFacade(out TCommand facade); return facade; }
+
+            public bool TryGetFacade<TCommand>(out TCommand entityCommand)
+                where TCommand : IEntityFacade
             {
                 entityCommand = default;
                 return false;

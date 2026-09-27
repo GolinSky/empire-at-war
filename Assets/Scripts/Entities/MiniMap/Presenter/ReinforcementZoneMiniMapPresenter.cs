@@ -57,7 +57,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         {
             marker.SetPosition(zone.Center.x, zone.Center.z);
             marker.SetRelation(zone.Owner);
-            marker.SetVisible(true);
+            marker.SetVisible(zone.IsRevealed);
             marker.SetWorldDiameter(zone.Radius * 2f);
         }
     }

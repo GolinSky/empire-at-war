@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
 
         public ShipAbilityId Id { get; }
         public ShipAbilityDefinition Definition { get; }
-        public IShipAbilityCommand Owner { get; }
+        public IShipAbilityFacade Owner { get; }
         public ShipAbilityState State { get; private set; } = ShipAbilityState.Ready;
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         };
 
         public ShipAbilitySlot(ShipAbilityId id, ShipAbilityDefinition definition,
-            IShipAbilityCommand owner)
+            IShipAbilityFacade owner)
         {
             Id = id;
             Definition = definition;

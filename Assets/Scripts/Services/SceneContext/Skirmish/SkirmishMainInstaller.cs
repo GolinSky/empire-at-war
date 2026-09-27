@@ -1,6 +1,7 @@
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
@@ -16,7 +17,6 @@ using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
@@ -26,7 +26,7 @@ using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
@@ -49,14 +49,16 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
-            .FromComponentInHierarchy()
-            .AsSingle();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
+        Container.BindScriptableObject<CaptureSiteData>(Repository);
         Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();
         Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
         Container.Bind<UnitActionTargetingModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<PlayerOrderInputHandler>();
+        Container.BindScriptableObject<HardPointOverlayData>(Repository);
+        Container.BindInterfacesAndSelfTo<HardPointOverlayModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<HardPointOverlayView>().FromNewComponentOnNewGameObject().AsSingle();
+        Container.BindInterfacesAndSelfTo<HardPointOverlayPresenter>().AsSingle().NonLazy();
 
         Container.BindInterfacesExt<AttackDataFactory>();
         Container.Bind<BattleVictoryModel>().AsSingle();
@@ -68,7 +70,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .AsSingle()
             .NonLazy();
         Container
-            .BindFactory<UiType, Transform, BaseUi, UiFacade>()
+            .BindFactory<UiType, Transform, BaseUi, UiFactory>()
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
 
@@ -96,8 +98,6 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesNonLazyExt<UnitOrderFeedbackUiController>();
         Container.BindInitializableExecutionOrder<PlayerOrderInputHandler>(-100);
         
-        //todo: merge map model with minimap 
-        Container.BindModel<MapData>(Repository);
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
         Container.BindModel<MiniMapData>(Repository);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
@@ -105,6 +105,10 @@ public class SkirmishMainInstaller : MonoInstaller
             .AsSingle()
             .NonLazy();
         Container.BindInitializableExecutionOrder<ReinforcementZoneMiniMapPresenter>(100);
+        Container.BindInterfacesAndSelfTo<CaptureSiteMiniMapPresenter>()
+            .AsSingle()
+            .NonLazy();
+        Container.BindInitializableExecutionOrder<CaptureSiteMiniMapPresenter>(100);
         
         Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
         Container.BindInterfacesAndSelfTo<CinematicCameraModel>().AsSingle();

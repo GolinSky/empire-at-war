@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -25,10 +23,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
         private ITimer _regenerateShieldsTimer;
-        private IEntityLifecycle _entityLifecycle;
         private CombatModifiers _modifiers;
         private PlayerType _playerType;
-        private Transform _viewTransform;
         private HardPointAdapter[] _adapters = Array.Empty<HardPointAdapter>();
         private bool _isReleased;
 
@@ -58,18 +54,14 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
         public PlayerType PlayerType => _playerType;
-        public Transform Transform => _viewTransform;
 
         [Inject]
         private void Construct(SquadronHealthModel model, CombatModifiers modifiers,
-            IEntityLifecycle entityLifecycle, PlayerType playerType,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
+            PlayerType playerType)
         {
             SetModel(model);
             _modifiers = modifiers;
-            _entityLifecycle = entityLifecycle;
             _playerType = playerType;
-            _viewTransform = viewTransform;
         }
 
         public void Initialize()
@@ -88,7 +80,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             _regenerateShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
-            Model.OnDestroy += HandleDestroy;
         }
 
         public void Tick()
@@ -112,7 +103,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             _isReleased = true;
-            Model.OnDestroy -= HandleDestroy;
             foreach (HardPointAdapter adapter in _adapters)
             {
                 adapter.Dispose();
@@ -134,12 +124,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             return _liveUnits.Count > 0 ? _liveUnits.ToArray() : _adapters;
-        }
-
-        private void HandleDestroy()
-        {
-            _entityLifecycle.Release();
-            Release();
         }
     }
 }

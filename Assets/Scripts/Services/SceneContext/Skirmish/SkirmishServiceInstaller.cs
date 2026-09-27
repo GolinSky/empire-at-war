@@ -2,7 +2,6 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Ship.Health.Overlay;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Weapon;
-using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -10,7 +9,6 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitDeathAnimation;
@@ -60,12 +58,6 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesAndSelfTo<CameraService>()
                 .FromComponentInHierarchy()
                 .AsSingle();
-            Container
-                .Bind(typeof(IMapObstacleContactSource), typeof(IMiniMapObstacleSource))
-                .To<MapObstacle>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-
             Container
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()

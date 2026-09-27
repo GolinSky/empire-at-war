@@ -52,6 +52,18 @@ namespace EmpireAtWar.Editor.Squadrons
                 new Vector3(0f, 180f, 0f), new Vector3(0f, -0.034f, -0.07f), 0.7f, 0.9f,
                 new[] { new Vector3(-0.29f, 0f, -0.6f), new Vector3(0.29f, 0f, -0.6f) },
                 new Color(1f, 0.62f, 0.3f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
+            BuildAWing();
+            AssetDatabase.SaveAssets();
+        }
+
+        [MenuItem("Tools/Squadrons/Build A-Wing Squadron View")]
+        public static void BuildAWing()
+        {
+            Build(new SquadronViewSpec(SquadronType.AWing,
+                "Assets/Art/Models/RepublicModels/A-wing/A-Wing.dae", 6, 0.00015f,
+                new Vector3(0f, 270f, 0f), new Vector3(0.036f, 0.041f, -0.309f), 1.6f, 1.5f,
+                new[] { new Vector3(-0.65f, 0f, -1.5f), new Vector3(0.65f, 0f, -1.5f) },
+                new Color(0.55f, 0.75f, 1f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingSilhouette.png"));
             AssetDatabase.SaveAssets();
         }
 

@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.SceneService;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Entities.Game
             FactionType playerFactionType,
             FactionType enemyFactionType,
             PlanetType planetType,
+            MapSize mapSize,
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty enemyDifficulty,
             float startingMoney)
@@ -28,7 +30,7 @@ namespace EmpireAtWar.Entities.Game
             if (playerFactionType == enemyFactionType)
             {
                 throw new ArgumentException(
-                    "Player and enemy factions must be different because each map has one station anchor per faction.",
+                    "Player and enemy factions must be different because each map has one station per faction.",
                     nameof(enemyFactionType));
             }
 
@@ -40,11 +42,12 @@ namespace EmpireAtWar.Entities.Game
             Model.EnemyFactionType = enemyFactionType;
             Model.PlayerFactionType = playerFactionType;
             Model.PlanetType = planetType;
+            Model.MapSize = mapSize;
             Model.VictoryCondition = victoryCondition;
             Model.EnemyDifficulty = enemyDifficulty;
             Model.StartingMoney = startingMoney;
             Model.GameMode = GameMode.Skirmish;
-            _sceneService.LoadSceneByPlanetType(planetType);
+            _sceneService.LoadScene(SceneType.Battle);
         }
 
         public void ExitGame()

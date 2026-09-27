@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.InputService;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Services.Camera
 
         private Plane _plane = new();
         private CameraData _cameraData;
+        private IMapModelObserver _mapModel;
         private IInputService _inputService;
         private Tween _moveTween;
         private Vector2 _keyboardInput;
@@ -50,9 +52,10 @@ namespace EmpireAtWar.Services.Camera
         }
 
         [Inject]
-        public void Constructor(CameraData cameraData, IInputService inputService)
+        public void Constructor(CameraData cameraData, IInputService inputService, IMapModelObserver mapModel)
         {
             _cameraData = cameraData;
+            _mapModel = mapModel;
             _inputService = inputService;
         }
 
@@ -205,13 +208,13 @@ namespace EmpireAtWar.Services.Camera
                 _cameraData.ZoomRange.Min,
                 _cameraData.ZoomRange.Max,
                 position.y);
-            float xMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.x, _cameraData.MaxMoveRangeY.Min.x, heightPercentage);
-            float xMax = Mathf.Lerp(_cameraData.MinMoveRangeX.Max.x, _cameraData.MaxMoveRangeY.Max.x, heightPercentage);
-            float zMin = Mathf.Lerp(_cameraData.MinMoveRangeX.Min.y, _cameraData.MaxMoveRangeY.Min.y, heightPercentage);
-            float zMax = Mathf.Lerp(_cameraData.MinMoveRangeX.Max.y, _cameraData.MaxMoveRangeY.Max.y, heightPercentage);
+            Vector2 min = _mapModel.SizeRange.Min + Vector2.Lerp(
+                _cameraData.MinZoomPadding.Min, _cameraData.MaxZoomPadding.Min, heightPercentage);
+            Vector2 max = _mapModel.SizeRange.Max + Vector2.Lerp(
+                _cameraData.MinZoomPadding.Max, _cameraData.MaxZoomPadding.Max, heightPercentage);
 
-            position.x = Mathf.Clamp(position.x, xMin, xMax);
-            position.z = Mathf.Clamp(position.z, zMin, zMax);
+            position.x = Mathf.Clamp(position.x, min.x, max.x);
+            position.z = Mathf.Clamp(position.z, min.y, max.y);
             return position;
         }
 
