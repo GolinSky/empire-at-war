@@ -18,6 +18,7 @@ namespace EmpireAtWar.Services.Cheats
         void AddShipReinforcement(ShipUnitRequest request);
         bool ForceSpawnShipAtDefaultZone(ShipUnitRequest request);
         bool GrantSuperWeapon(SuperWeaponType type);
+        void SetRangeDebug(bool isEnabled);
     }
 
     public sealed class CheatService : ICheatService
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Services.Cheats
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly SuperWeaponModel _superWeaponModel;
+        private readonly RangeDebugModel _rangeDebugModel;
 
         public CheatService(
             EconomyModel economyModel,
@@ -35,7 +37,8 @@ namespace EmpireAtWar.Services.Cheats
             ShipFactory shipFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
-            SuperWeaponModel superWeaponModel)
+            SuperWeaponModel superWeaponModel,
+            RangeDebugModel rangeDebugModel)
         {
             _economyModel = economyModel;
             _reinforcementModel = reinforcementModel;
@@ -43,6 +46,7 @@ namespace EmpireAtWar.Services.Cheats
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
             _superWeaponModel = superWeaponModel;
+            _rangeDebugModel = rangeDebugModel;
         }
 
         public void AddMoney(float amount)
@@ -108,6 +112,11 @@ namespace EmpireAtWar.Services.Cheats
             _superWeaponModel.StartCharging(type);
             _superWeaponModel.CompleteCharging(type);
             return true;
+        }
+
+        public void SetRangeDebug(bool isEnabled)
+        {
+            _rangeDebugModel.IsEnabled = isEnabled;
         }
 
         private void HandleShipDestroying(ShipType shipType)

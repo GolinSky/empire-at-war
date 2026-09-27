@@ -4,10 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Cheats;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using Zenject;
@@ -33,11 +37,17 @@ namespace EmpireAtWar.Components.Weapon
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
         [SerializeField] private bool useWeaponDamageRange;
+
+        // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
+        private const float ENGAGE_RANGE_FACTOR = 0.8f;
         
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private WeaponsData _weaponsData;
         private DamageMatrixData _damageMatrix;
+        private IRadarModelObserver _radarModel;
+        private IRangeDebugObserver _rangeDebug;
+        private ISelectionModelObserver _selection;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
@@ -52,18 +62,25 @@ namespace EmpireAtWar.Components.Weapon
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
         private bool _isReleased;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private DebugRangeCircle _attackRangeCircle;
+#endif
         public float AttackDistance => Model.OptimalAttackRange;
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
 
         [Inject]
         private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            WeaponsData weaponsData, DamageMatrixData damageMatrix)
+            WeaponsData weaponsData, DamageMatrixData damageMatrix, IRadarModelObserver radarModel,
+            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection)
         {
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _weaponsData = weaponsData;
             _damageMatrix = damageMatrix;
+            _radarModel = radarModel;
+            _rangeDebug = rangeDebug;
+            _selection = selection;
         }
         
         public void Initialize()
@@ -73,6 +90,10 @@ namespace EmpireAtWar.Components.Weapon
             {
                 Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => _weaponsData.GetProfile(hardPoint.WeaponType).Range));
             }
+            else
+            {
+                Model.SetAttackRange(_radarModel.Range);
+            }
 
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
@@ -80,6 +101,9 @@ namespace EmpireAtWar.Components.Weapon
                     this, _attackCoordinator, _modifiers, _impactPresenter);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _attackRangeCircle = new DebugRangeCircle("AttackRange", Color.red, _rangeDebug, _selection);
+#endif
         }
 
         private void OnDestroy()
@@ -95,6 +119,9 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _isReleased = true;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_attackRangeCircle != null) { _attackRangeCircle.Destroy(); _attackRangeCircle = null; }
+#endif
             _attackCoordinator.Unregister(this);
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
@@ -161,7 +188,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public bool HasEnoughRange(float distance)
         {
-            return distance <= Model.OptimalAttackRange;
+            return distance <= Model.OptimalAttackRange * (useWeaponDamageRange ? 1f : ENGAGE_RANGE_FACTOR);
         }
 
         public float GetFiringTurnAngle(Vector3 targetPosition)
@@ -195,6 +222,9 @@ namespace EmpireAtWar.Components.Weapon
             if (_isReleased)
                 return;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _attackRangeCircle.Draw(transform.position, Model.OptimalAttackRange);
+#endif
             if (hardPoints == null || hardPoints.Count == 0)
                 return;
 

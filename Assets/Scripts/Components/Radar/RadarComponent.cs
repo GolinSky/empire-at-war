@@ -10,6 +10,9 @@ using Utilities.ScriptUtils.Time;
 using EmpireAtWar.Services.Layer;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Utils;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Cheats;
 
 namespace EmpireAtWar.Components.Radar
 {
@@ -32,16 +35,24 @@ namespace EmpireAtWar.Components.Radar
         private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
         private readonly List<RadarContact> _contacts = new List<RadarContact>();
         private ILayerService _layerService;
+        private IRangeDebugObserver _rangeDebug;
+        private ISelectionModelObserver _selection;
         private Vector3 _position;
         private bool _isReleased;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private DebugRangeCircle _radarRangeCircle;
+#endif
         public event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
-        private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService)
+        private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService,
+            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection)
         {
             SetModel(model);
             _entityLocator = entityLocator;
             _layerService = layerService;
+            _rangeDebug = rangeDebug;
+            _selection = selection;
         }
 
         public void Initialize()
@@ -54,6 +65,9 @@ namespace EmpireAtWar.Components.Radar
                 ? LayerKey.Player
                 : LayerKey.Enemy;
             _layerService.Apply(gameObject, layerKey, true);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _radarRangeCircle = new DebugRangeCircle("RadarRange", new Color(0.2f, 0.6f, 1f), _rangeDebug, _selection);
+#endif
         }
 
         public void SetPosition(Vector3 position)
@@ -68,6 +82,9 @@ namespace EmpireAtWar.Components.Radar
                 return;
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _radarRangeCircle.Draw(_position, Model.Range);
+#endif
             if (_timer.IsComplete)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -160,6 +177,9 @@ namespace EmpireAtWar.Components.Radar
         public override void Release()
         {
             _isReleased = true;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_radarRangeCircle != null) { _radarRangeCircle.Destroy(); _radarRangeCircle = null; }
+#endif
             _contacts.Clear();
             _detectedEnemies.Clear();
             Model.Enemies.Clear();

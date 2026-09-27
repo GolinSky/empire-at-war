@@ -20,6 +20,11 @@ namespace EmpireAtWar.Components.Weapon
         public bool RollHit(DamageType damageType, ShipClass targetClass, float roll) =>
             roll < _accuracy[(damageType, targetClass)];
 
+        public void SetAttackRange(float range)
+        {
+            OptimalAttackRange = range;
+        }
+
         public void SetOptimalAttackRange(IEnumerable<float> ranges)
         {
             float maxAttackDistance = 0f;
