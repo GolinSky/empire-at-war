@@ -65,7 +65,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
             if (_playerType == PlayerType.Player)
             {
-                _fogOfWarSystem.RegisterVisionSource(transform, 180f);
+                _fogOfWarSystem.RegisterVisionSource(transform, 900f);
             }
         }
 
