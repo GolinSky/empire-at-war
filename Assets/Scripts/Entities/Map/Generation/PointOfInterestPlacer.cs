@@ -52,11 +52,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 nodes.Add(centralZone);
             }
 
-            return TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2,
-                    size, stations, center, random, nodes) &&
-                TryAddPairs(MapNodeKind.MiningSite, (size.MiningSiteCount - 2) / 2,
+            // Reserve the larger facility pockets before placing reinforcement zones.
+            return TryAddPairs(MapNodeKind.MiningSite, (size.MiningSiteCount - 2) / 2,
                     size, stations, center, random, nodes) &&
                 TryAddPairs(MapNodeKind.BattleSite, size.BattleSiteCount / 2,
+                    size, stations, center, random, nodes) &&
+                TryAddPairs(MapNodeKind.CapturableZone, size.CapturableZoneCount / 2,
                     size, stations, center, random, nodes);
         }
 
