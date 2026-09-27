@@ -1,17 +1,7 @@
-﻿using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.FogOfWar;
-using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Entities.BaseEntity;
+﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
-using EmpireAtWar.Entities.Ship.EntityFacades.Health;
-using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Selection;
 using Zenject;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
@@ -23,8 +13,6 @@ namespace EmpireAtWar.MiningFacility
         private PlayerType _playerType;
         private MiningFacilityType _miningFacilityType;
 
-        protected override string PrefabPathPostfix => "View";
-
         [Inject]
         public void Construct(PlayerType playerType, MiningFacilityType miningFacilityType)
         {
@@ -32,59 +20,18 @@ namespace EmpireAtWar.MiningFacility
             _miningFacilityType = miningFacilityType;
         }
 
-        protected override void OnBindData()
+        protected override void InstallFeatures(MiningFacilityData data)
         {
-            base.OnBindData();
             Container.BindEntityExt(_playerType);
             Container.BindEntityExt(_miningFacilityType);
-            Container.BindEntityExt(SelectionType.MiningFacility);
-            Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<MiningFacilityData>(ModelPathPrefix + nameof(MiningFacilityData)).ComponentData);
-            Container.Bind<SelectionModel>().AsSingle();
-            Container.Bind<CombatModifiers>().AsSingle();
-            Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
-            Container.Decorate<IHealthData>().With<ResearchHealthData>();
-            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-        }
-
-        protected override void BindComponents()
-        {
-            base.BindComponents();
-            Container.BindInitializableExecutionOrder<HealthComponent>(-100);
-            Container.Bind<HealthModel>().AsSingle();
-            Container.Bind<RadarModel>().AsSingle();
-            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
+            Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
 
             Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-
-            Container.BindInterfacesAndSelfTo<RadarComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-            Container.BindInterfacesAndSelfTo<SelectionComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-            if (_playerType == PlayerType.Opponent)
-                Container.BindInterfacesAndSelfTo<FogVisibilityComponent>()
-                    .FromComponentsInHierarchy()
-                    .AsCached();
-            
-            //entity commands
-            Container
-                .BindInterfacesExt<SelectionFacade>()
-                .BindInterfacesExt<HealthFacade>()
-                .BindInterfacesExt<HardPointsFacade>()
-                .BindInterfacesExt<CombatModifiersFacade>();
-
+                .BindSelectionFeature(SelectionType.MiningFacility)
+                .BindHealthFeature()
+                .BindRadarFeature()
+                .BindCombatModifiersFeature()
+                .BindFogOfWarFeature(_playerType);
         }
-        
-        protected override void OnEntityCreated()
-        {
-            base.OnEntityCreated();
-            Container.Install<EntityInstaller>(new object[] { Entity });
-        }
-
     }
 }

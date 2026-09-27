@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -5,88 +6,49 @@ using Zenject;
 
 namespace EmpireAtWar
 {
-    public abstract class DynamicEntityInstaller<TEntity, TModel> : MonoInstaller
+    public abstract class DynamicEntityInstaller<TEntity, TData> : MonoInstaller
         where TEntity : MonoBehaviour, IController
-        where TModel : Data
+        where TData : Data
     {
-        protected TEntity Entity { get; private set; }
-        protected Vector3 StartPosition { get; private set; }
+        private const string VIEW_POSTFIX = "View";
+
+        private Vector3 _startPosition;
+
         protected IAssetService Repository { get; private set; }
 
-        protected virtual Transform EntityTransformParent => transform;
-        protected virtual string ModelPathPrefix { get; } = string.Empty;
-        protected virtual string ModelPathPostfix { get; } = string.Empty;
-        protected virtual string PrefabPathPrefix { get; } = string.Empty;
-        protected virtual string PrefabPathPostfix { get; } = string.Empty;
+        protected virtual string DataPath => typeof(TData).Name;
+        protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
 
         [Inject]
         public void Constructor(IAssetService repository, Vector3 startPosition)
         {
             Repository = repository;
-            StartPosition = startPosition;
+            _startPosition = startPosition;
         }
 
         public sealed override void InstallBindings()
         {
-            BindData();
-            BindModel();
-            BindComponents();
-            BindEntity();
+            Container.BindEntityExt(_startPosition);
+
+            TData data = Repository.Load<TData>(DataPath);
+            Container.BindInterfacesAndSelfTo<TData>().FromNewScriptableObject(data).AsSingle();
+
+            InstallFeatures(data);
+
+            Container.BindInterfacesAndSelfTo<TEntity>()
+                .FromComponentInNewPrefab(Repository.Load<GameObject>(PrefabPath))
+                .UnderTransform(transform)
+                .AsSingle();
             Container.Bind<Transform>()
                 .WithId(EntityBindType.ViewTransform)
                 .FromResolveGetter<TEntity>(entity => entity.transform)
                 .AsCached();
-            AssignEntity();
-            OnEntityCreated();
+
+            // Spawned during install on purpose: FromComponentsInHierarchy bindings need the view in the hierarchy.
+            TEntity entity = Container.Resolve<TEntity>();
+            Container.Install<EntityInstaller>(new object[] { entity });
         }
 
-        protected virtual void OnBindData()
-        {
-        }
-
-        protected virtual void BindComponents()
-        {
-        }
-
-        protected virtual void OnModelCreated()
-        {
-        }
-
-        protected virtual void OnEntityCreated()
-        {
-        }
-
-        protected void BindBuffer<TBuffer>(TBuffer buffer) where TBuffer : class
-        {
-            Container.QueueForInject(buffer);
-            Container.Bind<TBuffer>().FromInstance(buffer).AsSingle();
-        }
-
-        private void BindData()
-        {
-            Container.BindEntityExt(StartPosition);
-            OnBindData();
-        }
-
-        protected virtual void BindModel()
-        {
-            ModelDependencyBuilder
-                .ConstructBuilder(Container)
-                .AppendToPath(ModelPathPrefix, ModelPathPostfix)
-                .BindFromNewScriptable<TModel>(Repository, OnModelCreated);
-        }
-
-        private void BindEntity()
-        {
-            PrefabDependencyBuilder
-                .ConstructBuilder(Container)
-                .AppendToPath(PrefabPathPrefix, PrefabPathPostfix)
-                .BindFromNewComponent<TEntity>(Repository, EntityTransformParent);
-        }
-
-        private void AssignEntity()
-        {
-            Entity = Container.Resolve<TEntity>();
-        }
+        protected abstract void InstallFeatures(TData data);
     }
 }
