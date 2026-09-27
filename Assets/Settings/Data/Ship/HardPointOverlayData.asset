@@ -16,20 +16,20 @@ MonoBehaviour:
   - hardPointType: 0
     displayName: Weapon Battery
     description: Destroying it silences the guns it controls.
-    icon: {fileID: 21300000, guid: ba23bc7dabcd5e342a50aa57c482e496, type: 3}
+    icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
   - hardPointType: 1
     displayName: Engines
     description: Destroying it cripples the ship's speed.
-    icon: {fileID: 21300000, guid: b9ed1157e47350849a4469c0372cee94, type: 3}
+    icon: {fileID: 21300000, guid: bf58ccdf2a3217f41a9ea9d694f66bc9, type: 3}
   - hardPointType: 2
     displayName: Shield Generator
     description: Destroying it collapses the ship's shields for good.
-    icon: {fileID: 21300000, guid: e7ce837574cb7ef48883710e912c3718, type: 3}
+    icon: {fileID: 21300000, guid: 33e58938768151045937fd04102c2bd5, type: 3}
   - hardPointType: 4
     displayName: Hangar
     description: Destroying it stops fighter launches.
-    icon: {fileID: 21300000, guid: 3f129cabb35ab4d45bd2fa4880196b4b, type: 3}
+    icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
   - hardPointType: 3
     displayName: Hull Section
     description: Structural section of the hull.
-    icon: {fileID: 21300000, guid: d59646037ab90d544b36716b5f97a3ca, type: 3}
+    icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
