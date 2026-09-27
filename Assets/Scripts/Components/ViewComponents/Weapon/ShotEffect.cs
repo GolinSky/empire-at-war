@@ -12,6 +12,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// </summary>
     public abstract class ShotEffect : MonoBehaviour
     {
+        [SerializeField] private MuzzleFlashView muzzleFlash;
+
         private readonly ITimer _busyTimer = TimerFactory.ConstructTimer();
         private bool _leaseActive;
         private int _leaseId;
@@ -67,6 +69,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
+            muzzleFlash.Play(muzzle, ResolveAimPoint(muzzle.position, target.position + aimOffset),
+                profile.Color, profile.Size.x);
             float travelTime = Play(muzzle, target, aimOffset, profile);
             BeginLease(travelTime);
             return travelTime;
@@ -80,7 +84,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected virtual void Update()
         {
-            if (!_leaseActive || !_busyTimer.IsComplete || !IsVisualComplete())
+            muzzleFlash.Tick();
+            if (!_leaseActive || !_busyTimer.IsComplete || !IsVisualComplete() || muzzleFlash.IsPlaying)
             {
                 return;
             }

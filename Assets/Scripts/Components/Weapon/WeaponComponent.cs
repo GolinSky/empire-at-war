@@ -260,8 +260,6 @@ namespace EmpireAtWar.Components.Weapon
             Vector3 origin = weaponTransform.position;
             Quaternion parentRotation = weaponTransform.parent == null
                 ? Quaternion.identity : weaponTransform.parent.rotation;
-            Quaternion lastAim = default;
-            bool hasAim = false;
             _targetPositions.Clear();
 
             for (int i = 0; i < _orderedCandidates.Count; i++)
@@ -278,19 +276,13 @@ namespace EmpireAtWar.Components.Weapon
                 Vector3 position = GetTargetPosition(candidate.Unit);
                 bool canAttack = WeaponTargetSelector.TryCalculateAim(position, origin, parentRotation,
                     weapon.MaxAttackDistance, weapon.MinYaw, weapon.MaxYaw,
-                    out Quaternion aim, out bool inRange);
-                if (inRange)
-                {
-                    lastAim = aim;
-                    hasAim = true;
-                }
+                    out _, out _);
 
                 if (canAttack)
                 {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                     AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
 #endif
-                    weapon.ApplyAim(aim);
                     weapon.Attack(candidate.Group, candidate.Unit);
                     return true;
                 }
@@ -299,7 +291,6 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             AttackSequenceDiagnostics.RecordTargetSelectionTime(selectionStart);
 #endif
-            if (hasAim) weapon.ApplyAim(lastAim);
             return false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
@@ -322,11 +313,9 @@ namespace EmpireAtWar.Components.Weapon
 
             if (result.CandidateIndex < 0)
             {
-                if (result.HasInRangeAim != 0) weapon.ApplyAim(ToQuaternion(result.LastInRangeAim));
                 return;
             }
 
-            weapon.ApplyAim(ToQuaternion(result.SelectedAim));
             weapon.Attack(selectedCandidate.Group, selectedCandidate.Unit);
         }
 
@@ -448,7 +437,5 @@ namespace EmpireAtWar.Components.Weapon
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>
             attackData.CanTarget(hardPointModel) && attackData.Contains(hardPointModel);
 
-        private static Quaternion ToQuaternion(Unity.Mathematics.float4 value) =>
-            new Quaternion(value.x, value.y, value.z, value.w);
     }
 }

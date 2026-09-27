@@ -28,7 +28,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _flightDistance = Vector3.Distance(_start, _lastAimPoint);
             _travelTime = _flightDistance / profile.ProjectileSpeed;
             _isFlying = true;
-            transform.SetPositionAndRotation(_start, muzzle.rotation);
+            Vector3 direction = _lastAimPoint - _start;
+            transform.SetPositionAndRotation(_start, direction.sqrMagnitude > 0f
+                ? Quaternion.LookRotation(direction) : muzzle.rotation);
             transform.localScale = Vector3.one;
 
             vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
