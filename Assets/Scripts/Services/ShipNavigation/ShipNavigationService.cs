@@ -189,6 +189,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         // Destination candidates ring out from the center; reachability of each is
         // answered by the single flood of the path grid, so failures cost no search.
+        // Within the first ring that holds a valid candidate the shortest route wins,
+        // so a blocked order ends on the ship's side of the obstacle, not the far one.
         private bool TryPlanNear(
             IShipNavigationAgent agent,
             int registrationId,
@@ -202,11 +204,18 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             Vector3 origin = agent.NavigationPosition;
             float candidateSpacing = agent.NavigationRadius * 2f;
+            bool isFound = false;
+            routePlan = default;
             for (int candidateIndex = 0;
                  candidateIndex <=
                  DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
                  candidateIndex++)
             {
+                if (isFound && IsFirstInRing(candidateIndex))
+                {
+                    return true;
+                }
+
                 Vector3 candidate = GetDestinationCandidate(
                     center,
                     candidateSpacing,
@@ -239,7 +248,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     continue;
                 }
 
-                routePlan = ShipRoutePlanner.Build(
+                ShipRoutePlan candidatePlan = ShipRoutePlanner.Build(
                     agent,
                     forward,
                     destination,
@@ -248,14 +257,22 @@ namespace EmpireAtWar.Services.ShipNavigation
                     _waypoints,
                     heightTolerance,
                     clearance);
-                if (!routePlan.IsStationary)
+                if (!candidatePlan.IsStationary &&
+                    (!isFound || candidatePlan.Route.Length < routePlan.Route.Length))
                 {
-                    return true;
+                    routePlan = candidatePlan;
+                    isFound = true;
                 }
             }
 
-            routePlan = default;
-            return false;
+            return isFound;
+        }
+
+        // Ring 0 is the requested point itself; each later ring starts a new slot cycle.
+        private static bool IsFirstInRing(int candidateIndex)
+        {
+            return candidateIndex > 0 &&
+                   (candidateIndex - 1) % DESTINATION_CANDIDATES_PER_RING == 0;
         }
 
         public void Register(

@@ -559,6 +559,29 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [Test]
+        public void Plan_OrderIntoObstacleCluster_EndsOnShipSide()
+        {
+            SetRangeValue("<Min>k__BackingField", new Vector2(-1000f, -1000f));
+            SetRangeValue("<Max>k__BackingField", new Vector2(1000f, 1000f));
+            List<RadarContact> cluster = new List<RadarContact>();
+            for (int x = -2; x <= 2; x++)
+            {
+                for (int z = -2; z <= 2; z++)
+                {
+                    cluster.Add(new RadarContact(new Vector3(x * 60f, 0f, z * 60f), 45f, false));
+                }
+            }
+
+            FakeAgent agent = new FakeAgent(new Vector3(-500f, 0f, 0f), 0f, 36f, 10f, 20f);
+
+            ShipNavigationPlan plan = Plan(CreateService(cluster), agent, Vector3.zero);
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(plan.Destination.x, Is.LessThan(0f));
+            Assert.That(plan.Route.Length, Is.LessThan(400f));
+        }
+
         private static ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
