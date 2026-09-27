@@ -36,6 +36,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SpawnForceRequested += SpawnForce;
             _view.GrantSuperWeaponRequested += GrantSuperWeapon;
             _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
+            _view.RangeDebugToggled += SetRangeDebug;
         }
 
         public void LateDispose()
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SpawnForceRequested -= SpawnForce;
             _view.GrantSuperWeaponRequested -= GrantSuperWeapon;
             _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
+            _view.RangeDebugToggled -= SetRangeDebug;
         }
 
         private List<ShipType> BuildShipCatalog()
@@ -120,6 +122,14 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(granted == types.Length
                 ? "All superweapons are ready to fire."
                 : $"Granted {granted} of {types.Length}; the rest were already charging or ready.");
+        }
+
+        private void SetRangeDebug(bool isEnabled)
+        {
+            _cheatService.SetRangeDebug(isEnabled);
+            _view.SetStatus(isEnabled
+                ? "Range debug on: select units to see attack (red) and radar (blue) range."
+                : "Range debug off.");
         }
 
         private ShipUnitRequest CreateRequest(ShipType shipType)

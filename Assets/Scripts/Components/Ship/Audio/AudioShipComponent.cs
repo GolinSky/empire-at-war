@@ -8,7 +8,7 @@ using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipComponent : IComponent, ICommand
+    public interface IAudioShipComponent : IComponent
     {
         void PlayHyperSpace(float hyperSpaceDuration);
         void HandleEnemyDetected();

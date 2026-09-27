@@ -7,6 +7,7 @@ namespace EmpireAtWar.Presenters.ShipUi
     public interface IShipUiPresenter
     {
         void CloseSelection();
+        void FocusSelection();
         void SelectShipGroup(ShipType shipType);
         void SelectSquadronGroup(SquadronType squadronType);
         void PressAbility(ShipAbilityId id);

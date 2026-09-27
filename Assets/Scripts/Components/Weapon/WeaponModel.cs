@@ -2,37 +2,34 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
-using UnityEngine;
+using System;
 
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponModel : PureModel
     {
-        private readonly WeaponsData _weaponsData;
-        private readonly DamageMatrixData _damageMatrix;
+        private readonly IReadOnlyDictionary<(DamageType, ShipClass), float> _accuracy;
 
         public float OptimalAttackRange { get; private set; } = 100f;
-        public float MissSpread => _damageMatrix.MissSpread;
 
-        public WeaponModel(WeaponsData weaponsData, DamageMatrixData damageMatrix)
+        public WeaponModel(IReadOnlyDictionary<(DamageType, ShipClass), float> accuracy)
         {
-            _weaponsData = weaponsData;
-            _damageMatrix = damageMatrix;
+            _accuracy = accuracy;
         }
 
-        public WeaponProfile GetProfile(WeaponType weaponType) => _weaponsData.GetProfile(weaponType);
+        public bool RollHit(DamageType damageType, ShipClass targetClass, float roll) =>
+            roll < _accuracy[(damageType, targetClass)];
 
-        public bool RollHit(DamageType damageType, ShipClass targetClass) =>
-            Random.value < _damageMatrix.GetAccuracy(damageType, targetClass);
+        public void SetAttackRange(float range)
+        {
+            OptimalAttackRange = range;
+        }
 
-        public void SetOptimalAttackRange(IEnumerable<WeaponType> weaponTypes)
+        public void SetOptimalAttackRange(IEnumerable<float> ranges)
         {
             float maxAttackDistance = 0f;
-            foreach (WeaponType weaponType in weaponTypes)
-            {
-                maxAttackDistance = Mathf.Max(maxAttackDistance, GetProfile(weaponType).Range);
-            }
-
+            foreach (float range in ranges)
+                maxAttackDistance = Math.Max(maxAttackDistance, range);
             OptimalAttackRange = maxAttackDistance * 0.5f;
         }
     }

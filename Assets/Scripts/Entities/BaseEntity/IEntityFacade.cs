@@ -1,9 +1,8 @@
 
-using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
-    public interface IEntityFacade : ICommand
+    public interface IEntityFacade
     {
         //long Id { get; }
     }

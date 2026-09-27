@@ -13,6 +13,7 @@ namespace EmpireAtWar.Views.Cheats
         event Action<ShipType> SpawnForceRequested;
         event Action<SuperWeaponType> GrantSuperWeaponRequested;
         event Action GrantAllSuperWeaponsRequested;
+        event Action<bool> RangeDebugToggled;
 
         void SetShips(IReadOnlyList<ShipType> ships);
         void SetStatus(string status);
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Views.Cheats
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
-        private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons" };
+        private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons", "Debug" };
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
 
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<ShipType> SpawnForceRequested;
         public event Action<SuperWeaponType> GrantSuperWeaponRequested;
         public event Action GrantAllSuperWeaponsRequested;
+        public event Action<bool> RangeDebugToggled;
 
         private Rect _windowRect = new Rect(
             WINDOW_MARGIN,
@@ -50,6 +52,7 @@ namespace EmpireAtWar.Views.Cheats
         private int _selectedTab;
         private int _selectedShip;
         private bool _isExpanded;
+        private bool _showRanges;
         private float _windowVisibility;
 
         public void SetShips(IReadOnlyList<ShipType> ships)
@@ -138,9 +141,13 @@ namespace EmpireAtWar.Views.Cheats
             {
                 DrawShipsTab();
             }
-            else
+            else if (_selectedTab == 2)
             {
                 DrawSuperWeaponsTab();
+            }
+            else
+            {
+                DrawDebugTab();
             }
 
             GUILayout.FlexibleSpace();
@@ -183,6 +190,16 @@ namespace EmpireAtWar.Views.Cheats
             if (GUILayout.Button("Grant All", GUILayout.Height(36f)))
             {
                 GrantAllSuperWeaponsRequested?.Invoke();
+            }
+        }
+
+        private void DrawDebugTab()
+        {
+            bool showRanges = GUILayout.Toggle(_showRanges, "Show attack / radar range of selected units");
+            if (showRanges != _showRanges)
+            {
+                _showRanges = showRanges;
+                RangeDebugToggled?.Invoke(_showRanges);
             }
         }
 

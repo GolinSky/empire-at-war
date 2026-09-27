@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -193,7 +194,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 unassignedShips.Add(ship);
-                positions.Add(new FormationPoint(ship.WorldPosition.x, ship.WorldPosition.z));
+                positions.Add(ToPoint(ship.WorldPosition));
                 radii.Add(ship.NavigationRadius);
                 maximumRadius = Mathf.Max(maximumRadius, ship.NavigationRadius);
             }
@@ -214,10 +215,10 @@ namespace EmpireAtWar.Services.Enemy
 
             List<FormationPoint> destinations = new List<FormationPoint>();
             FormationModel.CalculateCompactDestinations(positions, radii,
-                new FormationPoint(exitPosition.x, exitPosition.z), destinations);
+                ToPoint(exitPosition), destinations);
             for (int i = 0; i < unassignedShips.Count; i++)
             {
-                Vector3 target = new Vector3(destinations[i].X, 0f, destinations[i].Z);
+                Vector3 target = ToVector(destinations[i]);
                 _zoneExitTargets.Add(unassignedShips[i], target);
                 _orders.IssueMove(new[] {
                     _entityLocator.GetEntity(unassignedShips[i].EntityId) },

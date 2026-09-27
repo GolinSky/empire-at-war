@@ -8,16 +8,20 @@ using ViewComponents;
 
 namespace EmpireAtWar.Entities.Map
 {
-    /// <summary>Spawns a generated <see cref="MapLayout"/>: zones, capture sites, asteroid walls, border and fog area.</summary>
+    /// <summary>Spawns a generated <see cref="MapLayout"/>: zones, capture sites, asteroid fields, border and fog area.</summary>
     public sealed class MapLayoutView : MonoBehaviour
     {
         [SerializeField] private ReinforcementZoneView zonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
         [SerializeField] private CaptureSiteView battleSitePrefab;
-        [SerializeField] private MapObstacle obstaclePrefab;
+        [SerializeField, Tooltip("Invisible impassable circle with a unit-diameter collider.")]
+        private MapObstacle fieldVolumePrefab;
+        [SerializeField] private GameObject largeRockPrefab;
+        [SerializeField] private GameObject mediumRockPrefab;
+        [SerializeField] private GameObject[] debrisRockPrefabs;
         [SerializeField] private Transform zoneRoot;
         [SerializeField] private Transform siteRoot;
-        [SerializeField] private Transform obstacleRoot;
+        [SerializeField] private Transform fieldRoot;
         [SerializeField] private LineRenderer borderLine;
         [SerializeField] private float borderHeight;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
@@ -54,16 +58,38 @@ namespace EmpireAtWar.Entities.Map
                 _obstacles.AddRange(SiteViews[i].RockObstacles);
             }
 
-            foreach (ObstacleSpot spot in layout.Obstacles)
+            for (int i = 0; i < layout.Fields.Count; i++)
             {
-                MapObstacle obstacle = Instantiate(
-                    obstaclePrefab, spot.Position, Quaternion.Euler(0f, spot.Yaw, 0f), obstacleRoot);
-                obstacle.transform.localScale = obstaclePrefab.transform.localScale * spot.Scale;
-                _obstacles.Add(obstacle);
+                BuildField(layout.Fields[i], i);
             }
 
             DrawBorder(layout);
             fogOfWarSystem.ScaleArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
+        }
+
+        private void BuildField(AsteroidField field, int index)
+        {
+            Transform root = new GameObject($"AsteroidField_{index}").transform;
+            root.SetParent(fieldRoot, false);
+            foreach (FieldVolume volume in field.Volumes)
+            {
+                MapObstacle obstacle = Instantiate(fieldVolumePrefab, volume.Center, Quaternion.identity, root);
+                obstacle.transform.localScale = Vector3.one * volume.Radius * 2f;
+                _obstacles.Add(obstacle);
+            }
+
+            for (int i = 0; i < field.Rocks.Count; i++)
+            {
+                AsteroidSpot rock = field.Rocks[i];
+                GameObject prefab = rock.Size switch
+                {
+                    AsteroidSize.Large => largeRockPrefab,
+                    AsteroidSize.Medium => mediumRockPrefab,
+                    _ => debrisRockPrefabs[i % debrisRockPrefabs.Length]
+                };
+                GameObject instance = Instantiate(prefab, rock.Position, Quaternion.Euler(rock.Rotation), root);
+                instance.transform.localScale = prefab.transform.localScale * rock.Scale;
+            }
         }
 
         private void DrawBorder(MapLayout layout)

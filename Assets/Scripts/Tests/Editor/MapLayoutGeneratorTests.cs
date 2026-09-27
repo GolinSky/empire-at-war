@@ -66,9 +66,12 @@ namespace EmpireAtWar.Tests.Editor
                             AssertInside(site.Center, layout, $"{mapSize} site");
                         }
 
-                        foreach (ObstacleSpot obstacle in layout.Obstacles)
+                        foreach (AsteroidField field in layout.Fields)
                         {
-                            AssertInside(obstacle.Position, layout, $"{mapSize} obstacle");
+                            foreach (FieldVolume volume in field.Volumes)
+                            {
+                                AssertInside(volume.Center, layout, $"{mapSize} field volume");
+                            }
                         }
 
                         Assert.That(layout.Zones.Count, Is.EqualTo(size.CapturableZoneCount + 2));
@@ -150,31 +153,57 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [Test]
-        public void Walls_LeaveRoadsOpenAndEveryPointOfInterestConnected()
+        [TestCase(MapSize.Small)]
+        [TestCase(MapSize.Medium)]
+        [TestCase(MapSize.Large)]
+        public void Fields_LeaveLanesPassableAndEveryPointOfInterestConnected(MapSize mapSize)
         {
-            MapSize mapSize = MapSize.Medium;
             MapLayout layout = Generate(mapSize, EnemyAiDifficulty.Medium, 7);
-            float roadHalfWidth = _settings.GetSize(mapSize).RoadWidth * 0.5f;
+            MapSizeSettings size = _settings.GetSize(mapSize);
+            // Volumes may reach half a raster cell past the rasterised lane edge.
+            float narrowestWidth = Mathf.Min(size.MinLaneWidth, size.PocketEntranceWidth);
+            float passableHalfWidth = (narrowestWidth - size.FieldCellSize) * 0.5f;
 
-            foreach (ObstacleSpot obstacle in layout.Obstacles)
+            foreach (AsteroidField field in layout.Fields)
             {
-                foreach (MapRoad road in layout.Roads)
+                foreach (FieldVolume volume in field.Volumes)
                 {
-                    Assert.That(MapGeometry.DistanceToPolyline(obstacle.Position, road.Points),
-                        Is.GreaterThanOrEqualTo(roadHalfWidth), "An asteroid blocks a road.");
+                    foreach (MapLane lane in layout.Lanes)
+                    {
+                        Assert.That(MapGeometry.DistanceToPolyline(volume.Center, lane.Points) - volume.Radius,
+                            Is.GreaterThanOrEqualTo(passableHalfWidth), "An asteroid field blocks a lane.");
+                    }
                 }
             }
 
             foreach (ZoneSpot zone in layout.Zones)
             {
-                Assert.That(IsRoadEndpoint(layout, zone.Center), Is.True, $"Zone at {zone.Center} has no road.");
+                Assert.That(IsLaneEndpoint(layout, zone.Center), Is.True, $"Zone at {zone.Center} has no lane.");
             }
 
             foreach (SiteSpot site in layout.Sites)
             {
-                Assert.That(IsRoadEndpoint(layout, site.Center), Is.True, $"Site at {site.Center} has no road.");
+                Assert.That(IsLaneEndpoint(layout, site.Center), Is.True, $"Site at {site.Center} has no lane.");
             }
+        }
+
+        [Test]
+        public void Rocks_FollowTheLayerShares()
+        {
+            int[] counts = new int[Enum.GetValues(typeof(AsteroidSize)).Length];
+            int total = 0;
+            foreach (AsteroidField field in Generate(MapSize.Large, EnemyAiDifficulty.Medium, 5).Fields)
+            {
+                foreach (AsteroidSpot rock in field.Rocks)
+                {
+                    counts[(int)rock.Size]++;
+                    total++;
+                }
+            }
+
+            Assert.That(total, Is.GreaterThan(0));
+            Assert.That((float)counts[(int)AsteroidSize.Debris] / total, Is.GreaterThan(0.4f));
+            Assert.That((float)counts[(int)AsteroidSize.Large] / total, Is.LessThan(0.3f));
         }
 
         [Test]
@@ -185,7 +214,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(second.GetStationPosition(FactionType.Republic),
                 Is.EqualTo(first.GetStationPosition(FactionType.Republic)));
-            Assert.That(second.Obstacles.Count, Is.EqualTo(first.Obstacles.Count));
+            Assert.That(second.Fields.Count, Is.EqualTo(first.Fields.Count));
             Assert.That(second.PlanetPosition, Is.EqualTo(first.PlanetPosition));
         }
 
@@ -236,12 +265,12 @@ namespace EmpireAtWar.Tests.Editor
             return false;
         }
 
-        private static bool IsRoadEndpoint(MapLayout layout, Vector3 position)
+        private static bool IsLaneEndpoint(MapLayout layout, Vector3 position)
         {
-            foreach (MapRoad road in layout.Roads)
+            foreach (MapLane lane in layout.Lanes)
             {
-                if (MapGeometry.Distance(road.Points[0], position) < TOLERANCE ||
-                    MapGeometry.Distance(road.Points[road.Points.Count - 1], position) < TOLERANCE)
+                if (MapGeometry.Distance(lane.Points[0], position) < TOLERANCE ||
+                    MapGeometry.Distance(lane.Points[lane.Points.Count - 1], position) < TOLERANCE)
                 {
                     return true;
                 }

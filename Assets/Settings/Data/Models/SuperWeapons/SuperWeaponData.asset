@@ -28,8 +28,8 @@ MonoBehaviour:
             type: 3}
           projectileSpeed: 0
           color: {r: 0.35, g: 0.85, b: 1, a: 1}
-          size: {x: 12, y: 1, z: 1}
-        impactSize: 6
+          size: {x: 36, y: 3, z: 3}
+        impactSize: 18
         firingDelay: 0.45
         stunDuration: 30
         stunModifier:
@@ -54,8 +54,8 @@ MonoBehaviour:
             type: 3}
           projectileSpeed: 650
           color: {r: 1, g: 0.95, b: 0.75, a: 1}
-          size: {x: 1.2, y: 1.2, z: 1.2}
-        impactSize: 3
+          size: {x: 3.6, y: 3.6, z: 3.6}
+        impactSize: 9
         firingDelay: 0
         stunDuration: 0
         stunModifier:
@@ -80,8 +80,8 @@ MonoBehaviour:
             type: 3}
           projectileSpeed: 220
           color: {r: 0.45, g: 1, b: 0.25, a: 1}
-          size: {x: 6, y: 6, z: 6}
-        impactSize: 12
+          size: {x: 18, y: 18, z: 18}
+        impactSize: 36
         firingDelay: 0
         stunDuration: 0
         stunModifier:

@@ -68,6 +68,7 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<ISiteFacilityBuilder>().To<SiteFacilityBuilder>().AsSingle()
                 .WithArguments(PlayerType.Opponent);
             Container.BindInterfacesExt<EnemySiteConstructionController>();
+            Container.BindInterfacesExt<EnemySquadronCommander>();
             SceneContext.Container
                 .Bind<ISiteFacilityBuilder>()
                 .WithId(PlayerType.Opponent)

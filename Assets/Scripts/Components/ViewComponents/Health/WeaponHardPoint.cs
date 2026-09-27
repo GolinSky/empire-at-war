@@ -54,8 +54,6 @@ namespace EmpireAtWar.ViewComponents.Health
             _impactPresenter = impactPresenter;
         }
 
-        public void ApplyAim(Quaternion worldRotation) => transform.rotation = worldRotation;
-
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
             _attackCoordinator.BeginSequence(WeaponPresenter, this, attackData, hardPointModel);

@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -122,7 +123,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (count > _placedWaypointCount)
             {
                 var point = _targeting.Waypoints[count - 1];
-                PlayMovement(new Vector3(point.X, 0f, point.Z));
+                PlayMovement(ToVector(point));
             }
             _placedWaypointCount = count;
         }

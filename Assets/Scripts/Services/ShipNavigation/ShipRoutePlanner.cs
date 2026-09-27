@@ -52,7 +52,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 waypoints.Add(destination);
             }
             else if (!pathGrid.TryFindPath(
-                         origin, destination, agent.NavigationHeight, waypoints))
+                         destination, agent.NavigationHeight, waypoints))
             {
                 return BuildStationaryPlan(origin, forward);
             }

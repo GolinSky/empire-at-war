@@ -3,7 +3,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using ViewComponents;
 using Zenject;

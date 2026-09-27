@@ -17,57 +17,75 @@ MonoBehaviour:
     - key: 0
       value:
         <Bounds>k__BackingField:
-          <Min>k__BackingField: {x: -300, y: -300}
-          <Max>k__BackingField: {x: 300, y: 300}
+          <Min>k__BackingField: {x: -900, y: -900}
+          <Max>k__BackingField: {x: 900, y: 900}
         <CapturableZoneCount>k__BackingField: 2
         <MiningSiteCount>k__BackingField: 2
         <BattleSiteCount>k__BackingField: 2
         <PointSpacing>k__BackingField: 0
-        <RoadWidth>k__BackingField: 55
-        <ObstacleSpacing>k__BackingField: 20
-        <ObstacleScale>k__BackingField:
-          <Min>k__BackingField: 0.5
-          <Max>k__BackingField: 0.7
         <HomeMiningGap>k__BackingField:
-          <Min>k__BackingField: 5
-          <Max>k__BackingField: 50
-        <PlanetScale>k__BackingField: 1
+          <Min>k__BackingField: 60
+          <Max>k__BackingField: 150
+        <DefaultZoneGap>k__BackingField: 60
+        <PlanetScale>k__BackingField: 3
+        <LaneWidth>k__BackingField: 500
+        <MinLaneWidth>k__BackingField: 360
+        <FieldCellSize>k__BackingField: 45
+        <FieldFeatureSize>k__BackingField: 540
+        <FieldThreshold>k__BackingField: 0.5
+        <RidgeThreshold>k__BackingField: 0.9
+        <PocketThickness>k__BackingField: 66
+        <PocketEntranceWidth>k__BackingField: 400
+        <MinFieldArea>k__BackingField: 18000
+        <RockDensity>k__BackingField: 6
     - key: 1
       value:
         <Bounds>k__BackingField:
-          <Min>k__BackingField: {x: -450, y: -450}
-          <Max>k__BackingField: {x: 450, y: 450}
+          <Min>k__BackingField: {x: -1350, y: -1350}
+          <Max>k__BackingField: {x: 1350, y: 1350}
         <CapturableZoneCount>k__BackingField: 3
         <MiningSiteCount>k__BackingField: 4
         <BattleSiteCount>k__BackingField: 2
-        <PointSpacing>k__BackingField: 20
-        <RoadWidth>k__BackingField: 70
-        <ObstacleSpacing>k__BackingField: 26
-        <ObstacleScale>k__BackingField:
-          <Min>k__BackingField: 0.8
-          <Max>k__BackingField: 1.1
+        <PointSpacing>k__BackingField: 60
         <HomeMiningGap>k__BackingField:
-          <Min>k__BackingField: 20
-          <Max>k__BackingField: 120
-        <PlanetScale>k__BackingField: 1.4
+          <Min>k__BackingField: 60
+          <Max>k__BackingField: 360
+        <DefaultZoneGap>k__BackingField: 0
+        <PlanetScale>k__BackingField: 4.2
+        <LaneWidth>k__BackingField: 510
+        <MinLaneWidth>k__BackingField: 360
+        <FieldCellSize>k__BackingField: 60
+        <FieldFeatureSize>k__BackingField: 750
+        <FieldThreshold>k__BackingField: 0.5
+        <RidgeThreshold>k__BackingField: 0.9
+        <PocketThickness>k__BackingField: 135
+        <PocketEntranceWidth>k__BackingField: 400
+        <MinFieldArea>k__BackingField: 27000
+        <RockDensity>k__BackingField: 4
     - key: 2
       value:
         <Bounds>k__BackingField:
-          <Min>k__BackingField: {x: -1500, y: -1500}
-          <Max>k__BackingField: {x: 1500, y: 1500}
+          <Min>k__BackingField: {x: -4500, y: -4500}
+          <Max>k__BackingField: {x: 4500, y: 4500}
         <CapturableZoneCount>k__BackingField: 9
         <MiningSiteCount>k__BackingField: 8
         <BattleSiteCount>k__BackingField: 4
-        <PointSpacing>k__BackingField: 140
-        <RoadWidth>k__BackingField: 110
-        <ObstacleSpacing>k__BackingField: 50
-        <ObstacleScale>k__BackingField:
-          <Min>k__BackingField: 1.5
-          <Max>k__BackingField: 2.4
+        <PointSpacing>k__BackingField: 420
         <HomeMiningGap>k__BackingField:
-          <Min>k__BackingField: 80
-          <Max>k__BackingField: 450
-        <PlanetScale>k__BackingField: 3.5
+          <Min>k__BackingField: 240
+          <Max>k__BackingField: 1350
+        <DefaultZoneGap>k__BackingField: 240
+        <PlanetScale>k__BackingField: 10.5
+        <LaneWidth>k__BackingField: 500
+        <MinLaneWidth>k__BackingField: 360
+        <FieldCellSize>k__BackingField: 120
+        <FieldFeatureSize>k__BackingField: 1800
+        <FieldThreshold>k__BackingField: 0.5
+        <RidgeThreshold>k__BackingField: 0.92
+        <PocketThickness>k__BackingField: 270
+        <PocketEntranceWidth>k__BackingField: 400
+        <MinFieldArea>k__BackingField: 108000
+        <RockDensity>k__BackingField: 2
   stationRadii:
     keyValue:
     - key: 0
@@ -82,11 +100,36 @@ MonoBehaviour:
     - key: 1
       value: {fileID: 1663774606934864102, guid: 6c2aaf5fee18f854f89fae6033b89f3f,
         type: 3}
+  rockLayers:
+    keyValue:
+    - key: 0
+      value:
+        <Share>k__BackingField: 0.15
+        <Scale>k__BackingField:
+          <Min>k__BackingField: 1.5
+          <Max>k__BackingField: 3.5
+        <HeightJitter>k__BackingField: 2
+        <IsTumbled>k__BackingField: 0
+    - key: 1
+      value:
+        <Share>k__BackingField: 0.25
+        <Scale>k__BackingField:
+          <Min>k__BackingField: 0.5
+          <Max>k__BackingField: 1.2
+        <HeightJitter>k__BackingField: 6
+        <IsTumbled>k__BackingField: 1
+    - key: 2
+      value:
+        <Share>k__BackingField: 0.6
+        <Scale>k__BackingField:
+          <Min>k__BackingField: 0.8
+          <Max>k__BackingField: 2.5
+        <HeightJitter>k__BackingField: 12
+        <IsTumbled>k__BackingField: 1
   <StationEdgeDistance>k__BackingField: 100
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 10
   <HomeMiningAngle>k__BackingField: 5
   <PlanetBorderInset>k__BackingField: 0.25
-  <ExtraRoadChance>k__BackingField: 0.35
-  <RoadBend>k__BackingField: 0.2
-  <ObstacleFootprint>k__BackingField: 32
+  <ExtraLaneChance>k__BackingField: 0.35
+  <LaneBend>k__BackingField: 0.2

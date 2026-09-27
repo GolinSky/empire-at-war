@@ -28,7 +28,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         public NumericsVector3? LastRequest { get; private set; }
         public bool IsMoving => Phase == MovementPhase.Moving ||
             Phase == MovementPhase.Arriving && PendingDestination.HasValue;
-        public bool IsBlocked => Phase == MovementPhase.Blocked;
         public NumericsVector3 JumpPosition { get; private set; }
         public NumericsQuaternion StartRotation { get; private set; } = NumericsQuaternion.Identity;
         public NumericsVector3 HyperSpacePosition { get; private set; }
@@ -78,18 +77,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Defer(NumericsVector3 destination) => PendingDestination = destination;
 
-        public void Block(NumericsVector3 destination)
-        {
-            PendingDestination = destination;
-            if (Phase == MovementPhase.Arriving) Destination = destination;
-            else Phase = MovementPhase.Blocked;
-        }
-
         public NumericsVector3? TakePending()
         {
             NumericsVector3? pending = PendingDestination;
             PendingDestination = null;
-            if (Phase == MovementPhase.Blocked) Phase = MovementPhase.Idle;
             return pending;
         }
 

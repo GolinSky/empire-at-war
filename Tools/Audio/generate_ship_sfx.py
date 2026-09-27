@@ -3,12 +3,10 @@
 No sampled game audio is used. Run: python Tools/Audio/generate_ship_sfx.py
 """
 
-import array
 import math
 from pathlib import Path
 import random
-import sys
-import wave
+from wav_writer import write_wav
 
 
 SAMPLE_RATE = 44100
@@ -103,17 +101,7 @@ def engine(acceleration):
 
 
 def write_clip(name, samples, peak):
-    mean = sum(samples) / len(samples)
-    samples = [sample - mean for sample in samples]
-    scale = peak / max(abs(sample) for sample in samples)
-    pcm = array.array("h", (round(sample * scale * 32767) for sample in samples))
-    if sys.byteorder != "little":
-        pcm.byteswap()
-    with wave.open(str(OUTPUT / f"{name}.wav"), "wb") as clip:
-        clip.setnchannels(1)
-        clip.setsampwidth(2)
-        clip.setframerate(SAMPLE_RATE)
-        clip.writeframes(pcm.tobytes())
+    write_wav(OUTPUT / f"{name}.wav", samples, peak, SAMPLE_RATE)
 
 
 def main():

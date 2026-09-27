@@ -1,20 +1,9 @@
-﻿using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Hangar;
-using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Weapon;
+﻿using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
-using EmpireAtWar.Entities.Ship.EntityFacades.Health;
-using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
-using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using Zenject;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
@@ -25,9 +14,7 @@ namespace EmpireAtWar.SpaceStation
         private FactionType _factionType;
         private PlayerType _playerType;
 
-        protected override string PrefabPathPrefix => _factionType.ToString();
-        protected override string PrefabPathPostfix => "View";
-        
+        protected override string PrefabPath => _factionType + base.PrefabPath;
 
         [Inject]
         public void Construct(FactionType factionType, PlayerType playerType)
@@ -36,66 +23,25 @@ namespace EmpireAtWar.SpaceStation
             _playerType = playerType;
         }
 
-        protected override void OnBindData()
+        protected override void InstallFeatures(SpaceStationData data)
         {
-            base.OnBindData();
             Container.BindEntityExt(_playerType);
             Container.BindEntityExt(_factionType);
-            Container.BindEntityExt(SelectionType.Base);
-            Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<SpaceStationData>(nameof(SpaceStationData)).ComponentData);
-            Container.Bind<SelectionModel>().AsSingle();
-            Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-            Container.Bind<WeaponModel>().AsSingle();
-            Container.Bind<CombatModifiers>().AsSingle();
-            Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
-            Container.Decorate<IHealthData>().With<ResearchHealthData>();
-        }
-
-        protected override void BindComponents()
-        {
-            base.BindComponents();
-            Container.BindInitializableExecutionOrder<HealthComponent>(-100);
-            SpaceStationData model = Container.Resolve<SpaceStationData>();
-            Container.Bind<HealthModel>().AsSingle();
-            BindBuffer(model.RadarModel);
-            Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
+            Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
 
             Container
-                .BindInterfacesAndSelfTo<HealthComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+                .BindSelectionFeature(SelectionType.Base)
+                .BindHealthFeature()
+                .BindRadarFeature()
+                .BindWeaponFeature()
+                .BindCombatModifiersFeature()
+                .BindStationaryCombatFeature();
 
-            Container.BindInterfacesAndSelfTo<SelectionComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-            Container.BindInterfacesAndSelfTo<RadarComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-            Container.BindInterfacesAndSelfTo<WeaponComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
             Container.Bind<IHangarData>().To<StationHangarData>().AsSingle();
             Container.Bind<HangarModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<HangarComponent>()
                 .FromComponentsInHierarchy()
                 .AsCached();
-            Container.BindInterfacesAndSelfTo<StationCombatPresenter>().AsSingle();
-            
-            //entity commands
-            Container
-                .BindInterfacesExt<SelectionFacade>()
-                .BindInterfacesExt<HealthFacade>()
-                .BindInterfacesExt<HardPointsFacade>()
-                .BindInterfacesExt<CombatModifiersFacade>()
-                .BindInterfacesExt<StationaryAttackFacade>();
-        }
-        
-        
-        protected override void OnEntityCreated()
-        {
-            base.OnEntityCreated();
-            Container.Install<EntityInstaller>(new object[] { Entity });
         }
     }
 }

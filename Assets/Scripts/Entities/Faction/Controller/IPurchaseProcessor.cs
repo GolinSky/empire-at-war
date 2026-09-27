@@ -8,8 +8,4 @@ namespace EmpireAtWar.Controllers.Factions
         void RevertFlow(UnitRequest result);
     }
 
-    public interface IEnemyPurchaseProcessor: IChainHandler<UnitRequest>
-    {
-        
-    }
 }

@@ -13,11 +13,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.MiningFacility
 {
-    public interface IMiningFacilityCommand : ICommand
-    {
-    }
-
-    public class MiningFacility : MonoBehaviour, IController, IMiningFacilityCommand, IIncomeProvider,
+    public class MiningFacility : MonoBehaviour, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
         private IEconomyProvider _economyProvider;

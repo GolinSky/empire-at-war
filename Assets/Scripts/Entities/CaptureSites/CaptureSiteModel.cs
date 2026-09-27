@@ -4,11 +4,14 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Entities.CaptureSites
 {
     /// <summary>
-    /// Neutral → Owned → Constructing → Operational; losing the facility returns the site to Neutral.
+    /// Neutral → Owned → Constructing → Operational; the owner picks the facility when construction starts
+    /// and losing the facility returns the site to Neutral.
     /// An operational facility locks the site: it must be destroyed before the site can be captured.
     /// </summary>
     public sealed class CaptureSiteModel : PureModel
     {
+        private const float TIE_EPSILON = 0.001f;
+
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
         private float _buildDuration;
@@ -23,29 +26,33 @@ namespace EmpireAtWar.Entities.CaptureSites
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
         public PlayerType CapturingPlayer { get; private set; } = PlayerType.None;
         public float CaptureProgress { get; private set; }
+        public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }
         public bool IsContested { get; private set; }
         public bool IsCapturable => State != CaptureSiteState.Operational;
         public bool CanStartConstruction => State == CaptureSiteState.Owned;
 
         /// <returns>True when the site changed owner.</returns>
-        public bool TickCapture(float deltaTime, int playerShipCount, int opponentShipCount)
+        /// <param name="playerStrength">Weighted count of player units on the site (ship = 1).</param>
+        /// <param name="opponentStrength">Weighted count of opponent units on the site (ship = 1).</param>
+        public bool TickCapture(float deltaTime, float playerStrength, float opponentStrength)
         {
-            int shipAdvantage = playerShipCount - opponentShipCount;
-            IsContested = IsCapturable && playerShipCount > 0 && opponentShipCount > 0 && shipAdvantage == 0;
+            float advantage = playerStrength - opponentStrength;
+            bool isTied = System.Math.Abs(advantage) < TIE_EPSILON;
+            IsContested = IsCapturable && playerStrength > 0f && opponentStrength > 0f && isTied;
 
-            if (!IsCapturable || (playerShipCount == 0 && opponentShipCount == 0))
+            if (!IsCapturable || (playerStrength <= 0f && opponentStrength <= 0f))
             {
                 ResetCapture();
                 return false;
             }
 
-            if (shipAdvantage == 0)
+            if (isTied)
             {
                 return false;
             }
 
-            PlayerType capturingPlayer = shipAdvantage > 0 ? PlayerType.Player : PlayerType.Opponent;
+            PlayerType capturingPlayer = advantage > 0f ? PlayerType.Player : PlayerType.Opponent;
             if (capturingPlayer == Owner)
             {
                 ResetCapture();
@@ -58,8 +65,8 @@ namespace EmpireAtWar.Entities.CaptureSites
                 CaptureProgress = 0f;
             }
 
-            int netShipCount = System.Math.Abs(shipAdvantage);
-            CaptureProgress += deltaTime / _captureDuration * netShipCount * _captureSpeedPerNetShip;
+            float netStrength = System.Math.Abs(advantage);
+            CaptureProgress += deltaTime / _captureDuration * netStrength * _captureSpeedPerNetShip;
             if (CaptureProgress < 1f)
             {
                 return false;
@@ -73,8 +80,9 @@ namespace EmpireAtWar.Entities.CaptureSites
             return true;
         }
 
-        public void StartConstruction(float buildDuration)
+        public void StartConstruction(SiteFacilityType facilityType, float buildDuration)
         {
+            FacilityType = facilityType;
             _buildDuration = buildDuration;
             ConstructionProgress = 0f;
             State = CaptureSiteState.Constructing;

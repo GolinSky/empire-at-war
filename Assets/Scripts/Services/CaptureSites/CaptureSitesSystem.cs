@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
@@ -12,7 +15,7 @@ using Zenject;
 namespace EmpireAtWar.Services.CaptureSites
 {
     /// <summary>
-    /// Owns the generated capture sites of a map: ship-driven capture, paid construction
+    /// Owns the generated capture sites of a map: ship- and squadron-driven capture, paid construction
     /// through each side's <see cref="ISiteFacilityBuilder"/>, and reset when the facility dies.
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
@@ -22,8 +25,10 @@ namespace EmpireAtWar.Services.CaptureSites
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
+        private readonly List<IEntity> _squadrons = new List<IEntity>();
         private CaptureSiteView[] _siteViews;
         private IShipService _shipService;
+        private IEntityLocator _entityLocator;
         private CaptureSiteData _data;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
@@ -31,10 +36,12 @@ namespace EmpireAtWar.Services.CaptureSites
         private LazyInject<ISiteFacilityBuilder> _playerBuilder;
         private LazyInject<ISiteFacilityBuilder> _opponentBuilder;
         private CaptureSitePresenter _selectedSite;
+        private Predicate<float> _canPlayerAfford;
 
         [Inject]
         private void Construct(
             IShipService shipService,
+            IEntityLocator entityLocator,
             CaptureSiteData data,
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
@@ -45,6 +52,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             _siteViews = siteViews;
             _shipService = shipService;
+            _entityLocator = entityLocator;
             _data = data;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
@@ -60,11 +68,12 @@ namespace EmpireAtWar.Services.CaptureSites
             foreach (CaptureSiteView view in _siteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(view.CaptureDuration, _data.CaptureSpeedPerNetShip);
-                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data.GetCost(view.FacilityType));
+                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data);
                 site.BuildRequested += HandleBuildRequested;
                 _sites.Add(site);
             }
 
+            _canPlayerAfford = price => _playerBuilder.Value.CanAfford(price);
             _inputService.OnInput += HandleInput;
             _inputService.OnEscapePressed += ClearSelection;
         }
@@ -90,22 +99,26 @@ namespace EmpireAtWar.Services.CaptureSites
                 ClearSelection();
             }
 
+            CollectSquadrons();
             foreach (CaptureSitePresenter site in _sites)
             {
-                CountShips(site, out int playerShips, out int opponentShips);
-                site.TickCapture(deltaTime, playerShips, opponentShips);
+                GetStrength(site, out float playerStrength, out float opponentStrength);
+                site.TickCapture(deltaTime, playerStrength, opponentStrength);
                 if (site.TickConstruction(deltaTime))
                 {
                     GetBuilder(site.Owner).Build(site.FacilityType, site.Center, site.ReleaseFacility);
                 }
 
-                site.Render();
                 bool isVisible = !_fogOfWarSystem.IsHidden(site.Center, MINIMUM_SITE_VISIBILITY);
+                if (isVisible)
+                {
+                    // Out of vision the ring keeps its last seen owner.
+                    site.Render();
+                }
+
                 bool isHovered = isVisible && _inputService.SupportsHover &&
                     site.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, site.Center));
-                bool canPlayerAfford = site.Owner == PlayerType.Player &&
-                    _playerBuilder.Value.CanAfford(site.Cost.Price);
-                site.SetVisibility(isVisible, isHovered, canPlayerAfford);
+                site.SetVisibility(isVisible, isHovered, _canPlayerAfford);
             }
         }
 
@@ -160,7 +173,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (site.Owner == owner && HasHostileShips(site, owner))
+                if (site.Owner == owner && HasHostileUnits(site, owner))
                 {
                     position = site.Center;
                     position.y = 0f;
@@ -206,10 +219,10 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             foreach (CaptureSitePresenter site in _sites)
             {
-                // Paying for a site that hostile ships are about to take would waste the credits.
-                if (site.Owner == playerType && site.CanStartConstruction && !HasHostileShips(site, playerType))
+                // Paying for a site that hostile units are about to take would waste the credits.
+                if (site.Owner == playerType && site.CanStartConstruction && !HasHostileUnits(site, playerType))
                 {
-                    return TryStartConstruction(site);
+                    return TryStartConstruction(site, ChooseFacilityType(playerType));
                 }
             }
 
@@ -254,17 +267,42 @@ namespace EmpireAtWar.Services.CaptureSites
             _selectedSite = null;
         }
 
-        private void HandleBuildRequested(CaptureSitePresenter site)
+        private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
         {
             if (site.Owner == PlayerType.Player && site.CanStartConstruction)
             {
-                TryStartConstruction(site);
+                TryStartConstruction(site, facilityType);
             }
         }
 
-        private bool TryStartConstruction(CaptureSitePresenter site)
+        /// <summary>Keeps a side's facilities balanced: builds whichever type it owns fewer of, mining first.</summary>
+        private SiteFacilityType ChooseFacilityType(PlayerType playerType)
         {
-            if (!GetBuilder(site.Owner).TrySpend(site.Cost.Price))
+            int miningCount = 0;
+            int battleAsteroidCount = 0;
+            foreach (CaptureSitePresenter site in _sites)
+            {
+                if (site.Owner != playerType || !site.HasFacility)
+                {
+                    continue;
+                }
+
+                if (site.FacilityType == SiteFacilityType.Mining)
+                {
+                    miningCount++;
+                }
+                else
+                {
+                    battleAsteroidCount++;
+                }
+            }
+
+            return battleAsteroidCount < miningCount ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
+        }
+
+        private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType)
+        {
+            if (!GetBuilder(site.Owner).TrySpend(site.GetCost(facilityType).Price))
             {
                 return false;
             }
@@ -274,36 +312,56 @@ namespace EmpireAtWar.Services.CaptureSites
                 _selectedSite = null;
             }
 
-            site.StartConstruction();
+            site.StartConstruction(facilityType);
             return true;
         }
 
-        private void CountShips(CaptureSitePresenter site, out int playerShips, out int opponentShips)
+        private void CollectSquadrons()
         {
-            playerShips = 0;
-            opponentShips = 0;
-            foreach (IShipEntity ship in _shipService.Ships)
+            _squadrons.Clear();
+            foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (!site.Contains(ship.WorldPosition))
+                if (entity.Model is ISquadronModelObserver && !entity.HealthModel.IsDestroyed)
                 {
-                    continue;
-                }
-
-                if (ship.PlayerType == PlayerType.Player)
-                {
-                    playerShips++;
-                }
-                else if (ship.PlayerType == PlayerType.Opponent)
-                {
-                    opponentShips++;
+                    _squadrons.Add(entity);
                 }
             }
         }
 
-        private bool HasHostileShips(CaptureSitePresenter site, PlayerType owner)
+        private void GetStrength(CaptureSitePresenter site, out float playerStrength, out float opponentStrength)
         {
-            CountShips(site, out int playerShips, out int opponentShips);
-            return owner == PlayerType.Player ? opponentShips > 0 : playerShips > 0;
+            _shipService.CountShips(position => site.Contains(position), out int playerShips, out int opponentShips);
+            playerStrength = playerShips;
+            opponentStrength = opponentShips;
+
+            // A squadron is positioned at the centroid of its fighters.
+            foreach (IEntity squadron in _squadrons)
+            {
+                if (site.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
+                {
+                    AddStrength(squadron.PlayerType, _data.SquadronCaptureWeight,
+                        ref playerStrength, ref opponentStrength);
+                }
+            }
+        }
+
+        private static void AddStrength(PlayerType playerType, float strength,
+            ref float playerStrength, ref float opponentStrength)
+        {
+            if (playerType == PlayerType.Player)
+            {
+                playerStrength += strength;
+            }
+            else if (playerType == PlayerType.Opponent)
+            {
+                opponentStrength += strength;
+            }
+        }
+
+        private bool HasHostileUnits(CaptureSitePresenter site, PlayerType owner)
+        {
+            GetStrength(site, out float playerStrength, out float opponentStrength);
+            return owner == PlayerType.Player ? opponentStrength > 0f : playerStrength > 0f;
         }
 
         private ISiteFacilityBuilder GetBuilder(PlayerType playerType)

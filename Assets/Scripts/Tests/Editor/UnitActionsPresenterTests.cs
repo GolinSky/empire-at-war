@@ -16,7 +16,7 @@ using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.InputService;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using NUnit.Framework;
@@ -266,7 +266,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeSession : ISkirmishSessionModelObserver
         {
             public event Action<GameTimeMode> OnGameTimeModeChanged;
-            public GameTimeMode GameTimeMode => default;
+            public GameTimeMode EffectiveTimeMode => default;
             public bool IsBattleEnded => false;
         }
 

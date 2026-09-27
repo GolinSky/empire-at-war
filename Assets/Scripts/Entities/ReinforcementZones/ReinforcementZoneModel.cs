@@ -5,6 +5,8 @@ namespace EmpireAtWar.Models.ReinforcementZones
 {
     public sealed class ReinforcementZoneModel : PureModel
     {
+        private const float TIE_EPSILON = 0.001f;
+
         private readonly bool _isCapturable;
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
@@ -26,19 +28,22 @@ namespace EmpireAtWar.Models.ReinforcementZones
         public float CaptureProgress { get; private set; }
         public bool IsContested { get; private set; }
 
-        public bool Tick(float deltaTime, int playerShipCount, int opponentShipCount)
+        /// <param name="playerStrength">Weighted count of player units in the zone (ship = 1).</param>
+        /// <param name="opponentStrength">Weighted count of opponent units in the zone (ship = 1).</param>
+        public bool Tick(float deltaTime, float playerStrength, float opponentStrength)
         {
-            int shipAdvantage = playerShipCount - opponentShipCount;
-            IsContested = playerShipCount > 0 && opponentShipCount > 0 && shipAdvantage == 0;
+            float advantage = playerStrength - opponentStrength;
+            bool isTied = System.Math.Abs(advantage) < TIE_EPSILON;
+            IsContested = playerStrength > 0f && opponentStrength > 0f && isTied;
 
             if (!_isCapturable)
             {
                 return false;
             }
 
-            if (shipAdvantage == 0)
+            if (isTied)
             {
-                if (playerShipCount == 0 && opponentShipCount == 0)
+                if (playerStrength <= 0f && opponentStrength <= 0f)
                 {
                     ResetCapture();
                 }
@@ -46,7 +51,7 @@ namespace EmpireAtWar.Models.ReinforcementZones
                 return false;
             }
 
-            PlayerType capturingPlayer = shipAdvantage > 0
+            PlayerType capturingPlayer = advantage > 0f
                 ? PlayerType.Player
                 : PlayerType.Opponent;
             if (capturingPlayer == PlayerType.None || capturingPlayer == Owner)
@@ -61,8 +66,8 @@ namespace EmpireAtWar.Models.ReinforcementZones
                 CaptureProgress = 0f;
             }
 
-            int netShipCount = System.Math.Abs(shipAdvantage);
-            CaptureProgress += deltaTime / _captureDuration * netShipCount * _captureSpeedPerNetShip;
+            float netStrength = System.Math.Abs(advantage);
+            CaptureProgress += deltaTime / _captureDuration * netStrength * _captureSpeedPerNetShip;
             if (CaptureProgress < 1f)
             {
                 return false;

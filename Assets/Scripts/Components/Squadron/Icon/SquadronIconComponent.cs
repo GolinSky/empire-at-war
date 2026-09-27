@@ -21,11 +21,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private Image frameImage;
         [SerializeField] private Image silhouetteImage;
         [Tooltip("Visible marker width and height in screen pixels at the midpoint of camera zoom.")]
-        [SerializeField, Min(1f)] private float screenSize = 32f;
+        [SerializeField, Min(1f)] private float screenSize = 96f;
         [Tooltip("Clickable square width and height in screen pixels at the midpoint of camera zoom.")]
-        [SerializeField, Min(1f)] private float clickSize = 44f;
+        [SerializeField, Min(1f)] private float clickSize = 132f;
         [Tooltip("Screen pixels the marker sits above the squadron centroid at the midpoint of camera zoom.")]
-        [SerializeField] private float screenOffset = 20f;
+        [SerializeField] private float screenOffset = 60f;
         [Tooltip("How fast the marker catches up with the centroid; higher follows fighters more tightly.")]
         [SerializeField, Min(0.01f)] private float followSharpness = 12f;
         [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);

@@ -24,7 +24,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IMapModelObserver _mapModel;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly FactionType _playerFactionType;
-        private GameTimeMode _gameTimeMode;
+        private GameTimeMode _requestedTimeMode;
+        private bool _isMenuOpen;
 
         public SkirmishOrchestrator(
             SkirmishSessionModel sessionModel,
@@ -42,12 +43,12 @@ namespace EmpireAtWar.Controllers.Game
             _mapModel = mapModel;
             _battleVictoryNotifier = battleVictoryNotifier;
             _playerFactionType = playerFactionType;
-            _gameTimeMode = GameTimeMode.Common;
+            _requestedTimeMode = GameTimeMode.Common;
         }
 
         public void Initialize()
         {
-            ChangeTime(_gameTimeMode);
+            ChangeTime(_requestedTimeMode);
             _userStateNotifier.Value.AddObserver(this);
             _battleVictoryNotifier.AddObserver(this);
             _cameraService.MoveTo(_mapModel.GetStationPosition(_playerFactionType));
@@ -61,44 +62,44 @@ namespace EmpireAtWar.Controllers.Game
 
         public void TogglePause()
         {
-            if (_sessionModel.IsBattleEnded)
+            if (_sessionModel.IsBattleEnded || _isMenuOpen)
             {
                 return;
             }
 
-            switch (_gameTimeMode)
+            switch (_requestedTimeMode)
             {
                 case GameTimeMode.Common:
                 case GameTimeMode.SpeedUp:
-                    _gameTimeMode = GameTimeMode.Pause;
+                    _requestedTimeMode = GameTimeMode.Pause;
                     break;
                 case GameTimeMode.Pause:
-                    _gameTimeMode = GameTimeMode.Common;
+                    _requestedTimeMode = GameTimeMode.Common;
                     break;
             }
 
-            ChangeTime(_gameTimeMode);
+            ChangeTime(_requestedTimeMode);
         }
 
         public void ToggleSpeedUp()
         {
-            if (_sessionModel.IsBattleEnded)
+            if (_sessionModel.IsBattleEnded || _isMenuOpen)
             {
                 return;
             }
 
-            switch (_gameTimeMode)
+            switch (_requestedTimeMode)
             {
                 case GameTimeMode.Common:
                 case GameTimeMode.Pause:
-                    _gameTimeMode = GameTimeMode.SpeedUp;
+                    _requestedTimeMode = GameTimeMode.SpeedUp;
                     break;
                 case GameTimeMode.SpeedUp:
-                    _gameTimeMode = GameTimeMode.Common;
+                    _requestedTimeMode = GameTimeMode.Common;
                     break;
             }
 
-            ChangeTime(_gameTimeMode);
+            ChangeTime(_requestedTimeMode);
         }
 
         public void UpdateState(UserNotifierState notifierState)
@@ -114,10 +115,8 @@ namespace EmpireAtWar.Controllers.Game
                 return;
             }
 
-            ChangeTime(
-                notifierState == UserNotifierState.InMenu
-                    ? GameTimeMode.Pause
-                    : GameTimeMode.Common);
+            _isMenuOpen = notifierState == UserNotifierState.InMenu;
+            ChangeTime(_isMenuOpen ? GameTimeMode.Pause : _requestedTimeMode);
         }
 
         public void UpdateState(BattleResult result)
@@ -132,9 +131,9 @@ namespace EmpireAtWar.Controllers.Game
             _gameCommand.ExitGame();
         }
 
-        private void ChangeTime(GameTimeMode mode)
+        private void ChangeTime(GameTimeMode effectiveMode)
         {
-            switch (mode)
+            switch (effectiveMode)
             {
                 case GameTimeMode.Common:
                     Time.timeScale = DEFAULT_TIME_SCALE;
@@ -147,7 +146,7 @@ namespace EmpireAtWar.Controllers.Game
                     break;
             }
 
-            _sessionModel.SetGameTimeMode(mode);
+            _sessionModel.SetGameTimeMode(effectiveMode);
         }
     }
 }

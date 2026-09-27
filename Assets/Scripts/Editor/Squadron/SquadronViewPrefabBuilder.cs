@@ -8,7 +8,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
@@ -34,23 +34,23 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float EDITOR_SLOT_SPACING = 2f;
         private const float TRAIL_TIME = 0.6f;
         private const float TRAIL_WIDTH = 0.16f;
-        private const float ICON_SIZE = 32f;
+        private const float ICON_SIZE = 96f;
         private const float ICON_FRAME_STROKE = 2f;
         private const float ICON_FRAME_CORNER_RADIUS = 4f;
-        private const float ICON_SILHOUETTE_PADDING = 3f;
+        private const float ICON_SILHOUETTE_PADDING = 9f;
 
         [MenuItem("Tools/Squadrons/Build Squadron Views")]
         public static void BuildAll()
         {
             Build(new SquadronViewSpec(SquadronType.Delta7,
-                "Assets/Art/Models/RepublicModels/Delta7/Delta7.obj", 5, 0.085f,
-                Vector3.zero, new Vector3(0f, -0.153f, 0f), 0.55f, 0.8f,
-                new[] { new Vector3(-0.2f, 0f, -0.45f), new Vector3(0.2f, 0f, -0.45f) },
+                "Assets/Art/Models/RepublicModels/Delta7/Delta7.obj", 5, 0.306f,
+                Vector3.zero, new Vector3(0f, -0.551f, 0f), 1.98f, 1.5f,
+                new[] { new Vector3(-0.72f, 0f, -1.62f), new Vector3(0.72f, 0f, -1.62f) },
                 new Color(0.55f, 0.75f, 1f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Silhouette.png"));
             Build(new SquadronViewSpec(SquadronType.Belbullab22,
-                "Assets/Art/Models/SeparatistShip/belbullab/B22_whole.obj", 4, 0.087f,
-                new Vector3(0f, 180f, 0f), new Vector3(0f, -0.034f, -0.07f), 0.7f, 0.9f,
-                new[] { new Vector3(-0.29f, 0f, -0.6f), new Vector3(0.29f, 0f, -0.6f) },
+                "Assets/Art/Models/SeparatistShip/belbullab/B22_whole.obj", 4, 0.244f,
+                new Vector3(0f, 180f, 0f), new Vector3(0f, -0.095f, -0.196f), 1.96f, 1.5f,
+                new[] { new Vector3(-0.812f, 0f, -1.68f), new Vector3(0.812f, 0f, -1.68f) },
                 new Color(1f, 0.62f, 0.3f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
             BuildAWing();
             AssetDatabase.SaveAssets();

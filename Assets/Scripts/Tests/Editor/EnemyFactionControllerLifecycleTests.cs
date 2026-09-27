@@ -61,6 +61,7 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
+                    null,
                     null);
 
                 controller.Initialize();
@@ -122,10 +123,11 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
+                    null,
                     null);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
-                string unitId = $"{request.GetType().FullName}:{request.Id}";
+                UnitLimitKey unitId = UnitLimitKey.From(request);
                 Assert.That(
                     unitLimitModel.TryReserve(unitId, 1, 1, 10),
                     Is.True);
@@ -184,6 +186,7 @@ namespace EmpireAtWar.Tests.Editor
                 null,
                 structurePlacement,
                 new OperationalEntityLocator(),
+                null,
                 null);
 
             controller.Initialize();

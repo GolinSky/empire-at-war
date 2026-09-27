@@ -22,7 +22,7 @@ MonoBehaviour:
     range: 200
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 80
+    projectileSpeed: 133
     color: {r: 1, g: 0.31, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 7
@@ -34,7 +34,7 @@ MonoBehaviour:
     range: 200
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
-    projectileSpeed: 80
+    projectileSpeed: 133
     color: {r: 1, g: 0.68, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 14
@@ -58,7 +58,7 @@ MonoBehaviour:
     range: 175
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 60
+    projectileSpeed: 133
     color: {r: 1, g: 0.04, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 4
@@ -70,7 +70,7 @@ MonoBehaviour:
     range: 175
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 60
+    projectileSpeed: 133
     color: {r: 1, g: 0, b: 0.12, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 5
@@ -82,7 +82,7 @@ MonoBehaviour:
     range: 175
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
-    projectileSpeed: 60
+    projectileSpeed: 133
     color: {r: 1, g: 0, b: 0.05, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 2
@@ -94,7 +94,7 @@ MonoBehaviour:
     range: 150
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
-    projectileSpeed: 50
+    projectileSpeed: 133
     color: {r: 1, g: 0, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 3
@@ -106,7 +106,7 @@ MonoBehaviour:
     range: 150
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
-    projectileSpeed: 50
+    projectileSpeed: 133
     color: {r: 0.98, g: 0, b: 0.19, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 9
@@ -118,7 +118,7 @@ MonoBehaviour:
     range: 150
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
-    projectileSpeed: 50
+    projectileSpeed: 133
     color: {r: 0, g: 0.78, b: 1, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 10
