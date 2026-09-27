@@ -16,13 +16,7 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.MiniMap
 {
-    public interface IMiniMapCommand : ICommand
-    {
-        void MoveTo(Vector3 worldPoint);
-        bool TryOrderMove(Vector3 worldPoint);
-    }
-
-    public class MiniMapController : Controller<MiniMapData>, IMiniMapCommand,
+    public class MiniMapController : Controller<MiniMapData>,
         IInitializable, ILateTickable, ILateDisposable,
         ISkirmishUiRoute
     {
@@ -32,7 +26,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly IUiService _uiService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
-        private MiniMapUi _miniMapUi;
+        private IMiniMapView _miniMapView;
         private CustomCoroutine _unblockCoroutine;
         
         public MiniMapController(
@@ -92,6 +86,11 @@ namespace EmpireAtWar.Controllers.MiniMap
         public void LateDispose()
         {
             _inputService.OnBlocked -= UpdateBlockState;
+            if (_miniMapView != null)
+            {
+                _miniMapView.OnCameraMoveRequested -= MoveTo;
+                _miniMapView.OnMoveOrderRequested -= OrderMove;
+            }
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
                 this);
@@ -99,38 +98,43 @@ namespace EmpireAtWar.Controllers.MiniMap
 
         public void Activate(bool isActive, Transform parentTransform)
         {
-            if (_miniMapUi == null)
+            if (_miniMapView == null)
             {
                 BaseUi ui = _uiService.CreateUi(UiType.MiniMap, parentTransform);
-                _miniMapUi = ui as MiniMapUi
+                _miniMapView = ui as IMiniMapView
                     ?? throw new System.InvalidOperationException(
-                        "The minimap prefab does not contain MiniMapUi.");
+                        "The minimap prefab does not contain IMiniMapView.");
+                _miniMapView.OnCameraMoveRequested += MoveTo;
+                _miniMapView.OnMoveOrderRequested += OrderMove;
             }
             else
             {
-                _miniMapUi.SetParent(parentTransform);
+                _miniMapView.SetParent(parentTransform);
             }
 
             if (isActive)
             {
-                _miniMapUi.Show();
+                _miniMapView.Show();
             }
             else
             {
-                _miniMapUi.Hide();
+                _miniMapView.Hide();
             }
         }
         
-        public void MoveTo(Vector3 worldPoint)
+        private void MoveTo(Vector3 worldPoint)
         {
             _cameraService.MoveTo(worldPoint);
         }
 
-        public bool TryOrderMove(Vector3 worldPoint)
+        private void OrderMove(Vector3 worldPoint)
         {
             // Match world input: taps on an obstacle are not move targets.
-            if (Model.IsObstacleAt(worldPoint)) return false;
-            return _orderInput.TryIssueMove(worldPoint);
+            if (Model.IsObstacleAt(worldPoint)) return;
+            if (_orderInput.TryIssueMove(worldPoint))
+            {
+                _miniMapView.PlayMoveTarget(worldPoint);
+            }
         }
         
         private void UpdateBlockState(bool isBlocked)

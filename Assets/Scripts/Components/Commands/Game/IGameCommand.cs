@@ -3,11 +3,10 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Commands.Game
 {
-    public interface IGameCommand:ICommand
+    public interface IGameCommand
     {
         void StartGame(
             FactionType playerFactionType,

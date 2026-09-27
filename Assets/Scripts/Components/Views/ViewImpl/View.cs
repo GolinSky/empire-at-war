@@ -72,11 +72,4 @@ namespace EmpireAtWar.Views.ViewImpl
         {
         }
     }
-
-    public abstract class View<TModel, TCommand> : View<TModel>
-        where TModel : IModelObserver
-        where TCommand : ICommand
-    {
-        [Inject] protected TCommand Command { get; }
-    }
 }

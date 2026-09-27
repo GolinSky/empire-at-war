@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Ui.Base;
@@ -16,7 +16,7 @@ namespace EmpireAtWar.Views.MiniMap
         Vector2 GetPosition(Vector3 worldPos);
         Vector2 GetSize(float worldDiameter);
     }
-    public class MiniMapUi : BaseUi<IMiniMapModelObserver, IMiniMapCommand>, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
+    public class MiniMapUi : BaseUi<IMiniMapModelObserver>, IMiniMapView, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
     {
         private const float HIGHLIGHT_DURATION = 0.3f;
         private const float HIGHLIGHT_MAP_ALPHA = 1f;
@@ -36,6 +36,9 @@ namespace EmpireAtWar.Views.MiniMap
             new Dictionary<MiniMapMarker, MarkView>();
         private Vector2Range _mapRange;
         private Rect MiniMapRect => miniMapRectTransform.rect;
+
+        public event Action<Vector3> OnCameraMoveRequested;
+        public event Action<Vector3> OnMoveOrderRequested;
 
         public void Initialize()
         {
@@ -144,7 +147,7 @@ namespace EmpireAtWar.Views.MiniMap
             if (Model.IsInputBlocked) return;
             if (!TryGetWorldPoint(eventData, out Vector3 worldPoint)) return;
 
-            Command.MoveTo(worldPoint);
+            OnCameraMoveRequested.Invoke(worldPoint);
         }
 
         private void OrderMove(PointerEventData eventData)
@@ -152,10 +155,12 @@ namespace EmpireAtWar.Views.MiniMap
             if (Model.IsInputBlocked) return;
             if (!TryGetWorldPoint(eventData, out Vector3 worldPoint)) return;
 
-            if (Command.TryOrderMove(worldPoint))
-            {
-                moveTargetView.Play(GetPosition(worldPoint));
-            }
+            OnMoveOrderRequested.Invoke(worldPoint);
+        }
+
+        public void PlayMoveTarget(Vector3 worldPoint)
+        {
+            moveTargetView.Play(GetPosition(worldPoint));
         }
 
         private bool TryGetWorldPoint(PointerEventData eventData, out Vector3 worldPoint)
