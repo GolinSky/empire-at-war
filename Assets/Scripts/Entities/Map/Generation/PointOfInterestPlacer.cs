@@ -33,7 +33,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             nodes.Clear();
             Vector3 center = MapGeometry.GetCenter(size.Bounds);
-            AddDefaultZones(stations, center, nodes);
+            AddDefaultZones(size, stations, center, nodes);
             if (!TryAddHomeMining(size, stations, center, difficulty, random, nodes))
             {
                 return false;
@@ -83,14 +83,16 @@ namespace EmpireAtWar.Entities.Map.Generation
             return radius + _settings.ZoneClearance + (hasPocket ? size.PocketThickness : 0f);
         }
 
-        private void AddDefaultZones(IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
+        private void AddDefaultZones(
+            MapSizeSettings size, IReadOnlyList<MapStation> stations, Vector3 center, List<MapNode> nodes)
         {
             foreach (MapStation station in stations)
             {
                 // The zone sits beside its station on the side facing the map center.
                 float side = station.Position.x < center.x ? 1f : -1f;
+                float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
                 Vector3 position = new Vector3(
-                    station.Position.x + side * (station.Radius + _radii.Zone + _settings.ZoneClearance),
+                    station.Position.x + side * offset,
                     0f,
                     station.Position.z);
                 nodes.Add(new MapNode(MapNodeKind.DefaultZone, position, _radii.Zone, station.Owner));
