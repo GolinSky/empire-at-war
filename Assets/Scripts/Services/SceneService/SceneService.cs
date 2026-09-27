@@ -1,7 +1,5 @@
 using Utilities.ScriptUtils.Time;
 using System;
-using System.Collections.Generic;
-using EmpireAtWar.Entities.Planet;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using EmpireAtWar.Mvc;
@@ -13,7 +11,6 @@ namespace EmpireAtWar.Services.SceneService
     {
         event Action<SceneType> OnSceneActivation; 
         void LoadScene(SceneType sceneType);
-        void LoadSceneByPlanetType(PlanetType planetType);
         SceneType TargetScene { get; }
         bool IsSceneLoaded { get; }
         void ActivateScene();
@@ -29,13 +26,7 @@ namespace EmpireAtWar.Services.SceneService
 
         private AsyncOperation _asyncOperation;
 
-        
-        private readonly Dictionary<PlanetType, SceneType> _planetScenes = new Dictionary<PlanetType, SceneType>
-        {
-            {  PlanetType.Coruscant, SceneType.Coruscant },
-            {  PlanetType.Kamino, SceneType.Kamino }
-        };
-        
+
 
         public SceneService(SceneData sceneModel, TimerPoolService timerPoolService )
         {
@@ -43,16 +34,6 @@ namespace EmpireAtWar.Services.SceneService
             _timerPoolService = timerPoolService;
         }
         
-        public void LoadSceneByPlanetType(PlanetType planetType)
-        {
-            if (!_planetScenes.TryGetValue(planetType, out SceneType sceneType))
-            {
-                Debug.LogError($"No scene type for {planetType}");
-            }
-            
-            LoadScene(sceneType);
-        }
-
         public SceneType TargetScene { get; private set; }
 
         public bool IsSceneLoaded

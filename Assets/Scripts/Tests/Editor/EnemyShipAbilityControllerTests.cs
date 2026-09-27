@@ -82,6 +82,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeGameModel : IGameModelObserver
         {
             public EmpireAtWar.Entities.Planet.PlanetType PlanetType => default;
+            public EmpireAtWar.Entities.Map.MapSize MapSize => default;
             public FactionType PlayerFactionType => default;
             public FactionType EnemyFactionType => default;
             public BattleVictoryCondition VictoryCondition => BattleVictoryCondition.DestroyEnemyFleet;

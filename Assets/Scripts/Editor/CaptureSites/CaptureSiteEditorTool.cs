@@ -1,19 +1,16 @@
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Services.CaptureSites;
 using MPUIKIT;
 using TMPro;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Editor.CaptureSites
 {
-    /// <summary>Builds the capture-site prefab and places the hand-authored sites into each planet scene.</summary>
+    /// <summary>Builds the capture-site prefabs and data; maps spawn the sites at generated positions.</summary>
     public static class CaptureSiteEditorTool
     {
         private const float SITE_RADIUS = 40f;
@@ -32,22 +29,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static readonly Color TRACK_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xD9);
         private static readonly Color TEXT_COLOR = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
 
-        private static readonly (string Scene, string Prefab)[] MAPS =
-        {
-            ("Assets/Scenes/Planets/Kamino/Kamino.unity", PREFAB_FOLDER + "/KaminoCaptureSites.prefab"),
-            ("Assets/Scenes/Planets/Corusant/Corusant.unity", PREFAB_FOLDER + "/CoruscantCaptureSites.prefab"),
-        };
-
-        // Empty diagonal corners, roughly equidistant from both stations; battle asteroids sit beyond the mines.
-        private static readonly (string Name, Vector3 Position, SiteFacilityType FacilityType)[] SITES =
-        {
-            ("AsteroidSiteNorthEast", new Vector3(170f, 0f, 170f), SiteFacilityType.Mining),
-            ("AsteroidSiteSouthWest", new Vector3(-170f, 0f, -170f), SiteFacilityType.Mining),
-            ("BattleAsteroidSiteNorthEast", new Vector3(250f, 0f, 250f), SiteFacilityType.BattleAsteroid),
-            ("BattleAsteroidSiteSouthWest", new Vector3(-250f, 0f, -250f), SiteFacilityType.BattleAsteroid),
-        };
-
-        [MenuItem("Tools/Empire At War/Capture Sites/Build Sites And Place In Maps")]
+        [MenuItem("Tools/Empire At War/Capture Sites/Build Sites")]
         public static void Build()
         {
             AsteroidMiningFacilityAssetBuilder.Build();
@@ -56,14 +38,10 @@ namespace EmpireAtWar.Editor.CaptureSites
             EnsureFolder(DATA_FOLDER);
             BuildData();
             AddMiniMapIcon();
-            GameObject miningSitePrefab = BuildSitePrefab(SiteFacilityType.Mining, SITE_PREFAB_PATH,
+            BuildSitePrefab(SiteFacilityType.Mining, SITE_PREFAB_PATH,
                 parent => AsteroidMiningFacilityAssetBuilder.InstantiateModel(parent, "Machinery", keepRocks: false));
-            GameObject battleSitePrefab = BuildSitePrefab(SiteFacilityType.BattleAsteroid, BATTLE_SITE_PREFAB_PATH,
+            BuildSitePrefab(SiteFacilityType.BattleAsteroid, BATTLE_SITE_PREFAB_PATH,
                 parent => BattleAsteroidAssetBuilder.InstantiateCannons(parent, "Cannons"));
-            foreach ((string scenePath, string prefabPath) in MAPS)
-            {
-                PlaceInScene(scenePath, BuildMapPrefab(miningSitePrefab, battleSitePrefab, prefabPath));
-            }
 
             AssetDatabase.SaveAssets();
         }
@@ -73,31 +51,38 @@ namespace EmpireAtWar.Editor.CaptureSites
         public static void ApplyObstaclesAndMiniMapIcon()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(SITE_PREFAB_PATH);
-            AddRockObstacles(root.transform.Find("AsteroidRocks"));
+            AddRockObstacles(root.GetComponent<CaptureSiteView>(), root.transform.Find("AsteroidRocks"));
             PrefabUtility.SaveAsPrefabAsset(root, SITE_PREFAB_PATH);
             PrefabUtility.UnloadPrefabContents(root);
             AddMiniMapIcon();
             AssetDatabase.SaveAssets();
         }
 
-        private static void AddRockObstacles(Transform rocks)
+        private static void AddRockObstacles(CaptureSiteView site, Transform rocks)
         {
             // Registered MapObstacles steer ship navigation and draw on the minimap.
+            SerializedObject serializedSite = new SerializedObject(site);
+            SerializedProperty siteObstacles = serializedSite.FindProperty("rockObstacles");
+            siteObstacles.arraySize = 0;
             foreach (Transform rock in rocks)
             {
-                if (rock.GetComponent<MapObstacle>() != null)
+                MapObstacle obstacle = rock.GetComponent<MapObstacle>();
+                if (obstacle == null)
                 {
-                    continue;
+                    rock.gameObject.layer = OBSTACLE_LAYER;
+                    MeshCollider collider = rock.gameObject.AddComponent<MeshCollider>();
+                    collider.sharedMesh = rock.GetComponent<MeshFilter>().sharedMesh;
+                    obstacle = rock.gameObject.AddComponent<MapObstacle>();
+                    SerializedObject serializedObstacle = new SerializedObject(obstacle);
+                    serializedObstacle.FindProperty("_obstacleCollider").objectReferenceValue = collider;
+                    serializedObstacle.ApplyModifiedPropertiesWithoutUndo();
                 }
 
-                rock.gameObject.layer = OBSTACLE_LAYER;
-                MeshCollider collider = rock.gameObject.AddComponent<MeshCollider>();
-                collider.sharedMesh = rock.GetComponent<MeshFilter>().sharedMesh;
-                MapObstacle obstacle = rock.gameObject.AddComponent<MapObstacle>();
-                SerializedObject serializedObstacle = new SerializedObject(obstacle);
-                serializedObstacle.FindProperty("_obstacleCollider").objectReferenceValue = collider;
-                serializedObstacle.ApplyModifiedPropertiesWithoutUndo();
+                siteObstacles.arraySize++;
+                siteObstacles.GetArrayElementAtIndex(siteObstacles.arraySize - 1).objectReferenceValue = obstacle;
             }
+
+            serializedSite.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void AddMiniMapIcon()
@@ -166,7 +151,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             GameObject root = new GameObject(System.IO.Path.GetFileNameWithoutExtension(prefabPath));
             GameObject rocks = AsteroidMiningFacilityAssetBuilder.InstantiateModel(
                 root.transform, "AsteroidRocks", keepRocks: true);
-            AddRockObstacles(rocks.transform);
             Transform framework = BuildFramework(root.transform, instantiateFacilityModel);
             MeshRenderer ring = BuildRing(root.transform);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status,
@@ -184,6 +168,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             serializedView.FindProperty("buildButton").objectReferenceValue = button;
             serializedView.FindProperty("buildLabel").objectReferenceValue = buttonLabel;
             serializedView.ApplyModifiedPropertiesWithoutUndo();
+            AddRockObstacles(view, rocks.transform);
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
             Object.DestroyImmediate(root);
@@ -315,50 +300,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             rect.anchorMax = anchorMax;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-        }
-
-        private static GameObject BuildMapPrefab(GameObject miningSitePrefab, GameObject battleSitePrefab,
-            string prefabPath)
-        {
-            GameObject root = new GameObject("CaptureSites");
-            CaptureSitesSystem system = root.AddComponent<CaptureSitesSystem>();
-            SerializedObject serializedSystem = new SerializedObject(system);
-            SerializedProperty siteViews = serializedSystem.FindProperty("siteViews");
-            siteViews.arraySize = SITES.Length;
-            for (int i = 0; i < SITES.Length; i++)
-            {
-                GameObject sitePrefab = SITES[i].FacilityType == SiteFacilityType.BattleAsteroid
-                    ? battleSitePrefab
-                    : miningSitePrefab;
-                GameObject site = (GameObject)PrefabUtility.InstantiatePrefab(sitePrefab, root.transform);
-                site.name = SITES[i].Name;
-                site.transform.position = SITES[i].Position;
-                siteViews.GetArrayElementAtIndex(i).objectReferenceValue = site.GetComponent<CaptureSiteView>();
-            }
-
-            serializedSystem.ApplyModifiedPropertiesWithoutUndo();
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
-            Object.DestroyImmediate(root);
-            return prefab;
-        }
-
-        private static void PlaceInScene(string scenePath, GameObject mapPrefab)
-        {
-            // Additive open leaves every other open scene, and its unsaved state, untouched.
-            Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-            foreach (GameObject existing in scene.GetRootGameObjects())
-            {
-                if (existing.GetComponent<CaptureSitesSystem>() != null)
-                {
-                    Object.DestroyImmediate(existing);
-                }
-            }
-
-            GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(mapPrefab, scene);
-            instance.name = "CaptureSites";
-            EditorSceneManager.MarkSceneDirty(scene);
-            EditorSceneManager.SaveScene(scene);
-            EditorSceneManager.CloseScene(scene, true);
         }
 
         private static void EnsureFolder(string folderPath)

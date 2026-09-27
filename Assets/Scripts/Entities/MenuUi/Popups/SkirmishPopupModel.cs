@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         public FactionType PlayerFaction { get; private set; } = FactionType.Republic;
         public FactionType EnemyFaction { get; private set; } = FactionType.Separatist;
         public PlanetType Planet { get; private set; }
+        public MapSize MapSize { get; private set; }
         public BattleVictoryCondition VictoryCondition { get; private set; }
         public EnemyAiDifficulty EnemyDifficulty { get; private set; }
         public float MinStartingMoney => MIN_STARTING_MONEY;
@@ -53,6 +55,11 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         public void SelectPlanet(PlanetType planet)
         {
             Planet = planet;
+        }
+
+        public void SelectMapSize(MapSize mapSize)
+        {
+            MapSize = mapSize;
         }
 
         public void SelectVictoryCondition(BattleVictoryCondition condition)

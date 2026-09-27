@@ -9,7 +9,6 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
@@ -46,16 +45,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
     {
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
-        private const int MAX_LAYOUT_ATTEMPTS = 72;
-        private const float ZONE_CLEARANCE = 30f;
-        private const float CAPTURABLE_ZONE_SPACING = 150f;
         private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
 
-        // XZ footprint radii about each station's pivot, including its model offset.
-        [SerializeField, Min(0f)] private float republicStationRadius = 135f;
-        [SerializeField, Min(0f)] private float separatistStationRadius = 90f;
         [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
-        [SerializeField] private ReinforcementZoneView[] _zoneViews = Array.Empty<ReinforcementZoneView>();
 
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private readonly Dictionary<ShipType, float> _shipNavigationRadii =
@@ -68,10 +60,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
         private IAssetService _repository;
-        private ICaptureSitesSystem _captureSites;
         private ShipsData _shipsData;
-        private FactionType _playerFactionType;
-        private FactionType _opponentFactionType;
+        private ReinforcementZoneView[] _zoneViews;
 
         public event Action OwnershipChanged;
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
@@ -87,9 +77,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IInputService inputService,
-            ICaptureSitesSystem captureSites,
-            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
-            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
+            ReinforcementZoneView[] zoneViews)
         {
             _shipService = shipService;
             _data = data;
@@ -100,15 +88,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _inputService = inputService;
-            _captureSites = captureSites;
-            _playerFactionType = playerFactionType;
-            _opponentFactionType = opponentFactionType;
+            _zoneViews = zoneViews;
         }
 
         public void Initialize()
         {
             _zones.Clear();
-            ArrangeZones();
             foreach (ReinforcementZoneView view in _zoneViews)
             {
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
@@ -402,158 +387,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 MINIMUM_NAVIGATION_RADIUS);
             _shipNavigationRadii.Add(shipType, navigationRadius);
             return navigationRadius;
-        }
-
-        private void ArrangeZones()
-        {
-            List<ReinforcementZoneView> placed = new List<ReinforcementZoneView>();
-            List<ReinforcementZoneView> capturable = new List<ReinforcementZoneView>();
-            Vector2 mapCenter = (_mapModel.SizeRange.Min + _mapModel.SizeRange.Max) * 0.5f;
-            float largestRadius = 0f;
-            foreach (ReinforcementZoneView view in _zoneViews)
-            {
-                if (view.IsCapturable)
-                {
-                    capturable.Add(view);
-                    largestRadius = Mathf.Max(largestRadius, view.Radius);
-                    continue;
-                }
-
-                FactionType faction = view.StartingOwner == PlayerType.Player
-                    ? _playerFactionType
-                    : _opponentFactionType;
-                Vector3 station = _mapModel.GetStationPosition(faction);
-                float stationRadius = faction == FactionType.Republic
-                    ? republicStationRadius
-                    : separatistStationRadius;
-                float side = station.x < mapCenter.x ? 1f : -1f;
-                Vector3 center = new Vector3(
-                    station.x + side * (stationRadius + view.Radius + ZONE_CLEARANCE),
-                    view.Center.y,
-                    station.z);
-                if (!IsZonePositionClear(center, view.Radius, placed))
-                {
-                    throw new InvalidOperationException(
-                        $"No room beside the {faction} station for its default reinforcement zone.");
-                }
-
-                view.SetCenter(center);
-                placed.Add(view);
-            }
-
-            if (capturable.Count == 0)
-            {
-                return;
-            }
-
-            ReinforcementZoneView centralZone = capturable[0];
-            Vector3 centralPosition = new Vector3(mapCenter.x, centralZone.Center.y, mapCenter.y);
-            if (!IsZonePositionClear(centralPosition, largestRadius, placed))
-            {
-                throw new InvalidOperationException("The map center must have room for a capturable zone.");
-            }
-
-            centralZone.SetCenter(centralPosition);
-            placed.Add(centralZone);
-            if (capturable.Count == 1)
-            {
-                return;
-            }
-
-            float spacing = Mathf.Max(CAPTURABLE_ZONE_SPACING, largestRadius * 2f + ZONE_CLEARANCE);
-            Vector2 mapSize = _mapModel.SizeRange.Max - _mapModel.SizeRange.Min;
-            int extent = Mathf.CeilToInt(Mathf.Max(mapSize.x, mapSize.y) / spacing);
-            List<Vector3> candidates = new List<Vector3>();
-            for (int attempt = 0; attempt < MAX_LAYOUT_ATTEMPTS; attempt++)
-            {
-                candidates.Clear();
-                float angle = Random.Range(0f, Mathf.PI * 2f);
-                float cosine = Mathf.Cos(angle);
-                float sine = Mathf.Sin(angle);
-                // A randomly rotated triangular grid keeps uniform neighbor spacing,
-                // with the origin reserved for the central capture zone.
-                for (int row = -extent; row <= extent; row++)
-                {
-                    for (int column = -extent; column <= extent; column++)
-                    {
-                        if (row == 0 && column == 0)
-                        {
-                            continue;
-                        }
-
-                        float x = (column + row * 0.5f) * spacing;
-                        float z = row * Mathf.Sqrt(3f) * 0.5f * spacing;
-                        Vector3 candidate = new Vector3(
-                            mapCenter.x + x * cosine - z * sine,
-                            0f,
-                            mapCenter.y + x * sine + z * cosine);
-                        if (IsZonePositionClear(candidate, largestRadius, placed))
-                        {
-                            candidates.Add(candidate);
-                        }
-                    }
-                }
-
-                if (candidates.Count < capturable.Count - 1)
-                {
-                    continue;
-                }
-
-                candidates.Sort((a, b) =>
-                    (a - centralPosition).sqrMagnitude.CompareTo((b - centralPosition).sqrMagnitude));
-                for (int i = 1; i < capturable.Count; i++)
-                {
-                    Vector3 position = candidates[i - 1];
-                    position.y = capturable[i].Center.y;
-                    capturable[i].SetCenter(position);
-                }
-
-                return;
-            }
-
-            throw new InvalidOperationException(
-                "The map cannot fit its capturable zones at the required uniform spacing.");
-        }
-
-        private bool IsZonePositionClear(
-            Vector3 center, float radius, IReadOnlyList<ReinforcementZoneView> placed)
-        {
-            if (center.x - radius < _mapModel.SizeRange.Min.x ||
-                center.x + radius > _mapModel.SizeRange.Max.x ||
-                center.z - radius < _mapModel.SizeRange.Min.y ||
-                center.z + radius > _mapModel.SizeRange.Max.y)
-            {
-                return false;
-            }
-
-            Vector3 republic = _mapModel.GetStationPosition(FactionType.Republic);
-            Vector3 separatist = _mapModel.GetStationPosition(FactionType.Separatist);
-            float republicClearance = radius + republicStationRadius + ZONE_CLEARANCE;
-            float separatistClearance = radius + separatistStationRadius + ZONE_CLEARANCE;
-            if (new Vector2(center.x - republic.x, center.z - republic.z).sqrMagnitude <
-                    republicClearance * republicClearance ||
-                new Vector2(center.x - separatist.x, center.z - separatist.z).sqrMagnitude <
-                    separatistClearance * separatistClearance)
-            {
-                return false;
-            }
-
-            if (_captureSites.IsPositionInAnySite(center, radius + ZONE_CLEARANCE))
-            {
-                return false;
-            }
-
-            foreach (ReinforcementZoneView other in placed)
-            {
-                float clearance = radius + other.Radius + ZONE_CLEARANCE;
-                if (new Vector2(center.x - other.Center.x, center.z - other.Center.z).sqrMagnitude <
-                    clearance * clearance)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }
