@@ -138,9 +138,9 @@ MonoBehaviour:
   iconCanvas: {fileID: 8438747670609679604}
   frameImage: {fileID: 2080920292667764878}
   silhouetteImage: {fileID: 8696505948647311753}
-  screenSize: 32
-  clickSize: 44
-  screenOffset: 20
+  screenSize: 96
+  clickSize: 132
+  screenOffset: 60
   followSharpness: 12
   friendlyColor: {r: 0.55, g: 1, b: 0.55, a: 1}
   selectedColor: {r: 1, g: 0.92, b: 0.35, a: 1}
@@ -1543,7 +1543,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 32, y: 32}
+  m_SizeDelta: {x: 96, y: 96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8438747670609679604
 Canvas:
@@ -3368,7 +3368,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -6, y: -6}
+  m_SizeDelta: {x: -18, y: -18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5178238812936483156
 CanvasRenderer:

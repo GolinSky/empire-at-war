@@ -34,10 +34,10 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float EDITOR_SLOT_SPACING = 2f;
         private const float TRAIL_TIME = 0.6f;
         private const float TRAIL_WIDTH = 0.16f;
-        private const float ICON_SIZE = 32f;
+        private const float ICON_SIZE = 96f;
         private const float ICON_FRAME_STROKE = 2f;
         private const float ICON_FRAME_CORNER_RADIUS = 4f;
-        private const float ICON_SILHOUETTE_PADDING = 3f;
+        private const float ICON_SILHOUETTE_PADDING = 9f;
 
         [MenuItem("Tools/Squadrons/Build Squadron Views")]
         public static void BuildAll()
