@@ -37,7 +37,8 @@ namespace EmpireAtWar.Tests.Editor
                 new ShipFactory(),
                 new FakeReinforcementZonesSystem(),
                 new OperationalEntityLocator(),
-                _superWeaponModel);
+                _superWeaponModel,
+                new RangeDebugModel());
         }
 
         [TearDown]

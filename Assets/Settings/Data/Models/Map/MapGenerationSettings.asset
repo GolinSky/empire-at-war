@@ -26,7 +26,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 60
           <Max>k__BackingField: 150
-        <DefaultZoneGap>k__BackingField: 0
+        <DefaultZoneGap>k__BackingField: 60
         <PlanetScale>k__BackingField: 3
         <LaneWidth>k__BackingField: 500
         <MinLaneWidth>k__BackingField: 360

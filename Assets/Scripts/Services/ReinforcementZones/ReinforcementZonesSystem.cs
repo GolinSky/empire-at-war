@@ -267,6 +267,18 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ShipType shipType,
             out Vector3 position)
         {
+            // Prefer the whole hull inside the zone. When the zone is crowded that leaves capital ships
+            // almost no room, so fall back to the player placement rule: only the centre must be inside.
+            return TryGetClearSpawnPosition(zones, shipType, true, out position) ||
+                   TryGetClearSpawnPosition(zones, shipType, false, out position);
+        }
+
+        private bool TryGetClearSpawnPosition(
+            IReadOnlyList<ReinforcementZonePresenter> zones,
+            ShipType shipType,
+            bool keepHullInside,
+            out Vector3 position)
+        {
             if (zones.Count > 0)
             {
                 float navigationRadius = GetNavigationRadius(shipType);
@@ -274,12 +286,13 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 {
                     ReinforcementZonePresenter selectedZone =
                         zones[Random.Range(0, zones.Count)];
-                    float radius = selectedZone.Radius - _spawnEdgePadding - navigationRadius;
-                    if (radius < 0f)
+                    float hullRadius = selectedZone.Radius - _spawnEdgePadding - navigationRadius;
+                    if (hullRadius < 0f)
                     {
                         continue;
                     }
 
+                    float radius = keepHullInside ? hullRadius : selectedZone.Radius - _spawnEdgePadding;
                     Vector2 offset = Random.insideUnitCircle * radius;
                     position = selectedZone.Center + new Vector3(offset.x, 0f, offset.y);
                     position.y = 0f;

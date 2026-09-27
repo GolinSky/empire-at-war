@@ -5,7 +5,7 @@ using UnityEngine;
 namespace EmpireAtWar.ViewComponents.Weapon
 {
     /// <summary>
-    /// Laser / turbolaser bolt: the transform flies from the muzzle and homes onto the moving aim point,
+    /// Laser / turbolaser bolt: flies in a straight line to the aim point captured at fire time,
     /// arriving exactly when the scheduled damage lands. The particle stays at the transform origin.
     /// </summary>
     public class BoltShot : ShotEffect
@@ -16,17 +16,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float LIFETIME_MARGIN = 1f;
 
         [SerializeField] private ParticleSystem vfx;
+        [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
+        [SerializeField] private float sizeScale = 3f;
 
-        private Transform _target;
-        private Vector3 _aimOffset;
         private Vector3 _lastAimPoint;
         private float _arrivalTime;
         private bool _isFlying;
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
-            _target = target;
-            _aimOffset = aimOffset;
             Vector3 start = muzzle.position;
             _lastAimPoint = ResolveAimPoint(start, target.position + aimOffset);
             float travelTime = Vector3.Distance(start, _lastAimPoint) / profile.ProjectileSpeed;
@@ -44,9 +42,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
             main.startColor = profile.Color;
             main.startSize3D = true;
-            main.startSizeXMultiplier = profile.Size.x;
-            main.startSizeYMultiplier = profile.Size.y;
-            main.startSizeZMultiplier = profile.Size.z;
+            main.startSizeXMultiplier = profile.Size.x * sizeScale;
+            main.startSizeYMultiplier = profile.Size.y * sizeScale;
+            main.startSizeZMultiplier = profile.Size.z * sizeScale;
             main.startSpeed = 0f;
             main.startLifetime = travelTime + LIFETIME_MARGIN;
             ParticleSystem.EmissionModule emission = vfx.emission;
@@ -80,7 +78,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private void Fly()
         {
             Vector3 position = transform.position;
-            if (_target != null) _lastAimPoint = ResolveAimPoint(position, _target.position + _aimOffset);
 
             float remaining = _arrivalTime - Time.time;
             if (remaining <= 0f)
@@ -88,20 +85,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 Vector3 impactDirection = _lastAimPoint - position;
                 transform.position = _lastAimPoint;
                 _isFlying = false;
-                _target = null;
                 vfx.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 CompleteImpact(_lastAimPoint, impactDirection.sqrMagnitude > 0f ? impactDirection : transform.forward);
                 return;
             }
 
-            // Cover this frame's share of the remaining gap so the bolt curves onto a moving target
-            // and still lands on schedule.
+            // Cover this frame's share of the remaining gap so the bolt lands on schedule.
             float step = Time.deltaTime / (remaining + Time.deltaTime);
-            Vector3 next = Vector3.Lerp(position, _lastAimPoint, step);
-            Vector3 heading = _lastAimPoint - next;
-            transform.position = next;
-            if (heading.sqrMagnitude > 0f)
-                transform.rotation = Quaternion.LookRotation(heading);
+            transform.position = Vector3.Lerp(position, _lastAimPoint, step);
         }
 
         protected override bool IsVisualComplete() => !_isFlying;
