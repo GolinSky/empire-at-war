@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -241,12 +242,12 @@ namespace EmpireAtWar.Services.UnitOrders
             foreach (TCommand command in commands)
             {
                 Vector3 origin = position(command);
-                positions.Add(new FormationPoint(origin.x, origin.z));
+                positions.Add(ToPoint(origin));
                 radii.Add(radius(command));
             }
             List<FormationPoint> destinations = new List<FormationPoint>();
             FormationModel.CalculateCompactDestinations(positions, radii,
-                new FormationPoint(point.x, point.z), destinations);
+                ToPoint(point), destinations);
             List<Vector3> slots = new List<Vector3>(destinations.Count);
             for (int i = 0; i < destinations.Count; i++)
                 slots.Add(new Vector3(destinations[i].X, position(commands[i]).y,

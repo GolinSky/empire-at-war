@@ -18,14 +18,14 @@ The attached correction plan has been implemented for **all 17 entries**. The fo
 | C1 | Implemented | Restores requested pause/speed after menu close; ignores controls inside menu; requested/effective naming is explicit |
 | C2 | Implemented | Injected UiHitTest reuses storage; drag/pinch state moved to PointerGestureState |
 | C3 | Implemented | TargetSelectionBatch owns targeting/buffers; coordinator retains registration/generation and due-event ordering |
-| C4 | Implemented | Shared position-to-pixel mapping, sharedMesh, no GetComponent, explicit saved renderer binding |
-| D1 | Implemented | Shared FormationConversion for ShipOrderRunner/Squadron; height-preserving order conversion retained |
+| C4 | Implemented | Shared position-to-pixel mapping, sharedMesh, no GetComponent, explicit saved renderer binding; pure FogVisibilityGridModel owns grid/history/fade (follow-up) |
+| D1 | Implemented | FormationConversion used by every Vector3↔FormationPoint call site (orders, enemy AI, navigation, feedback UI — follow-up); height-preserving order output retained |
 | D2 | Implemented | Small shared squared segment-distance helper; MapGeometry takes square root |
 | D3 | Implemented | ShipPopulation.CountShips shares area/faction counting; existing squadron weighting is preserved |
 | D4 | Implemented | Composed MiniMapMarkerCollection shares registration/cleanup; presenter visibility policies remain local |
 | D5 | Implemented | UnitLimitKey replaces string keys and normalizes subclasses to the request kind |
 | D6 | Implemented | Shared offline WAV encoder; weapon RMS/seam reporting retained |
-| L1 | Implemented | Unused CollectionUtility deleted through Unity AssetDatabase |
+| L1 | Implemented | Unused CollectionUtility and its empty folder deleted through Unity AssetDatabase |
 | L2 | Implemented | Removed BuildPathToFile and cached name; compute name per binding |
 | L3 | Implemented | SelectionType moved; empty folder removed; vendor code moved with metadata/license material |
 | L4 | Implemented | Listed selection, purchase, random and radar types split into matching files |

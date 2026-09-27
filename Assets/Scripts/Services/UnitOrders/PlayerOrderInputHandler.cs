@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
@@ -68,7 +69,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 List<Vector3> points = new List<Vector3>(_targeting.Waypoints.Count);
                 foreach (FormationPoint waypoint in _targeting.Waypoints)
-                    points.Add(new Vector3(waypoint.X, 0f, waypoint.Z));
+                    points.Add(ToVector(waypoint));
                 _orders.IssueWaypointMove(Snapshot(), points);
             }
             _targeting.Cancel();
@@ -157,7 +158,7 @@ namespace EmpireAtWar.Services.UnitOrders
                         _targeting.Cancel();
                         break;
                     case UnitActionId.WaypointMove:
-                        _targeting.AddWaypoint(new FormationPoint(point.x, point.z));
+                        _targeting.AddWaypoint(ToPoint(point));
                         break;
                 }
                 return;

@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -74,7 +75,7 @@ namespace EmpireAtWar.Services.Enemy
             List<IShipEntity> enemyShips = GetShips(PlayerType.Opponent);
             List<IShipEntity> playerShips = GetShips(PlayerType.Player);
             FormationPoint fleetCenter = CalculateFleetCenter(enemyShips);
-            Vector3 origin = new Vector3(fleetCenter.X, 0f, fleetCenter.Z);
+            Vector3 origin = ToVector(fleetCenter);
             // Defending an owned site outranks new captures; raiding an operational site is the fallback.
             bool hasThreatenedSite = _captureSites.TryGetThreatenedSite(
                 PlayerType.Opponent, out Vector3 captureTarget);
@@ -163,7 +164,7 @@ namespace EmpireAtWar.Services.Enemy
             List<FormationPoint> positions = new List<FormationPoint>(ships.Count);
             foreach (IShipEntity ship in ships)
             {
-                positions.Add(new FormationPoint(ship.WorldPosition.x, ship.WorldPosition.z));
+                positions.Add(ToPoint(ship.WorldPosition));
             }
 
             return FormationModel.CalculateCenter(positions);

@@ -6,7 +6,6 @@ namespace ViewComponents
 {
     public class FogOfWarSystem : MonoBehaviour
     {
-        private const float HISTORIC_VISIBILITY = 0.35f;
         private const int MAX_TEXTURE_RESOLUTION = 512;
 
         
@@ -49,7 +48,7 @@ namespace ViewComponents
 
         private Texture2D _fogTexture;
         private Color[] _fogPixels;
-        private Color[] _targetPixels;
+        private FogVisibilityGridModel _grid;
 
         private List<VisionSource> _activeSources = new List<VisionSource>();
         private float _timer;
@@ -82,13 +81,11 @@ namespace ViewComponents
             _fogTexture.wrapMode = TextureWrapMode.Clamp;
             _fogTexture.filterMode = FilterMode.Bilinear;
 
-            int totalPixels = textureResolution * textureResolution;
-            _fogPixels = new Color[totalPixels];
-            _targetPixels = new Color[totalPixels];
-            for (int i = 0; i < totalPixels; i++)
+            _grid = new FogVisibilityGridModel(textureResolution);
+            _fogPixels = new Color[textureResolution * textureResolution];
+            for (int i = 0; i < _fogPixels.Length; i++)
             {
                 _fogPixels[i] = Color.black;
-                _targetPixels[i] = Color.black;
             }
 
             _fogTexture.SetPixels(_fogPixels);
@@ -107,19 +104,13 @@ namespace ViewComponents
                 UpdateFogTargets();
             }
 
-            // Smoothly interpolate current pixels to target pixels
-            bool changed = false;
-            for (int i = 0; i < _fogPixels.Length; i++)
+            if (_grid.Fade(fadeSpeed * Time.deltaTime))
             {
-                if (_fogPixels[i].r != _targetPixels[i].r)
+                for (int i = 0; i < _fogPixels.Length; i++)
                 {
-                    _fogPixels[i].r = Mathf.MoveTowards(_fogPixels[i].r, _targetPixels[i].r, fadeSpeed * Time.deltaTime);
-                    changed = true;
+                    _fogPixels[i].r = _grid.GetVisibility(i);
                 }
-            }
 
-            if (changed)
-            {
                 _fogTexture.SetPixels(_fogPixels);
                 _fogTexture.Apply();
             }
@@ -127,79 +118,29 @@ namespace ViewComponents
 
         private void UpdateFogTargets()
         {
-            float baseVis = keepHistory ? HISTORIC_VISIBILITY : 0f;
-
-            // Reset targets to base visibility (either totally unrevealed or historically revealed)
-            for (int i = 0; i < _targetPixels.Length; i++)
-            {
-                _targetPixels[i].r = _fogPixels[i].r > 0 ? baseVis : 0f;
-            }
+            _grid.ResetTargets(keepHistory);
 
             // Cleanup destroyed objects automatically
             _activeSources.RemoveAll(s => s.transform == null);
 
-            // Paint circles for each active vision source in the target pixel array
             foreach (var source in _activeSources)
             {
                 Vector2Int pixel = PositionToPixel(source.transform.position, out bool inside);
                 if (!inside) continue;
-                int px = pixel.x;
-                int py = pixel.y;
-
-                // Determine radius length in pixels along each axis
-                // Prevent division by zero
-                float safeMapX = Mathf.Max(mapWorldSize.x, 0.1f);
-                float safeMapY = Mathf.Max(mapWorldSize.y, 0.1f);
-
-                float rNormX = source.radius / safeMapX;
-                float rNormY = source.radius / safeMapY;
-                int radiusPxX = Mathf.RoundToInt(rNormX * textureResolution);
-                int radiusPxY = Mathf.RoundToInt(rNormY * textureResolution);
-
-                // We use the larger pixel radius length to simplify distance checks (assume square aspect ratio conceptually)
-                int radiusPx = Mathf.Max(radiusPxX, radiusPxY);
-                // Ensure a minimum of at least 1 pixel radius if there is supposed to be a hole
-                if (radiusPx < 1) radiusPx = 1;
-
-                int outerRadiusPx = Mathf.CeilToInt(
-                    radiusPx * (1f + edgeSoftness));
-
-                // Build bounds around the full feathered edge in pixel space.
-                int minX = Mathf.Clamp(px - outerRadiusPx, 0, textureResolution - 1);
-                int maxX = Mathf.Clamp(px + outerRadiusPx, 0, textureResolution - 1);
-                int minY = Mathf.Clamp(py - outerRadiusPx, 0, textureResolution - 1);
-                int maxY = Mathf.Clamp(py + outerRadiusPx, 0, textureResolution - 1);
-
-                float sqrOuterRadiusPx = outerRadiusPx * outerRadiusPx;
-
-                for (int y = minY; y <= maxY; y++)
-                {
-                    for (int x = minX; x <= maxX; x++)
-                    {
-                        // Calculate square distance in pixels
-                        float distSqr = (x - px) * (x - px) + (y - py) * (y - py);
-
-                        if (distSqr <= sqrOuterRadiusPx)
-                        {
-                            int index = y * textureResolution + x;
-
-                            // The registered radius is the middle of the
-                            // feather, so its border is exactly half visible.
-                            float targetVis =
-                                FogVisibilityModel.CalculateSoftVisibility(
-                                    Mathf.Sqrt(distSqr),
-                                    radiusPx,
-                                    edgeSoftness) *
-                                source.intensity;
-
-                            // Apply to all RGB channels equally
-                            _targetPixels[index].r = Mathf.Max(_targetPixels[index].r, targetVis);
-                            _targetPixels[index].g = _targetPixels[index].r;
-                            _targetPixels[index].b = _targetPixels[index].r;
-                        }
-                    }
-                }
+                _grid.Reveal(pixel.x, pixel.y, RadiusToPixels(source.radius), edgeSoftness, source.intensity);
             }
+        }
+
+        private int RadiusToPixels(float radius)
+        {
+            // Prevent division by zero
+            float safeMapX = Mathf.Max(mapWorldSize.x, 0.1f);
+            float safeMapY = Mathf.Max(mapWorldSize.y, 0.1f);
+            int radiusPxX = Mathf.RoundToInt(radius / safeMapX * textureResolution);
+            int radiusPxY = Mathf.RoundToInt(radius / safeMapY * textureResolution);
+
+            // Ensure a minimum of at least 1 pixel radius if there is supposed to be a hole
+            return Mathf.Max(1, Mathf.Max(radiusPxX, radiusPxY));
         }
 
         // ===================================
@@ -255,10 +196,7 @@ namespace ViewComponents
         public float GetVisibilityAtPosition(Vector3 worldPos)
         {
             Vector2Int pixel = PositionToPixel(worldPos, out _);
-            int px = Mathf.Clamp(pixel.x, 0, textureResolution - 1);
-            int py = Mathf.Clamp(pixel.y, 0, textureResolution - 1);
-
-            return _fogPixels[py * textureResolution + px].r;
+            return _grid.GetVisibility(pixel.x, pixel.y);
         }
 
         /// <summary>
