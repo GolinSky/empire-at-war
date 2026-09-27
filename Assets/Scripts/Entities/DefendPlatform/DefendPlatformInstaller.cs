@@ -40,7 +40,7 @@ namespace EmpireAtWar
             Container.BindEntityExt(_miningFacilityType);
             Container.BindEntityExt(SelectionType.DefendPlatform);
             Container.BindInterfacesTo<EntityComponentData>()
-                .FromInstance(Repository.Load<DefendPlatformData>(nameof(DefendPlatformData)).ComponentData);
+                .FromInstance(Repository.Load<DefendPlatformData>(ModelPathPrefix + nameof(DefendPlatformData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
             Container.Bind<WeaponModel>().AsSingle();

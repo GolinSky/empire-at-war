@@ -131,7 +131,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             PrefabUtility.UnloadPrefabContents(root);
         }
 
-        private static Shield BuildShield(Transform root, Bounds bounds)
+        public static Shield BuildShield(Transform root, Bounds bounds)
         {
             // Unit-sphere mesh: a uniform scale of the machinery's corner distance gives a round shell around it.
             GameObject surface = new GameObject("ShieldSurface");
