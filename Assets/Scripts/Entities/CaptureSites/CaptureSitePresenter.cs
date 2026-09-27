@@ -50,9 +50,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         /// <returns>True when the site changed owner.</returns>
-        public bool TickCapture(float deltaTime, int playerShipCount, int opponentShipCount)
+        public bool TickCapture(float deltaTime, float playerStrength, float opponentStrength)
         {
-            return _model.TickCapture(deltaTime, playerShipCount, opponentShipCount);
+            return _model.TickCapture(deltaTime, playerStrength, opponentStrength);
         }
 
         /// <returns>True on the frame the facility finishes construction.</returns>

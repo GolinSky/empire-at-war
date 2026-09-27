@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Mvc;
@@ -52,7 +55,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private readonly Dictionary<ShipType, float> _shipNavigationRadii =
             new Dictionary<ShipType, float>();
+        private readonly List<IEntity> _squadrons = new List<IEntity>();
         private IShipService _shipService;
+        private IEntityLocator _entityLocator;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IInputService _inputService;
@@ -69,6 +74,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         [Inject]
         private void Construct(
             IShipService shipService,
+            IEntityLocator entityLocator,
             ReinforcementZoneData data,
             IAssetService repository,
             ShipsData shipsData,
@@ -80,6 +86,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ReinforcementZoneView[] zoneViews)
         {
             _shipService = shipService;
+            _entityLocator = entityLocator;
             _data = data;
             _repository = repository;
             _shipsData = shipsData;
@@ -107,11 +114,24 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public void Tick()
         {
+            CollectSquadrons();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 _shipService.CountShips(zone.Contains, out int playerShips, out int opponentShips);
+                float playerStrength = playerShips;
+                float opponentStrength = opponentShips;
 
-                if (zone.Tick(Time.deltaTime, playerShips, opponentShips))
+                // A squadron is positioned at the centroid of its fighters.
+                foreach (IEntity squadron in _squadrons)
+                {
+                    if (zone.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
+                    {
+                        AddStrength(squadron.PlayerType, _data.SquadronCaptureWeight,
+                            ref playerStrength, ref opponentStrength);
+                    }
+                }
+
+                if (zone.Tick(Time.deltaTime, playerStrength, opponentStrength))
                 {
                     OwnershipChanged?.Invoke();
                 }
@@ -121,6 +141,31 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 bool isHovered = isRevealed && _inputService.SupportsHover &&
                     zone.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
+            }
+        }
+
+        private void CollectSquadrons()
+        {
+            _squadrons.Clear();
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Model is ISquadronModelObserver && !entity.HealthModel.IsDestroyed)
+                {
+                    _squadrons.Add(entity);
+                }
+            }
+        }
+
+        private static void AddStrength(PlayerType playerType, float strength,
+            ref float playerStrength, ref float opponentStrength)
+        {
+            if (playerType == PlayerType.Player)
+            {
+                playerStrength += strength;
+            }
+            else if (playerType == PlayerType.Opponent)
+            {
+                opponentStrength += strength;
             }
         }
 

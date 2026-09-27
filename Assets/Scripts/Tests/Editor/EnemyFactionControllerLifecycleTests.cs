@@ -61,6 +61,7 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
+                    null,
                     null);
 
                 controller.Initialize();
@@ -122,6 +123,7 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
+                    null,
                     null);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
@@ -184,6 +186,7 @@ namespace EmpireAtWar.Tests.Editor
                 null,
                 structurePlacement,
                 new OperationalEntityLocator(),
+                null,
                 null);
 
             controller.Initialize();

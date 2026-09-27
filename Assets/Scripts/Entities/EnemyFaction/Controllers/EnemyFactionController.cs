@@ -40,6 +40,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly IEntityLocator _entityLocator;
         private readonly ISquadronLauncher _squadronLauncher;
+        private readonly IEnemySquadronCommander _squadronCommander;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
             new Dictionary<CustomCoroutine, UnitRequest>();
 
@@ -68,7 +69,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ReinforcementData reinforcementData,
             IEnemyStructurePlacementService structurePlacement,
             IEntityLocator entityLocator,
-            ISquadronLauncher squadronLauncher) : base(model)
+            ISquadronLauncher squadronLauncher,
+            IEnemySquadronCommander squadronCommander) : base(model)
         {
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
@@ -82,6 +84,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _structurePlacement = structurePlacement;
             _entityLocator = entityLocator;
             _squadronLauncher = squadronLauncher;
+            _squadronCommander = squadronCommander;
         }
         
 
@@ -146,7 +149,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 ReleaseUnit(squadronUnitRequest);
                             };
                             squadron.Released += handler;
-                            squadron.Hunt();
+                            _squadronCommander.Command(squadron);
                         });
                     break;
                 }

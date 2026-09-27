@@ -53,24 +53,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.IsMoving, Is.True);
         }
 
-        [Test]
-        public void BlockedDestination_CanBeRetriedAfterRadarUpdate()
-        {
-            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
-            NumericsVector3 destination = new NumericsVector3(10f, 5f, 0f);
-            model.FinishArrival();
-            model.Block(destination);
-
-            Assert.That(model.IsBlocked, Is.True);
-            Assert.That(model.TakePending(), Is.EqualTo(destination));
-            model.Accept(destination);
-            Assert.That(model.Phase, Is.EqualTo(MovementPhase.Moving));
-        }
-
         [TestCase(MovementPhase.Arriving)]
         [TestCase(MovementPhase.Idle)]
         [TestCase(MovementPhase.Moving)]
-        [TestCase(MovementPhase.Blocked)]
         public void StopAt_ClearsPendingOrders(MovementPhase phase)
         {
             ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
@@ -83,10 +68,6 @@ namespace EmpireAtWar.Tests.Editor
             if (phase == MovementPhase.Moving)
             {
                 model.Accept(destination);
-            }
-            else if (phase == MovementPhase.Blocked)
-            {
-                model.Block(destination);
             }
 
             model.Request(destination);

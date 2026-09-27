@@ -136,7 +136,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _shipMoveComponent.GetRange(TargetPosition));
             if (_isClosingRange && inRange)
             {
-                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                if (_shipMoveComponent.IsMoving)
                 {
                     _shipMoveComponent.Stop();
                 }
@@ -150,7 +150,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_hasPursuitDestination &&
                 (destination - _pursuitDestination).sqrMagnitude < updateDistance * updateDistance)
             {
-                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                if (_shipMoveComponent.IsMoving)
                 {
                     return;
                 }
@@ -189,7 +189,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_weaponComponent.HasEnoughRange(
                     _shipMoveComponent.GetRange(TargetPosition)))
             {
-                if (_shipMoveComponent.IsMoving || _shipMoveComponent.IsBlocked)
+                if (_shipMoveComponent.IsMoving)
                 {
                     _shipMoveComponent.Stop();
                 }
