@@ -138,10 +138,16 @@ namespace EmpireAtWar.Controllers.MiniMap
             if (_unblockCoroutine != null)
             {
                 _unblockCoroutine.Release();
+                _unblockCoroutine = null;
             }
             if (!isBlocked)
             {
-                _unblockCoroutine = _timerPoolService.Invoke(() => { Model.IsInputBlocked = isBlocked; }, 1f);
+                // A finished timer returns to the shared pool; drop the handle so it is never released twice.
+                _unblockCoroutine = _timerPoolService.Invoke(() =>
+                {
+                    _unblockCoroutine = null;
+                    Model.IsInputBlocked = isBlocked;
+                }, 1f);
             }
             else
             {
