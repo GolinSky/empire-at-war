@@ -15,13 +15,13 @@ MonoBehaviour:
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 6
+  <Speed>k__BackingField: 18
   <Height>k__BackingField: 10
   <RotationSpeed>k__BackingField: 60
   <TurnAcceleration>k__BackingField: 60
   <HyperSpaceDuration>k__BackingField: 3
   <BodyRotationMaxAngle>k__BackingField: 30
-  <NavigationRadius>k__BackingField: 3
+  <NavigationRadius>k__BackingField: 9
   <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
   <FallDownRotation>k__BackingField:
     x:
@@ -53,3 +53,6 @@ MonoBehaviour:
   <Delay>k__BackingField: 0.25
   <Distance>k__BackingField: 200
   abilities: 04000000
+  hangarBays: []
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8

@@ -15,13 +15,13 @@ MonoBehaviour:
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 2.25
+  <Speed>k__BackingField: 6.75
   <Height>k__BackingField: 5
   <RotationSpeed>k__BackingField: 25
   <TurnAcceleration>k__BackingField: 25
   <HyperSpaceDuration>k__BackingField: 3
   <BodyRotationMaxAngle>k__BackingField: 10
-  <NavigationRadius>k__BackingField: 12
+  <NavigationRadius>k__BackingField: 36
   <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
   <FallDownRotation>k__BackingField:
     x:
