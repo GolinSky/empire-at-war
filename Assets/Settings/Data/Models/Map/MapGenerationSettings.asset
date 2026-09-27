@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b172b6537e9a8fe4888282ffd8e1ea2a, type: 3}
+  m_Name: MapGenerationSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.MapGenerationSettings
+  sizes:
+    keyValue:
+    - key: 0
+      value:
+        <Bounds>k__BackingField:
+          <Min>k__BackingField: {x: -300, y: -300}
+          <Max>k__BackingField: {x: 300, y: 300}
+        <CapturableZoneCount>k__BackingField: 2
+        <MiningSiteCount>k__BackingField: 2
+        <BattleSiteCount>k__BackingField: 2
+        <PointSpacing>k__BackingField: 0
+        <RoadWidth>k__BackingField: 55
+        <ObstacleSpacing>k__BackingField: 20
+        <ObstacleScale>k__BackingField:
+          <Min>k__BackingField: 0.5
+          <Max>k__BackingField: 0.7
+        <HomeMiningGap>k__BackingField:
+          <Min>k__BackingField: 5
+          <Max>k__BackingField: 50
+        <PlanetScale>k__BackingField: 1
+    - key: 1
+      value:
+        <Bounds>k__BackingField:
+          <Min>k__BackingField: {x: -450, y: -450}
+          <Max>k__BackingField: {x: 450, y: 450}
+        <CapturableZoneCount>k__BackingField: 3
+        <MiningSiteCount>k__BackingField: 4
+        <BattleSiteCount>k__BackingField: 2
+        <PointSpacing>k__BackingField: 20
+        <RoadWidth>k__BackingField: 70
+        <ObstacleSpacing>k__BackingField: 26
+        <ObstacleScale>k__BackingField:
+          <Min>k__BackingField: 0.8
+          <Max>k__BackingField: 1.1
+        <HomeMiningGap>k__BackingField:
+          <Min>k__BackingField: 20
+          <Max>k__BackingField: 120
+        <PlanetScale>k__BackingField: 1.4
+    - key: 2
+      value:
+        <Bounds>k__BackingField:
+          <Min>k__BackingField: {x: -1500, y: -1500}
+          <Max>k__BackingField: {x: 1500, y: 1500}
+        <CapturableZoneCount>k__BackingField: 9
+        <MiningSiteCount>k__BackingField: 8
+        <BattleSiteCount>k__BackingField: 4
+        <PointSpacing>k__BackingField: 140
+        <RoadWidth>k__BackingField: 110
+        <ObstacleSpacing>k__BackingField: 50
+        <ObstacleScale>k__BackingField:
+          <Min>k__BackingField: 1.5
+          <Max>k__BackingField: 2.4
+        <HomeMiningGap>k__BackingField:
+          <Min>k__BackingField: 80
+          <Max>k__BackingField: 450
+        <PlanetScale>k__BackingField: 3.5
+  stationRadii:
+    keyValue:
+    - key: 0
+      value: 135
+    - key: 1
+      value: 90
+  planetPrefabs:
+    keyValue:
+    - key: 0
+      value: {fileID: 255825743812757999, guid: df07939821b7f8c42aefe5813035a036,
+        type: 3}
+    - key: 1
+      value: {fileID: 1663774606934864102, guid: 6c2aaf5fee18f854f89fae6033b89f3f,
+        type: 3}
+  <StationEdgeDistance>k__BackingField: 100
+  <StationHeight>k__BackingField: -40
+  <ZoneClearance>k__BackingField: 10
+  <HomeMiningAngle>k__BackingField: 5
+  <PlanetBorderInset>k__BackingField: 0.25
+  <ExtraRoadChance>k__BackingField: 0.35
+  <RoadBend>k__BackingField: 0.2
+  <ObstacleFootprint>k__BackingField: 32

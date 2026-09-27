@@ -147,6 +147,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType playerFactionType,
                 FactionType enemyFactionType,
                 PlanetType planetType,
+                MapSize mapSize,
                 BattleVictoryCondition victoryCondition,
                 EnemyAiDifficulty enemyDifficulty,
                 float startingMoney) { }

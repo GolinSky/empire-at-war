@@ -70,11 +70,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3e84814326b95ad439662fee97464b33
-    m_Address: MapData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c82cfd092878f14087ee2689ea29b7f
     m_Address: AsteroidMiningFacilityData
     m_ReadOnly: 0

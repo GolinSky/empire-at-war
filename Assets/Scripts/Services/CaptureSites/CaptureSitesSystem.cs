@@ -12,7 +12,7 @@ using Zenject;
 namespace EmpireAtWar.Services.CaptureSites
 {
     /// <summary>
-    /// Owns the hand-placed capture sites of a map: ship-driven capture, paid construction
+    /// Owns the generated capture sites of a map: ship-driven capture, paid construction
     /// through each side's <see cref="ISiteFacilityBuilder"/>, and reset when the facility dies.
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
@@ -21,9 +21,8 @@ namespace EmpireAtWar.Services.CaptureSites
         // Explored fog retains 0.35 visibility; site status requires current vision.
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
 
-        [SerializeField] private CaptureSiteView[] siteViews = Array.Empty<CaptureSiteView>();
-
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
+        private CaptureSiteView[] _siteViews;
         private IShipService _shipService;
         private CaptureSiteData _data;
         private FogOfWarSystem _fogOfWarSystem;
@@ -41,8 +40,10 @@ namespace EmpireAtWar.Services.CaptureSites
             ICameraService cameraService,
             IInputService inputService,
             [Inject(Id = PlayerType.Player)] LazyInject<ISiteFacilityBuilder> playerBuilder,
-            [Inject(Id = PlayerType.Opponent)] LazyInject<ISiteFacilityBuilder> opponentBuilder)
+            [Inject(Id = PlayerType.Opponent)] LazyInject<ISiteFacilityBuilder> opponentBuilder,
+            CaptureSiteView[] siteViews)
         {
+            _siteViews = siteViews;
             _shipService = shipService;
             _data = data;
             _fogOfWarSystem = fogOfWarSystem;
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public void Initialize()
         {
-            foreach (CaptureSiteView view in siteViews)
+            foreach (CaptureSiteView view in _siteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(view.CaptureDuration, _data.CaptureSpeedPerNetShip);
                 CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data.GetCost(view.FacilityType));
@@ -111,7 +112,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f)
         {
             // Reads the views directly so zone layout can query sites before Initialize.
-            foreach (CaptureSiteView view in siteViews)
+            foreach (CaptureSiteView view in _siteViews)
             {
                 float x = position.x - view.Center.x;
                 float z = position.z - view.Center.z;

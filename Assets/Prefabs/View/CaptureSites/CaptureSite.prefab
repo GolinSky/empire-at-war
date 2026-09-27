@@ -3713,6 +3713,10 @@ MonoBehaviour:
   radius: 40
   captureDuration: 12
   ringRenderer: {fileID: 868575140992422580}
+  rockObstacles:
+  - {fileID: 9045886404821288482}
+  - {fileID: 8715947777947141369}
+  - {fileID: 3772752911260457590}
   constructionFramework: {fileID: 6362293097928257610}
   statusCanvas: {fileID: 1434080349191544781}
   progressFill: {fileID: 2274206431328672243}

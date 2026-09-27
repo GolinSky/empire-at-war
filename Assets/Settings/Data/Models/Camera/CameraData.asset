@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bfa8458ab5e571488a5c15ef5a85795, type: 3}
   m_Name: CameraData
   m_EditorClassIdentifier: 
-  <MinMoveRangeX>k__BackingField:
-    <Min>k__BackingField: {x: -350, y: -400}
-    <Max>k__BackingField: {x: 350, y: 400}
-  <MaxMoveRangeY>k__BackingField:
-    <Min>k__BackingField: {x: -350, y: -600}
-    <Max>k__BackingField: {x: 350, y: 400}
+  <MinZoomPadding>k__BackingField:
+    <Min>k__BackingField: {x: -50, y: -100}
+    <Max>k__BackingField: {x: 50, y: 100}
+  <MaxZoomPadding>k__BackingField:
+    <Min>k__BackingField: {x: -50, y: -300}
+    <Max>k__BackingField: {x: 50, y: 100}
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 60
     <Max>k__BackingField: 500

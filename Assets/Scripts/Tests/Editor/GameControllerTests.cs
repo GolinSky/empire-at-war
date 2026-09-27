@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.SceneService;
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Republic,
                 FactionType.Republic,
                 PlanetType.Coruscant,
+                MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet,
                 EnemyAiDifficulty.Medium,
                 2000f));
@@ -51,11 +53,6 @@ namespace EmpireAtWar.Tests.Editor
             public int LoadRequestCount { get; private set; }
 
             public void LoadScene(SceneType sceneType)
-            {
-                LoadRequestCount++;
-            }
-
-            public void LoadSceneByPlanetType(PlanetType planetType)
             {
                 LoadRequestCount++;
             }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Models.Factions;
 using TMPro;
 using UnityEngine;
@@ -16,6 +18,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField, Min(1f)] private float radius = 40f;
         [SerializeField, Min(1f)] private float captureDuration = 12f;
         [SerializeField] private MeshRenderer ringRenderer;
+        [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private Transform constructionFramework;
         [SerializeField] private Canvas statusCanvas;
         [SerializeField] private Image progressFill;
@@ -36,6 +39,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public float Radius => radius;
         public float CaptureDuration => captureDuration;
         public SiteFacilityType FacilityType => facilityType;
+        public IReadOnlyList<MapObstacle> RockObstacles => rockObstacles;
 
         private void Awake()
         {

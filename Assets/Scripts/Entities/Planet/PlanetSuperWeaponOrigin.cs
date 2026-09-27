@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.Planet
     public class PlanetSuperWeaponOrigin : MonoBehaviour, ISuperWeaponOrigin
     {
         [SerializeField] private Transform planetTransform;
-        [SerializeField] private float surfaceRadius;
+        [SerializeField, Tooltip("Surface radius at a planet scale of 1.")] private float surfaceRadius;
 
         private ISuperWeaponOriginRegistry _registry;
 
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.Planet
         public Vector3 GetFirePosition(Vector3 targetPosition)
         {
             Vector3 center = planetTransform.position;
-            return center + (targetPosition - center).normalized * surfaceRadius;
+            return center + (targetPosition - center).normalized * surfaceRadius * transform.lossyScale.x;
         }
     }
 }

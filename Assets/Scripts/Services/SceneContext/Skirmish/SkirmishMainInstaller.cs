@@ -17,7 +17,6 @@ using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
@@ -28,8 +27,6 @@ using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
@@ -52,13 +49,7 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
-            .FromComponentInHierarchy()
-            .AsSingle();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
-        Container.BindInterfacesAndSelfTo<CaptureSitesSystem>()
-            .FromComponentInHierarchy()
-            .AsSingle();
         Container.BindScriptableObject<CaptureSiteData>(Repository);
         Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();
         Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
@@ -107,8 +98,6 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesNonLazyExt<UnitOrderFeedbackUiController>();
         Container.BindInitializableExecutionOrder<PlayerOrderInputHandler>(-100);
         
-        //todo: merge map model with minimap 
-        Container.BindModel<MapData>(Repository);
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
         Container.BindModel<MiniMapData>(Repository);
         Container.BindInterfacesNonLazyExt<MiniMapController>();

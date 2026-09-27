@@ -119,13 +119,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MapData
-      value:
-        m_AssetGUID: 3e84814326b95ad439662fee97464b33
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MiningFacilityData
       value:
         m_AssetGUID: 4e9982630aa2fc24aadc3d4d3e5dea74

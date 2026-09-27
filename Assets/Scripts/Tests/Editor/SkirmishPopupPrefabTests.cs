@@ -38,6 +38,9 @@ namespace EmpireAtWar.Tests.Editor
                     serializedPopup.FindProperty("enemyDifficultyDropdown").objectReferenceValue,
                     Is.Not.Null);
                 Assert.That(
+                    serializedPopup.FindProperty("mapSizeDropdown").objectReferenceValue,
+                    Is.Not.Null);
+                Assert.That(
                     serializedPopup.FindProperty("startingMoneySlider").objectReferenceValue,
                     Is.Not.Null);
                 Assert.That(
@@ -46,6 +49,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(root.transform.Find("Background/VictoryConditionField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/EnemyDifficultyField"), Is.Not.Null);
+                Assert.That(root.transform.Find("Background/MapSizeField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/StartingMoneyField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
 
@@ -94,6 +98,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SelectEnemyFaction(int index) =>
                 _model.SelectEnemyFaction((FactionType)index);
             public void SelectPlanet(int index) { }
+            public void SelectMapSize(int index) { }
             public void SelectVictoryCondition(int index) { }
             public void SelectEnemyDifficulty(int index) { }
             public void SelectStartingMoney(float amount) =>

@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         void SelectPlayerFaction(int index);
         void SelectEnemyFaction(int index);
         void SelectPlanet(int index);
+        void SelectMapSize(int index);
         void SelectVictoryCondition(int index);
         void SelectEnemyDifficulty(int index);
         void SelectStartingMoney(float amount);
