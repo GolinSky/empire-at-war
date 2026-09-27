@@ -3,7 +3,7 @@ using EmpireAtWar.Commands;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;

@@ -14,7 +14,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using Zenject;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
@@ -46,7 +46,10 @@ namespace EmpireAtWar.SpaceStation
                 .FromInstance(Repository.Load<SpaceStationData>(nameof(SpaceStationData)).ComponentData);
             Container.Bind<SelectionModel>().AsSingle();
             Container.Bind<ISelectionModelObserver>().To<SelectionModel>().FromResolve();
-            Container.Bind<WeaponModel>().AsSingle();
+            Container.Bind<WeaponModel>()
+                .FromMethod(context => new WeaponModel(
+                    context.Container.Resolve<EmpireAtWar.Components.AttackComponent.DamageMatrixData>().CopyAccuracy()))
+                .AsSingle();
             Container.Bind<CombatModifiers>().AsSingle();
             Container.BindInterfacesTo<ResearchCombatModifier>().AsSingle();
             Container.Decorate<IHealthData>().With<ResearchHealthData>();
@@ -56,9 +59,8 @@ namespace EmpireAtWar.SpaceStation
         {
             base.BindComponents();
             Container.BindInitializableExecutionOrder<HealthComponent>(-100);
-            SpaceStationData model = Container.Resolve<SpaceStationData>();
             Container.Bind<HealthModel>().AsSingle();
-            BindBuffer(model.RadarModel);
+            Container.Bind<RadarModel>().AsSingle();
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container

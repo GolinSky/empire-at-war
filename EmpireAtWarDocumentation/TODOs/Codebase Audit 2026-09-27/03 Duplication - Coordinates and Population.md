@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Duplication — Coordinates and population
+
+> [!info] Implementation update
+> D1, optional D2, and D3 implemented. The follow-up request authorized the two capture-system call-site changes. ShipPopulation.CountShips shares containment/faction counting; the other agent's weighted-squadron behavior remains in each system.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
@@ -20,11 +25,11 @@ scope: read-only source review
 **Future verification:** X/Z round trips and preservation of each caller's current height convention. Do not replace existing numerics conversion helpers with unrelated formation logic.
 
 ## D2 — Segment-distance geometry is implemented twice
-**Priority:** P3 · **Confidence:** confirmed mathematical overlap; edge semantics differ.
+**Priority:** P3 · **Confidence:** confirmed small duplication.
 
-**Evidence:** [Assets/Scripts/Entities/Map/Generation/MapGeometry.cs:37](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Map/Generation/MapGeometry.cs#L37) computes planar distance to a segment; [Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs:232](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs#L232) computes squared distance. One clamps the denominator and the other explicitly handles tiny segments.
+**Evidence:** [Assets/Scripts/Entities/Map/Generation/MapGeometry.cs:37](file:///F:/Private/empire-at-war/Assets/Scripts/Entities/Map/Generation/MapGeometry.cs#L37) computes planar distance to a segment; [Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs:232](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Ship/Movement/ShipAvoidancePlanner.cs#L232) computes squared distance. Both return distance to the start point for zero-length segments. The original note overstated the significance of their tiny-segment arithmetic difference.
 
-**Solution:** extract a small planar segment-distance utility, preferably with squared distance as the primitive. Keep MapGeometry's map/polyline convenience methods near map generation. Choose and document degenerate-segment behavior before replacing both implementations.
+**Solution:** extract a small planar segment-distance utility, preferably with squared distance as the primitive. Keep MapGeometry's map/polyline convenience methods near map generation. Implemented one DistanceToSegmentSquared primitive; MapGeometry takes its square root.
 
 **Reuse:** map lane clearance and ship avoidance. Do not force Burst/job code through a managed helper or add conversions solely for uniformity.
 
@@ -39,4 +44,4 @@ scope: read-only source review
 
 **Benefit:** one ownership/filtering rule. A shared helper alone does not improve the current areas × ships complexity. Add a spatial index only after measurement justifies it.
 
-**Future verification:** boundary inclusion, neutral units, empty areas and overlapping areas. Preserve which entity types count; do not silently include squadrons.
+**Verification:** the shared helper is covered for boundary inclusion, neutral units, empty areas, and membership changes. It counts registered ships only; existing squadron weighting remains outside the helper.

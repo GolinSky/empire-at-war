@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Presenters.ShipUi;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
+using Zenject;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Views
@@ -19,12 +20,16 @@ namespace EmpireAtWar.Views
         [SerializeField] private Image shieldFill;
 
         private IShipUiModelObserver _model;
+        private IShipIconProvider _icons;
         private IHealthModelObserver _health;
         private IShipUiPresenter _presenter;
         private bool _isInitialized;
         private bool _isRouteActive = true;
         private bool _isEntry;
         private Action _onSelected;
+
+        [Inject]
+        public void Construct(IShipIconProvider icons) => _icons = icons;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
@@ -105,9 +110,9 @@ namespace EmpireAtWar.Views
             if (isVisible)
             {
                 if (_model.SelectedShipType.HasValue)
-                    icon = _model.GetShipIcon(_model.SelectedShipType.Value);
+                    icon = _icons.GetShipIcon(_model.SelectedShipType.Value);
                 else if (_model.SelectedSquadronType.HasValue)
-                    icon = _model.GetSquadronIcon(_model.SelectedSquadronType.Value);
+                    icon = _icons.GetSquadronIcon(_model.SelectedSquadronType.Value);
             }
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;

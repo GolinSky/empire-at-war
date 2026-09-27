@@ -36,11 +36,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         private static float DistanceToSegment(Vector3 point, Vector3 start, Vector3 end)
         {
-            Vector2 p = new Vector2(point.x, point.z);
-            Vector2 a = new Vector2(start.x, start.z);
-            Vector2 ab = new Vector2(end.x, end.z) - a;
-            float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, Mathf.Epsilon));
-            return (p - (a + ab * t)).magnitude;
+            return Mathf.Sqrt(EmpireAtWar.Utils.PlanarGeometry.DistanceToSegmentSquared(
+                new Vector2(point.x, point.z), new Vector2(start.x, start.z), new Vector2(end.x, end.z)));
         }
     }
 }

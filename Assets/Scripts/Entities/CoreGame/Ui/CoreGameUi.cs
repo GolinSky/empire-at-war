@@ -71,7 +71,7 @@ namespace EmpireAtWar.Views.Game
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.AddListener(_presenter.StartCinematic);
             _model.OnGameTimeModeChanged += UpdateSprites;
-            UpdateSprites(_model.GameTimeMode);
+            UpdateSprites(_model.EffectiveTimeMode);
             _isInitialized = true;
         }
 

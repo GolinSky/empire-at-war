@@ -9,16 +9,14 @@ namespace EmpireAtWar.Presenters.MiniMap
     public sealed class ReinforcementZoneMiniMapPresenter :
         IInitializable, ILateTickable, ILateDisposable
     {
-        private readonly MiniMapData _miniMapData;
         private readonly ReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly Dictionary<ReinforcementZonePresenter, MiniMapMarker> _markers =
-            new Dictionary<ReinforcementZonePresenter, MiniMapMarker>();
+        private readonly MiniMapMarkerCollection<ReinforcementZonePresenter> _markers;
 
         public ReinforcementZoneMiniMapPresenter(
             MiniMapData miniMapData,
             ReinforcementZonesSystem reinforcementZonesSystem)
         {
-            _miniMapData = miniMapData;
+            _markers = new MiniMapMarkerCollection<ReinforcementZonePresenter>(miniMapData);
             _reinforcementZonesSystem = reinforcementZonesSystem;
         }
 
@@ -32,13 +30,12 @@ namespace EmpireAtWar.Presenters.MiniMap
                 marker.SetWorldDiameter(zone.Radius * 2f);
                 marker.SetVisible(true);
                 _markers.Add(zone, marker);
-                _miniMapData.AddMarker(marker);
             }
         }
 
         public void LateTick()
         {
-            foreach (KeyValuePair<ReinforcementZonePresenter, MiniMapMarker> pair in _markers)
+            foreach (KeyValuePair<ReinforcementZonePresenter, MiniMapMarker> pair in _markers.Pairs)
             {
                 RefreshMarker(pair.Key, pair.Value);
             }
@@ -46,11 +43,6 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void LateDispose()
         {
-            foreach (MiniMapMarker marker in _markers.Values)
-            {
-                _miniMapData.RemoveMarker(marker);
-            }
-
             _markers.Clear();
         }
 

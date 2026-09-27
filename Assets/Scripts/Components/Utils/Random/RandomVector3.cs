@@ -13,9 +13,4 @@ namespace EmpireAtWar.Utils.Random
         public Vector3 Value => new Vector3(x.Random, y.Random, z.Random);
     }
 
-    [Serializable]
-    public class RandomFloat : RandomValue<float>
-    {
-        public override float Random => UnityEngine.Random.Range(Min, Max);
-    }
 }

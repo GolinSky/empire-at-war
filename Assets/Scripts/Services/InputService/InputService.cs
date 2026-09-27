@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Zenject;
@@ -12,7 +10,6 @@ namespace EmpireAtWar.Services.InputService
 {
     public class InputService : Service, IInputService, ITickable, IInitializable, IDisposable
     {
-        private const float DRAG_THRESHOLD = 5f;
         private const float EDGE_SCROLL_THICKNESS = 16f;
         private const float MAX_SWIPE_DELTA = 10f;
 
@@ -35,14 +32,9 @@ namespace EmpireAtWar.Services.InputService
         private InputComponent_Generated.TouchMapActions MapActions => _inputComponentGenerated.TouchMap;
 
         private bool _isBlocked;
-        private bool _isPointerPressed;
-        private bool _pressStartedOverUi;
-        private bool _hasDragged;
-        private bool _isMousePointer;
+        private readonly IUiHitTest _uiHitTest;
+        private readonly PointerGestureState _gesture = new PointerGestureState();
         private bool _wasWaypointModifierPressed;
-        private Vector2 _pressPosition;
-        private Vector2 _previousPosition;
-        private float _previousMagnitude;
 
         public TouchPhase CurrentTouchPhase { get; private set; }
         public Vector2 TouchPosition => MapActions.PrimaryPosition.ReadValue<Vector2>();
@@ -73,8 +65,9 @@ namespace EmpireAtWar.Services.InputService
         }
         public int TapCount => Mathf.Max(1, MapActions.TouchCount.ReadValue<int>());
 
-        public InputService()
+        public InputService(IUiHitTest uiHitTest)
         {
+            _uiHitTest = uiHitTest;
             _inputComponentGenerated = new InputComponent_Generated();
         }
 
@@ -103,12 +96,9 @@ namespace EmpireAtWar.Services.InputService
 
         private void OnPointerPressed(InputAction.CallbackContext callbackContext)
         {
-            _isPointerPressed = true;
-            _hasDragged = false;
-            _isMousePointer = callbackContext.control.device is Mouse;
-            _pressPosition = TouchPosition;
-            _previousPosition = _pressPosition;
-            _pressStartedOverUi = IsPointerOverUIObject(_pressPosition);
+            Vector2 position = TouchPosition;
+            _gesture.Begin(new System.Numerics.Vector2(position.x, position.y),
+                callbackContext.control.device is Mouse, _uiHitTest.IsOverUi(position));
             CurrentTouchPhase = TouchPhase.Began;
 
             if (callbackContext.control.device is Mouse)
@@ -116,7 +106,7 @@ namespace EmpireAtWar.Services.InputService
                 OnLeftMousePressed?.Invoke();
             }
 
-            if (!_isBlocked && !_pressStartedOverUi)
+            if (!_isBlocked && !_gesture.StartedOverUi)
             {
                 InvokeInputEvent(InputType.Selection);
             }
@@ -127,8 +117,8 @@ namespace EmpireAtWar.Services.InputService
             Vector2 releasePosition = TouchPosition;
             CurrentTouchPhase = TouchPhase.Ended;
 
-            if (!_isBlocked && _isPointerPressed && !_pressStartedOverUi &&
-                TryStartDrag(releasePosition) && _isMousePointer)
+            if (!_isBlocked && _gesture.IsPressed && !_gesture.StartedOverUi &&
+                TryStartDrag(releasePosition) && _gesture.IsMouse)
             {
                 OnPrimaryDragChanged?.Invoke(releasePosition);
             }
@@ -137,27 +127,23 @@ namespace EmpireAtWar.Services.InputService
             {
                 OnEndDrag?.Invoke(releasePosition);
             }
-            else if (_isPointerPressed && !_pressStartedOverUi)
+            else if (_gesture.IsPressed && !_gesture.StartedOverUi)
             {
-                if (_hasDragged && _isMousePointer)
+                if (_gesture.HasDragged && _gesture.IsMouse)
                 {
                     OnPrimaryDragEnded?.Invoke(releasePosition);
                 }
-                else if (!_hasDragged)
+                else if (!_gesture.HasDragged)
                 {
                     InvokeInputEvent(InputType.Selection);
-                    if (!_isMousePointer)
+                    if (!_gesture.IsMouse)
                     {
                         InvokeInputEvent(InputType.ShipInput);
                     }
                 }
             }
 
-            _isPointerPressed = false;
-            _hasDragged = false;
-            _pressStartedOverUi = false;
-            _isMousePointer = false;
-            _previousMagnitude = 0f;
+            _gesture.End();
         }
 
         private void OnSecondaryTouchPerformed(InputAction.CallbackContext callbackContext)
@@ -168,16 +154,13 @@ namespace EmpireAtWar.Services.InputService
                 !Touchscreen.current.primaryTouch.press.isPressed ||
                 !Touchscreen.current.touches[1].press.isPressed)
             {
-                _previousMagnitude = 0f;
+                _gesture.ResetPinch();
                 return;
             }
 
             float magnitude = (TouchPosition - SecondaryTouchPosition).magnitude;
-            if (_previousMagnitude > 0f)
-            {
-                OnZoom?.Invoke(_previousMagnitude - magnitude);
-            }
-            _previousMagnitude = magnitude;
+            if (_gesture.TryPinch(magnitude, out float delta))
+                OnZoom?.Invoke(delta);
         }
 
         private void OnScrollPerformed(InputAction.CallbackContext callbackContext)
@@ -240,27 +223,28 @@ namespace EmpireAtWar.Services.InputService
                     return;
                 }
 
-                _previousMagnitude = 0f;
+                _gesture.ResetPinch();
             }
 
-            if (!_isPointerPressed || _isBlocked || _pressStartedOverUi)
+            if (!_gesture.IsPressed || _isBlocked || _gesture.StartedOverUi)
             {
                 return;
             }
 
             Vector2 currentPosition = TouchPosition;
-            Vector2 delta = currentPosition - _previousPosition;
-            _previousPosition = currentPosition;
+            System.Numerics.Vector2 movement = _gesture.Move(
+                new System.Numerics.Vector2(currentPosition.x, currentPosition.y));
+            Vector2 delta = new Vector2(movement.X, movement.Y);
 
             TryStartDrag(currentPosition);
 
-            if (!_hasDragged || delta.sqrMagnitude <= Mathf.Epsilon)
+            if (!_gesture.HasDragged || delta.sqrMagnitude <= Mathf.Epsilon)
             {
                 return;
             }
 
             CurrentTouchPhase = TouchPhase.Moved;
-            if (_isMousePointer)
+            if (_gesture.IsMouse)
             {
                 OnPrimaryDragChanged?.Invoke(currentPosition);
             }
@@ -280,15 +264,14 @@ namespace EmpireAtWar.Services.InputService
 
         private bool TryStartDrag(Vector2 currentPosition)
         {
-            if (_hasDragged || Vector2.Distance(_pressPosition, currentPosition) < DRAG_THRESHOLD)
+            if (!_gesture.TryStartDrag(new System.Numerics.Vector2(currentPosition.x, currentPosition.y)))
             {
                 return false;
             }
 
-            _hasDragged = true;
-            if (_isMousePointer)
+            if (_gesture.IsMouse)
             {
-                OnPrimaryDragStarted?.Invoke(_pressPosition);
+                OnPrimaryDragStarted?.Invoke(new Vector2(_gesture.PressPosition.X, _gesture.PressPosition.Y));
             }
 
             return true;
@@ -302,32 +285,6 @@ namespace EmpireAtWar.Services.InputService
                 OnCameraPan?.Invoke(Vector2.zero);
             }
             OnBlocked?.Invoke(isBlocked);
-        }
-
-        private bool IsPointerOverUIObject(Vector2 screenPosition)
-        {
-            if (EventSystem.current == null)
-            {
-                return false;
-            }
-
-            PointerEventData eventData = new PointerEventData(EventSystem.current)
-            {
-                position = screenPosition
-            };
-            List<RaycastResult> results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-
-            int uiLayer = LayerMask.NameToLayer("UI");
-            for (int i = 0; i < results.Count; i++)
-            {
-                if (results[i].gameObject.layer == uiLayer)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private static Vector2 GetEdgeScrollDirection()
@@ -432,7 +389,7 @@ namespace EmpireAtWar.Services.InputService
             }
 
             Vector2 position = Mouse.current.position.ReadValue();
-            if (IsPointerOverUIObject(position))
+            if (_uiHitTest.IsOverUi(position))
             {
                 return;
             }

@@ -59,6 +59,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromComponentInHierarchy()
                 .AsSingle();
             Container
+                .BindInterfacesExt<UiHitTest>()
                 .BindInterfacesExt<InputService>()
                 .BindInterfacesExt<ShipService>()
                 .BindInterfacesExt<MapObstacleContactProvider>()

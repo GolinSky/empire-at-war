@@ -13,11 +13,11 @@ namespace EmpireAtWar.Extentions
         public void BindFromNewComponent<TEntity>(IAssetService repository, Transform parent)
             where TEntity : Component
         {
-            ConstructName<TEntity>();
+            string pathToFile = ConstructName<TEntity>();
 
             Container
                 .BindInterfacesAndSelfTo<TEntity>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>(PathToFile))
+                .FromComponentInNewPrefab(repository.Load<GameObject>(pathToFile))
                 .UnderTransform(parent)
                 .AsSingle();
         }

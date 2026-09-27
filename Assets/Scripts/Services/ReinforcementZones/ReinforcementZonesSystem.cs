@@ -109,25 +109,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                int playerShips = 0;
-                int opponentShips = 0;
-
-                foreach (IShipEntity ship in _shipService.Ships)
-                {
-                    if (!zone.Contains(ship.WorldPosition))
-                    {
-                        continue;
-                    }
-
-                    if (ship.PlayerType == PlayerType.Player)
-                    {
-                        playerShips++;
-                    }
-                    else if (ship.PlayerType == PlayerType.Opponent)
-                    {
-                        opponentShips++;
-                    }
-                }
+                _shipService.CountShips(zone.Contains, out int playerShips, out int opponentShips);
 
                 if (zone.Tick(Time.deltaTime, playerShips, opponentShips))
                 {

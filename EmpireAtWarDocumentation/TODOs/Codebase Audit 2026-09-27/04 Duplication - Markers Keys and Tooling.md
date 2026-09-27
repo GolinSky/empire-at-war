@@ -3,10 +3,15 @@ tags:
   - code-audit
   - refactoring
 created: 2026-09-27
-status: proposed
+status: implemented
 scope: read-only source review
+updated: 2026-09-27
 ---
 # Duplication — Markers, keys and tooling
+
+> [!info] Implementation update
+> D4, D5 and D6 implemented. The follow-up request explicitly authorized D4: MiniMapMarkerCollection owns registration/cleanup by composition, while both presenters retain their own marker construction and visibility policies.
+> See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
@@ -17,7 +22,7 @@ scope: read-only source review
 
 **Solution:** extract a small marker collection/lifetime collaborator only. Keep capture-site operational visibility, zone diameter, and last-seen ownership policy in their respective presenters. Avoid a generic presenter inheritance hierarchy for two small classes.
 
-**Future verification:** registration/removal happen once; unrevealed ownership stays hidden; operational capture-site hiding and always-drawn zones remain distinct.
+**Verification:** the collection test checks independent ownership, repeated cleanup, and reuse after cleanup. Source review confirms last-seen ownership, operational capture-site hiding, and zone diameter/visibility policy remain in their original presenters.
 
 ## D5 — Enemy reservation keys are independently constructed
 **Priority:** P2 · **Confidence:** confirmed.

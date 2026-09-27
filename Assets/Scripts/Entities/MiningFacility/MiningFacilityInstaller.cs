@@ -12,7 +12,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.NavigationService;
+using EmpireAtWar.Services.Selection;
 using Zenject;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
@@ -51,9 +51,8 @@ namespace EmpireAtWar.MiningFacility
         {
             base.BindComponents();
             Container.BindInitializableExecutionOrder<HealthComponent>(-100);
-            MiningFacilityData model = Container.Resolve<MiningFacilityData>();
             Container.Bind<HealthModel>().AsSingle();
-            BindBuffer(model.RadarModel);
+            Container.Bind<RadarModel>().AsSingle();
             Container.Bind<IRadarModelObserver>().To<RadarModel>().FromResolve();
 
             Container

@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
@@ -308,7 +309,5 @@ namespace EmpireAtWar.Entities.Squadrons
             Released?.Invoke();
         }
 
-        private static FormationPoint ToPoint(Vector3 value) => new FormationPoint(value.x, value.z);
-        private static Vector3 ToVector(FormationPoint value) => new Vector3(value.X, 0f, value.Z);
     }
 }

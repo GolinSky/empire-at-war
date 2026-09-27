@@ -285,24 +285,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
         private void CountShips(CaptureSitePresenter site, out int playerShips, out int opponentShips)
         {
-            playerShips = 0;
-            opponentShips = 0;
-            foreach (IShipEntity ship in _shipService.Ships)
-            {
-                if (!site.Contains(ship.WorldPosition))
-                {
-                    continue;
-                }
-
-                if (ship.PlayerType == PlayerType.Player)
-                {
-                    playerShips++;
-                }
-                else if (ship.PlayerType == PlayerType.Opponent)
-                {
-                    opponentShips++;
-                }
-            }
+            _shipService.CountShips(position => site.Contains(position), out playerShips, out opponentShips);
         }
 
         private bool HasHostileShips(CaptureSitePresenter site, PlayerType owner)
