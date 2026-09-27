@@ -187,6 +187,7 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "TODOs/Codebase Audit 2026-09-27/09 Implementation Results.md",
     "TODOs/Codebase Audit 2026-09-27/08 Reuse - UI Assets and Extraction Rules.md",
     "TODOs/Codebase Audit 2026-09-27/07 Reuse - Combat and Radar Boundaries.md",
     "TODOs/Codebase Audit 2026-09-27/06 Structure - Placement and Type Files.md",
@@ -214,7 +215,6 @@
     "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
     "Artifacts/Codex_Audit_2026-09-13/02_EFFECTIVE_LOAD_MAP.md",
     "Artifacts/Codex_Audit_2026-09-13/04_MIGRATION_MAP.md",
-    "Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md",
     "Artifacts/Codex_Audit_2026-09-13/inventory.json",
     "Artifacts/Codex_Audit_2026-09-13/patches/003-macos-receiver-instructions.patch",
     "Artifacts/Codex_Audit_2026-09-13/patches/002-parent-model-documentation.patch",

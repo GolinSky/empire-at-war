@@ -125,59 +125,19 @@ namespace EmpireAtWar.Services.ShipNavigation
             AddIdleAgentContacts(agent);
 
             using (ShipPathGrid pathGrid = new ShipPathGrid(
-                       _mapObstacleContacts, clearance, mapRange))
+                       _mapObstacleContacts, clearance, mapRange, origin))
             {
-                float candidateSpacing = agent.NavigationRadius * 2f;
-                for (int candidateIndex = 0;
-                     candidateIndex <=
-                     DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
-                     candidateIndex++)
+                // An unreachable order is not a failure: the ship heads for the
+                // reachable spot closest to what was asked for.
+                if (TryPlanNear(agent, registrationId, forward, requestedDestination,
+                        pathGrid, heightTolerance, clearance, mapRange,
+                        out ShipRoutePlan routePlan) ||
+                    pathGrid.TryGetNearestReachable(requestedDestination,
+                        agent.NavigationHeight, out Vector3 nearestReachable) &&
+                    TryPlanNear(agent, registrationId, forward, nearestReachable,
+                        pathGrid, heightTolerance, clearance, mapRange,
+                        out routePlan))
                 {
-                    Vector3 candidate = GetDestinationCandidate(
-                        requestedDestination,
-                        candidateSpacing,
-                        candidateIndex);
-                    candidate = ShipAvoidancePlanner.ClampToMap(
-                        candidate,
-                        mapRange,
-                        clearance);
-                    ShipAvoidancePlanner.TryResolveDestination(
-                        candidate,
-                        origin,
-                        _mapObstacleContacts,
-                        agent.NavigationHeight,
-                        heightTolerance,
-                        clearance,
-                        mapRange,
-                        out Vector3 destination);
-                    if (!ShipAvoidancePlanner.IsPointClear(
-                            destination,
-                            _mapObstacleContacts,
-                            agent.NavigationHeight,
-                            heightTolerance,
-                            clearance) ||
-                        !_destinationRegistry.HasClearance(
-                            registrationId,
-                            ToFormationPoint(destination),
-                            clearance))
-                    {
-                        continue;
-                    }
-
-                    ShipRoutePlan routePlan = ShipRoutePlanner.Build(
-                        agent,
-                        forward,
-                        destination,
-                        _mapObstacleContacts,
-                        pathGrid,
-                        _waypoints,
-                        heightTolerance,
-                        clearance);
-                    if (routePlan.IsStationary)
-                    {
-                        continue;
-                    }
-
                     bool isDeferred = reserveAsPending ||
                         (preserveCourse &&
                          routePlan.TurnDuration > Mathf.Epsilon);
@@ -225,6 +185,77 @@ namespace EmpireAtWar.Services.ShipNavigation
                 0f,
                 true,
                 preserveCourse || reserveAsPending);
+        }
+
+        // Destination candidates ring out from the center; reachability of each is
+        // answered by the single flood of the path grid, so failures cost no search.
+        private bool TryPlanNear(
+            IShipNavigationAgent agent,
+            int registrationId,
+            Vector3 forward,
+            Vector3 center,
+            ShipPathGrid pathGrid,
+            float heightTolerance,
+            float clearance,
+            Vector2Range mapRange,
+            out ShipRoutePlan routePlan)
+        {
+            Vector3 origin = agent.NavigationPosition;
+            float candidateSpacing = agent.NavigationRadius * 2f;
+            for (int candidateIndex = 0;
+                 candidateIndex <=
+                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
+                 candidateIndex++)
+            {
+                Vector3 candidate = GetDestinationCandidate(
+                    center,
+                    candidateSpacing,
+                    candidateIndex);
+                candidate = ShipAvoidancePlanner.ClampToMap(
+                    candidate,
+                    mapRange,
+                    clearance);
+                ShipAvoidancePlanner.TryResolveDestination(
+                    candidate,
+                    origin,
+                    _mapObstacleContacts,
+                    agent.NavigationHeight,
+                    heightTolerance,
+                    clearance,
+                    mapRange,
+                    out Vector3 destination);
+                if (!ShipAvoidancePlanner.IsPointClear(
+                        destination,
+                        _mapObstacleContacts,
+                        agent.NavigationHeight,
+                        heightTolerance,
+                        clearance) ||
+                    !_destinationRegistry.HasClearance(
+                        registrationId,
+                        ToFormationPoint(destination),
+                        clearance) ||
+                    pathGrid.IsKnownUnreachable(destination))
+                {
+                    continue;
+                }
+
+                routePlan = ShipRoutePlanner.Build(
+                    agent,
+                    forward,
+                    destination,
+                    _mapObstacleContacts,
+                    pathGrid,
+                    _waypoints,
+                    heightTolerance,
+                    clearance);
+                if (!routePlan.IsStationary)
+                {
+                    return true;
+                }
+            }
+
+            routePlan = default;
+            return false;
         }
 
         public void Register(

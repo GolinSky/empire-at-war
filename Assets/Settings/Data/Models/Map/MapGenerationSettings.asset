@@ -27,14 +27,14 @@ MonoBehaviour:
           <Min>k__BackingField: 15
           <Max>k__BackingField: 150
         <PlanetScale>k__BackingField: 3
-        <LaneWidth>k__BackingField: 450
-        <MinLaneWidth>k__BackingField: 300
+        <LaneWidth>k__BackingField: 500
+        <MinLaneWidth>k__BackingField: 360
         <FieldCellSize>k__BackingField: 45
         <FieldFeatureSize>k__BackingField: 540
         <FieldThreshold>k__BackingField: 0.5
         <RidgeThreshold>k__BackingField: 0.9
         <PocketThickness>k__BackingField: 66
-        <PocketEntranceWidth>k__BackingField: 240
+        <PocketEntranceWidth>k__BackingField: 400
         <MinFieldArea>k__BackingField: 18000
         <RockDensity>k__BackingField: 6
     - key: 1
@@ -51,13 +51,13 @@ MonoBehaviour:
           <Max>k__BackingField: 360
         <PlanetScale>k__BackingField: 4.2
         <LaneWidth>k__BackingField: 510
-        <MinLaneWidth>k__BackingField: 330
+        <MinLaneWidth>k__BackingField: 360
         <FieldCellSize>k__BackingField: 60
         <FieldFeatureSize>k__BackingField: 750
         <FieldThreshold>k__BackingField: 0.5
         <RidgeThreshold>k__BackingField: 0.9
         <PocketThickness>k__BackingField: 135
-        <PocketEntranceWidth>k__BackingField: 255
+        <PocketEntranceWidth>k__BackingField: 400
         <MinFieldArea>k__BackingField: 27000
         <RockDensity>k__BackingField: 4
     - key: 2
@@ -73,14 +73,14 @@ MonoBehaviour:
           <Min>k__BackingField: 80
           <Max>k__BackingField: 450
         <PlanetScale>k__BackingField: 3.5
-        <LaneWidth>k__BackingField: 260
-        <MinLaneWidth>k__BackingField: 140
+        <LaneWidth>k__BackingField: 500
+        <MinLaneWidth>k__BackingField: 360
         <FieldCellSize>k__BackingField: 40
         <FieldFeatureSize>k__BackingField: 600
         <FieldThreshold>k__BackingField: 0.5
         <RidgeThreshold>k__BackingField: 0.92
         <PocketThickness>k__BackingField: 90
-        <PocketEntranceWidth>k__BackingField: 110
+        <PocketEntranceWidth>k__BackingField: 400
         <MinFieldArea>k__BackingField: 12000
         <RockDensity>k__BackingField: 2
   stationRadii:

@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _shipMoveComponent = shipMoveComponent;
         }
 
-        public bool IsComplete => !_shipMoveComponent.IsMoving && !_shipMoveComponent.IsBlocked;
+        public bool IsComplete => !_shipMoveComponent.IsMoving;
 
         public void SetWorldDestination(Vector3 destination)
         {

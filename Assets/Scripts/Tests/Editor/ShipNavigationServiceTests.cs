@@ -468,23 +468,18 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void HandleRadarContacts_WithUnchangedContacts_RetriesBlockedTarget()
+        public void HandleRadarContacts_NeverPlans()
         {
-            GameObject gameObject = new GameObject(
-                nameof(HandleRadarContacts_WithUnchangedContacts_RetriesBlockedTarget));
+            GameObject gameObject = new GameObject(nameof(HandleRadarContacts_NeverPlans));
             try
             {
                 ShipMoveComponent component = CreateReadyComponent(
                     gameObject,
                     out RecordingShipNavigationService navigationService);
-                Vector3 destination = new Vector3(25f, 0f, 0f);
-                GetModel(component).Block(
-                    new System.Numerics.Vector3(destination.x, destination.y, destination.z));
 
                 component.HandleRadarContacts(System.Array.Empty<RadarContact>());
 
-                Assert.That(navigationService.PlanCallCount, Is.EqualTo(1));
-                Assert.That(navigationService.LastDestination, Is.EqualTo(destination));
+                Assert.That(navigationService.PlanCallCount, Is.Zero);
             }
             finally
             {
@@ -493,32 +488,29 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void SetTargetPosition_RepeatedBlockedDestination_RetriesTarget()
+        public void Plan_EnclosedDestination_MovesToNearestReachableSpot()
         {
-            GameObject gameObject = new GameObject(
-                nameof(SetTargetPosition_RepeatedBlockedDestination_RetriesTarget));
-            try
+            FakeAgent agent = new FakeAgent(new Vector3(-60f, 0f, 0f), 0f, 4f, 10f, 30f);
+            List<RadarContact> ring = new List<RadarContact>();
+            for (int i = 0; i < 24; i++)
             {
-                ShipMoveComponent component = CreateReadyComponent(
-                    gameObject,
-                    out RecordingShipNavigationService navigationService);
-                Vector3 destination = new Vector3(25f, 0f, 0f);
-                GetModel(component).Block(
-                    new System.Numerics.Vector3(destination.x, destination.y, destination.z));
-                MethodInfo setTargetPosition = typeof(ShipMoveComponent).GetMethod(
-                    "SetTargetPosition",
-                    BindingFlags.Instance | BindingFlags.NonPublic);
-                Assert.That(setTargetPosition, Is.Not.Null);
-
-                setTargetPosition.Invoke(component, new object[] { destination, false });
-
-                Assert.That(navigationService.PlanCallCount, Is.EqualTo(1));
-                Assert.That(navigationService.LastDestination, Is.EqualTo(destination));
+                float angle = i * Mathf.PI * 2f / 24f;
+                ring.Add(new RadarContact(
+                    new Vector3(40f + Mathf.Cos(angle) * 25f, 0f, Mathf.Sin(angle) * 25f),
+                    6f,
+                    false));
             }
-            finally
-            {
-                Object.DestroyImmediate(gameObject);
-            }
+
+            ShipNavigationPlan plan = Plan(
+                CreateService(ring),
+                agent,
+                new Vector3(40f, 0f, 0f));
+
+            Assert.That(plan.IsStationary, Is.False);
+            Assert.That(
+                Vector3.Distance(plan.Destination, new Vector3(40f, 0f, 0f)),
+                Is.GreaterThan(25f),
+                "The ship must stop outside the sealed ring, not inside it.");
         }
 
         [Test]
@@ -545,22 +537,21 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void StopDuringHyperspace_ClearsBlockedOrderAndPendingReservation()
+        public void StopDuringHyperspace_ClearsQueuedOrderAndPendingReservation()
         {
-            GameObject gameObject = new GameObject(nameof(StopDuringHyperspace_ClearsBlockedOrderAndPendingReservation));
+            GameObject gameObject = new GameObject(nameof(StopDuringHyperspace_ClearsQueuedOrderAndPendingReservation));
             try
             {
                 ShipMoveComponent component = CreateReadyComponent(gameObject,
                     out RecordingShipNavigationService navigationService, false);
                 GetModel(component).Queue(new System.Numerics.Vector3(25f, 0f, 0f));
-                GetModel(component).Block(new System.Numerics.Vector3(25f, 0f, 0f));
 
                 component.Stop();
                 component.HandleRadarContacts(System.Array.Empty<RadarContact>());
 
                 Assert.That(navigationService.PendingCancellationCount, Is.EqualTo(1));
                 Assert.That(navigationService.PlanCallCount, Is.Zero);
-                Assert.That(component.IsBlocked, Is.False);
+                Assert.That(component.IsMoving, Is.False);
             }
             finally
             {

@@ -23,9 +23,9 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
 
-        public bool Tick(float deltaTime, int playerShipCount, int opponentShipCount)
+        public bool Tick(float deltaTime, float playerStrength, float opponentStrength)
         {
-            bool ownerChanged = _model.Tick(deltaTime, playerShipCount, opponentShipCount);
+            bool ownerChanged = _model.Tick(deltaTime, playerStrength, opponentStrength);
             Render();
             return ownerChanged;
         }
