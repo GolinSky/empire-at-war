@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map
 {
-    public sealed class MapRoad
+    /// <summary>An invisible route kept free of asteroid fields between two points of interest.</summary>
+    public sealed class MapLane
     {
-        public MapRoad(IReadOnlyList<Vector3> points)
+        public MapLane(IReadOnlyList<Vector3> points)
         {
             Points = points;
         }

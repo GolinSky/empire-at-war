@@ -99,8 +99,13 @@ namespace EmpireAtWar.Services.CaptureSites
                     GetBuilder(site.Owner).Build(site.FacilityType, site.Center, site.ReleaseFacility);
                 }
 
-                site.Render();
                 bool isVisible = !_fogOfWarSystem.IsHidden(site.Center, MINIMUM_SITE_VISIBILITY);
+                if (isVisible)
+                {
+                    // Out of vision the ring keeps its last seen owner.
+                    site.Render();
+                }
+
                 bool isHovered = isVisible && _inputService.SupportsHover &&
                     site.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, site.Center));
                 bool canPlayerAfford = site.Owner == PlayerType.Player &&
