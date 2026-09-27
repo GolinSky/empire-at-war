@@ -25,7 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Brightness: 3
+    - _Brightness: 6
     - _Roundness: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

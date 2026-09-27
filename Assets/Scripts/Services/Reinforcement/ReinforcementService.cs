@@ -300,9 +300,12 @@ namespace EmpireAtWar.Services.Reinforcement
         private bool IsPlacementValid(Vector3 position)
         {
             return _entityLocator.IsStationOperational(PlayerType.Player) &&
-                (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
+                (_currentSpawnType == SpawnType.Ship
+                ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position) &&
+                  _reinforcementZonesSystem.IsShipSpawnPositionClear(_currentShipType, position)
+                : _currentSpawnType == SpawnType.Squadron
                 ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
-                : !_fogOfWarSystem.IsHidden(position) &&
+                :!_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&
                   !_captureSites.IsPositionInAnySite(position));
         }

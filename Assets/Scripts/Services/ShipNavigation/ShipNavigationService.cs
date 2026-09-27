@@ -318,7 +318,10 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public bool IsPositionClear(Vector3 position, float navigationRadius)
         {
-            return _destinationRegistry.HasClearance(
+            BuildNavigationContacts(Array.Empty<RadarContact>());
+            return ShipAvoidancePlanner.IsPointClear(position, _mapObstacleContacts,
+                       position.y, 0f, navigationRadius) &&
+                   _destinationRegistry.HasClearance(
                 ToPoint(position),
                 navigationRadius);
         }
