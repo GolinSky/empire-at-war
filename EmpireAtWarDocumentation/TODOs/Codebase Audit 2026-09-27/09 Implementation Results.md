@@ -15,7 +15,7 @@ Implemented all 17 entries from the attached correction plan. The follow-up requ
 
 - **D3 completed:** ShipPopulation.CountShips is shared by CaptureSitesSystem and ReinforcementZonesSystem. It takes a containment predicate and returns Player/Opponent ship counts. Existing squadron weights stay in the systems.
 - **D4 completed:** MiniMapMarkerCollection owns registration and cleanup through composition. Marker creation, zone diameter, last-seen ownership, and operational-site visibility stay in the presenters.
-- **C4 scope:** completed projection/sharedMesh/explicit binding changes. A separate pure visibility-grid model was considered and deferred; the attachment says to consider it only after those changes.
+- **C4 scope:** completed projection/sharedMesh/explicit binding changes. The pure visibility-grid model, first deferred, was added in the follow-up verification pass (see below).
 
 ## Main code changes
 
@@ -69,3 +69,19 @@ The vendored toolbar still emits its existing-style Unity internal-toolbar compa
 Other-agent edits continued during implementation, including navigation, capture logic and enemy squadron work. This task preserves those edits. Commit preparation uses an explicit file list plus partial-file staging for the shared capture systems and enemy controller/test, excluding the other agents' changes and all Obsidian configuration.
 
 The original audit's incorrect C1/R2 assessment and exaggerated D2 concern have been corrected in the overview and category notes.
+
+
+## Verification pass — 27 September 2026 (follow-up)
+
+Every entry was re-checked against live source at HEAD 1a7b901d. C1–C3, D2–D6, L2–L4 and R1–R3 hold. Four gaps were found and closed:
+
+| ID | Gap found | Fix |
+|---|---|---|
+| D1 | Inline `new FormationPoint(v.x, v.z)` / `new Vector3(p.X, 0f, p.Z)` remained in UnitOrderService, PlayerOrderInputHandler (both named by the audit), EnemyStrategicContextBuilder, EnemyTaskForceExecutor, EnemyUnitCommander, UnitOrderFeedbackUiController, and a private `ToFormationPoint` copy in ShipNavigationService | All use `FormationConversion.ToPoint/ToVector`; the private copy was deleted. UnitOrderService still preserves ship height on its output slots. |
+| C4 | Pure visibility-grid/history model had been deferred | `FogVisibilityGridModel` (pure C#, next to FogVisibilityModel) owns current/target visibility, history reset, circle reveal, fade and clamped sampling. FogOfWarSystem keeps the Transform projection, source registry, texture and material. There is no separate presenter: the system is a single scene view, so one would only forward calls. |
+| L1 | Empty `Components/Utils/Collections` folder + .meta left behind | Deleted through AssetDatabase. |
+| Tests | Stale `SelectionInputTests.DisabledMiniMapInteraction_KeepsMapVisible` reflected removed `ActivateInteraction` | Replaced by `MiniMapPointerExit_KeepsMapVisible`, which tests the current pointer-exit fade (map alpha stays ≥ 0.75). |
+
+New `FogVisibilityGridModelTests` cover fade step, history retention, no-history reset and clamped sampling.
+
+**Verification:** Unity refresh + forced recompile completed with `scriptCompilationFailed=false`. No `error CS` in the latest compile. The new model, fog tests and the replacement selection test are all present in loaded assemblies. Tests were **not executed** (AGENTS policy: run only on explicit request).

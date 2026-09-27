@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -145,13 +146,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                     {
                         _destinationRegistry.ReservePendingFinalPosition(
                             registrationId,
-                            ToFormationPoint(routePlan.Destination));
+                            ToPoint(routePlan.Destination));
                     }
                     else
                     {
                         _destinationRegistry.CommitActiveFinalPosition(
                             registrationId,
-                            ToFormationPoint(routePlan.Destination));
+                            ToPoint(routePlan.Destination));
                     }
 
                     float movementDuration =
@@ -241,7 +242,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         clearance) ||
                     !_destinationRegistry.HasClearance(
                         registrationId,
-                        ToFormationPoint(destination),
+                        ToPoint(destination),
                         clearance) ||
                     pathGrid.IsKnownUnreachable(destination))
                 {
@@ -291,9 +292,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             int registrationId = _destinationRegistry.Register(
-                () => ToFormationPoint(agent.NavigationPosition),
+                () => ToPoint(agent.NavigationPosition),
                 agent.NavigationRadius,
-                ToFormationPoint(initialFinalPosition));
+                ToPoint(initialFinalPosition));
             _registrationIds.Add(agent, registrationId);
         }
 
@@ -318,7 +319,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool IsPositionClear(Vector3 position, float navigationRadius)
         {
             return _destinationRegistry.HasClearance(
-                ToFormationPoint(position),
+                ToPoint(position),
                 navigationRadius);
         }
 
@@ -329,7 +330,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             return _destinationRegistry.HasClearance(
                 GetRegistrationId(agent),
-                ToFormationPoint(position),
+                ToPoint(position),
                 navigationRadius);
         }
 
@@ -377,7 +378,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (ShipAvoidancePlanner.IsPointClear(destination, _mapObstacleContacts,
                         agent.NavigationHeight, heightTolerance, clearance) &&
                     _destinationRegistry.HasClearance(
-                        ToFormationPoint(destination),
+                        ToPoint(destination),
                         clearance))
                 {
                     resolvedPosition = destination;
@@ -478,11 +479,6 @@ namespace EmpireAtWar.Services.ShipNavigation
                 Mathf.Cos(angle) * spacing * ring,
                 0f,
                 Mathf.Sin(angle) * spacing * ring);
-        }
-
-        private static FormationPoint ToFormationPoint(Vector3 position)
-        {
-            return new FormationPoint(position.x, position.z);
         }
     }
 }

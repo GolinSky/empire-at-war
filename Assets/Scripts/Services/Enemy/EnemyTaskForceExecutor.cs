@@ -1,3 +1,4 @@
+using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -125,8 +126,7 @@ namespace EmpireAtWar.Services.Enemy
                 _radii.Clear();
                 for (int i = 0; i < count; i++)
                 {
-                    _positions.Add(new FormationPoint(ships[i].WorldPosition.x,
-                        ships[i].WorldPosition.z));
+                    _positions.Add(ToPoint(ships[i].WorldPosition));
                     _radii.Add(ships[i].NavigationRadius);
                 }
                 BattleFormationModel.CalculateDestinations(_positions, _radii,
@@ -139,7 +139,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < count; i++)
             {
                 FormationPoint offset = _battleOffsets[ships[i]];
-                offsets.Add(new Vector3(offset.X, 0f, offset.Z));
+                offsets.Add(ToVector(offset));
             }
             return offsets;
         }

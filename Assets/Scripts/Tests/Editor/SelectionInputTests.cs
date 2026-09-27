@@ -80,7 +80,7 @@ namespace EmpireAtWar.Tests.Selection
         }
 
         [Test]
-        public void DisabledMiniMapInteraction_KeepsMapVisible()
+        public void MiniMapPointerExit_KeepsMapVisible()
         {
             GameObject gameObject = new GameObject(
                 "MiniMap",
@@ -94,25 +94,29 @@ namespace EmpireAtWar.Tests.Selection
             GameObject footprintObject = new GameObject("CameraFootprint", typeof(RectTransform));
             footprintObject.transform.SetParent(gameObject.transform, false);
             CameraFootprintView footprintView = footprintObject.AddComponent<CameraFootprintView>();
+            GameObject obstacleObject = new GameObject("Obstacles", typeof(RectTransform));
+            obstacleObject.transform.SetParent(gameObject.transform, false);
+            MiniMapObstacleView obstacleView = obstacleObject.AddComponent<MiniMapObstacleView>();
             FieldInfo footprintField = typeof(MiniMapUi).GetField(
                 "cameraFootprintView",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo obstacleField = typeof(MiniMapUi).GetField(
+                "obstacleView",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             FieldInfo mapImageField = typeof(MiniMapUi).GetField(
                 "mapImage",
                 BindingFlags.Instance | BindingFlags.NonPublic);
-            MethodInfo activateInteractionMethod = typeof(MiniMapUi).GetMethod(
-                "ActivateInteraction",
-                BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.That(mapImageField, Is.Not.Null);
             Assert.That(footprintField, Is.Not.Null);
-            Assert.That(activateInteractionMethod, Is.Not.Null);
+            Assert.That(obstacleField, Is.Not.Null);
 
             try
             {
                 mapImageField.SetValue(miniMapUi, mapImage);
                 footprintField.SetValue(miniMapUi, footprintView);
-                activateInteractionMethod.Invoke(miniMapUi, new object[] { false });
+                obstacleField.SetValue(miniMapUi, obstacleView);
+                miniMapUi.OnPointerExit(null);
                 DOTween.Complete(mapImage);
 
                 Assert.That(mapImage.color.a, Is.GreaterThanOrEqualTo(0.75f));
@@ -121,6 +125,7 @@ namespace EmpireAtWar.Tests.Selection
             {
                 DOTween.Kill(mapImage);
                 DOTween.Kill(footprintView);
+                DOTween.Kill(obstacleView);
                 UnityEngine.Object.DestroyImmediate(gameObject);
             }
         }
