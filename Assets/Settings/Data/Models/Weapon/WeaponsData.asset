@@ -19,7 +19,7 @@ MonoBehaviour:
     shotsPerSalvo: 3
     shotInterval: 0.1
     reload: 1.5
-    range: 200
+    range: 100
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -31,7 +31,7 @@ MonoBehaviour:
     shotsPerSalvo: 6
     shotInterval: 0.1
     reload: 2
-    range: 200
+    range: 100
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -43,7 +43,7 @@ MonoBehaviour:
     shotsPerSalvo: 8
     shotInterval: 0.08
     reload: 2
-    range: 150
+    range: 75
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 90
@@ -55,7 +55,7 @@ MonoBehaviour:
     shotsPerSalvo: 3
     shotInterval: 0.2
     reload: 4
-    range: 175
+    range: 87.5
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -67,7 +67,7 @@ MonoBehaviour:
     shotsPerSalvo: 3
     shotInterval: 0.2
     reload: 5
-    range: 175
+    range: 87.5
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -79,7 +79,7 @@ MonoBehaviour:
     shotsPerSalvo: 6
     shotInterval: 0.2
     reload: 7
-    range: 175
+    range: 87.5
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -91,7 +91,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.3
     reload: 8
-    range: 150
+    range: 75
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -103,7 +103,7 @@ MonoBehaviour:
     shotsPerSalvo: 4
     shotInterval: 0.3
     reload: 10
-    range: 150
+    range: 75
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -115,7 +115,7 @@ MonoBehaviour:
     shotsPerSalvo: 4
     shotInterval: 0.3
     reload: 10
-    range: 150
+    range: 75
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -127,7 +127,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 6
-    range: 150
+    range: 75
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 55
@@ -139,7 +139,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 10
-    range: 150
+    range: 75
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 55
@@ -151,7 +151,7 @@ MonoBehaviour:
     shotsPerSalvo: 1
     shotInterval: 0
     reload: 15
-    range: 150
+    range: 75
     shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
       type: 3}
     projectileSpeed: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
     shotsPerSalvo: 4
     shotInterval: 0.25
     reload: 10
-    range: 150
+    range: 75
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
     projectileSpeed: 35
@@ -175,7 +175,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.4
     reload: 12
-    range: 150
+    range: 75
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
     projectileSpeed: 25
@@ -187,7 +187,7 @@ MonoBehaviour:
     shotsPerSalvo: 2
     shotInterval: 0.08
     reload: 0.9
-    range: 70
+    range: 35
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 140
