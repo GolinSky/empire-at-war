@@ -7,11 +7,13 @@ created: 2026-09-27
 updated: 2026-09-28
 status: implemented
 ---
+
 # Codebase audit — implementation status
 
-The attached correction plan has been implemented for **all 17 entries**. The follow-up request authorized completing D3 and D4, focused tests, and committing this task's changes.
+- The attached correction plan has been implemented for **all 17 entries**.
+- The follow-up request authorized completing D3 and D4, focused tests, and committing this task's changes.
 
-[[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|Read implementation results and verification]]
+- [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|Read implementation results and verification]]
 
 > [!warning] Follow-up sweep 2026-09-28
 > All 17 entries were re-verified as present at f3fdf3d4. Two leftovers remain: an empty `Utils/Scenes` folder (from L3) and the fog models loose in the `Entities` root (from C4). The same issue classes still exist elsewhere: 79 multi-type files, silent null returns, property injection in services, a string-keyed pipeline dictionary, and hand-rolled owner counting in BattleVictoryService.
@@ -40,7 +42,8 @@ The attached correction plan has been implemented for **all 17 entries**. The fo
 ## Corrections to the original audit
 
 - **C1 was a real bug.** The existing menu-pause test did not cover closing the menu and the next control press.
-- **D2 was overstated.** Both zero-length paths return distance to the start. No behavior-design decision was necessary for this small consolidation.
+- **D2 was overstated.** Both zero-length paths return distance to the start.
+  - No behavior-design decision was necessary for this small consolidation.
 - **R2 was dead code.** No new layer service was needed.
 - **C4 also cloned meshes through mesh access and used forbidden component lookups.** Those uses are removed.
 - **L3's old NavigationService folder contained only SelectionType.** It has been removed after the Unity-aware move.
@@ -56,8 +59,14 @@ The attached correction plan has been implemented for **all 17 entries**. The fo
 
 ## Scope
 
-Original audit: inventoried 714 C# files under Assets/Scripts, used broad searches and focused live-source review, with Graphify as a non-authoritative map. Vendor code and every source line were not exhaustively audited. Original baseline was f61f9e49; other agents were editing the shared working tree.
+- Original audit: inventoried 714 C# files under Assets/Scripts, used broad searches and focused live-source review, with Graphify as a non-authoritative map.
+- Vendor code and every source line were not exhaustively audited.
+- Original baseline was f61f9e49; other agents were editing the shared working tree.
 
-Implementation: all planned changes are complete. File moves used AssetDatabase and preserved GUIDs. Only the fog renderer reference in SceneContext.prefab was intentionally changed by this task. The follow-up includes focused Edit Mode tests and a commit containing only this task's changes; see the results note for verification. Other agents' edits are preserved.
+- Implementation: all planned changes are complete.
+- File moves used AssetDatabase and preserved GUIDs.
+- Only the fog renderer reference in SceneContext.prefab was intentionally changed by this task.
+- The follow-up includes focused Edit Mode tests and a commit containing only this task's changes; see the results note for verification.
+- Other agents' edits are preserved.
 
-See the implementation results for exact verification limits; successful compilation is not a substitute for runtime regression tests.
+- See the implementation results for exact verification limits; successful compilation is not a substitute for runtime regression tests.

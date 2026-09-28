@@ -1,6 +1,7 @@
 # Validation record
 
-Only static inspection, installed help/version/config listings, and harmless read operations were performed. **No automated test suite or behavior fixture was run.** The source plan's V01–V14 identifiers are retained for continuity, but partial evidence is not reported as a full pass.
+- Only static inspection, installed help/version/config listings, and harmless read operations were performed.
+- **No automated test suite or behavior fixture was run.** The source plan's V01–V14 identifiers are retained for continuity, but partial evidence is not reported as a full pass.
 
 | ID | Status | Evidence obtained / remaining work |
 |---|---|---|
@@ -23,24 +24,45 @@ Only static inspection, installed help/version/config listings, and harmless rea
 
 - `/opt/homebrew/bin/codex --version`: `0.153.0`.
 - App-bundled Codex `--version`: `0.154.0-alpha.6.2`.
-- Each binary's `mcp list --json`: exit 0 at project root, `Assets/Scripts`, and `/Users/golinsky`. Project Unity/Serena/vault present only inside project; Graphify and legacy Unity disabled inside project.
-- `codex features list`: exit 0; `js_repl` reported removed, `multi_agent` stable/true. `rmcp_client` absent from that output; semantics remain unresolved.
-- Both `--strict-config mcp list` and `--strict-config features list`: rejected with “not supported” for those subcommands. These are diagnostic-command limitations, not failed TOML parsing. No unsafe alternate invocation was used just to obtain a strict result.
-- Unity status: one existing Editor, exact project path, state ready. The scene command's schema was inspected before its read-only invocation.
-- Serena `get_current_config`: version `1.7.0`; active project `empire-at-war`; language server ready; `codex` context; editing/interactive modes. No activation, onboarding, memory write or symbol edit performed.
+- Each binary's `mcp list --json`: exit 0 at project root, `Assets/Scripts`, and `/Users/golinsky`.
+  - Project Unity/Serena/vault present only inside project; Graphify and legacy Unity disabled inside project.
+- `codex features list`: exit 0; `js_repl` reported removed, `multi_agent` stable/true.
+  - `rmcp_client` absent from that output; semantics remain unresolved.
+- Both `--strict-config mcp list` and `--strict-config features list`: rejected with “not supported” for those subcommands.
+  - These are diagnostic-command limitations, not failed TOML parsing.
+  - No unsafe alternate invocation was used just to obtain a strict result.
+- Unity status: one existing Editor, exact project path, state ready.
+  - The scene command's schema was inspected before its read-only invocation.
+- Serena `get_current_config`: version `1.7.0`; active project `empire-at-war`; language server ready; `codex` context; editing/interactive modes.
+  - No activation, onboarding, memory write or symbol edit performed.
 - Context7 resolved Codex documentation and returned relevant current guidance; Context Mode stats responded.
-- Three Drive Markdown documents: metadata read, complete text fetched. The app's task reader returned the linked conversation.
+- Three Drive Markdown documents: metadata read, complete text fetched.
+  - The app's task reader returned the linked conversation.
 
 ## Report integrity and limits
 
-The source directory was clean during inspection. The project already contained 23 modified C#/asset files. Before final delivery, hash comparison against the initial 15-file settings baseline and a broader 27-file inventory checks that audited source/configuration files remain unchanged. The original Git-status lines are compared separately so unrelated work is not mistaken for report edits.
+- The source directory was clean during inspection.
+- The project already contained 23 modified C#/asset files.
+- Before final delivery, hash comparison against the initial 15-file settings baseline and a broader 27-file inventory checks that audited source/configuration files remain unchanged.
+- The original Git-status lines are compared separately so unrelated work is not mistaken for report edits.
 
-Report files are scanned locally against the credential encountered in the existing vault note; its value must not occur in any output. No auth stores, raw backups, full runtime environment or secret-bearing source files are included. New report Markdown and proposed patches are ordinary vault artifacts, not auto-loaded instruction/skill files.
+- Report files are scanned locally against the credential encountered in the existing vault note; its value must not occur in any output.
+- No auth stores, raw backups, full runtime environment or secret-bearing source files are included.
+- New report Markdown and proposed patches are ordinary vault artifacts, not auto-loaded instruction/skill files.
 
-Windows remains **not inspected live**. Other-client mirror behavior, complete vendor skill/script safety, all connector grants, cloud-managed configuration, full feature-key schema validation, and fresh-session behavior remain explicitly unverified. These limits prevent claiming that configuration is repaired or secure solely from this audit.
+- Windows remains **not inspected live**.
+- Other-client mirror behavior, complete vendor skill/script safety, all connector grants, cloud-managed configuration, full feature-key schema validation, and fresh-session behavior remain explicitly unverified.
+- These limits prevent claiming that configuration is repaired or secure solely from this audit.
 
-No before/after cost, token, latency or quality benchmark was run. Byte totals are not token counts, and no quota saving is claimed.
+- No before/after cost, token, latency or quality benchmark was run.
+- Byte totals are not token counts, and no quota saving is claimed.
 
 ## Final artifact readback — 14 September 2026
 
-All 27 inventoried source/config/reference files and the initial 15 settings baselines retained identical SHA-256 values. All 23 pre-existing Git-status entries remained present. Other work changed additional gameplay/UI files and Obsidian workspace state concurrently, and added other files during the audit. Those changes were not inspected, altered or attributed to this audit. This audit's own writes are limited to this new report folder. All report wikilinks resolve, and the encountered credential occurs zero times in the delivered artifacts. The three proposed patches remain unapplied.
+- All 27 inventoried source/config/reference files and the initial 15 settings baselines retained identical SHA-256 values.
+- All 23 pre-existing Git-status entries remained present.
+- Other work changed additional gameplay/UI files and Obsidian workspace state concurrently, and added other files during the audit.
+- Those changes were not inspected, altered or attributed to this audit.
+- This audit's own writes are limited to this new report folder.
+- All report wikilinks resolve, and the encountered credential occurs zero times in the delivered artifacts.
+- The three proposed patches remain unapplied.

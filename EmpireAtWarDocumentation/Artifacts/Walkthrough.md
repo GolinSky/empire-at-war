@@ -2,14 +2,13 @@
 
 ## Vault Organization
 
-The vault notes in `F:\Private\empire-at-war\EmpireAtWarDocumentation` are categorized into 4 core folders:
+- Vault: `F:\Private\empire-at-war\EmpireAtWarDocumentation`.
+- Original organization: 4 core folders.
 
 1. **`TODOs/`**: `TODOs.md`, `UI_Service_Refactoring.md`
 2. **`Architecture/`**: `PROJECT_ORGANIZATION.md`, `UI_REFACTORING_PLAYBOOK.md`, `SELECTION_SYSTEM.md`, `GRAPHIFY_GUIDE.md`
 3. **`Rules/`**: `AGENTS.md`, `README.md`
 4. **`Artifacts/`**: `Implementation_Plan.md`, `Walkthrough.md`
-
----
 
 ## Instructions for Opening in Obsidian
 

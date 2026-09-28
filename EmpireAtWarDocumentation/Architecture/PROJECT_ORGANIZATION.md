@@ -1,6 +1,8 @@
 # Project Organization Guide - MirrorMultiplayerTemplate
 
-This document outlines the asset organization rules for the **MirrorMultiplayerTemplate** Unity project. The project follows a **type-first** structure, where the root folder defines the asset type, and subfolders define the domain or category.
+- Scope: **MirrorMultiplayerTemplate** Unity asset rules.
+- Layout: type-first.
+- Root folder → asset type; subfolder → domain/category.
 
 ## Structure Overview
 
@@ -40,20 +42,23 @@ graph TD
 ## Root Folder Definitions
 
 ### 1. Art (`Assets/Art`)
-Contains all visual assets.
+
+- Contains all visual assets.
 - **Models/**: 3D meshes, FBX files, and their imported materials.
 - **Animation/**: Animator Controllers, Animation Clips, and Avatar Masks.
 - **Textures/**: Image assets and sprites.
 - **Materials/**: Shared material definitions.
 
 ### 2. Prefabs (`Assets/Prefabs`)
-Contains reusable GameObject configurations.
+
+- Contains reusable GameObject configurations.
 - **Models/**: Prefabs representing physical entities (Player, Equipment, Items, Skins).
 - **Ui/**: Menu screens, HUD elements, and UI widgets.
 - **View/**: Non-physical orchestration prefabs (NetworkManager, Scopes, Services).
 
 ### 3. Scripts (`Assets/Scripts`)
-Contains all project-owned C# source code.
+
+- Contains all project-owned C# source code.
 - **Components/**: Logic components that drive behavior (e.g., Movement, Interaction).
 - **Entities/**: Data-focused models and shared entity logic.
 - **Services/**: Global systems, manager logic, and dependency injection (VContainer).
@@ -61,20 +66,23 @@ Contains all project-owned C# source code.
 - **Tests/**: Automated test suites (EditMode and PlayMode).
 
 ### 4. Settings (`Assets/Settings`)
-Contains configuration and scriptable object data.
+
+- Contains configuration and scriptable object data.
 - **Data/**: Game settings and databases (e.g., ScriptableObjects inheriting from the `Data` class, like `HealthData`, `InventoryData`, and the global `AssetMappingData`).
 - **Input System Actions**: The `.inputactions` and `.inputsettings` assets.
 - **Player Data**: ScriptableObjects like `MovementData`.
 - **Render Pipelines**: HDRP/URP profiles and quality settings.
 
 ### 5. Plugins (`Assets/Plugins`)
-Reserved for major, project-wide external packages.
+
+- Reserved for major, project-wide external packages.
 - **Mirror**: Networking library.
 - **TextMesh Pro**: Text rendering.
 - **DOTween**: Animation engine.
 
 ### 6. Sandbox (`Assets/Sandbox`)
-A boundary for temporary development.
+
+- A boundary for temporary development.
 - **Scenes/**: Blocking, technical testing, and prototyping levels.
 - **Prefabs/Debug/**: Debug-only objects and technical integration tests.
 
@@ -83,6 +91,7 @@ A boundary for temporary development.
 1. **Type-First**: Always place assets in the root folder that matches their type (e.g., a weapon model goes in `Art/Models`, not `Prefabs`).
 2. **Graphics vs Art**: The folder for visual assets must always be named `Art`.
 3. **Addressables**: **Do not modify the `AddressableAssetsData` folder structure.** Assets referenced by Addressables can be moved through the Unity Editor, but the data folder itself must remain intact.
-4. **Resources**: Keep `Assets/Resources` minimal. Only use it for bootstrapping assets (e.g., initial VContainer configuration).
+4. **Resources**: Keep `Assets/Resources` minimal.
+   - Only use it for bootstrapping assets (e.g., initial VContainer configuration).
 5. **Third-Party**: External assets from the Asset Store that are not core plugins belong in `Assets/ThirdParty`.
 6. **Scripts**: Maintain the `Components/Entities/Services` separation to ensure a decoupled architecture.
