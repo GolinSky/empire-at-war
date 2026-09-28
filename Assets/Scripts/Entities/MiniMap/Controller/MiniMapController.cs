@@ -54,6 +54,8 @@ namespace EmpireAtWar.Controllers.MiniMap
             {
                 Model.AddBase(mapModel.GetStationPosition(player.Id), localPlayer.GetRelation(player.Id));
             }
+            // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
+            Physics.SyncTransforms();
             foreach (IMiniMapObstacleSource obstacleSource in obstacleSources)
             {
                 Bounds bounds = obstacleSource.WorldBounds;
