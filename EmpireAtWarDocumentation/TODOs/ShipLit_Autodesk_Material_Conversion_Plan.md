@@ -1,7 +1,7 @@
 # Ship Lit: Autodesk Interactive material conversion plan
 
 - Created: 2026-09-28
-- Status: Not started. Evidence gathered on 2026-09-28 (read-only).
+- Status: Phase 0 audit and baseline renders captured on 2026-09-28. Awaiting confirmation of verified semantic corrections and four shared-material copies before implementation.
 - Audience: Codex (or any implementing agent). Read `AGENTS.md` first. This note is advisory: check every claim against the live source and assets before editing.
 - Goal: every unit prefab renders with `EmpireAtWar/Ship Lit` so every unit shows team colors, while keeping its current look as close as possible.
 - Scope: the 10 Autodesk Interactive materials used by unit prefabs, and a new converter step in `Assets/Scripts/Editor/Rendering/ShipLitSetupTool.cs`.
@@ -178,4 +178,59 @@ Acceptance: user approves before/after renders; no console errors; `git status` 
 
 ## Findings
 
-_(fill during Phase 0)_
+### Phase 0 audit — 2026-09-28
+
+Status: read-only audit and seven baseline renders captured. **Implementation is awaiting the confirmation required below because live shader semantics contradict the draft mapping and four materials are shared.** No project scripts or Unity assets have been changed; no automated tests have been run.
+
+#### Verified shader semantics
+
+Source: `Library/PackageCache/com.unity.render-pipelines.universal@7228970dbdbf/Shaders/AutodeskInteractive/AutodeskInteractive.shadergraph`, traced through its serialized nodes and edges. Editor: Unity 6000.4.7f1.
+
+- Metallic: enabled map **R**; otherwise `_Metallic`. Map replaces the scalar.
+- Roughness: enabled `_SpecGlossMap.R`; otherwise `_Glossiness`. **Both paths feed Square Root, then One Minus: smoothness = 1 - sqrt(roughness)**. For example, ISD scalar 0.5 gives approximately 0.292893 smoothness, not 0.5.
+- `metal_gloss.png` is unequivocally consumed as **roughness** by the current shader when enabled. Its filename does not determine its current rendering. Preserve this behavior; any art correction would be separate.
+- Base color: `_UseColorMap` selects **the map OR `_Color`**, not their product. Ship Lit therefore needs white `_BaseColor` when the map is enabled; otherwise preserve `_Color` and use the white default map. Multiplying Dull_Metal's map by its stored 0.451 color would darken it.
+- Emission: `_UseEmissiveMap` selects **the map OR `_EmissionColor`**, not their product. With a map, use white target emission color; without a map, use source emission color with Ship Lit's white default emission map (all currently disabled cases have black source color).
+- AO: `_OcclusionMap` RGBA feeds the scalar Occlusion input directly, so **R is used**. Confirmed vector4-to-scalar conversion is `.x` in Shader Graph's `GenerationUtils.AdaptNodeOutput`. **`_UseAoMap` is exposed but has no graph node or edge and is ignored by this shader.** Preserve the assigned AO texture regardless of this unused toggle; no AO texture gives the white default. Bake sampled red into target green.
+- `_UvTiling.xy` and `_UvOffset.xy` transform the same UV stream for all six maps. Map to `_BaseMap` scale/offset; ISD's 11 x 11 tiling must survive.
+- Every assigned metallic, roughness and AO source texture among these ten materials is currently imported with **sRGB enabled**, compressed, and not readable. Preserve the GPU-sampled values (including existing sRGB decoding) in a linear readback and write new outputs with sRGB disabled; changing source import settings would change existing appearance.
+- Existing converted Ship Lit mask example: `Mat_Top_Hull_Final.mat` references `Assets/Art/Models/DefendPlatforms/XQ6/ScratchedMetal2.jpeg`, importer compression `Compressed`, max size 2048. Use the same compression class on new packed outputs, with input alpha, alpha-is-transparency off and mipmaps on.
+
+#### Reference audit
+
+Scanned **1,462 prefab, scene and .asset paths** using recursive `AssetDatabase.GetDependencies`, plus exact GUID search of serialized assets and model importer metadata. Confirmed all ten materials and all **475 slots** listed in the plan.
+
+| Material | Classification | Prefab consumers (including indirect model references) |
+| --- | --- | --- |
+| Dull_Metal | **Shared** | HeavyDreadnoughtShipView; Ui/Reinforcement/HeavyDreadnoughtReinforcementView |
+| ISD_Color_Baked | **Shared** | StarDestroyer2ShipView; Ui/Reinforcement/StarDestroyer1ReinforcementView and StarDestroyer2ReinforcementView |
+| lambert1 | **Shared** | AsteroidDefendPlatformView; Vfx/Heavy Turbolaser Cannon V1 |
+| defaultMat | **Shared** | DefendPlatformView; Ui/Reinforcement/DefendPlatformReinforcementView |
+| shell / parts1 / parts2 | Unit-only prefab consumers | HeavyDreadnoughtShipView, StarDestroyer1ShipView, StarDestroyer2ShipView, VenatorShipView |
+| set1 / set2 / set3 | Unit-only prefab consumers | SeparatistSpaceStationView |
+
+Imported source models also reference their original materials through importer remaps; these were recorded separately and are not additional non-unit prefab consumers. Full lists, including scene/data dependencies, are preserved in the audit files below.
+
+`lambert1` is additionally reached through capture-site prefabs, SceneContext, SceneData, and Battle/Corusant/Kamino scenes. The three shared reinforcement materials also appear in ReinforcementData through their UI previews. The six unit-only materials have no other prefab/scene/.asset consumers.
+
+Proposed adjustment: create exactly four `_ShipLit.mat` copies and repoint only their unit-prefab renderer slots; convert the remaining six materials in place. The Phase 2 isolated Dull_Metal check must operate on its unit copy because the original is shared. Keep VFX and reinforcement previews on their original Autodesk materials.
+
+#### Baseline evidence
+
+Saved outside Assets at `Logs/ShipLitConversion/2026-09-28/`:
+- `review.html`: baseline gallery for all seven affected prefabs.
+- Seven `<PrefabName>_before.png` files (1024 x 768).
+- `audit.json`: current materials, toggles, texture references and import settings.
+- `references.json`: exact GUID reference search.
+- `dependencies.json`: full recursive prefab/scene/asset reference lists.
+- `shader-edges.txt`: identified shader-graph connections.
+- `RenderBefore.cs`, `Audit.cs`, `Dependencies.cs`: repeatable official Unity CLI eval scripts.
+
+Preview rendering uses mesh-only copies in an isolated preview scene, first LOD geometry, a fixed orthographic camera and directional light, and shader user value 0. No gameplay scripts are instantiated. PNGs were inspected for SD2 and the Separatist station. The original MainMenuScene remains clean. No new Unity console errors were captured after baseline cursor 2513; older unrelated disposal errors already existed.
+
+Art oddities retained: lambert1's ignored color texture and cross-set station textures; defaultMat's red AO texture; set2's set1 emission texture. None should be corrected during conversion.
+
+#### Confirmation requested by the plan
+
+Approve preserving the **verified current shader behavior** above (square-root roughness, branch-based colors/emission, always-sampled red AO, current source color-space decoding, roughness interpretation of metal_gloss), and making the four unit-only material copies. Then continue Phases 1–3. The shader feature set and keywords remain unchanged.
+
