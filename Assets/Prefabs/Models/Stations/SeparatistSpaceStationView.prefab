@@ -496,7 +496,7 @@ MonoBehaviour:
     type: 3}
   ionFieldBounds:
     m_Center: {x: 0.0000019073486, y: 0, z: 0}
-    m_Extent: {x: 21.14099, y: 19.748112, z: 11.497068}
+    m_Extent: {x: 21.140991, y: 19.748112, z: 11.497067}
 --- !u!114 &9157349104637764079
 MonoBehaviour:
   m_ObjectHideFlags: 0
