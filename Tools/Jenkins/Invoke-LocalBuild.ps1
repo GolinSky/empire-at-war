@@ -14,6 +14,12 @@ if ($Phase -eq 'ArchiveMonitor') {
 }
 if ($Phase -eq 'ArchiveComplete') {
     Assert-CiIdle
+    if (Test-Path -LiteralPath "$workspace\archive-pending.json") {
+        $pending = Get-Content -LiteralPath "$workspace\archive-pending.json" -Raw | ConvertFrom-Json
+        if ($pending.State -eq 'PlayerReady' -and -not (Test-Path -LiteralPath "$workspace\artifacts\EmpireAtWar-Windows.zip")) {
+            throw 'Player packaging failed. Preserve/recover the player before clearing archive-pending.json.'
+        }
+    }
     foreach ($path in @("$workspace\player","$workspace\artifacts\EmpireAtWar-Windows.zip")) {
         Assert-PlainPath $path
         if (Test-Path -LiteralPath $path) {

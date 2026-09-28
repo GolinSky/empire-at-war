@@ -17,7 +17,7 @@ try {
         $editor = "F:\Program Files\Unity\Hub\Editor\$version\Editor\Unity.exe"
         if (-not (Test-Path -LiteralPath $editor)) { throw "Required Editor missing: $version" }
         if (Test-Path -LiteralPath "$player\EmpireAtWar.exe") { throw 'Old player output rejected.' }
-        @{Commit=$sha;Build=$env:BUILD_NUMBER} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
+        @{Commit=$sha;Build=$env:BUILD_NUMBER;State='BuildStarted'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
         & unity build $ci --target StandaloneWindows64 --editor-path $editor --output-path "$player\EmpireAtWar.exe" --log-file "$artifacts\Unity.log" --provenance-path "$artifacts\build-provenance.json" --args '-nographics -job-worker-count 4' --timeout $policy.BuildTimeoutSeconds --non-interactive
         if ($LASTEXITCODE -ne 0) { throw "Unity build failed: exit $LASTEXITCODE" }
         foreach ($required in @('EmpireAtWar.exe','UnityPlayer.dll','EmpireAtWar_Data\globalgamemanagers','EmpireAtWar_Data\Managed\Assembly-CSharp.dll','EmpireAtWar_Data\StreamingAssets\aa\settings.json')) {
@@ -27,6 +27,7 @@ try {
         if (-not $bundles.Count) { throw 'Addressables bundles are missing from player.' }
         if (-not (Test-Path -LiteralPath "$artifacts\build-provenance.json")) { throw 'CLI provenance is missing.' }
         @{LibraryGiB=(Get-DirectoryGiB "$ci\Library");PlayerGiB=(Get-DirectoryGiB $player);AddressablesBundles=$bundles.Count} | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\output-sizes.json"
+        @{Commit=$sha;Build=$env:BUILD_NUMBER;State='PlayerReady'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
     } else {
         Write-ResourceSample -Stage 'package'
         & tar.exe -a -c -f "$artifacts\EmpireAtWar-Windows.zip" -C $player .
