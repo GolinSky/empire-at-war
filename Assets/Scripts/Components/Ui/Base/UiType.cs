@@ -17,7 +17,7 @@ namespace EmpireAtWar.Ui.Base
         MainMenu = 9,
         ShipGroup = 10,
         UnitOrderFeedback = 11,
-        SkirmishGameSetUpPopup = 12,
-        SettingsPopup = 13,
+        Skirmish = 12,
+        Settings = 13,
     }
 }

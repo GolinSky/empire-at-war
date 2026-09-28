@@ -6,7 +6,8 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Ui.Popups;
+using EmpireAtWar.Entities.MainMenu.Settings;
+using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Views.Economy;
 using EmpireAtWar.Views.Factions;
 using EmpireAtWar.Views.Game;
@@ -37,8 +38,8 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(UiService), "defaultCanvas"),
             new SerializedReference(typeof(UiService), "dynamicCanvas"),
             new SerializedReference(typeof(UiService), "popupCanvas"),
-            new SerializedReference(typeof(SkirmishPopupUi), "startingMoneySlider"),
-            new SerializedReference(typeof(SkirmishPopupUi), "mapSizeDropdown"),
+            new SerializedReference(typeof(SkirmishUi), "startingMoneySlider"),
+            new SerializedReference(typeof(SkirmishUi), "mapSizeDropdown"),
             new SerializedReference(typeof(MapLayoutView), "zonePrefab"),
             new SerializedReference(typeof(MapLayoutView), "miningSitePrefab"),
             new SerializedReference(typeof(MapLayoutView), "battleSitePrefab"),
@@ -54,9 +55,9 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MapInstaller), "mapLayoutView"),
             new SerializedReference(typeof(MapInstaller), "reinforcementZonesSystem"),
             new SerializedReference(typeof(MapInstaller), "captureSitesSystem"),
-            new SerializedReference(typeof(SkirmishPopupUi), "closeButton"),
-            new SerializedReference(typeof(SettingsPopupUi), "closeButton"),
-            new SerializedReference(typeof(SettingsPopupUi), "qualitySettingsDropdown"),
+            new SerializedReference(typeof(SkirmishUi), "closeButton"),
+            new SerializedReference(typeof(SettingsUi), "closeButton"),
+            new SerializedReference(typeof(SettingsUi), "qualitySettingsDropdown"),
             new SerializedReference(typeof(CoreGameUi), "reinforcementButton"),
             new SerializedReference(typeof(CoreGameUi), "miniMapRouteParent"),
             new SerializedReference(typeof(CoreGameUi), "contentRouteParent"),
