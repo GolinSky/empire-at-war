@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
@@ -7,7 +8,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Enemy;
@@ -37,12 +37,13 @@ namespace EmpireAtWar.Tests.Editor
                 FakeCommand caster = new FakeCommand(definition);
                 EntityLocator entities = new EntityLocator();
                 entities.AddEntity(caster.Entity);
-                entities.AddEntity(new FakeEntity(2, PlayerType.Player,
+                entities.AddEntity(new FakeEntity(2, TestPlayers.Human,
                     new FakeHealth(playerView.transform, 1f), null));
                 RecordingFactory factory = new RecordingFactory();
-                ShipAbilityService service = new ShipAbilityService(factory);
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                ShipAbilityService service = new ShipAbilityService(factory, roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), new FakeGameModel(), service);
+                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy));
 
                 controller.Tick();
 
@@ -79,23 +80,12 @@ namespace EmpireAtWar.Tests.Editor
             public int ActiveShipCount => 1;
         }
 
-        private sealed class FakeGameModel : IGameModelObserver
-        {
-            public EmpireAtWar.Entities.Planet.PlanetType PlanetType => default;
-            public EmpireAtWar.Entities.Map.MapSize MapSize => default;
-            public FactionType PlayerFactionType => default;
-            public FactionType EnemyFactionType => default;
-            public BattleVictoryCondition VictoryCondition => BattleVictoryCondition.DestroyEnemyFleet;
-            public EnemyAiDifficulty EnemyDifficulty => EnemyAiDifficulty.UltraHard;
-            public float StartingMoney => 1000f;
-        }
-
         private sealed class FakeCommand : IShipAbilityFacade
         {
             public FakeCommand(ShipAbilityDefinition definition)
             {
                 Health = new FakeHealth(null, 0f);
-                Entity = new FakeEntity(1, PlayerType.Opponent, Health, this);
+                Entity = new FakeEntity(1, TestPlayers.Enemy, Health, this);
                 Slots = new[] { new ShipAbilitySlot(ShipAbilityId.BoostShieldPower,
                     definition, this) };
             }
@@ -112,11 +102,11 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly IShipAbilityFacade _command;
 
-            public FakeEntity(long id, PlayerType playerType, IHealthModelObserver health,
+            public FakeEntity(long id, PlayerId owner, IHealthModelObserver health,
                 IShipAbilityFacade command)
             {
                 Id = id;
-                PlayerType = playerType;
+                Owner = owner;
                 HealthModel = health;
                 _command = command;
             }
@@ -124,7 +114,7 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -163,7 +153,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>

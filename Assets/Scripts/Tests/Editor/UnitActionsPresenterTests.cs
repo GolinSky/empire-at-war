@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Components.Movement.Formation;
@@ -170,15 +171,15 @@ namespace EmpireAtWar.Tests.Editor
                 new List<IObserver<ISelectionSubject>>();
             public string Id => nameof(FakeSelection);
             public ISelectionContext PlayerSelectionContext => this;
-            public ISelectionContext EnemySelectionContext => null;
-            public PlayerType UpdatedType => PlayerType.Player;
+            public ISelectionContext OtherSelectionContext => null;
+            public SelectionScope UpdatedScope => SelectionScope.Local;
             public IEntity Entity => _entities.Count > 0 ? _entities[0] : null;
             public IReadOnlyList<IEntity> Entities => _entities;
             public IEntitySelectionFacade SelectionFacade => null;
             public SelectionType SelectionType => SelectionType.Ship;
             public bool HasSelectable => _entities.Count > 0;
             public int Count => _entities.Count;
-            public PlayerType PlayerType => PlayerType.Player;
+            public SelectionScope Scope => SelectionScope.Local;
             public bool Contains(IEntity entity) => _entities.Contains(entity);
             public void Select(IEntity entity)
             {
@@ -283,7 +284,7 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public FakeCommand Command { get; }
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -331,7 +332,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType type) =>

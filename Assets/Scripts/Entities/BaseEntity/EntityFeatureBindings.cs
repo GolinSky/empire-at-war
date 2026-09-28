@@ -10,7 +10,6 @@ using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Selection;
@@ -77,9 +76,10 @@ namespace EmpireAtWar.Entities.BaseEntity
             return container;
         }
 
-        public static DiContainer BindFogOfWarFeature(this DiContainer container, PlayerType playerType)
+        /// <param name="isHiddenByLocalFog">True for units outside the local team; they disappear under the local fog of war.</param>
+        public static DiContainer BindFogOfWarFeature(this DiContainer container, bool isHiddenByLocalFog)
         {
-            if (playerType == PlayerType.Opponent)
+            if (isHiddenByLocalFog)
                 container.BindInterfacesAndSelfTo<FogVisibilityComponent>().FromComponentsInHierarchy().AsCached();
             return container;
         }

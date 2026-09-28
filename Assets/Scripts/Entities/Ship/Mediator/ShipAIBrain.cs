@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -14,7 +14,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly IRadarComponent _radar;
         private readonly IShipMovement _movement;
         private readonly ShipAiDecisionModel _decisionModel;
-        private readonly IGameModelObserver _gameModel;
+        private readonly EnemyAiDifficulty _difficulty;
         private readonly UnitOrderModel _orders;
         private float _decisionTimer;
         private bool _isEnabled;
@@ -23,13 +23,13 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
         public ShipAIBrain(IHealthModelObserver healthModel, IRadarComponent radar,
             IShipMovement movement, ShipAiDecisionModel decisionModel,
-            IGameModelObserver gameModel, UnitOrderModel orders)
+            UnitOrderModel orders, PlayerId owner, IPlayerRoster roster)
         {
             _healthModel = healthModel;
             _radar = radar;
             _movement = movement;
             _decisionModel = decisionModel;
-            _gameModel = gameModel;
+            _difficulty = roster.Get(owner).Difficulty;
             _orders = orders;
         }
 
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             _decisionTimer -= deltaTime;
             if (_decisionTimer > 0f) return;
             _decisionTimer = EnemyAiDifficultyProfile.Get(
-                _gameModel.EnemyDifficulty).DecisionInterval;
+                _difficulty).DecisionInterval;
 
             bool hasTarget = _orders.Target != null;
             bool targetAvailable = hasTarget &&
@@ -55,7 +55,7 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 _healthModel.IsDestroyed, _healthModel.HasShields,
                 _healthModel.ShieldPercentage, _radar.Enemies.Count,
                 hasTarget, targetAvailable, _movement.IsMoving),
-                _gameModel.EnemyDifficulty);
+                _difficulty);
             IsFleeing = decision == ShipAiDecision.Flee;
         }
     }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
@@ -39,8 +39,8 @@ namespace EmpireAtWar.Controllers.MiniMap
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
             List<IMiniMapObstacleSource> obstacleSources,
-            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
-            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType) : base(model)
+            IPlayerRoster roster,
+            ILocalPlayer localPlayer) : base(model)
         {
             _cameraService = cameraService;
             _inputService = inputService;
@@ -49,8 +49,11 @@ namespace EmpireAtWar.Controllers.MiniMap
             _routeNavigation = routeNavigation;
             _orderInput = orderInput;
             Model.MapRange = mapModel.SizeRange;            
-            Model.AddMark(MarkType.PlayerBase, mapModel.GetStationPosition(playerFactionType));
-            Model.AddMark(MarkType.EnemyBase, mapModel.GetStationPosition(opponentFactionType));
+            Model.ClearBases();
+            foreach (PlayerSlot player in roster.Players)
+            {
+                Model.AddBase(mapModel.GetStationPosition(player.Id), localPlayer.GetRelation(player.Id));
+            }
             foreach (IMiniMapObstacleSource obstacleSource in obstacleSources)
             {
                 Bounds bounds = obstacleSource.WorldBounds;

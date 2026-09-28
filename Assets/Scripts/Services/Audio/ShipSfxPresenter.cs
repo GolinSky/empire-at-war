@@ -1,8 +1,8 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
 using ViewComponents;
@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Audio
         // Remembered terrain remains at 0.35 visibility without revealing enemy activity.
         private const float MIN_ENEMY_VISIBILITY = 0.5f;
         private readonly IShipSfxView _view;
+        private readonly ILocalPlayer _localPlayer;
         private readonly IShipAbilityFacade _abilities;
         private readonly IShipMovement _movement;
         private readonly ShipMoveModel _movementModel;
@@ -31,8 +32,10 @@ namespace EmpireAtWar.Services.Audio
 
         public ShipSfxPresenter(IShipSfxView view, IShipAbilityFacade abilities,
             IShipMovement movement, ShipMoveModel movementModel, IShipMoveData movementData,
-            ICameraService camera, FogOfWarSystem fog, AudioShipData data)
+            ICameraService camera, FogOfWarSystem fog, AudioShipData data,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _view = view;
             _abilities = abilities;
             _movement = movement;
@@ -116,7 +119,7 @@ namespace EmpireAtWar.Services.Audio
                         break;
                     case ShipAbilityState.Ready:
                         if (previous == ShipAbilityState.Recovering &&
-                            _abilities.Health.PlayerType == PlayerType.Player)
+                            _localPlayer.IsLocal(_abilities.Health.Owner))
                             _view.PlayCue(sound.RestoreClip, sound.CueVolume * 0.7f);
                         break;
                 }
@@ -133,7 +136,7 @@ namespace EmpireAtWar.Services.Audio
             Vector3 position = _movement.CurrentPosition;
             Vector3 viewport = _camera.WorldToViewportPoint(position);
             float gain = 0f;
-            if (viewport.z > 0f && (_abilities.Health.PlayerType == PlayerType.Player ||
+            if (viewport.z > 0f && (_localPlayer.IsFriendly(_abilities.Health.Owner) ||
                 !_fog.IsHidden(position, MIN_ENEMY_VISIBILITY)))
             {
                 Vector3 cameraPosition = _camera.CameraPosition;

@@ -1,10 +1,11 @@
 using System.Linq;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Presenters.Cheats;
 using EmpireAtWar.Presenters.Economy;
@@ -26,10 +27,12 @@ namespace EmpireAtWar
     public class PlayerCoreInstaller : MonoInstaller
     {
         [Inject] private IAssetService Repository { get; }
-        [Inject] private Zenject.SceneContext SceneContext { get; }
+        [Inject] private ILocalPlayer LocalPlayer { get; }
 
         public override void InstallBindings()
         {
+            // Everything in this context, including the units it spawns, belongs to the local human.
+            Container.BindInstance(LocalPlayer.Slot);
             Container.Install<GameUnitsInstaller>();
             
             Container.BindScriptableObject<ReinforcementData>(Repository);
@@ -42,16 +45,14 @@ namespace EmpireAtWar
                 .AsSingle();
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
-            // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
-            FactionType playerFactionType = Container.ResolveId<FactionType>(PlayerType.Player);
             Container
                 .BindInterfacesAndSelfTo<PlayerFactionModel>()
                 .AsSingle()
-                .WithArguments(playerFactionType);
+                .WithArguments(LocalPlayer.Slot.Faction);
             Container
                 .BindInterfacesAndSelfTo<FactionResearchModel>()
                 .AsSingle()
-                .WithArguments(playerFactionType);
+                .WithArguments(LocalPlayer.Slot.Faction);
             Container.BindInterfacesAndSelfTo<SuperWeaponModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<SuperWeaponPresenter>();
             Container.BindInterfacesNonLazyExt<FactionService>();
@@ -63,14 +64,8 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<EconomyService>();
             Container.BindInterfacesNonLazyExt<EconomyUiController>();
 
-            Container.Bind<ISiteFacilityBuilder>().To<SiteFacilityBuilder>().AsSingle()
-                .WithArguments(PlayerType.Player);
-            Container.ParentContainers.Single()
-                .Bind<ISiteFacilityBuilder>()
-                .WithId(PlayerType.Player)
-                .FromSubContainerResolve()
-                .ByInstance(Container)
-                .AsSingle();
+            // Registers itself in the scene-wide player registry so capture sites can build for the player.
+            Container.BindInterfacesTo<SiteFacilityBuilder>().AsSingle().NonLazy();
 
             Container.BindInterfacesExt<CheatService>();
             Container

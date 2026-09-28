@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
@@ -7,7 +8,6 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.UnitOrders
         IPlayerOrderInputHandler
     {
         private readonly IInputService _input;
+        private readonly ILocalPlayer _localPlayer;
         private readonly ISelectionService _selection;
         private readonly ISelectionQuery _query;
         private readonly ICameraService _camera;
@@ -36,8 +37,10 @@ namespace EmpireAtWar.Services.UnitOrders
             ISelectionQuery query, ICameraService camera, ILayerService layers,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
             IUnitOrderService orders, SuperWeaponTargetingModel superWeapons,
-            IHardPointHoverObserver hardPointHover)
+            IHardPointHoverObserver hardPointHover,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _input = input;
             _selection = selection;
             _query = query;
@@ -110,7 +113,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
             if (_abilities.IsWaitingForTarget)
             {
-                if (target != null && target.PlayerType == PlayerType.Opponent)
+                if (target != null && _localPlayer.IsHostile(target.Owner))
                     _abilities.SubmitTarget(target);
                 else _abilities.CancelTargeting();
                 return;
@@ -139,7 +142,8 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             if (pending == UnitActionId.Guard)
             {
-                if (target != null && target.PlayerType == PlayerType.Player &&
+                // Allied units can be escorted too.
+                if (target != null && _localPlayer.IsFriendly(target.Owner) &&
                     target.TryGetFacade(out IEntitySelectionFacade _))
                 {
                     _orders.IssueGuard(receivers, target);
@@ -194,8 +198,8 @@ namespace EmpireAtWar.Services.UnitOrders
             return receivers[0].GetFacade<IEntityTransformFacade>().Transform.position;
         }
 
-        private static bool IsEnemy(IEntity entity) =>
-            entity != null && entity.PlayerType == PlayerType.Opponent &&
+        private bool IsEnemy(IEntity entity) =>
+            entity != null && _localPlayer.IsHostile(entity.Owner) &&
             !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
         private bool IsObstacle(Vector2 screen)

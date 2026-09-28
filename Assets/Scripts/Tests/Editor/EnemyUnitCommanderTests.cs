@@ -1,11 +1,11 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.UnitActions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip second = new FakeShip(2, Vector3.zero);
             FakeShip third = new FakeShip(3, Vector3.zero);
             GameObject view = new GameObject("Target");
-            FakeEntity target = new FakeEntity(4, PlayerType.Player,
+            FakeEntity target = new FakeEntity(4, TestPlayers.Human,
                 new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
             EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip defender = new FakeShip(1, Vector3.zero);
             FakeShip idle = new FakeShip(2, Vector3.right);
             GameObject view = new GameObject("Station");
-            FakeEntity station = new FakeEntity(3, PlayerType.Opponent,
+            FakeEntity station = new FakeEntity(3, TestPlayers.Enemy,
                 new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
             try
@@ -142,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Dictionary<IShipEntity, IEntity> receivers = new Dictionary<IShipEntity, IEntity>();
             foreach (IShipEntity ship in ships)
-                receivers.Add(ship, new FakeEntity(ship.EntityId, PlayerType.Opponent, null));
+                receivers.Add(ship, new FakeEntity(ship.EntityId, TestPlayers.Enemy, null));
             return new EnemyStrategicContext(default, ships,
                 new Vector3(55f, 0f, -55f), fleetTarget, null, ownBase, receivers);
         }
@@ -151,7 +151,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public FakeShip(long id, Vector3 position) { EntityId = id; WorldPosition = position; }
             public IShipModelObserver ModelObserver => null;
-            public PlayerType PlayerType => PlayerType.Opponent;
+            public PlayerId Owner => TestPlayers.Enemy;
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 5f;
             public float NavigationSpeed { get; set; } = 1f;
@@ -219,12 +219,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerType side, IHealthModelObserver health)
-            { Id = id; PlayerType = side; HealthModel = health; }
+            public FakeEntity(long id, PlayerId side, IHealthModelObserver health)
+            { Id = id; Owner = side; HealthModel = health; }
             public long Id { get; }
             public EmpireAtWar.Mvc.IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
@@ -252,7 +252,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType type) =>

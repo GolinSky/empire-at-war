@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
@@ -29,7 +30,7 @@ namespace EmpireAtWar.Ship
     public interface IShipEntity
     {
         IShipModelObserver ModelObserver { get; }
-        PlayerType PlayerType { get; }
+        PlayerId Owner { get; }
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Ship
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private EntityComponentLifecycle _componentLifecycle;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private bool _isReleased;
         private ILayerService _layerService;
         private IUnitDeathAnimationData _deathAnimationData;
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Ship
         public event Action<ShipType> OnRelease;
 
         public string Id => GetType().Name;
-        public PlayerType PlayerType => _playerType;
+        public PlayerId Owner => _owner;
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
         public float NavigationRadius => _shipMoveComponent.NavigationRadius;
         public float NavigationSpeed => _shipMoveComponent.NavigationSpeed;
@@ -84,7 +85,7 @@ namespace EmpireAtWar.Ship
             ISelectionModelObserver selectionModel,
             ShipOrderRunner orders,
             LazyInject<IEntity> entity,
-            PlayerType playerType,
+            PlayerId owner,
             IAudioShipComponent audioShipComponent,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
@@ -99,7 +100,7 @@ namespace EmpireAtWar.Ship
             _selectionModel = selectionModel;
             _orders = orders;
             _entity = entity;
-            _playerType = playerType;
+            _owner = owner;
             _audioShipComponent = audioShipComponent;
             _audioDialogShipComponent = audioDialogShipComponent;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);

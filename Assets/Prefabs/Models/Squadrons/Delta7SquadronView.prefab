@@ -335,6 +335,7 @@ GameObject:
   - component: {fileID: 2249065435612880045}
   - component: {fileID: 2830691518358750855}
   - component: {fileID: 2438442675913171415}
+  - component: {fileID: 1139883098706175716}
   m_Layer: 0
   m_Name: Delta7SquadronView
   m_TagString: Untagged
@@ -461,6 +462,7 @@ MonoBehaviour:
   followSharpness: 12
   friendlyColor: {r: 0.55, g: 1, b: 0.55, a: 1}
   selectedColor: {r: 1, g: 0.92, b: 0.35, a: 1}
+  allyColor: {r: 0.4, g: 0.8, b: 1, a: 1}
   enemyColor: {r: 1, g: 0.3, b: 0.25, a: 1}
 --- !u!114 &2438442675913171415
 MonoBehaviour:
@@ -511,6 +513,24 @@ MonoBehaviour:
   - {fileID: 6248682979103973531}
   - {fileID: 2438295677250294922}
   - {fileID: 1256288030112164449}
+--- !u!114 &1139883098706175716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758148520541430113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 2000458561101706652}
+  - {fileID: 7167500405621296208}
+  - {fileID: 185293575550655065}
+  - {fileID: 2479805238689050746}
+  - {fileID: 6295076181410897928}
 --- !u!1 &2382013464077537138
 GameObject:
   m_ObjectHideFlags: 0

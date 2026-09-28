@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Mvc;
 
@@ -19,32 +19,22 @@ namespace EmpireAtWar.Entities.Game
         }
         
         public void StartGame(
-            FactionType playerFactionType,
-            FactionType enemyFactionType,
+            IReadOnlyList<PlayerSlot> players,
             PlanetType planetType,
             MapSize mapSize,
             BattleVictoryCondition victoryCondition,
-            EnemyAiDifficulty enemyDifficulty,
             float startingMoney)
         {
-            if (playerFactionType == enemyFactionType)
-            {
-                throw new ArgumentException(
-                    "Player and enemy factions must be different because each map has one station per faction.",
-                    nameof(enemyFactionType));
-            }
-
+            MatchRules.Validate(players);
             if (startingMoney <= 0f)
             {
                 throw new ArgumentOutOfRangeException(nameof(startingMoney), "Starting money must be greater than zero.");
             }
 
-            Model.EnemyFactionType = enemyFactionType;
-            Model.PlayerFactionType = playerFactionType;
+            Model.Players = players;
             Model.PlanetType = planetType;
             Model.MapSize = mapSize;
             Model.VictoryCondition = victoryCondition;
-            Model.EnemyDifficulty = enemyDifficulty;
             Model.StartingMoney = startingMoney;
             Model.GameMode = GameMode.Skirmish;
             _sceneService.LoadScene(SceneType.Battle);

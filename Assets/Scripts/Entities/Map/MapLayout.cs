@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
 using UnityEngine;
 
@@ -8,11 +8,11 @@ namespace EmpireAtWar.Entities.Map
     /// <summary>The generated battlefield of one skirmish; immutable once built.</summary>
     public sealed class MapLayout : IMapModelObserver
     {
-        private readonly IReadOnlyDictionary<FactionType, Vector3> _stationPositions;
+        private readonly IReadOnlyDictionary<PlayerId, Vector3> _stationPositions;
 
         public MapLayout(
             Vector2Range sizeRange,
-            IReadOnlyDictionary<FactionType, Vector3> stationPositions,
+            IReadOnlyDictionary<PlayerId, Vector3> stationPositions,
             Vector3 planetPosition,
             IReadOnlyList<ZoneSpot> zones,
             IReadOnlyList<SiteSpot> sites,
@@ -36,9 +36,9 @@ namespace EmpireAtWar.Entities.Map
         public IReadOnlyList<MapLane> Lanes { get; }
         public IReadOnlyList<AsteroidField> Fields { get; }
 
-        public Vector3 GetStationPosition(FactionType factionType)
+        public Vector3 GetStationPosition(PlayerId owner)
         {
-            return _stationPositions[factionType];
+            return _stationPositions[owner];
         }
     }
 }

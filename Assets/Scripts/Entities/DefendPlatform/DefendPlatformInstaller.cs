@@ -1,7 +1,7 @@
 ﻿using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using Zenject;
 
@@ -9,19 +9,21 @@ namespace EmpireAtWar
 {
     public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformData>
     {
-        private PlayerType _playerType;
+        private PlayerId _owner;
+        private bool _isHiddenByLocalFog;
         private DefendPlatformType _defendPlatformType;
 
         [Inject]
-        public void Construct(DefendPlatformType defendPlatformType, PlayerType playerType)
+        public void Construct(DefendPlatformType defendPlatformType, PlayerId owner, ILocalPlayer localPlayer)
         {
+            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
             _defendPlatformType = defendPlatformType;
-            _playerType = playerType;
+            _owner = owner;
         }
 
         protected override void InstallFeatures(DefendPlatformData data)
         {
-            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_owner);
             Container.BindEntityExt(_defendPlatformType);
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
 
@@ -32,7 +34,7 @@ namespace EmpireAtWar
                 .BindWeaponFeature()
                 .BindCombatModifiersFeature()
                 .BindStationaryCombatFeature()
-                .BindFogOfWarFeature(_playerType);
+                .BindFogOfWarFeature(_isHiddenByLocalFog);
         }
     }
 }

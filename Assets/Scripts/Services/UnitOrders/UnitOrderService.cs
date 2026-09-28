@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -193,7 +194,7 @@ namespace EmpireAtWar.Services.UnitOrders
         {
             List<IRetreatFacade> commands = Collect<IRetreatFacade>(receivers);
             if (commands.Count == 0) return;
-            if (!TryGetRetreatPoint(receivers[0].PlayerType, out Vector3 point))
+            if (!TryGetRetreatPoint(receivers[0].Owner, out Vector3 point))
                 throw new InvalidOperationException("No retreat destination exists for the receivers.");
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
@@ -202,12 +203,12 @@ namespace EmpireAtWar.Services.UnitOrders
             Publish(UnitActionId.Retreat, receivers, commands.Count, point);
         }
 
-        private bool TryGetRetreatPoint(EmpireAtWar.Models.Factions.PlayerType side,
+        private bool TryGetRetreatPoint(PlayerId side,
             out Vector3 point)
         {
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.PlayerType != side ||
+                if (entity.Owner != side ||
                     !(entity.Model is ISpaceStationModelObserver) || !IsAlive(entity)) continue;
                 Vector3 station = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_zones.TryGetDefaultZoneCenter(side, out Vector3 zone))
@@ -260,7 +261,7 @@ namespace EmpireAtWar.Services.UnitOrders
             IReadOnlyList<Vector3> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
             if (count > 0)
-                OrderIssued?.Invoke(new UnitOrder(action, receivers[0].PlayerType,
+                OrderIssued?.Invoke(new UnitOrder(action, receivers[0].Owner,
                     point, target, waypoints, targetHardPointId));
         }
     }

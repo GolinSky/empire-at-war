@@ -1,7 +1,6 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
-using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Layer;
@@ -22,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private const int MAX_RECENT_DESTROYED_POSITIONS = 10;
         private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
 
-        private readonly EnemyFactionModel _factionModel;
+        private readonly PlayerSlot _owner;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly IReinforcementZonesSystem _zones;
         private readonly ICaptureSitesSystem _captureSites;
@@ -31,30 +30,30 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
         public EnemyStructurePlacementService(
-            EnemyFactionModel factionModel,
             LazyInject<IMapModelObserver> mapModel,
             IReinforcementZonesSystem zones,
             ICaptureSitesSystem captureSites,
-            ILayerService layerService)
+            ILayerService layerService,
+            PlayerSlot owner)
         {
-            _factionModel = factionModel;
+            _owner = owner;
             _mapModel = mapModel;
             _zones = zones;
             _captureSites = captureSites;
 
-            _obstacleMask = layerService.GetMask(LayerKey.Player, LayerKey.Enemy, LayerKey.Obstacle);
+            _obstacleMask = layerService.GetMask(LayerKey.Unit, LayerKey.Obstacle);
         }
 
         public bool TryGetPosition(out Vector3 position)
         {
             Physics.SyncTransforms();
-            Vector3 station = _mapModel.Value.GetStationPosition(_factionModel.FactionType);
+            Vector3 station = _mapModel.Value.GetStationPosition(_owner.Id);
             if (TryGetPositionNear(station, out position))
             {
                 return true;
             }
 
-            _zones.CopyOwnedCapturableZoneCenters(PlayerType.Opponent, _capturedZoneCenters);
+            _zones.CopyOwnedCapturableZoneCenters(_owner.Id, _capturedZoneCenters);
             foreach (Vector3 center in _capturedZoneCenters)
             {
                 if (TryGetPositionNear(center, out position))

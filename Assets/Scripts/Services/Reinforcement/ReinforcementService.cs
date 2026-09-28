@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Services.Reinforcement
         ILateDisposable, IReinforcementChain, IObserver<BattleResult>
     {
         private readonly ReinforcementModel _model;
+        private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _playerFactionModel;
         private readonly ReinforcementData _data;
         private readonly InputServiceImpl _inputService;
@@ -72,8 +74,10 @@ namespace EmpireAtWar.Services.Reinforcement
             FogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
             IEntityLocator entityLocator,
-            INotifier<BattleResult> battleVictoryNotifier)
+            INotifier<BattleResult> battleVictoryNotifier,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _model = model;
             _playerFactionModel = playerFactionModel;
             _data = data;
@@ -132,7 +136,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
-            bool canSpawn = _entityLocator.IsStationOperational(PlayerType.Player) &&
+            bool canSpawn = _entityLocator.IsStationOperational(_owner.Id) &&
                 _spawnReinforcement.CanSpawn && IsPlacementValid(spawnPosition);
 
             if (canSpawn)
@@ -150,26 +154,26 @@ namespace EmpireAtWar.Services.Reinforcement
             switch (_currentSpawnType)
             {
                 case SpawnType.Ship:
-                    ShipEntity ship = _shipFactory.Create(PlayerType.Player, _currentShipType, spawnPosition);
+                    ShipEntity ship = _shipFactory.Create(_owner.Id, _currentShipType, spawnPosition);
                     ship.OnRelease += HandleShipDestroying;
                     _model.AddUnitCapacity(_currentShipType);
                     break;
                 case SpawnType.Squadron:
                     SquadronType squadronType = _currentSquadronType;
-                    Squadron squadron = _squadronFactory.Create(PlayerType.Player, squadronType,
-                        spawnPosition, _stationFacingService.GetRotation(PlayerType.Player));
+                    Squadron squadron = _squadronFactory.Create(_owner.Id, squadronType,
+                        spawnPosition, _stationFacingService.GetRotation(_owner.Id));
                     squadron.Released += () => _model.RemoveUnitCapacity(squadronType);
                     _model.AddUnitCapacity(squadronType);
                     break;
                 case SpawnType.MiningFacility:
                     MiningFacilityType facilityType = _currentFacilityType;
-                    var facility = _miningFacilityFactory.Create(PlayerType.Player, facilityType, spawnPosition);
+                    var facility = _miningFacilityFactory.Create(_owner.Id, facilityType, spawnPosition);
                     facility.OnRelease += () =>
                         _playerFactionModel.ReleaseStructure<MiningFacilityUnitRequest>(facilityType.ToString());
                     break;
                 case SpawnType.DefendPlatform:
                     DefendPlatformType platformType = _currentPlatformType;
-                    var platform = _defendPlatformFactory.Create(PlayerType.Player, platformType, spawnPosition);
+                    var platform = _defendPlatformFactory.Create(_owner.Id, platformType, spawnPosition);
                     platform.OnRelease += () =>
                         _playerFactionModel.ReleaseStructure<DefendPlatformUnitRequest>(platformType.ToString());
                     break;
@@ -229,7 +233,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(string id)
         {
-            if (_hasBattleEnded || !_entityLocator.IsStationOperational(PlayerType.Player))
+            if (_hasBattleEnded || !_entityLocator.IsStationOperational(_owner.Id))
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;
@@ -286,7 +290,7 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             UnitSpawnView spawnView = Object.Instantiate(prefab);
             spawnView.UpdatePosition(spawnView.Position);
-            spawnView.SetRotation(_stationFacingService.GetRotation(PlayerType.Player));
+            spawnView.SetRotation(_stationFacingService.GetRotation(_owner.Id));
             return spawnView;
         }
 
@@ -299,12 +303,12 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private bool IsPlacementValid(Vector3 position)
         {
-            return _entityLocator.IsStationOperational(PlayerType.Player) &&
+            return _entityLocator.IsStationOperational(_owner.Id) &&
                 (_currentSpawnType == SpawnType.Ship
-                ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position) &&
+                ? _reinforcementZonesSystem.IsPositionInOwnedZone(_owner.Id, position) &&
                   _reinforcementZonesSystem.IsShipSpawnPositionClear(_currentShipType, position)
                 : _currentSpawnType == SpawnType.Squadron
-                ? _reinforcementZonesSystem.IsPositionInOwnedZone(PlayerType.Player, position)
+                ? _reinforcementZonesSystem.IsPositionInOwnedZone(_owner.Id, position)
                 :!_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&
                   !_captureSites.IsPositionInAnySite(position));

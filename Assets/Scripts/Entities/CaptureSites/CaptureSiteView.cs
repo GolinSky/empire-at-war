@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Obstacles;
-using EmpireAtWar.Models.Factions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +29,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private SiteFacilityOptionView[] facilityOptions = Array.Empty<SiteFacilityOptionView>();
         [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
         [SerializeField] private Color playerColor = new Color(0.22f, 0.74f, 0.97f, 0.1f);
+        [SerializeField] private Color allyColor = new Color(0.36f, 0.9f, 0.62f, 0.1f);
         [SerializeField] private Color opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.1f);
         [SerializeField] private Color contestedColor = new Color(1f, 0.75f, 0.1f, 0.14f);
 
@@ -85,10 +86,10 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         public void Render(
-            PlayerType owner,
+            OwnerRelation owner,
             CaptureSiteState state,
             SiteFacilityType facilityType,
-            PlayerType capturingPlayer,
+            OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
             bool isContested)
@@ -113,18 +114,18 @@ namespace EmpireAtWar.Entities.CaptureSites
                 framework.localScale = scale;
             }
 
-            bool isCapturing = capturingPlayer != PlayerType.None;
+            bool isCapturing = capturer != OwnerRelation.Neutral;
             float displayedProgress = isCapturing ? captureProgress
                 : isConstructing ? constructionProgress
-                : owner == PlayerType.None ? 0f
+                : owner == OwnerRelation.Neutral ? 0f
                 : 1f;
             // Sprite-free Images display progress through their rect width.
             progressFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(displayedProgress), 1f);
-            Color progressColor = GetColor(isCapturing ? capturingPlayer : owner, isContested);
+            Color progressColor = GetColor(isCapturing ? capturer : owner, isContested);
             progressColor.a = 0.95f;
             progressFill.color = progressColor;
 
-            statusText.text = GetStatus(owner, state, GetOption(facilityType).DisplayName, capturingPlayer,
+            statusText.text = GetStatus(owner, state, GetOption(facilityType).DisplayName, capturer,
                 captureProgress, constructionProgress, isContested);
         }
 
@@ -166,7 +167,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             BuildPressed?.Invoke(facilityType);
         }
 
-        private Color GetColor(PlayerType owner, bool isContested)
+        private Color GetColor(OwnerRelation owner, bool isContested)
         {
             if (isContested)
             {
@@ -175,17 +176,18 @@ namespace EmpireAtWar.Entities.CaptureSites
 
             return owner switch
             {
-                PlayerType.Player => playerColor,
-                PlayerType.Opponent => opponentColor,
+                OwnerRelation.Own => playerColor,
+                OwnerRelation.Ally => allyColor,
+                OwnerRelation.Enemy => opponentColor,
                 _ => neutralColor
             };
         }
 
         private static string GetStatus(
-            PlayerType owner,
+            OwnerRelation owner,
             CaptureSiteState state,
             string facilityName,
-            PlayerType capturingPlayer,
+            OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
             bool isContested)
@@ -195,22 +197,30 @@ namespace EmpireAtWar.Entities.CaptureSites
                 return "CONTESTED";
             }
 
-            if (capturingPlayer != PlayerType.None)
+            if (capturer != OwnerRelation.Neutral)
             {
                 int capturePercent = Mathf.RoundToInt(Mathf.Clamp01(captureProgress) * 100f);
-                return capturingPlayer == PlayerType.Player
-                    ? $"CAPTURING {capturePercent}%"
-                    : $"ENEMY CAPTURE {capturePercent}%";
+                return capturer switch
+                {
+                    OwnerRelation.Own => $"CAPTURING {capturePercent}%",
+                    OwnerRelation.Ally => $"ALLY CAPTURE {capturePercent}%",
+                    _ => $"ENEMY CAPTURE {capturePercent}%"
+                };
             }
 
-            bool isAllied = owner == PlayerType.Player;
+            string ownerLabel = owner switch
+            {
+                OwnerRelation.Own => "ALLIED",
+                OwnerRelation.Ally => "ALLY",
+                _ => "ENEMY"
+            };
             return state switch
             {
                 CaptureSiteState.Constructing =>
-                    $"{(isAllied ? "BUILDING" : "ENEMY")} {facilityName} " +
+                    $"{(owner == OwnerRelation.Own ? "BUILDING" : ownerLabel)} {facilityName} " +
                     $"{Mathf.RoundToInt(Mathf.Clamp01(constructionProgress) * 100f)}%",
-                CaptureSiteState.Operational => isAllied ? $"ALLIED {facilityName}" : $"ENEMY {facilityName}",
-                CaptureSiteState.Owned => isAllied ? "ALLIED SITE - SELECT TO BUILD" : "ENEMY SITE",
+                CaptureSiteState.Operational => $"{ownerLabel} {facilityName}",
+                CaptureSiteState.Owned => owner == OwnerRelation.Own ? "ALLIED SITE - SELECT TO BUILD" : $"{ownerLabel} SITE",
                 _ => "NEUTRAL SITE"
             };
         }

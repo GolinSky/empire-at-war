@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 7194699224708189319}
   - component: {fileID: 4166981062735255513}
   - component: {fileID: 122418962115332479}
+  - component: {fileID: 637827819061471777}
   m_Layer: 0
   m_Name: MunificentShipView
   m_TagString: Untagged
@@ -429,6 +430,27 @@ MonoBehaviour:
   - {fileID: 7249564750223754445}
   - {fileID: 2332046382789699452}
   - {fileID: 5076323153315440972}
+--- !u!114 &637827819061471777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5651266934280829786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 894832207088223828}
+  - {fileID: 6865471333153544608}
+  - {fileID: 3266166978511449973}
+  - {fileID: 3485545602505991803}
+  - {fileID: 3784444074786861726}
+  - {fileID: 7816365578834819367}
+  - {fileID: 8112101386715020215}
+  - {fileID: 3679682056592292513}
 --- !u!1 &6988587151254960236
 GameObject:
   m_ObjectHideFlags: 0

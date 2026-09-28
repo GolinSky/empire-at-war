@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.MiniMap;
@@ -16,8 +17,7 @@ namespace EmpireAtWar.Models.MiniMap
         
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
-        MarkData PlayerBase { get; }
-        MarkData EnemyBase { get; }
+        IReadOnlyList<BaseMarkData> Bases { get; }
         CameraMarkData CameraMark { get;}
         IReadOnlyList<MiniMapMarker> Markers { get; }
         IReadOnlyList<MiniMapObstacle> Obstacles { get; }
@@ -32,13 +32,13 @@ namespace EmpireAtWar.Models.MiniMap
         public event Action<MiniMapMarker> OnMarkerAdded;
         public event Action<MiniMapMarker> OnMarkerRemoved;
         public Vector2Range MapRange { get; set; }
-        public MarkData PlayerBase { get; private set; }
-        public MarkData EnemyBase { get; private set; }
+        public IReadOnlyList<BaseMarkData> Bases => _bases;
         public CameraMarkData CameraMark { get; } = new CameraMarkData();
         public IReadOnlyList<MiniMapMarker> Markers => _markers;
         public IReadOnlyList<MiniMapObstacle> Obstacles => _obstacles;
 
         private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
+        private readonly List<BaseMarkData> _bases = new List<BaseMarkData>();
         private readonly List<MiniMapObstacle> _obstacles = new List<MiniMapObstacle>();
 
         [field:SerializeField] public DictionaryWrapper<MarkType, Sprite> MarkWrapper { get; private set; }
@@ -46,18 +46,21 @@ namespace EmpireAtWar.Models.MiniMap
 
         public bool IsInputBlocked { get; set; }
 
+        // The asset outlives a battle in the Editor, so every battle starts from an empty list.
+        public void ClearBases()
+        {
+            _bases.Clear();
+        }
+
+        public void AddBase(Vector3 position, OwnerRelation relation)
+        {
+            MarkType iconType = relation == OwnerRelation.Enemy ? MarkType.EnemyBase : MarkType.PlayerBase;
+            _bases.Add(new BaseMarkData(position, GetIcon(iconType), relation));
+        }
+
         public void AddMark(MarkType markType, Vector3 position)
         {
             Sprite icon = GetIcon(markType);
-            switch (markType)
-            {
-                case MarkType.PlayerBase:
-                    PlayerBase = new MarkData(position, icon);
-                    return;
-                case MarkType.EnemyBase:
-                    EnemyBase = new MarkData(position, icon);
-                    return;
-            }
             OnMarkAdded?.Invoke(new MarkData(position, icon));
         }
 

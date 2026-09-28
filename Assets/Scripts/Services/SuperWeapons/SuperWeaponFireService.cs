@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.SuperWeapons
     public sealed class SuperWeaponFireService : ISuperWeaponFireService, ITickable, ILateDisposable
     {
         private readonly SuperWeaponData _data;
+        private readonly IPlayerRelations _relations;
         private readonly ImpactEffectPresenter _impactPresenter;
         private readonly IEntityLocator _entities;
         private readonly ISuperWeaponOrigin _origin;
@@ -28,17 +29,19 @@ namespace EmpireAtWar.Services.SuperWeapons
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
         public SuperWeaponFireService(SuperWeaponData data, ImpactEffectPresenter impactPresenter,
-            IEntityLocator entities, ISuperWeaponOrigin origin)
+            IEntityLocator entities, ISuperWeaponOrigin origin,
+            IPlayerRelations relations)
         {
+            _relations = relations;
             _data = data;
             _impactPresenter = impactPresenter;
             _entities = entities;
             _origin = origin;
         }
 
-        public bool CanTarget(PlayerType owner, IEntity target)
+        public bool CanTarget(PlayerId owner, IEntity target)
         {
-            return target != null && target.PlayerType != owner && target.PlayerType != PlayerType.None &&
+            return target != null && _relations.IsHostile(owner, target.Owner) &&
                    !target.HealthModel.IsDestroyed && target.HealthModel.HasUnits &&
                    target.HealthModel.ShipClass != ShipClass.Fighter &&
                    target.HealthModel.ShipClass != ShipClass.Bomber &&
@@ -161,7 +164,8 @@ namespace EmpireAtWar.Services.SuperWeapons
             _areaTargets.Clear();
             foreach (IEntity entity in _entities.Entities)
             {
-                if (entity == target || entity.PlayerType != target.PlayerType ||
+                // The blast hits the target's whole team, never the shooter's side.
+                if (entity == target || !_relations.IsAllied(entity.Owner, target.Owner) ||
                     entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
                     Vector3.Distance(center, entity.GetFacade<IEntityTransformFacade>().Transform.position) > profile.AreaRadius)
                     continue;

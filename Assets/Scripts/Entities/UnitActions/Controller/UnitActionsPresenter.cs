@@ -5,7 +5,6 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.ShipAbilities;
@@ -71,7 +70,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         public void UpdateState(ISelectionSubject subject)
         {
-            if (subject.UpdatedType != PlayerType.Player) return;
+            if (subject.UpdatedScope != SelectionScope.Local) return;
             _targeting.Cancel();
             RefreshAvailability();
         }

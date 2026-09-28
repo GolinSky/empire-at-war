@@ -170,8 +170,7 @@ namespace EmpireAtWar.Tests.Editor
             LayerData layerData = AssetDatabase.LoadAssetAtPath<LayerData>(LAYER_DATA_PATH);
             Assert.That(layerData, Is.Not.Null, LAYER_DATA_PATH);
 
-            AssertSingleLayer(layerData.PlayerLayerMask, nameof(layerData.PlayerLayerMask));
-            AssertSingleLayer(layerData.EnemyLayerMask, nameof(layerData.EnemyLayerMask));
+            AssertSingleLayer(layerData.UnitLayerMask, nameof(layerData.UnitLayerMask));
             AssertSingleLayer(layerData.ObstacleLayerMask, nameof(layerData.ObstacleLayerMask));
             AssertSingleLayer(layerData.DeadLayerMask, nameof(layerData.DeadLayerMask));
             Assert.That(LayerMask.NameToLayer("UI"), Is.GreaterThanOrEqualTo(0), "UI layer");

@@ -1,4 +1,8 @@
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.SceneContext;
+using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Player;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
@@ -44,6 +48,7 @@ public class SkirmishMainInstaller : MonoInstaller
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [SerializeField] private UnitOrderSettings unitOrderSettings;
+    [SerializeField] private TeamColorPalette teamColorPalette;
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IAssetService Repository { get; }
 
@@ -77,10 +82,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesExt<EntityLocator>();
         Container.BindInterfacesExt<SquadronLauncher>();
         
-        
-        //todo: use GameModelObserver.PlayerFactionType directly
-        Container.Bind<FactionType>().WithId(PlayerType.Player).FromMethod(GetPlayerFactionType);
-        Container.Bind<FactionType>().WithId(PlayerType.Opponent).FromMethod(GetEnemyFactionType);
+
+        BindPlayers();
         
         Container.BindModel<MenuData>(Repository);
         Container.BindInterfacesNonLazyExt<MenuController>();
@@ -135,13 +138,36 @@ public class SkirmishMainInstaller : MonoInstaller
 
     }
 
-    private FactionType GetPlayerFactionType()
+    private void BindPlayers()
     {
-        return GameModelObserver.PlayerFactionType;
+        PlayerRoster roster = new PlayerRoster(GameModelObserver.Players);
+        Container.Bind(typeof(IPlayerRoster), typeof(IPlayerRelations)).FromInstance(roster).AsSingle();
+        Container.Bind<ILocalPlayer>().To<LocalPlayer>().AsSingle();
+        Container.Bind<IPlayerRegistry>().To<PlayerRegistry>().AsSingle();
+        Container.Bind<TeamColorPalette>().FromInstance(teamColorPalette).AsSingle();
+        Container.BindInterfacesTo<TeamColorService>().AsSingle();
+
+        // The human context is placed in the scene; every AI gets its own sub-container on a new GameObject.
+        foreach (PlayerSlot slot in roster.Players)
+        {
+            if (!slot.IsAi)
+            {
+                continue;
+            }
+
+            Container.Bind<IEnemyService>()
+                .WithId(slot.Id)
+                .FromSubContainerResolve()
+                .ByNewGameObjectMethod(subContainer => InstallAiPlayer(subContainer, slot))
+                .WithGameObjectName($"AiPlayer{slot.Id.Index}")
+                .AsCached()
+                .NonLazy();
+        }
     }
 
-    private FactionType GetEnemyFactionType()
+    private static void InstallAiPlayer(DiContainer subContainer, PlayerSlot slot)
     {
-        return GameModelObserver.EnemyFactionType;
+        subContainer.BindInstance(slot);
+        AiPlayerInstaller.Install(subContainer);
     }
 }

@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Views.ReinforcementZones;
 
@@ -8,24 +8,29 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
     {
         private readonly ReinforcementZoneModel _model;
         private readonly IReinforcementZoneView _view;
+        private readonly ILocalPlayer _localPlayer;
 
-        public ReinforcementZonePresenter(ReinforcementZoneModel model, IReinforcementZoneView view)
+        public ReinforcementZonePresenter(
+            ReinforcementZoneModel model,
+            IReinforcementZoneView view,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _model = model;
             _view = view;
             Render();
             SetVisibility(false, false);
         }
 
-        public PlayerType Owner => _model.Owner;
+        public PlayerId Owner => _model.Owner;
         public bool IsCapturable => _view.IsCapturable;
         public bool IsRevealed { get; private set; }
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
 
-        public bool Tick(float deltaTime, float playerStrength, float opponentStrength)
+        public bool Tick(float deltaTime, CaptureTally tally)
         {
-            bool ownerChanged = _model.Tick(deltaTime, playerStrength, opponentStrength);
+            bool ownerChanged = _model.Tick(deltaTime, tally);
             Render();
             return ownerChanged;
         }
@@ -34,7 +39,7 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         {
             IsRevealed = isRevealed;
             bool showCaptureUi = IsCapturable &&
-                (isHovered || _model.CapturingPlayer != PlayerType.None || _model.IsContested);
+                (isHovered || _model.CapturingPlayer != PlayerId.None || _model.IsContested);
             _view.SetVisibility(true, isRevealed && showCaptureUi);
         }
 
@@ -47,7 +52,11 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
 
         private void Render()
         {
-            _view.Render(_model.Owner, _model.CapturingPlayer, _model.CaptureProgress, _model.IsContested);
+            _view.Render(
+                _localPlayer.GetRelation(_model.Owner),
+                _localPlayer.GetRelation(_model.CapturingPlayer),
+                _model.CaptureProgress,
+                _model.IsContested);
         }
     }
 }

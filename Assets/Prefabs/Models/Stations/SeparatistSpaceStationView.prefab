@@ -327,6 +327,7 @@ GameObject:
   - component: {fileID: 7452272234364217738}
   - component: {fileID: 1883335095933476815}
   - component: {fileID: 9157349104637764079}
+  - component: {fileID: 2249092079602960465}
   m_Layer: 0
   m_Name: SeparatistSpaceStationView
   m_TagString: Untagged
@@ -510,6 +511,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
   launchPoint: {fileID: 2905650185782976014}
   hangarHardPoint: {fileID: 1620864998972290866}
+--- !u!114 &2249092079602960465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8914769984232844324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 5779169953484096173}
 --- !u!1001 &497502350874413966
 PrefabInstance:
   m_ObjectHideFlags: 0

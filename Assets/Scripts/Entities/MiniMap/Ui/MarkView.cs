@@ -1,5 +1,5 @@
 ﻿using DG.Tweening;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
 using UnityEngine;
 using UnityEngine.UI;
@@ -67,6 +67,17 @@ namespace EmpireAtWar.Views.MiniMap
             }
         }
 
+        public static Color GetRelationColor(OwnerRelation relation)
+        {
+            return relation switch
+            {
+                OwnerRelation.Own => new Color(0.15f, 0.65f, 1f),
+                OwnerRelation.Ally => new Color(0.3f, 0.9f, 0.5f),
+                OwnerRelation.Enemy => new Color(1f, 0.2f, 0.15f),
+                _ => new Color(0.7f, 0.7f, 0.7f),
+            };
+        }
+
         private void RefreshMarker()
         {
             rectTransform.anchoredPosition = _miniMapPositionConvector.GetPosition(
@@ -76,12 +87,7 @@ namespace EmpireAtWar.Views.MiniMap
                 rectTransform.sizeDelta = _miniMapPositionConvector.GetSize(_marker.WorldDiameter) * ZONE_SIZE_SCALE;
             }
 
-            Color color = _marker.Relation switch
-            {
-                PlayerType.Player => new Color(0.15f, 0.65f, 1f),
-                PlayerType.Opponent => new Color(1f, 0.2f, 0.15f),
-                _ => new Color(0.7f, 0.7f, 0.7f),
-            };
+            Color color = GetRelationColor(_marker.Relation);
             color.a = iconImage.color.a;
             iconImage.color = color;
             iconImage.enabled = _marker.Visible;

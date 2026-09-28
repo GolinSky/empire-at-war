@@ -1,11 +1,11 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.StationFacing;
@@ -31,13 +31,15 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private CombatModifiers _modifiers;
         private Vector3 _startPosition;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
         private IShipNavigationService _shipNavigationService;
         private FogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
+        private ILocalPlayer _localPlayer;
+        private bool _sharesLocalVision;
         private ShipMovementTweenPlayer _motion;
         private readonly List<RadarContact> _navigationContacts = new List<RadarContact>();
         private bool _isNavigationRegistered;
@@ -58,22 +60,24 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         [Inject]
         private void Construct(ShipMoveModel model,
-            Vector3 startPosition, PlayerType playerType, IMapModelObserver mapModel,
+            Vector3 startPosition, PlayerId owner, IMapModelObserver mapModel,
             IStationFacingService stationFacingService,
             IShipNavigationService shipNavigationService, FogOfWarSystem fogOfWarSystem,
-            IRadarModelObserver radarModel, CombatModifiers modifiers, IWeaponFacing weaponFacing)
+            IRadarModelObserver radarModel, CombatModifiers modifiers, IWeaponFacing weaponFacing,
+            ILocalPlayer localPlayer)
         {
             _weaponFacing = weaponFacing;
             SetModel(model);
             _modifiers = modifiers;
             startPosition.y = Model.Height;
             _startPosition = startPosition;
-            _playerType = playerType;
+            _owner = owner;
             _mapModel = mapModel;
             _stationFacingService = stationFacingService;
             _shipNavigationService = shipNavigationService;
             _fogOfWarSystem = fogOfWarSystem;
             _radarModel = radarModel;
+            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -90,15 +94,17 @@ namespace EmpireAtWar.Components.Ship.Movement
                 throw new InvalidOperationException("No clear ship spawn position is available on the map.");
             _startPosition = resolvedPosition;
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(),
-                _stationFacingService.GetRotation(_playerType).ToNumerics(),
-                _playerType == PlayerType.Player);
+                _stationFacingService.GetRotation(_owner).ToNumerics(),
+                _localPlayer.IsLocal(_owner));
             transform.SetPositionAndRotation(Model.JumpPosition.ToUnity(),
                 Model.StartRotation.ToUnity());
             _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
             _isNavigationRegistered = true;
             _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
                 Model.HyperSpaceDuration, FinishHyperSpaceJump);
-            if (_playerType == PlayerType.Player)
+            // Allies share vision, so their ships reveal the local fog too.
+            _sharesLocalVision = _localPlayer.IsFriendly(_owner);
+            if (_sharesLocalVision)
                 _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
         }
 
@@ -115,7 +121,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Unregister(this);
                 _isNavigationRegistered = false;
             }
-            if (_playerType == PlayerType.Player)
+            if (_sharesLocalVision)
                 _fogOfWarSystem.UnregisterVisionSource(transform);
             _motion.Release();
         }

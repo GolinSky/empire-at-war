@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Random = System.Random;
 
@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.Map.Generation
     {
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
+        private const float MIRROR_TOLERANCE = 1f;
 
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             if (size.CapturableZoneCount % 2 == 1)
             {
                 MapNode centralZone = new MapNode(
-                    MapNodeKind.CapturableZone, center, _radii.Zone, PlayerType.None);
+                    MapNodeKind.CapturableZone, center, _radii.Zone, PlayerId.None);
                 if (!IsClear(center, GetOuterRadius(centralZone, size), size, stations, nodes))
                 {
                     return false;
@@ -98,8 +99,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 nodes.Add(new MapNode(MapNodeKind.DefaultZone, position, _radii.Zone, station.Owner));
             }
 
-            nodes[0].Mirror = 1;
-            nodes[1].Mirror = 0;
+            PairWithMirroredStations(stations, center, 0, nodes);
         }
 
         private bool TryAddHomeMining(
@@ -133,12 +133,41 @@ namespace EmpireAtWar.Entities.Map.Generation
                     return false;
                 }
 
-                nodes.Add(new MapNode(MapNodeKind.MiningSite, position, _radii.MiningSite, PlayerType.None));
+                nodes.Add(new MapNode(MapNodeKind.MiningSite, position, _radii.MiningSite, PlayerId.None));
             }
 
-            nodes[firstIndex].Mirror = firstIndex + 1;
-            nodes[firstIndex + 1].Mirror = firstIndex;
+            PairWithMirroredStations(stations, center, firstIndex, nodes);
             return true;
+        }
+
+        /// <summary>
+        /// Links the per-station nodes starting at <paramref name="firstIndex"/> the same way point
+        /// symmetry links their stations. A station without a reflected twin (three players) mirrors itself.
+        /// </summary>
+        private static void PairWithMirroredStations(
+            IReadOnlyList<MapStation> stations,
+            Vector3 center,
+            int firstIndex,
+            List<MapNode> nodes)
+        {
+            for (int i = 0; i < stations.Count; i++)
+            {
+                nodes[firstIndex + i].Mirror = firstIndex + FindMirroredStation(stations, center, i);
+            }
+        }
+
+        private static int FindMirroredStation(IReadOnlyList<MapStation> stations, Vector3 center, int index)
+        {
+            Vector3 reflected = MapGeometry.Reflect(stations[index].Position, center);
+            for (int i = 0; i < stations.Count; i++)
+            {
+                if (i != index && MapGeometry.Distance(stations[i].Position, reflected) < MIRROR_TOLERANCE)
+                {
+                    return i;
+                }
+            }
+
+            return index;
         }
 
         private bool TryAddPairs(
@@ -165,8 +194,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 int index = nodes.Count;
-                nodes.Add(new MapNode(kind, position, radius, PlayerType.None) { Mirror = index + 1 });
-                nodes.Add(new MapNode(kind, MapGeometry.Reflect(position, center), radius, PlayerType.None) { Mirror = index });
+                nodes.Add(new MapNode(kind, position, radius, PlayerId.None) { Mirror = index + 1 });
+                nodes.Add(new MapNode(kind, MapGeometry.Reflect(position, center), radius, PlayerId.None) { Mirror = index });
             }
 
             return true;

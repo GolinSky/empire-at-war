@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using System.Linq;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Audio;
@@ -71,7 +72,7 @@ namespace EmpireAtWar.Services.Audio
 
         private void PlayMusic(SceneType sceneType)
         {
-            _clips = _musicAudioModel.GetMusicList(sceneType, _gameModelObserver.PlayerFactionType);
+            _clips = _musicAudioModel.GetMusicList(sceneType, MatchRules.FindHuman(_gameModelObserver.Players).Faction);
             if (_isMusicPlaying)
             {
                 _isFadingOut = true;

@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
@@ -12,20 +13,20 @@ namespace EmpireAtWar.SpaceStation
     public class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationData>
     {
         private FactionType _factionType;
-        private PlayerType _playerType;
+        private PlayerId _owner;
 
         protected override string PrefabPath => _factionType + base.PrefabPath;
 
         [Inject]
-        public void Construct(FactionType factionType, PlayerType playerType)
+        public void Construct(FactionType factionType, PlayerId owner)
         {
             _factionType = factionType;
-            _playerType = playerType;
+            _owner = owner;
         }
 
         protected override void InstallFeatures(SpaceStationData data)
         {
-            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_owner);
             Container.BindEntityExt(_factionType);
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
 

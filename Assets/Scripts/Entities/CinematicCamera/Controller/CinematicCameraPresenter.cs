@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CinematicCamera.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Ui.Base;
@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IEntityLocator _entityLocator;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly ISkirmishSessionModelObserver _sessionModel;
+        private readonly ILocalPlayer _localPlayer;
         private readonly CinematicActivityTracker _activityTracker = new();
         private readonly CinematicInterestScorer _scorer;
         private readonly CinematicShotSequencer _sequencer;
@@ -56,7 +57,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             IUiService uiService,
             IEntityLocator entityLocator,
             FogOfWarSystem fogOfWarSystem,
-            ISkirmishSessionModelObserver sessionModel)
+            ISkirmishSessionModelObserver sessionModel,
+            IPlayerRoster roster,
+            ILocalPlayer localPlayer)
         {
             _model = model;
             _settings = cameraData.Cinematic;
@@ -66,9 +69,10 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _entityLocator = entityLocator;
             _fogOfWarSystem = fogOfWarSystem;
             _sessionModel = sessionModel;
+            _localPlayer = localPlayer;
 
             Random random = new Random();
-            _scorer = new CinematicInterestScorer(_settings, random);
+            _scorer = new CinematicInterestScorer(_settings, random, roster);
             _sequencer = new CinematicShotSequencer(random, _settings.MinShotDuration, _settings.MaxShotDuration);
         }
 
@@ -211,7 +215,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (entity.PlayerType != PlayerType.Player && _fogOfWarSystem.IsHidden(position))
+                if (!_localPlayer.IsFriendly(entity.Owner) && _fogOfWarSystem.IsHidden(position))
                 {
                     continue;
                 }
@@ -220,7 +224,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                     entity.Id,
                     position.ToNumerics(),
                     entity.HealthModel.ShipClass,
-                    entity.PlayerType,
+                    entity.Owner,
                     _activityTracker.GetSecondsSinceDamaged(entity.Id, time)));
             }
         }

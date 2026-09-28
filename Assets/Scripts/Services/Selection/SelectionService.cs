@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -23,20 +24,25 @@ namespace EmpireAtWar.Services.Battle
         private readonly List<IObserver<ISelectionSubject>> _observers =
             new List<IObserver<ISelectionSubject>>();
         private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
-        private readonly SelectionContext _playerSelectionContext = new SelectionContext(PlayerType.Player);
-        private readonly SelectionContext _enemySelectionContext = new SelectionContext(PlayerType.Opponent);
+        private readonly SelectionContext _playerSelectionContext;
+        private readonly SelectionContext _otherSelectionContext;
+        private readonly ILocalPlayer _localPlayer;
         private long? _lastTappedEntityId;
 
         public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
-        public ISelectionContext EnemySelectionContext => _enemySelectionContext;
-        public PlayerType UpdatedType { get; private set; }
+        public ISelectionContext OtherSelectionContext => _otherSelectionContext;
+        public SelectionScope UpdatedScope { get; private set; }
 
         public SelectionService(
             IInputService inputService,
             IEntityLocator entityLocator,
             ISelectionQuery selectionQuery,
-            IMarqueeSelectionPresenter marqueeSelectionPresenter)
+            IMarqueeSelectionPresenter marqueeSelectionPresenter,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
+            _playerSelectionContext = new SelectionContext(SelectionScope.Local, localPlayer);
+            _otherSelectionContext = new SelectionContext(SelectionScope.Other, localPlayer);
             _inputService = inputService;
             _entityLocator = entityLocator;
             _selectionQuery = selectionQuery;
@@ -60,7 +66,7 @@ namespace EmpireAtWar.Services.Battle
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _playerSelectionContext.ResetCurrentSelectable();
-            _enemySelectionContext.ResetCurrentSelectable();
+            _otherSelectionContext.ResetCurrentSelectable();
         }
 
         public void RemoveSelectable(ISelectionContext context)
@@ -70,7 +76,7 @@ namespace EmpireAtWar.Services.Battle
                 return;
             }
 
-            ClearSelection(context.PlayerType);
+            ClearSelection(context.Scope);
         }
 
         public void SelectCurrentShipsByType(ShipType shipType)
@@ -93,7 +99,7 @@ namespace EmpireAtWar.Services.Battle
             }
 
             _lastTappedEntityId = null;
-            SetSelection(PlayerType.Player, _selectionBuffer);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
         public void SelectCurrentSquadronsByType(SquadronType squadronType)
@@ -116,7 +122,7 @@ namespace EmpireAtWar.Services.Battle
             }
 
             _lastTappedEntityId = null;
-            SetSelection(PlayerType.Player, _selectionBuffer);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
         private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
@@ -140,17 +146,17 @@ namespace EmpireAtWar.Services.Battle
             bool isRepeatedTap = _lastTappedEntityId == selection.Entity.Id;
             _lastTappedEntityId = selection.Entity.Id;
             if (isRepeatedTap &&
-                selection.Entity.PlayerType == PlayerType.Player &&
+                _localPlayer.IsLocal(selection.Entity.Owner) &&
                 _inputService.TapCount >= 2 &&
                 TryCollectSameShipType(selection))
             {
-                SetSelection(selection.Entity.PlayerType, _selectionBuffer);
+                SetSelection(GetScope(selection.Entity), _selectionBuffer);
                 return;
             }
 
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
-            SetSelection(selection.Entity.PlayerType, _selectionBuffer);
+            SetSelection(GetScope(selection.Entity), _selectionBuffer);
         }
 
         private bool TryCollectSameShipType(SelectionEntry selection)
@@ -165,7 +171,7 @@ namespace EmpireAtWar.Services.Battle
             _lastTappedEntityId = null;
             _selectionBuffer.Clear();
             _selectionQuery.CollectInside(rectangle, _selectionBuffer);
-            SetSelection(PlayerType.Player, _selectionBuffer);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
         private void HandleSelectAllUnitsPressed()
@@ -174,7 +180,7 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionQuery.CollectAllPlayerUnits(_selectionBuffer);
             ResetAllSelections();
-            SetSelection(PlayerType.Player, _selectionBuffer);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
         private void HandleSelectVisibleUnitsPressed()
@@ -183,43 +189,31 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionQuery.CollectVisiblePlayerUnits(_selectionBuffer);
             ResetAllSelections();
-            SetSelection(PlayerType.Player, _selectionBuffer);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
-        private void SetSelection(PlayerType playerType, IReadOnlyList<SelectionEntry> selection)
+        private void SetSelection(SelectionScope scope, IReadOnlyList<SelectionEntry> selection)
         {
-            SelectionContext context = GetContext(playerType);
-            if (context == null)
-            {
-                return;
-            }
-
-            context.Replace(selection);
-            NotifyObservers(playerType);
+            GetContext(scope).Replace(selection);
+            NotifyObservers(scope);
         }
 
-        private void ClearSelection(PlayerType playerType)
+        private void ClearSelection(SelectionScope scope)
         {
-            SelectionContext context = GetContext(playerType);
-            if (context == null)
-            {
-                return;
-            }
-
-            context.ResetCurrentSelectable();
-            NotifyObservers(playerType);
+            GetContext(scope).ResetCurrentSelectable();
+            NotifyObservers(scope);
         }
 
         private void ResetAllSelections()
         {
             if (_playerSelectionContext.HasSelectable)
             {
-                ClearSelection(PlayerType.Player);
+                ClearSelection(SelectionScope.Local);
             }
 
-            if (_enemySelectionContext.HasSelectable)
+            if (_otherSelectionContext.HasSelectable)
             {
-                ClearSelection(PlayerType.Opponent);
+                ClearSelection(SelectionScope.Other);
             }
         }
 
@@ -230,29 +224,26 @@ namespace EmpireAtWar.Services.Battle
                 _lastTappedEntityId = null;
             }
 
-            SelectionContext context = GetContext(entity.PlayerType);
-            if (context != null && context.Remove(entity))
+            SelectionScope scope = GetScope(entity);
+            if (GetContext(scope).Remove(entity))
             {
-                NotifyObservers(entity.PlayerType);
+                NotifyObservers(scope);
             }
         }
 
-        private SelectionContext GetContext(PlayerType playerType)
+        private SelectionScope GetScope(IEntity entity)
         {
-            switch (playerType)
-            {
-                case PlayerType.Player:
-                    return _playerSelectionContext;
-                case PlayerType.Opponent:
-                    return _enemySelectionContext;
-                default:
-                    return null;
-            }
+            return _localPlayer.IsLocal(entity.Owner) ? SelectionScope.Local : SelectionScope.Other;
         }
 
-        private void NotifyObservers(PlayerType playerType)
+        private SelectionContext GetContext(SelectionScope scope)
         {
-            UpdatedType = playerType;
+            return scope == SelectionScope.Local ? _playerSelectionContext : _otherSelectionContext;
+        }
+
+        private void NotifyObservers(SelectionScope scope)
+        {
+            UpdatedScope = scope;
             for (int i = 0; i < _observers.Count; i++)
             {
                 _observers[i].UpdateState(this);

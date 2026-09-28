@@ -1,49 +1,43 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Services.StationFacing
 {
     public interface IStationFacingService
     {
-        Quaternion GetRotation(PlayerType playerType);
+        Quaternion GetRotation(PlayerId owner);
     }
 
+    /// <summary>Every station, and the units it launches, faces the map center where the players meet.</summary>
     public sealed class StationFacingService : IStationFacingService
     {
-        private readonly Quaternion _playerRotation;
-        private readonly Quaternion _opponentRotation;
+        private readonly Dictionary<PlayerId, Quaternion> _rotations = new Dictionary<PlayerId, Quaternion>();
 
-        public StationFacingService(
-            IMapModelObserver mapModel,
-            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
-            [Inject(Id = PlayerType.Opponent)] FactionType opponentFactionType)
+        public StationFacingService(IMapModelObserver mapModel, IPlayerRoster roster)
         {
-
-            Vector3 playerToOpponent =
-                mapModel.GetStationPosition(opponentFactionType) -
-                mapModel.GetStationPosition(playerFactionType);
-            playerToOpponent.y = 0f;
-            if (playerToOpponent.sqrMagnitude <= Mathf.Epsilon)
+            Vector3 center = new Vector3(
+                (mapModel.SizeRange.Min.x + mapModel.SizeRange.Max.x) * 0.5f,
+                0f,
+                (mapModel.SizeRange.Min.y + mapModel.SizeRange.Max.y) * 0.5f);
+            foreach (PlayerSlot player in roster.Players)
             {
-                throw new InvalidOperationException(
-                    "Player and opponent stations must have different horizontal positions.");
-            }
+                Vector3 toCenter = center - mapModel.GetStationPosition(player.Id);
+                toCenter.y = 0f;
+                if (toCenter.sqrMagnitude <= Mathf.Epsilon)
+                {
+                    throw new InvalidOperationException($"The station of {player.Id} sits on the map center.");
+                }
 
-            _playerRotation = Quaternion.LookRotation(playerToOpponent, Vector3.up);
-            _opponentRotation = Quaternion.LookRotation(-playerToOpponent, Vector3.up);
+                _rotations.Add(player.Id, Quaternion.LookRotation(toCenter, Vector3.up));
+            }
         }
 
-        public Quaternion GetRotation(PlayerType playerType)
+        public Quaternion GetRotation(PlayerId owner)
         {
-            return playerType switch
-            {
-                PlayerType.Player => _playerRotation,
-                PlayerType.Opponent => _opponentRotation,
-                _ => throw new ArgumentOutOfRangeException(nameof(playerType), playerType, null)
-            };
+            return _rotations[owner];
         }
     }
 }

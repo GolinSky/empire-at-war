@@ -31,9 +31,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         {
             MapLayout layout = new MapLayoutGenerator(settings, mapLayoutView.FeatureRadii).Generate(
                 GameModel.MapSize,
-                GameModel.EnemyDifficulty,
-                GameModel.PlayerFactionType,
-                GameModel.EnemyFactionType,
+                GameModel.Players,
                 new Random());
             mapLayoutView.Build(layout);
 

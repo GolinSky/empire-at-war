@@ -10194,6 +10194,7 @@ GameObject:
   - component: {fileID: 9099343971920931525}
   - component: {fileID: 1115088912326920354}
   - component: {fileID: 1283754632722916796}
+  - component: {fileID: 7532020912885601778}
   m_Layer: 0
   m_Name: VenatorShipView
   m_TagString: Untagged
@@ -10497,6 +10498,30 @@ MonoBehaviour:
   - {fileID: 6852928509335582908}
   - {fileID: 5054377183115151904}
   - {fileID: 810153685434030957}
+--- !u!114 &7532020912885601778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 3156991302101039615}
+  - {fileID: 910652348408526127}
+  - {fileID: 8143812027280813905}
+  - {fileID: 8073762314301974062}
+  - {fileID: 7504021556642263889}
+  - {fileID: 1191454270007629787}
+  - {fileID: 6080055043469353044}
+  - {fileID: 4297702259995321763}
+  - {fileID: 7256676803284391210}
+  - {fileID: 3016675454295695116}
+  - {fileID: 2561499397476259715}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0

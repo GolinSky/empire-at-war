@@ -1,11 +1,12 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map.Generation
 {
     public readonly struct MapStation
     {
-        public MapStation(FactionType faction, PlayerType owner, Vector3 position, float radius)
+        public MapStation(FactionType faction, PlayerId owner, Vector3 position, float radius)
         {
             Faction = faction;
             Owner = owner;
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         }
 
         public FactionType Faction { get; }
-        public PlayerType Owner { get; }
+        public PlayerId Owner { get; }
         public Vector3 Position { get; }
         public float Radius { get; }
     }

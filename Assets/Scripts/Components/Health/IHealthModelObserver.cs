@@ -1,6 +1,6 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Health
@@ -22,6 +22,6 @@ namespace EmpireAtWar.Models.Health
         bool HasLiveHardPoints { get; }
         bool HasShields { get; }
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
-        PlayerType PlayerType { get; }
+        PlayerId Owner { get; }
     }
 }

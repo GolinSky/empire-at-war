@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
@@ -83,7 +83,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasUnits => true;
             public bool HasLiveHardPoints => true;
             public bool HasShields => false;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
         }
 

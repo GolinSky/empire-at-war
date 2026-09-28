@@ -127,7 +127,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public void UpdateState(ISelectionSubject subject)
         {
-            if (subject.UpdatedType != PlayerType.Player)
+            if (subject.UpdatedScope != SelectionScope.Local)
             {
                 return;
             }

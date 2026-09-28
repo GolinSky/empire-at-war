@@ -25,7 +25,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 DiContainer parent = new DiContainer();
-                parent.Bind<FactionType>().WithId(PlayerType.Player).FromInstance(factionType);
+                parent.Bind<FactionType>().WithId(TestPlayers.Human).FromInstance(factionType);
                 parent.Bind<FactionsData>().FromInstance(factionsData);
                 DiContainer container = parent.CreateSubContainer();
                 container.Bind<IAssetService>().FromInstance(assets);

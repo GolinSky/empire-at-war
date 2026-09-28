@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
@@ -7,7 +8,6 @@ using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using Zenject;
@@ -18,23 +18,25 @@ namespace EmpireAtWar.Entities.Squadrons
     public sealed class SquadronInstaller : DynamicEntityInstaller<Squadron, SquadronData>
     {
         private SquadronType _squadronType;
-        private PlayerType _playerType;
+        private PlayerId _owner;
+        private bool _isHiddenByLocalFog;
         private Quaternion _startRotation;
 
         protected override string DataPath => _squadronType + base.DataPath;
         protected override string PrefabPath => _squadronType + base.PrefabPath;
 
         [Inject]
-        public void Construct(PlayerType playerType, SquadronType squadronType, Quaternion startRotation)
+        public void Construct(PlayerId owner, SquadronType squadronType, Quaternion startRotation, ILocalPlayer localPlayer)
         {
-            _playerType = playerType;
+            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
+            _owner = owner;
             _squadronType = squadronType;
             _startRotation = startRotation;
         }
 
         protected override void InstallFeatures(SquadronData data)
         {
-            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_owner);
             Container.BindEntityExt(_squadronType);
             Container.BindEntityExt(_startRotation);
 
@@ -42,7 +44,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 .BindSelectionFeature(SelectionType.Ship)
                 .BindRadarFeature()
                 .BindWeaponFeature()
-                .BindFogOfWarFeature(_playerType);
+                .BindFogOfWarFeature(_isHiddenByLocalFog);
             Container.Bind<CombatModifiers>().AsSingle();
 
             Container.BindInitializableExecutionOrder<SquadronHealthComponent>(-100);

@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
@@ -30,12 +30,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField, Min(0.01f)] private float followSharpness = 12f;
         [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);
         [SerializeField] private Color selectedColor = new Color(1f, 0.92f, 0.35f);
+        [SerializeField] private Color allyColor = new Color(0.4f, 0.8f, 1f);
         [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
 
         private ICameraService _cameraService;
         private CameraData _cameraData;
         private FogOfWarSystem _fogOfWarSystem;
-        private PlayerType _playerType;
+        private PlayerId _owner;
+        private ILocalPlayer _localPlayer;
         private Vector3 _anchor;
         private Vector3 _iconPosition;
         private bool _isReleased;
@@ -43,13 +45,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         [Inject]
         private void Construct(SelectionModel model, ICameraService cameraService, CameraData cameraData,
-            FogOfWarSystem fogOfWarSystem, PlayerType playerType)
+            FogOfWarSystem fogOfWarSystem, PlayerId owner, ILocalPlayer localPlayer)
         {
             SetModel(model);
             _cameraService = cameraService;
             _cameraData = cameraData;
             _fogOfWarSystem = fogOfWarSystem;
-            _playerType = playerType;
+            _owner = owner;
+            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -69,7 +72,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
 
             _anchor = Vector3.Lerp(_anchor, transform.position, 1f - Mathf.Exp(-followSharpness * Time.deltaTime));
-            iconCanvas.enabled = _playerType == PlayerType.Player || !_fogOfWarSystem.IsHidden(transform.position);
+            iconCanvas.enabled = _localPlayer.IsFriendly(_owner) || !_fogOfWarSystem.IsHidden(transform.position);
             if (!iconCanvas.enabled)
             {
                 return;
@@ -116,7 +119,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private void UpdateColor(bool isSelected)
         {
-            Color color = _playerType != PlayerType.Player ? enemyColor
+            Color color = !_localPlayer.IsFriendly(_owner) ? enemyColor
+                : !_localPlayer.IsLocal(_owner) ? allyColor
                 : isSelected ? selectedColor
                 : friendlyColor;
             frameImage.color = color;

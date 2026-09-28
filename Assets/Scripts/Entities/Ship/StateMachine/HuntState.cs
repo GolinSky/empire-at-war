@@ -1,8 +1,8 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
@@ -19,15 +19,21 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IEntityLocator _locator;
         private readonly FogOfWarSystem _fog;
         private readonly UnitOrderSettings _settings;
-        private readonly PlayerType _side;
+        private readonly PlayerId _side;
+        private readonly IPlayerRelations _relations;
+        private readonly bool _respectsFog;
         private IEntity _target;
         private float _retargetTimer;
         private Vector3 _pursuitDestination;
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            FogOfWarSystem fog, UnitOrderSettings settings, PlayerType side)
+            FogOfWarSystem fog, UnitOrderSettings settings, PlayerId side,
+            IPlayerRelations relations, ILocalPlayer localPlayer)
         {
+            _relations = relations;
+            // Only the human's ships are limited to what the fog of war reveals.
+            _respectsFog = localPlayer.IsLocal(side);
             _movement = movement;
             _weapon = weapon;
             _attackDataFactory = attackDataFactory;
@@ -78,10 +84,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float nearest = float.PositiveInfinity;
             foreach (IEntity entity in _locator.Entities)
             {
-                if (entity.PlayerType == _side || entity.HealthModel.IsDestroyed ||
+                if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_side == PlayerType.Player && _fog.GetVisibilityAtPosition(position) < 0.5f)
+                if (_respectsFog && _fog.GetVisibilityAtPosition(position) < 0.5f)
                     continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
                 if (distance >= nearest) continue;

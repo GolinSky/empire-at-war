@@ -4,12 +4,12 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
     {
         void CloseSkirmish();
         void StartGame();
-        void SelectPlayerFaction(int index);
-        void SelectEnemyFaction(int index);
+        void SelectSlotOccupant(int slotIndex, int occupantIndex);
+        void SelectSlotFaction(int slotIndex, int factionIndex);
+        void SelectSlotTeam(int slotIndex, int teamIndex);
         void SelectPlanet(int index);
         void SelectMapSize(int index);
         void SelectVictoryCondition(int index);
-        void SelectEnemyDifficulty(int index);
         void SelectStartingMoney(float amount);
     }
 }

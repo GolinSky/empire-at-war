@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Squadrons;
@@ -22,43 +23,43 @@ namespace EmpireAtWar.SceneContext.Skirmish
         public override void InstallBindings()
         {
             Container
-                .BindFactory<PlayerType, ShipType, Vector3, ShipEntity, ShipFactory>()
+                .BindFactory<PlayerId, ShipType, Vector3, ShipEntity, ShipFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<ShipInstaller>(GetPath<ShipInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, SquadronType, Vector3, Quaternion, Squadron, SquadronFactory>()
+                .BindFactory<PlayerId, SquadronType, Vector3, Quaternion, Squadron, SquadronFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<SquadronInstaller>(GetPath<SquadronInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, FactionType, Vector3, SpaceStationEntity, SpaceStationFactory>()
+                .BindFactory<PlayerId, FactionType, Vector3, SpaceStationEntity, SpaceStationFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<SpaceStationInstaller>(GetPath<SpaceStationInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, MiningFacilityFactory>()
+                .BindFactory<PlayerId, MiningFacilityType, Vector3, MiningFacilityEntity, MiningFacilityFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<MiningFacilityInstaller>(GetPath<MiningFacilityInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, MiningFacilityType, Vector3, MiningFacilityEntity, AsteroidMiningFacilityFactory>()
+                .BindFactory<PlayerId, MiningFacilityType, Vector3, MiningFacilityEntity, AsteroidMiningFacilityFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<AsteroidMiningFacilityInstaller>(GetPath<AsteroidMiningFacilityInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFactory>()
+                .BindFactory<PlayerId, DefendPlatformType, Vector3, DefendPlatform, DefendPlatformFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<DefendPlatformInstaller>(GetPath<DefendPlatformInstaller>())
                 .NonLazy();
 
             Container
-                .BindFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform, AsteroidDefendPlatformFactory>()
+                .BindFactory<PlayerId, DefendPlatformType, Vector3, DefendPlatform, AsteroidDefendPlatformFactory>()
                 .FromSubContainerResolve()
                 .ByNewContextPrefab<AsteroidDefendPlatformInstaller>(GetPath<AsteroidDefendPlatformInstaller>())
                 .NonLazy();

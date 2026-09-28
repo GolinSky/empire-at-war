@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
@@ -14,10 +14,10 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel);
         void Render(
-            PlayerType owner,
+            OwnerRelation owner,
             CaptureSiteState state,
             SiteFacilityType facilityType,
-            PlayerType capturingPlayer,
+            OwnerRelation capturer,
             float captureProgress,
             float constructionProgress,
             bool isContested);

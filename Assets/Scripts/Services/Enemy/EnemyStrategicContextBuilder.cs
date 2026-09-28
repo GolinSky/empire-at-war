@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -6,7 +7,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
@@ -55,55 +55,64 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
+        private readonly PlayerSlot _owner;
+        private readonly IPlayerRoster _roster;
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
             ICaptureSitesSystem captureSites,
             IEntityLocator entityLocator,
-            IGameModelObserver gameModel)
+            IGameModelObserver gameModel,
+            PlayerSlot owner,
+            IPlayerRoster roster)
         {
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _captureSites = captureSites;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
+            _owner = owner;
+            _roster = roster;
         }
 
         public EnemyStrategicContext Build()
         {
-            List<IShipEntity> enemyShips = GetShips(PlayerType.Opponent);
-            List<IShipEntity> playerShips = GetShips(PlayerType.Player);
-            FormationPoint fleetCenter = CalculateFleetCenter(enemyShips);
+            PlayerId self = _owner.Id;
+            List<IShipEntity> ownShips = GetShips(ship => ship.Owner == self);
+            FormationPoint fleetCenter = CalculateFleetCenter(ownShips);
             Vector3 origin = ToVector(fleetCenter);
             // Defending an owned site outranks new captures; raiding an operational site is the fallback.
-            bool hasThreatenedSite = _captureSites.TryGetThreatenedSite(
-                PlayerType.Opponent, out Vector3 captureTarget);
+            bool hasThreatenedSite = _captureSites.TryGetThreatenedSite(self, out Vector3 captureTarget);
             bool hasCaptureTarget = hasThreatenedSite ||
                 TryGetClosestCaptureTarget(origin, out captureTarget) ||
-                _captureSites.TryGetRaidTarget(PlayerType.Opponent, origin, out captureTarget);
+                _captureSites.TryGetRaidTarget(self, origin, out captureTarget);
+            GameEntity ownBase = FindClosestEntity<ISpaceStationModelObserver>(owner => owner == self, origin);
+            Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position : origin;
+
+            // With several enemies the AI commits to one of them so it does not split its fleet.
+            PlayerId focusEnemy = FindFocusEnemy(home);
             GameEntity enemyBaseTarget = FindClosestEntity<ISpaceStationModelObserver>(
-                PlayerType.Player,
+                owner => owner == focusEnemy,
                 origin);
-            GameEntity ownBase = FindClosestEntity<ISpaceStationModelObserver>(
-                PlayerType.Opponent,
-                origin);
+            // Any hostile ship is a fair fleet target; the closest one wins.
             GameEntity enemyFleetTarget = FindClosestEntity<IShipModelObserver>(
-                PlayerType.Player,
+                owner => _roster.IsHostile(self, owner),
                 origin);
-            int ownedCapturableZoneCount =
-                _reinforcementZonesSystem.GetOwnedCapturableZoneCount(
-                    PlayerType.Opponent);
+            // Strength is compared against the whole team of the focused enemy.
+            List<IShipEntity> focusTeamShips = GetShips(ship => _roster.IsAllied(focusEnemy, ship.Owner));
+            List<IShipEntity> hostileShips = GetShips(ship => _roster.IsHostile(self, ship.Owner));
+            int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
             int enemyShipsNearOwnBase = CountShipsNearBase(
-                playerShips,
+                hostileShips,
                 ownBase,
                 BASE_THREAT_RADIUS);
 
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 _gameModel.VictoryCondition,
-                _gameModel.EnemyDifficulty,
-                enemyShips.Count,
-                playerShips.Count,
+                _owner.Difficulty,
+                ownShips.Count,
+                focusTeamShips.Count,
                 hasCaptureTarget,
                 enemyBaseTarget != null,
                 ownBase != null,
@@ -112,11 +121,11 @@ namespace EmpireAtWar.Services.Enemy
                 hasThreatenedSite);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
-            foreach (IShipEntity ship in enemyShips)
+            foreach (IShipEntity ship in ownShips)
                 receivers.Add(ship, _entityLocator.GetEntity(ship.EntityId));
             return new EnemyStrategicContext(
                 snapshot,
-                enemyShips,
+                ownShips,
                 captureTarget,
                 enemyFleetTarget,
                 enemyBaseTarget,
@@ -124,12 +133,33 @@ namespace EmpireAtWar.Services.Enemy
                 receivers);
         }
 
+        /// <summary>
+        /// The hostile player whose living station is closest to <paramref name="home"/>;
+        /// once every hostile station is gone, the owner of the closest hostile ship.
+        /// </summary>
+        private PlayerId FindFocusEnemy(Vector3 home)
+        {
+            PlayerId self = _owner.Id;
+            GameEntity closestStation = FindClosestEntity<ISpaceStationModelObserver>(
+                owner => _roster.IsHostile(self, owner),
+                home);
+            if (closestStation != null)
+            {
+                return closestStation.Owner;
+            }
+
+            GameEntity closestShip = FindClosestEntity<IShipModelObserver>(
+                owner => _roster.IsHostile(self, owner),
+                home);
+            return closestShip != null ? closestShip.Owner : PlayerId.None;
+        }
+
         private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
         {
             bool hasZone = _reinforcementZonesSystem.TryGetCaptureTarget(
-                PlayerType.Opponent, origin, out Vector3 zoneTarget);
+                _owner.Id, origin, out Vector3 zoneTarget);
             bool hasSite = _captureSites.TryGetCaptureTarget(
-                PlayerType.Opponent, origin, out Vector3 siteTarget);
+                _owner.Id, origin, out Vector3 siteTarget);
             captureTarget = hasSite && (!hasZone ||
                 (siteTarget - origin).sqrMagnitude < (zoneTarget - origin).sqrMagnitude)
                 ? siteTarget
@@ -137,14 +167,14 @@ namespace EmpireAtWar.Services.Enemy
             return hasZone || hasSite;
         }
 
-        private List<IShipEntity> GetShips(PlayerType playerType)
+        private List<IShipEntity> GetShips(Predicate<IShipEntity> include)
         {
             List<IShipEntity> ships = new List<IShipEntity>();
             foreach (IShipEntity ship in _shipService.Ships)
             {
                 // A ship joins IShipService before its entity registers; the
                 // registration raises EntityAdded, which re-evaluates the AI.
-                if (ship.PlayerType == playerType &&
+                if (include(ship) &&
                     _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                 {
                     ships.Add(ship);
@@ -196,14 +226,14 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
-        private GameEntity FindClosestEntity<TModel>(PlayerType playerType, Vector3 origin)
+        private GameEntity FindClosestEntity<TModel>(Predicate<PlayerId> includeOwner, Vector3 origin)
             where TModel : IModelObserver
         {
             GameEntity closest = null;
             float closestDistance = float.MaxValue;
             foreach (GameEntity entity in _entityLocator.Entities)
             {
-                if (entity.PlayerType != playerType ||
+                if (!includeOwner(entity.Owner) ||
                     entity.Model is not TModel ||
                     entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits)

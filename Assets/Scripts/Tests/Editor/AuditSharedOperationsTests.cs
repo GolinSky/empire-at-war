@@ -1,6 +1,6 @@
 using System.Linq;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Ship;
@@ -12,26 +12,31 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class AuditSharedOperationsTests
     {
         [Test]
-        public void ShipCounts_UseAreaAndFactionAndReadCurrentMembership()
+        public void ShipStrength_UsesAreaAndOwnerAndReadsCurrentMembership()
         {
             ShipService ships = new ShipService();
-            FakeShip player = new FakeShip(PlayerType.Player, 5f);
+            FakeShip player = new FakeShip(TestPlayers.Human, 5f);
             ships.Add(player);
-            ships.Add(new FakeShip(PlayerType.Opponent, 3f));
-            ships.Add(new FakeShip(PlayerType.Opponent, 8f));
-            ships.Add(new FakeShip(PlayerType.None, 2f));
+            ships.Add(new FakeShip(TestPlayers.Enemy, 3f));
+            ships.Add(new FakeShip(TestPlayers.Enemy, 8f));
+            ships.Add(new FakeShip(PlayerId.None, 2f));
+            CaptureTallyBuilder tally = new CaptureTallyBuilder(TestPlayers.CreateDuel());
 
-            ships.CountShips(position => position.x <= 5f, out int players, out int opponents);
-            Assert.That(players, Is.EqualTo(1));
-            Assert.That(opponents, Is.EqualTo(1));
+            ships.AddShipStrength(position => position.x <= 5f, tally);
+            CaptureTally bothSides = tally.Build();
+            Assert.That(bothSides.PresentTeamCount, Is.EqualTo(2));
+            Assert.That(bothSides.IsContested, Is.True);
 
             ships.Remove(player);
-            ships.CountShips(position => position.x <= 5f, out players, out opponents);
-            Assert.That(players, Is.Zero);
-            Assert.That(opponents, Is.EqualTo(1));
-            ships.CountShips(position => false, out players, out opponents);
-            Assert.That(players, Is.Zero);
-            Assert.That(opponents, Is.Zero);
+            tally.Clear();
+            ships.AddShipStrength(position => position.x <= 5f, tally);
+            CaptureTally enemyOnly = tally.Build();
+            Assert.That(enemyOnly.LeadingPlayer, Is.EqualTo(TestPlayers.Enemy));
+            Assert.That(enemyOnly.Advantage, Is.EqualTo(1f));
+
+            tally.Clear();
+            ships.AddShipStrength(position => false, tally);
+            Assert.That(tally.Build().HasUnits, Is.False);
         }
 
         [Test]
@@ -42,8 +47,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 MiniMapMarkerCollection<string> sites = new MiniMapMarkerCollection<string>(data);
                 MiniMapMarkerCollection<string> zones = new MiniMapMarkerCollection<string>(data);
-                MiniMapMarker site = new MiniMapMarker(MarkType.CaptureSite, PlayerType.Player);
-                MiniMapMarker zone = new MiniMapMarker(MarkType.ReinforcementZone, PlayerType.Opponent);
+                MiniMapMarker site = new MiniMapMarker(MarkType.CaptureSite, OwnerRelation.Own);
+                MiniMapMarker zone = new MiniMapMarker(MarkType.ReinforcementZone, OwnerRelation.Enemy);
                 int removed = 0;
                 data.OnMarkerRemoved += marker => removed++;
                 sites.Add("site", site);
@@ -72,14 +77,14 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeShip : IShipEntity
         {
-            public FakeShip(PlayerType playerType, float x)
+            public FakeShip(PlayerId owner, float x)
             {
-                PlayerType = playerType;
+                Owner = owner;
                 WorldPosition = new Vector3(x, 0f, 0f);
             }
 
             public IShipModelObserver ModelObserver => null;
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 1f;
             public float NavigationSpeed => 1f;

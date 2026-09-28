@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         {
             foreach (IEntity entity in _entities.Entities)
             {
-                if (entity.PlayerType != caster.Entity.PlayerType || entity.HealthModel.IsDestroyed ||
+                if (entity.Owner != caster.Entity.Owner || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IShipAbilityFacade ally) ||
                     !entity.TryGetFacade(out IAttackFacade attack) ||
                     Vector3.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)

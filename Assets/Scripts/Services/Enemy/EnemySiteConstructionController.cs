@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Ship;
 using Utilities.ScriptUtils.Time;
@@ -16,11 +16,13 @@ namespace EmpireAtWar.Services.Enemy
         private const int MINIMUM_FLEET_SIZE = 2;
 
         private readonly ICaptureSitesSystem _captureSites;
+        private readonly PlayerSlot _owner;
         private readonly IShipService _shipService;
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
 
-        public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService)
+        public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService, PlayerSlot owner)
         {
+            _owner = owner;
             _captureSites = captureSites;
             _shipService = shipService;
         }
@@ -35,7 +37,7 @@ namespace EmpireAtWar.Services.Enemy
             _decisionTimer.StartTimer();
             if (CountOwnShips() >= MINIMUM_FLEET_SIZE)
             {
-                _captureSites.TryBuildOnOwnedSite(PlayerType.Opponent);
+                _captureSites.TryBuildOnOwnedSite(_owner.Id);
             }
         }
 
@@ -44,7 +46,7 @@ namespace EmpireAtWar.Services.Enemy
             int count = 0;
             foreach (IShipEntity ship in _shipService.Ships)
             {
-                if (ship.PlayerType == PlayerType.Opponent)
+                if (ship.Owner == _owner.Id)
                 {
                     count++;
                 }

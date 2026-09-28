@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using EmpireAtWar.Tests.Editor;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Tests.Selection
             FakeSelectionCommand secondCommand = new FakeSelectionCommand(SelectionType.Ship);
             FakeEntity first = new FakeEntity(1, firstCommand);
             FakeEntity second = new FakeEntity(2, secondCommand);
-            SelectionContext context = new SelectionContext(PlayerType.Player);
+            SelectionContext context = new SelectionContext(SelectionScope.Local, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
             context.Replace(new[]
             {
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Tests.Selection
         {
             FakeSelectionCommand shipCommand = new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand baseCommand = new FakeSelectionCommand(SelectionType.Base);
-            SelectionContext context = new SelectionContext(PlayerType.Player);
+            SelectionContext context = new SelectionContext(SelectionScope.Local, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
             context.Replace(new[]
             {
@@ -120,7 +121,7 @@ namespace EmpireAtWar.Tests.Selection
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel => null;
-            public PlayerType PlayerType => EmpireAtWar.Models.Factions.PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

@@ -1,10 +1,10 @@
 using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Services.Squadrons
 {
     public interface ISquadronLauncher
     {
-        ISquadron LaunchFromStation(PlayerType playerType, SquadronType squadronType);
+        ISquadron LaunchFromStation(PlayerId owner, SquadronType squadronType);
     }
 }

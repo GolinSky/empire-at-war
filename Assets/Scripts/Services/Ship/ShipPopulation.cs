@@ -1,30 +1,22 @@
 using System;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 
 namespace EmpireAtWar.Ship
 {
     public static class ShipPopulation
     {
-        public static void CountShips(this IShipService shipService, Func<Vector3, bool> contains,
-            out int playerShips, out int opponentShips)
+        private const float SHIP_CAPTURE_STRENGTH = 1f;
+
+        /// <summary>Adds every ship inside the circle to the capture tally; a ship weighs 1.</summary>
+        public static void AddShipStrength(this IShipService shipService, Func<Vector3, bool> contains,
+            CaptureTallyBuilder tally)
         {
-            playerShips = 0;
-            opponentShips = 0;
             foreach (IShipEntity ship in shipService.Ships)
             {
-                if (!contains(ship.WorldPosition))
+                if (contains(ship.WorldPosition))
                 {
-                    continue;
-                }
-
-                if (ship.PlayerType == PlayerType.Player)
-                {
-                    playerShips++;
-                }
-                else if (ship.PlayerType == PlayerType.Opponent)
-                {
-                    opponentShips++;
+                    tally.Add(ship.Owner, SHIP_CAPTURE_STRENGTH);
                 }
             }
         }

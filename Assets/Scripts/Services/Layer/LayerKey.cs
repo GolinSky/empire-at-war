@@ -2,8 +2,7 @@ namespace EmpireAtWar.Services.Layer
 {
     public enum LayerKey
     {
-        Player,
-        Enemy,
+        Unit,
         Obstacle,
         Dead
     }

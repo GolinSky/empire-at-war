@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: 8268658347014680846}
   - component: {fileID: 2371074356274764079}
   - component: {fileID: 4951248571961129780}
+  - component: {fileID: 225075031365764140}
   m_Layer: 0
   m_Name: ThrantaShipView
   m_TagString: Untagged
@@ -388,6 +389,22 @@ MonoBehaviour:
   - {fileID: 2960250742237942502}
   - {fileID: 679826317741067710}
   - {fileID: 746876643857132625}
+--- !u!114 &225075031365764140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211217585912450137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 3070764655531412209}
+  - {fileID: 3468393307539088419}
+  - {fileID: 1055661806489196083}
 --- !u!1 &1758038123369621645
 GameObject:
   m_ObjectHideFlags: 0

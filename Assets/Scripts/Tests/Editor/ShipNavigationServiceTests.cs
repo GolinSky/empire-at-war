@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Tests.Editor;
 using System.Reflection;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ShipNavigation;
 using NUnit.Framework;
@@ -634,7 +635,7 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { model, Vector3.zero,
-                PlayerType.Player, new FakeMapModel(_mapRange), null,
+                TestPlayers.Human, new FakeMapModel(_mapRange), null,
                 navigationService, null, null, null, null });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
@@ -722,7 +723,7 @@ namespace EmpireAtWar.Tests.Movement
 
             public Vector2Range SizeRange { get; }
 
-            public Vector3 GetStationPosition(FactionType factionType)
+            public Vector3 GetStationPosition(PlayerId owner)
             {
                 return Vector3.zero;
             }

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -18,8 +19,13 @@ namespace EmpireAtWar.Services.Battle
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
         private readonly BattleVictoryModel _victoryModel;
-        private readonly LazyInject<IEnemyReinforcementObserver> _enemyReinforcement;
+        private readonly IPlayerRoster _roster;
+        private readonly ILocalPlayer _localPlayer;
+        private readonly IPlayerRegistry _playerRegistry;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
+        private readonly int[] _shipCounts = new int[MatchRules.MAX_PLAYERS];
+        private readonly bool[] _aliveBases = new bool[MatchRules.MAX_PLAYERS];
+        private readonly List<PlayerBattleState> _states = new List<PlayerBattleState>();
         private BattleResult _finalResult;
 
         public BattleVictoryService(
@@ -27,13 +33,17 @@ namespace EmpireAtWar.Services.Battle
             IShipService shipService,
             IEntityLocator entityLocator,
             BattleVictoryModel victoryModel,
-            LazyInject<IEnemyReinforcementObserver> enemyReinforcement)
+            IPlayerRoster roster,
+            ILocalPlayer localPlayer,
+            IPlayerRegistry playerRegistry)
         {
             _gameModel = gameModel;
             _shipService = shipService;
             _entityLocator = entityLocator;
             _victoryModel = victoryModel;
-            _enemyReinforcement = enemyReinforcement;
+            _roster = roster;
+            _localPlayer = localPlayer;
+            _playerRegistry = playerRegistry;
         }
 
         public string Id => nameof(BattleVictoryService);
@@ -64,67 +74,93 @@ namespace EmpireAtWar.Services.Battle
                 return;
             }
 
-            int playerShipCount = 0;
-            int enemyShipCount = 0;
-            foreach (IShipEntity ship in _shipService.Ships)
-            {
-                if (ship.PlayerType == PlayerType.Player)
-                {
-                    playerShipCount++;
-                }
-                else if (ship.PlayerType == PlayerType.Opponent)
-                {
-                    enemyShipCount++;
-                }
-            }
-
-            bool isPlayerBaseAlive = false;
-            bool isEnemyBaseAlive = false;
-            foreach (GameEntity entity in _entityLocator.Entities)
-            {
-                if (entity.Model is not ISpaceStationModelObserver)
-                {
-                    continue;
-                }
-
-                bool isAlive = !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
-                if (entity.PlayerType == PlayerType.Player)
-                {
-                    isPlayerBaseAlive |= isAlive;
-                }
-                else if (entity.PlayerType == PlayerType.Opponent)
-                {
-                    isEnemyBaseAlive |= isAlive;
-                }
-            }
-
+            CollectStates();
             BattleOutcome outcome = _victoryModel.Evaluate(
                 _gameModel.VictoryCondition,
-                playerShipCount,
-                enemyShipCount,
-                isPlayerBaseAlive,
-                isEnemyBaseAlive,
-                _enemyReinforcement.Value.HasPendingReinforcement);
+                _states,
+                _localPlayer.Slot.Team);
             if (outcome == BattleOutcome.None)
             {
                 return;
             }
 
-            _finalResult = new BattleResult(
-                outcome,
-                _gameModel.VictoryCondition,
-                _gameModel.PlanetType,
-                _gameModel.PlayerFactionType,
-                _gameModel.EnemyFactionType,
-                playerShipCount,
-                enemyShipCount,
-                isPlayerBaseAlive,
-                isEnemyBaseAlive);
+            _finalResult = CreateResult(outcome);
             Debug.Log($"[Battle] Outcome={outcome}, VictoryCondition={_gameModel.VictoryCondition}");
             foreach (IObserver<BattleResult> observer in _observers)
             {
                 observer.UpdateState(_finalResult);
             }
+        }
+
+        private void CollectStates()
+        {
+            for (int i = 0; i < _shipCounts.Length; i++)
+            {
+                _shipCounts[i] = 0;
+                _aliveBases[i] = false;
+            }
+
+            foreach (IShipEntity ship in _shipService.Ships)
+            {
+                _shipCounts[ship.Owner.Index]++;
+            }
+
+            foreach (GameEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Model is ISpaceStationModelObserver)
+                {
+                    _aliveBases[entity.Owner.Index] |= !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
+                }
+            }
+
+            _states.Clear();
+            foreach (PlayerSlot player in _roster.Players)
+            {
+                int index = player.Id.Index;
+                _states.Add(new PlayerBattleState(
+                    player.Id,
+                    player.Team,
+                    _shipCounts[index],
+                    _aliveBases[index],
+                    _playerRegistry.HasPendingReinforcement(player.Id)));
+            }
+        }
+
+        private BattleResult CreateResult(BattleOutcome outcome)
+        {
+            int playerShipCount = 0;
+            int enemyShipCount = 0;
+            bool isPlayerBaseAlive = false;
+            bool isEnemyBaseAlive = false;
+            List<FactionType> enemyFactions = new List<FactionType>();
+            foreach (PlayerBattleState state in _states)
+            {
+                if (_localPlayer.IsFriendly(state.Player))
+                {
+                    playerShipCount += state.ShipCount;
+                    isPlayerBaseAlive |= state.IsBaseAlive;
+                    continue;
+                }
+
+                enemyShipCount += state.ShipCount;
+                isEnemyBaseAlive |= state.IsBaseAlive;
+                FactionType faction = _roster.Get(state.Player).Faction;
+                if (!enemyFactions.Contains(faction))
+                {
+                    enemyFactions.Add(faction);
+                }
+            }
+
+            return new BattleResult(
+                outcome,
+                _gameModel.VictoryCondition,
+                _gameModel.PlanetType,
+                _localPlayer.Slot.Faction,
+                enemyFactions,
+                playerShipCount,
+                enemyShipCount,
+                isPlayerBaseAlive,
+                isEnemyBaseAlive);
         }
     }
 }

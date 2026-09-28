@@ -2,7 +2,7 @@ using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly ICameraService _cameraService;
         private readonly IMapModelObserver _mapModel;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
-        private readonly FactionType _playerFactionType;
+        private readonly ILocalPlayer _localPlayer;
         private GameTimeMode _requestedTimeMode;
         private bool _isMenuOpen;
 
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Controllers.Game
             ICameraService cameraService,
             IMapModelObserver mapModel,
             INotifier<BattleResult> battleVictoryNotifier,
-            [Inject(Id = PlayerType.Player)] FactionType playerFactionType)
+            ILocalPlayer localPlayer)
         {
             _sessionModel = sessionModel;
             _userStateNotifier = userStateNotifier;
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Controllers.Game
             _cameraService = cameraService;
             _mapModel = mapModel;
             _battleVictoryNotifier = battleVictoryNotifier;
-            _playerFactionType = playerFactionType;
+            _localPlayer = localPlayer;
             _requestedTimeMode = GameTimeMode.Common;
         }
 
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Controllers.Game
             ChangeTime(_requestedTimeMode);
             _userStateNotifier.Value.AddObserver(this);
             _battleVictoryNotifier.AddObserver(this);
-            _cameraService.MoveTo(_mapModel.GetStationPosition(_playerFactionType));
+            _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
         }
 
         public void LateDispose()

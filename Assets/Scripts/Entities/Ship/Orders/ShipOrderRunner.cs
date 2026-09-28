@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
@@ -6,7 +7,6 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.StateMachine;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
             IdleState idleState, NavigateState navigateState, AttackTargetState attackTargetState,
             AttackMoveState attackMoveState, GuardState guardState, HuntState huntState,
-            FleeState fleeState, PlayerType playerType)
+            FleeState fleeState, PlayerId owner, IPlayerRoster roster)
         {
             _orders = orders;
             _stateMachine = stateMachine;
@@ -55,7 +55,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _guardState = guardState;
             _huntState = huntState;
             _fleeState = fleeState;
-            _isAiControlled = playerType == PlayerType.Opponent;
+            _isAiControlled = roster.Get(owner).IsAi;
         }
 
         public void Start() => _stateMachine.SetState(_idleState);

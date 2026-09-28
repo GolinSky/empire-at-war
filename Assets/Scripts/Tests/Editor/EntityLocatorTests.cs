@@ -1,6 +1,6 @@
 using System.Reflection;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public EmpireAtWar.Mvc.IModelObserver Model => null;
             public IHealthModelObserver HealthModel => null;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

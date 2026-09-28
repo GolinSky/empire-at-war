@@ -1,6 +1,6 @@
 using System.Numerics;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Model
 {
@@ -9,20 +9,20 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
         public long Id { get; }
         public Vector3 Position { get; }
         public ShipClass ShipClass { get; }
-        public PlayerType PlayerType { get; }
+        public PlayerId Owner { get; }
         public float SecondsSinceDamaged { get; }
 
         public CinematicCandidate(
             long id,
             Vector3 position,
             ShipClass shipClass,
-            PlayerType playerType,
+            PlayerId owner,
             float secondsSinceDamaged)
         {
             Id = id;
             Position = position;
             ShipClass = shipClass;
-            PlayerType = playerType;
+            Owner = owner;
             SecondsSinceDamaged = secondsSinceDamaged;
         }
     }

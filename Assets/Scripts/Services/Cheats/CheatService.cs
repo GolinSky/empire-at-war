@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Services.Cheats
     public sealed class CheatService : ICheatService
     {
         private readonly EconomyModel _economyModel;
+        private readonly PlayerSlot _owner;
         private readonly ReinforcementModel _reinforcementModel;
         private readonly ShipFactory _shipFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
@@ -38,8 +40,10 @@ namespace EmpireAtWar.Services.Cheats
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
             SuperWeaponModel superWeaponModel,
-            RangeDebugModel rangeDebugModel)
+            RangeDebugModel rangeDebugModel,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _economyModel = economyModel;
             _reinforcementModel = reinforcementModel;
             _shipFactory = shipFactory;
@@ -77,20 +81,20 @@ namespace EmpireAtWar.Services.Cheats
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            if (!_entityLocator.IsStationOperational(_owner.Id))
             {
                 return false;
             }
 
             if (!_reinforcementZonesSystem.TryGetDefaultSpawnPosition(
-                    PlayerType.Player,
+                    _owner.Id,
                     out Vector3 spawnPosition))
             {
                 return false;
             }
 
             _reinforcementModel.UpdateShipData(request);
-            ShipEntity ship = _shipFactory.Create(PlayerType.Player, request.Key, spawnPosition);
+            ShipEntity ship = _shipFactory.Create(_owner.Id, request.Key, spawnPosition);
             if (ship == null)
             {
                 throw new InvalidOperationException($"Failed to create ship {request.Key}.");

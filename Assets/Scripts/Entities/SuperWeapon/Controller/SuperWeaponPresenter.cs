@@ -1,8 +1,8 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
     public sealed class SuperWeaponPresenter : IInitializable, ILateDisposable, ISkirmishUiRoute
     {
         private readonly SuperWeaponModel _model;
+        private readonly ILocalPlayer _localPlayer;
         private readonly SuperWeaponTargetingModel _targeting;
         private readonly ISuperWeaponFireService _fireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
@@ -31,8 +32,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         public SuperWeaponPresenter(SuperWeaponModel model, SuperWeaponTargetingModel targeting,
             ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
             ISkirmishRouteNavigation routeNavigation, IInputService input,
-            UnitActionTargetingModel unitTargeting, IShipAbilityTargeting abilities)
+            UnitActionTargetingModel unitTargeting, IShipAbilityTargeting abilities,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _model = model;
             _targeting = targeting;
             _fireService = fireService;
@@ -110,7 +113,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private void HandleTargetSubmitted(SuperWeaponType type, IEntity target)
         {
             // Invalid picks such as fighters keep the weapon waiting for a proper target.
-            if (!_fireService.CanTarget(PlayerType.Player, target)) return;
+            if (!_fireService.CanTarget(_localPlayer.Id, target)) return;
             _targeting.Cancel();
             _model.Consume(type);
             _fireService.Fire(type, target);

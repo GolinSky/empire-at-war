@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitDeathAnimation;
 using UnityEngine;
@@ -14,7 +14,8 @@ namespace EmpireAtWar.Entities.SpaceStation
     public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
         private FogOfWarSystem _fogOfWarSystem;
-        private PlayerType _playerType;
+        private ILocalPlayer _localPlayer;
+        private PlayerId _owner;
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
@@ -29,16 +30,18 @@ namespace EmpireAtWar.Entities.SpaceStation
         [Inject]
         private void Construct(
             FogOfWarSystem fogOfWarSystem,
-            PlayerType playerType,
+            PlayerId owner,
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitDeathAnimationData deathAnimationData,
-            IUnitDeathAnimationService deathAnimationService)
+            IUnitDeathAnimationService deathAnimationService,
+            ILocalPlayer localPlayer)
         {
             _fogOfWarSystem = fogOfWarSystem;
-            _playerType = playerType;
+            _localPlayer = localPlayer;
+            _owner = owner;
             _healthComponent = healthComponent;
             _radarComponent = radarComponent;
             _startPosition = startPosition;
@@ -55,11 +58,12 @@ namespace EmpireAtWar.Entities.SpaceStation
         public void Initialize()
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
-            gameObject.name = $"{_playerType}_SpaceStation";
+            gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
             _radarComponent.SetPosition(transform.position);
 
-            if (_playerType == PlayerType.Player)
+            // Allied stations share vision with the local player.
+            if (_localPlayer.IsFriendly(_owner))
             {
                 _fogOfWarSystem.RegisterVisionSource(transform, 900f);
             }

@@ -1,4 +1,5 @@
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         
         private AudioShipDialogData _data;
         private IAudioService _audioService;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private ITimer _alarmRadarTimer;
         private bool _isSelected;
 
@@ -34,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             [InjectOptional] AudioShipDialogModel model,
             [InjectOptional] AudioShipDialogData data,
             IAudioService audioService,
-            PlayerType playerType)
+            PlayerId owner)
         {
             if (model == null)
             {
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             SetModel(model);
             _data = data;
             _audioService = audioService;
-            _playerType = playerType;
+            _owner = owner;
             _alarmRadarTimer = TimerFactory.ConstructTimer(Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY));
             _alarmRadarTimer.StartTimer();
         }
@@ -70,7 +71,7 @@ namespace EmpireAtWar.Components.Ship.Audio
                 if (_alarmRadarTimer.IsComplete)
                 {
                     _alarmRadarTimer.StartTimer();
-                    Play(Model.GetAlarmSightsClip(_playerType));
+                    Play(Model.GetAlarmSightsClip(_owner));
                 }
             }
         }
@@ -79,7 +80,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             if (_isSelected)
             {
-                Play(Model.GetDamageClip(_playerType));
+                Play(Model.GetDamageClip(_owner));
             }
         }
 
@@ -87,7 +88,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             if (_isSelected)
             {
-                Play(Model.GetMoveClip(_playerType));
+                Play(Model.GetMoveClip(_owner));
             }
         }
         
@@ -95,7 +96,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             if (_isSelected)
             {
-                Play(Model.GetAttackClip(_playerType));
+                Play(Model.GetAttackClip(_owner));
             }
         }
         
@@ -104,7 +105,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             _isSelected = isSelected;
             if (isSelected)
             {
-                Play(Model.GetDialogClip(_playerType));
+                Play(Model.GetDialogClip(_owner));
             }
         }
 

@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
@@ -184,7 +183,7 @@ namespace EmpireAtWar.Presenters.Game
 
         public void UpdateState(ISelectionSubject selectionSubject)
         {
-            if (selectionSubject.UpdatedType == PlayerType.Player)
+            if (selectionSubject.UpdatedScope == SelectionScope.Local)
             {
                 _lastSelectionContext = selectionSubject.PlayerSelectionContext;
                 UpdateContentVisibility(_lastSelectionContext);
