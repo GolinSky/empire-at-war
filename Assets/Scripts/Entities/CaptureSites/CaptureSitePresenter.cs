@@ -45,7 +45,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public bool CanPlayerBuild => _localPlayer.IsLocal(_model.Owner) && _model.CanStartConstruction;
         public SiteFacilityType FacilityType => _model.FacilityType;
         public Vector3 Center => _view.Center;
-        public Vector3 FacilityPosition => _view.GetFacilityPosition(_model.FacilityType);
+        public Vector3 FacilityPosition => _view.FacilityPosition;
         public float Radius => _view.Radius;
         public bool IsRevealed { get; private set; }
         public bool IsOperational => _model.State == CaptureSiteState.Operational;

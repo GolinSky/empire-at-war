@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Obstacles;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities.ScriptUtils.EditorSerialization;
 
@@ -17,8 +18,9 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         [SerializeField, Min(1f)] private float radius = 40f;
         [SerializeField, Min(1f)] private float captureDuration = 12f;
-        [SerializeField, Tooltip("World-space height of a built mining facility relative to the site center; keeps it below ship and station hulls.")]
-        private float miningFacilityHeightOffset;
+        [SerializeField, FormerlySerializedAs("miningFacilityHeightOffset"),
+         Tooltip("World-space height of a built facility relative to the site center; keeps it on the site rocks.")]
+        private float facilityHeightOffset;
         [SerializeField] private MeshRenderer ringRenderer;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
@@ -44,6 +46,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public Vector3 Center => transform.position;
         public float Radius => radius * Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));
         public float CaptureDuration => captureDuration;
+        public Vector3 FacilityPosition => Center + Vector3.up * facilityHeightOffset;
         public IReadOnlyList<MapObstacle> RockObstacles => rockObstacles;
 
         private void Awake()
@@ -80,13 +83,6 @@ namespace EmpireAtWar.Entities.CaptureSites
             float viewHeight = 2f * distance * Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
             float worldScale = viewHeight * screenHeightFraction / _canvasTransform.rect.height;
             _canvasTransform.localScale = Vector3.one * (worldScale / transform.lossyScale.y);
-        }
-
-        public Vector3 GetFacilityPosition(SiteFacilityType facilityType)
-        {
-            return facilityType == SiteFacilityType.Mining
-                ? Center + Vector3.up * miningFacilityHeightOffset
-                : Center;
         }
 
         public void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel)
