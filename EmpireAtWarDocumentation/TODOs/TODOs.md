@@ -2,6 +2,9 @@
 
 ## Active Tasks
 
+- [ ] **Set up Jenkins local Windows builds**
+  - **Plan**: private local documentation outside this vault; excluded from Git.
+
 - [x] **Implement unit actions (ship orders)**
   - **Plan**: [[SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
 
