@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
         void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination);
-        bool IsPositionInOwnedZone(PlayerId owner, Vector3 position);
+        bool IsPositionInAlliedZone(PlayerId owner, Vector3 position);
         int GetOwnedCapturableZoneCount(PlayerId owner);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
         bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
@@ -164,11 +164,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
         }
 
-        public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position)
+        public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position)
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner == owner && zone.Contains(position))
+                if (_roster.IsAllied(zone.Owner, owner) && zone.Contains(position))
                 {
                     return true;
                 }
@@ -232,17 +232,18 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ShipType shipType,
             out Vector3 position)
         {
-            List<ReinforcementZonePresenter> ownedZones = new List<ReinforcementZonePresenter>();
+            // Reinforcements may arrive in any zone held by the owner's team.
+            List<ReinforcementZonePresenter> alliedZones = new List<ReinforcementZonePresenter>();
             List<ReinforcementZonePresenter> capturedZones = new List<ReinforcementZonePresenter>();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner != owner)
+                if (!_roster.IsAllied(zone.Owner, owner))
                 {
                     continue;
                 }
 
-                ownedZones.Add(zone);
-                // AI players reinforce at their captured front-line zones first.
+                alliedZones.Add(zone);
+                // AI players reinforce at their team's captured front-line zones first.
                 if (zone.IsCapturable && _roster.Get(owner).IsAi)
                 {
                     capturedZones.Add(zone);
@@ -255,7 +256,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 return true;
             }
 
-            return TryGetClearSpawnPosition(ownedZones, shipType, out position);
+            return TryGetClearSpawnPosition(alliedZones, shipType, out position);
         }
 
         private bool TryGetClearSpawnPosition(

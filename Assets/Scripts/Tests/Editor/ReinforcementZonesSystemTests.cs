@@ -106,6 +106,37 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void Spawn_AllowsAlliedZonesAndRejectsHostileZones()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZoneView allied = CreateZone(
+                    root.transform, TestPlayers.Ally, false, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, allied);
+                Dictionary<ShipType, float> radii = (Dictionary<ShipType, float>)
+                    typeof(ReinforcementZonesSystem).GetField(
+                        "_shipNavigationRadii", PRIVATE_INSTANCE).GetValue(system);
+                radii.Add(ShipType.Arquitens, 5f);
+
+                Assert.That(system.IsPositionInAlliedZone(TestPlayers.Human, allied.Center), Is.True);
+                Assert.That(system.IsPositionInAlliedZone(TestPlayers.Enemy, allied.Center), Is.False);
+                Assert.That(system.TryGetRandomSpawnPosition(
+                    TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
+                Assert.That(Vector3.Distance(position, allied.Center),
+                    Is.LessThanOrEqualTo(allied.Radius));
+                Assert.That(system.TryGetRandomSpawnPosition(
+                    TestPlayers.Enemy, ShipType.Arquitens, out _), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, params ReinforcementZoneView[] zones)
         {
@@ -115,6 +146,9 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_mapModel", new FakeMapModel(
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
             SetField(system, "_shipNavigationService", new FakeShipNavigationService());
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            SetField(system, "_roster", roster);
+            SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
             system.Initialize();
             return system;
         }
