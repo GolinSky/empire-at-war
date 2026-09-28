@@ -1,0 +1,43 @@
+pipeline {
+    agent { label 'windows-local-unity' }
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 120, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '3'))
+    }
+    environment {
+        CI_TOOLS = 'F:/Jenkins/app/build-tools'
+    }
+    stages {
+        stage('Prepare committed main') {
+            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Prepare' }
+        }
+        stage('Build Windows x64') {
+            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Build' }
+        }
+        stage('Package player') {
+            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Package' }
+        }
+    }
+    post {
+        always {
+            script {
+                parallel(
+                    archive: {
+                        try {
+                            archiveArtifacts artifacts: 'artifacts/**', allowEmptyArchive: false
+                            powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase ArchiveComplete'
+                        } finally {
+                            writeFile file: 'archive-finished', text: 'finished'
+                        }
+                    },
+                    resources: {
+                        powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase ArchiveMonitor'
+                    },
+                    failFast: true
+                )
+            }
+        }
+    }
+}

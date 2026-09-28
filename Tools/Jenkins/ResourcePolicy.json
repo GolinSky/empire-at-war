@@ -1,0 +1,9 @@
+{
+  "StartAvailableRamGiB": 10,
+  "StopAvailableRamGiB": 2,
+  "DiskReserveGiB": 20,
+  "AdditionalPeakGiB": { "F:\\": 50, "C:\\": 15 },
+  "LibraryBudgetGiB": 24,
+  "PollSeconds": 5,
+  "BuildTimeoutSeconds": 6600
+}
