@@ -176,7 +176,7 @@ PrefabInstance:
     - target: {fileID: 5972179036990806493, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
       propertyPath: m_Name
-      value: vfx (2)_backup
+      value: SkirmishVfx_Backup
       objectReference: {fileID: 0}
     - target: {fileID: 5972179036990806493, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
@@ -5334,7 +5334,7 @@ PrefabInstance:
     - target: {fileID: 5972179036990806493, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
       propertyPath: m_Name
-      value: vfx
+      value: SkirmishVfx
       objectReference: {fileID: 0}
     - target: {fileID: 7287119041305564453, guid: b8b423c1887ca92438b219b9eaa1d187,
         type: 3}
