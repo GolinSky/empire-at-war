@@ -187,6 +187,7 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/ShipLit_Autodesk_Material_Conversion_Plan.md",
     "TODOs/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28.md",
     "Architecture/UI_REFACTORING_PLAYBOOK.md",
     "TODOs/Codebase Audit 2026-09-27/09 Implementation Results.md",
@@ -214,7 +215,6 @@
     "TODOs/Ship_Abilities_Plan.md",
     "TODOs/SkirmishOrchestrator_Refactoring_Plan.md",
     "TODOs/Battle_Attack_Optimization_Plan.md",
-    "Artifacts/Codex_Audit_2026-09-13/01_INVENTORY.md",
     "Artifacts/Codex_Audit_2026-09-13/inventory.json",
     "Artifacts/Codex_Audit_2026-09-13/patches/003-macos-receiver-instructions.patch",
     "Artifacts/Codex_Audit_2026-09-13/patches/002-parent-model-documentation.patch",
