@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.CinematicCamera.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -32,6 +32,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly IUnitOrderService _orderService;
         private readonly ICinematicCameraModelObserver _cinematicCamera;
         private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly ILocalPlayer _localPlayer;
 
         public HardPointOverlayPresenter(
             IHardPointOverlayView view,
@@ -42,7 +43,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             ICameraService cameraService,
             IUnitOrderService orderService,
             ICinematicCameraModelObserver cinematicCamera,
-            FogOfWarSystem fogOfWarSystem)
+            FogOfWarSystem fogOfWarSystem,
+            ILocalPlayer localPlayer)
         {
             _view = view;
             _model = model;
@@ -53,6 +55,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _orderService = orderService;
             _cinematicCamera = cinematicCamera;
             _fogOfWarSystem = fogOfWarSystem;
+            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -239,7 +242,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private bool IsVisible(IEntity ship)
         {
             return !ship.HealthModel.IsDestroyed &&
-                   (ship.PlayerType == PlayerType.Player ||
+                   (_localPlayer.IsFriendly(ship.Owner) ||
                     !_fogOfWarSystem.IsHidden(ship.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
@@ -252,7 +255,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private void HandleOrderIssued(UnitOrder order)
         {
-            if (order.Issuer != PlayerType.Player)
+            if (!_localPlayer.IsLocal(order.Issuer))
             {
                 return;
             }

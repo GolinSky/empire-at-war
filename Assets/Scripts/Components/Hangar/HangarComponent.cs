@@ -1,10 +1,10 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Hangar
             new List<(ISquadron Squadron, Action Handler)>();
         private IHangarData _data;
         private SquadronFactory _squadronFactory;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private LazyInject<IEntity> _carrier;
         private IHealthModelObserver _health;
         private IHardPointModel _hangarUnit;
@@ -35,12 +35,12 @@ namespace EmpireAtWar.Components.Hangar
 
         [Inject]
         private void Construct(HangarModel model, IHangarData data, SquadronFactory squadronFactory,
-            PlayerType playerType, LazyInject<IEntity> carrier, IHealthModelObserver health)
+            PlayerId owner, LazyInject<IEntity> carrier, IHealthModelObserver health)
         {
             SetModel(model);
             _data = data;
             _squadronFactory = squadronFactory;
-            _playerType = playerType;
+            _owner = owner;
             _carrier = carrier;
             _health = health;
         }
@@ -98,7 +98,7 @@ namespace EmpireAtWar.Components.Hangar
 
         public ISquadron Launch(SquadronType squadronType)
         {
-            ISquadron squadron = _squadronFactory.Create(_playerType, squadronType,
+            ISquadron squadron = _squadronFactory.Create(_owner, squadronType,
                 launchPoint.position, launchPoint.rotation);
             squadron.Guard(_carrier.Value, Vector3.zero);
             return squadron;

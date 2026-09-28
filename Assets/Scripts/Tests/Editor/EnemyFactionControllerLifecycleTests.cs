@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Services.Player;
+using EmpireAtWar.Models.Players;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -62,7 +64,9 @@ namespace EmpireAtWar.Tests.Editor
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
                     null,
-                    null);
+                    null,
+                    TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    new PlayerRegistry());
 
                 controller.Initialize();
                 controller.Handle(
@@ -124,7 +128,9 @@ namespace EmpireAtWar.Tests.Editor
                     new UnavailableStructurePlacement(),
                     new OperationalEntityLocator(),
                     null,
-                    null);
+                    null,
+                    TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    new PlayerRegistry());
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 UnitLimitKey unitId = UnitLimitKey.From(request);
@@ -187,7 +193,9 @@ namespace EmpireAtWar.Tests.Editor
                 structurePlacement,
                 new OperationalEntityLocator(),
                 null,
-                null);
+                null,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                new PlayerRegistry());
 
             controller.Initialize();
             controller.Initialize();
@@ -240,7 +248,7 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
             public event Action<IEntity> EntityAdded { add { } remove { } }
             public event Action<IEntity> EntityRemoved { add { } remove { } }
-            public bool IsStationOperational(PlayerType playerType) => true;
+            public bool IsStationOperational(PlayerId owner) => true;
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -11,11 +12,14 @@ namespace EmpireAtWar.Presenters.MiniMap
     {
         private readonly ReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly MiniMapMarkerCollection<ReinforcementZonePresenter> _markers;
+        private readonly ILocalPlayer _localPlayer;
 
         public ReinforcementZoneMiniMapPresenter(
             MiniMapData miniMapData,
-            ReinforcementZonesSystem reinforcementZonesSystem)
+            ReinforcementZonesSystem reinforcementZonesSystem,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _markers = new MiniMapMarkerCollection<ReinforcementZonePresenter>(miniMapData);
             _reinforcementZonesSystem = reinforcementZonesSystem;
         }
@@ -24,7 +28,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         {
             foreach (ReinforcementZonePresenter zone in _reinforcementZonesSystem.Zones)
             {
-                MiniMapMarker marker = new MiniMapMarker(MarkType.ReinforcementZone, zone.Owner);
+                MiniMapMarker marker = new MiniMapMarker(MarkType.ReinforcementZone, _localPlayer.GetRelation(zone.Owner));
                 // Zones are known terrain: always drawn, with the owner from the last sighting.
                 marker.SetPosition(zone.Center.x, zone.Center.z);
                 marker.SetWorldDiameter(zone.Radius * 2f);
@@ -46,13 +50,13 @@ namespace EmpireAtWar.Presenters.MiniMap
             _markers.Clear();
         }
 
-        private static void RefreshMarker(
+        private void RefreshMarker(
             ReinforcementZonePresenter zone,
             MiniMapMarker marker)
         {
             if (zone.IsRevealed)
             {
-                marker.SetRelation(zone.Owner);
+                marker.SetRelation(_localPlayer.GetRelation(zone.Owner));
             }
         }
     }

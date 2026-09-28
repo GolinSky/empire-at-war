@@ -1487,6 +1487,7 @@ GameObject:
   - component: {fileID: 1280977221910138847}
   - component: {fileID: 8636846628301652099}
   - component: {fileID: 4922508454177302544}
+  - component: {fileID: 8884538507175374387}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
   m_TagString: Untagged
@@ -1624,6 +1625,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
   launchPoint: {fileID: 4029083725751294024}
   hangarHardPoint: {fileID: 2124114673325768231}
+--- !u!114 &8884538507175374387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 555100115181004464}
+  - {fileID: 2641999123679171728}
+  - {fileID: 8426188828586698579}
+  - {fileID: 253668630777400967}
+  - {fileID: 6488916625286535517}
+  - {fileID: 9093703196654673226}
+  - {fileID: 8824072863644394166}
+  - {fileID: 4144613105397337534}
+  - {fileID: 2488626554368185859}
+  - {fileID: 5392373877904681124}
+  - {fileID: 6773111060450377339}
+  - {fileID: 6164268158150407079}
+  - {fileID: 9046699686680731835}
 --- !u!1001 &4411045628918960048
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.Battle
     public interface ISelectionService : IService, INotifier<ISelectionSubject>
     {
         ISelectionContext PlayerSelectionContext { get; }
-        ISelectionContext EnemySelectionContext { get; }
+        ISelectionContext OtherSelectionContext { get; }
         void RemoveSelectable(ISelectionContext selectionContext);
         void SelectCurrentShipsByType(ShipType shipType);
         void SelectCurrentSquadronsByType(SquadronType squadronType);

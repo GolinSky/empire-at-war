@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Services.Player;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
@@ -41,6 +43,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEntityLocator _entityLocator;
         private readonly ISquadronLauncher _squadronLauncher;
         private readonly IEnemySquadronCommander _squadronCommander;
+        private readonly PlayerSlot _owner;
+        private readonly IPlayerRegistry _playerRegistry;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
             new Dictionary<CustomCoroutine, UnitRequest>();
 
@@ -51,7 +55,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly TimerPoolService _timerPoolService;
         private bool _isInitialized;
 
-        private PlayerType PlayerType => PlayerType.Opponent;
+        private PlayerId Owner => _owner.Id;
         public float Income => DEFAULT_INCOME * Model.CurrentLevel;
         public bool HasPendingReinforcement => _pendingBuilds.Count > 0;
 
@@ -70,8 +74,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IEnemyStructurePlacementService structurePlacement,
             IEntityLocator entityLocator,
             ISquadronLauncher squadronLauncher,
-            IEnemySquadronCommander squadronCommander) : base(model)
+            IEnemySquadronCommander squadronCommander,
+            PlayerSlot owner,
+            IPlayerRegistry playerRegistry) : base(model)
         {
+            _owner = owner;
+            _playerRegistry = playerRegistry;
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
@@ -96,7 +104,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Handle(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType))
+            if (!_entityLocator.IsStationOperational(Owner))
             {
                 _purchaseChain.Revert(unitRequest);
                 return;
@@ -122,7 +130,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ScheduleBuild(shipUnitRequest, () =>
                         {
                             ShipEntity ship = _shipFactory.Create(
-                                PlayerType,
+                                Owner,
                                 shipUnitRequest.Key,
                                 GenerateShipCoordinates(shipUnitRequest.Key));
                             ship.OnRelease += _ => ReleaseUnit(shipUnitRequest);
@@ -140,7 +148,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ScheduleBuild(squadronUnitRequest, () =>
                         {
                             ISquadron squadron = _squadronLauncher.LaunchFromStation(
-                                PlayerType,
+                                Owner,
                                 squadronUnitRequest.Key);
                             Action handler = null;
                             handler = () =>
@@ -165,7 +173,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         {
                             Vector3 position = GenerateMapCoordinates();
                             MiningFacilityEntity facility = _miningFacilityFactory.Create(
-                                PlayerType,
+                                Owner,
                                 miningFacilityUnitRequest.Key,
                                 position);
                             facility.OnRelease += () =>
@@ -189,7 +197,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         {
                             Vector3 position = GenerateMapCoordinates();
                             DefendPlatformEntity platform = _defendPlatformFactory.Create(
-                                PlayerType,
+                                Owner,
                                 defendPlatformUnitRequest.Key,
                                 position);
                             platform.OnRelease += () =>
@@ -280,7 +288,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3 GenerateShipCoordinates(ShipType shipType)
         {
             if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(
-                    PlayerType,
+                    Owner,
                     shipType,
                     out Vector3 position))
             {
@@ -312,6 +320,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _unitLimitModel.Reset();
             _structurePlacement.Reset();
             _economyProvider.AddProvider(this);
+            _playerRegistry.RegisterAiReinforcement(Owner, this);
             _isInitialized = true;
         }
 
@@ -325,6 +334,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _economyProvider.RemoveProvider(this);
+            _playerRegistry.UnregisterAiReinforcement(Owner);
             _isInitialized = false;
         }
     }

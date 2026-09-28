@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -11,6 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities
     public sealed class ShipAbilityService : ITickable, ILateDisposable, IShipAbilityTargeting
     {
         private readonly IShipAbilityFactory _factory;
+        private readonly IPlayerRelations _relations;
         private readonly List<ShipAbilitySlot> _running = new List<ShipAbilitySlot>();
         private readonly List<IEntity> _pendingCasters = new List<IEntity>();
 
@@ -18,7 +20,11 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
 
-        public ShipAbilityService(IShipAbilityFactory factory) { _factory = factory; }
+        public ShipAbilityService(IShipAbilityFactory factory, IPlayerRelations relations)
+        {
+            _factory = factory;
+            _relations = relations;
+        }
 
         public void Press(IReadOnlyList<IEntity> casters, ShipAbilityId id)
         {
@@ -107,7 +113,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             ShipAbilityDefinition definition = slot.Definition;
             if (definition.RequiresEnemyTarget &&
                 (target == null || target.HealthModel.IsDestroyed ||
-                 target.PlayerType == caster.Entity.PlayerType ||
+                 !_relations.IsHostile(caster.Entity.Owner, target.Owner) ||
                  Vector3.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
                 return false;
 

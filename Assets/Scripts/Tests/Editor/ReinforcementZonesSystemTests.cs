@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using System.Reflection;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
@@ -26,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, PlayerType.Opponent,
+                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Enemy,
                     true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, zone);
 
@@ -49,15 +50,15 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 ReinforcementZoneView captured = CreateZone(
-                    root.transform, PlayerType.Opponent, true, new Vector3(55f, 0f, -55f));
+                    root.transform, TestPlayers.Enemy, true, new Vector3(55f, 0f, -55f));
                 ReinforcementZonesSystem system = CreateSystem(root, data,
-                    CreateZone(root.transform, PlayerType.Opponent, false, Vector3.zero),
+                    CreateZone(root.transform, TestPlayers.Enemy, false, Vector3.zero),
                     captured,
-                    CreateZone(root.transform, PlayerType.Player, true, Vector3.left * 80f),
-                    CreateZone(root.transform, PlayerType.None, true, Vector3.right * 80f));
+                    CreateZone(root.transform, TestPlayers.Human, true, Vector3.left * 80f),
+                    CreateZone(root.transform, PlayerId.None, true, Vector3.right * 80f));
                 List<Vector3> centers = new List<Vector3> { Vector3.one };
 
-                system.CopyOwnedCapturableZoneCenters(PlayerType.Opponent, centers);
+                system.CopyOwnedCapturableZoneCenters(TestPlayers.Enemy, centers);
 
                 Assert.That(centers, Is.EqualTo(new[] { captured.Center }));
             }
@@ -79,9 +80,9 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 ReinforcementZoneView home = CreateZone(
-                    root.transform, PlayerType.Opponent, false, new Vector3(160f, 0f, -170f));
+                    root.transform, TestPlayers.Enemy, false, new Vector3(160f, 0f, -170f));
                 ReinforcementZoneView captured = CreateZone(
-                    root.transform, PlayerType.Opponent, true, Vector3.zero);
+                    root.transform, TestPlayers.Enemy, true, Vector3.zero);
                 SetField(captured, "_radius", capturedRadius);
                 ReinforcementZonesSystem system = CreateSystem(root, data, home, captured);
                 SetField(system, "_shipService", new ShipService());
@@ -91,7 +92,7 @@ namespace EmpireAtWar.Tests.Editor
                 radii.Add(ShipType.Arquitens, 5f);
 
                 bool found = system.TryGetRandomSpawnPosition(
-                    PlayerType.Opponent, ShipType.Arquitens, out Vector3 position);
+                    TestPlayers.Enemy, ShipType.Arquitens, out Vector3 position);
 
                 Assert.That(found, Is.True);
                 ReinforcementZoneView expectedZone = usesCapturedZone ? captured : home;
@@ -120,7 +121,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static ReinforcementZoneView CreateZone(
             Transform parent,
-            PlayerType owner,
+            PlayerId owner,
             bool isCapturable,
             Vector3 center)
         {
@@ -161,17 +162,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public Vector2Range SizeRange => _sizeRange;
 
-            public Vector3 GetStationPosition(FactionType factionType)
+            public Vector3 GetStationPosition(PlayerId owner)
             {
-                return factionType switch
-                {
-                    FactionType.Republic => _republicPosition,
-                    FactionType.Separatist => _separatistPosition,
-                    _ => throw new System.ArgumentOutOfRangeException(
-                        nameof(factionType),
-                        factionType,
-                        null)
-                };
+                return owner == TestPlayers.Human ? _republicPosition : _separatistPosition;
             }
 
             private void SetRangeValue(string fieldName, Vector2 value)

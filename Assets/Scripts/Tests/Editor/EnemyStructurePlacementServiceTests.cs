@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -20,7 +21,6 @@ namespace EmpireAtWar.Tests.Editor
         private const int OBSTACLE_LAYER = 9;
         private const int DEAD_LAYER = 10;
         private GameObject _root;
-        private EnemyFactionModel _faction;
         private MapStub _map;
         private ZonesStub _zones;
         private EnemyStructurePlacementService _service;
@@ -29,15 +29,14 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
-            _faction = new EnemyFactionModel(null, FactionType.Republic);
             _map = new MapStub();
             _zones = new ZonesStub();
             DiContainer container = new DiContainer();
             container.Bind<IMapModelObserver>().FromInstance(_map);
-            _service = new EnemyStructurePlacementService(_faction,
+            _service = new EnemyStructurePlacementService(
                 new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                _zones, new NoCaptureSites(), new LayersStub());
+                _zones, new NoCaptureSites(), new LayersStub(), TestPlayers.CreateDuel().Get(TestPlayers.Enemy));
         }
 
         [TearDown]
@@ -143,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
                     .SetValue(SizeRange, Vector2.one * maximum);
             }
 
-            public Vector3 GetStationPosition(FactionType factionType) => Station;
+            public Vector3 GetStationPosition(PlayerId owner) => Station;
         }
 
         private sealed class LayersStub : ILayerService
@@ -160,30 +159,30 @@ namespace EmpireAtWar.Tests.Editor
             public List<Vector3> Centers { get; } = new List<Vector3>();
             public event Action OwnershipChanged { add { } remove { } }
             public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f) => false;
-            public bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position) => false;
-            public int GetOwnedCapturableZoneCount(PlayerType playerType) => Centers.Count;
+            public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position) => false;
+            public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
             public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position) => true;
 
-            public void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination)
+            public void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination)
             {
                 destination.Clear();
                 destination.AddRange(Centers);
             }
 
-            public bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position)
+            public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position)
+            public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
             public bool TryGetDefaultZoneExitPosition(
-                PlayerType playerType,
+                PlayerId owner,
                 Vector3 shipPosition,
                 float shipRadius,
                 out Vector3 position)
@@ -192,13 +191,13 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
-            public bool TryGetRandomSpawnPosition(PlayerType playerType, ShipType shipType, out Vector3 position)
+            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
             {
                 position = default;
                 return false;
@@ -209,21 +208,21 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
 
-            public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryBuildOnOwnedSite(PlayerType playerType) => false;
+            public bool TryBuildOnOwnedSite(PlayerId owner) => false;
 
-            public bool TryGetThreatenedSite(PlayerType owner, out Vector3 position)
+            public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetRaidTarget(PlayerType attacker, Vector3 origin, out Vector3 position)
+            public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
             {
                 position = default;
                 return false;

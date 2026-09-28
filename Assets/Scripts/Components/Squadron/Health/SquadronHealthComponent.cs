@@ -1,9 +1,9 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Squadrons;
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
         private ITimer _regenerateShieldsTimer;
         private CombatModifiers _modifiers;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private HardPointAdapter[] _adapters = Array.Empty<HardPointAdapter>();
         private bool _isReleased;
 
@@ -53,15 +53,15 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public bool HasUnits => Model.HasUnits;
         public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
-        public PlayerType PlayerType => _playerType;
+        public PlayerId Owner => _owner;
 
         [Inject]
         private void Construct(SquadronHealthModel model, CombatModifiers modifiers,
-            PlayerType playerType)
+            PlayerId owner)
         {
             SetModel(model);
             _modifiers = modifiers;
-            _playerType = playerType;
+            _owner = owner;
         }
 
         public void Initialize()

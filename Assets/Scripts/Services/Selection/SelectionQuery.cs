@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Icon;
@@ -26,11 +27,13 @@ namespace EmpireAtWar.Services.Battle
     {
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
+        private readonly ILocalPlayer _localPlayer;
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
-        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator)
+        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
         }
@@ -76,7 +79,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (entity.Id == selected.Entity.Id ||
                     entity.HealthModel.IsDestroyed ||
-                    entity.PlayerType != selected.Entity.PlayerType ||
+                    entity.Owner != selected.Entity.Owner ||
                     !IsSameUnitType(selected.Entity.Model, entity.Model) ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
@@ -91,7 +94,7 @@ namespace EmpireAtWar.Services.Battle
         {
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.PlayerType != PlayerType.Player ||
+                if (!_localPlayer.IsLocal(entity.Owner) ||
                     entity.HealthModel.IsDestroyed ||
                     !IsUnit(entity.Model) ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command))
@@ -107,7 +110,7 @@ namespace EmpireAtWar.Services.Battle
         {
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.PlayerType != PlayerType.Player ||
+                if (!_localPlayer.IsLocal(entity.Owner) ||
                     entity.HealthModel.IsDestroyed ||
                     !IsUnit(entity.Model) ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
@@ -137,7 +140,7 @@ namespace EmpireAtWar.Services.Battle
 
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.PlayerType != PlayerType.Player ||
+                if (!_localPlayer.IsLocal(entity.Owner) ||
                     entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
                     !(command is ISelectionPositionProvider positionProvider))

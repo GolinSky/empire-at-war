@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -26,22 +27,22 @@ namespace EmpireAtWar.Services.ReinforcementZones
         event Action OwnershipChanged;
 
         bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
-        void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination);
-        bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position);
-        int GetOwnedCapturableZoneCount(PlayerType playerType);
+        void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination);
+        bool IsPositionInOwnedZone(PlayerId owner, Vector3 position);
+        int GetOwnedCapturableZoneCount(PlayerId owner);
         bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
-        bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position);
-        bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position);
+        bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
+        bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position);
         bool TryGetDefaultZoneExitPosition(
-            PlayerType playerType,
+            PlayerId owner,
             Vector3 shipPosition,
             float shipRadius,
             out Vector3 position);
         bool TryGetRandomSpawnPosition(
-            PlayerType playerType,
+            PlayerId owner,
             ShipType shipType,
             out Vector3 position);
-        bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position);
+        bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position);
     }
 
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IInitializable, ITickable
@@ -67,6 +68,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IAssetService _repository;
         private ShipsData _shipsData;
         private ReinforcementZoneView[] _zoneViews;
+        private IPlayerRoster _roster;
+        private ILocalPlayer _localPlayer;
+        private CaptureTallyBuilder _tally;
 
         public event Action OwnershipChanged;
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
@@ -83,7 +87,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IInputService inputService,
-            ReinforcementZoneView[] zoneViews)
+            ReinforcementZoneView[] zoneViews,
+            IPlayerRoster roster,
+            ILocalPlayer localPlayer)
         {
             _shipService = shipService;
             _entityLocator = entityLocator;
@@ -96,6 +102,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _cameraService = cameraService;
             _inputService = inputService;
             _zoneViews = zoneViews;
+            _roster = roster;
+            _localPlayer = localPlayer;
+            _tally = new CaptureTallyBuilder(roster);
         }
 
         public void Initialize()
@@ -107,8 +116,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     view.StartingOwner,
                     view.IsCapturable,
                     view.CaptureDuration,
-                    _data.CaptureSpeedPerNetShip);
-                _zones.Add(new ReinforcementZonePresenter(model, view));
+                    _data.CaptureSpeedPerNetShip,
+                    _roster);
+                _zones.Add(new ReinforcementZonePresenter(model, view, _localPlayer));
             }
         }
 
@@ -117,21 +127,19 @@ namespace EmpireAtWar.Services.ReinforcementZones
             CollectSquadrons();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                _shipService.CountShips(zone.Contains, out int playerShips, out int opponentShips);
-                float playerStrength = playerShips;
-                float opponentStrength = opponentShips;
+                _tally.Clear();
+                _shipService.AddShipStrength(zone.Contains, _tally);
 
                 // A squadron is positioned at the centroid of its fighters.
                 foreach (IEntity squadron in _squadrons)
                 {
                     if (zone.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
                     {
-                        AddStrength(squadron.PlayerType, _data.SquadronCaptureWeight,
-                            ref playerStrength, ref opponentStrength);
+                        _tally.Add(squadron.Owner, _data.SquadronCaptureWeight);
                     }
                 }
 
-                if (zone.Tick(Time.deltaTime, playerStrength, opponentStrength))
+                if (zone.Tick(Time.deltaTime, _tally.Build()))
                 {
                     OwnershipChanged?.Invoke();
                 }
@@ -156,24 +164,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
         }
 
-        private static void AddStrength(PlayerType playerType, float strength,
-            ref float playerStrength, ref float opponentStrength)
-        {
-            if (playerType == PlayerType.Player)
-            {
-                playerStrength += strength;
-            }
-            else if (playerType == PlayerType.Opponent)
-            {
-                opponentStrength += strength;
-            }
-        }
-
-        public bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position)
+        public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position)
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner == playerType && zone.Contains(position))
+                if (zone.Owner == owner && zone.Contains(position))
                 {
                     return true;
                 }
@@ -198,12 +193,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return false;
         }
 
-        public int GetOwnedCapturableZoneCount(PlayerType playerType)
+        public int GetOwnedCapturableZoneCount(PlayerId owner)
         {
             int count = 0;
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.IsCapturable && zone.Owner == playerType)
+                if (zone.IsCapturable && zone.Owner == owner)
                 {
                     count++;
                 }
@@ -212,12 +207,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return count;
         }
 
-        public void CopyOwnedCapturableZoneCenters(PlayerType playerType, List<Vector3> destination)
+        public void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination)
         {
             destination.Clear();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.IsCapturable && zone.Owner == playerType)
+                if (zone.IsCapturable && zone.Owner == owner)
                 {
                     destination.Add(zone.Center);
                 }
@@ -233,7 +228,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         }
 
         public bool TryGetRandomSpawnPosition(
-            PlayerType playerType,
+            PlayerId owner,
             ShipType shipType,
             out Vector3 position)
         {
@@ -241,13 +236,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
             List<ReinforcementZonePresenter> capturedZones = new List<ReinforcementZonePresenter>();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner != playerType)
+                if (zone.Owner != owner)
                 {
                     continue;
                 }
 
                 ownedZones.Add(zone);
-                if (zone.IsCapturable && playerType == PlayerType.Opponent)
+                // AI players reinforce at their captured front-line zones first.
+                if (zone.IsCapturable && _roster.Get(owner).IsAi)
                 {
                     capturedZones.Add(zone);
                 }
@@ -307,11 +303,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return false;
         }
 
-        public bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position)
+        public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner != playerType)
+                if (zone.Owner != owner)
                 {
                     continue;
                 }
@@ -327,11 +323,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return false;
         }
 
-        public bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position)
+        public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
         {
             foreach (ReinforcementZoneView view in _zoneViews)
             {
-                if (view.StartingOwner != playerType || view.IsCapturable) continue;
+                if (view.StartingOwner != owner || view.IsCapturable) continue;
                 position = view.Center;
                 position.y = 0f;
                 return true;
@@ -342,14 +338,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
         }
 
         public bool TryGetDefaultZoneExitPosition(
-            PlayerType playerType,
+            PlayerId owner,
             Vector3 shipPosition,
             float shipRadius,
             out Vector3 position)
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (zone.Owner != playerType || zone.IsCapturable ||
+                if (zone.Owner != owner || zone.IsCapturable ||
                     !zone.Contains(shipPosition))
                 {
                     continue;
@@ -374,14 +370,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return false;
         }
 
-        public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+        public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
         {
             ReinforcementZonePresenter closestZone = null;
             float closestDistance = float.MaxValue;
 
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (!zone.IsCapturable || zone.Owner == playerType)
+                if (!zone.IsCapturable || zone.Owner == owner)
                 {
                     continue;
                 }

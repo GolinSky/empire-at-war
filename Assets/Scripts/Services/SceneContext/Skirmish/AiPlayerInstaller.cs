@@ -1,11 +1,12 @@
 using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Economy;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Services.CaptureSites;
@@ -16,15 +17,19 @@ using Zenject;
 
 namespace EmpireAtWar.SceneContext
 {
-    public class EnemyCoreInstaller : MonoInstaller
+    /// <summary>
+    /// Installs one AI player. The skirmish installer runs it once per AI slot, each in its own
+    /// sub-container, after binding that slot's <see cref="PlayerSlot"/>.
+    /// </summary>
+    public class AiPlayerInstaller : Installer<AiPlayerInstaller>
     {
         [Inject] private IAssetService Repository { get; }
-        [Inject] private Zenject.SceneContext SceneContext { get; }
-        
+        [Inject] private PlayerSlot Owner { get; }
+
         public override void InstallBindings()
         {
             Container.Install<GameUnitsInstaller>();
-            
+
             Container.BindInterfacesExt<EnemyService>();
             Container.Bind<EnemyStrategicDecisionModel>().AsSingle();
             Container.Bind<EnemyProductionDecisionModel>().AsSingle();
@@ -38,12 +43,12 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemySuperWeaponController>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
             Container.BindScriptableObject<ReinforcementData>(Repository);
-            
+
             Container.BindInterfacesExt<EnemyPurchaseProcessor>();
-            
+
+            // Registers itself as this AI's pending-reinforcement source in the scene-wide player registry.
             Container.BindInterfacesExt<EnemyFactionController>();
-            
-            
+
             Container.BindScriptableObject<EconomyData>(Repository);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
@@ -54,48 +59,19 @@ namespace EmpireAtWar.SceneContext
                 .NonLazy();
 #endif
 
-            
-            SceneContext.Container
-                .Bind<IPurchaseChain>()
-                .WithId(PlayerType.Opponent)
-                .FromMethod(()=>Container.Resolve<IPurchaseChain>());
-            
-            SceneContext.Container
-                .Bind<IEconomyProvider>()
-                .WithId(PlayerType.Opponent)
-                .FromMethod(()=>Container.Resolve<IEconomyProvider>());
-
-            Container.Bind<ISiteFacilityBuilder>().To<SiteFacilityBuilder>().AsSingle()
-                .WithArguments(PlayerType.Opponent);
+            // Registers itself in the scene-wide player registry so capture sites can build for this AI.
+            Container.BindInterfacesTo<SiteFacilityBuilder>().AsSingle().NonLazy();
             Container.BindInterfacesExt<EnemySiteConstructionController>();
             Container.BindInterfacesExt<EnemySquadronCommander>();
-            SceneContext.Container
-                .Bind<ISiteFacilityBuilder>()
-                .WithId(PlayerType.Opponent)
-                .FromMethod(() => Container.Resolve<ISiteFacilityBuilder>());
 
-            SceneContext.Container
-                .Bind<IEnemyReinforcementObserver>()
-                .FromMethod(()=>Container.Resolve<IEnemyReinforcementObserver>());
-
-            // Resolving inside WithArguments would finalize the binding before its arguments are assigned.
-            FactionType enemyFactionType = Container.ResolveId<FactionType>(PlayerType.Opponent);
             Container
                 .Bind<EnemyFactionModel>()
                 .AsSingle()
-                .WithArguments(enemyFactionType);
+                .WithArguments(Owner.Faction);
             Container
                 .BindInterfacesAndSelfTo<FactionResearchModel>()
                 .AsSingle()
-                .WithArguments(enemyFactionType);
-
-            
-            SceneContext.Container
-                .Bind<IBuildShipChain>()
-                .WithId(PlayerType.Opponent)
-                .FromResolve()
-                .AsSingle();
-
+                .WithArguments(Owner.Faction);
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
@@ -18,7 +18,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         void RemoveEntity(IEntity entity);
         IEntity GetEntity(long entityId);
         bool TryGetEntity(long entityId, out IEntity entity);
-        bool IsStationOperational(PlayerType playerType);
+        bool IsStationOperational(PlayerId owner);
         
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
         bool TryGetEntity(Collider collider, out IEntity entity);
@@ -61,11 +61,11 @@ namespace EmpireAtWar.Entities.BaseEntity
             return _entities.TryGetValue(entityId, out entity);
         }
 
-        public bool IsStationOperational(PlayerType playerType)
+        public bool IsStationOperational(PlayerId owner)
         {
             foreach (IEntity entity in _entities.Values)
             {
-                if (entity.PlayerType == playerType &&
+                if (entity.Owner == owner &&
                     entity.Model is ISpaceStationModelObserver &&
                     !entity.HealthModel.IsDestroyed &&
                     entity.HealthModel.HasUnits)

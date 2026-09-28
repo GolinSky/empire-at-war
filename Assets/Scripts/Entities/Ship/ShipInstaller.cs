@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
@@ -21,23 +22,25 @@ namespace EmpireAtWar.Ship
     public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipData>
     {
         private ShipType _shipType;
-        private PlayerType _playerType;
+        private PlayerId _owner;
+        private ILocalPlayer _localPlayer;
         private string _shipDataPath;
 
         protected override string DataPath => _shipDataPath;
         protected override string PrefabPath => _shipType + base.PrefabPath;
 
         [Inject]
-        public void Construct(ShipType shipType, PlayerType playerType, ShipsData shipsData)
+        public void Construct(ShipType shipType, PlayerId owner, ShipsData shipsData, ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _shipType = shipType;
-            _playerType = playerType;
+            _owner = owner;
             _shipDataPath = shipsData.GetShipDataPath(shipType);
         }
 
         protected override void InstallFeatures(ShipData data)
         {
-            Container.BindEntityExt(_playerType);
+            Container.BindEntityExt(_owner);
             Container.BindEntityExt(_shipType);
 
             Container
@@ -46,7 +49,7 @@ namespace EmpireAtWar.Ship
                 .BindRadarFeature()
                 .BindWeaponFeature()
                 .BindCombatModifiersFeature()
-                .BindFogOfWarFeature(_playerType);
+                .BindFogOfWarFeature(!_localPlayer.IsFriendly(_owner));
 
             Container.Bind<ShipMoveModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<ShipMoveComponent>()
@@ -87,7 +90,8 @@ namespace EmpireAtWar.Ship
                 .AsSingle();
             Container.BindInterfacesTo<ShipSfxPresenter>().AsSingle().NonLazy();
 
-            if (_playerType != PlayerType.Player)
+            // Voice lines only play for the local player's own ships.
+            if (!_localPlayer.IsLocal(_owner))
                 return;
 
             Container.Bind<AudioShipDialogData>()

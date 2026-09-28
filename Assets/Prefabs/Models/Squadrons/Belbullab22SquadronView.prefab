@@ -1482,6 +1482,7 @@ GameObject:
   - component: {fileID: 8598202042970863376}
   - component: {fileID: 5259228285351426918}
   - component: {fileID: 2157226560756004583}
+  - component: {fileID: 6410026500573442608}
   m_Layer: 0
   m_Name: Belbullab22SquadronView
   m_TagString: Untagged
@@ -1605,6 +1606,7 @@ MonoBehaviour:
   followSharpness: 12
   friendlyColor: {r: 0.55, g: 1, b: 0.55, a: 1}
   selectedColor: {r: 1, g: 0.92, b: 0.35, a: 1}
+  allyColor: {r: 0.4, g: 0.8, b: 1, a: 1}
   enemyColor: {r: 1, g: 0.3, b: 0.25, a: 1}
 --- !u!114 &2157226560756004583
 MonoBehaviour:
@@ -1648,6 +1650,23 @@ MonoBehaviour:
   - {fileID: 9220304312881968133}
   - {fileID: 6691877565017890596}
   - {fileID: 3753962729109616816}
+--- !u!114 &6410026500573442608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139966785138268518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 4269749118105874505}
+  - {fileID: 2581843268356220194}
+  - {fileID: 6198644078951638440}
+  - {fileID: 2860613498069391094}
 --- !u!1 &5413055772174472877
 GameObject:
   m_ObjectHideFlags: 0

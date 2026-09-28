@@ -1,5 +1,6 @@
 ﻿using EmpireAtWar.Models.Factions;
 using UnityEngine;
+using EmpireAtWar.Models.Players;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity
@@ -7,7 +8,7 @@ namespace EmpireAtWar.Entities.BaseEntity
     public interface IViewEntity
     {
         long Id { get; }
-        PlayerType PlayerType { get; }
+        PlayerId Owner { get; }
     }
 
     /// <summary>
@@ -19,6 +20,6 @@ namespace EmpireAtWar.Entities.BaseEntity
         public long Id { get; }
         
         [Inject]
-        public PlayerType PlayerType { get;  }
+        public PlayerId Owner { get;  }
     }
 }

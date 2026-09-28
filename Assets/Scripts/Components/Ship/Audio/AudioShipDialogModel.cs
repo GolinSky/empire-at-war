@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using Zenject;
@@ -13,51 +14,48 @@ namespace EmpireAtWar.Components.Ship.Audio
         private readonly Random _moveRandom = new Random();
         private readonly Random _alarmSightsRandom = new Random();
         private readonly Random _damageRandom = new Random();
-        private readonly FactionType _playerFactionType;
-        private readonly FactionType _enemyFactionType;
+        private readonly IPlayerRoster _roster;
 
         [Inject]
         public AudioShipDialogModel(
             AudioShipDialogData data,
-            [Inject(Id = PlayerType.Player)] FactionType playerFactionType,
-            [Inject(Id = PlayerType.Opponent)] FactionType enemyFactionType)
+            IPlayerRoster roster)
         {
             _data = data;
-            _playerFactionType = playerFactionType;
-            _enemyFactionType = enemyFactionType;
+            _roster = roster;
         }
 
-        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDialogClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDialogClip(PlayerId owner)
         {
-            return GetClip(playerType, AudioShipDialogData.ClipType.Dialog, _dialogRandom);
+            return GetClip(owner, AudioShipDialogData.ClipType.Dialog, _dialogRandom);
         }
 
-        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAttackClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAttackClip(PlayerId owner)
         {
-            return GetClip(playerType, AudioShipDialogData.ClipType.Attack, _attackRandom);
+            return GetClip(owner, AudioShipDialogData.ClipType.Attack, _attackRandom);
         }
 
-        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetMoveClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetMoveClip(PlayerId owner)
         {
-            return GetClip(playerType, AudioShipDialogData.ClipType.Move, _moveRandom);
+            return GetClip(owner, AudioShipDialogData.ClipType.Move, _moveRandom);
         }
 
-        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAlarmSightsClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetAlarmSightsClip(PlayerId owner)
         {
-            return GetClip(playerType, AudioShipDialogData.ClipType.AlarmSights, _alarmSightsRandom);
+            return GetClip(owner, AudioShipDialogData.ClipType.AlarmSights, _alarmSightsRandom);
         }
 
-        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDamageClip(PlayerType playerType)
+        public (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetDamageClip(PlayerId owner)
         {
-            return GetClip(playerType, AudioShipDialogData.ClipType.Damage, _damageRandom);
+            return GetClip(owner, AudioShipDialogData.ClipType.Damage, _damageRandom);
         }
 
         private (FactionType FactionType, AudioShipDialogData.ClipType ClipType, int Index) GetClip(
-            PlayerType playerType,
+            PlayerId owner,
             AudioShipDialogData.ClipType clipType,
             Random random)
         {
-            FactionType factionType = playerType == PlayerType.Player ? _playerFactionType : _enemyFactionType;
+            FactionType factionType = _roster.Get(owner).Faction;
             return (factionType, clipType, random.Next(_data.GetClipCount(factionType, clipType)));
         }
     }

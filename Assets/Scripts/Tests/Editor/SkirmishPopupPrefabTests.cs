@@ -1,10 +1,12 @@
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MenuUi.Popups;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Ui.Popups;
 using NUnit.Framework;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -23,56 +25,68 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(popup, Is.Not.Null);
 
                 SerializedObject serializedPopup = new SerializedObject(popup);
-                TMP_Dropdown playerFactionDropdown =
-                    serializedPopup.FindProperty("playerFactionDropdown").objectReferenceValue
-                        as TMP_Dropdown;
-                TMP_Dropdown enemyFactionDropdown =
-                    serializedPopup.FindProperty("enemyFactionDropdown").objectReferenceValue
-                        as TMP_Dropdown;
-                Assert.That(playerFactionDropdown, Is.Not.Null);
-                Assert.That(enemyFactionDropdown, Is.Not.Null);
-                Assert.That(
-                    serializedPopup.FindProperty("victoryConditionDropdown").objectReferenceValue,
-                    Is.Not.Null);
-                Assert.That(
-                    serializedPopup.FindProperty("enemyDifficultyDropdown").objectReferenceValue,
-                    Is.Not.Null);
-                Assert.That(
-                    serializedPopup.FindProperty("mapSizeDropdown").objectReferenceValue,
-                    Is.Not.Null);
-                Assert.That(
-                    serializedPopup.FindProperty("startingMoneySlider").objectReferenceValue,
-                    Is.Not.Null);
-                Assert.That(
-                    serializedPopup.FindProperty("startingMoneyText").objectReferenceValue,
-                    Is.Not.Null);
+                SerializedProperty rows = serializedPopup.FindProperty("slotRows");
+                Assert.That(rows.arraySize, Is.EqualTo(MatchRules.MAX_PLAYERS));
+                for (int i = 0; i < rows.arraySize; i++)
+                {
+                    SkirmishSlotRowView row = rows.GetArrayElementAtIndex(i).objectReferenceValue as SkirmishSlotRowView;
+                    Assert.That(row, Is.Not.Null, $"Slot row {i} is not bound.");
+                    SerializedObject serializedRow = new SerializedObject(row);
+                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown" })
+                    {
+                        Assert.That(serializedRow.FindProperty(field).objectReferenceValue, Is.Not.Null,
+                            $"Slot row {i} has no {field}.");
+                    }
+                }
 
+                foreach (string field in new[]
+                         {
+                             "closeButton", "startGameButton", "planetsDropdown", "mapSizeDropdown",
+                             "victoryConditionDropdown", "startingMoneySlider", "startingMoneyText"
+                         })
+                {
+                    Assert.That(serializedPopup.FindProperty(field).objectReferenceValue, Is.Not.Null,
+                        $"{field} is not bound.");
+                }
+
+                Assert.That(root.transform.Find("Background/PlayersField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/VictoryConditionField"), Is.Not.Null);
-                Assert.That(root.transform.Find("Background/EnemyDifficultyField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/MapSizeField"), Is.Not.Null);
-                Assert.That(root.transform.Find("Background/StartingMoneyField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
 
-                var model = new SkirmishPopupModel();
+        [Test]
+        public void Initialize_DefaultDuel_OpensHumanAndOneAiRow()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            try
+            {
+                SkirmishPopupUi popup = root.GetComponent<SkirmishPopupUi>();
+                SkirmishPopupModel model = new SkirmishPopupModel();
                 popup.SetModel(model);
                 popup.SetPresenter(new SkirmishPopupPresenterStub(model));
                 popup.Initialize();
-                Assert.That(
-                    playerFactionDropdown.value,
-                    Is.EqualTo((int)FactionType.Republic));
-                Assert.That(
-                    enemyFactionDropdown.value,
-                    Is.EqualTo((int)FactionType.Separatist));
 
-                playerFactionDropdown.value = (int)FactionType.Separatist;
-                Assert.That(
-                    enemyFactionDropdown.value,
-                    Is.EqualTo((int)FactionType.Republic));
+                SerializedObject serializedPopup = new SerializedObject(popup);
+                SerializedProperty rows = serializedPopup.FindProperty("slotRows");
+                TMP_Dropdown humanOccupant = GetRowDropdown(rows, 0, "occupantDropdown");
+                TMP_Dropdown thirdOccupant = GetRowDropdown(rows, 2, "occupantDropdown");
+                TMP_Dropdown thirdFaction = GetRowDropdown(rows, 2, "factionDropdown");
+                Button startGameButton = serializedPopup.FindProperty("startGameButton").objectReferenceValue as Button;
 
-                enemyFactionDropdown.value = (int)FactionType.Separatist;
-                Assert.That(
-                    playerFactionDropdown.value,
-                    Is.EqualTo((int)FactionType.Republic));
+                Assert.That(humanOccupant.interactable, Is.False);
+                Assert.That(thirdFaction.interactable, Is.False);
+                Assert.That(startGameButton.interactable, Is.True);
+
+                thirdOccupant.value = (int)SkirmishSlotOccupant.AiHard;
+
+                Assert.That(model.Slots[2].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
+                Assert.That(thirdFaction.interactable, Is.True);
 
                 popup.Dispose();
             }
@@ -80,6 +94,12 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private static TMP_Dropdown GetRowDropdown(SerializedProperty rows, int index, string field)
+        {
+            SkirmishSlotRowView row = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(index).objectReferenceValue;
+            return (TMP_Dropdown)new SerializedObject(row).FindProperty(field).objectReferenceValue;
         }
 
         private sealed class SkirmishPopupPresenterStub : ISkirmishPopupPresenter
@@ -93,14 +113,15 @@ namespace EmpireAtWar.Tests.Editor
 
             public void CloseSkirmish() { }
             public void StartGame() { }
-            public void SelectPlayerFaction(int index) =>
-                _model.SelectPlayerFaction((FactionType)index);
-            public void SelectEnemyFaction(int index) =>
-                _model.SelectEnemyFaction((FactionType)index);
+            public void SelectSlotOccupant(int slotIndex, int occupantIndex) =>
+                _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
+            public void SelectSlotFaction(int slotIndex, int factionIndex) =>
+                _model.SelectSlotFaction(slotIndex, (FactionType)factionIndex);
+            public void SelectSlotTeam(int slotIndex, int teamIndex) =>
+                _model.SelectSlotTeam(slotIndex, teamIndex);
             public void SelectPlanet(int index) { }
             public void SelectMapSize(int index) { }
             public void SelectVictoryCondition(int index) { }
-            public void SelectEnemyDifficulty(int index) { }
             public void SelectStartingMoney(float amount) =>
                 _model.SelectStartingMoney(amount);
         }

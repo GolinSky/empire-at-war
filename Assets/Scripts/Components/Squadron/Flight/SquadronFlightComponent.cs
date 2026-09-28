@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Squadrons;
@@ -23,9 +23,11 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
         private Vector3 _startPosition;
         private Quaternion _startRotation;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private FogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
+        private ILocalPlayer _localPlayer;
+        private bool _sharesLocalVision;
         private bool _isReleased;
 
         public IFighterFlightData Data => Model.Data;
@@ -35,14 +37,15 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         [Inject]
         private void Construct(SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation,
-            PlayerType playerType, FogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel)
+            PlayerId owner, FogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer)
         {
             SetModel(model);
             _startPosition = startPosition;
             _startRotation = startRotation;
-            _playerType = playerType;
+            _owner = owner;
             _fogOfWarSystem = fogOfWarSystem;
             _radarModel = radarModel;
+            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -67,7 +70,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 fighter.ClearTrails();
             }
 
-            if (_playerType == PlayerType.Player)
+            // Allies share vision, so their squadrons reveal the local fog too.
+            _sharesLocalVision = _localPlayer.IsFriendly(_owner);
+            if (_sharesLocalVision)
             {
                 _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
             }
@@ -83,7 +88,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
 
             _isReleased = true;
-            if (_playerType == PlayerType.Player)
+            if (_sharesLocalVision)
             {
                 _fogOfWarSystem.UnregisterVisionSource(transform);
             }

@@ -1,8 +1,8 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         IInitializable, ILateTickable, ILateDisposable
     {
         private readonly IUiService _uiService;
+        private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly IUnitOrderService _orders;
@@ -27,8 +28,10 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         public UnitOrderFeedbackUiController(IUiService uiService,
             ICameraService cameraService, IEntityLocator entityLocator,
-            IUnitOrderService orders, UnitActionTargetingModel targeting)
+            IUnitOrderService orders, UnitActionTargetingModel targeting,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _uiService = uiService;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
@@ -78,7 +81,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         private void HandleOrder(UnitOrder order)
         {
-            if (order.Issuer != PlayerType.Player) return;
+            if (!_localPlayer.IsLocal(order.Issuer)) return;
             if (order.Action == UnitActionId.Attack && order.Target != null)
             {
                 _attackTarget = order.Target;

@@ -1,11 +1,11 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
     public class AsteroidDefendPlatformFactory
-        : PlaceholderFactory<PlayerType, DefendPlatformType, Vector3, DefendPlatform>
+        : PlaceholderFactory<PlayerId, DefendPlatformType, Vector3, DefendPlatform>
     {
     }
 }

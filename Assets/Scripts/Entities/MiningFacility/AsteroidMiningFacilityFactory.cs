@@ -1,11 +1,11 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.Entities.MiningFacility
 {
     public class AsteroidMiningFacilityFactory
-        : PlaceholderFactory<PlayerType, MiningFacilityType, Vector3, MiningFacility>
+        : PlaceholderFactory<PlayerId, MiningFacilityType, Vector3, MiningFacility>
     {
     }
 }

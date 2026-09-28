@@ -1,11 +1,11 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
 using NUnit.Framework;
 using UnityEngine;
@@ -33,9 +33,10 @@ namespace EmpireAtWar.Tests.Editor
             IdleState idle = new IdleState(movement, weapon, null);
             ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
-            ShipAIBrain brain = new ShipAIBrain(null, null, movement, null, null, model);
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ShipAIBrain brain = new ShipAIBrain(null, null, movement, null, model, TestPlayers.Human, roster);
             ShipOrderRunner runner = new ShipOrderRunner(model, stateMachine, brain, movement, weapon,
-                null, idle, null, null, null, null, null, null, PlayerType.Player);
+                null, idle, null, null, null, null, null, null, TestPlayers.Human, roster);
 
             runner.Stop();
 

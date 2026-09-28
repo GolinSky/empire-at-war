@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 2557233241895815559}
   - component: {fileID: 4068811108492124294}
   - component: {fileID: 3350890140303717934}
+  - component: {fileID: 4738334751003922498}
   m_Layer: 0
   m_Name: DefendPlatformView
   m_TagString: Untagged
@@ -261,6 +262,21 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
+--- !u!114 &4738334751003922498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414979512125735457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 1290879100403526326}
+  - {fileID: 9101076424120669535}
 --- !u!1 &2484499334210203976
 GameObject:
   m_ObjectHideFlags: 0

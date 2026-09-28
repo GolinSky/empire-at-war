@@ -1,5 +1,5 @@
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.StationFacing;
 using NUnit.Framework;
@@ -10,19 +10,17 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class StationFacingServiceTests
     {
         [Test]
-        public void Constructor_CalculatesBothRotationsOnceAndReusesThem()
+        public void Constructor_FacesEveryStationTowardMapCenterOnce()
         {
+            // The default size range is centered on the origin.
             CountingMapModel mapModel = new CountingMapModel(
-                new Vector3(-10f, 3f, 5f),
-                new Vector3(20f, 9f, 5f));
-            StationFacingService service = new StationFacingService(
-                mapModel,
-                FactionType.Republic,
-                FactionType.Separatist);
+                new Vector3(-10f, 3f, 0f),
+                new Vector3(20f, 9f, 0f));
+            StationFacingService service = new StationFacingService(mapModel, TestPlayers.CreateDuel());
 
-            Quaternion playerRotation = service.GetRotation(PlayerType.Player);
-            Quaternion opponentRotation = service.GetRotation(PlayerType.Opponent);
-            service.GetRotation(PlayerType.Player);
+            Quaternion playerRotation = service.GetRotation(TestPlayers.Human);
+            Quaternion opponentRotation = service.GetRotation(TestPlayers.Enemy);
+            service.GetRotation(TestPlayers.Human);
 
             Assert.That(mapModel.PositionRequestCount, Is.EqualTo(2));
             Assert.That(
@@ -35,24 +33,22 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class CountingMapModel : IMapModelObserver
         {
-            private readonly Vector3 _republicPosition;
-            private readonly Vector3 _separatistPosition;
+            private readonly Vector3 _humanPosition;
+            private readonly Vector3 _enemyPosition;
 
-            public CountingMapModel(Vector3 republicPosition, Vector3 separatistPosition)
+            public CountingMapModel(Vector3 humanPosition, Vector3 enemyPosition)
             {
-                _republicPosition = republicPosition;
-                _separatistPosition = separatistPosition;
+                _humanPosition = humanPosition;
+                _enemyPosition = enemyPosition;
             }
 
             public int PositionRequestCount { get; private set; }
-            public Vector2Range SizeRange => default;
+            public Vector2Range SizeRange { get; } = new Vector2Range();
 
-            public Vector3 GetStationPosition(FactionType factionType)
+            public Vector3 GetStationPosition(PlayerId owner)
             {
                 PositionRequestCount++;
-                return factionType == FactionType.Republic
-                    ? _republicPosition
-                    : _separatistPosition;
+                return owner == TestPlayers.Human ? _humanPosition : _enemyPosition;
             }
         }
     }

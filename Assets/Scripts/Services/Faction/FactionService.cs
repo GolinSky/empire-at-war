@@ -1,4 +1,5 @@
 using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.Factions
         private const float DEFAULT_INCOME = 5f;
 
         private readonly ISelectionService _selectionService;
+        private readonly PlayerSlot _owner;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
         private readonly IEntityLocator _entityLocator;
@@ -45,8 +47,10 @@ namespace EmpireAtWar.Services.Factions
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyProvider economyProvider,
-            IEntityLocator entityLocator)
+            IEntityLocator entityLocator,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _model = model;
             _research = research;
             _superWeapons = superWeapons;
@@ -99,7 +103,7 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType.Player))
+            if (!_entityLocator.IsStationOperational(_owner.Id))
             {
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest)
@@ -137,7 +141,7 @@ namespace EmpireAtWar.Services.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType.Player) ||
+            if (!_entityLocator.IsStationOperational(_owner.Id) ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {
@@ -184,7 +188,7 @@ namespace EmpireAtWar.Services.Factions
 
         public void UpdateState(ISelectionSubject selectionSubject)
         {
-            if (selectionSubject.UpdatedType == PlayerType.Player)
+            if (selectionSubject.UpdatedScope == SelectionScope.Local)
             {
                 _selectionContext = selectionSubject.PlayerSelectionContext;
                 _model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 

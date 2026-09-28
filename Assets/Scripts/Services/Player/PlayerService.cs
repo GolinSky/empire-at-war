@@ -1,6 +1,6 @@
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using Zenject;
 
@@ -15,13 +15,14 @@ namespace EmpireAtWar.Services.Player
         private readonly SpaceStationFactory _spaceStationFactory;
         private readonly LazyInject<IMapModelObserver> _mapModel;
 
-        [Inject(Id = PlayerType.Player)]
-        private FactionType FactionType { get; }
-        
+        private readonly PlayerSlot _owner;
+
         public PlayerService(
             SpaceStationFactory spaceStationFactory,
-            LazyInject<IMapModelObserver> mapModel)
+            LazyInject<IMapModelObserver> mapModel,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _spaceStationFactory = spaceStationFactory;
             _mapModel = mapModel;
         }
@@ -29,9 +30,9 @@ namespace EmpireAtWar.Services.Player
         public void Initialize()
         {
             _spaceStationFactory.Create(
-                PlayerType.Player,
-                FactionType,
-                _mapModel.Value.GetStationPosition(FactionType));
+                _owner.Id,
+                _owner.Faction,
+                _mapModel.Value.GetStationPosition(_owner.Id));
             
         }
     }

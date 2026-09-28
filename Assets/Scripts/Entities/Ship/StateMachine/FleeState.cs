@@ -1,8 +1,6 @@
-using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
 
@@ -12,33 +10,23 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     {
         private readonly IShipMovement _shipMoveComponent;
         private readonly IMapModelObserver _mapModel;
-        private readonly FactionType _factionType;
+        private readonly PlayerId _owner;
 
         public FleeState(
             IShipMovement shipMoveComponent,
             IMapModelObserver mapModel,
-            PlayerType playerType,
-            IGameModelObserver gameModel)
+            PlayerId owner)
         {
             _shipMoveComponent = shipMoveComponent;
             _mapModel = mapModel;
-
-            _factionType = playerType switch
-            {
-                PlayerType.Player => gameModel.PlayerFactionType,
-                PlayerType.Opponent => gameModel.EnemyFactionType,
-                _ => throw new ArgumentOutOfRangeException(
-                    nameof(playerType),
-                    playerType,
-                    null)
-            };
+            _owner = owner;
         }
 
         public bool IsComplete => false;
 
         public void Enter()
         {
-            Vector3 safePosition = _mapModel.GetStationPosition(_factionType);
+            Vector3 safePosition = _mapModel.GetStationPosition(_owner);
             _shipMoveComponent.MoveToPosition(safePosition);
         }
 

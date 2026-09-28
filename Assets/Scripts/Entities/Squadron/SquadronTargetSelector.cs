@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Models.Factions;
 using UnityEngine;
 using ViewComponents;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -16,11 +16,16 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private readonly IEntityLocator _entityLocator;
         private readonly FogOfWarSystem _fogOfWarSystem;
-        private readonly PlayerType _side;
+        private readonly PlayerId _side;
+        private readonly IPlayerRelations _relations;
+        private readonly bool _respectsFog;
 
         public SquadronTargetSelector(IEntityLocator entityLocator, FogOfWarSystem fogOfWarSystem,
-            PlayerType side)
+            PlayerId side, IPlayerRelations relations, ILocalPlayer localPlayer)
         {
+            _relations = relations;
+            // Only the human's squadrons are limited to what the fog of war reveals.
+            _respectsFog = localPlayer.IsLocal(side);
             _entityLocator = entityLocator;
             _fogOfWarSystem = fogOfWarSystem;
             _side = side;
@@ -53,7 +58,7 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 if (!IsValidEnemy(candidate)) continue;
                 Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_side == PlayerType.Player &&
+                if (_respectsFog &&
                     _fogOfWarSystem.GetVisibilityAtPosition(position) < VISIBLE_THRESHOLD) continue;
                 float score = Score(candidate, (position - origin).sqrMagnitude);
                 if (score >= bestScore) continue;
@@ -67,7 +72,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public static bool IsAlive(IEntity entity) =>
             entity != null && !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
-        private bool IsValidEnemy(IEntity entity) => entity.PlayerType != _side && IsAlive(entity);
+        private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity);
 
         private static float Score(IEntity entity, float sqrDistance)
         {

@@ -1,11 +1,11 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Models.Players;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
@@ -38,6 +38,7 @@ namespace EmpireAtWar.Services.Enemy
         IEnemyAiStateProvider
     {
         private readonly IShipService _shipService;
+        private readonly PlayerSlot _owner;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
@@ -59,8 +60,10 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicDecisionModel decisionModel,
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
-            IUnitOrderService orders)
+            IUnitOrderService orders,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
@@ -148,7 +151,7 @@ namespace EmpireAtWar.Services.Enemy
         private void EvaluateAndExecute()
         {
             _decisionTimer = EnemyAiDifficultyProfile
-                .Get(_gameModel.EnemyDifficulty)
+                .Get(_owner.Difficulty)
                 .DecisionInterval;
             EnemyStrategicContext context = _contextBuilder.Build();
             LastSnapshot = context.Snapshot;
@@ -182,7 +185,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
-                        PlayerType.Opponent,
+                        _owner.Id,
                         ship.WorldPosition,
                         ship.NavigationRadius,
                         out _))
@@ -207,7 +210,7 @@ namespace EmpireAtWar.Services.Enemy
             float formationClearance = maximumRadius *
                 (2f * Mathf.Ceil(Mathf.Sqrt(unassignedShips.Count)) + 1f);
             if (!_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
-                    PlayerType.Opponent, unassignedShips[0].WorldPosition,
+                    _owner.Id, unassignedShips[0].WorldPosition,
                     formationClearance, out Vector3 exitPosition))
             {
                 throw new InvalidOperationException("An exiting fleet requires its default zone.");
@@ -240,7 +243,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             Debug.Log(
-                $"[EnemyAI] Difficulty={_gameModel.EnemyDifficulty}, " +
+                $"[EnemyAI] Difficulty={_owner.Difficulty}, " +
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
                 $"EnemyShips={LastSnapshot.EnemyShipCount}, " +

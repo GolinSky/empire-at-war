@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Controllers.Game;
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
                 new CameraServiceStub(),
                 new MapModelStub(),
                 new NotifierStub<BattleResult>(),
-                FactionType.Republic);
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             _orchestrator.Initialize();
         }
 
@@ -164,19 +165,17 @@ namespace EmpireAtWar.Tests.Editor
             public int ExitCount { get; private set; }
             public void ExitGame() => ExitCount++;
             public void StartGame(
-                FactionType playerFactionType,
-                FactionType enemyFactionType,
+                System.Collections.Generic.IReadOnlyList<PlayerSlot> players,
                 PlanetType planetType,
                 MapSize mapSize,
                 BattleVictoryCondition victoryCondition,
-                EnemyAiDifficulty enemyDifficulty,
                 float startingMoney) { }
         }
 
         private sealed class MapModelStub : IMapModelObserver
         {
             public Vector2Range SizeRange => null;
-            public Vector3 GetStationPosition(FactionType factionType) => Vector3.zero;
+            public Vector3 GetStationPosition(PlayerId owner) => Vector3.zero;
         }
 
         private sealed class CameraServiceStub : ICameraService

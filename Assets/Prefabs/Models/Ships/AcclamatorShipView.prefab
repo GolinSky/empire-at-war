@@ -654,6 +654,7 @@ GameObject:
   - component: {fileID: 3845683113570912092}
   - component: {fileID: 8523343445597092706}
   - component: {fileID: 6930281553757434045}
+  - component: {fileID: 334406596647582418}
   m_Layer: 0
   m_Name: AcclamatorShipView
   m_TagString: Untagged
@@ -929,6 +930,24 @@ MonoBehaviour:
   - {fileID: 8219935066806577051}
   - {fileID: 1014526724357004300}
   - {fileID: 2235957021269889044}
+--- !u!114 &334406596647582418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8044965249881922621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 7060524419501671730}
+  - {fileID: 3869146714339041649}
+  - {fileID: 4536763028871818398}
+  - {fileID: 5637170337897155631}
+  - {fileID: 2693757955960993265}
 --- !u!1 &8703706821001797128
 GameObject:
   m_ObjectHideFlags: 0

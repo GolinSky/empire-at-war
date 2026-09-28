@@ -1,10 +1,11 @@
 using System;
+using EmpireAtWar.Services.Player;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ship;
@@ -33,8 +34,10 @@ namespace EmpireAtWar.Services.CaptureSites
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IInputService _inputService;
-        private LazyInject<ISiteFacilityBuilder> _playerBuilder;
-        private LazyInject<ISiteFacilityBuilder> _opponentBuilder;
+        private IPlayerRegistry _playerRegistry;
+        private IPlayerRoster _roster;
+        private ILocalPlayer _localPlayer;
+        private CaptureTallyBuilder _tally;
         private CaptureSitePresenter _selectedSite;
         private Predicate<float> _canPlayerAfford;
 
@@ -46,8 +49,9 @@ namespace EmpireAtWar.Services.CaptureSites
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IInputService inputService,
-            [Inject(Id = PlayerType.Player)] LazyInject<ISiteFacilityBuilder> playerBuilder,
-            [Inject(Id = PlayerType.Opponent)] LazyInject<ISiteFacilityBuilder> opponentBuilder,
+            IPlayerRegistry playerRegistry,
+            IPlayerRoster roster,
+            ILocalPlayer localPlayer,
             CaptureSiteView[] siteViews)
         {
             _siteViews = siteViews;
@@ -57,8 +61,10 @@ namespace EmpireAtWar.Services.CaptureSites
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _inputService = inputService;
-            _playerBuilder = playerBuilder;
-            _opponentBuilder = opponentBuilder;
+            _playerRegistry = playerRegistry;
+            _roster = roster;
+            _localPlayer = localPlayer;
+            _tally = new CaptureTallyBuilder(roster);
         }
 
         public IReadOnlyList<CaptureSitePresenter> Sites => _sites;
@@ -67,13 +73,14 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             foreach (CaptureSiteView view in _siteViews)
             {
-                CaptureSiteModel model = new CaptureSiteModel(view.CaptureDuration, _data.CaptureSpeedPerNetShip);
-                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data);
+                CaptureSiteModel model = new CaptureSiteModel(
+                    view.CaptureDuration, _data.CaptureSpeedPerNetShip, _roster);
+                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data, _localPlayer);
                 site.BuildRequested += HandleBuildRequested;
                 _sites.Add(site);
             }
 
-            _canPlayerAfford = price => _playerBuilder.Value.CanAfford(price);
+            _canPlayerAfford = price => GetBuilder(_localPlayer.Id).CanAfford(price);
             _inputService.OnInput += HandleInput;
             _inputService.OnEscapePressed += ClearSelection;
         }
@@ -102,8 +109,7 @@ namespace EmpireAtWar.Services.CaptureSites
             CollectSquadrons();
             foreach (CaptureSitePresenter site in _sites)
             {
-                GetStrength(site, out float playerStrength, out float opponentStrength);
-                site.TickCapture(deltaTime, playerStrength, opponentStrength);
+                site.TickCapture(deltaTime, TallySite(site));
                 if (site.TickConstruction(deltaTime))
                 {
                     GetBuilder(site.Owner).Build(site.FacilityType, site.Center, site.ReleaseFacility);
@@ -139,13 +145,13 @@ namespace EmpireAtWar.Services.CaptureSites
             return false;
         }
 
-        public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+        public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
         {
             CaptureSitePresenter closestSite = null;
             float closestDistance = float.MaxValue;
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (!site.IsCapturable || site.Owner == playerType)
+                if (!site.IsCapturable || _roster.IsAllied(site.Owner, owner))
                 {
                     continue;
                 }
@@ -169,7 +175,7 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        public bool TryGetThreatenedSite(PlayerType owner, out Vector3 position)
+        public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
         {
             foreach (CaptureSitePresenter site in _sites)
             {
@@ -185,13 +191,13 @@ namespace EmpireAtWar.Services.CaptureSites
             return false;
         }
 
-        public bool TryGetRaidTarget(PlayerType attacker, Vector3 origin, out Vector3 position)
+        public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
         {
             CaptureSitePresenter closestSite = null;
             float closestDistance = float.MaxValue;
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (!site.IsOperational || site.Owner == attacker)
+                if (!site.IsOperational || !_roster.IsHostile(attacker, site.Owner))
                 {
                     continue;
                 }
@@ -215,14 +221,14 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        public bool TryBuildOnOwnedSite(PlayerType playerType)
+        public bool TryBuildOnOwnedSite(PlayerId owner)
         {
             foreach (CaptureSitePresenter site in _sites)
             {
                 // Paying for a site that hostile units are about to take would waste the credits.
-                if (site.Owner == playerType && site.CanStartConstruction && !HasHostileUnits(site, playerType))
+                if (site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
                 {
-                    return TryStartConstruction(site, ChooseFacilityType(playerType));
+                    return TryStartConstruction(site, ChooseFacilityType(owner));
                 }
             }
 
@@ -269,20 +275,20 @@ namespace EmpireAtWar.Services.CaptureSites
 
         private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
         {
-            if (site.Owner == PlayerType.Player && site.CanStartConstruction)
+            if (_localPlayer.IsLocal(site.Owner) && site.CanStartConstruction)
             {
                 TryStartConstruction(site, facilityType);
             }
         }
 
         /// <summary>Keeps a side's facilities balanced: builds whichever type it owns fewer of, mining first.</summary>
-        private SiteFacilityType ChooseFacilityType(PlayerType playerType)
+        private SiteFacilityType ChooseFacilityType(PlayerId owner)
         {
             int miningCount = 0;
             int battleAsteroidCount = 0;
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (site.Owner != playerType || !site.HasFacility)
+                if (site.Owner != owner || !site.HasFacility)
                 {
                     continue;
                 }
@@ -328,50 +334,48 @@ namespace EmpireAtWar.Services.CaptureSites
             }
         }
 
-        private void GetStrength(CaptureSitePresenter site, out float playerStrength, out float opponentStrength)
+        private CaptureTally TallySite(CaptureSitePresenter site)
         {
-            _shipService.CountShips(position => site.Contains(position), out int playerShips, out int opponentShips);
-            playerStrength = playerShips;
-            opponentStrength = opponentShips;
+            _tally.Clear();
+            _shipService.AddShipStrength(position => site.Contains(position), _tally);
 
             // A squadron is positioned at the centroid of its fighters.
             foreach (IEntity squadron in _squadrons)
             {
                 if (site.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
                 {
-                    AddStrength(squadron.PlayerType, _data.SquadronCaptureWeight,
-                        ref playerStrength, ref opponentStrength);
+                    _tally.Add(squadron.Owner, _data.SquadronCaptureWeight);
                 }
             }
+
+            return _tally.Build();
         }
 
-        private static void AddStrength(PlayerType playerType, float strength,
-            ref float playerStrength, ref float opponentStrength)
+        private bool HasHostileUnits(CaptureSitePresenter site, PlayerId owner)
         {
-            if (playerType == PlayerType.Player)
+            foreach (IShipEntity ship in _shipService.Ships)
             {
-                playerStrength += strength;
+                if (_roster.IsHostile(owner, ship.Owner) && site.Contains(ship.WorldPosition))
+                {
+                    return true;
+                }
             }
-            else if (playerType == PlayerType.Opponent)
+
+            foreach (IEntity squadron in _squadrons)
             {
-                opponentStrength += strength;
+                if (_roster.IsHostile(owner, squadron.Owner) &&
+                    site.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
 
-        private bool HasHostileUnits(CaptureSitePresenter site, PlayerType owner)
+        private ISiteFacilityBuilder GetBuilder(PlayerId owner)
         {
-            GetStrength(site, out float playerStrength, out float opponentStrength);
-            return owner == PlayerType.Player ? opponentStrength > 0f : playerStrength > 0f;
-        }
-
-        private ISiteFacilityBuilder GetBuilder(PlayerType playerType)
-        {
-            return playerType switch
-            {
-                PlayerType.Player => _playerBuilder.Value,
-                PlayerType.Opponent => _opponentBuilder.Value,
-                _ => throw new ArgumentOutOfRangeException(nameof(playerType), playerType, null)
-            };
+            return _playerRegistry.GetSiteBuilder(owner);
         }
     }
 }

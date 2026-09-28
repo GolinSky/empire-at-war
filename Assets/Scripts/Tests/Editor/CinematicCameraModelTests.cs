@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Tests.Editor;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CinematicCamera.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 using NUnit.Framework;
 using NumericsVector3 = System.Numerics.Vector3;
@@ -43,12 +43,12 @@ namespace EmpireAtWar.Tests.CinematicCamera
         public void Scorer_PrefersRecentlyDamagedUnitInsideEngagement()
         {
             CinematicCameraSettings settings = new CinematicCameraSettings();
-            CinematicInterestScorer scorer = new CinematicInterestScorer(settings, new Random(1));
+            CinematicInterestScorer scorer = new CinematicInterestScorer(settings, new Random(1), TestPlayers.CreateDuel());
             CinematicCandidate[] candidates =
             {
-                new(1, new NumericsVector3(0f, 0f, 0f), ShipClass.Frigate, PlayerType.Player, 0.5f),
-                new(2, new NumericsVector3(50f, 0f, 0f), ShipClass.Frigate, PlayerType.Opponent, float.PositiveInfinity),
-                new(3, new NumericsVector3(5000f, 0f, 0f), ShipClass.HeavyCapital, PlayerType.Player, float.PositiveInfinity),
+                new(1, new NumericsVector3(0f, 0f, 0f), ShipClass.Frigate, TestPlayers.Human, 0.5f),
+                new(2, new NumericsVector3(50f, 0f, 0f), ShipClass.Frigate, TestPlayers.Enemy, float.PositiveInfinity),
+                new(3, new NumericsVector3(5000f, 0f, 0f), ShipClass.HeavyCapital, TestPlayers.Human, float.PositiveInfinity),
             };
 
             bool found = scorer.TrySelect(candidates, -1, out CinematicSelection selection);
@@ -61,7 +61,7 @@ namespace EmpireAtWar.Tests.CinematicCamera
         [Test]
         public void Scorer_ReturnsFalseWithoutCandidates()
         {
-            CinematicInterestScorer scorer = new CinematicInterestScorer(new CinematicCameraSettings(), new Random(1));
+            CinematicInterestScorer scorer = new CinematicInterestScorer(new CinematicCameraSettings(), new Random(1), TestPlayers.CreateDuel());
 
             Assert.That(scorer.TrySelect(Array.Empty<CinematicCandidate>(), -1, out _), Is.False);
         }

@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Entities.Game
 {
+    /// <summary>Battle summary from the local player's side: "player" means the local team, "enemy" every hostile team.</summary>
     public sealed class BattleResult
     {
         public BattleResult(
@@ -10,7 +12,7 @@ namespace EmpireAtWar.Entities.Game
             BattleVictoryCondition victoryCondition,
             PlanetType planet,
             FactionType playerFaction,
-            FactionType enemyFaction,
+            IReadOnlyList<FactionType> enemyFactions,
             int playerShipCount,
             int enemyShipCount,
             bool isPlayerBaseAlive,
@@ -20,7 +22,7 @@ namespace EmpireAtWar.Entities.Game
             VictoryCondition = victoryCondition;
             Planet = planet;
             PlayerFaction = playerFaction;
-            EnemyFaction = enemyFaction;
+            EnemyFactions = enemyFactions;
             PlayerShipCount = playerShipCount;
             EnemyShipCount = enemyShipCount;
             IsPlayerBaseAlive = isPlayerBaseAlive;
@@ -31,7 +33,8 @@ namespace EmpireAtWar.Entities.Game
         public BattleVictoryCondition VictoryCondition { get; }
         public PlanetType Planet { get; }
         public FactionType PlayerFaction { get; }
-        public FactionType EnemyFaction { get; }
+        /// <summary>Distinct factions of all hostile players.</summary>
+        public IReadOnlyList<FactionType> EnemyFactions { get; }
         public int PlayerShipCount { get; }
         public int EnemyShipCount { get; }
         public bool IsPlayerBaseAlive { get; }

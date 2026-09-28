@@ -3027,6 +3027,7 @@ GameObject:
   - component: {fileID: 6175106514994132088}
   - component: {fileID: 3390042486601539979}
   - component: {fileID: 4949378780131669032}
+  - component: {fileID: 8122547812603076977}
   m_Layer: 0
   m_Name: AsteroidMiningFacilityView
   m_TagString: Untagged
@@ -3178,3 +3179,46 @@ MonoBehaviour:
   - {fileID: 7585486297845372129}
   hardPoints:
   - {fileID: 1754627770004611748}
+--- !u!114 &8122547812603076977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 2017052827535815179}
+  - {fileID: 4442031904108412962}
+  - {fileID: 1412661323894338435}
+  - {fileID: 9204914100942223104}
+  - {fileID: 1239330608508541129}
+  - {fileID: 591389478027388803}
+  - {fileID: 2797129538259864947}
+  - {fileID: 5626668909991153140}
+  - {fileID: 5026822826995360424}
+  - {fileID: 223254163508832766}
+  - {fileID: 4163044657031503228}
+  - {fileID: 2508852387315138993}
+  - {fileID: 8597894557429600588}
+  - {fileID: 8394894193066648371}
+  - {fileID: 4412961732016044533}
+  - {fileID: 3249132442710151026}
+  - {fileID: 966767080776874177}
+  - {fileID: 4134908367230079016}
+  - {fileID: 2000697938864659908}
+  - {fileID: 8147534102782750724}
+  - {fileID: 8637246515990416637}
+  - {fileID: 3422697419491209029}
+  - {fileID: 2817496632522516745}
+  - {fileID: 5233305121195832820}
+  - {fileID: 2824462393763791424}
+  - {fileID: 5445195796440134805}
+  - {fileID: 2113667004022803345}
+  - {fileID: 30541847785515116}
+  - {fileID: 316462958882684173}
+  - {fileID: 7585486297845372129}

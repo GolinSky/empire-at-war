@@ -1,10 +1,10 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Models.MiniMap
 {
     public sealed class MiniMapMarker
     {
-        public MiniMapMarker(MarkType markType, PlayerType relation)
+        public MiniMapMarker(MarkType markType, OwnerRelation relation)
         {
             MarkType = markType;
             Relation = relation;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Models.MiniMap
         public float X { get; private set; }
         public float Z { get; private set; }
         public MarkType MarkType { get; }
-        public PlayerType Relation { get; private set; }
+        public OwnerRelation Relation { get; private set; }
         public bool Visible { get; private set; }
         public float WorldDiameter { get; private set; }
 
@@ -23,7 +23,7 @@ namespace EmpireAtWar.Models.MiniMap
             Z = z;
         }
 
-        public void SetRelation(PlayerType relation)
+        public void SetRelation(OwnerRelation relation)
         {
             Relation = relation;
         }

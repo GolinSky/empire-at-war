@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
@@ -50,11 +51,11 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(UnitActionId.Retreat)]
         public void EveryAction_OnlyTouchesExplicitReceivers(UnitActionId action)
         {
-            FakeEntity first = Entity(1, PlayerType.Player);
-            FakeEntity second = Entity(2, PlayerType.Player);
-            FakeEntity third = Entity(3, PlayerType.Player);
-            FakeEntity enemy = Entity(4, PlayerType.Opponent);
-            FakeEntity friendly = Entity(5, PlayerType.Player);
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity second = Entity(2, TestPlayers.Human);
+            FakeEntity third = Entity(3, TestPlayers.Human);
+            FakeEntity enemy = Entity(4, TestPlayers.Enemy);
+            FakeEntity friendly = Entity(5, TestPlayers.Human);
             UnitOrder issued = default;
             bool fired = false;
             _orders.OrderIssued += order => { issued = order; fired = true; };
@@ -64,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(second.Command.CallCount, Is.EqualTo(1));
             Assert.That(third.Command.CallCount, Is.Zero);
             Assert.That(fired, Is.True);
-            Assert.That(issued.Issuer, Is.EqualTo(PlayerType.Player));
+            Assert.That(issued.Issuer, Is.EqualTo(TestPlayers.Human));
             Assert.That(issued.Action, Is.EqualTo(action));
 
             first.Command.CallCount = 0;
@@ -79,11 +80,11 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void UnsupportedReceiver_IsSkipped_IncludingMixedStationAttack()
         {
-            FakeEntity ship = Entity(1, PlayerType.Player);
-            FakeEntity station = Entity(2, PlayerType.Player,
+            FakeEntity ship = Entity(1, TestPlayers.Human);
+            FakeEntity station = Entity(2, TestPlayers.Human,
                 new[] { typeof(IFocusFireFacade), typeof(IStopFacade) });
-            FakeEntity facility = Entity(3, PlayerType.Player, Array.Empty<Type>());
-            FakeEntity enemy = Entity(4, PlayerType.Opponent);
+            FakeEntity facility = Entity(3, TestPlayers.Human, Array.Empty<Type>());
+            FakeEntity enemy = Entity(4, TestPlayers.Enemy);
 
             _orders.IssueAttack(new IEntity[] { ship, station, facility }, enemy);
             Assert.That(ship.Command.CallCount, Is.EqualTo(1));
@@ -98,8 +99,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Move_UsesCompactFormationOrExplicitDestinations()
         {
-            FakeEntity first = Entity(1, PlayerType.Player);
-            FakeEntity second = Entity(2, PlayerType.Player);
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity second = Entity(2, TestPlayers.Human);
             Vector3 destination = new Vector3(100f, 0f, 100f);
             _orders.IssueMove(new IEntity[] { first, second }, destination);
             Assert.That(first.Command.LastPoint, Is.Not.EqualTo(second.Command.LastPoint));
@@ -116,8 +117,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Retreat_UsesOwnStationThenDefaultZoneWhenStationDestroyed()
         {
-            FakeEntity ship = Entity(1, PlayerType.Opponent);
-            FakeEntity station = Entity(2, PlayerType.Opponent,
+            FakeEntity ship = Entity(1, TestPlayers.Enemy);
+            FakeEntity station = Entity(2, TestPlayers.Enemy,
                 Array.Empty<Type>(), new FakeStationModel());
             station.Health.Transform.position = new Vector3(200f, 0f, 0f);
             _locator.EntitiesList.Add(station);
@@ -126,10 +127,10 @@ namespace EmpireAtWar.Tests.Editor
             station.Health.IsDestroyedValue = true;
             _orders.IssueRetreat(new IEntity[] { ship });
             Assert.That(ship.Command.LastPoint, Is.EqualTo(_zones.Center));
-            Assert.That(_zones.LastSide, Is.EqualTo(PlayerType.Opponent));
+            Assert.That(_zones.LastSide, Is.EqualTo(TestPlayers.Enemy));
         }
 
-        private FakeEntity Entity(long id, PlayerType side, Type[] commands = null,
+        private FakeEntity Entity(long id, PlayerId side, Type[] commands = null,
             IModelObserver model = null)
         {
             GameObject obj = new GameObject("Unit " + id);
@@ -161,18 +162,18 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeEntity : IEntity
         {
             private readonly HashSet<Type> _commands;
-            public FakeEntity(long id, PlayerType side, FakeHealth health,
+            public FakeEntity(long id, PlayerId side, FakeHealth health,
                 IModelObserver model, Type[] commands)
             {
                 Id = id;
-                PlayerType = side;
+                Owner = side;
                 Health = health;
                 Model = model;
                 Command = new FakeCommand();
                 _commands = commands == null ? null : new HashSet<Type>(commands);
             }
             public long Id { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
             public IModelObserver Model { get; }
             public FakeHealth Health { get; }
             public IHealthModelObserver HealthModel => Health;
@@ -236,7 +237,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => IsDestroyedValue;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
@@ -257,7 +258,7 @@ namespace EmpireAtWar.Tests.Editor
             public IEntity GetEntity(long id) => EntitiesList.Find(entity => entity.Id == id);
             public bool TryGetEntity(long id, out IEntity entity)
             { entity = GetEntity(id); return entity != null; }
-            public bool IsStationOperational(PlayerType side) => true;
+            public bool IsStationOperational(PlayerId side) => true;
             public bool TryGetEntity(RaycastHit hit, out IEntity entity)
             { entity = null; return false; }
             public bool TryGetEntity(Collider collider, out IEntity entity)
@@ -268,22 +269,22 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action OwnershipChanged;
             public Vector3 Center => new Vector3(-100f, 0f, 50f);
-            public PlayerType LastSide { get; private set; }
-            public bool TryGetDefaultZoneCenter(PlayerType side, out Vector3 point)
+            public PlayerId LastSide { get; private set; }
+            public bool TryGetDefaultZoneCenter(PlayerId side, out Vector3 point)
             { LastSide = side; point = Center; return true; }
             public bool IsPositionInAnyZone(Vector3 point, float clearance = 0f) => false;
-            public bool IsPositionInOwnedZone(PlayerType side, Vector3 point) => false;
-            public int GetOwnedCapturableZoneCount(PlayerType side) => 0;
+            public bool IsPositionInOwnedZone(PlayerId side, Vector3 point) => false;
+            public int GetOwnedCapturableZoneCount(PlayerId side) => 0;
             public bool IsShipSpawnPositionClear(ShipType type, Vector3 point) => true;
-            public void CopyOwnedCapturableZoneCenters(PlayerType side, List<Vector3> dest)
+            public void CopyOwnedCapturableZoneCenters(PlayerId side, List<Vector3> dest)
                 => dest.Clear();
-            public bool TryGetDefaultSpawnPosition(PlayerType side, out Vector3 point)
+            public bool TryGetDefaultSpawnPosition(PlayerId side, out Vector3 point)
             { point = default; return false; }
-            public bool TryGetDefaultZoneExitPosition(PlayerType side, Vector3 ship,
+            public bool TryGetDefaultZoneExitPosition(PlayerId side, Vector3 ship,
                 float radius, out Vector3 point) { point = default; return false; }
-            public bool TryGetRandomSpawnPosition(PlayerType side, ShipType type,
+            public bool TryGetRandomSpawnPosition(PlayerId side, ShipType type,
                 out Vector3 point) { point = default; return false; }
-            public bool TryGetCaptureTarget(PlayerType side, Vector3 origin,
+            public bool TryGetCaptureTarget(PlayerId side, Vector3 origin,
                 out Vector3 point) { point = default; return false; }
         }
     }

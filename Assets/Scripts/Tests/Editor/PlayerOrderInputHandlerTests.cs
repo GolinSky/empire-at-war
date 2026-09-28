@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
@@ -41,8 +42,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _view = new GameObject("Test entity");
-            _receiver = new FakeEntity(1, PlayerType.Player, _view.transform);
-            _enemy = new FakeEntity(2, PlayerType.Opponent, _view.transform);
+            _receiver = new FakeEntity(1, TestPlayers.Human, _view.transform);
+            _enemy = new FakeEntity(2, TestPlayers.Enemy, _view.transform);
             _input = new FakeInput();
             _selection = new FakeSelection(_receiver);
             _query = new FakeQuery(_enemy);
@@ -52,7 +53,8 @@ namespace EmpireAtWar.Tests.Editor
             _camera = new FakeCamera();
             _handler = new PlayerOrderInputHandler(_input, _selection, _query,
                 _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel(),
-                new HardPointOverlayModel());
+                new HardPointOverlayModel(),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             _handler.Initialize();
         }
 
@@ -146,10 +148,10 @@ namespace EmpireAtWar.Tests.Editor
             public SelectionType SelectionType => SelectionType.Ship;
             public bool HasSelectable => true;
             public int Count => 1;
-            public PlayerType PlayerType => PlayerType.Player;
+            public SelectionScope Scope => SelectionScope.Local;
             public bool Contains(IEntity entity) => entity.Id == Entity.Id;
             public ISelectionContext PlayerSelectionContext => this;
-            public ISelectionContext EnemySelectionContext => null;
+            public ISelectionContext OtherSelectionContext => null;
             public void RemoveSelectable(ISelectionContext context) { }
             public void SelectCurrentShipsByType(ShipType type) { }
             public void SelectCurrentSquadronsByType(EmpireAtWar.Entities.Squadrons.SquadronType type) { }
@@ -239,19 +241,19 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerType side, Transform transform)
-            { Id = id; PlayerType = side; HealthModel = new FakeHealth(transform); }
+            public FakeEntity(long id, PlayerId side, Transform transform)
+            { Id = id; Owner = side; HealthModel = new FakeHealth(transform); }
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
-                if (PlayerType == PlayerType.Player &&
+                if (Owner == TestPlayers.Human &&
                     typeof(TCommand) == typeof(IWaypointMoveFacade))
                 {
                     command = (TCommand)(IEntityFacade)new FakeWaypointCommand();
@@ -284,7 +286,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType type) =>

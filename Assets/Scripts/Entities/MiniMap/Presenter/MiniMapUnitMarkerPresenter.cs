@@ -1,6 +1,6 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Selection;
@@ -14,23 +14,26 @@ namespace EmpireAtWar.Presenters.MiniMap
     {
         private readonly MiniMapData _miniMapData;
         private readonly Transform _viewTransform;
-        private readonly PlayerType _playerType;
+        private readonly PlayerId _owner;
         private readonly SelectionType _selectionType;
         private readonly IHealthModelObserver _healthModel;
         private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly ILocalPlayer _localPlayer;
         private MiniMapMarker _marker;
 
         public MiniMapUnitMarkerPresenter(
             MiniMapData miniMapData,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
-            PlayerType playerType,
+            PlayerId owner,
             SelectionType selectionType,
             IHealthModelObserver healthModel,
-            FogOfWarSystem fogOfWarSystem)
+            FogOfWarSystem fogOfWarSystem,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _miniMapData = miniMapData;
             _viewTransform = viewTransform;
-            _playerType = playerType;
+            _owner = owner;
             _selectionType = selectionType;
             _healthModel = healthModel;
             _fogOfWarSystem = fogOfWarSystem;
@@ -44,10 +47,10 @@ namespace EmpireAtWar.Presenters.MiniMap
                 return;
             }
 
-            _marker = new MiniMapMarker(GetMarkType(), _playerType);
+            _marker = new MiniMapMarker(GetMarkType(), _localPlayer.GetRelation(_owner));
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
-            _marker.SetVisible(_playerType != PlayerType.Opponent);
+            _marker.SetVisible(_localPlayer.IsFriendly(_owner));
             _miniMapData.AddMarker(_marker);
         }
 
@@ -90,7 +93,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(
-                _playerType != PlayerType.Opponent || !_fogOfWarSystem.IsHidden(position));
+                _localPlayer.IsFriendly(_owner) || !_fogOfWarSystem.IsHidden(position));
         }
 
         private void RemoveMarker()

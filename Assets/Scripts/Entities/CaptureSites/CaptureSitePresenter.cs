@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
@@ -12,12 +12,18 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly CaptureSiteModel _model;
         private readonly ICaptureSiteView _view;
         private readonly CaptureSiteData _data;
+        private readonly ILocalPlayer _localPlayer;
         private bool _isSelected;
 
         public event Action<CaptureSitePresenter, SiteFacilityType> BuildRequested;
 
-        public CaptureSitePresenter(CaptureSiteModel model, ICaptureSiteView view, CaptureSiteData data)
+        public CaptureSitePresenter(
+            CaptureSiteModel model,
+            ICaptureSiteView view,
+            CaptureSiteData data,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _model = model;
             _view = view;
             _data = data;
@@ -33,10 +39,10 @@ namespace EmpireAtWar.Entities.CaptureSites
             SetVisibility(false, false, _ => false);
         }
 
-        public PlayerType Owner => _model.Owner;
+        public PlayerId Owner => _model.Owner;
         public bool IsCapturable => _model.IsCapturable;
         public bool CanStartConstruction => _model.CanStartConstruction;
-        public bool CanPlayerBuild => _model.Owner == PlayerType.Player && _model.CanStartConstruction;
+        public bool CanPlayerBuild => _localPlayer.IsLocal(_model.Owner) && _model.CanStartConstruction;
         public SiteFacilityType FacilityType => _model.FacilityType;
         public Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
@@ -63,9 +69,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         /// <returns>True when the site changed owner.</returns>
-        public bool TickCapture(float deltaTime, float playerStrength, float opponentStrength)
+        public bool TickCapture(float deltaTime, CaptureTally tally)
         {
-            return _model.TickCapture(deltaTime, playerStrength, opponentStrength);
+            return _model.TickCapture(deltaTime, tally);
         }
 
         /// <returns>True on the frame the facility finishes construction.</returns>
@@ -92,7 +98,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void Render()
         {
-            _view.Render(_model.Owner, _model.State, _model.FacilityType, _model.CapturingPlayer,
+            _view.Render(_localPlayer.GetRelation(_model.Owner), _model.State, _model.FacilityType,
+                _localPlayer.GetRelation(_model.CapturingPlayer),
                 _model.CaptureProgress, _model.ConstructionProgress, _model.IsContested);
         }
 
@@ -101,7 +108,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             IsRevealed = isVisible;
             // The facility choice only appears after the player selects their empty site.
             bool showBuildOptions = isVisible && _isSelected && CanPlayerBuild;
-            bool isActive = _model.CapturingPlayer != PlayerType.None || _model.IsContested ||
+            bool isActive = _model.CapturingPlayer != PlayerId.None || _model.IsContested ||
                 _model.State == CaptureSiteState.Constructing;
             // The ring is known terrain; ownership details need current vision.
             _view.SetVisibility(true, isVisible && (isHovered || isActive || showBuildOptions));

@@ -1,10 +1,10 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Extentions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents;
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private ShieldComponent _shield;
         private bool _isReleased;
         private CombatModifiers _modifiers;
-        private PlayerType _playerType;
+        private PlayerId _owner;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
         private IIonStunView _ionStunView;
@@ -65,7 +65,7 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool HasUnits => Model.HasUnits;
         public bool HasLiveHardPoints => Model.HasLiveHardPoints;
         public bool HasShields => Model.HasShields;
-        public PlayerType PlayerType => _playerType;
+        public PlayerId Owner => _owner;
         public IReadOnlyList<IHardPointStatus> HardPoints => _hardPointAdapters;
         public float MaxShields => Model.MaxShields;
 
@@ -73,12 +73,12 @@ namespace EmpireAtWar.Components.Ship.Health
         private void Construct(
             HealthModel model,
             CombatModifiers modifiers,
-            PlayerType playerType,
+            PlayerId owner,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
             _modifiers = modifiers;
-            _playerType = playerType;
+            _owner = owner;
             _viewTransform = viewTransform;
         }
 

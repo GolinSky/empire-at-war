@@ -19,8 +19,7 @@ namespace EmpireAtWar.Services.Layer
 
         public LayerService(LayerData layerModel)
         {
-            Register(LayerKey.Player, layerModel.PlayerLayerMask);
-            Register(LayerKey.Enemy, layerModel.EnemyLayerMask);
+            Register(LayerKey.Unit, layerModel.UnitLayerMask);
             Register(LayerKey.Obstacle, layerModel.ObstacleLayerMask);
             Register(LayerKey.Dead, layerModel.DeadLayerMask);
         }

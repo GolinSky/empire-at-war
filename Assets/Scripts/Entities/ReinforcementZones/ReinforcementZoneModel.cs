@@ -1,49 +1,47 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.ReinforcementZones
 {
     public sealed class ReinforcementZoneModel : PureModel
     {
-        private const float TIE_EPSILON = 0.001f;
-
         private readonly bool _isCapturable;
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
+        private readonly IPlayerRelations _relations;
 
         public ReinforcementZoneModel(
-            PlayerType startingOwner,
+            PlayerId startingOwner,
             bool isCapturable,
             float captureDuration,
-            float captureSpeedPerNetShip)
+            float captureSpeedPerNetShip,
+            IPlayerRelations relations)
         {
             Owner = startingOwner;
             _isCapturable = isCapturable;
             _captureDuration = captureDuration > 0f ? captureDuration : 1f;
             _captureSpeedPerNetShip = captureSpeedPerNetShip > 0f ? captureSpeedPerNetShip : 1f;
+            _relations = relations;
         }
 
-        public PlayerType Owner { get; private set; }
-        public PlayerType CapturingPlayer { get; private set; } = PlayerType.None;
+        public PlayerId Owner { get; private set; }
+        public PlayerId CapturingPlayer { get; private set; } = PlayerId.None;
         public float CaptureProgress { get; private set; }
         public bool IsContested { get; private set; }
 
-        /// <param name="playerStrength">Weighted count of player units in the zone (ship = 1).</param>
-        /// <param name="opponentStrength">Weighted count of opponent units in the zone (ship = 1).</param>
-        public bool Tick(float deltaTime, float playerStrength, float opponentStrength)
+        /// <returns>True when the zone changed owner.</returns>
+        public bool Tick(float deltaTime, CaptureTally tally)
         {
-            float advantage = playerStrength - opponentStrength;
-            bool isTied = System.Math.Abs(advantage) < TIE_EPSILON;
-            IsContested = playerStrength > 0f && opponentStrength > 0f && isTied;
+            IsContested = tally.IsContested;
 
             if (!_isCapturable)
             {
                 return false;
             }
 
-            if (isTied)
+            if (tally.IsTied)
             {
-                if (playerStrength <= 0f && opponentStrength <= 0f)
+                if (!tally.HasUnits)
                 {
                     ResetCapture();
                 }
@@ -51,23 +49,22 @@ namespace EmpireAtWar.Models.ReinforcementZones
                 return false;
             }
 
-            PlayerType capturingPlayer = advantage > 0f
-                ? PlayerType.Player
-                : PlayerType.Opponent;
-            if (capturingPlayer == PlayerType.None || capturingPlayer == Owner)
+            // Allies never take a zone from each other.
+            PlayerId capturingPlayer = tally.LeadingPlayer;
+            if (_relations.IsAllied(capturingPlayer, Owner))
             {
                 ResetCapture();
                 return false;
             }
 
-            if (CapturingPlayer != capturingPlayer)
+            // Progress carries over while the same team keeps capturing, even if its lead player changes.
+            if (!_relations.IsAllied(CapturingPlayer, capturingPlayer))
             {
-                CapturingPlayer = capturingPlayer;
                 CaptureProgress = 0f;
             }
 
-            float netStrength = System.Math.Abs(advantage);
-            CaptureProgress += deltaTime / _captureDuration * netStrength * _captureSpeedPerNetShip;
+            CapturingPlayer = capturingPlayer;
+            CaptureProgress += deltaTime / _captureDuration * tally.Advantage * _captureSpeedPerNetShip;
             if (CaptureProgress < 1f)
             {
                 return false;
@@ -80,7 +77,7 @@ namespace EmpireAtWar.Models.ReinforcementZones
 
         private void ResetCapture()
         {
-            CapturingPlayer = PlayerType.None;
+            CapturingPlayer = PlayerId.None;
             CaptureProgress = 0f;
         }
     }

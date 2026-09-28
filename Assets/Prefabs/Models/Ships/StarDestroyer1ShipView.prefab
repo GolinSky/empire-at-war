@@ -9781,6 +9781,7 @@ GameObject:
   - component: {fileID: 3042627084866838877}
   - component: {fileID: 668069889707086654}
   - component: {fileID: 1236021114480366598}
+  - component: {fileID: 4045615104949275915}
   m_Layer: 0
   m_Name: StarDestroyer1ShipView
   m_TagString: Untagged
@@ -10078,6 +10079,29 @@ MonoBehaviour:
   - {fileID: 5535047837810061399}
   - {fileID: 4129112414660189129}
   - {fileID: 3961140125084281180}
+--- !u!114 &4045615104949275915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139560028601839024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 7845217449981124495}
+  - {fileID: 5218505592341560288}
+  - {fileID: 8978645983907114253}
+  - {fileID: 2404815047331943576}
+  - {fileID: 3552924957105167591}
+  - {fileID: 8413967583207143238}
+  - {fileID: 1185769501173902371}
+  - {fileID: 6763174985555853723}
+  - {fileID: 1203051110192335805}
+  - {fileID: 3876563722252897791}
 --- !u!1 &2712254921419722816
 GameObject:
   m_ObjectHideFlags: 0

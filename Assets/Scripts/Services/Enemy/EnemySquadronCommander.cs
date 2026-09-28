@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float DECISION_INTERVAL = 3f;
 
         private readonly ICaptureSitesSystem _captureSites;
+        private readonly PlayerSlot _owner;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly Dictionary<ISquadron, Action> _squadrons = new Dictionary<ISquadron, Action>();
         private readonly List<ISquadron> _orderBuffer = new List<ISquadron>();
@@ -26,8 +27,10 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemySquadronCommander(
             ICaptureSitesSystem captureSites,
-            IReinforcementZonesSystem reinforcementZonesSystem)
+            IReinforcementZonesSystem reinforcementZonesSystem,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _captureSites = captureSites;
             _reinforcementZonesSystem = reinforcementZonesSystem;
         }
@@ -69,7 +72,7 @@ namespace EmpireAtWar.Services.Enemy
         private void IssueOrder(ISquadron squadron)
         {
             // Attack-Move re-issued to the same point is ignored by the squadron, so repeats are cheap.
-            if (_captureSites.TryGetThreatenedSite(PlayerType.Opponent, out Vector3 target) ||
+            if (_captureSites.TryGetThreatenedSite(_owner.Id, out Vector3 target) ||
                 TryGetClosestCaptureTarget(squadron.WorldPosition, out target))
             {
                 squadron.AttackMoveTo(target);
@@ -83,9 +86,9 @@ namespace EmpireAtWar.Services.Enemy
         private bool TryGetClosestCaptureTarget(Vector3 origin, out Vector3 captureTarget)
         {
             bool hasZone = _reinforcementZonesSystem.TryGetCaptureTarget(
-                PlayerType.Opponent, origin, out Vector3 zoneTarget);
+                _owner.Id, origin, out Vector3 zoneTarget);
             bool hasSite = _captureSites.TryGetCaptureTarget(
-                PlayerType.Opponent, origin, out Vector3 siteTarget);
+                _owner.Id, origin, out Vector3 siteTarget);
             captureTarget = hasSite && (!hasZone ||
                 (siteTarget - origin).sqrMagnitude < (zoneTarget - origin).sqrMagnitude)
                 ? siteTarget

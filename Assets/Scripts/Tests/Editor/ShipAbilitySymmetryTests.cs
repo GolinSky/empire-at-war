@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
@@ -6,7 +7,6 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipAbilityId.Assault)]
         public void StatAbility_StartThenStop_RestoresCasterModifiers(ShipAbilityId id)
         {
-            TestCommand caster = new TestCommand(1, PlayerType.Player);
+            TestCommand caster = new TestCommand(1, TestPlayers.Human);
             IShipAbility ability = id switch
             {
                 ShipAbilityId.Invulnerability => new InvulnerabilityAbility(
@@ -51,8 +51,8 @@ namespace EmpireAtWar.Tests.Editor
         public void ConcentrateFire_StartThenStop_RestoresAllAffectedAllies()
         {
             EntityLocator entities = new EntityLocator();
-            TestCommand caster = new TestCommand(1, PlayerType.Player);
-            TestCommand ally = new TestCommand(2, PlayerType.Player);
+            TestCommand caster = new TestCommand(1, TestPlayers.Human);
+            TestCommand ally = new TestCommand(2, TestPlayers.Human);
             entities.AddEntity(caster.Entity);
             entities.AddEntity(ally.Entity);
             ConcentrateFireSettings settings = CreateSettings<ConcentrateFireSettings>(
@@ -96,11 +96,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TestCommand : IShipAbilityFacade, IAttackFacade
         {
-            public TestCommand(long id, PlayerType playerType)
+            public TestCommand(long id, PlayerId owner)
             {
                 FakeHealth health = new FakeHealth();
                 Health = health;
-                Entity = new TestEntity(id, playerType, health, this);
+                Entity = new TestEntity(id, owner, health, this);
             }
 
             public IReadOnlyList<ShipAbilitySlot> Slots { get; } = Array.Empty<ShipAbilitySlot>();
@@ -117,11 +117,11 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly TestCommand _command;
 
-            public TestEntity(long id, PlayerType playerType, IHealthModelObserver health,
+            public TestEntity(long id, PlayerId owner, IHealthModelObserver health,
                 TestCommand command)
             {
                 Id = id;
-                PlayerType = playerType;
+                Owner = owner;
                 HealthModel = health;
                 _command = command;
             }
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -161,7 +161,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyed => false;
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform => null;
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>

@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Ship;
@@ -15,7 +15,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         IModelObserver Model { get; }
         IHealthModelObserver HealthModel { get; }
         
-        PlayerType PlayerType { get; }
+        PlayerId Owner { get; }
     }
     
     public class Entity: IEntity, IInitializable, ILateDisposable
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         
         public IModelObserver Model { get; }
         public IHealthModelObserver HealthModel { get; }
-        public PlayerType PlayerType { get; }
+        public PlayerId Owner { get; }
 
         public Entity(
             long id,
@@ -34,11 +34,11 @@ namespace EmpireAtWar.Entities.BaseEntity
             IUnitModelObserver modelObserver,
             IHealthModelObserver healthModel,
             IEntityLocator entityLocator,
-            PlayerType playerType)
+            PlayerId owner)
         {
             _facades = facades;
             _entityLocator = entityLocator;
-            PlayerType = playerType;
+            Owner = owner;
             Id = id;
             Model = modelObserver;
             HealthModel = healthModel;

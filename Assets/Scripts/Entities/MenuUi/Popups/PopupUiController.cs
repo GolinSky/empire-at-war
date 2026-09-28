@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Commands.Game;
-using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
@@ -91,24 +90,32 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
 
         public void StartGame()
         {
+            if (!_skirmishModel.CanStart)
+            {
+                return;
+            }
+
             _gameCommand.StartGame(
-                _skirmishModel.PlayerFaction,
-                _skirmishModel.EnemyFaction,
+                _skirmishModel.CreatePlayers(),
                 _skirmishModel.Planet,
                 _skirmishModel.MapSize,
                 _skirmishModel.VictoryCondition,
-                _skirmishModel.EnemyDifficulty,
                 _skirmishModel.StartingMoney);
         }
 
-        public void SelectPlayerFaction(int index)
+        public void SelectSlotOccupant(int slotIndex, int occupantIndex)
         {
-            _skirmishModel.SelectPlayerFaction((FactionType)index);
+            _skirmishModel.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
         }
 
-        public void SelectEnemyFaction(int index)
+        public void SelectSlotFaction(int slotIndex, int factionIndex)
         {
-            _skirmishModel.SelectEnemyFaction((FactionType)index);
+            _skirmishModel.SelectSlotFaction(slotIndex, (FactionType)factionIndex);
+        }
+
+        public void SelectSlotTeam(int slotIndex, int teamIndex)
+        {
+            _skirmishModel.SelectSlotTeam(slotIndex, teamIndex);
         }
 
         public void SelectPlanet(int index)
@@ -124,11 +131,6 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         public void SelectVictoryCondition(int index)
         {
             _skirmishModel.SelectVictoryCondition((BattleVictoryCondition)index);
-        }
-
-        public void SelectEnemyDifficulty(int index)
-        {
-            _skirmishModel.SelectEnemyDifficulty((EnemyAiDifficulty)index);
         }
 
         public void SelectStartingMoney(float amount)

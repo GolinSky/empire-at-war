@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float MONEY_RESERVE_MULTIPLIER = 2f;
 
         private readonly SuperWeaponModel _model;
+        private readonly PlayerSlot _owner;
         private readonly EnemyFactionModel _factionModel;
         private readonly EconomyModel _economyModel;
         private readonly FactionsData _factionsData;
@@ -33,8 +35,10 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemySuperWeaponController(SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel, FactionsData factionsData, ISuperWeaponFireService fireService,
-            IEntityLocator entities)
+            IEntityLocator entities,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _model = model;
             _factionModel = factionModel;
             _economyModel = economyModel;
@@ -80,7 +84,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 _chargeTimeLeft.Remove(type);
-                if (_entities.IsStationOperational(PlayerType.Opponent))
+                if (_entities.IsStationOperational(_owner.Id))
                 {
                     _model.CompleteCharging(type);
                     continue;
@@ -94,7 +98,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (!_entities.IsStationOperational(PlayerType.Opponent) ||
+            if (!_entities.IsStationOperational(_owner.Id) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
                 !_economyModel.TrySpend(data.Price))
@@ -123,7 +127,7 @@ namespace EmpireAtWar.Services.Enemy
             float bestScore = 0f;
             foreach (IEntity entity in _entities.Entities)
             {
-                if (!_fireService.CanTarget(PlayerType.Opponent, entity)) continue;
+                if (!_fireService.CanTarget(_owner.Id, entity)) continue;
                 float score = type == SuperWeaponType.IonCannon
                     ? entity.HealthModel.Shields
                     : entity.HealthModel.Hull;

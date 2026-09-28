@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.CaptureSites
@@ -10,21 +10,21 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// </summary>
     public sealed class CaptureSiteModel : PureModel
     {
-        private const float TIE_EPSILON = 0.001f;
-
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
+        private readonly IPlayerRelations _relations;
         private float _buildDuration;
 
-        public CaptureSiteModel(float captureDuration, float captureSpeedPerNetShip)
+        public CaptureSiteModel(float captureDuration, float captureSpeedPerNetShip, IPlayerRelations relations)
         {
             _captureDuration = captureDuration;
             _captureSpeedPerNetShip = captureSpeedPerNetShip;
+            _relations = relations;
         }
 
-        public PlayerType Owner { get; private set; } = PlayerType.None;
+        public PlayerId Owner { get; private set; } = PlayerId.None;
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
-        public PlayerType CapturingPlayer { get; private set; } = PlayerType.None;
+        public PlayerId CapturingPlayer { get; private set; } = PlayerId.None;
         public float CaptureProgress { get; private set; }
         public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }
@@ -33,40 +33,37 @@ namespace EmpireAtWar.Entities.CaptureSites
         public bool CanStartConstruction => State == CaptureSiteState.Owned;
 
         /// <returns>True when the site changed owner.</returns>
-        /// <param name="playerStrength">Weighted count of player units on the site (ship = 1).</param>
-        /// <param name="opponentStrength">Weighted count of opponent units on the site (ship = 1).</param>
-        public bool TickCapture(float deltaTime, float playerStrength, float opponentStrength)
+        public bool TickCapture(float deltaTime, CaptureTally tally)
         {
-            float advantage = playerStrength - opponentStrength;
-            bool isTied = System.Math.Abs(advantage) < TIE_EPSILON;
-            IsContested = IsCapturable && playerStrength > 0f && opponentStrength > 0f && isTied;
+            IsContested = IsCapturable && tally.IsContested;
 
-            if (!IsCapturable || (playerStrength <= 0f && opponentStrength <= 0f))
+            if (!IsCapturable || !tally.HasUnits)
             {
                 ResetCapture();
                 return false;
             }
 
-            if (isTied)
+            if (tally.IsTied)
             {
                 return false;
             }
 
-            PlayerType capturingPlayer = advantage > 0f ? PlayerType.Player : PlayerType.Opponent;
-            if (capturingPlayer == Owner)
+            // Allies never take a site from each other.
+            PlayerId capturingPlayer = tally.LeadingPlayer;
+            if (_relations.IsAllied(capturingPlayer, Owner))
             {
                 ResetCapture();
                 return false;
             }
 
-            if (CapturingPlayer != capturingPlayer)
+            // Progress carries over while the same team keeps capturing, even if its lead player changes.
+            if (!_relations.IsAllied(CapturingPlayer, capturingPlayer))
             {
-                CapturingPlayer = capturingPlayer;
                 CaptureProgress = 0f;
             }
 
-            float netStrength = System.Math.Abs(advantage);
-            CaptureProgress += deltaTime / _captureDuration * netStrength * _captureSpeedPerNetShip;
+            CapturingPlayer = capturingPlayer;
+            CaptureProgress += deltaTime / _captureDuration * tally.Advantage * _captureSpeedPerNetShip;
             if (CaptureProgress < 1f)
             {
                 return false;
@@ -109,7 +106,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void ReleaseFacility()
         {
-            Owner = PlayerType.None;
+            Owner = PlayerId.None;
             State = CaptureSiteState.Neutral;
             ConstructionProgress = 0f;
             ResetCapture();
@@ -117,7 +114,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void ResetCapture()
         {
-            CapturingPlayer = PlayerType.None;
+            CapturingPlayer = PlayerId.None;
             CaptureProgress = 0f;
         }
     }

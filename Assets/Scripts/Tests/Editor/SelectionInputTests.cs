@@ -1,11 +1,12 @@
 using System;
+using EmpireAtWar.Tests.Editor;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using DG.Tweening;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
@@ -35,7 +36,8 @@ namespace EmpireAtWar.Tests.Selection
                 inputService,
                 new EntityLocator(),
                 selectionQuery,
-                marqueeSelectionPresenter);
+                marqueeSelectionPresenter,
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             FakeSelectionCommand playerCommand =
                 new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand opponentCommand =
@@ -43,12 +45,12 @@ namespace EmpireAtWar.Tests.Selection
             selectionQuery.Add(
                 playerPosition,
                 new SelectionEntry(
-                    new FakeEntity(1, PlayerType.Player, playerCommand),
+                    new FakeEntity(1, TestPlayers.Human, playerCommand),
                     playerCommand));
             selectionQuery.Add(
                 opponentPosition,
                 new SelectionEntry(
-                    new FakeEntity(2, PlayerType.Opponent, opponentCommand),
+                    new FakeEntity(2, TestPlayers.Enemy, opponentCommand),
                     opponentCommand));
 
             selectionService.Initialize();
@@ -63,14 +65,14 @@ namespace EmpireAtWar.Tests.Selection
                     selectionService.PlayerSelectionContext.HasSelectable,
                     Is.False);
                 Assert.That(
-                    selectionService.EnemySelectionContext.HasSelectable,
+                    selectionService.OtherSelectionContext.HasSelectable,
                     Is.True);
 
                 inputService.RaiseSelectionBegan(emptyPosition);
 
                 Assert.That(opponentCommand.IsSelected, Is.False);
                 Assert.That(
-                    selectionService.EnemySelectionContext.HasSelectable,
+                    selectionService.OtherSelectionContext.HasSelectable,
                     Is.False);
             }
             finally
@@ -228,18 +230,18 @@ namespace EmpireAtWar.Tests.Selection
 
             public FakeEntity(
                 long id,
-                PlayerType playerType,
+                PlayerId owner,
                 IEntitySelectionFacade selectionCommand)
             {
                 Id = id;
-                PlayerType = playerType;
+                Owner = owner;
                 _selectionCommand = selectionCommand;
             }
 
             public long Id { get; }
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel => null;
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

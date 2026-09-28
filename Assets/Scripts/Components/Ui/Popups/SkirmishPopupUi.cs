@@ -1,6 +1,5 @@
 using System;
 using EmpireAtWar.Entities.MenuUi.Popups;
-using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
@@ -14,14 +13,18 @@ namespace EmpireAtWar.Ui.Popups
 {
     public class SkirmishPopupUi : BaseUi, ISkirmishPopupUi
     {
+        // Labels for the AI rows, in SkirmishSlotOccupant order (Closed .. AiUltraHard).
+        private static readonly string[] AI_OCCUPANT_OPTIONS =
+        {
+            "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard"
+        };
+
         [SerializeField] private Button closeButton;
         [SerializeField] private Button startGameButton;
-        [SerializeField] private TMP_Dropdown playerFactionDropdown;
-        [SerializeField] private TMP_Dropdown enemyFactionDropdown;
+        [SerializeField] private SkirmishSlotRowView[] slotRows;
         [SerializeField] private TMP_Dropdown planetsDropdown;
         [SerializeField] private TMP_Dropdown mapSizeDropdown;
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
-        [SerializeField] private TMP_Dropdown enemyDifficultyDropdown;
         [SerializeField] private Slider startingMoneySlider;
         [SerializeField] private TMP_Text startingMoneyText;
 
@@ -51,34 +54,50 @@ namespace EmpireAtWar.Ui.Popups
                 throw new InvalidOperationException("Skirmish popup dependencies must be set before initialization.");
             }
 
-            SetData<FactionType>(playerFactionDropdown);
-            SetData<FactionType>(enemyFactionDropdown);
+            string[] factionOptions = Enum.GetNames(typeof(FactionType));
+            string[] teamOptions = CreateTeamOptions(_model.TeamCount);
+            for (int i = 0; i < slotRows.Length; i++)
+            {
+                SkirmishSlotRowView row = slotRows[i];
+                row.Initialize(i, _model.Slots[i].IsHuman, AI_OCCUPANT_OPTIONS, factionOptions, teamOptions);
+                row.OccupantChanged += _presenter.SelectSlotOccupant;
+                row.FactionChanged += _presenter.SelectSlotFaction;
+                row.TeamChanged += _presenter.SelectSlotTeam;
+            }
+
             SetData<PlanetType>(planetsDropdown);
             SetData<MapSize>(mapSizeDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
-            SetData<EnemyAiDifficulty>(enemyDifficultyDropdown);
             SetStartingMoneySliderData();
             Render();
 
             _model.Changed += Render;
             closeButton.onClick.AddListener(_presenter.CloseSkirmish);
             startGameButton.onClick.AddListener(_presenter.StartGame);
-            playerFactionDropdown.onValueChanged.AddListener(_presenter.SelectPlayerFaction);
-            enemyFactionDropdown.onValueChanged.AddListener(_presenter.SelectEnemyFaction);
             planetsDropdown.onValueChanged.AddListener(_presenter.SelectPlanet);
             mapSizeDropdown.onValueChanged.AddListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
-            enemyDifficultyDropdown.onValueChanged.AddListener(_presenter.SelectEnemyDifficulty);
             startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
             _isInitialized = true;
+        }
+
+        private static string[] CreateTeamOptions(int teamCount)
+        {
+            string[] options = new string[teamCount];
+            for (int i = 0; i < teamCount; i++)
+            {
+                options[i] = $"Team {i + 1}";
+            }
+
+            return options;
         }
 
         private void SetData<TEnum>(TMP_Dropdown dropdown)
         {
             dropdown.options.Clear();
-            foreach (var factionType in Enum.GetNames(typeof(TEnum)))
+            foreach (var optionName in Enum.GetNames(typeof(TEnum)))
             {
-                dropdown.options.Add(new TMP_Dropdown.OptionData(factionType));
+                dropdown.options.Add(new TMP_Dropdown.OptionData(optionName));
             }
 
             dropdown.value = 0;
@@ -98,15 +117,17 @@ namespace EmpireAtWar.Ui.Popups
 
         private void Render()
         {
-            playerFactionDropdown.SetValueWithoutNotify((int)_model.PlayerFaction);
-            enemyFactionDropdown.SetValueWithoutNotify((int)_model.EnemyFaction);
+            for (int i = 0; i < slotRows.Length; i++)
+            {
+                slotRows[i].Render(_model.Slots[i]);
+            }
+
+            // A match needs at least two opposing teams among the open rows.
+            startGameButton.interactable = _model.CanStart;
             planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
-            enemyDifficultyDropdown.SetValueWithoutNotify((int)_model.EnemyDifficulty);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
-            playerFactionDropdown.RefreshShownValue();
-            enemyFactionDropdown.RefreshShownValue();
             startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
         }
 
@@ -118,14 +139,19 @@ namespace EmpireAtWar.Ui.Popups
             }
 
             _model.Changed -= Render;
+            foreach (SkirmishSlotRowView row in slotRows)
+            {
+                row.OccupantChanged -= _presenter.SelectSlotOccupant;
+                row.FactionChanged -= _presenter.SelectSlotFaction;
+                row.TeamChanged -= _presenter.SelectSlotTeam;
+                row.Dispose();
+            }
+
             closeButton.onClick.RemoveListener(_presenter.CloseSkirmish);
             startGameButton.onClick.RemoveListener(_presenter.StartGame);
-            playerFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectPlayerFaction);
-            enemyFactionDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyFaction);
             planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
             mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
-            enemyDifficultyDropdown.onValueChanged.RemoveListener(_presenter.SelectEnemyDifficulty);
             startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
             _isInitialized = false;
         }

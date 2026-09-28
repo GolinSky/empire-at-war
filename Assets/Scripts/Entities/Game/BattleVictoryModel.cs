@@ -1,84 +1,75 @@
 using System;
+using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.Game
 {
+    /// <summary>
+    /// Players drop out one by one; a team loses when all of its players are defeated and the last
+    /// team standing wins. The outcome is reported from the local player's point of view.
+    /// </summary>
     public sealed class BattleVictoryModel : PureModel
     {
-        private bool _hasObservedPlayerBase;
-        private bool _hasObservedEnemyBase;
+        private readonly HashSet<PlayerId> _observedBases = new HashSet<PlayerId>();
+        private readonly HashSet<TeamId> _survivingTeams = new HashSet<TeamId>();
 
         public BattleOutcome Evaluate(
             BattleVictoryCondition victoryCondition,
-            int playerShipCount,
-            int enemyShipCount,
-            bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive,
-            bool hasEnemyPendingReinforcement)
+            IReadOnlyList<PlayerBattleState> players,
+            TeamId localTeam)
         {
-            if (playerShipCount < 0)
+            foreach (PlayerBattleState player in players)
             {
-                throw new ArgumentOutOfRangeException(nameof(playerShipCount));
+                if (player.ShipCount < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(players), $"{player.Player} has a negative ship count.");
+                }
+
+                if (player.IsBaseAlive)
+                {
+                    _observedBases.Add(player.Player);
+                }
             }
 
-            if (enemyShipCount < 0)
+            _survivingTeams.Clear();
+            foreach (PlayerBattleState player in players)
             {
-                throw new ArgumentOutOfRangeException(nameof(enemyShipCount));
+                if (!IsDefeated(victoryCondition, player))
+                {
+                    _survivingTeams.Add(player.Team);
+                }
             }
 
-            _hasObservedPlayerBase |= isPlayerBaseAlive;
-            _hasObservedEnemyBase |= isEnemyBaseAlive;
-
-            return victoryCondition switch
-            {
-                BattleVictoryCondition.DestroyEnemyFleet =>
-                    EvaluateFleetOutcome(
-                        playerShipCount,
-                        enemyShipCount,
-                        isPlayerBaseAlive,
-                        isEnemyBaseAlive,
-                        hasEnemyPendingReinforcement),
-                BattleVictoryCondition.DestroyOpponentBase =>
-                    EvaluateBaseOutcome(isPlayerBaseAlive, isEnemyBaseAlive),
-                _ => throw new ArgumentOutOfRangeException(nameof(victoryCondition))
-            };
-        }
-
-        // A side is wiped out only when its ships and station are gone; the enemy must also have no
-        // queued reinforcements left. The player cannot deploy reinforcements without a station.
-        private BattleOutcome EvaluateFleetOutcome(
-            int playerShipCount,
-            int enemyShipCount,
-            bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive,
-            bool hasEnemyPendingReinforcement)
-        {
-            bool isPlayerDefeated = _hasObservedPlayerBase && !isPlayerBaseAlive && playerShipCount == 0;
-            bool isEnemyDefeated = _hasObservedEnemyBase && !isEnemyBaseAlive && enemyShipCount == 0 &&
-                !hasEnemyPendingReinforcement;
-            return ResolveOutcome(isPlayerDefeated, isEnemyDefeated);
-        }
-
-        private BattleOutcome EvaluateBaseOutcome(bool isPlayerBaseAlive, bool isEnemyBaseAlive)
-        {
-            bool isPlayerDefeated = _hasObservedPlayerBase && !isPlayerBaseAlive;
-            bool isEnemyDefeated = _hasObservedEnemyBase && !isEnemyBaseAlive;
-            return ResolveOutcome(isPlayerDefeated, isEnemyDefeated);
-        }
-
-        private static BattleOutcome ResolveOutcome(bool isPlayerDefeated, bool isEnemyDefeated)
-        {
-            if (isPlayerDefeated && isEnemyDefeated)
+            if (_survivingTeams.Count == 0)
             {
                 return BattleOutcome.Draw;
             }
 
-            if (isEnemyDefeated)
+            if (!_survivingTeams.Contains(localTeam))
             {
-                return BattleOutcome.PlayerVictory;
+                return BattleOutcome.EnemyVictory;
             }
 
-            return isPlayerDefeated ? BattleOutcome.EnemyVictory : BattleOutcome.None;
+            return _survivingTeams.Count == 1 ? BattleOutcome.PlayerVictory : BattleOutcome.None;
+        }
+
+        // A player counts only after its station was seen alive, so a slow first spawn is not a defeat.
+        private bool IsDefeated(BattleVictoryCondition victoryCondition, PlayerBattleState player)
+        {
+            if (!_observedBases.Contains(player.Player) || player.IsBaseAlive)
+            {
+                return false;
+            }
+
+            return victoryCondition switch
+            {
+                // Fleet victory also waits for ships and for AI builds still on the way.
+                BattleVictoryCondition.DestroyEnemyFleet =>
+                    player.ShipCount == 0 && !player.HasPendingReinforcement,
+                BattleVictoryCondition.DestroyOpponentBase => true,
+                _ => throw new ArgumentOutOfRangeException(nameof(victoryCondition))
+            };
         }
     }
 }

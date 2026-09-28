@@ -1,10 +1,10 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
-using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
@@ -20,11 +20,11 @@ namespace EmpireAtWar.Services.Enemy
         private const int SHIPS_PER_SQUADRON = 2;
 
         private readonly EnemyFactionModel _factionModel;
+        private readonly PlayerSlot _owner;
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
         private readonly IEnemyAiStateProvider _stateProvider;
-        private readonly IGameModelObserver _gameModel;
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
@@ -40,19 +40,19 @@ namespace EmpireAtWar.Services.Enemy
             IUnitRequestFactory requestFactory,
             IEconomyModelObserver economyModel,
             IEnemyAiStateProvider stateProvider,
-            IGameModelObserver gameModel,
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             IEnemyStructurePlacementService structurePlacementService,
-            IEntityLocator entityLocator)
+            IEntityLocator entityLocator,
+            PlayerSlot owner)
         {
+            _owner = owner;
             _factionModel = factionModel;
             _purchaseProcessor = purchaseProcessor;
             _requestFactory = requestFactory;
             _economyModel = economyModel;
             _stateProvider = stateProvider;
-            _gameModel = gameModel;
             _decisionModel = decisionModel;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
-            if (!_entityLocator.IsStationOperational(PlayerType.Opponent))
+            if (!_entityLocator.IsStationOperational(_owner.Id))
             {
                 return;
             }
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(
-                _gameModel.EnemyDifficulty);
+                _owner.Difficulty);
             _decisionTimer = Mathf.Max(
                 MINIMUM_PRODUCTION_INTERVAL,
                 profile.DecisionInterval * 2f);
@@ -109,7 +109,7 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
-            bool isUltraHard = _gameModel.EnemyDifficulty == EnemyAiDifficulty.UltraHard;
+            bool isUltraHard = _owner.Difficulty == EnemyAiDifficulty.UltraHard;
             bool hasShipOption = TrySelectShip(
                 shipCount,
                 out KeyValuePair<ShipType, FactionData> ship);
@@ -127,7 +127,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyProductionCategory category = _decisionModel.Evaluate(
                 new EnemyProductionSnapshot(
                     _stateProvider.CurrentState,
-                    _gameModel.EnemyDifficulty,
+                    _owner.Difficulty,
                     miningFacilityCount,
                     shipCount,
                     _unitLimitModel.ShipOrdersCount,

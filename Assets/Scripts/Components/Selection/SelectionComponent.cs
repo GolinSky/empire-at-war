@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Selection;
@@ -30,7 +30,8 @@ namespace EmpireAtWar.Components.Ship.Selection
         private bool _canBeSelected = true;
         private SharedSelectionData _sharedSelectionData;
 
-        [Inject] private PlayerType PlayerType { get; }
+        [Inject] private PlayerId Owner { get; }
+        [Inject] private ILocalPlayer LocalPlayer { get; }
         public Vector3 WorldPosition => selectedCanvas.transform.position;
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
@@ -76,7 +77,8 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public void SetActive(bool isActive)
         {
-            if (PlayerType != PlayerType.Player)
+            // Only the local player's own units show the selection ring.
+            if (!LocalPlayer.IsLocal(Owner))
             {
                 return;
             }

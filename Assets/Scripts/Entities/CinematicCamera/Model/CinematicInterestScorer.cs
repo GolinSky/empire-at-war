@@ -1,7 +1,7 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Numerics;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Camera;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Model
@@ -10,9 +10,11 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
     {
         private readonly CinematicCameraSettings _settings;
         private readonly Random _random;
+        private readonly IPlayerRelations _relations;
 
-        public CinematicInterestScorer(CinematicCameraSettings settings, Random random)
+        public CinematicInterestScorer(CinematicCameraSettings settings, Random random, IPlayerRelations relations)
         {
+            _relations = relations;
             _settings = settings;
             _random = random;
         }
@@ -35,7 +37,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
                 for (int j = 0; j < candidates.Count; j++)
                 {
                     CinematicCandidate other = candidates[j];
-                    if (!AreEnemies(candidate.PlayerType, other.PlayerType) ||
+                    if (!_relations.IsHostile(candidate.Owner, other.Owner) ||
                         Vector3.DistanceSquared(candidate.Position, other.Position) > engagementRadiusSquared)
                     {
                         continue;
@@ -75,11 +77,6 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
             }
 
             return score * (1f + _settings.ScoreJitter * (float)_random.NextDouble());
-        }
-
-        private static bool AreEnemies(PlayerType first, PlayerType second)
-        {
-            return first != second && first != PlayerType.None && second != PlayerType.None;
         }
     }
 }

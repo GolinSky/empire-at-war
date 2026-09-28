@@ -1,32 +1,48 @@
 using System;
+using Zenject;
+using EmpireAtWar.Services.Player;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Economy;
-using EmpireAtWar.Models.Factions;
 using UnityEngine;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.Services.CaptureSites
 {
-    public sealed class SiteFacilityBuilder : ISiteFacilityBuilder
+    /// <summary>Lives in one player's container and registers itself so scene-wide capture sites can reach it.</summary>
+    public sealed class SiteFacilityBuilder : ISiteFacilityBuilder, IInitializable, ILateDisposable
     {
-        private readonly PlayerType _playerType;
+        private readonly PlayerId _owner;
+        private readonly IPlayerRegistry _playerRegistry;
         private readonly EconomyModel _economyModel;
         private readonly AsteroidMiningFacilityFactory _miningFacilityFactory;
         private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
 
         public SiteFacilityBuilder(
-            PlayerType playerType,
+            PlayerSlot owner,
+            IPlayerRegistry playerRegistry,
             EconomyModel economyModel,
             AsteroidMiningFacilityFactory miningFacilityFactory,
             AsteroidDefendPlatformFactory battleAsteroidFactory)
         {
-            _playerType = playerType;
+            _owner = owner.Id;
+            _playerRegistry = playerRegistry;
             _economyModel = economyModel;
             _miningFacilityFactory = miningFacilityFactory;
             _battleAsteroidFactory = battleAsteroidFactory;
+        }
+
+        public void Initialize()
+        {
+            _playerRegistry.RegisterSiteBuilder(_owner, this);
+        }
+
+        public void LateDispose()
+        {
+            _playerRegistry.UnregisterSiteBuilder(_owner);
         }
 
         public bool CanAfford(float price)
@@ -45,12 +61,12 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 case SiteFacilityType.Mining:
                     MiningFacilityEntity facility = _miningFacilityFactory.Create(
-                        _playerType, MiningFacilityType.AsteroidMiner, position);
+                        _owner, MiningFacilityType.AsteroidMiner, position);
                     facility.OnRelease += onDestroyed;
                     break;
                 case SiteFacilityType.BattleAsteroid:
                     DefendPlatformEntity battleAsteroid = _battleAsteroidFactory.Create(
-                        _playerType, DefendPlatformType.BattleAsteroid, position);
+                        _owner, DefendPlatformType.BattleAsteroid, position);
                     battleAsteroid.OnRelease += onDestroyed;
                     break;
                 default:

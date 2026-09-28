@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
@@ -87,8 +88,8 @@ namespace EmpireAtWar.Tests.Editor
             for (int seed = 0; seed < SEED_COUNT; seed++)
             {
                 MapLayout layout = Generate(MapSize.Medium, EnemyAiDifficulty.Medium, seed);
-                Vector3 republic = layout.GetStationPosition(FactionType.Republic);
-                Vector3 separatist = layout.GetStationPosition(FactionType.Separatist);
+                Vector3 republic = layout.GetStationPosition(TestPlayers.Human);
+                Vector3 separatist = layout.GetStationPosition(TestPlayers.Enemy);
 
                 Assert.That(separatist.x, Is.EqualTo(-republic.x).Within(TOLERANCE));
                 Assert.That(separatist.z, Is.EqualTo(-republic.z).Within(TOLERANCE));
@@ -207,26 +208,70 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TeamGame_EveryMapSize_GivesEachPlayerACornerWithTeammatesSharingAnEdge()
+        {
+            PlayerRoster teamGame = TestPlayers.CreateTeamGame();
+            foreach (MapSize mapSize in new[] { MapSize.Small, MapSize.Medium, MapSize.Large })
+            {
+                for (int seed = 0; seed < SEED_COUNT; seed++)
+                {
+                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
+                    Vector3 human = layout.GetStationPosition(TestPlayers.Human);
+                    Vector3 ally = layout.GetStationPosition(TestPlayers.Ally);
+                    Vector3 enemy = layout.GetStationPosition(TestPlayers.Enemy);
+                    Vector3 secondEnemy = layout.GetStationPosition(TestPlayers.SecondEnemy);
+
+                    // Neighbouring corners share one coordinate sign; the enemy team holds the opposite edge.
+                    Assert.That(SharesEdge(human, ally), Is.True, $"{mapSize} seed {seed} allies");
+                    Assert.That(SharesEdge(enemy, secondEnemy), Is.True, $"{mapSize} seed {seed} enemies");
+                    Assert.That(human, Is.Not.EqualTo(enemy));
+                    Assert.That(human, Is.Not.EqualTo(secondEnemy));
+                    Assert.That(layout.Zones.Count,
+                        Is.EqualTo(_settings.GetSize(mapSize).CapturableZoneCount + teamGame.Players.Count));
+                }
+            }
+        }
+
+        [Test]
+        public void ThreePlayers_GeneratesOnEveryMapSize()
+        {
+            PlayerRoster teamGame = TestPlayers.CreateTeamGame();
+            PlayerSlot[] threePlayers = { teamGame.Players[0], teamGame.Players[1], teamGame.Players[2] };
+            foreach (MapSize mapSize in new[] { MapSize.Small, MapSize.Medium, MapSize.Large })
+            {
+                for (int seed = 0; seed < SEED_COUNT; seed++)
+                {
+                    Assert.DoesNotThrow(() => _generator.Generate(mapSize, threePlayers, new Random(seed)),
+                        $"{mapSize} seed {seed}");
+                }
+            }
+        }
+
+        private static bool SharesEdge(Vector3 first, Vector3 second)
+        {
+            return Mathf.Approximately(first.x, second.x) != Mathf.Approximately(first.z, second.z);
+        }
+
+        [Test]
         public void SameSeed_ProducesSameLayout()
         {
             MapLayout first = Generate(MapSize.Medium, EnemyAiDifficulty.Hard, 42);
             MapLayout second = Generate(MapSize.Medium, EnemyAiDifficulty.Hard, 42);
 
-            Assert.That(second.GetStationPosition(FactionType.Republic),
-                Is.EqualTo(first.GetStationPosition(FactionType.Republic)));
+            Assert.That(second.GetStationPosition(TestPlayers.Human),
+                Is.EqualTo(first.GetStationPosition(TestPlayers.Human)));
             Assert.That(second.Fields.Count, Is.EqualTo(first.Fields.Count));
             Assert.That(second.PlanetPosition, Is.EqualTo(first.PlanetPosition));
         }
 
         private MapLayout Generate(MapSize mapSize, EnemyAiDifficulty difficulty, int seed)
         {
-            return _generator.Generate(
-                mapSize, difficulty, FactionType.Republic, FactionType.Separatist, new Random(seed));
+            return _generator.Generate(mapSize, TestPlayers.CreateDuel(difficulty).Players, new Random(seed));
         }
 
         private static float GetClosestMiningDistance(MapLayout layout)
         {
-            Vector3 station = layout.GetStationPosition(FactionType.Republic);
+            Vector3 station = layout.GetStationPosition(TestPlayers.Human);
             float closest = float.MaxValue;
             foreach (SiteSpot site in layout.Sites)
             {

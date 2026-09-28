@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using System.Collections.ObjectModel;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 
 namespace EmpireAtWar.Services.Battle
@@ -13,10 +13,12 @@ namespace EmpireAtWar.Services.Battle
         private readonly List<IEntity> _entities = new List<IEntity>();
         private readonly List<SelectionEntry> _replacementEntries = new List<SelectionEntry>();
         private readonly ReadOnlyCollection<IEntity> _readOnlyEntities;
+        private readonly ILocalPlayer _localPlayer;
 
-        public SelectionContext(PlayerType playerType)
+        public SelectionContext(SelectionScope scope, ILocalPlayer localPlayer)
         {
-            PlayerType = playerType;
+            Scope = scope;
+            _localPlayer = localPlayer;
             _readOnlyEntities = _entities.AsReadOnly();
         }
 
@@ -27,7 +29,12 @@ namespace EmpireAtWar.Services.Battle
         public SelectionType SelectionType { get; private set; } = SelectionType.None;
         public bool HasSelectable => _entries.Count > 0;
         public int Count => _entries.Count;
-        public PlayerType PlayerType { get; }
+        public SelectionScope Scope { get; }
+
+        public bool Accepts(IEntity entity)
+        {
+            return _localPlayer.IsLocal(entity.Owner) == (Scope == SelectionScope.Local);
+        }
 
         public bool Contains(IEntity entity)
         {
@@ -39,7 +46,7 @@ namespace EmpireAtWar.Services.Battle
             _replacementEntries.Clear();
             for (int i = 0; i < entries.Count; i++)
             {
-                if (entries[i].Entity.PlayerType == PlayerType &&
+                if (Accepts(entries[i].Entity) &&
                     !Contains(_replacementEntries, entries[i].Entity))
                 {
                     _replacementEntries.Add(entries[i]);

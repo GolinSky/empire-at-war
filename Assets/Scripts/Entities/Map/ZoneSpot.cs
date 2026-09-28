@@ -1,11 +1,11 @@
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map
 {
     public readonly struct ZoneSpot
     {
-        public ZoneSpot(Vector3 center, PlayerType owner, bool isCapturable)
+        public ZoneSpot(Vector3 center, PlayerId owner, bool isCapturable)
         {
             Center = center;
             Owner = owner;
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Entities.Map
         }
 
         public Vector3 Center { get; }
-        public PlayerType Owner { get; }
+        public PlayerId Owner { get; }
         public bool IsCapturable { get; }
     }
 }

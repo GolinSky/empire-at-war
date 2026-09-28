@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Mvc;
@@ -37,6 +38,7 @@ namespace EmpireAtWar.Components.Radar
         private ILayerService _layerService;
         private IRangeDebugObserver _rangeDebug;
         private ISelectionModelObserver _selection;
+        private IPlayerRelations _relations;
         private Vector3 _position;
         private bool _isReleased;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -46,13 +48,14 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService,
-            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection)
+            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection, IPlayerRelations relations)
         {
             SetModel(model);
             _entityLocator = entityLocator;
             _layerService = layerService;
             _rangeDebug = rangeDebug;
             _selection = selection;
+            _relations = relations;
         }
 
         public void Initialize()
@@ -61,10 +64,7 @@ namespace EmpireAtWar.Components.Radar
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
 
-            LayerKey layerKey = Model.PlayerType == EmpireAtWar.Models.Factions.PlayerType.Player
-                ? LayerKey.Player
-                : LayerKey.Enemy;
-            _layerService.Apply(gameObject, layerKey, true);
+            _layerService.Apply(gameObject, LayerKey.Unit, true);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _radarRangeCircle = new DebugRangeCircle("RadarRange", new Color(0.2f, 0.6f, 1f), _rangeDebug, _selection);
 #endif
@@ -105,7 +105,7 @@ namespace EmpireAtWar.Components.Radar
                     if (_entityLocator.TryGetEntity(_overlapHits[i], out IEntity entity) &&
                         !entity.HealthModel.IsDestroyed)
                     {
-                        if (entity.PlayerType != Model.PlayerType && entity.HealthModel.HasUnits &&
+                        if (_relations.IsHostile(Model.Owner, entity.Owner) && entity.HealthModel.HasUnits &&
                             (entity.GetFacade<IEntityTransformFacade>().Transform.position - _position).sqrMagnitude <=
                             Model.Range * Model.Range)
                         {
@@ -162,7 +162,7 @@ namespace EmpireAtWar.Components.Radar
                     _halfExtents,
                     _overlapHits,
                     Quaternion.identity,
-                    _layerService.GetMask(LayerKey.Player, LayerKey.Enemy, LayerKey.Obstacle),
+                    _layerService.GetMask(LayerKey.Unit, LayerKey.Obstacle),
                     QueryTriggerInteraction.Collide);
                 if (hitAmount < _overlapHits.Length || _overlapHits.Length >= MAX_HIT_LIMIT)
                 {

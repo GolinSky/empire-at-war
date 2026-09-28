@@ -423,6 +423,7 @@ GameObject:
   - component: {fileID: 6175106514994132088}
   - component: {fileID: 3390042486601539979}
   - component: {fileID: 4949378780131669032}
+  - component: {fileID: 994680405957274432}
   m_Layer: 0
   m_Name: MiningFacilityView
   m_TagString: Untagged
@@ -546,3 +547,18 @@ MonoBehaviour:
   - {fileID: 8377140888753509348}
   hardPoints:
   - {fileID: 1754627770004611748}
+--- !u!114 &994680405957274432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8290540933441299966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc6da9f12354d5d4780a4aeec9c5dd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
+  meshRenderers:
+  - {fileID: 3704989187706422692}
+  - {fileID: 8377140888753509348}

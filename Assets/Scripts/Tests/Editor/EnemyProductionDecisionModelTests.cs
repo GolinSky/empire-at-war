@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
@@ -382,7 +383,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(source, Is.Not.Null);
 
             FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
-            GameData gameModel = ScriptableObject.CreateInstance<GameData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -394,7 +394,7 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     nameof(ReinforcementData.MaxUnitCapacity),
                     MAX_UNIT_CAPACITY);
-                gameModel.EnemyDifficulty = difficulty;
+                PlayerSlot owner = TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy);
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 ReserveEconomicFloor(
@@ -429,12 +429,12 @@ namespace EmpireAtWar.Tests.Editor
                     new UnitRequestFactory(),
                     new EconomyModelStub(10000f),
                     new StateProviderStub(),
-                    gameModel,
                     new EnemyProductionDecisionModel(),
                     unitLimitModel,
                     reinforcementData,
                     new StructurePlacementServiceStub(),
-                    new OperationalEntityLocator());
+                    new OperationalEntityLocator(),
+                    owner);
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -449,7 +449,6 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(factionsModel);
-                UnityEngine.Object.DestroyImmediate(gameModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -466,7 +465,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(source, Is.Not.Null);
 
             FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
-            GameData gameModel = ScriptableObject.CreateInstance<GameData>();
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -479,7 +477,7 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData,
                     nameof(ReinforcementData.MaxUnitCapacity),
                     MAX_UNIT_CAPACITY);
-                gameModel.EnemyDifficulty = EnemyAiDifficulty.UltraHard;
+                PlayerSlot owner = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy);
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 ReserveEconomicFloor(factionModel, unitLimitModel, 3);
@@ -502,12 +500,12 @@ namespace EmpireAtWar.Tests.Editor
                     new UnitRequestFactory(),
                     new EconomyModelStub(money),
                     new StateProviderStub(),
-                    gameModel,
                     new EnemyProductionDecisionModel(),
                     unitLimitModel,
                     reinforcementData,
                     new StructurePlacementServiceStub(),
-                    new OperationalEntityLocator());
+                    new OperationalEntityLocator(),
+                    owner);
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -542,7 +540,6 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(factionsModel);
-                UnityEngine.Object.DestroyImmediate(gameModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -651,7 +648,7 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
             public event Action<IEntity> EntityAdded { add { } remove { } }
             public event Action<IEntity> EntityRemoved { add { } remove { } }
-            public bool IsStationOperational(PlayerType playerType) => true;
+            public bool IsStationOperational(PlayerId owner) => true;
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();

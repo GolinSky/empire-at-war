@@ -1,11 +1,11 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Activation_ProgressesThroughDurationAndRecovery()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand caster = CreateCaster();
 
             Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
@@ -54,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ZeroRecovery_ReactivatedAbility_ElapsesOncePerAdvance()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand caster = CreateCaster(recoveryDelay: 0f);
 
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Cancel_StopsOnceAndEntersFullRecovery_OnlyWhenAllowed()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand caster = CreateCaster();
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
 
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(factory.Created[0].StopCount, Is.EqualTo(1));
 
             FakeCommand fixedDuration = CreateCaster(canCancel: false);
-            ShipAbilityService fixedService = new ShipAbilityService(factory);
+            ShipAbilityService fixedService = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             fixedService.Press(new IEntity[] { fixedDuration.Entity }, ShipAbilityId.BoostEnginePower);
             fixedService.Press(new IEntity[] { fixedDuration.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(fixedDuration.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
@@ -96,7 +96,7 @@ namespace EmpireAtWar.Tests.Editor
         public void CasterDeath_StopsActiveAbilityOnce()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             caster.FakeHealth.IsDestroyedValue = true;
@@ -110,11 +110,11 @@ namespace EmpireAtWar.Tests.Editor
         public void Targeting_RejectsOutOfRangeAndActivatesInRange()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand caster = CreateCaster(targeted: true);
             _targetView = new GameObject("Target");
             FakeHealth targetHealth = new FakeHealth(_targetView.transform);
-            FakeEntity target = new FakeEntity(null, PlayerType.Opponent, targetHealth);
+            FakeEntity target = new FakeEntity(null, TestPlayers.Enemy, targetHealth);
 
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(service.IsWaitingForTarget, Is.True);
@@ -134,7 +134,7 @@ namespace EmpireAtWar.Tests.Editor
         public void GroupPress_ActivatesOnlyReadySlots()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory);
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
             FakeCommand first = CreateCaster();
             FakeCommand second = CreateCaster();
             service.TryActivate(first, ShipAbilityId.BoostEnginePower, null);
@@ -191,7 +191,7 @@ namespace EmpireAtWar.Tests.Editor
             public FakeCommand(ShipAbilityDefinition definition)
             {
                 FakeHealth = new FakeHealth(null);
-                Entity = new FakeEntity(this, PlayerType.Player, FakeHealth);
+                Entity = new FakeEntity(this, TestPlayers.Human, FakeHealth);
                 Slots = new[] { new ShipAbilitySlot(ShipAbilityId.BoostEnginePower,
                     definition, this) };
             }
@@ -209,18 +209,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly IShipAbilityFacade _command;
 
-            public FakeEntity(IShipAbilityFacade command, PlayerType playerType,
+            public FakeEntity(IShipAbilityFacade command, PlayerId owner,
                 IHealthModelObserver health)
             {
                 _command = command;
-                PlayerType = playerType;
+                Owner = owner;
                 HealthModel = health;
             }
 
             public long Id => 1;
             public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
-            public PlayerType PlayerType { get; }
+            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -254,7 +254,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsDestroyedValue { get; set; }
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerType PlayerType => PlayerType.Player;
+            public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>

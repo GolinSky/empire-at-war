@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
@@ -38,7 +39,8 @@ namespace EmpireAtWar.Tests.Editor
                 new FakeReinforcementZonesSystem(),
                 new OperationalEntityLocator(),
                 _superWeaponModel,
-                new RangeDebugModel());
+                new RangeDebugModel(),
+                TestPlayers.CreateDuel().Get(TestPlayers.Human));
         }
 
         [TearDown]
@@ -126,17 +128,17 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
-            public bool IsPositionInOwnedZone(PlayerType playerType, Vector3 position)
+            public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position)
             {
                 return false;
             }
 
-            public int GetOwnedCapturableZoneCount(PlayerType playerType)
+            public int GetOwnedCapturableZoneCount(PlayerId owner)
             {
                 return 0;
             }
 
-            public void CopyOwnedCapturableZoneCenters(PlayerType playerType, System.Collections.Generic.List<Vector3> destination)
+            public void CopyOwnedCapturableZoneCenters(PlayerId owner, System.Collections.Generic.List<Vector3> destination)
             {
                 destination.Clear();
             }
@@ -146,20 +148,20 @@ namespace EmpireAtWar.Tests.Editor
                 return true;
             }
 
-            public bool TryGetDefaultSpawnPosition(PlayerType playerType, out Vector3 position)
+            public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetDefaultZoneCenter(PlayerType playerType, out Vector3 position)
+            public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
             public bool TryGetDefaultZoneExitPosition(
-                PlayerType playerType,
+                PlayerId owner,
                 Vector3 shipPosition,
                 float shipRadius,
                 out Vector3 position)
@@ -169,7 +171,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public bool TryGetRandomSpawnPosition(
-                PlayerType playerType,
+                PlayerId owner,
                 ShipType shipType,
                 out Vector3 position)
             {
@@ -177,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
-            public bool TryGetCaptureTarget(PlayerType playerType, Vector3 origin, out Vector3 position)
+            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
             {
                 position = default;
                 return false;
@@ -190,7 +192,7 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
             public event Action<IEntity> EntityAdded { add { } remove { } }
             public event Action<IEntity> EntityRemoved { add { } remove { } }
-            public bool IsStationOperational(PlayerType playerType) => true;
+            public bool IsStationOperational(PlayerId owner) => true;
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();
