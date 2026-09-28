@@ -8,13 +8,23 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 from pathlib import Path
+import subprocess
 import sys
 import time
 
 from freshness import Freshness, file_lock, write_json
 
 
+class NoWindowPopen(subprocess.Popen):
+    # The watcher runs under pythonw, which has no console, so each console child
+    # (for example Graphify's `git ls-files`) would otherwise open a visible window.
+    def __init__(self, *args, creationflags=0, **kwargs):
+        super().__init__(*args, creationflags=creationflags | subprocess.CREATE_NO_WINDOW, **kwargs)
+
+
 def watch(runtime):
+    if os.name == "nt":
+        subprocess.Popen = NoWindowPopen
     try:
         with file_lock(runtime.state / "watcher.lock", timeout=0):
             handler = RotatingFileHandler(runtime.state / "watcher.log", maxBytes=2_000_000, backupCount=2, encoding="utf-8")
