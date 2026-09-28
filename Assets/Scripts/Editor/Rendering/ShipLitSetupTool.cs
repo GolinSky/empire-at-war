@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.TeamColor;
@@ -20,10 +21,11 @@ namespace EmpireAtWar.Editor.Rendering
     {
         private const string CONVERT_MENU_PATH = "Tools/Rendering/Convert Unit Materials To Ship Lit";
         private const string TEAM_COLOR_MENU_PATH = "Tools/Rendering/Add Team Color Views To Unit Prefabs";
-        private const string SHIP_LIT_SHADER_PATH = "Assets/Art/Shaders/Units/ShipLit.shader";
+        public const string SHIP_LIT_SHADER_PATH = "Assets/Art/Shaders/Units/ShipLit.shader";
         private const string LIT_SHADER_NAME = "Universal Render Pipeline/Lit";
         private const string COMPLEX_LIT_SHADER_NAME = "Universal Render Pipeline/Complex Lit";
         private const string MESH_RENDERERS_PROPERTY = "meshRenderers";
+        private const string SHIP_LIT_COPY_SUFFIX = "_ShipLit";
         private const float OPAQUE_SURFACE = 0f;
 
         private static readonly string[] UNIT_PREFAB_FOLDERS =
@@ -74,6 +76,74 @@ namespace EmpireAtWar.Editor.Rendering
             AssetDatabase.SaveAssets();
             report.AppendLine($"  converted {converted} materials; skipped {alreadyConverted} already Ship Lit");
             Debug.Log(report.ToString());
+
+            // Newly converted materials need their livery hue measured before they show team colors.
+            TeamLiveryAnalyzer.DetectUnitLiveries();
+        }
+
+        /// <summary>
+        /// Gives a unit root a <see cref="TeamColorView"/> listing every mesh renderer under it.
+        /// Anything that rebuilds a unit prefab's hierarchy must call this before saving, or the view keeps
+        /// references to renderers that no longer exist.
+        /// </summary>
+        /// <returns>The number of renderers the view now colors.</returns>
+        public static int AssignTeamColorRenderers(GameObject root)
+        {
+            TeamColorView view = root.GetComponent<TeamColorView>();
+            if (view == null)
+            {
+                view = root.AddComponent<TeamColorView>();
+            }
+
+            // Authoring-time collection only: the result is stored as explicit serialized references.
+            MeshRenderer[] renderers = root.GetComponentsInChildren<MeshRenderer>(true);
+            SerializedObject serializedView = new SerializedObject(view);
+            SerializedProperty rendererList = serializedView.FindProperty(MESH_RENDERERS_PROPERTY);
+            rendererList.arraySize = renderers.Length;
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                rendererList.GetArrayElementAtIndex(i).objectReferenceValue = renderers[i];
+            }
+
+            serializedView.ApplyModifiedPropertiesWithoutUndo();
+            return renderers.Length;
+        }
+
+        /// <summary>
+        /// Model files keep their original materials; unit prefabs use the "<name>_ShipLit" copies made for
+        /// materials that other content still shares. Builders that instantiate a model must call this so
+        /// the rebuilt unit does not fall back to the unconverted material.
+        /// </summary>
+        public static void UseShipLitMaterialCopies(GameObject root)
+        {
+            Shader shipLit = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_LIT_SHADER_PATH);
+            foreach (MeshRenderer meshRenderer in root.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                Material[] slots = meshRenderer.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < slots.Length; i++)
+                {
+                    if (slots[i] == null || slots[i].shader == shipLit)
+                    {
+                        continue;
+                    }
+
+                    string path = AssetDatabase.GetAssetPath(slots[i]);
+                    string copyPath = Path.Combine(Path.GetDirectoryName(path),
+                        Path.GetFileNameWithoutExtension(path) + SHIP_LIT_COPY_SUFFIX + ".mat").Replace('\\', '/');
+                    Material copy = AssetDatabase.LoadAssetAtPath<Material>(copyPath);
+                    if (copy != null)
+                    {
+                        slots[i] = copy;
+                        changed = true;
+                    }
+                }
+
+                if (changed)
+                {
+                    meshRenderer.sharedMaterials = slots;
+                }
+            }
         }
 
         [MenuItem(TEAM_COLOR_MENU_PATH)]
@@ -90,25 +160,9 @@ namespace EmpireAtWar.Editor.Rendering
                         continue;
                     }
 
-                    TeamColorView view = root.GetComponent<TeamColorView>();
-                    if (view == null)
-                    {
-                        view = root.AddComponent<TeamColorView>();
-                    }
-
-                    // Authoring-time collection only: the result is stored as explicit serialized references.
-                    MeshRenderer[] renderers = root.GetComponentsInChildren<MeshRenderer>(true);
-                    SerializedObject serializedView = new SerializedObject(view);
-                    SerializedProperty rendererList = serializedView.FindProperty(MESH_RENDERERS_PROPERTY);
-                    rendererList.arraySize = renderers.Length;
-                    for (int i = 0; i < renderers.Length; i++)
-                    {
-                        rendererList.GetArrayElementAtIndex(i).objectReferenceValue = renderers[i];
-                    }
-
-                    serializedView.ApplyModifiedPropertiesWithoutUndo();
+                    int rendererCount = AssignTeamColorRenderers(root);
                     PrefabUtility.SaveAsPrefabAsset(root, path);
-                    report.AppendLine($"  {path}: {renderers.Length} renderers");
+                    report.AppendLine($"  {path}: {rendererCount} renderers");
                 }
                 finally
                 {
@@ -151,7 +205,7 @@ namespace EmpireAtWar.Editor.Rendering
             EditorUtility.SetDirty(material);
         }
 
-        private static HashSet<Material> CollectUnitMaterials()
+        internal static HashSet<Material> CollectUnitMaterials()
         {
             HashSet<Material> materials = new HashSet<Material>();
             foreach (string path in FindUnitPrefabPaths())

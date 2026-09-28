@@ -40,6 +40,13 @@ Shader "EmpireAtWar/Ship Lit"
         _TeamRimPower("Rim Sharpness", Range(0.5, 8.0)) = 3.0
         _TeamEmissionTint("Emission Tint", Range(0.0, 1.0)) = 0.5
 
+        // Painted livery recolored to the team color. Filled in by Tools/Rendering/Detect Team Livery Colors.
+        [Header(Team Livery)]
+        _TeamLiveryHue("Livery Hue", Range(0.0, 1.0)) = 0.0
+        _TeamLiveryHueRange("Livery Hue Range", Range(0.01, 0.5)) = 0.07
+        _TeamLiveryMinSaturation("Livery Min Saturation", Range(0.0, 1.0)) = 0.4
+        _TeamLiveryStrength("Livery Strength", Range(0.0, 1.0)) = 0.0
+
         // URP's shared shadow/depth passes read _Cutoff; ships never clip, so it stays hidden.
         [HideInInspector] _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
     }

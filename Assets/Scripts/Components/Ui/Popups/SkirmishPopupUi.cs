@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.MenuUi.Popups;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Ui.Popups
 
         private ISkirmishPopupModelObserver _model;
         private ISkirmishPopupPresenter _presenter;
+        private TeamColorPalette _palette;
         private bool _isInitialized;
 
         public void SetModel(ISkirmishPopupModelObserver model)
@@ -42,6 +44,11 @@ namespace EmpireAtWar.Ui.Popups
             _presenter = presenter;
         }
 
+        public void SetData(TeamColorPalette palette)
+        {
+            _palette = palette;
+        }
+
         public void Initialize()
         {
             if (_isInitialized)
@@ -49,20 +56,22 @@ namespace EmpireAtWar.Ui.Popups
                 return;
             }
 
-            if (_model == null || _presenter == null)
+            if (_model == null || _presenter == null || _palette == null)
             {
                 throw new InvalidOperationException("Skirmish popup dependencies must be set before initialization.");
             }
 
             string[] factionOptions = Enum.GetNames(typeof(FactionType));
             string[] teamOptions = CreateTeamOptions(_model.TeamCount);
+            string[] colorOptions = CreateColorOptions(_palette);
             for (int i = 0; i < slotRows.Length; i++)
             {
                 SkirmishSlotRowView row = slotRows[i];
-                row.Initialize(i, _model.Slots[i].IsHuman, AI_OCCUPANT_OPTIONS, factionOptions, teamOptions);
+                row.Initialize(i, _model.Slots[i].IsHuman, AI_OCCUPANT_OPTIONS, factionOptions, teamOptions, colorOptions);
                 row.OccupantChanged += _presenter.SelectSlotOccupant;
                 row.FactionChanged += _presenter.SelectSlotFaction;
                 row.TeamChanged += _presenter.SelectSlotTeam;
+                row.ColorChanged += _presenter.SelectSlotColor;
             }
 
             SetData<PlanetType>(planetsDropdown);
@@ -87,6 +96,19 @@ namespace EmpireAtWar.Ui.Popups
             for (int i = 0; i < teamCount; i++)
             {
                 options[i] = $"Team {i + 1}";
+            }
+
+            return options;
+        }
+
+        // Each option name is drawn in its own color, so the dropdown doubles as a swatch.
+        private static string[] CreateColorOptions(TeamColorPalette palette)
+        {
+            string[] options = new string[palette.Count];
+            for (int i = 0; i < palette.Count; i++)
+            {
+                string hex = ColorUtility.ToHtmlStringRGB(palette.GetColor(i));
+                options[i] = $"<b><color=#{hex}>{palette.GetName(i)}</color></b>";
             }
 
             return options;
@@ -144,6 +166,7 @@ namespace EmpireAtWar.Ui.Popups
                 row.OccupantChanged -= _presenter.SelectSlotOccupant;
                 row.FactionChanged -= _presenter.SelectSlotFaction;
                 row.TeamChanged -= _presenter.SelectSlotTeam;
+                row.ColorChanged -= _presenter.SelectSlotColor;
                 row.Dispose();
             }
 

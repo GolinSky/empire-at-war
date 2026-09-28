@@ -47,8 +47,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 MiniMapMarkerCollection<string> sites = new MiniMapMarkerCollection<string>(data);
                 MiniMapMarkerCollection<string> zones = new MiniMapMarkerCollection<string>(data);
-                MiniMapMarker site = new MiniMapMarker(MarkType.CaptureSite, OwnerRelation.Own);
-                MiniMapMarker zone = new MiniMapMarker(MarkType.ReinforcementZone, OwnerRelation.Enemy);
+                MiniMapMarker site = new MiniMapMarker(MarkType.CaptureSite, TestPlayers.Human);
+                MiniMapMarker zone = new MiniMapMarker(MarkType.ReinforcementZone, TestPlayers.Enemy);
                 int removed = 0;
                 data.OnMarkerRemoved += marker => removed++;
                 sites.Add("site", site);

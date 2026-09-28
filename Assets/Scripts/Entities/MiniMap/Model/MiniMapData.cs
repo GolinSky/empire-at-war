@@ -52,10 +52,11 @@ namespace EmpireAtWar.Models.MiniMap
             _bases.Clear();
         }
 
-        public void AddBase(Vector3 position, OwnerRelation relation)
+        /// <param name="isHostile">Hostile stations use the enemy base icon; the color always comes from the owner.</param>
+        public void AddBase(Vector3 position, PlayerId owner, bool isHostile)
         {
-            MarkType iconType = relation == OwnerRelation.Enemy ? MarkType.EnemyBase : MarkType.PlayerBase;
-            _bases.Add(new BaseMarkData(position, GetIcon(iconType), relation));
+            MarkType iconType = isHostile ? MarkType.EnemyBase : MarkType.PlayerBase;
+            _bases.Add(new BaseMarkData(position, GetIcon(iconType), owner));
         }
 
         public void AddMark(MarkType markType, Vector3 position)

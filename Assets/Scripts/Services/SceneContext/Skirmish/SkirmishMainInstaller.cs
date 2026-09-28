@@ -146,6 +146,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.Bind<IPlayerRegistry>().To<PlayerRegistry>().AsSingle();
         Container.Bind<TeamColorPalette>().FromInstance(teamColorPalette).AsSingle();
         Container.BindInterfacesTo<TeamColorService>().AsSingle();
+        Container.Bind<IPlayerColors>().To<PlayerColors>().AsSingle();
 
         // The human context is placed in the scene; every AI gets its own sub-container on a new GameObject.
         foreach (PlayerSlot slot in roster.Players)

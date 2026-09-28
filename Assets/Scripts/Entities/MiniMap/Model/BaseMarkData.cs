@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace EmpireAtWar.Models.MiniMap
 {
-    /// <summary>A space station on the minimap, colored by how its owner relates to the local player.</summary>
+    /// <summary>A space station on the minimap, drawn in its owner's team color.</summary>
     public sealed class BaseMarkData : MarkData
     {
-        public BaseMarkData(Vector3 position, Sprite icon, OwnerRelation relation) : base(position, icon)
+        public BaseMarkData(Vector3 position, Sprite icon, PlayerId owner) : base(position, icon)
         {
-            Relation = relation;
+            Owner = owner;
         }
 
-        public OwnerRelation Relation { get; }
+        public PlayerId Owner { get; }
     }
 }

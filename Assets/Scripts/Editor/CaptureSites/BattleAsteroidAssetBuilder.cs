@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Editor.Rendering;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
@@ -140,6 +141,10 @@ namespace EmpireAtWar.Editor.CaptureSites
             root.transform.Find("SelectedCanvas").localScale *= selectionScale;
             root.transform.Find("Components/ShieldGenerator").localPosition =
                 new Vector3(bounds.center.x, bounds.max.y, bounds.center.z);
+            // The model was re-instantiated with its source materials; swap in the converted unit copies.
+            ShipLitSetupTool.UseShipLitMaterialCopies(root);
+            // The hierarchy was rebuilt, so the team color view must list the new renderers.
+            ShipLitSetupTool.AssignTeamColorRenderers(root);
 
             PrefabUtility.SaveAsPrefabAsset(root, VIEW_PATH);
             PrefabUtility.UnloadPrefabContents(root);

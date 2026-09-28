@@ -47,7 +47,7 @@ namespace EmpireAtWar.Presenters.MiniMap
                 return;
             }
 
-            _marker = new MiniMapMarker(GetMarkType(), _localPlayer.GetRelation(_owner));
+            _marker = new MiniMapMarker(GetMarkType(), _owner);
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(_localPlayer.IsFriendly(_owner));

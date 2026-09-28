@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         ISkirmishPopupPresenter, ISettingsPopupPresenter, ILateDisposable
     {
         private readonly IUiService _uiService;
+        private readonly TeamColorPalette _teamColorPalette;
         private readonly IGameCommand _gameCommand;
         private readonly ISettingsService _settingsService;
         private readonly SkirmishPopupModel _skirmishModel;
@@ -27,8 +29,10 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
             IGameCommand gameCommand,
             ISettingsService settingsService,
             SkirmishPopupModel skirmishModel,
-            SettingsPopupModel settingsModel)
+            SettingsPopupModel settingsModel,
+            TeamColorPalette teamColorPalette)
         {
+            _teamColorPalette = teamColorPalette;
             _uiService = uiService;
             _gameCommand = gameCommand;
             _settingsService = settingsService;
@@ -47,6 +51,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
                         "The skirmish popup prefab does not implement ISkirmishPopupUi.");
                 _skirmishUi.SetModel(_skirmishModel);
                 _skirmishUi.SetPresenter(this);
+                _skirmishUi.SetData(_teamColorPalette);
                 _skirmishUi.Initialize();
             }
 
@@ -116,6 +121,11 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
         public void SelectSlotTeam(int slotIndex, int teamIndex)
         {
             _skirmishModel.SelectSlotTeam(slotIndex, teamIndex);
+        }
+
+        public void SelectSlotColor(int slotIndex, int colorIndex)
+        {
+            _skirmishModel.SelectSlotColor(slotIndex, colorIndex);
         }
 
         public void SelectPlanet(int index)
