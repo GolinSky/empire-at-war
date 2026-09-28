@@ -15,6 +15,9 @@ updated: 2026-09-27
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
+> [!warning] Follow-up 2026-09-28
+> `FogVisibilityGridModel`/`FogVisibilityModel` sit loose in the `Scripts/Entities` root. CombatAttackCoordinator is still 506 lines. See [[TODOs/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
+
 ## C3 — CombatAttackCoordinator owns two batching pipelines plus telemetry
 **Priority:** P2 · **Confidence:** confirmed structure; performance impact unmeasured.
 

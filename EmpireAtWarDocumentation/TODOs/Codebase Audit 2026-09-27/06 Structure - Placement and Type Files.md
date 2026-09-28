@@ -15,6 +15,9 @@ updated: 2026-09-27
 
 [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
+> [!warning] Follow-up 2026-09-28
+> L3 left `Components/Utils/Scenes/` empty, with its `.meta` still tracked. L4 covered only the files it listed; 79 files still declare more than one top-level type. See [[TODOs/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
+
 ## L3 — Domain placement and vendor ownership are unclear
 **Priority:** P3 · **Confidence:** confirmed placement mismatch; no obsolete API claim.
 

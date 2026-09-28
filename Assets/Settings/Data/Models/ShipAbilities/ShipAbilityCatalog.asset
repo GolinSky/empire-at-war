@@ -22,7 +22,7 @@ MonoBehaviour:
         recoveryDelay: 50
         canCancel: 0
         requiresEnemyTarget: 1
-        range: 170
+        range: 340
         aiUse: 2
         settings:
           rid: 7607833764655792203
@@ -82,7 +82,7 @@ MonoBehaviour:
         recoveryDelay: 45
         canCancel: 0
         requiresEnemyTarget: 1
-        range: 140
+        range: 280
         aiUse: 2
         settings:
           rid: 7607833764655792208
@@ -94,7 +94,7 @@ MonoBehaviour:
         recoveryDelay: 60
         canCancel: 0
         requiresEnemyTarget: 1
-        range: 170
+        range: 340
         aiUse: 2
         settings:
           rid: 7607833764655792209
@@ -169,4 +169,4 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
-        commandRadius: 200
+        commandRadius: 400

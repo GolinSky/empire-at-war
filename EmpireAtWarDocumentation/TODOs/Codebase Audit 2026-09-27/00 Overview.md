@@ -4,7 +4,7 @@ tags:
   - refactoring
   - index
 created: 2026-09-27
-updated: 2026-09-27
+updated: 2026-09-28
 status: implemented
 ---
 # Codebase audit — implementation status
@@ -12,6 +12,10 @@ status: implemented
 The attached correction plan has been implemented for **all 17 entries**. The follow-up request authorized completing D3 and D4, focused tests, and committing this task's changes.
 
 [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|Read implementation results and verification]]
+
+> [!warning] Follow-up sweep 2026-09-28
+> All 17 entries were re-verified as present at f3fdf3d4. Two leftovers remain: an empty `Utils/Scenes` folder (from L3) and the fog models loose in the `Entities` root (from C4). The same issue classes still exist elsewhere: 79 multi-type files, silent null returns, property injection in services, a string-keyed pipeline dictionary, and hand-rolled owner counting in BattleVictoryService.
+> [[TODOs/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|Read the follow-up sweep]]
 
 | ID | Status | Result |
 |---|---|---|

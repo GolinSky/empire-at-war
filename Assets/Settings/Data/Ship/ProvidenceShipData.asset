@@ -15,14 +15,14 @@ MonoBehaviour:
   <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 4.5
+  <Speed>k__BackingField: 9
   <Height>k__BackingField: 0
   <RotationSpeed>k__BackingField: 7.5
   <TurnAcceleration>k__BackingField: 7.5
   <HyperSpaceDuration>k__BackingField: 3
   <BodyRotationMaxAngle>k__BackingField: 10
-  <NavigationRadius>k__BackingField: 33
-  <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
+  <NavigationRadius>k__BackingField: 66
+  <FallDownDirection>k__BackingField: {x: 0, y: 80, z: 0}
   <FallDownRotation>k__BackingField:
     x:
       <Min>k__BackingField: -90
@@ -55,9 +55,9 @@ MonoBehaviour:
   - hardPointType: 4
     health: 400
     hullDamageMultiplier: 1
-  <Range>k__BackingField: 500
+  <Range>k__BackingField: 1000
   <Delay>k__BackingField: 0.25
-  <Distance>k__BackingField: 200
+  <Distance>k__BackingField: 400
   abilities: 0300000005000000
   hangarBays:
   - squadronType: 100
