@@ -43,8 +43,8 @@ Apply project guidance in this order:
 ## Main Agent Tooling and Subagents
 
 - The main agent uses Serena MCP for live C# symbol work and Graphify MCP for graph-based codebase exploration. Verify graph findings against live source before making changes.
-- Project-specific subagent roles are disabled. Built-in generic agents are allowed for explicitly requested, bounded delegation.
-- Keep the main agent responsible for MCP-backed code navigation and final decisions. Do not run overlapping writers. Generic agents must not spawn subagents.
+- Only project-specific custom subagent roles are disabled. Use built-in generic/default agents when useful for bounded, separable work; no separate user request is needed.
+- Keep the main agent responsible for MCP-backed code navigation and final decisions. Do not run overlapping writers.
 
 
 ## Architecture: Model-View-Presenter
