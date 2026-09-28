@@ -21,7 +21,7 @@ enabled = true
 command = "uvx"
 args = [
   "--from", "graphifyy[mcp]==0.9.54",
-  "graphify-mcp", "graphify-out/graph.json",
+  "python", "Tools/Graphify/run.py", "mcp",
 ]
 enabled_tools = [
   "query_graph",
@@ -33,7 +33,7 @@ enabled_tools = [
 ]
 default_tools_approval_mode = "auto"
 startup_timeout_sec = 45
-tool_timeout_sec = 60
+tool_timeout_sec = 180
 
 [mcp_servers.graphify.env]
 GRAPHIFY_QUERY_LOG_DISABLE = "1"
@@ -41,13 +41,3 @@ GRAPHIFY_QUERY_LOG_DISABLE = "1"
 # Compatibility tombstone for the retired mcp-for-unity server.
 [mcp_servers.unityMCP]
 enabled = false
-
-[features]
-multi_agent = true
-
-[agents]
-enabled = true
-max_concurrent_threads_per_session = 4
-default_subagent_model = "gpt-5.6-terra"
-default_subagent_reasoning_effort = "high"
-interrupt_message = true

@@ -40,11 +40,11 @@ Apply project guidance in this order:
 - Serena uses one shared HTTP backend at `http://127.0.0.1:9122/mcp` for this exact checkout. `Tools/Serena/Start-Serena.ps1` starts it idempotently and activates `empire-at-war`; setup installs a per-user sign-in shortcut. If unavailable, run that launcher and inspect `.serena/service/` logs. Never switch the shared backend to another project or worktree; use a separate backend and endpoint for another checkout. See `Tools/Serena/README.md`.
 - Do not run Serena onboarding or write Serena memories automatically. `AGENTS.md` is the source of durable agent instructions; use Serena memories only when the user explicitly requests them.
 
-## Main Agent Tooling and Subagents
+## Code Navigation and Custom Roles
 
-- The main agent uses Serena MCP for live C# symbol work and Graphify MCP for graph-based codebase exploration. Verify graph findings against live source before making changes.
-- Only project-specific custom subagent roles are disabled. Use built-in generic/default agents when useful for bounded, separable work; no separate user request is needed.
-- Keep the main agent responsible for MCP-backed code navigation and final decisions. Do not run overlapping writers.
+- Use Serena MCP for live C# symbol work and Graphify MCP for graph-based codebase exploration. Verify graph findings against live source before making changes.
+- Graphify updates automatically through the per-user `empire-at-war Graphify` task. Use the configured Graphify MCP tools: they verify freshness before reading the graph and report update failures instead of serving stale results. Setup, status, scope, and recovery are documented in `Tools/Graphify/README.md`.
+- Project-specific custom subagent roles are disabled.
 
 
 ## Architecture: Model-View-Presenter
