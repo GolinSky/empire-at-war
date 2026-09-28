@@ -9,7 +9,10 @@ using Zenject;
 
 namespace EmpireAtWar.Editor.CaptureSites
 {
-    /// <summary>Builds the battle asteroid entity assets: the XQ6 platform's components with turbolasers on the site rocks.</summary>
+    /// <summary>
+    /// Builds the battle asteroid entity assets: the XQ6 platform's components on the asteroid mine's machinery, with
+    /// turbolaser turrets on the site rocks around it.
+    /// </summary>
     public static class BattleAsteroidAssetBuilder
     {
         private const string CANNON_MODEL_PATH =
@@ -19,25 +22,26 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string INSTALLER_PATH = "Assets/Prefabs/View/AsteroidDefendPlatformInstaller.prefab";
         private const string SOURCE_DATA_PATH = "Assets/Settings/Data/Models/DefendPlatform/DefendPlatformData.asset";
         private const string DATA_PATH = "Assets/Settings/Data/Models/DefendPlatform/AsteroidDefendPlatformData.asset";
-        private const float CANNON_SCALE = 8f;
-        private const float HEIGHT_SAMPLE_RADIUS = 1.5f;
+        private const float CANNON_SCALE = 3f;
+        private const float HEIGHT_SAMPLE_RADIUS = 0.8f;
         private const float SURFACE_HEIGHT_PERCENTILE = 0.85f;
         // Sinks each cannon base slightly into the uneven rock so no edge floats.
-        private const float MOUNT_SINK = 0.3f;
+        private const float MOUNT_SINK = 0.1f;
         private const float HULL = 3500f;
         private const float SHIELDS = 1800f;
         // Muzzle of the unscaled cannon model, whose barrels point along -X.
         private static readonly Vector3 MUZZLE_OFFSET = new Vector3(-0.2f, 0.09f, 0f);
 
-        // Site-local XZ mount points: one on each small rock, four across the large one.
+        // Site-local XZ mount points on bare rock clear of the machinery: one on each small rock, four around the
+        // large one's rim.
         private static readonly Vector2[] MOUNT_POINTS =
         {
-            new Vector2(-8f, -4.7f),
-            new Vector2(-6.4f, 2.9f),
-            new Vector2(1f, 0.5f),
-            new Vector2(7f, 0.5f),
-            new Vector2(1f, 5.5f),
-            new Vector2(7f, 5.5f),
+            new Vector2(-8.6f, -2.5f),
+            new Vector2(-6.4f, 3.1f),
+            new Vector2(0.2f, 5.8f),
+            new Vector2(7.6f, 5.4f),
+            new Vector2(8.6f, 2.2f),
+            new Vector2(6.6f, -0.6f),
         };
 
         [MenuItem("Tools/Empire At War/Capture Sites/Build Battle Asteroid Assets")]
@@ -50,6 +54,17 @@ namespace EmpireAtWar.Editor.CaptureSites
             AsteroidMiningFacilityAssetBuilder.AddAddressable(INSTALLER_PATH, "Installers");
             AsteroidMiningFacilityAssetBuilder.AddAddressable(DATA_PATH, "Model");
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>The asteroid mine's machinery with the turbolaser turrets around it.</summary>
+        public static GameObject InstantiateFacility(Transform parent, string name)
+        {
+            GameObject facility = new GameObject(name);
+            facility.layer = parent.gameObject.layer;
+            facility.transform.SetParent(parent, false);
+            AsteroidMiningFacilityAssetBuilder.InstantiateModel(facility.transform, "Machinery", keepRocks: false);
+            InstantiateCannons(facility.transform, "Cannons");
+            return facility;
         }
 
         /// <summary>Mounts the turbolasers on the site rocks, each facing away from the site centre.</summary>
@@ -84,25 +99,26 @@ namespace EmpireAtWar.Editor.CaptureSites
             GameObject root = PrefabUtility.LoadPrefabContents(VIEW_PATH);
             root.name = "AsteroidDefendPlatformView";
 
-            // The XQ6 hull and its always-visible shell give way to cannons and a ship-style, impact-only shield.
+            // The XQ6 hull and its always-visible shell give way to the mine's machinery, turrets and a ship-style,
+            // impact-only shield.
             Transform platformModel = root.transform.Find("default");
             Bounds platformBounds = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(
                 root.transform, new[] { platformModel.GetComponent<Renderer>() });
             Object.DestroyImmediate(platformModel.gameObject);
             Object.DestroyImmediate(root.transform.Find("ShieldView").gameObject);
 
-            GameObject cannons = InstantiateCannons(root.transform, "Cannons");
-            Renderer[] cannonRenderers = cannons.GetComponentsInChildren<Renderer>();
-            Bounds bounds = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(root.transform, cannonRenderers);
+            GameObject facility = InstantiateFacility(root.transform, "Facility");
+            Renderer[] facilityRenderers = facility.GetComponentsInChildren<Renderer>();
+            Bounds bounds = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(root.transform, facilityRenderers);
             Shield shield = AsteroidMiningFacilityAssetBuilder.BuildShield(root.transform, bounds);
 
             BoxCollider collider = root.GetComponent<BoxCollider>();
             collider.center = bounds.center;
             collider.size = bounds.size;
 
-            Renderer[] fogRenderers = new Renderer[cannonRenderers.Length + 1];
-            cannonRenderers.CopyTo(fogRenderers, 0);
-            fogRenderers[cannonRenderers.Length] = shield.GetComponent<Renderer>();
+            Renderer[] fogRenderers = new Renderer[facilityRenderers.Length + 1];
+            facilityRenderers.CopyTo(fogRenderers, 0);
+            fogRenderers[facilityRenderers.Length] = shield.GetComponent<Renderer>();
             SerializedObject fog = new SerializedObject(root.GetComponent<FogVisibilityComponent>());
             SerializedProperty renderers = fog.FindProperty("renderers");
             renderers.arraySize = fogRenderers.Length;
@@ -117,7 +133,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             health.FindProperty("shieldView").objectReferenceValue = shield;
             health.ApplyModifiedPropertiesWithoutUndo();
 
-            MountHardPoints(root.transform, cannons.transform);
+            MountHardPoints(root.transform, facility.transform.Find("Cannons"));
 
             float selectionScale = Mathf.Max(bounds.extents.x, bounds.extents.z) /
                 Mathf.Max(platformBounds.extents.x, platformBounds.extents.z);

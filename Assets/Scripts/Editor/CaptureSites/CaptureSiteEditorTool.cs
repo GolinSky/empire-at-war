@@ -167,7 +167,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             Transform miningFramework = BuildFramework(root.transform, "MiningFramework",
                 parent => AsteroidMiningFacilityAssetBuilder.InstantiateModel(parent, "Machinery", keepRocks: false));
             Transform battleFramework = BuildFramework(root.transform, "BattleAsteroidFramework",
-                parent => BattleAsteroidAssetBuilder.InstantiateCannons(parent, "Cannons"));
+                parent => BattleAsteroidAssetBuilder.InstantiateFacility(parent, "Facility"));
             MeshRenderer ring = BuildRing(root.transform);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status,
                 out GameObject buildOptions, out SiteFacilityOptionView[] options);
