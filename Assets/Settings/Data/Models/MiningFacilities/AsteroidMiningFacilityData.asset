@@ -46,7 +46,7 @@ MonoBehaviour:
     - hardPointType: 4
       health: 300
       hullDamageMultiplier: 1
-    <Range>k__BackingField: 150
+    <Range>k__BackingField: 75
     <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 50
   <Income>k__BackingField: 20
