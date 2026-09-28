@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Orders;
 using UnityEngine;
 
@@ -29,8 +30,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
             _orders.Attack(target, formationOffset);
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>
             _orders.AttackHardPoint(target, hardPointId, formationOffset);
-        public void AttackMoveTo(Vector3 worldPosition) =>
-            _orders.AttackMoveTo(worldPosition);
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
+            _orders.AttackMoveTo(worldPosition, engagement);
         public void Stop() => _orders.Stop();
         public void Guard(IEntity friendly, Vector3 offset) => _orders.Guard(friendly, offset);
         public void MoveAlong(IReadOnlyList<Vector3> waypoints) =>

@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
@@ -6,6 +7,6 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
-        void AttackMoveTo(Vector3 worldPosition);
+        void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement);
     }
 }

@@ -125,7 +125,8 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers);
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
-            for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(slots[i]);
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(slots[i], engagement);
             Publish(UnitActionId.AttackMove, receivers, commands.Count, point);
         }
 

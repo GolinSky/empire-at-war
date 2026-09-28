@@ -12,6 +12,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -208,7 +209,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Attack(IEntity target, Vector3 offset) =>
                 Record(UnitActionId.Attack, offset);
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
-            public void AttackMoveTo(Vector3 point) => Record(UnitActionId.AttackMove, point);
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) => Record(UnitActionId.AttackMove, point);
             public void Stop() => Record(UnitActionId.Stop);
             public void Guard(IEntity target, Vector3 offset) =>
                 Record(UnitActionId.Guard, offset);

@@ -20,6 +20,7 @@ using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -309,7 +310,7 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveTo(Vector3 point) { }
             public void Attack(IEntity target, Vector3 offset) { }
             public void FocusFire(IEntity target) { }
-            public void AttackMoveTo(Vector3 point) { }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) { }
             public void Stop() { }
             public void Guard(IEntity target, Vector3 offset) { }
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
