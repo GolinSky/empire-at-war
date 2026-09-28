@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         float Radius { get; }
         float CaptureDuration { get; }
 
+        Vector3 GetFacilityPosition(SiteFacilityType facilityType);
         void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel);
         void Render(
             OwnerRelation owner,
