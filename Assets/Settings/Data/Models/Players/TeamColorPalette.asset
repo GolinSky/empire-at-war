@@ -12,12 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df409c60b946dc841a41faf3545930bf, type: 3}
   m_Name: TeamColorPalette
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Players.TeamColorPalette
-  colors:
-  - {r: 0.2, g: 0.55, b: 1, a: 1}
-  - {r: 1, g: 0.25, b: 0.2, a: 1}
-  - {r: 0.3, g: 0.9, b: 0.4, a: 1}
-  - {r: 1, g: 0.75, b: 0.2, a: 1}
-  - {r: 0.7, g: 0.35, b: 1, a: 1}
-  - {r: 0.2, g: 0.9, b: 0.9, a: 1}
-  - {r: 1, g: 0.45, b: 0.75, a: 1}
-  - {r: 0.9, g: 0.9, b: 0.9, a: 1}
+  entries:
+  - name: Blue
+    color: {r: 0.2, g: 0.55, b: 1, a: 1}
+  - name: Red
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+  - name: Green
+    color: {r: 0.3, g: 0.9, b: 0.4, a: 1}
+  - name: Gold
+    color: {r: 1, g: 0.75, b: 0.2, a: 1}
+  - name: Purple
+    color: {r: 0.7, g: 0.35, b: 1, a: 1}
+  - name: Cyan
+    color: {r: 0.2, g: 0.9, b: 0.9, a: 1}
+  - name: Pink
+    color: {r: 1, g: 0.45, b: 0.75, a: 1}
+  - name: White
+    color: {r: 0.9, g: 0.9, b: 0.9, a: 1}

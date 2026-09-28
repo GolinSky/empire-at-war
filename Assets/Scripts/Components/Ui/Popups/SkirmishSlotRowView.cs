@@ -18,6 +18,7 @@ namespace EmpireAtWar.Ui.Popups
         [SerializeField] private TMP_Dropdown occupantDropdown;
         [SerializeField] private TMP_Dropdown factionDropdown;
         [SerializeField] private TMP_Dropdown teamDropdown;
+        [SerializeField] private TMP_Dropdown colorDropdown;
 
         private int _rowIndex;
         private bool _isHumanRow;
@@ -25,13 +26,15 @@ namespace EmpireAtWar.Ui.Popups
         public event Action<int, int> OccupantChanged;
         public event Action<int, int> FactionChanged;
         public event Action<int, int> TeamChanged;
+        public event Action<int, int> ColorChanged;
 
         public void Initialize(
             int rowIndex,
             bool isHumanRow,
             IReadOnlyList<string> aiOccupantOptions,
             IReadOnlyList<string> factionOptions,
-            IReadOnlyList<string> teamOptions)
+            IReadOnlyList<string> teamOptions,
+            IReadOnlyList<string> colorOptions)
         {
             _rowIndex = rowIndex;
             _isHumanRow = isHumanRow;
@@ -41,10 +44,12 @@ namespace EmpireAtWar.Ui.Popups
             occupantDropdown.interactable = !isHumanRow;
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
+            SetOptions(colorDropdown, colorOptions);
 
             occupantDropdown.onValueChanged.AddListener(HandleOccupantChanged);
             factionDropdown.onValueChanged.AddListener(HandleFactionChanged);
             teamDropdown.onValueChanged.AddListener(HandleTeamChanged);
+            colorDropdown.onValueChanged.AddListener(HandleColorChanged);
         }
 
         public void Render(SkirmishSlotSetup slot)
@@ -53,11 +58,14 @@ namespace EmpireAtWar.Ui.Popups
             occupantDropdown.SetValueWithoutNotify(_isHumanRow ? 0 : (int)slot.Occupant);
             factionDropdown.SetValueWithoutNotify((int)slot.Faction);
             teamDropdown.SetValueWithoutNotify(slot.Team);
+            colorDropdown.SetValueWithoutNotify(slot.ColorIndex);
             factionDropdown.interactable = slot.IsOpen;
             teamDropdown.interactable = slot.IsOpen;
+            colorDropdown.interactable = slot.IsOpen;
             occupantDropdown.RefreshShownValue();
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
+            colorDropdown.RefreshShownValue();
         }
 
         public void Dispose()
@@ -65,6 +73,7 @@ namespace EmpireAtWar.Ui.Popups
             occupantDropdown.onValueChanged.RemoveListener(HandleOccupantChanged);
             factionDropdown.onValueChanged.RemoveListener(HandleFactionChanged);
             teamDropdown.onValueChanged.RemoveListener(HandleTeamChanged);
+            colorDropdown.onValueChanged.RemoveListener(HandleColorChanged);
         }
 
         private static void SetOptions(TMP_Dropdown dropdown, IReadOnlyList<string> options)
@@ -84,5 +93,7 @@ namespace EmpireAtWar.Ui.Popups
         private void HandleFactionChanged(int value) => FactionChanged?.Invoke(_rowIndex, value);
 
         private void HandleTeamChanged(int value) => TeamChanged?.Invoke(_rowIndex, value);
+
+        private void HandleColorChanged(int value) => ColorChanged?.Invoke(_rowIndex, value);
     }
 }

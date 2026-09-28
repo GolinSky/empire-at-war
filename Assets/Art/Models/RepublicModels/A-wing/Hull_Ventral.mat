@@ -117,6 +117,10 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TeamEmissionTint: 0.5
+    - _TeamLiveryHue: 0.0051621553
+    - _TeamLiveryHueRange: 0.07
+    - _TeamLiveryMinSaturation: 0.4
+    - _TeamLiveryStrength: 1
     - _TeamMaskStrength: 1
     - _TeamRimPower: 3
     - _TeamRimStrength: 0.6

@@ -20,10 +20,10 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
 
         private readonly SkirmishSlotSetup[] _slots =
         {
-            new SkirmishSlotSetup(SkirmishSlotOccupant.Human, FactionType.Republic, 0),
-            new SkirmishSlotSetup(SkirmishSlotOccupant.AiMedium, FactionType.Separatist, 1),
-            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Republic, 0),
-            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1)
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Human, FactionType.Republic, 0, 0),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.AiMedium, FactionType.Separatist, 1, 1),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Republic, 0, 2),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1, 3)
         };
 
         public event Action Changed;
@@ -62,6 +62,27 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
             Changed?.Invoke();
         }
 
+        /// <summary>Colors stay unique: taking a color another row uses swaps the two rows' colors.</summary>
+        public void SelectSlotColor(int slotIndex, int colorIndex)
+        {
+            if (colorIndex < 0 || colorIndex >= MatchRules.MAX_TEAM_COLORS)
+            {
+                throw new ArgumentOutOfRangeException(nameof(colorIndex), colorIndex, "No such team color.");
+            }
+
+            SkirmishSlotSetup slot = _slots[slotIndex];
+            foreach (SkirmishSlotSetup other in _slots)
+            {
+                if (other != slot && other.ColorIndex == colorIndex)
+                {
+                    other.ColorIndex = slot.ColorIndex;
+                }
+            }
+
+            slot.ColorIndex = colorIndex;
+            Changed?.Invoke();
+        }
+
         public void SelectPlanet(PlanetType planet)
         {
             Planet = planet;
@@ -85,13 +106,12 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
             Changed?.Invoke();
         }
 
-        /// <summary>Open rows become players in row order; the row index doubles as the team color.</summary>
+        /// <summary>Open rows become players in row order, keeping the color each row picked.</summary>
         public IReadOnlyList<PlayerSlot> CreatePlayers()
         {
             List<PlayerSlot> players = new List<PlayerSlot>();
-            for (int row = 0; row < _slots.Length; row++)
+            foreach (SkirmishSlotSetup slot in _slots)
             {
-                SkirmishSlotSetup slot = _slots[row];
                 if (!slot.IsOpen)
                 {
                     continue;
@@ -103,7 +123,7 @@ namespace EmpireAtWar.Entities.MenuUi.Popups
                     slot.Faction,
                     slot.IsHuman ? PlayerController.Human : PlayerController.Ai,
                     ToDifficulty(slot.Occupant),
-                    row));
+                    slot.ColorIndex));
             }
 
             return players;

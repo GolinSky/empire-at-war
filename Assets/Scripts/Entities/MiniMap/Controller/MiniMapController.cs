@@ -52,7 +52,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             Model.ClearBases();
             foreach (PlayerSlot player in roster.Players)
             {
-                Model.AddBase(mapModel.GetStationPosition(player.Id), localPlayer.GetRelation(player.Id));
+                Model.AddBase(mapModel.GetStationPosition(player.Id), player.Id, localPlayer.IsHostile(player.Id));
             }
             // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
             Physics.SyncTransforms();

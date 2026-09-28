@@ -8,6 +8,8 @@ namespace EmpireAtWar.Models.Players
     {
         public const int MIN_PLAYERS = 2;
         public const int MAX_PLAYERS = 4;
+        /// <summary>Size of the team color palette; must match MAX_TEAM_COLORS in ShipLitInput.hlsl.</summary>
+        public const int MAX_TEAM_COLORS = 8;
 
         /// <summary>The one human of a line-up; throws when there is none or more than one.</summary>
         public static PlayerSlot FindHuman(IReadOnlyList<PlayerSlot> players)
@@ -41,10 +43,11 @@ namespace EmpireAtWar.Models.Players
 
             int humanCount = 0;
             HashSet<TeamId> teams = new HashSet<TeamId>();
+            HashSet<int> colors = new HashSet<int>();
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerSlot slot = players[i];
-                // Slot ids index palettes and corner lists, so they must be 0..Count-1 in order.
+                // Slot ids index per-player arrays and corner lists, so they must be 0..Count-1 in order.
                 if (slot.Id != new PlayerId(i))
                 {
                     throw new ArgumentException($"Player slot {i} has id {slot.Id}.", nameof(players));
@@ -56,6 +59,11 @@ namespace EmpireAtWar.Models.Players
                 }
 
                 teams.Add(slot.Team);
+
+                if (slot.ColorIndex < 0 || slot.ColorIndex >= MAX_TEAM_COLORS || !colors.Add(slot.ColorIndex))
+                {
+                    throw new ArgumentException($"Player slot {i} has an invalid or repeated color {slot.ColorIndex}.", nameof(players));
+                }
             }
 
             if (humanCount != 1)

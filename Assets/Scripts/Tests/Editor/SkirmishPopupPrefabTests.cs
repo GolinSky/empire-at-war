@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string PREFAB_PATH =
             "Assets/Prefabs/Ui/Popups/SkirmishGameSetUpPopupUi.prefab";
+        private const string PALETTE_PATH = "Assets/Settings/Data/Models/Players/TeamColorPalette.asset";
 
         [Test]
         public void SetupOptions_ArePresentAndExplicitlyBound()
@@ -32,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
                     SkirmishSlotRowView row = rows.GetArrayElementAtIndex(i).objectReferenceValue as SkirmishSlotRowView;
                     Assert.That(row, Is.Not.Null, $"Slot row {i} is not bound.");
                     SerializedObject serializedRow = new SerializedObject(row);
-                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown" })
+                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown", "colorDropdown" })
                     {
                         Assert.That(serializedRow.FindProperty(field).objectReferenceValue, Is.Not.Null,
                             $"Slot row {i} has no {field}.");
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Tests.Editor
                 SkirmishPopupModel model = new SkirmishPopupModel();
                 popup.SetModel(model);
                 popup.SetPresenter(new SkirmishPopupPresenterStub(model));
+                popup.SetData(AssetDatabase.LoadAssetAtPath<TeamColorPalette>(PALETTE_PATH));
                 popup.Initialize();
 
                 SerializedObject serializedPopup = new SerializedObject(popup);
@@ -87,6 +89,15 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(model.Slots[2].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
                 Assert.That(thirdFaction.interactable, Is.True);
+
+                TMP_Dropdown humanColor = GetRowDropdown(rows, 0, "colorDropdown");
+                TMP_Dropdown enemyColor = GetRowDropdown(rows, 1, "colorDropdown");
+                humanColor.value = enemyColor.value;
+
+                // Taking a color that another row uses swaps the two colors.
+                Assert.That(model.Slots[0].ColorIndex, Is.EqualTo(1));
+                Assert.That(model.Slots[1].ColorIndex, Is.EqualTo(0));
+                Assert.That(enemyColor.value, Is.EqualTo(0));
 
                 popup.Dispose();
             }
@@ -119,6 +130,8 @@ namespace EmpireAtWar.Tests.Editor
                 _model.SelectSlotFaction(slotIndex, (FactionType)factionIndex);
             public void SelectSlotTeam(int slotIndex, int teamIndex) =>
                 _model.SelectSlotTeam(slotIndex, teamIndex);
+            public void SelectSlotColor(int slotIndex, int colorIndex) =>
+                _model.SelectSlotColor(slotIndex, colorIndex);
             public void SelectPlanet(int index) { }
             public void SelectMapSize(int index) { }
             public void SelectVictoryCondition(int index) { }

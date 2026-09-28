@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.FogOfWar;
+using EmpireAtWar.Editor.Rendering;
 using EmpireAtWar.MiningFacility;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             SerializedObject health = new SerializedObject(root.GetComponent<HealthComponent>());
             health.FindProperty("shieldView").objectReferenceValue = shield;
             health.ApplyModifiedPropertiesWithoutUndo();
+            ShipLitSetupTool.AssignTeamColorRenderers(root);
 
             PrefabUtility.SaveAsPrefabAsset(root, SOURCE_VIEW_PATH);
             PrefabUtility.UnloadPrefabContents(root);
@@ -126,6 +128,10 @@ namespace EmpireAtWar.Editor.CaptureSites
 
             root.transform.Find("SelectedCanvas").localScale *= SELECTION_SCALE;
             root.transform.Find("ShieldGenerator").localPosition = new Vector3(0f, bounds.max.y, 0f);
+            // The model was re-instantiated with its source materials; swap in the converted unit copies.
+            ShipLitSetupTool.UseShipLitMaterialCopies(root);
+            // The hierarchy was rebuilt, so the team color view must list the new renderers.
+            ShipLitSetupTool.AssignTeamColorRenderers(root);
 
             PrefabUtility.SaveAsPrefabAsset(root, VIEW_PATH);
             PrefabUtility.UnloadPrefabContents(root);

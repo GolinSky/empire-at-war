@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Services.Player;
 using System.Collections.Generic;
 using DG.Tweening;
 using EmpireAtWar.Models.MiniMap;
@@ -23,6 +24,8 @@ namespace EmpireAtWar.Views.MiniMap
         private const float HIGHLIGHT_MARK_ALPHA = 1f;
         private const float FADE_DURATION = 0.3f;
         private const float ORIGIN_MAP_ALPHA = 0.8f;
+
+        [Inject] private IPlayerColors PlayerColors { get; }
 
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private Transform iconParent;
@@ -73,7 +76,7 @@ namespace EmpireAtWar.Views.MiniMap
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
             if (markData is BaseMarkData baseMark)
             {
-                view.IconImage.color = MarkView.GetRelationColor(baseMark.Relation);
+                view.IconImage.color = PlayerColors.GetColor(baseMark.Owner);
             }
             _mapMarkers.Add(view.IconImage);
         }
@@ -81,7 +84,7 @@ namespace EmpireAtWar.Views.MiniMap
         private void AddMarker(MiniMapMarker marker)
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
-            view.SetData(this, iconParent, marker, Model.GetIcon(marker.MarkType));
+            view.SetData(this, PlayerColors, iconParent, marker, Model.GetIcon(marker.MarkType));
             _markerViews.Add(marker, view);
             _mapMarkers.Add(view.IconImage);
         }

@@ -4,16 +4,17 @@ namespace EmpireAtWar.Models.MiniMap
 {
     public sealed class MiniMapMarker
     {
-        public MiniMapMarker(MarkType markType, OwnerRelation relation)
+        public MiniMapMarker(MarkType markType, PlayerId owner)
         {
             MarkType = markType;
-            Relation = relation;
+            Owner = owner;
         }
 
         public float X { get; private set; }
         public float Z { get; private set; }
         public MarkType MarkType { get; }
-        public OwnerRelation Relation { get; private set; }
+        /// <summary>Who the marker shows; the minimap draws it in this owner's team color.</summary>
+        public PlayerId Owner { get; private set; }
         public bool Visible { get; private set; }
         public float WorldDiameter { get; private set; }
 
@@ -23,9 +24,9 @@ namespace EmpireAtWar.Models.MiniMap
             Z = z;
         }
 
-        public void SetRelation(OwnerRelation relation)
+        public void SetOwner(PlayerId owner)
         {
-            Relation = relation;
+            Owner = owner;
         }
 
         public void SetVisible(bool visible)

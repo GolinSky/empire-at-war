@@ -46,6 +46,10 @@ CBUFFER_START(UnityPerMaterial)
     half _TeamRimStrength;
     half _TeamRimPower;
     half _TeamEmissionTint;
+    half _TeamLiveryHue;
+    half _TeamLiveryHueRange;
+    half _TeamLiveryMinSaturation;
+    half _TeamLiveryStrength;
 CBUFFER_END
 
 // -----------------------------------------------------------------------------
@@ -82,13 +86,68 @@ half4 GetTeamColor()
     return half4(_TeamColors[paletteIndex].rgb, 1.0h);
 }
 
-// Recolors the painted parts of the hull. We keep the albedo's brightness and swap
-// its hue for the team color, so panel detail and dirt in the texture survive.
+// Hue of an RGB color on a 0..1 wheel: 0 = red, 1/3 = green, 2/3 = blue (back to red at 1).
+// This is the H of HSV: find which channel is largest, then measure how far the other two
+// lean toward their neighbours on the color wheel.
+half GetHue(half3 color)
+{
+    half maxChannel = max(color.r, max(color.g, color.b));
+    half minChannel = min(color.r, min(color.g, color.b));
+    half delta = maxChannel - minChannel;
+    if (delta <= HALF_MIN)
+    {
+        return 0.0h;                            // grey has no hue
+    }
+
+    half hue;
+    if (maxChannel == color.r)
+    {
+        hue = (color.g - color.b) / delta;      // between magenta (-1) and yellow (+1)
+    }
+    else if (maxChannel == color.g)
+    {
+        hue = 2.0h + (color.b - color.r) / delta;
+    }
+    else
+    {
+        hue = 4.0h + (color.r - color.g) / delta;
+    }
+
+    return frac(hue / 6.0h);                    // frac wraps negative reds back into 0..1
+}
+
+// S of HSV: 0 for greys, 1 for pure colors. Keeps white panels and dark metal out of the livery.
+half GetSaturation(half3 color)
+{
+    half maxChannel = max(color.r, max(color.g, color.b));
+    half minChannel = min(color.r, min(color.g, color.b));
+    return (maxChannel - minChannel) / max(maxChannel, HALF_MIN);
+}
+
+// How much of this albedo is the ship's painted livery (for example the Republic red stripes).
+// Each material stores its livery hue, measured by the TeamLiveryAnalyzer editor tool, so no
+// mask texture has to be painted. Strength 0 switches the effect off for that material.
+half GetLiveryMask(half3 albedo)
+{
+    // Distance on a circle: hue 0.98 and hue 0.02 are both red, only 0.04 apart.
+    half hueDistance = abs(GetHue(albedo) - _TeamLiveryHue);
+    hueDistance = min(hueDistance, 1.0h - hueDistance);
+    half hueWeight = saturate(1.0h - hueDistance / _TeamLiveryHueRange);
+
+    // smoothstep gives a soft edge instead of a hard cut, so stripe borders do not alias.
+    half saturationWeight = smoothstep(_TeamLiveryMinSaturation, _TeamLiveryMinSaturation + 0.15h,
+        GetSaturation(albedo));
+    return hueWeight * saturationWeight * _TeamLiveryStrength;
+}
+
+// Repaints the livery (and any hand-painted mask) in the team color. The brightest channel of the
+// original paint is kept, so shading, dirt and panel lines in the texture survive the recolor.
 half3 ApplyTeamMask(half3 albedo, half teamMask, half4 teamColor)
 {
-    half luminance = dot(albedo, half3(0.299h, 0.587h, 0.114h));
-    half3 tinted = luminance * teamColor.rgb * 2.0h;   // x2 keeps mid-grey paint at full color
-    half weight = saturate(teamMask * _TeamMaskStrength) * teamColor.a;
+    half weight = max(saturate(teamMask * _TeamMaskStrength), GetLiveryMask(albedo)) * teamColor.a;
+    half paintBrightness = max(albedo.r, max(albedo.g, albedo.b));
+    half teamBrightness = max(teamColor.r, max(teamColor.g, teamColor.b));
+    half3 tinted = teamColor.rgb * (paintBrightness / max(teamBrightness, HALF_MIN));
     return lerp(albedo, tinted, weight);
 }
 

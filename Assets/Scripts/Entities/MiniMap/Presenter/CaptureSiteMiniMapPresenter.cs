@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
@@ -14,14 +13,11 @@ namespace EmpireAtWar.Presenters.MiniMap
     {
         private readonly CaptureSitesSystem _captureSitesSystem;
         private readonly MiniMapMarkerCollection<CaptureSitePresenter> _markers;
-        private readonly ILocalPlayer _localPlayer;
 
         public CaptureSiteMiniMapPresenter(
             MiniMapData miniMapData,
-            CaptureSitesSystem captureSitesSystem,
-            ILocalPlayer localPlayer)
+            CaptureSitesSystem captureSitesSystem)
         {
-            _localPlayer = localPlayer;
             _markers = new MiniMapMarkerCollection<CaptureSitePresenter>(miniMapData);
             _captureSitesSystem = captureSitesSystem;
         }
@@ -30,7 +26,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         {
             foreach (CaptureSitePresenter site in _captureSitesSystem.Sites)
             {
-                MiniMapMarker marker = new MiniMapMarker(MarkType.CaptureSite, _localPlayer.GetRelation(site.Owner));
+                MiniMapMarker marker = new MiniMapMarker(MarkType.CaptureSite, site.Owner);
                 marker.SetPosition(site.Center.x, site.Center.z);
                 marker.SetVisible(true);
                 _markers.Add(site, marker);
@@ -50,11 +46,11 @@ namespace EmpireAtWar.Presenters.MiniMap
             _markers.Clear();
         }
 
-        private void RefreshMarker(CaptureSitePresenter site, MiniMapMarker marker)
+        private static void RefreshMarker(CaptureSitePresenter site, MiniMapMarker marker)
         {
             if (site.IsRevealed)
             {
-                marker.SetRelation(_localPlayer.GetRelation(site.Owner));
+                marker.SetOwner(site.Owner);
                 marker.SetVisible(!site.IsOperational);
             }
         }
