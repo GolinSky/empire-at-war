@@ -257,15 +257,18 @@ namespace EmpireAtWar.Editor
             private string BuildFinalStatus()
             {
                 var completedCount = 0;
+                var unsupportedCount = 0;
                 foreach (Dictionary<string, object> phase in _phases)
                 {
                     if ((string)phase["status"] == "completed")
                     {
                         completedCount++;
                     }
+                    if ((string)phase["status"] == "unsupported")
+                        unsupportedCount++;
                 }
 
-                return completedCount == _phases.Count ? "completed" : completedCount == 0 ? "unsupported" : "partial";
+                return completedCount == _phases.Count ? "completed" : unsupportedCount == _phases.Count ? "unsupported" : "partial";
             }
         }
     }

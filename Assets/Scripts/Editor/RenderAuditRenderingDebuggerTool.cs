@@ -19,11 +19,17 @@ namespace EmpireAtWar.Editor
             var result = RenderAuditCaptureStatus.CreateResult("completed", "Captured registered Rendering Debugger panel values.");
             result["phase"] = phase;
             var panels = new List<object>();
+            var valueErrors = new List<object>();
 
             foreach (var panel in DebugManager.instance.panels)
             {
                 var panelValues = new List<object>();
                 CaptureWidgets(panel, panel.displayName, panelValues);
+                foreach (Dictionary<string, object> value in panelValues)
+                {
+                    if (value.ContainsKey("value_error"))
+                        valueErrors.Add(value);
+                }
                 panels.Add(new Dictionary<string, object>
                 {
                     ["display_name"] = panel.displayName,
@@ -33,6 +39,12 @@ namespace EmpireAtWar.Editor
 
             result["panels"] = panels;
             result["panel_count"] = panels.Count;
+            result["value_errors"] = valueErrors;
+            if (valueErrors.Count > 0)
+            {
+                result["status"] = "partial";
+                result["message"] = $"Captured panels with {valueErrors.Count} unreadable values; see value_errors.";
+            }
             RenderAuditCaptureStatus.WriteJson(directory, "rendering-debugger.json", result);
             result.Remove("panels");
             result["artifact"] = "rendering-debugger.json";

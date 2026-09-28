@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Unity.Pipeline.Commands;
 using UnityEditor;
@@ -18,8 +20,12 @@ namespace EmpireAtWar.Editor
         private const string SESSION_ACTIVE_KEY = "EmpireAtWar.RenderAudit.Profiler.Active";
         private const string SESSION_DRIVER_ENABLED_KEY = "EmpireAtWar.RenderAudit.Profiler.DriverEnabled";
         private const string SESSION_DRIVER_PROFILE_EDITOR_KEY = "EmpireAtWar.RenderAudit.Profiler.DriverProfileEditor";
+        private const string SESSION_FRAME_COUNT_KEY = "EmpireAtWar.RenderAudit.Profiler.FrameCount";
 
         private static CaptureOperation _activeCapture;
+        private static readonly PropertyInfo _frameCount = typeof(ProfilerDriver).Assembly
+            .GetType("UnityEditor.Profiling.ProfilerUserSettings", true)
+            .GetProperty("frameCount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
         static RenderAuditProfilerTool()
         {
@@ -100,6 +106,7 @@ namespace EmpireAtWar.Editor
             SessionState.SetBool(SESSION_ACTIVE_KEY, true);
             SessionState.SetBool(SESSION_DRIVER_ENABLED_KEY, ProfilerDriver.enabled);
             SessionState.SetBool(SESSION_DRIVER_PROFILE_EDITOR_KEY, ProfilerDriver.profileEditor);
+            SessionState.SetInt(SESSION_FRAME_COUNT_KEY, (int)_frameCount.GetValue(null));
         }
 
         private static void RestoreStateIfNeeded()
@@ -111,6 +118,7 @@ namespace EmpireAtWar.Editor
 
             ProfilerDriver.profileEditor = SessionState.GetBool(SESSION_DRIVER_PROFILE_EDITOR_KEY, false);
             ProfilerDriver.enabled = SessionState.GetBool(SESSION_DRIVER_ENABLED_KEY, false);
+            _frameCount.SetValue(null, SessionState.GetInt(SESSION_FRAME_COUNT_KEY, (int)_frameCount.GetValue(null)));
             ClearSavedState();
         }
 
@@ -119,6 +127,7 @@ namespace EmpireAtWar.Editor
             SessionState.EraseBool(SESSION_ACTIVE_KEY);
             SessionState.EraseBool(SESSION_DRIVER_ENABLED_KEY);
             SessionState.EraseBool(SESSION_DRIVER_PROFILE_EDITOR_KEY);
+            SessionState.EraseInt(SESSION_FRAME_COUNT_KEY);
         }
 
 private static Dictionary<string, object> SummarizeRenderingCounters(Dictionary<string, object> counters)
@@ -213,8 +222,9 @@ private static Dictionary<string, object> CaptureRenderingStats()
             internal void Start()
             {
                 SaveState();
+                _frameCount.SetValue(null, Math.Max((int)_frameCount.GetValue(null), _framesRequested + 32));
                 ProfilerDriver.enabled = true;
-                ProfilerDriver.profileEditor = true;
+                ProfilerDriver.profileEditor = false;
                 _firstProfilerFrameIndex = ProfilerDriver.lastFrameIndex + 1;
                 RenderPipelineManager.endFrameRendering += HandleEndFrameRendering;
                 ProfilerDriver.NewProfilerFrameRecorded += HandleNewProfilerFrameRecorded;
@@ -288,13 +298,16 @@ private static Dictionary<string, object> CaptureRenderingStats()
                     var saved = ProfilerDriver.SaveProfile(profilePath);
                     var summaries = CaptureFrameSummaries(GetRequestedProfilerFrames());
                     var hasProfileData = saved && File.Exists(profilePath) && new FileInfo(profilePath).Length > 4;
-                    var status = hasProfileData && summaries.Count > 0 ? "completed" : hasProfileData ? "partial" : "error";
+                    var status = hasProfileData && summaries.Count == _framesRequested ? "completed" : hasProfileData ? "partial" : "error";
                     var message = status == "completed" ? "Captured profiler data and frame summaries." : "Profiler capture did not produce both a non-empty editor-buffer .data export and frame summaries.";
                     var result = RenderAuditCaptureStatus.CreateResult(status, message);
                     result["phase"] = "profiler";
                     result["rendered_frame_identities"] = _frameIdentities;
                     result["profiler_frame_summaries"] = summaries;
                     result["profiler_data_artifact"] = hasProfileData ? "profiler.data" : null;
+                    result["requested_frames"] = _framesRequested;
+                    result["summarized_frames"] = summaries.Count;
+                    result["profile_editor"] = false;
                     RenderAuditCaptureStatus.WriteJson(_directory, "profiler-summary.json", result);
                     Complete(result);
                 }
@@ -399,7 +412,8 @@ private static Dictionary<string, object> CaptureRenderingStats()
                             ["thread_name"] = view.threadName,
                             ["sample_count"] = view.sampleCount,
                             ["frame_time_ms"] = view.frameTimeMs,
-                            ["frame_gpu_time_ms"] = view.frameGpuTimeMs > 0 ? (object)view.frameGpuTimeMs : null
+                            ["frame_gpu_time_ms"] = view.frameGpuTimeMs > 0 ? (object)view.frameGpuTimeMs : null,
+                            ["cpu_hotspots"] = CaptureCpuHotspots(view)
                         });
                     }
 
@@ -411,13 +425,42 @@ private static Dictionary<string, object> CaptureRenderingStats()
                             ["captured_at_utc"] = DateTime.UtcNow.ToString("O"),
                             ["rendering_counters"] = counters,
                             ["rendering_metrics"] = SummarizeRenderingCounters(counters),
-                            ["counter_scope"] = "Recorded Editor profiler frame; includes Editor rendering.",
+                            ["counter_scope"] = "Editor-hosted player with profileEditor disabled; rendering counters can still include Editor rendering.",
+                            ["cpu_hotspot_note"] = "Top 40 markers per thread by self time. Inclusive time overlaps parent/child scopes; waits remain visible. Times are milliseconds.",
                             ["threads"] = threads
                         });
                     }
                 }
 
                 return summaries;
+            }
+
+            private static object CaptureCpuHotspots(RawFrameDataView view)
+            {
+                var totals = new Dictionary<string, (int Calls, double Total, double Self)>();
+                for (var sample = 0; sample < view.sampleCount; sample++)
+                {
+                    var name = view.GetSampleName(sample);
+                    var duration = view.GetSampleTimeMs(sample);
+                    double self = duration;
+                    var child = sample + 1;
+                    for (var index = 0; index < view.GetSampleChildrenCount(sample); index++)
+                    {
+                        self -= view.GetSampleTimeMs(child);
+                        child += 1 + view.GetSampleChildrenCountRecursive(child);
+                    }
+
+                    totals.TryGetValue(name, out var total);
+                    totals[name] = (total.Calls + 1, total.Total + duration, total.Self + Math.Max(0, self));
+                }
+
+                return totals.OrderByDescending(pair => pair.Value.Self).Take(40).Select(pair => new
+                {
+                    marker = pair.Key,
+                    calls = pair.Value.Calls,
+                    inclusive_ms = pair.Value.Total,
+                    self_ms = pair.Value.Self
+                }).ToArray();
             }
         }
     }
