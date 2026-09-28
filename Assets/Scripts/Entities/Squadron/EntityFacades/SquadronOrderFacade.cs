@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons.EntityFacades
@@ -18,7 +19,9 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public void MoveTo(Vector2 screenPosition) => _squadron.MoveTo(screenPosition);
         public void MoveTo(Vector3 worldPosition) => _squadron.MoveTo(worldPosition);
         public void Attack(IEntity target, Vector3 formationOffset) => _squadron.Attack(target, formationOffset);
-        public void AttackMoveTo(Vector3 worldPosition) => _squadron.AttackMoveTo(worldPosition);
+        // Fighters swarm whatever their own radar finds, so squadrons do not join the shared engagement.
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
+            _squadron.AttackMoveTo(worldPosition);
         public void Stop() => _squadron.Stop();
         public void Guard(IEntity friendly, Vector3 offset) => _squadron.Guard(friendly, offset);
         public void MoveAlong(IReadOnlyList<Vector3> waypoints) => _squadron.MoveAlong(waypoints);

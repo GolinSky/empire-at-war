@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly HuntState _huntState;
         private readonly FleeState _fleeState;
         private readonly bool _isAiControlled;
+        private AttackMoveEngagement _attackMoveEngagement;
 
         public UnitOrderType CurrentOrder => _orders.Current;
 
@@ -80,6 +81,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             _orders.Clear();
             _brain.Enable(false);
+            // Leaves the shared attack-move engagement so the group stops counting this ship.
+            if (_stateMachine.CurrentState == _attackMoveState) _stateMachine.SetState(_idleState);
         }
 
         public void MoveTo(Vector2 screenPosition) =>
@@ -107,10 +110,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
             Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
         }
 
-        public void AttackMoveTo(Vector3 destination)
+        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement)
         {
             FormationPoint point = ToPoint(destination);
             if (_orders.Matches(UnitOrderType.AttackMove, point)) return;
+            _attackMoveEngagement = engagement;
             Issue(UnitOrderType.AttackMove, point);
         }
 
@@ -183,7 +187,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:
-                    _attackMoveState.SetDestination(ToVector(_orders.Destination));
+                    _attackMoveState.SetData(ToVector(_orders.Destination), _attackMoveEngagement);
                     _stateMachine.SetState(_attackMoveState);
                     break;
                 case UnitOrderType.Guard:
