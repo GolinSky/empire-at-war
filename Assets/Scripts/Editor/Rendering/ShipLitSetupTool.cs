@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -44,13 +45,18 @@ namespace EmpireAtWar.Editor.Rendering
         public static void ConvertUnitMaterials()
         {
             Shader shipLit = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_LIT_SHADER_PATH);
+            HashSet<Material> materials = CollectUnitMaterials();
             StringBuilder report = new StringBuilder("[ShipLit] Material conversion\n");
-            int converted = 0;
-            foreach (Material material in CollectUnitMaterials())
+            int alreadyConverted = materials.Count(material => material.shader == shipLit);
+            int converted = AutodeskUnitMaterialConversion.Convert(materials, shipLit,
+                FindUnitPrefabPaths().Where(path => IsUnitRoot(AssetDatabase.LoadAssetAtPath<GameObject>(path))), report);
+            foreach (Material material in materials)
             {
                 string shaderName = material.shader.name;
+                if (material.shader == shipLit || shaderName == AutodeskMaterialConverter.SOURCE_SHADER_NAME) continue;
                 if (shaderName != LIT_SHADER_NAME && shaderName != COMPLEX_LIT_SHADER_NAME)
                 {
+                    report.AppendLine($"  skipped (unsupported shader {shaderName}): {AssetDatabase.GetAssetPath(material)}");
                     continue;
                 }
 
@@ -66,7 +72,7 @@ namespace EmpireAtWar.Editor.Rendering
             }
 
             AssetDatabase.SaveAssets();
-            report.AppendLine($"  converted {converted} materials");
+            report.AppendLine($"  converted {converted} materials; skipped {alreadyConverted} already Ship Lit");
             Debug.Log(report.ToString());
         }
 
