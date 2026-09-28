@@ -24,6 +24,7 @@ namespace EmpireAtWar.Editor
         private static MethodInfo _getFrameEventData;
         private static MethodInfo _getFrameEventInfoName;
         private static Type _eventDataType;
+        private static string[] _batchBreakCauses;
 
         static RenderAuditFrameDebuggerTool()
         {
@@ -119,6 +120,11 @@ namespace EmpireAtWar.Editor
             if (_getFrameEventData.Invoke(null, parameters) is bool success && success)
             {
                 entry["data"] = CapturePublicFields(parameters[1]);
+                var fields = (Dictionary<string, object>)entry["data"];
+                var cause = Convert.ToInt32(fields["m_BatchBreakCause"]);
+                entry["batch_break_reason"] = cause >= 0 && cause < _batchBreakCauses.Length
+                    ? _batchBreakCauses[cause]
+                    : $"Unknown batch break code: {cause}";
             }
             else
             {
@@ -171,6 +177,11 @@ namespace EmpireAtWar.Editor
                 return values;
             }
 
+            // Unity's Frame Debugger structs contain nested shader properties and render state.
+            // Their default ToString() only exports the type name.
+            if (value.GetType().IsValueType || value.GetType().Namespace == _eventDataType.Namespace)
+                return CapturePublicFields(value);
+
             return value.ToString();
         }
 
@@ -216,6 +227,7 @@ namespace EmpireAtWar.Editor
             {
                 throw new InvalidOperationException("Expected Unity 6000 Frame Debugger methods were not found.");
             }
+            _batchBreakCauses = (string[])_utilityType.GetMethod("GetBatchBreakCauseStrings", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
         }
 
         private static void InvokeSetEnabled(bool enabled)
