@@ -28,7 +28,7 @@ Shader "Custom/Vfx/VolumetricNebulaRaymarch"
         Tags 
         { 
             "RenderType"="Transparent" 
-            "Queue"="Transparent" 
+            "Queue"="Transparent-50"
             "RenderPipeline"="UniversalPipeline" 
             "IgnoreProjector"="True" 
         }
@@ -81,6 +81,8 @@ Shader "Custom/Vfx/VolumetricNebulaRaymarch"
                 Varyings OUT;
                 OUT.positionWS = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.positionHCS = TransformWorldToHClip(OUT.positionWS);
+                // Composite after background clouds, but remain behind the planet's depth.
+                OUT.positionHCS.z = UNITY_RAW_FAR_CLIP_VALUE * OUT.positionHCS.w;
                 OUT.uv = IN.uv;
                 OUT.color = IN.color;
                 return OUT;

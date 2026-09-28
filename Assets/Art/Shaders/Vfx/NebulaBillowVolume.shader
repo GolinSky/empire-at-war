@@ -16,7 +16,7 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
     }
     SubShader
     {
-        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" "DisableBatching"="True" }
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-100" "DisableBatching"="True" }
         Pass
         {
             Name "CloudScattering"
@@ -24,7 +24,7 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             // Exit faces cover the volume both outside and inside the box.
             Cull Front
             ZWrite Off
-            ZTest Always
+            ZTest LEqual
             Blend One OneMinusSrcAlpha
 
             HLSLPROGRAM
@@ -35,7 +35,6 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             #pragma instancing_options procedural:ParticleInstancingSetup
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ParticlesInstancing.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             TEXTURE3D(_CloudField);
             SAMPLER(sampler_CloudField);
@@ -54,7 +53,6 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 float4 screen : SV_POSITION;
                 float3 eyeOS : TEXCOORD0;
                 float3 rayOS : TEXCOORD1;
-                float3 rayWS : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -66,19 +64,15 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 float3 surface = TransformObjectToWorld(mesh.vertex);
                 float3 eyeWS = GetCameraPositionWS();
                 // Keep rays unnormalized so perspective interpolation stays linear.
-                volume.rayWS = -GetWorldSpaceViewDir(surface);
+                float3 rayWS = -GetWorldSpaceViewDir(surface);
                 if (unity_OrthoParams.w > 0.5)
-                    eyeWS = surface - volume.rayWS * dot(surface - eyeWS, volume.rayWS);
+                    eyeWS = surface - rayWS * dot(surface - eyeWS, rayWS);
                 // Resolve particle transforms per vertex instead of per fragment.
                 volume.eyeOS = TransformWorldToObject(eyeWS);
-                volume.rayOS = TransformWorldToObjectDir(volume.rayWS, false);
+                volume.rayOS = TransformWorldToObjectDir(rayWS, false);
                 volume.screen = TransformWorldToHClip(surface);
-                // Preserve back faces beyond the far clip plane for cameras inside a cloud.
-                #if UNITY_REVERSED_Z
-                    volume.screen.z = max(volume.screen.z, volume.screen.w * 0.00001);
-                #else
-                    volume.screen.z = min(volume.screen.z, volume.screen.w * 0.99999);
-                #endif
+                // Background clouds sit behind all scene geometry, even when volumes overlap it.
+                volume.screen.z = UNITY_RAW_FAR_CLIP_VALUE * volume.screen.w;
                 return volume;
             }
 
@@ -93,11 +87,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             half4 VolumeFragment(VolumeInput volume) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(volume);
-                float worldRayLength = length(volume.rayWS);
                 float localRayLength = length(volume.rayOS);
-                float3 rayWS = volume.rayWS / worldRayLength;
                 float3 ray = volume.rayOS / localRayLength;
-                float distanceScale = localRayLength / worldRayLength;
                 float3 eye = volume.eyeOS;
                 float3 reciprocalRay = rcp(lerp(-1.0, 1.0, step(0.0, ray)) * max(abs(ray), 0.00001));
                 float3 a = (-0.5 - eye) * reciprocalRay;
@@ -105,14 +96,6 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 float3 nearBounds = min(a, b), farBounds = max(a, b);
                 float first = max(0.0, max(nearBounds.x, max(nearBounds.y, nearBounds.z)));
                 float last = min(farBounds.x, min(farBounds.y, farBounds.z));
-                float2 uv = GetNormalizedScreenSpaceUV(volume.screen);
-                float sceneDepth = SampleSceneDepth(uv);
-                #if !UNITY_REVERSED_Z
-                    sceneDepth = lerp(UNITY_NEAR_CLIP_VALUE, 1.0, sceneDepth);
-                #endif
-                float3 scenePoint = ComputeWorldSpacePosition(uv, sceneDepth, UNITY_MATRIX_I_VP);
-                // Orthographic origins differ from the camera only perpendicular to the ray.
-                last = min(last, dot(scenePoint - GetCameraPositionWS(), rayWS) * distanceScale);
                 if (first >= last) discard;
 
                 int count = clamp((int)_Samples, 32, 128);
