@@ -33,6 +33,7 @@
 - Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
 - Retention: 10 runs; artifacts from 3 runs. Retention limits counts, not total bytes.
 - Player output and workspace ZIP are deleted only after Jenkins confirms archiving; archived files remain downloadable.
+- A complete player without its ZIP is preserved if packaging fails. Archival monitors disk reserve and records RAM without blocking failure-log recovery on low memory.
 - `archive-pending.json` blocks a new snapshot when the only output copy still needs recovery. Recover/archive that output before removing the marker.
 - Cancellation closes the monitor's Job Object and kills only its CI group. Preparation refuses to reuse a worktree with an active CI Editor or held Unity lock.
 - Sign-in startup remains disabled until cold/warm builds, player navigation, cancellation, queued builds and resource rejection pass acceptance.
