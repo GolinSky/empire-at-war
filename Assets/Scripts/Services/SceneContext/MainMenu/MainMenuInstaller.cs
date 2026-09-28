@@ -1,5 +1,6 @@
 using EmpireAtWar.Ui.Base;
-using EmpireAtWar.Entities.MenuUi;
+using EmpireAtWar.Entities.MainMenu;
+using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
@@ -23,8 +24,8 @@ namespace EmpireAtWar
                 .ByNewGameObjectInstaller<UiInstaller>();
 
             // Bind Main Menu MVP Components
-            Container.BindInterfacesAndSelfTo<MenuUiModel>().AsSingle();
-            Container.BindInterfacesAndSelfTo<MenuUiController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MainMenuModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MainRouteController>().AsSingle();
             Container.BindInterfacesTo<MainMenuOrchestrator>().AsSingle();
         }
     }

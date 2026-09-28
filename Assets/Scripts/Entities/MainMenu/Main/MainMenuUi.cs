@@ -1,0 +1,59 @@
+using EmpireAtWar.Ui.Base;
+using UnityEngine;
+using UnityEngine.UI;
+using System;
+
+namespace EmpireAtWar.Entities.MainMenu.Main
+{
+    public class MainMenuUi : BaseUi, IMainMenuUi
+    {
+        [SerializeField] private Button startDemoButton;
+        [SerializeField] private Button optionsButton;
+        [SerializeField] private Button quitApplicationButton;
+
+        private IMainMenuModel _model;
+        private IMainRouteNavigation _navigation;
+        private bool _isInitialized;
+
+        public void SetModel(IMainMenuModel model)
+        {
+            _model = model;
+        }
+
+        public void SetNavigation(IMainRouteNavigation navigation)
+        {
+            _navigation = navigation;
+        }
+
+        public void Initialize()
+        {
+            if (_navigation == null)
+            {
+                throw new InvalidOperationException("MainMenuUi dependencies must be set before initialization.");
+            }
+
+            startDemoButton.onClick.AddListener(_navigation.OpenSkirmish);
+            optionsButton.onClick.AddListener(_navigation.OpenSettings);
+            quitApplicationButton.onClick.AddListener(_navigation.ExitApplication);
+            _isInitialized = true;
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            startDemoButton.onClick.RemoveListener(_navigation.OpenSkirmish);
+            optionsButton.onClick.RemoveListener(_navigation.OpenSettings);
+            quitApplicationButton.onClick.RemoveListener(_navigation.ExitApplication);
+            _isInitialized = false;
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
+    }
+}

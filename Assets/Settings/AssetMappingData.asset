@@ -434,7 +434,7 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: SkirmishGameSetUpPopupUi
+    - key: SkirmishUi
       value:
         m_AssetGUID: 036dc1095929d7d4fa18c87931bf9cfd
         m_SubObjectName: 
@@ -462,7 +462,7 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: SettingsPopupUi
+    - key: SettingsUi
       value:
         m_AssetGUID: 8ccd7e58fab50c945bd09b3337b5b68c
         m_SubObjectName: 
