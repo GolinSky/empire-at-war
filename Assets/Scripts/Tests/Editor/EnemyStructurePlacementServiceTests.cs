@@ -159,7 +159,7 @@ namespace EmpireAtWar.Tests.Editor
             public List<Vector3> Centers { get; } = new List<Vector3>();
             public event Action OwnershipChanged { add { } remove { } }
             public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f) => false;
-            public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position) => false;
+            public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position) => false;
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
             public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position) => true;
 

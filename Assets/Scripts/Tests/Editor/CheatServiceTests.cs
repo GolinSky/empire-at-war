@@ -128,7 +128,7 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
-            public bool IsPositionInOwnedZone(PlayerId owner, Vector3 position)
+            public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position)
             {
                 return false;
             }

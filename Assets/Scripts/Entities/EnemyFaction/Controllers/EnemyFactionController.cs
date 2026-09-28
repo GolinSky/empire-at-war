@@ -296,7 +296,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             throw new InvalidOperationException(
-                $"No clear enemy spawn position is available in an owned zone for {shipType}.");
+                $"No clear enemy spawn position is available in an allied zone for {shipType}.");
         }
 
         private Vector3 GenerateMapCoordinates()

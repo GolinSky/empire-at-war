@@ -305,10 +305,10 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             return _entityLocator.IsStationOperational(_owner.Id) &&
                 (_currentSpawnType == SpawnType.Ship
-                ? _reinforcementZonesSystem.IsPositionInOwnedZone(_owner.Id, position) &&
+                ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position) &&
                   _reinforcementZonesSystem.IsShipSpawnPositionClear(_currentShipType, position)
                 : _currentSpawnType == SpawnType.Squadron
-                ? _reinforcementZonesSystem.IsPositionInOwnedZone(_owner.Id, position)
+                ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position)
                 :!_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&
                   !_captureSites.IsPositionInAnySite(position));
