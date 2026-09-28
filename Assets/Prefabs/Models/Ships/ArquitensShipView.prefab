@@ -418,8 +418,8 @@ MonoBehaviour:
   ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
     type: 3}
   ionFieldBounds:
-    m_Center: {x: 0, y: 0.16540861, z: 0.30721068}
-    m_Extent: {x: 1.2340806, y: 0.5152941, z: 2.7872603}
+    m_Center: {x: 0.00000047683716, y: 0.9924526, z: 1.8432617}
+    m_Extent: {x: 7.404484, y: 3.0917645, z: 16.72356}
 --- !u!114 &4447947531347916293
 MonoBehaviour:
   m_ObjectHideFlags: 0

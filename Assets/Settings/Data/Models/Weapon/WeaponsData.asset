@@ -156,7 +156,7 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
-    size: {x: 0.1, y: 0.1, z: 0.1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 13
     damageType: 5
     damage: 40
