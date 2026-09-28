@@ -26,7 +26,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
           <Max>k__BackingField: 300
-        <DefaultZoneGap>k__BackingField: 120
+        <DefaultZoneGap>k__BackingField: 220
         <PlanetScale>k__BackingField: 6
         <LaneWidth>k__BackingField: 1000
         <MinLaneWidth>k__BackingField: 720
@@ -50,7 +50,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
           <Max>k__BackingField: 720
-        <DefaultZoneGap>k__BackingField: 0
+        <DefaultZoneGap>k__BackingField: 240
         <PlanetScale>k__BackingField: 8.4
         <LaneWidth>k__BackingField: 1020
         <MinLaneWidth>k__BackingField: 720
@@ -74,7 +74,7 @@ MonoBehaviour:
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 240
           <Max>k__BackingField: 1350
-        <DefaultZoneGap>k__BackingField: 240
+        <DefaultZoneGap>k__BackingField: 360
         <PlanetScale>k__BackingField: 10.5
         <LaneWidth>k__BackingField: 1000
         <MinLaneWidth>k__BackingField: 720
@@ -126,7 +126,7 @@ MonoBehaviour:
           <Max>k__BackingField: 2.5
         <HeightJitter>k__BackingField: 12
         <IsTumbled>k__BackingField: 1
-  <StationEdgeDistance>k__BackingField: 100
+  <StationEdgeDistance>k__BackingField: 150
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20
   <HomeMiningAngle>k__BackingField: 5
