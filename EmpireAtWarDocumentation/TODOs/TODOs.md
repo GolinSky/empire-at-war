@@ -1,6 +1,6 @@
 # Project TODOs & Backlog
 
-## 📋 Active Tasks
+## Active Tasks
 
 - [x] **Implement unit actions (ship orders)**
   - **Plan**: [[SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
@@ -14,9 +14,7 @@
   - **Details**: See [[UI_Service_Refactoring|UI Service Refactoring]]
   - **Reference**: [[UI_REFACTORING_PLAYBOOK|UI_REFACTORING_PLAYBOOK.md]]
 
----
-
-## 📌 Architecture Backlog
+## Architecture Backlog
 
 - [ ] Audit gameplay services for direct `IUiService` or `BaseUi` references.
 - [ ] Migrate UI creation calls from services into feature UI controllers / presenters.

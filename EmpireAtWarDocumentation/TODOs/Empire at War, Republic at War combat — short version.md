@@ -1,6 +1,6 @@
-### Ship classes
+# Empire at War / Republic at War Combat
 
-The important combat classes are roughly:
+## Ship classes
 
 - **Fighter / Interceptor** → kills bombers and other fighters.
 - **Bomber** → attacks large ships and hardpoints.
@@ -9,17 +9,13 @@ The important combat classes are roughly:
 - **Capital Ship** → heavy ship-to-ship combat.
 - **Super Capital** → same idea, but its own armor/category rules.
 
-The engine explicitly has Fighter, Bomber, Corvette, Frigate, Capital and Super target categories.
+- The engine explicitly has Fighter, Bomber, Corvette, Frigate, Capital and Super target categories.
 
 ### Simplified rock-paper-scissors
 
-Think of it like:
+### Fighter → Bomber → Capital → Frigate → Corvette → Fighter
 
-**Fighter → Bomber → Capital → Frigate → Corvette → Fighter**
-
-But it is **not a strict circle**.
-
-For example:
+- Counter cycle is approximate; weapon loadouts can break it.
 
 - Fighters protect capitals from bombers.
 - Corvettes destroy fighters/bombers.
@@ -27,54 +23,49 @@ For example:
 - Capitals punish frigates and other large ships.
 - Bombers bypass the normal capital-vs-capital fight and attack important hardpoints.
 
-Individual ships can break these rules because their weapons have different damage types, accuracy and fire rates.
-
----
+- Damage type, accuracy, and fire rate can override class counters.
 
 ## Main weapon types
 
-**Laser Cannon**
+### Laser Cannon
 
 - Fast / accurate.
 - Usually anti-fighter and anti-bomber.
 - Weak against large armored ships.
 
-**Turbolaser**
+### Turbolaser
 
 - Heavy ship weapon.
 - Strong against frigates/capitals.
 - Very inaccurate against fighters.
 
-EaW can literally define different `Fire_Inaccuracy_Distance` values for Fighter, Corvette, Frigate, Capital, etc. A heavy weapon may therefore be accurate against a frigate but almost useless against a fighter.
+- `Fire_Inaccuracy_Distance` varies by Fighter, Corvette, Frigate, Capital, etc.
+- Heavy weapon → may hit frigates reliably while missing fighters.
 
-**Ion Cannon**
+### Ion Cannon
 
 - Primarily attacks shields/energy.
 - Used to help disable or expose large ships.
 - Exact shield/hull multipliers depend on the mod data.
 
-**Proton Torpedo**
+### Proton Torpedo
 
 - Heavy bomber/ship ordnance.
 - Excellent for attacking capital ships and hardpoints.
 - In classic EaW/FoC mechanics, proton torpedoes can bypass shields.
 
-**Concussion Missile**
+### Concussion Missile
 
 - Missile weapon with behavior depending on projectile/configuration.
 - Often useful against ships or lighter craft depending on the weapon.
 
-**Flak / point-defense weapons**
+### Flak / point-defense weapons
 
 - Designed primarily for fighter/bomber suppression.
 
-RaW's source contains damage types for fighters, ion cannons, proton torpedoes, concussion missiles, turbolasers, flak and others.
-
----
+- RaW's source contains damage types for fighters, ion cannons, proton torpedoes, concussion missiles, turbolasers, flak and others.
 
 ## How damage basically works
-
-The core idea you described is correct:
 
 ```
 Final Damage
@@ -82,7 +73,7 @@ Final Damage
 × DamageType-vs-ArmorType modifier
 ```
 
-A weapon has something such as:
+### Weapon Fields
 
 ```
 Damage_Proton_Torp
@@ -91,16 +82,14 @@ Damage_Fighter
 Damage_IonCannon
 ```
 
-A target has:
+### Target Fields
 
 ```
 Armor_Type
 Shield_Armor_Type
 ```
 
-And the engine supports a `Damage_To_Armor_Mod` matrix.
-
-So:
+- Engine supports a `Damage_To_Armor_Mod` matrix.
 
 ```
 Turbolaser
@@ -112,17 +101,13 @@ Anti-fighter laser
     vs Capital      → low modifier
 ```
 
-That multiplier matrix is the **main RPS balancing layer**.
-
----
+- Multiplier matrix → primary RPS balancing layer.
 
 ## Accuracy is the second balancing layer
 
-Damage alone is not enough.
+- Potential damage does not establish hit probability.
 
-A weapon may theoretically hurt a fighter but almost never hit it.
-
-Example:
+### Example
 
 ```
 Heavy Turbolaser
@@ -132,7 +117,7 @@ Frigate  → accurate
 Capital  → accurate
 ```
 
-This is configured through things like:
+### Accuracy Fields
 
 ```
 Fire_Inaccuracy_Distance
@@ -141,15 +126,11 @@ Fire_Cone
 Projectile behavior
 ```
 
-So you get:
-
-**Damage effectiveness × ability to hit target.**
-
----
+### Damage effectiveness × ability to hit target.
 
 ## Hardpoints
 
-Large ships are effectively collections of subsystems:
+- Large ships contain independent subsystems:
 
 ```
 Hull
@@ -162,22 +143,16 @@ Hull
 └─ Missile/Torpedo launcher
 ```
 
-Each hardpoint can have its own HP and be destroyed separately.
-
-Destroying them removes capabilities:
+- Hardpoints have separate HP and destruction.
 
 - **weapon** → gun stops working
 - **engine** → ship becomes much slower; RaW's source uses an engine-disabled speed multiplier of `0.4`
 - **shield generator** → shield system is lost/disabled
 - **hangar** → fighter capability can be affected
 
-RaW also links hull and hardpoint health through `Hull_Vs_Hard_Points_Health_Constraint`.
-
----
+- RaW also links hull and hardpoint health through `Hull_Vs_Hard_Points_Health_Constraint`.
 
 ## What I would copy for your Unity clone
-
-The clean model is:
 
 ```
 Weapon
@@ -197,7 +172,7 @@ Ship
  └ Hardpoints[]
 ```
 
-Then combat becomes:
+### Resolution Order
 
 ```
 1. Can weapon target this ship class?

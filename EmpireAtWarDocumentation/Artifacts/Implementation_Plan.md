@@ -1,6 +1,7 @@
 # Implementation Plan - Obsidian Vault Integration & MCP Config
 
-Set up an Obsidian Vault in the project (`f:\Private\empire-at-war\EmpireAtWarDocumentation`), construct an organized note index & vault settings, and configure the local Obsidian MCP server for both **Antigravity** and **Codex**.
+- Vault: `f:\Private\empire-at-war\EmpireAtWarDocumentation`.
+- Planned work: note index, vault settings, local MCP registration for **Antigravity** and **Codex**.
 
 ## User Review Required
 
@@ -12,16 +13,16 @@ Set up an Obsidian Vault in the project (`f:\Private\empire-at-war\EmpireAtWarDo
 ## Proposed Changes
 
 ### 1. Vault Categorization
+
 - `TODOs/`: Project backlog & UI Service refactoring plan
 - `Architecture/`: Placement rules, MVP refactoring playbook, selection system, graphify guide
 - `Rules/`: Shared AI agent rules, coding standards, project overview
 - `Artifacts/`: AI implementation plans and walkthroughs
 
----
-
 ## Antigravity & Codex MCP Configuration
 
 ### Antigravity mcp_config.json
+
 ```json
 "obsidian": {
   "command": "npx",

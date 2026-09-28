@@ -26,6 +26,42 @@ Apply project guidance in this order:
 - Audits, reviews, documentation cleanup, MCP work, and general optimization requests do not grant permission to change Obsidian configuration. Report findings and wait for an explicit request.
 - The local vault MCP server is `empire-vault`, backed by `EmpireAtWarDocumentation` over stdio. Do not start Obsidian or use the retired bearer-token REST bridge.
 
+## Obsidian Writing Flow
+
+Write Obsidian `.md` notes as engineering reference sheets: fast scanning, high information density, concise working knowledge.
+
+### Content and Structure
+
+- Prefer facts, decisions, rules, constraints, values, commands, paths, APIs, code, examples, edge cases, and TODOs.
+- Remove introductions, conclusions, motivational text, filler, obvious statements, repeated explanations, unnecessary background, and long prose.
+- Use a `# Topic` title. Include only useful sections: `Goal`, `Rules`, `Decision`, `Implementation`, `Important Values`, `Edge Cases`, `Files`, and `TODO`.
+- Keep goals to 1–3 bullets; target 3–8 bullets per section and 1–2 lines per bullet. Split large sections. Usually limit heading depth to `###`.
+
+### Writing Rules
+
+- Use short sentences and one fact per bullet. Prefer bullets over paragraphs.
+- Use concrete values with units, limits, current/target values, and costs where known. Preserve useful numbers; never replace them with vague warnings or invent missing values.
+- Preserve exact filenames, class names, APIs, commands, and paths. Use inline code for identifiers.
+- Prefer code examples over explanations of code. Add only necessary lifecycle, usage, or constraint context.
+- Use `X → Y` for simple relationships, event chains, and edge-case outcomes.
+- Use numbered steps for procedures.
+- Show decisions explicitly: chosen option, `Why`, and `Avoid`. Separate facts/rules from reasons and solutions.
+
+### Editing and Compression Pass
+
+1. Preserve useful facts, important numbers, constraints, code, APIs, and file names.
+2. Remove duplicate prose and compress long explanations.
+3. Add missing edge cases supported by the source or verified behavior.
+4. Ask of every sentence: “Does this contain information I may need later?” Delete it if not.
+5. Convert paragraphs → bullets, sentences → values, explanations → code, and simple relationships → `A → B` where clearer.
+6. Check for repetition and missing important numbers, filenames, classes, or APIs.
+7. Keep short notes short; do not expand them into long documents.
+
+When detailed research is necessary, separate it:
+
+- `Topic.md` — concise working knowledge; keep it easy to scan.
+- `Topic - Research.md` — detailed explanations and sources.
+
 ## Unity Tooling
 
 - Use Unity's official `unity` CLI command; do not call `unity-cli` or `unity-mcp-cli`.

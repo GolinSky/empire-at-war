@@ -7,34 +7,48 @@ status: implemented
 scope: read-only source review
 updated: 2026-09-27
 ---
+
 # Reuse — Combat and radar boundaries
 
 > [!info] Implementation update
 > R1 and R2 implemented: weapon rules accept plain accuracy/range/roll values; radar's unused masks are deleted and dependencies are constructor-injected. Existing ObservableList remains; radar is not claimed to be completely Unity-free.
 > See [[TODOs/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-[[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[TODOs/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## R1 — WeaponModel contains engine data and random sampling
-**Priority:** P2 · **Confidence:** confirmed MVP boundary issue.
 
-**Evidence:** [Assets/Scripts/Components/Weapon/WeaponModel.cs:9](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Weapon/WeaponModel.cs#L9) depends on WeaponsData/DamageMatrixData and uses UnityEngine.Random.value and Mathf. That conflicts with the pure-C# model rule.
+- **Priority:** P2 · **Confidence:** confirmed MVP boundary issue.
 
-**Solution:** expose a small read-only combat configuration contract containing plain values; keep ScriptableObject lookup in the Unity adapter. Pass a random sample into hit evaluation or inject a narrow random-source contract. Use ordinary numeric operations in the model.
+- **Evidence:** [Assets/Scripts/Components/Weapon/WeaponModel.cs:9](file:///F:/Private/empire-at-war/Assets/Scripts/Components/Weapon/WeaponModel.cs#L9) depends on WeaponsData/DamageMatrixData and uses UnityEngine.Random.value and Mathf.
+- That conflicts with the pure-C# model rule.
 
-**Reuse:** one hit/accuracy rule can then be used by weapons and other combat consumers without pulling Unity assets into the model. Keep damage-type/ship-class policy in the combat domain, not global Utils.
+- **Solution:** expose a small read-only combat configuration contract containing plain values; keep ScriptableObject lookup in the Unity adapter.
+- Pass a random sample into hit evaluation or inject a narrow random-source contract.
+- Use ordinary numeric operations in the model.
 
-**Responsibilities:** Model = range/accuracy rules; Presenter/component = obtains configuration and random sample; Unity adapter = assets/random integration.
+- **Reuse:** one hit/accuracy rule can then be used by weapons and other combat consumers without pulling Unity assets into the model.
+- Keep damage-type/ship-class policy in the combat domain, not global Utils.
 
-**Future verification:** preserve hit threshold, accuracy matrix and half-max-range calculation. Do not introduce a project-wide randomness service without another real consumer.
+- **Responsibilities:** Model = range/accuracy rules; Presenter/component = obtains configuration and random sample; Unity adapter = assets/random integration.
+
+- **Future verification:** preserve hit threshold, accuracy matrix and half-max-range calculation.
+- Do not introduce a project-wide randomness service without another real consumer.
 
 ## R2 — Remove dead radar masks and hidden injection
-**Priority:** P2 · **Confidence:** confirmed unused members.
 
-The original audit proposed moving layer-mask resolution, but RadarModel.LayerMask and EnemyLayerMask had no readers. RadarComponent already uses ILayerService.
+- **Priority:** P2 · **Confidence:** confirmed unused members.
 
-**Implemented:** deleted both masks and LayerData dependency; removed dead comments/imports; constructor-injected IRadarData and PlayerType. Station/platform/mining installers now construct RadarModel instead of injecting serialized empty instances, and the obsolete serialized model properties were removed from those data classes. IRadarData and IRadarModelObserver have separate files.
+- Original proposal: move layer-mask resolution.
+- RadarModel.LayerMask and EnemyLayerMask had no readers.
+- RadarComponent already uses ILayerService.
 
-The existing Unity ObservableList contract is retained; no claim that every radar dependency is now engine-independent.
+- **Implemented:** deleted both masks and LayerData dependency; removed dead comments/imports; constructor-injected IRadarData and PlayerType.
+- Station/platform/mining installers now construct RadarModel instead of injecting serialized empty instances, and the obsolete serialized model properties were removed from those data classes.
+- IRadarData and IRadarModelObserver have separate files.
 
-**Verification:** compilation succeeds. No radar runtime test was run.
+- Unity ObservableList contract retained.
+- Remaining radar dependencies are not all engine-independent.
+
+- **Verification:** compilation succeeds.
+- No radar runtime test was run.

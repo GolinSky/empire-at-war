@@ -1,6 +1,9 @@
 # Repair plan and preservation map
 
-This plan is reviewable but unapplied. It reuses existing ownership and locations; it does not introduce a new framework, permanent role, or universal skill. A later repair request should identify the batches to apply. Obsidian configuration/credential changes must be named explicitly because the current repository protects them separately.
+- This plan is reviewable but unapplied.
+- It reuses existing ownership and locations; it does not introduce a new framework, permanent role, or universal skill.
+- A later repair request should identify the batches to apply.
+- Obsidian configuration/credential changes must be named explicitly because the current repository protects them separately.
 
 ## Ordered repair batches
 
@@ -13,23 +16,36 @@ This plan is reviewable but unapplied. It reuses existing ownership and location
 | E — Reconcile advisory docs and credential handling | Targeted existing vault navigation/README text, active-tool descriptions and separate credential remediation | Canonical root policy and current integrations are clear; no literal credential in intended current docs | Explicit Obsidian credential/config scope where applicable; preserve useful history; no automatic Git history rewrite |
 | F — Optional legacy cleanup | Proven no-op flags and obsolete broad execution allowances only | Version-specific recognition and intended approval behavior verified | Not required for functioning Unity/Serena; no speculative replacement flags |
 
-Prioritize C and the exposure review in E when explicitly authorized; B must precede any synchronization. A can be handled independently. D/F are policy decisions, not prerequisites for writing this audit.
+- Prioritize C and the exposure review in E when explicitly authorized; B must precede any synchronization.
+- A can be handled independently.
+- D/F are policy decisions, not prerequisites for writing this audit.
 
 ### Batch B implementation decisions
 
 1. Re-read the source/installed key-level difference list and both versions; do not apply today's snapshot blindly after an app update.
-2. Preserve this Mac's Astra/xhigh and current desktop/runtime bindings. Keep a separate Windows rendering. Do not copy a Mac absolute path into the Windows branch.
-3. Establish which keys are durable shared intent, per-host preference, app-owned generated state, or local grants. The current whole-file template mixes them. Choose a supported preservation/merge mechanism or explicitly keep the app-owned host config outside whole-file synchronization before implementation; no guessed include key or wholesale template replacement.
-4. Render to temporary storage and compare parsed values. Applying a rendered full file is acceptable only when every change is intentional and local app state is preserved.
-5. Verify source/target mapping after the authorized write and after a second render. No commit/push is included unless requested.
+2. Preserve this Mac's Astra/xhigh and current desktop/runtime bindings.
+   - Keep a separate Windows rendering.
+   - Do not copy a Mac absolute path into the Windows branch.
+3. Establish which keys are durable shared intent, per-host preference, app-owned generated state, or local grants.
+   - The current whole-file template mixes them.
+   - Choose a supported preservation/merge mechanism or explicitly keep the app-owned host config outside whole-file synchronization before implementation; no guessed include key or wholesale template replacement.
+4. Render to temporary storage and compare parsed values.
+   - Applying a rendered full file is acceptable only when every change is intentional and local app state is preserved.
+5. Verify source/target mapping after the authorized write and after a second render.
+   - No commit/push is included unless requested.
 
 ### Batch C discovery before an exact patch
 
-The Windows launcher is known, but a verified Mac mcpvault package location was not established. Therefore no executable Obsidian patch is staged. The repair must first locate a local installation or separately obtain installation authorization. Preserve the vault root and server identity, inspect startup behavior, then produce the exact platform-specific change. Saving Markdown into the vault does not require repairing this server.
+- The Windows launcher is known, but a verified Mac mcpvault package location was not established.
+- Therefore no executable Obsidian patch is staged.
+- The repair must first locate a local installation or separately obtain installation authorization.
+- Preserve the vault root and server identity, inspect startup behavior, then produce the exact platform-specific change.
+- Saving Markdown into the vault does not require repairing this server.
 
 ## Semantic preservation map
 
-No current instruction is retired by this audit. This table maps every existing global/root section and the other affected surfaces to a disposition; optional moves require a later per-paragraph trace before implementation.
+- No current instruction is retired by this audit.
+- This table maps every existing global/root section and the other affected surfaces to a disposition; optional moves require a later per-paragraph trace before implementation.
 
 | Source / obligation | Disposition | Destination / reason |
 |---|---|---|
@@ -69,4 +85,7 @@ No current instruction is retired by this audit. This table maps every existing 
 
 ## Staged proposals
 
-The three `.patch` files under `patches/` are plain text review artifacts. They were not applied. Each addresses only the named lines; source hashes must be rechecked before later application. There is intentionally no patch with guessed Mac Obsidian paths, broad sandbox changes, wholesale plugin deletion or replacement sync configuration.
+- The three `.patch` files under `patches/` are plain text review artifacts.
+- They were not applied.
+- Each addresses only the named lines; source hashes must be rechecked before later application.
+- There is intentionally no patch with guessed Mac Obsidian paths, broad sandbox changes, wholesale plugin deletion or replacement sync configuration.

@@ -1,13 +1,22 @@
 # Rollback for a future authorized repair
 
-No live configuration changed during this audit, so there is no configuration repair to roll back. The new audit directory can be kept as historical evidence. Do not delete or restore unrelated files to undo it.
+- Audit changed no live configuration.
+- Keep the audit directory as historical evidence.
+- Do not delete or restore unrelated files for rollback.
 
 ## Before applying any batch
 
-1. Identify this audit folder and the approved finding/batch IDs. Re-read the exact current source and deployed files. Compare their SHA-256 values with `inventory.json`; a mismatch requires reconciling newer edits, not overwriting them.
-2. Record current Git status in the game repository and chezmoi source. Preserve all unrelated modifications, including the 23 C#/asset changes already present at audit start.
-3. Take **new** prechange snapshots for the exact files in the batch. A project branch does not protect `~/.codex`; global/source targets need their own paired copies. Store any secret-bearing copies outside this report and outside Git with restrictive permissions. Hashes in this report are not backups.
-4. Inspect the proposed diff. No package install, permission broadening, automatic login, credential rotation, Obsidian change, push or merge is implied by an ordinary documentation patch.
+1. Identify this audit folder and the approved finding/batch IDs.
+   - Re-read the exact current source and deployed files.
+   - Compare their SHA-256 values with `inventory.json`; a mismatch requires reconciling newer edits, not overwriting them.
+2. Record current Git status in the game repository and chezmoi source.
+   - Preserve all unrelated modifications, including the 23 C#/asset changes already present at audit start.
+3. Take **new** prechange snapshots for the exact files in the batch.
+   - A project branch does not protect `~/.codex`; global/source targets need their own paired copies.
+   - Store any secret-bearing copies outside this report and outside Git with restrictive permissions.
+   - Hashes in this report are not backups.
+4. Inspect the proposed diff.
+   - No package install, permission broadening, automatic login, credential rotation, Obsidian change, push or merge is implied by an ordinary documentation patch.
 
 ## Restore by batch
 
@@ -20,10 +29,16 @@ No live configuration changed during this audit, so there is no configuration re
 | E — Advisory docs/credential | Restore ordinary documentation if appropriate. Do not re-enable a retired credential; credential remediation needs its own forward recovery procedure |
 | F — Flags/rules | Restore the changed key/rule set and synchronized template, preserving newer user grants/edits |
 
-After restoring, start a fresh affected task/session only when authorized and safe. Repeat the smallest relevant read-only configuration/tool check. If an integration repair needs a behavior test, obtain explicit automated-test authorization and follow the repository's Unity scene preflight when applicable.
+- After restoring, start a fresh affected task/session only when authorized and safe.
+- Repeat the smallest relevant read-only configuration/tool check.
+- If an integration repair needs a behavior test, obtain explicit automated-test authorization and follow the repository's Unity scene preflight when applicable.
 
-Never use a blanket `git reset`, home-directory restore, forced settings sync, scene reload, or broad package reimport as rollback. No automatic “save all” or dialog-driven Editor recovery is permitted.
+- Never use a blanket `git reset`, home-directory restore, forced settings sync, scene reload, or broad package reimport as rollback.
+- No automatic “save all” or dialog-driven Editor recovery is permitted.
 
 ## Known audit-only artifacts
 
-The persistent deliverable is this vault folder. Temporary sanitized inspection material was created at `/tmp/codex-audit-2026-09-13` (public source text, hashes, source/target key differences, and initial Git-status lines). It is not a live configuration source. No secret-bearing backup was created by this audit.
+- The persistent deliverable is this vault folder.
+- Temporary sanitized inspection material was created at `/tmp/codex-audit-2026-09-13` (public source text, hashes, source/target key differences, and initial Git-status lines).
+- It is not a live configuration source.
+- No secret-bearing backup was created by this audit.

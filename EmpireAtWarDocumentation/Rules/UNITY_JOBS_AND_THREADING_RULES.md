@@ -1,12 +1,14 @@
 # Unity Jobs, Burst & Threading Rules
 
-Project rule set for any multithreaded / Jobs / Burst code in Empire At War. Condensed from the external pack *01 Threading & Synchronization Rules*, *02 Jobs Audit Playbook*, *03 Agent Prompts & Report Template* (2026-09-24), verified against this repository and adapted to its conventions.
+- Scope: multithreading / Jobs / Burst.
+- Source pack (2026-09-24): *01 Threading & Synchronization Rules*, *02 Jobs Audit Playbook*, *03 Agent Prompts & Report Template*.
+- Rules verified against the repository and adapted to its conventions.
 
-**Installed baseline (verify before relying on version-specific API):** Unity `6000.4.7f1`, Burst `1.8.29`, Collections `6.4.0`, Mathematics `1.3.3`. DI is **Zenject** (not VContainer). No Entities/ECS.
+- **Installed baseline (verify before relying on version-specific API):** Unity `6000.4.7f1`, Burst `1.8.29`, Collections `6.4.0`, Mathematics `1.3.3`.
+- DI is **Zenject** (not VContainer).
+- No Entities/ECS.
 
 > Prefer clear ownership, independent data and explicit dependencies. Jobs are a tool, not a goal: the target is a simpler, correct, measurable implementation.
-
----
 
 ## 1. Choose the execution model first
 
@@ -18,7 +20,8 @@ Project rule set for any multithreaded / Jobs / Burst code in Empire At War. Con
 | Shared mutable managed state | Single owner / message passing; a small `lock` only if really shared |
 
 - `async`/`await`/UniTask do **not** move work off the main thread by themselves.
-- Unity object APIs are main-thread only unless the API explicitly says otherwise (`IJobParallelForTransform`, `RaycastCommand`). A lock does not make an engine call legal off-thread.
+- Unity object APIs are main-thread only unless the API explicitly says otherwise (`IJobParallelForTransform`, `RaycastCommand`).
+  - A lock does not make an engine call legal off-thread.
 
 ## 2. Ownership & data flow (MUST)
 
@@ -29,8 +32,10 @@ Main thread: gather snapshot (+ stable ids / generation)
   -> main thread: validate id/generation, then apply
 ```
 
-- One **feature-level owner** (a Zenject service, e.g. `CombatAttackCoordinator`, `ShipNavigationService`) owns buffers, scheduling, completion, result publication and disposal. No global job manager / scheduler framework / EventBus.
-- Jobs never receive presenters, components, ScriptableObjects, the DI container or live models. Copy values into structs (`float3`, `int`, blittable structs) first.
+- One **feature-level owner** (a Zenject service, e.g. `CombatAttackCoordinator`, `ShipNavigationService`) owns buffers, scheduling, completion, result publication and disposal.
+  - No global job manager / scheduler framework / EventBus.
+- Jobs never receive presenters, components, ScriptableObjects, the DI container or live models.
+  - Copy values into structs (`float3`, `int`, blittable structs) first.
 - A snapshot must be independent: copying a `NativeArray` struct **aliases** the same memory; `readonly` does not make referenced data immutable.
 - Results computed for a request must carry a request id / generation; discard results whose owner was unregistered, pooled or re-requested meanwhile.
 
@@ -53,19 +58,24 @@ Main thread: gather snapshot (+ stable ids / generation)
 ## 4. Managed threading (outside Jobs)
 
 - `lock` a private dedicated object; every reader and writer uses it; no `await`, Unity calls, event invocation or job completion under a lock.
-- `Interlocked` protects one operation, not an object. `volatile` gives visibility only — never use it as a cancellation or publication protocol.
-- `ConcurrentQueue` makes queue operations safe, not the messages inside. Bound admission and drain with a per-frame budget.
+- `Interlocked` protects one operation, not an object.
+  - `volatile` gives visibility only — never use it as a cancellation or publication protocol.
+- `ConcurrentQueue` makes queue operations safe, not the messages inside.
+  - Bound admission and drain with a per-frame budget.
 - No `Task.Wait()`, `.Result`, `Thread.Join` or busy-wait on the main thread.
 
 ## 5. Performance claims
 
-- Measure the whole feature path: gather → prepare → schedule → execute → complete → apply → cleanup. Use `ProfilerMarker`s (see `BattleProfilerMarkers`) around schedule and complete.
-- Never report "faster", "thread-safe" or "deterministic" because code compiles, has `[BurstCompile]`, or showed no safety error in one Editor run. Say what was measured and what remains unverified.
+- Measure the whole feature path: gather → prepare → schedule → execute → complete → apply → cleanup.
+  - Use `ProfilerMarker`s (see `BattleProfilerMarkers`) around schedule and complete.
+- Never report "faster", "thread-safe" or "deterministic" because code compiles, has `[BurstCompile]`, or showed no safety error in one Editor run.
+  - Say what was measured and what remains unverified.
 - Tune batch sizes only after correctness; don't sum overlapping worker time into frame time.
 
 ## 6. Project-specific adaptations (differences from the external pack)
 
-- The pack's example code uses constructor `ArgumentNullException` guards — **not allowed here** (see [[Rules/AGENTS]]: no constructor null guards). Assign injected dependencies directly.
+- The pack's example code uses constructor `ArgumentNullException` guards — **not allowed here** (see [[Rules/AGENTS]]: no constructor null guards).
+  - Assign injected dependencies directly.
 - The pack mentions VContainer — this project uses **Zenject**; the owner service is bound in the scene installer and disposes buffers via `IDisposable`/`ILateDisposable`.
 - Collections here is `6.4.0` (Unity 6 versioning), not `2.5`; allocator semantics referenced above are unchanged, but check the package docs for API details.
 - Keep job structs `internal`, one type per file, named after the file; `const` fields in `UPPER_SNAKE_CASE`.
@@ -78,11 +88,13 @@ Main thread: gather snapshot (+ stable ids / generation)
 3. Inventory jobs (scheduler, rate, inputs/outputs, consumer) and allocations (allocator, aliases, readers/writers, final handle, disposal site).
 4. Check: thread affinity, copied data, iteration independence, access attributes, `Complete()` before consumption, capacity/overflow, allocator lifetime, disposal on every exit path, stale-result rejection.
 5. Decide approach: keep / keep with fixes / simplify to synchronous / rework batching / different model / insufficient evidence.
-6. Report findings with severity + confidence + evidence label (*observed in source*, *reproduced*, *measured*, *hypothesis*, *not verified*). Correctness first, design second, measured optimization third.
+6. Report findings with severity + confidence + evidence label (*observed in source*, *reproduced*, *measured*, *hypothesis*, *not verified*).
+   - Correctness first, design second, measured optimization third.
 
 ## Existing project Jobs usage
 
-- `Components/Weapon/WeaponTargetSelectionJob.cs` and `AttackDueJob.cs` — `IJobParallelFor`, Burst, scheduled and completed in the same frame by `CombatAttackCoordinator` with `Allocator.Persistent` buffers grown on demand and disposed in `Dispose()`. Use this as the reference pattern.
+- `Components/Weapon/WeaponTargetSelectionJob.cs` and `AttackDueJob.cs` — `IJobParallelFor`, Burst, scheduled and completed in the same frame by `CombatAttackCoordinator` with `Allocator.Persistent` buffers grown on demand and disposed in `Dispose()`.
+  - Use this as the reference pattern.
 
 ## References
 

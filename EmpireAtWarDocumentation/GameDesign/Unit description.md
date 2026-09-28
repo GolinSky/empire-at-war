@@ -1,3 +1,5 @@
+# Unit Description
+
 ## Republic
 
 ### Fighters / bombers
@@ -29,9 +31,7 @@
 - **Venator** — `5,000 / 3,000` — 8 heavy TL + 2 medium TL + lasers + torpedoes + huge fighter complement → carrier/capital hybrid.
 - **Victory** — `4,900 / 3,100` — 8 concussion missile launchers + 8 TL batteries + lasers + torpedoes → artillery capital ship.
 
----
-
-# CIS
+## CIS
 
 ### Fighters / bombers
 
