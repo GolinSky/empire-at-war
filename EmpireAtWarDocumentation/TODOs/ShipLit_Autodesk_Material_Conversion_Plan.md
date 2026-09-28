@@ -1,7 +1,7 @@
 # Ship Lit: Autodesk Interactive material conversion plan
 
 - Created: 2026-09-28
-- Status: Phase 0 approved on 2026-09-28. User approved the verified shader mapping and four shared-material copies; Phases 1–3 are in progress.
+- Status: Phases 1–3 implemented and verified on 2026-09-28 with the approved mapping. Converted assets are saved; final user visual acceptance is pending.
 - Audience: Codex (or any implementing agent). Read `AGENTS.md` first. This note is advisory: check every claim against the live source and assets before editing.
 - Goal: every unit prefab renders with `EmpireAtWar/Ship Lit` so every unit shows team colors, while keeping its current look as close as possible.
 - Scope: the 10 Autodesk Interactive materials used by unit prefabs, and a new converter step in `Assets/Scripts/Editor/Rendering/ShipLitSetupTool.cs`.
@@ -87,7 +87,7 @@ For every Autodesk unit material:
 - Bake **one new packed texture** `<MaterialName>_MetallicSmoothness.png` next to the material's source textures:
   - R = metallic (from metallic map if `_UseMetallicMap`, else `_Metallic` scalar, broadcast)
   - G = 0, B = 0 (unused)
-  - A = smoothness = 1 − roughness (from roughness map if `_UseRoughnessMap`, else from the `_Glossiness` scalar per Phase 0 finding)
+  - A = smoothness = 1 − sqrt(roughness) (from sampled roughness-map R if `_UseRoughnessMap`, otherwise the `_Glossiness` roughness scalar; verified and approved in Phase 0)
   - Resolution: the larger of the two source maps; resample the smaller with bilinear sampling.
   - Import settings: sRGB off, alpha source = input alpha, alpha is transparency off, mipmaps on, same compression class as other mask maps in the project (check an existing `_MetallicGlossMap` texture used by a converted Lit material).
 - If AO needs a channel move (Phase 0 answer 1), bake `<MaterialName>_Occlusion.png` with AO in G; otherwise reuse the source AO texture.
@@ -96,13 +96,13 @@ For every Autodesk unit material:
 | Ship Lit | Source |
 | --- | --- |
 | `_BaseMap` | `_MainTex` if `_UseColorMap` = 1, else `null` (white) |
-| `_BaseColor` | `_Color` |
+| `_BaseColor` | White when `_UseColorMap` = 1; otherwise `_Color` (the Autodesk graph selects map OR color) |
 | `_BaseMap_ST` | `(_UvTiling.xy, _UvOffset.xy)` |
 | `_MetallicGlossMap` | baked packed texture |
 | `_Metallic`, `_Smoothness` | 1, 1 (values live in the baked texture) |
 | `_BumpMap`, `_BumpScale` | `_BumpMap` if `_UseNormalMap` = 1, else `null`; scale 1 |
-| `_OcclusionMap`, `_OcclusionStrength` | AO (source or baked) if `_UseAoMap` = 1, else `null`; strength 1 |
-| `_EmissionMap`, `_EmissionColor` | `_EmissionMap` + `_EmissionColor` if `_UseEmissiveMap` = 1, else `_EmissionColor` = black |
+| `_OcclusionMap`, `_OcclusionStrength` | Assigned AO baked from sampled R to G regardless of the unused `_UseAoMap` toggle; otherwise `null`; strength 1 |
+| `_EmissionMap`, `_EmissionColor` | Map + white if `_UseEmissiveMap` = 1; otherwise `null` (white default) + source `_EmissionColor` |
 | `shaderKeywords` | cleared |
 
 Implementation lives in `ShipLitSetupTool` as a new focused class `AutodeskMaterialConverter` (same `Editor/Rendering` folder, one type per file) so the tool stays under 200 lines. The pure channel math (metallic/roughness/scalar → packed pixel) goes in a small static class `MetallicSmoothnessPacker` that tests can call without assets.
@@ -123,7 +123,7 @@ Acceptance: Findings section filled; user confirms any surprising answer (especi
 
 1. Add `Assets/Scripts/Editor/Rendering/MetallicSmoothnessPacker.cs`: pure functions, e.g.
    ```csharp
-   public static Color32 Pack(float metallic, float roughness)   // → (metallic, 0, 0, 1 - roughness)
+   public static Color32 Pack(float metallic, float roughness)   // → (metallic, 0, 0, 1 - sqrt(roughness))
    public static Color32[] Pack(Color[] metallicPixels, Color[] roughnessPixels, int metallicChannel, int roughnessChannel,
        float metallicFallback, float roughnessFallback, bool useMetallicMap, bool useRoughnessMap)
    ```
@@ -180,7 +180,7 @@ Acceptance: user approves before/after renders; no console errors; `git status` 
 
 ### Phase 0 audit — 2026-09-28
 
-Status: read-only audit and seven baseline renders captured. **Implementation is awaiting the confirmation required below because live shader semantics contradict the draft mapping and four materials are shared.** No project scripts or Unity assets have been changed; no automated tests have been run.
+Phase 0 status: audit and seven baseline renders captured, then explicitly approved by the user in chat. The user approved preserving the verified shader semantics and copying the four shared materials. Implementation results are recorded below; automated tests have not been run.
 
 #### Verified shader semantics
 
@@ -232,5 +232,40 @@ Art oddities retained: lambert1's ignored color texture and cross-set station te
 
 #### Confirmation requested by the plan
 
-Approve preserving the **verified current shader behavior** above (square-root roughness, branch-based colors/emission, always-sampled red AO, current source color-space decoding, roughness interpretation of metal_gloss), and making the four unit-only material copies. Then continue Phases 1–3. The shader feature set and keywords remain unchanged.
+**Approved by the user in chat:** preserve the verified current shader behavior (square-root roughness, branch-based colors/emission, always-sampled red AO, current source color-space decoding, roughness interpretation of metal_gloss), create four unit-only material copies, and execute Phases 1–3. The shader feature set and keywords remain unchanged.
+
+### Phases 1–3 execution — 2026-09-28
+
+- Added `MetallicSmoothnessPacker` and 11 NUnit cases covering square-root roughness (including the 0.5 scalar), all map-toggle combinations, disabled-map inputs, per-pixel packing, and mismatched enabled-map sizes. Unity compiled the code and tests; **tests were not run**.
+- Added `AutodeskMaterialConverter` (136 lines) and focused `AutodeskUnitMaterialConversion` orchestration. `ShipLitSetupTool.cs` remains 198 lines. The helper owns non-unit dependency detection and prefab-only material overrides; the converter owns GPU readback, optional bilinear resampling, PNG import settings and material mapping. No runtime code or Ship Lit shader files changed.
+- Phase 2 isolated conversion succeeded on `Dull_Metal_ShipLit.mat`; the original remains Autodesk. Phase 1 commit: `05dc9267`. Phase 2 commit: `8bd73a6f`.
+- Executed the conversion menu: nine remaining conversions plus reuse of the isolated Dull_Metal copy. **10 materials / 475 slots across seven prefabs** now use Ship Lit: six in-place conversions and four unit-only copies. Generated **10 metallic/smoothness PNGs and eight AO PNGs**, each with Unity metadata.
+- Repointed only HeavyDreadnoughtShipView, StarDestroyer2ShipView, AsteroidDefendPlatformView and DefendPlatformView. Refreshed team-color renderer lists using the existing menu; all 20 units have matching renderer and bound-reference counts. Only the four repointed prefabs have content changes.
+- Shared originals (Dull_Metal, ISD_Color_Baked, lambert1, defaultMat), all **32 source textures**, and all their importer metadata are byte-for-byte unchanged. No UI or VFX prefab changed. Existing glass, windows, glow and shield exceptions remain on their existing shaders.
+- Verified all ten converted materials are imported, saved (not dirty), use Ship Lit with empty material keywords, and have metallic/smoothness multipliers 1. Packed importers use linear data, input alpha, no alpha transparency, mipmaps and Compressed. ISD retains 11 x 11 UV tiling. The unit material inventory is now 99 Ship Lit materials, seven transparent/cut-out Lit materials and two shield materials; no Autodesk materials remain in unit renderer slots.
+- Called Refresh, ForceReserializeAssets with the explicit ten-material/four-prefab list, and SaveAssets. No new Unity console errors since audit cursor 2513. MainMenuScene remains clean. Source-code whitespace checks pass; Unity-generated prefab overrides retain Unity's standard empty `value: ` serialization.
+- Re-ran the conversion menu: **0 conversions, 99 already-Ship-Lit skips**. All 59 inspected output files retained both SHA-256 hashes and modification timestamps: no rebakes, new copies or prefab writes.
+
+#### Visual evidence and remaining acceptance
+
+The updated `Logs/ShipLitConversion/2026-09-28/review.html` contains all seven before/after pairs and blue/red team previews of StarDestroyer2 and SeparatistSpaceStation. The project palette and `SetShaderUserValue(1/2)` produce distinct team rim/emission colors on the converted surfaces; temporary global palette state was restored afterward. All screenshots were visually inspected.
+
+Average absolute RGB channel difference within foreground pixels, in 8-bit values (0–255):
+
+| Prefab | Average difference | Maximum single-channel difference |
+| --- | ---: | ---: |
+| HeavyDreadnought | 0.026 | 2 |
+| StarDestroyer1 | 0.000 | 0 |
+| StarDestroyer2 | 0.067 | 68 |
+| Venator | 0.000 | 0 |
+| SeparatistSpaceStation | 0.581 | 41 |
+| AsteroidDefendPlatform | 0.155 | 11 |
+| DefendPlatform | 0.152 | 2 |
+
+The views closely match. The Separatist station shows small highlight differences and has the largest average change (about 0.23% of the 8-bit channel range); isolated SD2 highlight pixels also differ. Pixel identity is not claimed: packing, compression and the existing shader implementations can differ in filtering and highlights.
+
+**Remaining:** the plan's user visual approval of the gallery, plus its optional manual skirmish/Frame Debugger checks. No Play Mode, automated test runner or Frame Debugger capture was performed. Team-mask authoring (Phase 4) remains out of scope.
+
+Additional evidence: `verification.json`, `idempotency-result.json`, `source-hashes.json`, `RenderAfter.cs`, `RenderTeams.cs`, and `InspectResults.cs` beside the gallery. Graphify's scheduled updater changed generated reports during the task; those report changes are excluded from the conversion commits.
+
 
