@@ -34,8 +34,15 @@ namespace EmpireAtWar.Entities.Map.Generation
         public MapStation[] Place(Vector2Range bounds, IReadOnlyList<PlayerSlot> players, Random random)
         {
             Vector2 center = (bounds.Min + bounds.Max) * 0.5f;
+            // Every station shares the largest footprint's inset so the corners stay point-symmetric.
+            float largestRadius = 0f;
+            foreach (PlayerSlot player in players)
+            {
+                largestRadius = Mathf.Max(largestRadius, _settings.GetStationRadius(player.Faction));
+            }
+
             Vector2 cornerOffset = (bounds.Max - bounds.Min) * 0.5f -
-                Vector2.one * _settings.StationEdgeDistance;
+                Vector2.one * (largestRadius + _settings.StationEdgeDistance);
             int startCorner = random.Next(CORNER_SIGNS.Length);
             int cornerStep = players.Count == DUEL_PLAYER_COUNT ? OPPOSITE_CORNER_STEP : 1;
 
