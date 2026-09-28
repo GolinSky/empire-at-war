@@ -17,6 +17,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         [SerializeField, Min(1f)] private float radius = 40f;
         [SerializeField, Min(1f)] private float captureDuration = 12f;
+        [SerializeField, Tooltip("World-space height of a built mining facility relative to the site center; keeps it below ship and station hulls.")]
+        private float miningFacilityHeightOffset;
         [SerializeField] private MeshRenderer ringRenderer;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
@@ -78,6 +80,13 @@ namespace EmpireAtWar.Entities.CaptureSites
             float viewHeight = 2f * distance * Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
             float worldScale = viewHeight * screenHeightFraction / _canvasTransform.rect.height;
             _canvasTransform.localScale = Vector3.one * (worldScale / transform.lossyScale.y);
+        }
+
+        public Vector3 GetFacilityPosition(SiteFacilityType facilityType)
+        {
+            return facilityType == SiteFacilityType.Mining
+                ? Center + Vector3.up * miningFacilityHeightOffset
+                : Center;
         }
 
         public void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel)

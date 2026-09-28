@@ -112,7 +112,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 site.TickCapture(deltaTime, TallySite(site));
                 if (site.TickConstruction(deltaTime))
                 {
-                    GetBuilder(site.Owner).Build(site.FacilityType, site.Center, site.ReleaseFacility);
+                    GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition, site.ReleaseFacility);
                 }
 
                 bool isVisible = !_fogOfWarSystem.IsHidden(site.Center, MINIMUM_SITE_VISIBILITY);
