@@ -23,14 +23,13 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             transform.localPosition = bounds.center;
             transform.localRotation = Quaternion.identity;
-            // Enclose the hull's bounding-box corners inside the ellipsoid.
-            _extents = bounds.extents * 1.8f;
+            _extents = bounds.extents * 1.44f;
             shimmer.transform.localScale = _extents;
             _properties = new MaterialPropertyBlock();
             foreach (LineRenderer arc in arcs)
             {
                 arc.positionCount = ARC_POINTS;
-                arc.widthMultiplier = Mathf.Clamp(bounds.size.magnitude * 0.015f, 0.4f, 2.25f);
+                arc.widthMultiplier = Mathf.Clamp(bounds.size.magnitude * 0.012f, 0.32f, 1.8f);
             }
             SetVisible(false);
             enabled = false;
