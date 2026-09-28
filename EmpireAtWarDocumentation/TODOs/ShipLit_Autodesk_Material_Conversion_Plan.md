@@ -1,7 +1,7 @@
 # Ship Lit: Autodesk Interactive material conversion plan
 
 - Created: 2026-09-28
-- Status: Phase 0 audit and baseline renders captured on 2026-09-28. Awaiting confirmation of verified semantic corrections and four shared-material copies before implementation.
+- Status: Phase 0 approved on 2026-09-28. User approved the verified shader mapping and four shared-material copies; Phases 1–3 are in progress.
 - Audience: Codex (or any implementing agent). Read `AGENTS.md` first. This note is advisory: check every claim against the live source and assets before editing.
 - Goal: every unit prefab renders with `EmpireAtWar/Ship Lit` so every unit shows team colors, while keeping its current look as close as possible.
 - Scope: the 10 Autodesk Interactive materials used by unit prefabs, and a new converter step in `Assets/Scripts/Editor/Rendering/ShipLitSetupTool.cs`.
