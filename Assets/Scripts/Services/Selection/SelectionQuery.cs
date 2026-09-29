@@ -11,6 +11,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Ship;
 using UnityEngine;
+using ViewComponents;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -28,12 +29,15 @@ namespace EmpireAtWar.Services.Battle
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
+        private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
-        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
+        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer,
+            FogOfWarSystem fogOfWarSystem)
         {
             _localPlayer = localPlayer;
+            _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
         }
@@ -57,6 +61,7 @@ namespace EmpireAtWar.Services.Battle
             if (raycastHit.collider != null &&
                 _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&
                 !entity.HealthModel.IsDestroyed &&
+                !IsHiddenByFog(entity) &&
                 entity.TryGetFacade(out IEntitySelectionFacade command))
             {
                 selection = new SelectionEntry(entity, command);
@@ -171,6 +176,10 @@ namespace EmpireAtWar.Services.Battle
                 results.Add(_marqueeResults[i].Entry);
             }
         }
+
+        private bool IsHiddenByFog(IEntity entity) =>
+            !_localPlayer.IsFriendly(entity.Owner) &&
+            _fogOfWarSystem.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position);
 
         private static bool IsUnit(IModelObserver model) =>
             model is IShipModelObserver || model is ISquadronModelObserver;

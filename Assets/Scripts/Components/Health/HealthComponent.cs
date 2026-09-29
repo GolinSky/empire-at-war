@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable, IHardPointsSource
+        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
@@ -39,6 +39,8 @@ namespace EmpireAtWar.Components.Ship.Health
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
         private IIonStunView _ionStunView;
+
+        public event Action<IonStunView> IonStunViewSpawned;
 
         public event Action OnValueChanged
         {
@@ -104,6 +106,7 @@ namespace EmpireAtWar.Components.Ship.Health
                 IonStunView view = Instantiate(ionStunPrefab, _viewTransform);
                 view.Configure(ionFieldBounds);
                 _ionStunView = view;
+                IonStunViewSpawned?.Invoke(view);
             }
 
             _ionStunView.SetActive(_modifiers.IsIonDisabled);
