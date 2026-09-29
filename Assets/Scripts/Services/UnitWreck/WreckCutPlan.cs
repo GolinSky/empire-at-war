@@ -1,39 +1,65 @@
 using System;
+using System.Collections.Generic;
 
 namespace EmpireAtWar.Services.UnitWreck
 {
     /// <summary>
-    /// Where a wreck breaks, as fractions of the ship's length (0 = one end, 1 = the other).
-    /// Two parts: one cut splitting the ship at the given ratio (0.5 = in half, 0.7 = 70/30).
-    /// Three parts: the bigger of the two parts is split again the same way.
+    /// Where a wreck breaks, as sorted fractions of the unit's length (0 = one end, 1 = the other).
+    /// The first cut splits the unit at the given ratio (0.5 = in half, 0.7 = 70/30); every further
+    /// cut splits the biggest part so far the same way, until the part count is reached.
     /// </summary>
     public readonly struct WreckCutPlan
     {
-        private WreckCutPlan(float firstCut, float secondCut, int partCount)
+        public const int MIN_PARTS = 2;
+        /// <summary>The shader has four cut slots.</summary>
+        public const int MAX_PARTS = 5;
+
+        private readonly float[] _cuts;
+
+        private WreckCutPlan(float[] cuts)
         {
-            FirstCut = firstCut;
-            SecondCut = secondCut;
-            PartCount = partCount;
+            _cuts = cuts;
         }
 
-        public float FirstCut { get; }
-        /// <summary>Only meaningful when <see cref="PartCount"/> is 3; always after <see cref="FirstCut"/>.</summary>
-        public float SecondCut { get; }
-        public int PartCount { get; }
+        public IReadOnlyList<float> Cuts => _cuts;
+        public int PartCount => _cuts.Length + 1;
 
-        public static WreckCutPlan Create(float threePartChance, float minRatio, float maxRatio, Random random)
+        public static WreckCutPlan Create(int minParts, int maxParts, float minRatio, float maxRatio, Random random)
         {
-            float cut = PickCut(0f, 1f, minRatio, maxRatio, random);
-            if (random.NextDouble() >= threePartChance)
+            if (minParts < MIN_PARTS || maxParts > MAX_PARTS || minParts > maxParts)
             {
-                return new WreckCutPlan(cut, 1f, 2);
+                throw new ArgumentOutOfRangeException(nameof(minParts),
+                    $"Part counts must satisfy {MIN_PARTS} <= min <= max <= {MAX_PARTS}; got {minParts}..{maxParts}.");
             }
 
-            bool isFirstPartBigger = cut > 0.5f;
-            float extraCut = isFirstPartBigger
-                ? PickCut(0f, cut, minRatio, maxRatio, random)
-                : PickCut(cut, 1f, minRatio, maxRatio, random);
-            return new WreckCutPlan(Math.Min(cut, extraCut), Math.Max(cut, extraCut), 3);
+            int partCount = random.Next(minParts, maxParts + 1);
+            List<float> cuts = new List<float>(partCount - 1);
+            float biggestStart = 0f;
+            float biggestEnd = 1f;
+            for (int i = 1; i < partCount; i++)
+            {
+                cuts.Add(PickCut(biggestStart, biggestEnd, minRatio, maxRatio, random));
+                cuts.Sort();
+                FindBiggestPart(cuts, out biggestStart, out biggestEnd);
+            }
+
+            return new WreckCutPlan(cuts.ToArray());
+        }
+
+        private static void FindBiggestPart(List<float> cuts, out float start, out float end)
+        {
+            start = 0f;
+            end = cuts[0];
+            for (int i = 0; i < cuts.Count; i++)
+            {
+                float partStart = cuts[i];
+                float partEnd = i + 1 < cuts.Count ? cuts[i + 1] : 1f;
+                if (partEnd - partStart > end - start)
+                {
+                    start = partStart;
+                    end = partEnd;
+                }
+            }
         }
 
         // A cut inside [start, end] that leaves `ratio` of the span on a random side.

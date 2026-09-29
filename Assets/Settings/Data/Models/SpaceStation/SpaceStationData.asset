@@ -13,18 +13,9 @@ MonoBehaviour:
   m_Name: SpaceStationData
   m_EditorClassIdentifier: 
   <ComponentData>k__BackingField:
-    <FallDownDirection>k__BackingField: {x: 0, y: 40, z: 0}
-    <FallDownRotation>k__BackingField:
-      x:
-        <Min>k__BackingField: -90
-        <Max>k__BackingField: 90
-      y:
-        <Min>k__BackingField: -10
-        <Max>k__BackingField: 10
-      z:
-        <Min>k__BackingField: -360
-        <Max>k__BackingField: 360
-    <FallDownDuration>k__BackingField: 180
+    <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
+      type: 3}
+    <DestroyDelay>k__BackingField: 0.35
     <ShipClass>k__BackingField: 6
     <Hull>k__BackingField: 12000
     <Shields>k__BackingField: 8000
@@ -49,6 +40,12 @@ MonoBehaviour:
     <Range>k__BackingField: 187.5
     <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 100
+  wrecks:
+    keyValue:
+    - key: 0
+      value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
+    - key: 1
+      value: {fileID: 11400000, guid: a363bae8f25566841a66676da42ea93d, type: 2}
   hangarBays:
     keyValue:
     - key: 0

@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.MiningFacility
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacilityData : Data, IModel, IMiningFacilityModelObserver
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
+        [Tooltip("Optional. Empty = the facility is only removed; set = a breaking wreck replaces it.")]
+        [field: SerializeField] public UnitWreckData Wreck { get; private set; }
 
         [field:SerializeField] public float Income { get; private set; }
     }

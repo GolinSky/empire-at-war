@@ -15,7 +15,8 @@ MonoBehaviour:
   <Prefab>k__BackingField: {fileID: 6790382067150838172, guid: 33e5d759a62ef424389d4aa8f29ca00a,
     type: 3}
   <MaxActive>k__BackingField: 32
-  <ThreePartChance>k__BackingField: 0.5
+  <MinParts>k__BackingField: 2
+  <MaxParts>k__BackingField: 3
   <MinCutRatio>k__BackingField: 0.5
   <MaxCutRatio>k__BackingField: 0.7
   <Lifetime>k__BackingField: 30

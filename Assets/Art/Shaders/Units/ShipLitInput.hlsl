@@ -55,7 +55,7 @@ CBUFFER_START(UnityPerMaterial)
     // Written once per wreck spawn (see UnitWreckView.cs); distances are world units, speeds per second.
     float4 _WreckAxis;          // xyz = the ship's long axis in world space
     float4 _WreckCenter;        // xyz = ship bounds center in world space
-    float4 _WreckCuts;          // x, y = cut positions along the axis (world units), z = part count (2 or 3)
+    float4 _WreckCuts;          // up to 4 sorted cut positions along the axis (world units); unused = huge value
     float4 _WreckAxisRange;     // x = min, y = max of the ship along the axis (world units)
     float _WreckSeed;
     float _WreckStartTime;
