@@ -30,10 +30,17 @@ try {
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='PlayerReady'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
     } else {
         Write-ResourceSample -Stage 'package'
-        & tar.exe -a -c -f "$artifacts\EmpireAtWar-Windows.zip" -C $player .
-        if ($LASTEXITCODE -ne 0) { throw 'ZIP packaging failed.' }
-        & tar.exe -t -f "$artifacts\EmpireAtWar-Windows.zip" > "$artifacts\zip-contents.txt"
-        if ($LASTEXITCODE -ne 0) { throw 'ZIP inventory failed.' }
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zipPath = "$artifacts\EmpireAtWar-Windows.zip"
+        [IO.Compression.ZipFile]::CreateFromDirectory($player, $zipPath, [IO.Compression.CompressionLevel]::Optimal, $false)
+        $zip = [IO.Compression.ZipFile]::OpenRead($zipPath)
+        try {
+            $zip.Entries.FullName | Set-Content -LiteralPath "$artifacts\zip-contents.txt"
+            if (-not $zip.GetEntry('EmpireAtWar.exe')) { throw 'ZIP executable is not at the archive root.' }
+        } finally { $zip.Dispose() }
+        $shell = New-Object -ComObject Shell.Application
+        $zipFolder = $shell.NameSpace($zipPath)
+        if ($null -eq $zipFolder -or $null -eq $zipFolder.ParseName('EmpireAtWar.exe')) { throw 'Windows ZIP handler cannot read the packaged player.' }
         Get-FileHash -LiteralPath "$artifacts\EmpireAtWar-Windows.zip" -Algorithm SHA256 | Select-Object Hash | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\zip-sha256.json"
     }
     exit 0
