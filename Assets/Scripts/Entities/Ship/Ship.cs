@@ -130,6 +130,7 @@ namespace EmpireAtWar.Ship
             _radarComponent.Enemies.ItemAdded += HandleEnemyAdded;
             _radarComponent.ContactsUpdated += _shipMoveComponent.HandleRadarContacts;
             _selectionModel.OnSelected += _shipMoveComponent.HandleSelection;
+            _shipMoveComponent.HyperSpaceCompleted += _audioShipComponent.PlayHyperSpace;
             if (_audioDialogShipComponent != null)
             {
                 _shipMoveComponent.DestinationChanged += _audioDialogShipComponent.HandleMove;
@@ -140,7 +141,6 @@ namespace EmpireAtWar.Ship
 
             _orders.Start();
             ShipService.Add(this);
-            _audioShipComponent.PlayHyperSpace(_shipMoveComponent.HyperSpaceDuration);
             SynchronizeComponents();
         }
 
@@ -205,6 +205,7 @@ namespace EmpireAtWar.Ship
             _radarComponent.Enemies.ItemAdded -= HandleEnemyAdded;
             _radarComponent.ContactsUpdated -= _shipMoveComponent.HandleRadarContacts;
             _selectionModel.OnSelected -= _shipMoveComponent.HandleSelection;
+            _shipMoveComponent.HyperSpaceCompleted -= _audioShipComponent.PlayHyperSpace;
             if (_audioDialogShipComponent != null)
             {
                 _shipMoveComponent.DestinationChanged -= _audioDialogShipComponent.HandleMove;

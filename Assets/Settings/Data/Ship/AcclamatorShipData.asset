@@ -19,7 +19,7 @@ MonoBehaviour:
   <Height>k__BackingField: 5
   <RotationSpeed>k__BackingField: 30
   <TurnAcceleration>k__BackingField: 30
-  <HyperSpaceDuration>k__BackingField: 3
+  <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 20
   <NavigationRadius>k__BackingField: 42
   <FallDownDirection>k__BackingField: {x: 0, y: 80, z: 0}

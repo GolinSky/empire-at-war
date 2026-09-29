@@ -10,19 +10,16 @@ namespace EmpireAtWar.Components.Ship.Audio
 {
     public interface IAudioShipComponent : IComponent
     {
-        void PlayHyperSpace(float hyperSpaceDuration);
+        void PlayHyperSpace();
         void HandleEnemyDetected();
     }
 
     public class AudioShipComponent : MonoComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
         ILateDisposable
     {
-        private const float HYPER_SPACE_TIME_PERCENTAGE = 0.8f;
-
         [SerializeField] private AudioSource source;
 
         private AudioShipData _data;
-        private TimerPoolService _timerPoolService;
         private IAudioService _audioService;
         private ITimer _alarmTimer;
         private IWeaponFireEvents _weaponFireEvents;
@@ -32,14 +29,12 @@ namespace EmpireAtWar.Components.Ship.Audio
         private void Construct(
             AudioShipModel model,
             AudioShipData data,
-            TimerPoolService timerPoolService,
             IAudioService audioService,
             IWeaponFireEvents weaponFireEvents,
             WeaponAudioPresenter weaponAudio)
         {
             SetModel(model);
             _data = data;
-            _timerPoolService = timerPoolService;
             _audioService = audioService;
             _weaponFireEvents = weaponFireEvents;
             _weaponAudio = weaponAudio;
@@ -88,10 +83,9 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
         
-        public void PlayHyperSpace(float hyperSpaceDuration)
+        public void PlayHyperSpace()
         {
-            _timerPoolService.Invoke(() => { Model.PlayHyperSpace(); },
-                hyperSpaceDuration * HYPER_SPACE_TIME_PERCENTAGE);
+            Model.PlayHyperSpace();
         }
 
         private void PlayOneShot(AudioShipModel.OneShot oneShot)

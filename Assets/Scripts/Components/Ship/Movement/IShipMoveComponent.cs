@@ -12,8 +12,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         event Action<Vector3> DestinationChanged;
         event Action<Vector3> LookingAt;
         event Action Stopped;
+        event Action HyperSpaceCompleted;
         float NavigationSpeed { get; }
-        float HyperSpaceDuration { get; }
         void ApplyMoveCoefficient(float coefficient);
         void HandleSelection(bool isSelected);
         void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
