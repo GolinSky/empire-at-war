@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using ViewComponents;
@@ -9,7 +10,7 @@ namespace EmpireAtWar.Components.FogOfWar
     /// <summary>
     /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
-    /// Hardpoint explosion VFX spawned at runtime are hidden with the unit. Bound only for opponent entities.
+    /// Hardpoint explosion VFX and the ion stun effect spawned at runtime are hidden with the unit. Bound only for opponent entities.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable
     {
@@ -18,13 +19,15 @@ namespace EmpireAtWar.Components.FogOfWar
 
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private FogOfWarSystem _fogOfWarSystem;
+        private List<IIonStunViewSource> _ionStunSources;
         private bool _isHidden;
         private bool _isReleased;
 
         [Inject]
-        private void Construct(FogOfWarSystem fogOfWarSystem)
+        private void Construct(FogOfWarSystem fogOfWarSystem, List<IIonStunViewSource> ionStunSources)
         {
             _fogOfWarSystem = fogOfWarSystem;
+            _ionStunSources = ionStunSources;
         }
 
         public void Initialize()
@@ -33,6 +36,11 @@ namespace EmpireAtWar.Components.FogOfWar
             foreach (HardPoint hardPoint in hardPoints)
             {
                 hardPoint.ExplosionSpawned += TrackExplosion;
+            }
+
+            foreach (IIonStunViewSource ionStunSource in _ionStunSources)
+            {
+                ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
 
             _isHidden = _fogOfWarSystem.IsHidden(transform.position);
@@ -68,14 +76,29 @@ namespace EmpireAtWar.Components.FogOfWar
             {
                 hardPoint.ExplosionSpawned -= TrackExplosion;
             }
+
+            foreach (IIonStunViewSource ionStunSource in _ionStunSources)
+            {
+                ionStunSource.IonStunViewSpawned -= TrackIonStun;
+            }
         }
 
         private void TrackExplosion(ExplosionVfx explosion)
         {
-            foreach (Renderer explosionRenderer in explosion.Renderers)
+            TrackRenderers(explosion.Renderers);
+        }
+
+        private void TrackIonStun(IonStunView ionStun)
+        {
+            TrackRenderers(ionStun.Renderers);
+        }
+
+        private void TrackRenderers(IEnumerable<Renderer> spawnedRenderers)
+        {
+            foreach (Renderer spawnedRenderer in spawnedRenderers)
             {
-                explosionRenderer.forceRenderingOff = _isHidden;
-                _renderers.Add(explosionRenderer);
+                spawnedRenderer.forceRenderingOff = _isHidden;
+                _renderers.Add(spawnedRenderer);
             }
         }
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
 
@@ -11,6 +12,15 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private LineRenderer[] arcs;
         [SerializeField, Min(0.01f)] private float fadeDuration = 0.7f;
         [SerializeField, ColorUsage(true, true)] private Color arcColor = new Color(0.25f, 0.8f, 1f, 1f);
+
+        public IEnumerable<Renderer> Renderers
+        {
+            get
+            {
+                yield return shimmer;
+                foreach (LineRenderer arc in arcs) yield return arc;
+            }
+        }
 
         private readonly Vector3[] _points = new Vector3[ARC_POINTS];
         private MaterialPropertyBlock _properties;
