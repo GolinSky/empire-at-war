@@ -18,6 +18,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         ILateDisposable
     {
         [SerializeField] private AudioSource source;
+        [SerializeField] private AudioSource hyperSpaceSource;
 
         private AudioShipData _data;
         private IAudioService _audioService;
@@ -93,7 +94,7 @@ namespace EmpireAtWar.Components.Ship.Audio
             switch (oneShot)
             {
                 case AudioShipModel.OneShot.HyperSpace:
-                    PlayOneShot(_data.GetHyperSpaceClip());
+                    hyperSpaceSource.PlayOneShot(_data.GetHyperSpaceClip());
                     break;
                 case AudioShipModel.OneShot.Alarm:
                     PlayOneShot(_data.GetAlarmClip());
