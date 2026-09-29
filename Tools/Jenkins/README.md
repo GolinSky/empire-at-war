@@ -31,6 +31,7 @@
 ## Artifacts and recovery
 
 - Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
+- Packaging uses .NET `ZipFile` with player files at the archive root; Windows' ZIP handler must recognize `EmpireAtWar.exe` before archiving. `tar -C player .` produced ZIPs that Windows Explorer could not extract.
 - Retention: 10 runs; artifacts from 3 runs. Retention limits counts, not total bytes.
 - Player output and workspace ZIP are deleted only after Jenkins confirms archiving; archived files remain downloadable.
 - A complete player without its ZIP is preserved if packaging fails. Archival monitors disk reserve and records RAM without blocking failure-log recovery on low memory.
