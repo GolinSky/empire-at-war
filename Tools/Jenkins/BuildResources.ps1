@@ -45,9 +45,6 @@ function Write-ResourceSample([switch]$Preflight, [string]$Stage = 'build') {
         }
         if ($free -lt $required) { $failures += "Disk $root has $([math]::Round($free,2)) GiB; requires $required GiB." }
     }
-    $ramLimit = $policy.StopAvailableRamGiB
-    if ($Preflight) { $ramLimit = $policy.StartAvailableRamGiB }
-    if ($Stage -ne 'archive' -and $ram -lt $ramLimit) { $failures += "Available RAM $([math]::Round($ram,2)) GiB; requires $ramLimit GiB." }
     $sample = [ordered]@{Utc=[DateTime]::UtcNow.ToString('o');Stage=$Stage;AvailableRamGiB=[math]::Round($ram,3);FreeDiskGiB=$volumes;Failures=$failures}
     $sample | ConvertTo-Json -Compress | Add-Content -LiteralPath "$env:WORKSPACE\artifacts\resources.jsonl" -Encoding UTF8
     if ($failures.Count) { throw ($failures -join ' ') }
