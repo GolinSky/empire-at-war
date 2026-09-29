@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Entities.SpaceStation
 {
     public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
+        [SerializeField] private Renderer[] explosionHullRenderers;
+
         private FogOfWarSystem _fogOfWarSystem;
         private ILocalPlayer _localPlayer;
         private PlayerId _owner;
@@ -21,6 +24,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
+        private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
         private GameObjectContext _context;
         private FactionType _factionType;
@@ -38,6 +42,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
+            IUnitExplosionService explosionService,
             GameObjectContext context,
             FactionType factionType,
             ILocalPlayer localPlayer)
@@ -50,6 +55,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
+            _explosionService = explosionService;
             _context = context;
             _factionType = factionType;
         }
@@ -90,7 +96,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = RootModel.ComponentData;
-                Instantiate(componentData.DeathExplosionVfx, transform.position, Quaternion.identity);
+                _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (RootModel.TryGetWreck(_factionType, out UnitWreckData wreck))
                 {

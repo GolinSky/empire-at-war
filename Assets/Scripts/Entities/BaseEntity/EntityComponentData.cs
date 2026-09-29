@@ -12,8 +12,6 @@ namespace EmpireAtWar.Entities.BaseEntity
     public sealed class EntityComponentData : IHealthData, IRadarData
     {
         [Header("Destruction Settings")]
-        [Tooltip("Explosion that hides the swap from the dead unit to its wreck.")]
-        [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
         [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
         [field: SerializeField, Min(0f)] public float DestroyDelay { get; private set; } = 0.35f;
 

@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using EmpireAtWar.Services.Layer;
 using Zenject;
@@ -14,10 +15,13 @@ namespace EmpireAtWar.Entities.DefendPlatform
 {
     public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable, ITickable
     {
+        [SerializeField] private Renderer[] explosionHullRenderers;
+
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
+        private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
         private GameObjectContext _context;
         private PlayerId _owner;
@@ -36,6 +40,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
+            IUnitExplosionService explosionService,
             GameObjectContext context,
             PlayerId owner,
             ILayerService layerService)
@@ -45,6 +50,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
+            _explosionService = explosionService;
             _context = context;
             _owner = owner;
             _layerService = layerService;
@@ -86,7 +92,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
                 OnRelease?.Invoke();
                 EntityComponentData componentData = RootModel.ComponentData;
-                Instantiate(componentData.DeathExplosionVfx, transform.position, Quaternion.identity);
+                _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the platform entity is destroyed.
                 if (RootModel.Wreck != null)
                 {
