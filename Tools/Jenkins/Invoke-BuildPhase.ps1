@@ -18,7 +18,7 @@ try {
         if (-not (Test-Path -LiteralPath $editor)) { throw "Required Editor missing: $version" }
         if (Test-Path -LiteralPath "$player\EmpireAtWar.exe") { throw 'Old player output rejected.' }
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='BuildStarted'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"
-        & unity build $ci --target StandaloneWindows64 --editor-path $editor --output-path "$player\EmpireAtWar.exe" --log-file "$artifacts\Unity.log" --provenance-path "$artifacts\build-provenance.json" --args '-nographics -job-worker-count 4' --timeout $policy.BuildTimeoutSeconds --non-interactive
+        & unity build $ci --target StandaloneWindows64 --editor-path $editor --output-path "$player\EmpireAtWar.exe" --log-file "$artifacts\Unity.log" --provenance-path "$artifacts\build-provenance.json" --args '-job-worker-count 4' --timeout $policy.BuildTimeoutSeconds --non-interactive
         if ($LASTEXITCODE -ne 0) { throw "Unity build failed: exit $LASTEXITCODE" }
         foreach ($required in @('EmpireAtWar.exe','UnityPlayer.dll','EmpireAtWar_Data\globalgamemanagers','EmpireAtWar_Data\Managed\Assembly-CSharp.dll','EmpireAtWar_Data\StreamingAssets\aa\settings.json')) {
             if (-not (Test-Path -LiteralPath "$player\$required" -PathType Leaf)) { throw "Incomplete Mono player: $required" }
