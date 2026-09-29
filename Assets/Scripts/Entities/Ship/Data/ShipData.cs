@@ -17,7 +17,6 @@ namespace EmpireAtWar.Entities.Ship.Data
 {
     public interface IShipData
     {
-        ParticleSystem DeathExplosionVfx { get; }
         float MinMoveCoefficient { get; }
         float DestroyDelay { get; }
         UnitWreckData Wreck { get; }
@@ -30,7 +29,6 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Inject] public ShipType ShipType { get; private set; }
 
         [Header("Ship Settings")]
-        [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
 
         [Header("Movement Settings")]

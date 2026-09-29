@@ -1539,6 +1539,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617baef4c9215ff46811c5b18a2d67ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionHullRenderers:
+  - {fileID: 555100115181004464}
+  - {fileID: 2641999123679171728}
+  - {fileID: 8426188828586698579}
+  - {fileID: 253668630777400967}
+  - {fileID: 6488916625286535517}
+  - {fileID: 9093703196654673226}
+  - {fileID: 8824072863644394166}
+  - {fileID: 4144613105397337534}
+  - {fileID: 2488626554368185859}
+  - {fileID: 5392373877904681124}
+  - {fileID: 6773111060450377339}
+  - {fileID: 6164268158150407079}
+  - {fileID: 9046699686680731835}
 --- !u!65 &4944068100476870398
 BoxCollider:
   m_ObjectHideFlags: 0

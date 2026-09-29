@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: AsteroidMiningFacilityData
   m_EditorClassIdentifier: 
   <ComponentData>k__BackingField:
-    <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
-      type: 3}
     <DestroyDelay>k__BackingField: 0.35
     <ShipClass>k__BackingField: 6
     <Hull>k__BackingField: 2500

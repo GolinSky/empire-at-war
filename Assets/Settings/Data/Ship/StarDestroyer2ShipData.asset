@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
   m_Name: StarDestroyer2ShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
-  <DeathExplosionVfx>k__BackingField: {fileID: 705529199416479514, guid: ad12607a43b672a44b753a7397fe2083,
-    type: 3}
   <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 7.2000003
   <Height>k__BackingField: -5

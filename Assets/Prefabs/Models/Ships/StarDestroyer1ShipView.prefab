@@ -9825,6 +9825,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e11f9a6878dc040ba9c051837b41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionHullRenderers:
+  - {fileID: 7845217449981124495}
+  - {fileID: 5218505592341560288}
+  - {fileID: 8978645983907114253}
+  - {fileID: 2404815047331943576}
+  - {fileID: 3552924957105167591}
+  - {fileID: 8413967583207143238}
+  - {fileID: 1185769501173902371}
+  - {fileID: 6763174985555853723}
+  - {fileID: 1203051110192335805}
 --- !u!65 &2344170095056088637
 BoxCollider:
   m_ObjectHideFlags: 0

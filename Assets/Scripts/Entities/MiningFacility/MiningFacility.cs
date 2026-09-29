@@ -9,6 +9,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using Zenject;
 
@@ -17,11 +18,14 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacility : MonoBehaviour, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
+        [SerializeField] private Renderer[] explosionHullRenderers;
+
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
+        private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
         private GameObjectContext _context;
         private PlayerId _owner;
@@ -43,6 +47,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
+            IUnitExplosionService explosionService,
             GameObjectContext context,
             PlayerId owner,
             ILayerService layerService,
@@ -54,6 +59,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
+            _explosionService = explosionService;
             _context = context;
             _owner = owner;
             _layerService = layerService;
@@ -99,7 +105,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 OnRelease?.Invoke();
                 EntityComponentData componentData = RootModel.ComponentData;
-                Instantiate(componentData.DeathExplosionVfx, transform.position, Quaternion.identity);
+                _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
                 if (RootModel.Wreck != null)
                 {

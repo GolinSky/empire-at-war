@@ -14,6 +14,8 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.UnitExplosion;
+using EmpireAtWar.ViewComponents.Health;
 using Zenject;
 using UnityEngine;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -23,10 +25,12 @@ namespace EmpireAtWar.SceneContext.Skirmish
     public class SkirmishServiceInstaller : MonoInstaller
     {
         [SerializeField] private ImpactEffectView impactEffectPrefab;
+        [SerializeField] private UnitExplosionView unitExplosionPrefab;
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {
+            Container.BindInstance(unitExplosionPrefab);
             Container.Bind<IWeaponAudioView>().To<WeaponAudioView>()
                 .FromComponentInNewPrefab(Repository.Load<AudioShipData>(nameof(AudioShipData)).WeaponAudioPrefab)
                 .AsSingle();
@@ -73,6 +77,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()
                 .BindInterfacesExt<UnitWreckService>()
+                .BindInterfacesExt<UnitExplosionService>()
                 .BindInterfacesExt<SelectionQuery>()
                 .BindInterfacesExt<SelectionService>();
         }

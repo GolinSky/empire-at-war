@@ -19,6 +19,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Zenject;
@@ -43,6 +44,8 @@ namespace EmpireAtWar.Ship
     /// </summary>
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateDisposable, ITickable
     {
+        [SerializeField] private Renderer[] explosionHullRenderers;
+
         private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
         private IShipMoveComponent _shipMoveComponent;
@@ -57,6 +60,7 @@ namespace EmpireAtWar.Ship
         private PlayerId _owner;
         private bool _isReleased;
         private ILayerService _layerService;
+        private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
         private GameObjectContext _context;
 
@@ -91,6 +95,7 @@ namespace EmpireAtWar.Ship
             List<IMonoComponent> monoComponents,
             ILayerService layerService,
             IUnitWreckService wreckService,
+            IUnitExplosionService explosionService,
             GameObjectContext context)
         {
             _healthComponent = healthComponent;
@@ -106,6 +111,7 @@ namespace EmpireAtWar.Ship
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
             _wreckService = wreckService;
+            _explosionService = explosionService;
             _context = context;
         }
 
@@ -190,7 +196,7 @@ namespace EmpireAtWar.Ship
             if (playDeathEffects && gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(ShipType);
-                Instantiate(Data.DeathExplosionVfx, transform.position, Quaternion.identity);
+                _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
                 if (Data.Wreck != null)
                 {
