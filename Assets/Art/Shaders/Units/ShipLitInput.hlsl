@@ -50,6 +50,27 @@ CBUFFER_START(UnityPerMaterial)
     half _TeamLiveryHueRange;
     half _TeamLiveryMinSaturation;
     half _TeamLiveryStrength;
+#ifdef SHIP_WRECK
+    // "EmpireAtWar/Ship Wreck" only. Ship Lit never defines SHIP_WRECK, so its buffer is unchanged.
+    // Written once per wreck spawn (see UnitWreckView.cs); distances are world units, speeds per second.
+    float4 _WreckAxis;          // xyz = the ship's long axis in world space
+    float4 _WreckCenter;        // xyz = ship bounds center in world space
+    float4 _WreckCuts;          // x, y = cut positions along the axis (world units), z = part count (2 or 3)
+    float4 _WreckAxisRange;     // x = min, y = max of the ship along the axis (world units)
+    float _WreckSeed;
+    float _WreckStartTime;
+    float _WreckLifetime;
+    float _WreckDissolveDuration;
+    float _WreckSeparationSpeed;
+    float _WreckTiltSpeed;
+    float _WreckSinkSpeed;
+    float _WreckGlowDuration;
+    float _WreckTornEdgeWidth;
+    half4 _WreckHeatColor;
+    half4 _WreckDissolveEdgeColor;
+    half _WreckDissolveEdgeWidth;
+    half _WreckDissolveNoiseScale;
+#endif
 CBUFFER_END
 
 // -----------------------------------------------------------------------------

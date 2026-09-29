@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
@@ -20,6 +22,7 @@ namespace EmpireAtWar.Services.Cheats
         bool ForceSpawnShipAtDefaultZone(ShipUnitRequest request);
         bool GrantSuperWeapon(SuperWeaponType type);
         void SetRangeDebug(bool isEnabled);
+        int DestroyOwnShips();
     }
 
     public sealed class CheatService : ICheatService
@@ -32,6 +35,7 @@ namespace EmpireAtWar.Services.Cheats
         private readonly IEntityLocator _entityLocator;
         private readonly SuperWeaponModel _superWeaponModel;
         private readonly RangeDebugModel _rangeDebugModel;
+        private readonly List<IEntity> _ownEntities = new List<IEntity>();
 
         public CheatService(
             EconomyModel economyModel,
@@ -121,6 +125,31 @@ namespace EmpireAtWar.Services.Cheats
         public void SetRangeDebug(bool isEnabled)
         {
             _rangeDebugModel.IsEnabled = isEnabled;
+        }
+
+        /// <summary>Destroys every ship the player owns. Returns how many were destroyed.</summary>
+        public int DestroyOwnShips()
+        {
+            // Copied first: destroyed ships leave the locator while we iterate.
+            _ownEntities.Clear();
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Owner == _owner.Id) _ownEntities.Add(entity);
+            }
+
+            int destroyed = 0;
+            foreach (IEntity entity in _ownEntities)
+            {
+                if (!entity.HealthModel.IsDestroyed &&
+                    entity.TryGetFacade(out IEntityDestroyFacade destroyFacade))
+                {
+                    destroyFacade.Destroy();
+                    destroyed++;
+                }
+            }
+
+            _ownEntities.Clear();
+            return destroyed;
         }
 
         private void HandleShipDestroying(ShipType shipType)

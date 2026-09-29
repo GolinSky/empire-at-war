@@ -14,6 +14,7 @@ namespace EmpireAtWar.Views.Cheats
         event Action<SuperWeaponType> GrantSuperWeaponRequested;
         event Action GrantAllSuperWeaponsRequested;
         event Action<bool> RangeDebugToggled;
+        event Action DestroyOwnShipsRequested;
 
         void SetShips(IReadOnlyList<ShipType> ships);
         void SetStatus(string status);
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<SuperWeaponType> GrantSuperWeaponRequested;
         public event Action GrantAllSuperWeaponsRequested;
         public event Action<bool> RangeDebugToggled;
+        public event Action DestroyOwnShipsRequested;
 
         private Rect _windowRect = new Rect(
             WINDOW_MARGIN,
@@ -205,6 +207,11 @@ namespace EmpireAtWar.Views.Cheats
 
         private void DrawShipsTab()
         {
+            if (GUILayout.Button("Destroy All My Ships", GUILayout.Height(36f)))
+            {
+                DestroyOwnShipsRequested?.Invoke();
+            }
+
             if (_ships.Length == 0)
             {
                 GUILayout.Label("No ships are configured.");

@@ -37,6 +37,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantSuperWeaponRequested += GrantSuperWeapon;
             _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
             _view.RangeDebugToggled += SetRangeDebug;
+            _view.DestroyOwnShipsRequested += DestroyOwnShips;
         }
 
         public void LateDispose()
@@ -47,6 +48,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantSuperWeaponRequested -= GrantSuperWeapon;
             _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
             _view.RangeDebugToggled -= SetRangeDebug;
+            _view.DestroyOwnShipsRequested -= DestroyOwnShips;
         }
 
         private List<ShipType> BuildShipCatalog()
@@ -130,6 +132,14 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(isEnabled
                 ? "Range debug on: select units to see attack (red) and radar (blue) range."
                 : "Range debug off.");
+        }
+
+        private void DestroyOwnShips()
+        {
+            int destroyed = _cheatService.DestroyOwnShips();
+            _view.SetStatus(destroyed > 0
+                ? $"Destroyed {destroyed} of your ships."
+                : "You have no ships to destroy.");
         }
 
         private ShipUnitRequest CreateRequest(ShipType shipType)

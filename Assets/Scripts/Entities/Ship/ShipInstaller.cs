@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Ship
 
             Container.BindInterfacesExt<ShipAbilityFacade>();
             Container.BindInterfacesExt<ShipOrderFacade>();
+            Container.BindInterfacesExt<ShipDestroyFacade>();
         }
 
         private void BindAudio()
