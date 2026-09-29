@@ -14,6 +14,7 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.UnitDeathAnimation;
+using EmpireAtWar.Services.UnitWreck;
 using Zenject;
 using UnityEngine;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -73,6 +74,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()
                 .BindInterfacesExt<UnitDeathAnimationService>()
+                .BindInterfacesExt<UnitWreckService>()
                 .BindInterfacesExt<SelectionQuery>()
                 .BindInterfacesExt<SelectionService>();
         }

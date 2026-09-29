@@ -78,6 +78,21 @@ namespace EmpireAtWar.Models.Health
             OnValueChanged?.Invoke();
         }
 
+        /// <summary>Destroys the unit at once, ignoring shields and hardpoints (cheats and debugging).</summary>
+        public void Kill()
+        {
+            if (IsDestroyed)
+            {
+                return;
+            }
+
+            Shields = 0f;
+            Hull = 0f;
+            IsDestroyed = true;
+            OnValueChanged?.Invoke();
+            OnDestroy?.Invoke();
+        }
+
         public void RegenerateShields(float value)
         {
             Shields = Math.Min(_data.Shields, Shields + value);

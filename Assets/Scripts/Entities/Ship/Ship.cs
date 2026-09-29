@@ -18,7 +18,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Timing;
-using EmpireAtWar.Services.UnitDeathAnimation;
+using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Zenject;
@@ -57,8 +57,8 @@ namespace EmpireAtWar.Ship
         private PlayerId _owner;
         private bool _isReleased;
         private ILayerService _layerService;
-        private IUnitDeathAnimationData _deathAnimationData;
-        private IUnitDeathAnimationService _deathAnimationService;
+        private IUnitWreckService _wreckService;
+        private GameObjectContext _context;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
@@ -90,8 +90,8 @@ namespace EmpireAtWar.Ship
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
             ILayerService layerService,
-            IUnitDeathAnimationData deathAnimationData,
-            IUnitDeathAnimationService deathAnimationService)
+            IUnitWreckService wreckService,
+            GameObjectContext context)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -105,8 +105,8 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent = audioDialogShipComponent;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
-            _deathAnimationData = deathAnimationData;
-            _deathAnimationService = deathAnimationService;
+            _wreckService = wreckService;
+            _context = context;
         }
 
         public IModel GetModel()
@@ -183,7 +183,6 @@ namespace EmpireAtWar.Ship
             if (playDeathEffects)
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
-                _deathAnimationService.Play(transform, _deathAnimationData);
             }
 
             ShipService.Remove(this);
@@ -192,6 +191,13 @@ namespace EmpireAtWar.Ship
             {
                 OnRelease?.Invoke(ShipType);
                 Instantiate(Data.DeathExplosionVfx, transform.position, Quaternion.identity);
+                // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
+                if (Data.Wreck != null)
+                {
+                    _wreckService.Spawn(Data.Wreck, transform, _owner, Data.DestroyDelay);
+                }
+
+                Destroy(_context.gameObject, Data.DestroyDelay);
             }
         }
 

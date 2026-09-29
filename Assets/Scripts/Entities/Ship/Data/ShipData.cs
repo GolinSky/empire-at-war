@@ -7,9 +7,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Services.UnitDeathAnimation;
 using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Utils.Random;
+using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 using Zenject;
@@ -20,11 +19,13 @@ namespace EmpireAtWar.Entities.Ship.Data
     {
         ParticleSystem DeathExplosionVfx { get; }
         float MinMoveCoefficient { get; }
+        float DestroyDelay { get; }
+        UnitWreckData Wreck { get; }
     }
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
     public class ShipData : Mvc.Data, IModel, IShipModelObserver, IShipData,
-        IShipMoveData, IHealthData, IRadarData, IUnitDeathAnimationData, IHangarData
+        IShipMoveData, IHealthData, IRadarData, IHangarData
     {
         [Inject] public ShipType ShipType { get; private set; }
 
@@ -41,11 +42,11 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         [field: SerializeField] public float NavigationRadius { get; private set; } = 8f;
 
-        [Header("Death Animation Settings")]
-        [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
-        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
-        [field: SerializeField] public float FallDownDuration { get; private set; }
-        Vector3 IUnitDeathAnimationData.FallDownRotation => FallDownRotation.Value;
+        [Header("Destruction Settings")]
+        [Tooltip("Seconds the dead ship stays under its explosion before it is removed.")]
+        [field: SerializeField, Min(0f)] public float DestroyDelay { get; private set; } = 0.35f;
+        [Tooltip("Optional. Empty = the ship is only removed; set = a breaking wreck replaces it.")]
+        [field: SerializeField] public UnitWreckData Wreck { get; private set; }
 
         [Header("Health Settings")]
         [field: SerializeField] public ShipClass ShipClass { get; private set; }

@@ -22,18 +22,9 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 20
   <NavigationRadius>k__BackingField: 42
-  <FallDownDirection>k__BackingField: {x: 0, y: 80, z: 0}
-  <FallDownRotation>k__BackingField:
-    x:
-      <Min>k__BackingField: -90
-      <Max>k__BackingField: 90
-    y:
-      <Min>k__BackingField: -10
-      <Max>k__BackingField: 10
-    z:
-      <Min>k__BackingField: -360
-      <Max>k__BackingField: 360
-  <FallDownDuration>k__BackingField: 180
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: d1c07ef65046cea47a72250abb326543,
+    type: 2}
   <ShipClass>k__BackingField: 4
   <Hull>k__BackingField: 4700
   <Shields>k__BackingField: 2000
