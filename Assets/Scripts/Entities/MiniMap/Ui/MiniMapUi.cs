@@ -98,7 +98,11 @@ namespace EmpireAtWar.Views.MiniMap
 
             _mapMarkers.Remove(view.IconImage);
             view.Release();
-            Destroy(view.gameObject);
+            // Scene teardown can destroy the view before the marker presenter is disposed.
+            if (view != null)
+            {
+                Destroy(view.gameObject);
+            }
         }
 
         public Vector2 GetPosition(Vector3 worldPos)
