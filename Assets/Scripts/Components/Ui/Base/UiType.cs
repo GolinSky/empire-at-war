@@ -19,5 +19,6 @@ namespace EmpireAtWar.Ui.Base
         UnitOrderFeedback = 11,
         Skirmish = 12,
         Settings = 13,
+        Fps = 14,
     }
 }
