@@ -64,11 +64,14 @@ namespace EmpireAtWar.Entities.Map.Generation
                 GetRidgeNoise(position) > _size.RidgeThreshold;
         }
 
+        // Only cell centers are tested, but field volumes and rocks spill up to one cell past them,
+        // so the station clearing is widened by a cell to keep its footprint free of asteroids.
         private bool IsInClearing(Vector3 position)
         {
             foreach (MapStation station in _stations)
             {
-                if (MapGeometry.Distance(position, station.Position) < station.Radius + _settings.ZoneClearance)
+                if (MapGeometry.Distance(position, station.Position) <
+                    station.Radius + _settings.ZoneClearance + _size.FieldCellSize)
                 {
                     return true;
                 }

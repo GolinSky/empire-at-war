@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.MiniMap;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
@@ -43,6 +44,13 @@ namespace EmpireAtWar.SceneContext.Skirmish
             {
                 Container.Bind(typeof(IMapObstacleContactSource), typeof(IMiniMapObstacleSource))
                     .FromInstance(obstacle);
+            }
+
+            foreach (PlayerSlot player in GameModel.Players)
+            {
+                Container.Bind<IMapObstacleContactSource>().FromInstance(new StationObstacle(
+                    layout.GetStationPosition(player.Id),
+                    settings.GetStationRadius(player.Faction)));
             }
 
             Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
