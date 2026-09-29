@@ -10,7 +10,7 @@ namespace EmpireAtWar.ViewComponents.Wreck
     /// </summary>
     public sealed class UnitWreckView : MonoBehaviour
     {
-        // Past the end of any mesh: puts the unused second cut of a two-part wreck out of reach.
+        // Past the end of any mesh: puts unused cut slots out of reach.
         private const float NO_CUT = 1000000f;
 
         private static readonly int AXIS_ID = Shader.PropertyToID("_WreckAxis");
@@ -141,12 +141,15 @@ namespace EmpireAtWar.ViewComponents.Wreck
             // World units per root unit along the axis: converts the ship's length into world units.
             float worldPerRoot = worldAxis.magnitude;
             float halfLength = Vector3.Dot(extents, rootAxis) * worldPerRoot;
-            float firstCut = Mathf.Lerp(-halfLength, halfLength, cutPlan.FirstCut);
-            float secondCut = cutPlan.PartCount == 3 ? Mathf.Lerp(-halfLength, halfLength, cutPlan.SecondCut) : NO_CUT;
+            Vector4 cuts = new Vector4(NO_CUT, NO_CUT, NO_CUT, NO_CUT);
+            for (int i = 0; i < cutPlan.Cuts.Count; i++)
+            {
+                cuts[i] = Mathf.Lerp(-halfLength, halfLength, cutPlan.Cuts[i]);
+            }
 
             material.SetVector(AXIS_ID, worldAxis / worldPerRoot);
             material.SetVector(CENTER_ID, transform.TransformPoint(_shipBounds.center));
-            material.SetVector(CUTS_ID, new Vector4(firstCut, secondCut, cutPlan.PartCount, 0f));
+            material.SetVector(CUTS_ID, cuts);
             material.SetVector(AXIS_RANGE_ID, new Vector4(-halfLength, halfLength, 0f, 0f));
             material.SetFloat(SEED_ID, seed);
         }

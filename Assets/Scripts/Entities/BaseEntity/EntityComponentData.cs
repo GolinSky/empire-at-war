@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.UnitDeathAnimation;
-using EmpireAtWar.Utils.Random;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IUnitDeathAnimationData, IHealthData, IRadarData
+    public sealed class EntityComponentData : IHealthData, IRadarData
     {
-        [Header("Death Animation Settings")]
-        [field: SerializeField] public Vector3 FallDownDirection { get; private set; }
-        [field: SerializeField] public RandomVector3 FallDownRotation { get; private set; }
-        [field: SerializeField] public float FallDownDuration { get; private set; }
-        Vector3 IUnitDeathAnimationData.FallDownRotation => FallDownRotation.Value;
+        [Header("Destruction Settings")]
+        [Tooltip("Explosion that hides the swap from the dead unit to its wreck.")]
+        [field: SerializeField] public ParticleSystem DeathExplosionVfx { get; private set; }
+        [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
+        [field: SerializeField, Min(0f)] public float DestroyDelay { get; private set; } = 0.35f;
 
         [Header("Health Settings")]
         [field: SerializeField] public ShipClass ShipClass { get; private set; } = ShipClass.Structure;

@@ -2,8 +2,9 @@
 // -----------------------------------------------------------------------------
 // Break-apart and dissolve math shared by every pass of "EmpireAtWar/Ship Wreck".
 //
-// The wreck renders the ship's own meshes. The shader cuts them across the ship's long axis into 2 or 3 parts:
-//   part = how many cuts lie before the vertex along _WreckAxis (0, 1 or 2), all in world space.
+// The wreck renders the ship's own meshes. The shader cuts them across the ship's long axis into 2-5 parts:
+//   part = how many cuts lie before the vertex along _WreckAxis (0..4), all in world space.
+//   Unused cut slots hold a huge value, so no vertex lies past them.
 // A triangle that crosses a cut gets a fractional part id after interpolation; ClipWreck discards
 // those pixels, which leaves a torn edge instead of triangles stretched across the gap.
 // Each part then separates along the axis, tilts, rolls and sinks. Everything is a pure function
@@ -30,11 +31,18 @@ float GetAxisPosition(float3 positionOS)
     return dot(TransformObjectToWorld(positionOS) - _WreckCenter.xyz, _WreckAxis.xyz);
 }
 
-// 0, 1 or 2: which part of the ship this position belongs to.
+// 0..4: which part of the ship this position belongs to.
 float GetWreckPart(float3 positionOS)
 {
-    float axisPosition = GetAxisPosition(positionOS);
-    return step(_WreckCuts.x, axisPosition) + step(_WreckCuts.y, axisPosition);
+    return dot(step(_WreckCuts, GetAxisPosition(positionOS).xxxx), float4(1.0, 1.0, 1.0, 1.0));
+}
+
+// Start (x) and end (y) of a part along the axis. Cuts are sorted, so part n lies between cut n-1 and cut n.
+float2 GetPartRange(float part)
+{
+    float bounds[6] = { _WreckAxisRange.x, _WreckCuts.x, _WreckCuts.y, _WreckCuts.z, _WreckCuts.w, _WreckAxisRange.y };
+    int index = (int)round(part);
+    return float2(bounds[index], min(bounds[index + 1], _WreckAxisRange.y));
 }
 
 // 0..1 random value per part, different for every wreck.
@@ -61,19 +69,19 @@ float ApplyWreckDeformation(inout float3 positionOS, inout float3 normalOS, inou
     float random = GetPartRandom(part);
     float3 axis = _WreckAxis.xyz;
 
-    float partStart = part < 0.5 ? _WreckAxisRange.x : (part < 1.5 ? _WreckCuts.x : _WreckCuts.y);
-    float partEnd = part < 0.5 ? _WreckCuts.x : (part < 1.5 && _WreckCuts.z > 2.5 ? _WreckCuts.y : _WreckAxisRange.y);
-    float partMiddle = (partStart + partEnd) * 0.5;
+    float2 partRange = GetPartRange(part);
+    float partMiddle = (partRange.x + partRange.y) * 0.5;
     float3 pivot = _WreckCenter.xyz + axis * partMiddle;
 
     // Parts nose down/up away from the break (pitch) and roll a little around the ship axis.
     float3 up = float3(0.0, 1.0, 0.0);
     float3 pitchAxis = normalize(cross(axis, up) + float3(0.0001, 0.0, 0.0));
-    // In a three-part wreck the middle part stays and drops; the end parts pull away from it.
-    bool isMiddlePart = _WreckCuts.z > 2.5 && part > 0.5 && part < 1.5;
-    float awayFromMiddle = isMiddlePart ? 0.0 : sign(partMiddle - (_WreckAxisRange.x + _WreckAxisRange.y) * 0.5);
+    // Parts pull away from the ship's middle, the outer ones fastest; parts near the middle stay and drop.
+    float halfLength = max((_WreckAxisRange.y - _WreckAxisRange.x) * 0.5, 0.001);
+    float awayFromMiddle = clamp((partMiddle - (_WreckAxisRange.x + _WreckAxisRange.y) * 0.5) / (halfLength * 0.5), -1.0, 1.0);
+    bool isMiddlePart = abs(awayFromMiddle) < 0.35;
     float sinkScale = isMiddlePart ? 1.8 : lerp(0.7, 1.3, random);
-    float pitchSign = isMiddlePart ? (random < 0.5 ? -1.0 : 1.0) : awayFromMiddle;
+    float pitchSign = isMiddlePart ? (random < 0.5 ? -1.0 : 1.0) : sign(awayFromMiddle);
     float pitch = radians(_WreckTiltSpeed) * age * lerp(0.5, 1.0, random) * pitchSign;
     float roll = radians(_WreckTiltSpeed) * age * (random - 0.5);
 
@@ -144,7 +152,8 @@ half GetWreckHeat()
 half GetTornEdge(float3 restPositionOS)
 {
     float axisPosition = GetAxisPosition(restPositionOS);
-    float distanceToCut = min(abs(axisPosition - _WreckCuts.x), abs(axisPosition - _WreckCuts.y));
+    float4 distances = abs(axisPosition.xxxx - _WreckCuts);
+    float distanceToCut = min(min(distances.x, distances.y), min(distances.z, distances.w));
     return saturate(1.0 - distanceToCut / max(_WreckTornEdgeWidth, 0.001));
 }
 

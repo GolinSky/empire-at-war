@@ -8,51 +8,120 @@ using UnityEngine.Rendering;
 namespace EmpireAtWar.Editor.Rendering
 {
     /// <summary>
-    /// Builds the wreck prefab of a ship view prefab for the EmpireAtWar/Ship Wreck shader.
+    /// Builds the wreck prefab of a unit view prefab (ship, station, platform, facility) for the EmpireAtWar/Ship Wreck shader.
     /// Every Ship Lit renderer is copied with its original mesh; only the materials are Ship Wreck
     /// copies (same textures and colors). The shader cuts the mesh into parts at runtime. Safe to re-run.
     /// </summary>
     public static class ShipWreckBuilder
     {
-        private const string MENU_PATH = "Tools/Rendering/Build Ship Wreck From Selected View";
+        private const string BUILD_MENU_PATH = "Tools/Rendering/Build Wreck From Selected View";
+        private const string SYNC_MENU_PATH = "Tools/Rendering/Sync Wreck Materials";
         private const string SHIP_LIT_SHADER_NAME = "EmpireAtWar/Ship Lit";
         private const string SHIP_WRECK_SHADER_PATH = "Assets/Art/Shaders/Units/ShipWreck.shader";
-        private const string VIEW_SUFFIX = "ShipView";
+        // Ship views drop "ShipView" (VenatorShipView -> Venator); other unit views drop "View".
+        private const string SHIP_VIEW_SUFFIX = "ShipView";
+        private const string VIEW_SUFFIX = "View";
+        private const string VIEW_FOLDER = "Assets/Prefabs/Models";
         private const string MATERIAL_FOLDER = "Assets/Art/Materials/Wrecks";
-        private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Wrecks";
+        public const string PREFAB_FOLDER = "Assets/Prefabs/Models/Wrecks";
 
-        [MenuItem(MENU_PATH)]
+        [MenuItem(BUILD_MENU_PATH)]
         private static void BuildSelected()
         {
             string path = AssetDatabase.GetAssetPath(Selection.activeObject);
             Debug.Log($"[ShipWreck] Built {AssetDatabase.GetAssetPath(Build(path))}");
         }
 
-        [MenuItem(MENU_PATH, true)]
+        [MenuItem(BUILD_MENU_PATH, true)]
         private static bool CanBuildSelected()
         {
             return Selection.activeObject is GameObject &&
                    AssetDatabase.GetAssetPath(Selection.activeObject).EndsWith(VIEW_SUFFIX + ".prefab");
         }
 
+        /// <summary>
+        /// Copies every source Ship Lit material onto its wreck material again (textures, colors, metallic,
+        /// smoothness, ...). Run after editing a unit's materials; prefabs keep their material references.
+        /// </summary>
+        [MenuItem(SYNC_MENU_PATH)]
+        public static void SyncAllMaterials()
+        {
+            Shader wreckShader = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_WRECK_SHADER_PATH);
+            List<string> viewPaths = FindWreckedViewPaths();
+            foreach (string viewPath in viewPaths)
+            {
+                GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
+                string materialFolder = $"{MATERIAL_FOLDER}/{GetUnitName(view)}";
+                foreach (MeshRenderer source in GetSourceRenderers(view))
+                {
+                    CreateWreckMaterials(source.sharedMaterials, wreckShader, materialFolder);
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[ShipWreck] Synced wreck materials of {viewPaths.Count} units.");
+        }
+
+        /// <summary>Unit view prefabs that have a wreck prefab.</summary>
+        public static List<string> FindWreckedViewPaths()
+        {
+            List<string> paths = new List<string>();
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { VIEW_FOLDER }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (path.StartsWith(PREFAB_FOLDER) || !path.EndsWith(VIEW_SUFFIX + ".prefab")) continue;
+
+                GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (AssetDatabase.LoadAssetAtPath<UnitWreckView>(GetWreckPrefabPath(view)) != null)
+                {
+                    paths.Add(path);
+                }
+            }
+
+            return paths;
+        }
+
+        public static string GetWreckPrefabPath(GameObject view)
+        {
+            return $"{PREFAB_FOLDER}/{GetUnitName(view)}WreckView.prefab";
+        }
+
+        /// <summary>The renderers a wreck copies, in the order its prefab lists them.</summary>
+        public static List<MeshRenderer> GetSourceRenderers(GameObject view)
+        {
+            List<MeshRenderer> renderers = new List<MeshRenderer>();
+            foreach (MeshRenderer meshRenderer in view.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                if (UsesOnlyShipLit(meshRenderer)) renderers.Add(meshRenderer);
+            }
+
+            return renderers;
+        }
+
+        private static string GetUnitName(GameObject view)
+        {
+            string suffix = view.name.EndsWith(SHIP_VIEW_SUFFIX) ? SHIP_VIEW_SUFFIX : VIEW_SUFFIX;
+            return view.name.Substring(0, view.name.Length - suffix.Length);
+        }
+
         public static UnitWreckView Build(string viewPrefabPath)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPrefabPath);
-            string shipName = view.name.Replace(VIEW_SUFFIX, string.Empty);
+            string shipName = GetUnitName(view);
             Shader wreckShader = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_WRECK_SHADER_PATH);
             string materialFolder = EnsureFolder($"{MATERIAL_FOLDER}/{shipName}");
             EnsureFolder(PREFAB_FOLDER);
 
             GameObject root = new GameObject(shipName + "WreckView");
+            // The spawn sets position and rotation only, so the view's own root scale must be kept here.
+            root.transform.localScale = view.transform.localScale;
             try
             {
                 List<MeshRenderer> renderers = new List<MeshRenderer>();
                 List<MeshFilter> filters = new List<MeshFilter>();
                 Matrix4x4 viewToLocal = view.transform.worldToLocalMatrix;
-                foreach (MeshRenderer source in view.GetComponentsInChildren<MeshRenderer>(true))
+                foreach (MeshRenderer source in GetSourceRenderers(view))
                 {
-                    if (!UsesOnlyShipLit(source)) continue;
-
                     GameObject part = new GameObject(source.name);
                     part.transform.SetParent(root.transform, false);
                     Matrix4x4 local = viewToLocal * source.transform.localToWorldMatrix;

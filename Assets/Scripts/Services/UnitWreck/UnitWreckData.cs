@@ -10,14 +10,15 @@ namespace EmpireAtWar.Services.UnitWreck
     [CreateAssetMenu(fileName = "UnitWreckData", menuName = "Data/UnitWreckData")]
     public sealed class UnitWreckData : ScriptableObject
     {
-        [Tooltip("Copy of the ship view on the Ship Wreck shader. Build with Tools/Rendering/Build Ship Wreck From Selected View.")]
+        [Tooltip("Copy of the unit view on the Ship Wreck shader. Build with Tools/Rendering/Build Wreck From Selected View.")]
         [field: SerializeField] public UnitWreckView Prefab { get; private set; }
         [Tooltip("Wrecks of this type alive at once; spawning another force-recycles the oldest.")]
         [field: SerializeField, Min(1)] public int MaxActive { get; private set; } = 32;
 
         [Header("Cut")]
-        [Tooltip("Chance the ship breaks into 3 parts instead of 2.")]
-        [field: SerializeField, Range(0f, 1f)] public float ThreePartChance { get; private set; } = 0.5f;
+        [Tooltip("Fewest parts the unit breaks into (picked at random between min and max, both included).")]
+        [field: SerializeField, Range(WreckCutPlan.MIN_PARTS, WreckCutPlan.MAX_PARTS)] public int MinParts { get; private set; } = 2;
+        [field: SerializeField, Range(WreckCutPlan.MIN_PARTS, WreckCutPlan.MAX_PARTS)] public int MaxParts { get; private set; } = 3;
         [Tooltip("Share of the bigger part at each cut: 0.5 = in half, 0.7 = 70/30.")]
         [field: SerializeField, Range(0.5f, 0.95f)] public float MinCutRatio { get; private set; } = 0.5f;
         [field: SerializeField, Range(0.5f, 0.95f)] public float MaxCutRatio { get; private set; } = 0.7f;

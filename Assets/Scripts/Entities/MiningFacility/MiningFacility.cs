@@ -5,9 +5,10 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Layer;
-using EmpireAtWar.Services.UnitDeathAnimation;
+using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 using Zenject;
 
@@ -21,8 +22,9 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
-        private IUnitDeathAnimationData _deathAnimationData;
-        private IUnitDeathAnimationService _deathAnimationService;
+        private IUnitWreckService _wreckService;
+        private GameObjectContext _context;
+        private PlayerId _owner;
         private ILayerService _layerService;
         private IFactionResearchModelObserver _research;
 
@@ -40,8 +42,9 @@ namespace EmpireAtWar.Entities.MiningFacility
             IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
-            IUnitDeathAnimationData deathAnimationData,
-            IUnitDeathAnimationService deathAnimationService,
+            IUnitWreckService wreckService,
+            GameObjectContext context,
+            PlayerId owner,
             ILayerService layerService,
             IFactionResearchModelObserver research)
         {
@@ -50,8 +53,9 @@ namespace EmpireAtWar.Entities.MiningFacility
             _radarComponent = radarComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
-            _deathAnimationData = deathAnimationData;
-            _deathAnimationService = deathAnimationService;
+            _wreckService = wreckService;
+            _context = context;
+            _owner = owner;
             _layerService = layerService;
             _research = research;
         }
@@ -87,7 +91,6 @@ namespace EmpireAtWar.Entities.MiningFacility
             if (playDeathEffects)
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
-                _deathAnimationService.Play(transform, _deathAnimationData);
             }
 
             _research.OnResearchCompleted -= HandleResearchCompleted;
@@ -95,6 +98,15 @@ namespace EmpireAtWar.Entities.MiningFacility
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
+                EntityComponentData componentData = RootModel.ComponentData;
+                Instantiate(componentData.DeathExplosionVfx, transform.position, Quaternion.identity);
+                // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
+                if (RootModel.Wreck != null)
+                {
+                    _wreckService.Spawn(RootModel.Wreck, transform, _owner, componentData.DestroyDelay);
+                }
+
+                Destroy(_context.gameObject, componentData.DestroyDelay);
             }
         }
 

@@ -3,8 +3,9 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.UnitDeathAnimation;
+using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
@@ -20,8 +21,9 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
-        private IUnitDeathAnimationData _deathAnimationData;
-        private IUnitDeathAnimationService _deathAnimationService;
+        private IUnitWreckService _wreckService;
+        private GameObjectContext _context;
+        private FactionType _factionType;
 
         [Inject] private SpaceStationData RootModel { get; }
 
@@ -35,8 +37,9 @@ namespace EmpireAtWar.Entities.SpaceStation
             IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
-            IUnitDeathAnimationData deathAnimationData,
-            IUnitDeathAnimationService deathAnimationService,
+            IUnitWreckService wreckService,
+            GameObjectContext context,
+            FactionType factionType,
             ILocalPlayer localPlayer)
         {
             _fogOfWarSystem = fogOfWarSystem;
@@ -46,8 +49,9 @@ namespace EmpireAtWar.Entities.SpaceStation
             _radarComponent = radarComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
-            _deathAnimationData = deathAnimationData;
-            _deathAnimationService = deathAnimationService;
+            _wreckService = wreckService;
+            _context = context;
+            _factionType = factionType;
         }
 
         public IModel GetModel()
@@ -85,7 +89,15 @@ namespace EmpireAtWar.Entities.SpaceStation
             }
             if (playDeathAnimation)
             {
-                _deathAnimationService.Play(transform, _deathAnimationData);
+                EntityComponentData componentData = RootModel.ComponentData;
+                Instantiate(componentData.DeathExplosionVfx, transform.position, Quaternion.identity);
+                // The explosion hides the swap: the wreck appears as the station entity is destroyed.
+                if (RootModel.TryGetWreck(_factionType, out UnitWreckData wreck))
+                {
+                    _wreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
+                }
+
+                Destroy(_context.gameObject, componentData.DestroyDelay);
             }
         }
     }
