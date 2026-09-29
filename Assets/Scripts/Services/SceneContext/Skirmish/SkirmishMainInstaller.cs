@@ -1,4 +1,5 @@
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Entities.Fps;
 using EmpireAtWar.SceneContext;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Player;
@@ -79,6 +80,8 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
         Container.BindInterfacesExt<UiCancelRouter>();
+        Container.Bind<FpsModel>().AsSingle();
+        Container.BindInterfacesNonLazyExt<FpsUiController>();
 
         Container.BindInterfacesExt<EntityLocator>();
         Container.BindInterfacesExt<SquadronLauncher>();

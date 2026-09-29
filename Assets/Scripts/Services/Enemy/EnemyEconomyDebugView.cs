@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.Enemy
         private void OnGUI()
         {
             Rect panel = new Rect(
-                Screen.width - PANEL_WIDTH - PANEL_MARGIN,
+                (Screen.width - PANEL_WIDTH) * 0.5f,
                 PANEL_MARGIN,
                 PANEL_WIDTH,
                 PANEL_HEIGHT);
