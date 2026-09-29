@@ -48,6 +48,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public event Action<Vector3> DestinationChanged;
         public event Action<Vector3> LookingAt;
         public event Action Stopped;
+        public event Action HyperSpaceCompleted;
 
         public Vector3 NavigationPosition => transform.position;
         public float NavigationHeight => Model.Height;
@@ -56,7 +57,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public Vector3 CurrentPosition => transform.position;
         public bool IsMoving => Model.IsMoving;
-        public float HyperSpaceDuration => Model.HyperSpaceDuration;
 
         [Inject]
         private void Construct(ShipMoveModel model,
@@ -205,6 +205,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void FinishHyperSpaceJump()
         {
+            HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
             if (queued.HasValue) Plan(queued.Value.ToUnity());
             else
