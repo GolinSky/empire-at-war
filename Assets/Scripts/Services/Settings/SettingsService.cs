@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Settings
     public class SettingsService : Service, ISettingsService, IInitializable
     {
         private const string QUALITY_PRESET_KEY = "QualityPreset";
+        private const string INPUT_BINDINGS_KEY = "InputBindingOverrides";
 
         public void Initialize()
         {
@@ -41,6 +42,17 @@ namespace EmpireAtWar.Services.Settings
         public int GetCurrentQualityPresetIndex()
         {
             return QualitySettings.GetQualityLevel();
+        }
+
+        public string LoadInputBindingOverrides()
+        {
+            return PlayerPrefs.GetString(INPUT_BINDINGS_KEY, string.Empty);
+        }
+
+        public void SaveInputBindingOverrides(string overridesJson)
+        {
+            PlayerPrefs.SetString(INPUT_BINDINGS_KEY, overridesJson);
+            PlayerPrefs.Save();
         }
     }
 }

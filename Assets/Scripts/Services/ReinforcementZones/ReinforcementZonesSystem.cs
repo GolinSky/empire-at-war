@@ -13,7 +13,7 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using ViewComponents;
@@ -61,7 +61,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IEntityLocator _entityLocator;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
-        private IInputService _inputService;
+        private IPointerInput _pointer;
         private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IShipNavigationService shipNavigationService,
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
-            IInputService inputService,
+            IPointerInput pointer,
             ReinforcementZoneView[] zoneViews,
             IPlayerRoster roster,
             ILocalPlayer localPlayer)
@@ -100,7 +100,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _shipNavigationService = shipNavigationService;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
-            _inputService = inputService;
+            _pointer = pointer;
             _zoneViews = zoneViews;
             _roster = roster;
             _localPlayer = localPlayer;
@@ -146,8 +146,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
                 // The circle stays visible; labels and minimap markers require current vision.
                 bool isRevealed = !_fogOfWarSystem.IsHidden(zone.Center, MINIMUM_ZONE_VISIBILITY);
-                bool isHovered = isRevealed && _inputService.SupportsHover &&
-                    zone.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, zone.Center));
+                bool isHovered = isRevealed &&
+                    zone.Contains(_cameraService.GetWorldPoint(_pointer.Position, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
             }
         }

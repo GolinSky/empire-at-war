@@ -14,7 +14,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
             _targeting = new UnitActionTargetingModel();
             _orders = new FakeOrders();
             _camera = new FakeCamera();
-            _handler = new PlayerOrderInputHandler(_input, _selection, _query,
+            _handler = new PlayerOrderInputHandler(_input, _input, _selection, _query,
                 _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel(),
                 new HardPointOverlayModel(),
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
@@ -88,7 +88,7 @@ namespace EmpireAtWar.Tests.Editor
         public void AltWaypoints_AreIssuedOnModifierRelease()
         {
             _query.ReturnEnemy = false;
-            _input.IsWaypointModifierPressed = true;
+            _input.IsQueueWaypointHeld = true;
             _input.RightClick(Vector2.zero);
             _input.RightClick(new Vector2(2f, 3f));
             Assert.That(_targeting.Waypoints.Count, Is.EqualTo(2));
@@ -109,33 +109,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.Attack));
         }
 
-        private sealed class FakeInput : IInputService
+        private sealed class FakeInput : IPointerGestures, IUnitOrderInput
         {
-            public event Action<Vector2> OnSwipe;
-            public event Action<Vector2> OnCameraPan;
-            public event Action OnLeftMousePressed;
-            public event Action<Vector2> OnPrimaryDragStarted;
-            public event Action<Vector2> OnPrimaryDragChanged;
-            public event Action<Vector2> OnPrimaryDragEnded;
-            public event Action OnEscapePressed;
-            public event Action OnWaypointModifierReleased;
-            public event Action OnSelectAllUnitsPressed;
-            public event Action OnSelectVisibleUnitsPressed;
-            public event Action<bool> OnBlocked;
-            public event Action<InputType, TouchPhase, Vector2> OnInput;
-            public event Action<Vector2> OnEndDrag;
-            public event Action<float> OnZoom;
-            public string Id => nameof(FakeInput);
-            public TouchPhase CurrentTouchPhase => TouchPhase.Ended;
-            public Vector2 TouchPosition => default;
-            public bool SupportsHover => true;
-            public bool IsWaypointModifierPressed { get; set; }
-            public Vector2 CameraMove => default;
-            public int TapCount => 1;
-            public void RightClick(Vector2 point) =>
-                OnInput?.Invoke(InputType.ShipInput, TouchPhase.Ended, point);
+            public event Action<Vector2> WorldPressed { add { } remove { } }
+            public event Action<Vector2> WorldClicked { add { } remove { } }
+            public event Action<Vector2> WorldCommanded;
+            public event Action<Vector2> DragStarted { add { } remove { } }
+            public event Action<Vector2> DragChanged { add { } remove { } }
+            public event Action<Vector2> DragEnded { add { } remove { } }
+            public event Action QueueWaypointReleased;
+            public bool IsQueueWaypointHeld { get; set; }
+            public void RightClick(Vector2 point) => WorldCommanded?.Invoke(point);
             public void ReleaseAlt()
-            { IsWaypointModifierPressed = false; OnWaypointModifierReleased?.Invoke(); }
+            { IsQueueWaypointHeld = false; QueueWaypointReleased?.Invoke(); }
         }
 
         private sealed class FakeSelection : ISelectionService, ISelectionContext

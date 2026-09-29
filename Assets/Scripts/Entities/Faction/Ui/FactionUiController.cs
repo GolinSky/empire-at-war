@@ -10,10 +10,9 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.Factions
 {
-    public class FactionUiController : IFactionPresenter, IInitializable,
+    public class FactionUiController : UiController, IFactionPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute
     {
-        private readonly IUiService _uiService;
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
@@ -25,14 +24,14 @@ namespace EmpireAtWar.Presenters.Factions
 
         public FactionUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IFactionService factionService,
             IPlayerFactionModelObserver model,
             IFactionResearchModelObserver research,
             FactionsData factionsData,
             IUnitRequestFactory unitRequestFactory,
-            ISkirmishRouteNavigation routeNavigation)
+            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _factionService = factionService;
             _model = model;
             _research = research;
@@ -69,7 +68,7 @@ namespace EmpireAtWar.Presenters.Factions
         {
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(UiType.Faction, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.Faction, parentTransform);
                 _ui = ui as IFactionUi
                     ?? throw new InvalidOperationException(
                         "The faction prefab does not implement IFactionUi.");

@@ -9,10 +9,9 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.Reinforcement
 {
-    public class ReinforcementUiController : IReinforcementPresenter,
+    public class ReinforcementUiController : UiController, IReinforcementPresenter,
         IInitializable, ILateDisposable, ISkirmishUiRoute
     {
-        private readonly IUiService _uiService;
         private readonly IReinforcementService _reinforcementService;
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
@@ -22,12 +21,12 @@ namespace EmpireAtWar.Presenters.Reinforcement
 
         public ReinforcementUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IReinforcementService reinforcementService,
             ReinforcementModel model,
             ReinforcementData data,
-            ISkirmishRouteNavigation routeNavigation)
+            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _reinforcementService = reinforcementService;
             _model = model;
             _data = data;
@@ -79,7 +78,7 @@ namespace EmpireAtWar.Presenters.Reinforcement
         {
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(
+                BaseUi ui = UiService.CreateUi(
                     UiType.Reinforcement,
                     parentTransform);
                 _ui = ui as IReinforcementUi

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace EmpireAtWar.Services.InputService
+namespace EmpireAtWar.Services.Input
 {
     public sealed class UiHitTest : IUiHitTest
     {

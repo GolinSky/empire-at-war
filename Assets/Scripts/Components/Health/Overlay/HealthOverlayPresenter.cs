@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using UnityEngine;
 using Zenject;
 
@@ -15,7 +15,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
     {
         private readonly IHealthOverlayView _view;
         private readonly ISelectionQuery _selectionQuery;
-        private readonly IInputService _inputService;
+        private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
 
         private IEntity _target;
@@ -24,12 +24,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         public HealthOverlayPresenter(
             IHealthOverlayView view,
             ISelectionQuery selectionQuery,
-            IInputService inputService,
+            IPointerInput pointer,
             ICameraService cameraService)
         {
             _view = view;
             _selectionQuery = selectionQuery;
-            _inputService = inputService;
+            _pointer = pointer;
             _cameraService = cameraService;
         }
 
@@ -83,8 +83,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
         private IEntity GetHoveredEntity()
         {
-            if (!_inputService.SupportsHover ||
-                !_selectionQuery.TryFindAt(_inputService.TouchPosition, out SelectionEntry selection))
+            if (!_selectionQuery.TryFindAt(_pointer.Position, out SelectionEntry selection))
             {
                 return null;
             }

@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using UnityEngine;
 using Zenject;
 
@@ -12,34 +12,34 @@ namespace EmpireAtWar.Components.Selection.Marquee
 
     public sealed class MarqueeSelectionPresenter : IMarqueeSelectionPresenter, IInitializable, ILateDisposable
     {
-        private readonly IInputService _inputService;
+        private readonly IPointerGestures _gestures;
         private readonly MarqueeSelectionModel _model;
         private readonly IMarqueeSelectionView _view;
 
         public event Action<MarqueeRectangle> Completed;
 
         public MarqueeSelectionPresenter(
-            IInputService inputService,
+            IPointerGestures gestures,
             MarqueeSelectionModel model,
             IMarqueeSelectionView view)
         {
-            _inputService = inputService;
+            _gestures = gestures;
             _model = model;
             _view = view;
         }
 
         public void Initialize()
         {
-            _inputService.OnPrimaryDragStarted += HandleDragStarted;
-            _inputService.OnPrimaryDragChanged += HandleDragChanged;
-            _inputService.OnPrimaryDragEnded += HandleDragEnded;
+            _gestures.DragStarted += HandleDragStarted;
+            _gestures.DragChanged += HandleDragChanged;
+            _gestures.DragEnded += HandleDragEnded;
         }
 
         public void LateDispose()
         {
-            _inputService.OnPrimaryDragStarted -= HandleDragStarted;
-            _inputService.OnPrimaryDragChanged -= HandleDragChanged;
-            _inputService.OnPrimaryDragEnded -= HandleDragEnded;
+            _gestures.DragStarted -= HandleDragStarted;
+            _gestures.DragChanged -= HandleDragChanged;
+            _gestures.DragEnded -= HandleDragEnded;
             _model.Cancel();
             _view.Hide();
         }

@@ -4,26 +4,27 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
-using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
 using Random = System.Random;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
-    public class CinematicCameraPresenter : ICinematicCameraController, ILateTickable, ILateDisposable
+    public class CinematicCameraPresenter : UiController, ICinematicCameraController, ILateTickable,
+        ILateDisposable
     {
         private const long NO_TARGET = -1;
 
         private readonly CinematicCameraModel _model;
         private readonly CinematicCameraSettings _settings;
         private readonly ICameraService _cameraService;
-        private readonly InputServiceImpl _inputService;
-        private readonly IUiService _uiService;
+        private readonly IInputLock _inputLock;
+        private readonly IPointerInput _pointer;
         private readonly IEntityLocator _entityLocator;
         private readonly FogOfWarSystem _fogOfWarSystem;
         private readonly ISkirmishSessionModelObserver _sessionModel;
@@ -48,24 +49,27 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private bool _isCutPending;
         private bool _isExitRequested;
         private int _enterFrame;
+        private System.IDisposable _inputLockHandle;
 
         public CinematicCameraPresenter(
             CinematicCameraModel model,
             CameraData cameraData,
             ICameraService cameraService,
-            InputServiceImpl inputService,
+            IInputLock inputLock,
+            IPointerInput pointer,
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IEntityLocator entityLocator,
             FogOfWarSystem fogOfWarSystem,
             ISkirmishSessionModelObserver sessionModel,
             IPlayerRoster roster,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _model = model;
             _settings = cameraData.Cinematic;
             _cameraService = cameraService;
-            _inputService = inputService;
-            _uiService = uiService;
+            _inputLock = inputLock;
+            _pointer = pointer;
             _entityLocator = entityLocator;
             _fogOfWarSystem = fogOfWarSystem;
             _sessionModel = sessionModel;
@@ -85,10 +89,10 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
 
             _savedPosition = _cameraService.CameraPosition;
             _savedRotation = _cameraService.CameraTransform.rotation;
-            _inputService.Block(true);
-            _uiService.SetHudVisible(false);
-            _inputService.OnEscapePressed += RequestExit;
-            _inputService.OnEndDrag += OnPointerReleased;
+            _inputLockHandle = _inputLock.Acquire();
+            UiService.SetHudVisible(false);
+            Focus();
+            _pointer.PrimaryReleased += OnPointerReleased;
             _model.SetActive(true);
             _enterFrame = Time.frameCount;
 
@@ -254,6 +258,12 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             }
         }
 
+        protected override bool HandleCancel()
+        {
+            RequestExit();
+            return true;
+        }
+
         private void RequestExit()
         {
             _isExitRequested = true;
@@ -265,15 +275,15 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _isExitRequested = false;
             _targetId = NO_TARGET;
             _cameraService.SetPose(_savedPosition, _savedRotation);
-            _uiService.SetHudVisible(true);
-            _inputService.Block(false);
+            UiService.SetHudVisible(true);
+            _inputLockHandle.Dispose();
             _model.SetActive(false);
         }
 
         private void Unsubscribe()
         {
-            _inputService.OnEscapePressed -= RequestExit;
-            _inputService.OnEndDrag -= OnPointerReleased;
+            Unfocus();
+            _pointer.PrimaryReleased -= OnPointerReleased;
         }
     }
 }

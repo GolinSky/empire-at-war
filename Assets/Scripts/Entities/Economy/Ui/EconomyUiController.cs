@@ -8,10 +8,9 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.Economy
 {
-    public class EconomyUiController : IInitializable, ILateDisposable,
+    public class EconomyUiController : UiController, IInitializable, ILateDisposable,
         ISkirmishUiRoute
     {
-        private readonly IUiService _uiService;
         private readonly IEconomyModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
 
@@ -19,10 +18,10 @@ namespace EmpireAtWar.Presenters.Economy
 
         public EconomyUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IEconomyModelObserver model,
-            ISkirmishRouteNavigation routeNavigation)
+            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _model = model;
             _routeNavigation = routeNavigation;
         }
@@ -50,7 +49,7 @@ namespace EmpireAtWar.Presenters.Economy
         {
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(
+                BaseUi ui = UiService.CreateUi(
                     UiType.Economy,
                     parentTransform);
                 _ui = ui as IEconomyUi

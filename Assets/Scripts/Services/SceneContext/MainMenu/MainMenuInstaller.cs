@@ -22,6 +22,7 @@ namespace EmpireAtWar
                 .BindFactory<UiType, Transform, BaseUi, UiFactory>()
                 .FromSubContainerResolve()
                 .ByNewGameObjectInstaller<UiInstaller>();
+            Container.BindInterfacesAndSelfTo<UiCancelRouter>().AsSingle();
 
             // Bind Main Menu MVP Components
             Container.BindInterfacesAndSelfTo<MainMenuModel>().AsSingle();

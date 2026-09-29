@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Camera
         public void CameraMove_UsesArrowKeysWasdAndQe()
         {
             InputAction action = _inputActions.FindAction(
-                "TouchMap/CameraMove",
+                "Camera/Move",
                 true);
 
             AssertBindings(
@@ -52,32 +52,55 @@ namespace EmpireAtWar.Tests.Camera
         [Test]
         public void Zoom_UsesMouseWheelAndLetterKeys()
         {
-            InputAction action = _inputActions.FindAction(
-                "TouchMap/Zoom",
-                true);
-            InputAction scroll = _inputActions.FindAction(
-                "TouchMap/Scroll",
-                true);
-
             AssertBindings(
-                action,
+                _inputActions.FindAction("Camera/Zoom", true),
                 "<Keyboard>/r",
                 "<Keyboard>/f");
-            AssertBindings(scroll, "<Mouse>/scroll/y");
+            AssertBindings(
+                _inputActions.FindAction("Camera/ZoomScroll", true),
+                "<Mouse>/scroll/y");
         }
 
         [Test]
         public void CameraDrag_UsesMiddleMouseWithoutRotationActions()
         {
             AssertBindings(
-                _inputActions.FindAction("TouchMap/CameraDrag", true),
+                _inputActions.FindAction("Camera/DragPan", true),
                 "<Mouse>/middleButton");
             Assert.That(
-                _inputActions.FindAction("TouchMap/CameraRotate", false),
+                _inputActions.FindAction("Camera/Rotate", false),
                 Is.Null);
             Assert.That(
-                _inputActions.FindAction("TouchMap/CameraReset", false),
+                _inputActions.FindAction("Camera/Reset", false),
                 Is.Null);
+        }
+
+        [Test]
+        public void BattleShortcuts_UseModifierComposites()
+        {
+            AssertBindings(
+                _inputActions.FindAction("Battle/SelectVisible", true),
+                "<Keyboard>/ctrl",
+                "<Keyboard>/a");
+            AssertBindings(
+                _inputActions.FindAction("Battle/SelectAll", true),
+                "<Keyboard>/ctrl",
+                "<Keyboard>/shift",
+                "<Keyboard>/a");
+            AssertBindings(
+                _inputActions.FindAction("Battle/QueueWaypoint", true),
+                "<Keyboard>/alt");
+            AssertBindings(
+                _inputActions.FindAction("Ui/Cancel", true),
+                "<Keyboard>/escape");
+        }
+
+        [Test]
+        public void Asset_HasOnlyKeyboardAndMouseScheme()
+        {
+            Assert.That(
+                _inputActions.controlSchemes.Select(scheme => scheme.name),
+                Is.EquivalentTo(new[] { "Keyboard&Mouse" }));
         }
 
         private static void AssertBindings(

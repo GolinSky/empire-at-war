@@ -10,9 +10,8 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
-    public class SkirmishRouteController : ISkirmishRoute, ISkirmishRouteNavigation, ILateDisposable
+    public class SkirmishRouteController : UiController, ISkirmishRoute, ISkirmishRouteNavigation, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly TeamColorPalette _teamColorPalette;
         private readonly IGameCommand _gameCommand;
         private readonly SkirmishModel _model;
@@ -21,12 +20,12 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public SkirmishRouteController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IGameCommand gameCommand,
             SkirmishModel model,
-            TeamColorPalette teamColorPalette)
+            TeamColorPalette teamColorPalette) : base(uiService, cancelRouter)
         {
             _teamColorPalette = teamColorPalette;
-            _uiService = uiService;
             _gameCommand = gameCommand;
             _model = model;
         }
@@ -35,7 +34,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(UiType.Skirmish);
+                BaseUi ui = UiService.CreateUi(UiType.Skirmish);
                 _ui = ui as ISkirmishUi
                     ?? throw new InvalidOperationException(
                         "The skirmish setup prefab does not implement ISkirmishUi.");
@@ -46,11 +45,20 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             }
 
             _ui.Show();
+            Focus();
         }
 
         public void Close()
         {
             _ui.Hide();
+            Unfocus();
+        }
+
+        // Escape closes the open menu screen and returns to the main menu.
+        protected override bool HandleCancel()
+        {
+            Close();
+            return true;
         }
 
         public void StartGame()

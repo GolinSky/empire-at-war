@@ -10,7 +10,7 @@ using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
@@ -21,7 +21,8 @@ namespace EmpireAtWar.Services.UnitOrders
     public sealed class PlayerOrderInputHandler : IInitializable, ILateDisposable,
         IPlayerOrderInputHandler
     {
-        private readonly IInputService _input;
+        private readonly IPointerGestures _gestures;
+        private readonly IUnitOrderInput _orderInput;
         private readonly ILocalPlayer _localPlayer;
         private readonly ISelectionService _selection;
         private readonly ISelectionQuery _query;
@@ -33,7 +34,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly SuperWeaponTargetingModel _superWeapons;
         private readonly IHardPointHoverObserver _hardPointHover;
 
-        public PlayerOrderInputHandler(IInputService input, ISelectionService selection,
+        public PlayerOrderInputHandler(IPointerGestures gestures, IUnitOrderInput orderInput,
+            ISelectionService selection,
             ISelectionQuery query, ICameraService camera, ILayerService layers,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
             IUnitOrderService orders, SuperWeaponTargetingModel superWeapons,
@@ -41,7 +43,8 @@ namespace EmpireAtWar.Services.UnitOrders
             ILocalPlayer localPlayer)
         {
             _localPlayer = localPlayer;
-            _input = input;
+            _gestures = gestures;
+            _orderInput = orderInput;
             _selection = selection;
             _query = query;
             _camera = camera;
@@ -55,14 +58,14 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void Initialize()
         {
-            _input.OnInput += HandleInput;
-            _input.OnWaypointModifierReleased += HandleModifierReleased;
+            _gestures.WorldCommanded += HandleCommand;
+            _orderInput.QueueWaypointReleased += HandleModifierReleased;
         }
 
         public void LateDispose()
         {
-            _input.OnInput -= HandleInput;
-            _input.OnWaypointModifierReleased -= HandleModifierReleased;
+            _gestures.WorldCommanded -= HandleCommand;
+            _orderInput.QueueWaypointReleased -= HandleModifierReleased;
         }
 
         public void FinishWaypoints()
@@ -96,9 +99,8 @@ namespace EmpireAtWar.Services.UnitOrders
             if (_targeting.IsAltPlacement) FinishWaypoints();
         }
 
-        private void HandleInput(InputType type, TouchPhase phase, Vector2 screen)
+        private void HandleCommand(Vector2 screen)
         {
-            if (type != InputType.ShipInput) return;
             // A hardpoint marker wins over the hull or whatever else is under it.
             bool hasHardPoint = _hardPointHover.TryGetHovered(out IEntity hardPointOwner, out int hardPointId);
             SelectionEntry hit = default;
@@ -121,7 +123,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
             List<IEntity> receivers = Snapshot();
             if (receivers.Count == 0) return;
-            if (_targeting.Pending == null && _input.IsWaypointModifierPressed)
+            if (_targeting.Pending == null && _orderInput.IsQueueWaypointHeld)
             {
                 foreach (IEntity receiver in receivers)
                     if (receiver.TryGetFacade(out IWaypointMoveFacade _))

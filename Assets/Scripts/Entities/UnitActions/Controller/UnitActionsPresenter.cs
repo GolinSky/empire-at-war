@@ -6,19 +6,18 @@ using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Ui.Base;
 using Zenject;
 
 namespace EmpireAtWar.Entities.UnitActions.Controller
 {
-    public sealed class UnitActionsPresenter : IInitializable, ILateDisposable,
+    public sealed class UnitActionsPresenter : UiController, IInitializable, ILateDisposable,
         ITickable, IObserver<ISelectionSubject>
     {
         private readonly IUnitActionsViewProvider _coreUi;
         private readonly ISelectionService _selection;
-        private readonly IInputService _input;
         private readonly IShipAbilityTargeting _abilities;
         private readonly UnitActionTargetingModel _targeting;
         private readonly IPlayerOrderInputHandler _inputHandler;
@@ -30,14 +29,14 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private bool _battleEnded;
 
         public UnitActionsPresenter(IUnitActionsViewProvider coreUi,
-            ISelectionService selection, IInputService input,
+            ISelectionService selection,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
             IPlayerOrderInputHandler inputHandler, IUnitOrderService orders,
-            ISkirmishSessionModelObserver session)
+            ISkirmishSessionModelObserver session,
+            IUiService uiService, IUiCancelRouter cancelRouter) : base(uiService, cancelRouter)
         {
             _coreUi = coreUi;
             _selection = selection;
-            _input = input;
             _abilities = abilities;
             _targeting = targeting;
             _inputHandler = inputHandler;
@@ -51,7 +50,6 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             _view.Initialize();
             _view.ActionPressed += HandleAction;
             _selection.AddObserver(this);
-            _input.OnEscapePressed += Cancel;
             _abilities.TargetingChanged += HandleAbilityTargeting;
             _targeting.Changed += RefreshPending;
             RefreshAvailability();
@@ -61,7 +59,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         {
             _view.ActionPressed -= HandleAction;
             _selection.RemoveObserver(this);
-            _input.OnEscapePressed -= Cancel;
+            Unfocus();
             _abilities.TargetingChanged -= HandleAbilityTargeting;
             _targeting.Changed -= RefreshPending;
             _view.Dispose();
@@ -183,7 +181,18 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             if (_abilities.IsWaitingForTarget) _targeting.Cancel();
         }
 
-        private void RefreshPending() => _view.SetPending(_targeting.Pending);
-        private void Cancel() => _targeting.Cancel();
+        // A pending target selection makes this the selected UI, so Escape cancels it first.
+        protected override bool HandleCancel()
+        {
+            _targeting.Cancel();
+            return true;
+        }
+
+        private void RefreshPending()
+        {
+            _view.SetPending(_targeting.Pending);
+            if (_targeting.Pending != null) Focus();
+            else Unfocus();
+        }
     }
 }
