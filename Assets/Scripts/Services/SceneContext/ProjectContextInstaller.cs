@@ -4,6 +4,7 @@ using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.CoroutineService;
 using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Timing;
@@ -47,7 +48,10 @@ namespace EmpireAtWar.SceneContext
                 .BindInterfacesExt<SceneService>()
                 .BindInterfacesExt<SettingsService>()
                 .BindInterfacesExt<AudioService>()
-                .BindInterfacesExt<UniqueIdGenerator>();
+                .BindInterfacesExt<UniqueIdGenerator>()
+                .BindInterfacesExt<InputActionsProvider>()
+                .BindInterfacesExt<InputBindingService>()
+                .BindInterfacesExt<CancelInput>();
         }
     }
 }

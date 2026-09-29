@@ -20,10 +20,9 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.ShipUi
 {
-    public class ShipUiController : IShipUiPresenter, IInitializable,
+    public class ShipUiController : UiController, IShipUiPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute, EmpireAtWar.IObserver<ISelectionSubject>
     {
-        private readonly IUiService _uiService;
         private readonly ISelectionService _selectionService;
         private readonly ShipUiModel _model;
         private readonly ShipAbilityService _abilityService;
@@ -38,13 +37,13 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public ShipUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ISelectionService selectionService,
             ShipUiModel model,
             ISkirmishRouteNavigation routeNavigation,
             ShipAbilityService abilityService,
-            ICameraService cameraService)
+            ICameraService cameraService) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _selectionService = selectionService;
             _model = model;
             _routeNavigation = routeNavigation;
@@ -75,8 +74,8 @@ namespace EmpireAtWar.Controllers.ShipUi
         {
             if (_shipUi == null)
             {
-                _shipUi = (IShipUi)_uiService.CreateUi(UiType.Ship, parentTransform);
-                _shipGroupUi = (IShipGroupUi)_uiService.CreateUi(UiType.ShipGroup, parentTransform);
+                _shipUi = (IShipUi)UiService.CreateUi(UiType.Ship, parentTransform);
+                _shipGroupUi = (IShipGroupUi)UiService.CreateUi(UiType.ShipGroup, parentTransform);
 
                 _shipUi.SetModel(_model);
                 _shipUi.SetPresenter(this);

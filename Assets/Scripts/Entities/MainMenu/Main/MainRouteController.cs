@@ -7,9 +7,8 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
 {
-    public class MainRouteController : IMainRouteNavigation, ILateDisposable
+    public class MainRouteController : UiController, IMainRouteNavigation, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly ISkirmishRoute _skirmishRoute;
         private readonly ISettingsRoute _settingsRoute;
         private readonly MainMenuModel _model;
@@ -18,11 +17,11 @@ namespace EmpireAtWar.Entities.MainMenu.Main
 
         public MainRouteController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ISkirmishRoute skirmishRoute,
             ISettingsRoute settingsRoute,
-            MainMenuModel model)
+            MainMenuModel model) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _skirmishRoute = skirmishRoute;
             _settingsRoute = settingsRoute;
             _model = model;
@@ -30,7 +29,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
 
         public void Open()
         {
-            BaseUi ui = _uiService.CreateUi(UiType.MainMenu);
+            BaseUi ui = UiService.CreateUi(UiType.MainMenu);
             _ui = ui as IMainMenuUi
                 ?? throw new InvalidOperationException("The main menu prefab does not implement IMainMenuUi.");
 

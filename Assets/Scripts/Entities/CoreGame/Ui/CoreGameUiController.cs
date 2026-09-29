@@ -16,11 +16,10 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.Game
 {
-    public class CoreGameUiController : ICoreGamePresenter, ISkirmishRouteNavigation,
+    public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
         IUnitActionsViewProvider, ISuperWeaponsViewProvider,
         IObserver<ISelectionSubject>, IInitializable, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly ISelectionService _selectionService;
         private readonly ISkirmishSessionModelObserver _sessionModel;
         private readonly ISkirmishFlow _skirmishFlow;
@@ -38,13 +37,13 @@ namespace EmpireAtWar.Presenters.Game
 
         public CoreGameUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ISelectionService selectionService,
             ISkirmishSessionModelObserver sessionModel,
             ISkirmishFlow skirmishFlow,
             INotifier<BattleResult> battleVictoryNotifier,
-            ICinematicCameraController cinematicCamera)
+            ICinematicCameraController cinematicCamera) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _selectionService = selectionService;
             _sessionModel = sessionModel;
             _skirmishFlow = skirmishFlow;
@@ -54,13 +53,13 @@ namespace EmpireAtWar.Presenters.Game
 
         public void Initialize()
         {
-            _ui = (ICoreGameUi)_uiService.CreateUi(UiType.CoreGame);
+            _ui = (ICoreGameUi)UiService.CreateUi(UiType.CoreGame);
             _ui.SetModel(_sessionModel);
             _ui.SetPresenter(this);
             _ui.Initialize();
             _endGamePresenter = new EndGamePresenter(
                 _battleVictoryNotifier,
-                _ui.PrepareEndGameView(_uiService.PopupCanvasTransform),
+                _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
                 _skirmishFlow.ExitSkirmish);
             _selectionService.AddObserver(this);
 

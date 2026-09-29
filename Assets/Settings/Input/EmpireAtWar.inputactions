@@ -1,68 +1,83 @@
 {
+    "version": 1,
     "name": "EmpireAtWar",
     "maps": [
         {
-            "name": "TouchMap",
-            "id": "ac4a8204-04fc-4f79-a6dc-090164689d8d",
+            "name": "Pointer",
+            "id": "0c6d1b92-ac02-4270-8558-863602598992",
             "actions": [
                 {
-                    "name": "PrimaryContact",
+                    "name": "Position",
+                    "type": "PassThrough",
+                    "id": "61fbd83a-f942-4535-ae6c-86ec23d347b3",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Primary",
                     "type": "Button",
-                    "id": "3271e749-e7c0-4a02-86da-5f80dcc04a8a",
+                    "id": "3e59fa1d-e692-46cc-8126-8272745c40a1",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "PrimaryPosition",
-                    "type": "PassThrough",
-                    "id": "34317922-b446-4c12-a934-bbc4ae0202ba",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "TouchPhase",
+                    "name": "ClickCount",
                     "type": "Value",
-                    "id": "a846cc5c-2073-4fe4-a6c8-9361e7ac5d35",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "TouchDelta",
-                    "type": "Value",
-                    "id": "90a4dae7-9460-448e-9a05-3a94c8d3043d",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Scroll",
-                    "type": "PassThrough",
-                    "id": "139bdbb5-681e-4dc3-b3ae-57b2a24fe5e9",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TouchCount",
-                    "type": "Value",
-                    "id": "91b6625d-d574-4474-90c6-128c53569c66",
+                    "id": "da632341-7315-40ec-a12c-bcd8c621cbf5",
                     "expectedControlType": "Integer",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "57089e3a-5fb1-4322-815c-687e9dd98b8d",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
-                    "name": "SecondaryPosition",
-                    "type": "PassThrough",
-                    "id": "af90b00b-2773-4ec4-af6c-c0f24500764b",
+                    "name": "",
+                    "id": "4d2e1d4f-056a-428b-a71c-507374a4dee6",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "caf50581-6c1b-42a3-aa2d-7a183939dc5d",
+                    "path": "<Mouse>/clickCount",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ClickCount",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Camera",
+            "id": "0b768b3a-c092-4929-8097-3eaa4588c0ce",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "0074d209-3f22-4982-aaf3-0cd4bc74eb18",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -70,157 +85,188 @@
                 },
                 {
                     "name": "Zoom",
-                    "type": "PassThrough",
-                    "id": "f69c9648-c4ab-4f65-bad1-540f587d811c",
+                    "type": "Value",
+                    "id": "ad291758-8ba0-4f94-8a28-9f4dee22bedf",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CameraDrag",
+                    "name": "ZoomScroll",
+                    "type": "PassThrough",
+                    "id": "1ab25cb8-2c73-4c13-bc6c-1930050bd38b",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DragPan",
                     "type": "Button",
-                    "id": "a4e53197-ecae-4a8c-a5d7-8e88e71e0c6a",
+                    "id": "c390b1f7-c014-4e5f-8932-9821fafbe146",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
-                    "name": "CameraMove",
+                    "name": "DragDelta",
                     "type": "Value",
-                    "id": "d8da86bf-b5bb-44df-aa10-f9b77609f9ef",
+                    "id": "2870f935-a77b-4a9a-9c61-852cad18ebc7",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "24a90077-608d-469a-865c-fe1ba962f17d",
-                    "path": "<Touchscreen>/primaryTouch/press",
+                    "name": "WASD",
+                    "id": "ae45c98b-e4f2-46a4-b33d-70d8bcd38caf",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch",
-                    "action": "PrimaryContact",
-                    "isComposite": false,
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "798f40b7-b636-4a99-b140-ec407fac07ec",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "PrimaryContact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e1dc184f-1d6d-4755-bd33-4898d8df1d6d",
-                    "path": "<Touchscreen>/primaryTouch/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "PrimaryPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4fcea9c7-0300-4b4f-8241-ff8625e1ea7d",
-                    "path": "<Mouse>/position",
+                    "name": "up",
+                    "id": "085da3dc-3a75-4faa-94c9-c6791963b634",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "PrimaryPosition",
+                    "action": "Move",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "2ccd9519-99f5-4784-9b57-53d12a64b4d2",
-                    "path": "<Touchscreen>/primaryTouch/phase",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "TouchPhase",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "25469d18-fa4a-4437-954d-76177ae7f35d",
-                    "path": "<Mouse>/delta",
+                    "name": "down",
+                    "id": "81ca619e-1fce-46a6-bc95-5ebbe8d083d0",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "TouchDelta",
+                    "action": "Move",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "be1b4665-7c8b-45c6-9c6b-ef688587aefa",
-                    "path": "<Touchscreen>/primaryTouch/delta",
-                    "interactions": "",
-                    "processors": "ScaleVector2(x=2,y=2)",
-                    "groups": "Touch",
-                    "action": "TouchDelta",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d9943e47-5eb5-4b3d-8d8e-9a774e19fba3",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "Invert",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Scroll",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c5680e10-94d4-48c4-ac70-d4abb642553a",
-                    "path": "<Mouse>/clickCount",
+                    "name": "left",
+                    "id": "a3f62584-5d7f-41ac-9120-43082e1273ce",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "TouchCount",
+                    "action": "Move",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "ad04c16a-8211-4638-b75c-740da2681ed0",
-                    "path": "<Touchscreen>/primaryTouch/tapCount",
+                    "name": "right",
+                    "id": "b5c56d0f-91dc-4c3b-827b-3c7abbe53b78",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch",
-                    "action": "TouchCount",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "966f2b1d-ee5c-4d9b-9be9-9ba58c0bd8ad",
-                    "path": "<Touchscreen>/touch1/position",
+                    "name": "Arrow Keys",
+                    "id": "3179395c-a0bc-49e7-9f79-5a359d1a26a5",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch",
-                    "action": "SecondaryPosition",
-                    "isComposite": false,
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "1D Axis",
-                    "id": "c6d65865-fbf7-44ee-b186-1bb289042ca2",
+                    "name": "up",
+                    "id": "4e9cc2a9-0bde-43a3-a1de-58de2a083a0b",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "8951a5bb-e73e-46ed-ab4b-285a7b69032a",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "72126630-73ec-441c-b1be-2d93352a3b2e",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "76a18101-90ce-4103-a4a3-c428a3761ef3",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "QE",
+                    "id": "389e8a0c-c7f5-412f-9a9b-4005af3477c3",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "left",
+                    "id": "2eca760c-4a7d-4bc8-81c2-4445eda67f72",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "22d39371-b80e-4b37-9f55-d987731b4046",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "RF",
+                    "id": "89c2454a-20c6-444c-8039-0a6029df3217",
                     "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
@@ -230,19 +276,8 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "positive",
-                    "id": "0be6cc3a-446d-4c16-b334-a570b8d40976",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "negative",
-                    "id": "b38cc561-3e38-4196-a4c4-9ffafeb370b1",
+                    "id": "68b7b4b2-852a-4d6d-844f-00e8ba3e54ff",
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
@@ -252,158 +287,239 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "positive",
+                    "id": "fb26638f-a662-424e-ace8-fa41b16a851b",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
-                    "id": "f35b16ad-9294-4398-ad83-6f49917225ee",
+                    "id": "1917346b-f29e-47a9-9ece-d888f1a0fc46",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ZoomScroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6763e533-987d-45cb-9c20-42fdd418cf0f",
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraDrag",
+                    "action": "DragPan",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Arrow Keys",
-                    "id": "68e95c65-58de-451e-beab-e6c53b3eaf17",
-                    "path": "2DVector",
+                    "name": "",
+                    "id": "e848bf8f-acd6-4bdd-8fff-09dd542779b2",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
+                    "action": "DragDelta",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Battle",
+            "id": "85127c08-bc34-4694-ae37-a116897152cf",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "a2e1bdde-35b9-4196-9b06-a5f7395fe778",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Command",
+                    "type": "Button",
+                    "id": "736ea8f0-8dbc-4cc2-a5b2-28f63fa93ad6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectVisible",
+                    "type": "Button",
+                    "id": "297d8043-3f85-4cc1-aa05-7feac1539221",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectAll",
+                    "type": "Button",
+                    "id": "6d27ccec-9148-4b01-9c12-1afa7778b885",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "QueueWaypoint",
+                    "type": "Button",
+                    "id": "f13b81be-6c25-4b46-bc3c-68859567e9f9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0fefc715-18e2-47a5-8e9d-476b3b124f65",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b312ae1-2cc9-4f95-a905-ad8fe084fe4e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Command",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Ctrl+A",
+                    "id": "9d73c0fc-adf5-4fcf-b539-da5aae782c43",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectVisible",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "up",
-                    "id": "f12963a4-45a0-4dc5-af85-6e371be4cc76",
-                    "path": "<Keyboard>/upArrow",
+                    "name": "modifier",
+                    "id": "205dc3c2-828a-414a-887d-44898318715c",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
+                    "action": "SelectVisible",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "down",
-                    "id": "731d3b05-b1d3-44ac-8bd8-d20b0e70f6c0",
-                    "path": "<Keyboard>/downArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "f17f921c-d9d6-49b8-85a4-79ef04e71dca",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "0415ac2f-d9d5-4bd8-921e-42c64626d78c",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "WASD",
-                    "id": "d2c33e4f-19eb-42d6-bae4-43a15e2892f8",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "d3a8722e-9aad-4ea1-b9df-f9e236aab047",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "66443636-6fb9-46c8-a56c-89d6fd1ce0eb",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "57ed97f1-3b70-4a78-9856-f521ac0cef0e",
+                    "name": "binding",
+                    "id": "0aa98ff1-0866-4de1-9218-5137e1a105a0",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
+                    "action": "SelectVisible",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "right",
-                    "id": "58cf7941-d4c2-4b80-9dcb-23bcb44d38ad",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "QE",
-                    "id": "508eb2af-46ba-49cd-8c36-c1c2a887d359",
-                    "path": "2DVector",
+                    "name": "Ctrl+Shift+A",
+                    "id": "21416c43-ed57-476c-8c0a-1cce463bfc68",
+                    "path": "TwoModifiers",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CameraMove",
+                    "action": "SelectAll",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "right",
-                    "id": "bd5eea4f-b90a-4199-b02a-bb3101fb9f52",
-                    "path": "<Keyboard>/e",
+                    "name": "modifier1",
+                    "id": "10620463-7cb3-40ec-b596-93fd4303d832",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
+                    "action": "SelectAll",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "left",
-                    "id": "de2fb0bc-33a2-4517-b3c0-d29e8799c6a1",
-                    "path": "<Keyboard>/q",
+                    "name": "modifier2",
+                    "id": "6bb709f9-ecec-4922-8b2f-ab420db53074",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "CameraMove",
+                    "action": "SelectAll",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "2fb0cfe0-7690-4de5-91bd-28b95abd97af",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "SelectAll",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5b0b3751-4fb3-4bfe-85d1-9510be052bad",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "QueueWaypoint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Ui",
+            "id": "f899c98e-ea2f-4c1b-9073-76ba14633992",
+            "actions": [
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "fc215811-1729-41de-b7d4-ba0e9c6cc85d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "44e30fbe-54f9-41d6-99b1-7420bef6579b",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
@@ -420,50 +536,6 @@
                 },
                 {
                     "devicePath": "<Mouse>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "Gamepad",
-            "bindingGroup": "Gamepad",
-            "devices": [
-                {
-                    "devicePath": "<Gamepad>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "Touch",
-            "bindingGroup": "Touch",
-            "devices": [
-                {
-                    "devicePath": "<Touchscreen>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "Joystick",
-            "bindingGroup": "Joystick",
-            "devices": [
-                {
-                    "devicePath": "<Joystick>",
-                    "isOptional": false,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "XR",
-            "bindingGroup": "XR",
-            "devices": [
-                {
-                    "devicePath": "<XRController>",
                     "isOptional": false,
                     "isOR": false
                 }

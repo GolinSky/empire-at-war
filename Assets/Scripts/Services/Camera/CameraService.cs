@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using DG.Tweening;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.InputService;
 using UnityEngine;
 using Zenject;
 
@@ -28,13 +26,11 @@ namespace EmpireAtWar.Services.Camera
     public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable
     {
         [SerializeField] private UnityEngine.Camera _camera;
-        [SerializeField] private Ease _moveEase = Ease.OutExpo;
 
         private Plane _plane = new();
         private CameraData _cameraData;
         private IMapModelObserver _mapModel;
-        private IInputService _inputService;
-        private Tween _moveTween;
+        private ICameraInput _cameraInput;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
@@ -52,32 +48,30 @@ namespace EmpireAtWar.Services.Camera
         }
 
         [Inject]
-        public void Constructor(CameraData cameraData, IInputService inputService, IMapModelObserver mapModel)
+        public void Constructor(
+            CameraData cameraData,
+            ICameraInput cameraInput,
+            IMapModelObserver mapModel)
         {
             _cameraData = cameraData;
             _mapModel = mapModel;
-            _inputService = inputService;
+            _cameraInput = cameraInput;
         }
 
         public void Initialize()
         {
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
-            _inputService.OnLeftMousePressed += StopMovement;
-            _inputService.OnSwipe += OnSwipe;
-            _inputService.OnZoom += ZoomCamera;
-            _inputService.OnCameraPan += PanCamera;
+            _cameraInput.Zoomed += ZoomCamera;
+            _cameraInput.Panned += PanCamera;
         }
 
         public void LateDispose()
         {
-            _inputService.OnLeftMousePressed -= StopMovement;
-            _inputService.OnSwipe -= OnSwipe;
-            _inputService.OnZoom -= ZoomCamera;
-            _inputService.OnCameraPan -= PanCamera;
+            _cameraInput.Zoomed -= ZoomCamera;
+            _cameraInput.Panned -= PanCamera;
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
-            StopMovement();
         }
 
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
@@ -119,33 +113,18 @@ namespace EmpireAtWar.Services.Camera
             }
 
             targetCameraPosition.y = CameraPosition.y;
-            SetPosition(ClampPosition(targetCameraPosition), false);
+            SetPosition(ClampPosition(targetCameraPosition));
         }
 
         public void SetPose(Vector3 position, Quaternion rotation)
         {
-            StopMovement();
             _keyboardVelocity = Vector2.zero;
             transform.SetPositionAndRotation(position, rotation);
         }
 
-        private void OnSwipe(Vector2 direction)
-        {
-            Vector3 worldDirection = GetPlanarDirection(direction);
-            Vector3 move = -worldDirection * _cameraData.PanSpeed * Time.unscaledDeltaTime;
-            SetPosition(ClampPosition(CameraPosition + move), true);
-        }
-
         public void Tick()
         {
-            Vector2 currentInput = _inputService.CameraMove;
-            if (currentInput.sqrMagnitude > Mathf.Epsilon &&
-                _keyboardInput.sqrMagnitude <= Mathf.Epsilon)
-            {
-                StopMovement();
-            }
-
-            _keyboardInput = currentInput;
+            _keyboardInput = _cameraInput.Move;
             _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
                 _keyboardVelocity,
                 _keyboardInput,
@@ -160,7 +139,7 @@ namespace EmpireAtWar.Services.Camera
             }
 
             Vector3 move = GetPlanarDirection(_keyboardVelocity) * Time.unscaledDeltaTime;
-            SetPosition(ClampPosition(CameraPosition + move), false);
+            SetPosition(ClampPosition(CameraPosition + move));
         }
 
         private void PanCamera(Vector2 direction)
@@ -169,7 +148,7 @@ namespace EmpireAtWar.Services.Camera
             Vector3 move = GetPlanarDirection(normalizedDirection) *
                 _cameraData.PanSpeed *
                 Time.unscaledDeltaTime;
-            SetPosition(ClampPosition(CameraPosition + move), false);
+            SetPosition(ClampPosition(CameraPosition + move));
         }
 
         private Vector3 GetPlanarDirection(Vector2 input)
@@ -184,12 +163,6 @@ namespace EmpireAtWar.Services.Camera
             return right * input.x + forward * input.y;
         }
 
-        private void StopMovement()
-        {
-            _moveTween?.Kill();
-            _moveTween = null;
-        }
-
         private void ZoomCamera(float scrollDelta)
         {
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
@@ -199,7 +172,7 @@ namespace EmpireAtWar.Services.Camera
                 return;
 
             newPosition.y = _cameraData.ZoomRange.Clamp(newPosition.y);
-            SetPosition(ClampPosition(newPosition), false);
+            SetPosition(ClampPosition(newPosition));
         }
 
         private Vector3 ClampPosition(Vector3 position)
@@ -218,18 +191,8 @@ namespace EmpireAtWar.Services.Camera
             return position;
         }
 
-        private void SetPosition(Vector3 position, bool useTween)
+        private void SetPosition(Vector3 position)
         {
-            _moveTween?.Kill();
-
-            if (useTween)
-            {
-                _moveTween = transform
-                    .DOMove(position, _cameraData.TweenSpeed)
-                    .SetEase(_moveEase);
-                return;
-            }
-
             transform.position = position;
         }
     }

@@ -8,7 +8,8 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Components.Ship.Audio;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
@@ -62,7 +63,12 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .AsSingle();
             Container
                 .BindInterfacesExt<UiHitTest>()
-                .BindInterfacesExt<InputService>()
+                .BindInterfacesExt<InputLockService>()
+                .BindInterfacesExt<PointerInput>()
+                .BindInterfacesExt<PointerGestures>()
+                .BindInterfacesExt<CameraInput>()
+                .BindInterfacesExt<SelectionInput>()
+                .BindInterfacesExt<UnitOrderInput>()
                 .BindInterfacesExt<ShipService>()
                 .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()

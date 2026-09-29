@@ -6,7 +6,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
@@ -17,7 +17,9 @@ namespace EmpireAtWar.Services.Battle
     public sealed class SelectionService : Service, ISelectionService, IInitializable, ILateDisposable,
         ISelectionSubject
     {
-        private readonly IInputService _inputService;
+        private readonly IPointerGestures _gestures;
+        private readonly IPointerInput _pointer;
+        private readonly ISelectionInput _selectionInput;
         private readonly IEntityLocator _entityLocator;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IMarqueeSelectionPresenter _marqueeSelectionPresenter;
@@ -34,7 +36,9 @@ namespace EmpireAtWar.Services.Battle
         public SelectionScope UpdatedScope { get; private set; }
 
         public SelectionService(
-            IInputService inputService,
+            IPointerGestures gestures,
+            IPointerInput pointer,
+            ISelectionInput selectionInput,
             IEntityLocator entityLocator,
             ISelectionQuery selectionQuery,
             IMarqueeSelectionPresenter marqueeSelectionPresenter,
@@ -43,7 +47,9 @@ namespace EmpireAtWar.Services.Battle
             _localPlayer = localPlayer;
             _playerSelectionContext = new SelectionContext(SelectionScope.Local, localPlayer);
             _otherSelectionContext = new SelectionContext(SelectionScope.Other, localPlayer);
-            _inputService = inputService;
+            _gestures = gestures;
+            _pointer = pointer;
+            _selectionInput = selectionInput;
             _entityLocator = entityLocator;
             _selectionQuery = selectionQuery;
             _marqueeSelectionPresenter = marqueeSelectionPresenter;
@@ -51,18 +57,20 @@ namespace EmpireAtWar.Services.Battle
 
         public void Initialize()
         {
-            _inputService.OnInput += HandleInput;
-            _inputService.OnSelectAllUnitsPressed += HandleSelectAllUnitsPressed;
-            _inputService.OnSelectVisibleUnitsPressed += HandleSelectVisibleUnitsPressed;
+            _gestures.WorldPressed += HandleWorldPressed;
+            _gestures.WorldClicked += SelectAt;
+            _selectionInput.SelectAllRequested += HandleSelectAllUnitsPressed;
+            _selectionInput.SelectVisibleRequested += HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
         public void LateDispose()
         {
-            _inputService.OnInput -= HandleInput;
-            _inputService.OnSelectAllUnitsPressed -= HandleSelectAllUnitsPressed;
-            _inputService.OnSelectVisibleUnitsPressed -= HandleSelectVisibleUnitsPressed;
+            _gestures.WorldPressed -= HandleWorldPressed;
+            _gestures.WorldClicked -= SelectAt;
+            _selectionInput.SelectAllRequested -= HandleSelectAllUnitsPressed;
+            _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _playerSelectionContext.ResetCurrentSelectable();
@@ -125,19 +133,15 @@ namespace EmpireAtWar.Services.Battle
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 touchPosition)
+        private void HandleWorldPressed(Vector2 screenPosition)
         {
-            if (inputType != InputType.Selection)
-            {
-                return;
-            }
+            ResetAllSelections();
+            SelectAt(screenPosition);
+        }
 
-            if (touchPhase == TouchPhase.Began)
-            {
-                ResetAllSelections();
-            }
-
-            if (!_selectionQuery.TryFindAt(touchPosition, out SelectionEntry selection))
+        private void SelectAt(Vector2 screenPosition)
+        {
+            if (!_selectionQuery.TryFindAt(screenPosition, out SelectionEntry selection))
             {
                 _lastTappedEntityId = null;
                 return;
@@ -147,7 +151,7 @@ namespace EmpireAtWar.Services.Battle
             _lastTappedEntityId = selection.Entity.Id;
             if (isRepeatedTap &&
                 _localPlayer.IsLocal(selection.Entity.Owner) &&
-                _inputService.TapCount >= 2 &&
+                _pointer.ClickCount >= 2 &&
                 TryCollectSameShipType(selection))
             {
                 SetSelection(GetScope(selection.Entity), _selectionBuffer);

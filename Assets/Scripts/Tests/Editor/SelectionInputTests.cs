@@ -10,7 +10,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Views.MiniMap;
 using NUnit.Framework;
@@ -33,6 +33,8 @@ namespace EmpireAtWar.Tests.Selection
             FakeMarqueeSelectionPresenter marqueeSelectionPresenter =
                 new FakeMarqueeSelectionPresenter();
             SelectionService selectionService = new SelectionService(
+                inputService,
+                inputService,
                 inputService,
                 new EntityLocator(),
                 selectionQuery,
@@ -132,34 +134,25 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeInputService : IInputService
+        private sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
         {
-            public event Action<Vector2> OnSwipe;
-            public event Action<Vector2> OnCameraPan;
-            public event Action OnLeftMousePressed;
-            public event Action<Vector2> OnPrimaryDragStarted;
-            public event Action<Vector2> OnPrimaryDragChanged;
-            public event Action<Vector2> OnPrimaryDragEnded;
-            public event Action OnEscapePressed;
-            public event Action OnWaypointModifierReleased;
-            public event Action OnSelectAllUnitsPressed;
-            public event Action OnSelectVisibleUnitsPressed;
-            public event Action<bool> OnBlocked;
-            public event Action<InputType, TouchPhase, Vector2> OnInput;
-            public event Action<Vector2> OnEndDrag;
-            public event Action<float> OnZoom;
+            public event Action<Vector2> WorldPressed;
+            public event Action<Vector2> WorldClicked { add { } remove { } }
+            public event Action<Vector2> WorldCommanded { add { } remove { } }
+            public event Action<Vector2> DragStarted { add { } remove { } }
+            public event Action<Vector2> DragChanged { add { } remove { } }
+            public event Action<Vector2> DragEnded { add { } remove { } }
+            public event Action<Vector2> PrimaryPressed { add { } remove { } }
+            public event Action<Vector2> PrimaryReleased { add { } remove { } }
+            public event Action SelectVisibleRequested { add { } remove { } }
+            public event Action SelectAllRequested { add { } remove { } }
 
-            public TouchPhase CurrentTouchPhase => TouchPhase.Began;
-            public Vector2 TouchPosition => Vector2.zero;
-            public bool SupportsHover => true;
-            public bool IsWaypointModifierPressed => false;
-            public Vector2 CameraMove => Vector2.zero;
-            public int TapCount => 1;
-            public string Id { get; set; }
+            public Vector2 Position => Vector2.zero;
+            public int ClickCount => 1;
 
             public void RaiseSelectionBegan(Vector2 position)
             {
-                OnInput?.Invoke(InputType.Selection, TouchPhase.Began, position);
+                WorldPressed?.Invoke(position);
             }
         }
 

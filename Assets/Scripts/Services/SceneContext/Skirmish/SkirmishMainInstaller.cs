@@ -78,6 +78,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .BindFactory<UiType, Transform, BaseUi, UiFactory>()
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
+        Container.BindInterfacesExt<UiCancelRouter>();
 
         Container.BindInterfacesExt<EntityLocator>();
         Container.BindInterfacesExt<SquadronLauncher>();

@@ -10,10 +10,9 @@ using Zenject;
 
 namespace EmpireAtWar.Presenters.Factions
 {
-    public class ShipBuildUiController : IShipBuildPresenter, IInitializable,
+    public class ShipBuildUiController : UiController, IShipBuildPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute
     {
-        private readonly IUiService _uiService;
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -21,11 +20,11 @@ namespace EmpireAtWar.Presenters.Factions
 
         public ShipBuildUiController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             IFactionService factionService,
             IPlayerFactionModelObserver model,
-            ISkirmishRouteNavigation routeNavigation)
+            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _factionService = factionService;
             _model = model;
             _routeNavigation = routeNavigation;
@@ -56,7 +55,7 @@ namespace EmpireAtWar.Presenters.Factions
         {
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(UiType.ShipBuild, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.ShipBuild, parentTransform);
                 _ui = ui as IShipBuildUi
                     ?? throw new InvalidOperationException(
                         "The ship build prefab does not implement IShipBuildUi.");

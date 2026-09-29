@@ -7,8 +7,9 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Services.CaptureSites
     /// through each side's <see cref="ISiteFacilityBuilder"/>, and reset when the facility dies.
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
-        ILateDisposable
+        ILateDisposable, IUiCancelHandler
     {
         // Explored fog retains 0.35 visibility; site status requires current vision.
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
@@ -33,7 +34,9 @@ namespace EmpireAtWar.Services.CaptureSites
         private CaptureSiteData _data;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
-        private IInputService _inputService;
+        private IPointerInput _pointer;
+        private IPointerGestures _gestures;
+        private IUiCancelRouter _cancelRouter;
         private IPlayerRegistry _playerRegistry;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
@@ -48,7 +51,9 @@ namespace EmpireAtWar.Services.CaptureSites
             CaptureSiteData data,
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
-            IInputService inputService,
+            IPointerInput pointer,
+            IPointerGestures gestures,
+            IUiCancelRouter cancelRouter,
             IPlayerRegistry playerRegistry,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
@@ -60,7 +65,9 @@ namespace EmpireAtWar.Services.CaptureSites
             _data = data;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
-            _inputService = inputService;
+            _pointer = pointer;
+            _gestures = gestures;
+            _cancelRouter = cancelRouter;
             _playerRegistry = playerRegistry;
             _roster = roster;
             _localPlayer = localPlayer;
@@ -81,14 +88,15 @@ namespace EmpireAtWar.Services.CaptureSites
             }
 
             _canPlayerAfford = price => GetBuilder(_localPlayer.Id).CanAfford(price);
-            _inputService.OnInput += HandleInput;
-            _inputService.OnEscapePressed += ClearSelection;
+            _gestures.WorldPressed += HandleWorldPressed;
+            _gestures.WorldCommanded += HandleWorldCommanded;
         }
 
         public void LateDispose()
         {
-            _inputService.OnInput -= HandleInput;
-            _inputService.OnEscapePressed -= ClearSelection;
+            _gestures.WorldPressed -= HandleWorldPressed;
+            _gestures.WorldCommanded -= HandleWorldCommanded;
+            _cancelRouter.Unfocus(this);
             foreach (CaptureSitePresenter site in _sites)
             {
                 site.BuildRequested -= HandleBuildRequested;
@@ -122,8 +130,8 @@ namespace EmpireAtWar.Services.CaptureSites
                     site.Render();
                 }
 
-                bool isHovered = isVisible && _inputService.SupportsHover &&
-                    site.Contains(_cameraService.GetWorldPoint(_inputService.TouchPosition, site.Center));
+                bool isHovered = isVisible &&
+                    site.Contains(_cameraService.GetWorldPoint(_pointer.Position, site.Center));
                 site.SetVisibility(isVisible, isHovered, _canPlayerAfford);
             }
         }
@@ -235,20 +243,25 @@ namespace EmpireAtWar.Services.CaptureSites
             return false;
         }
 
-        private void HandleInput(InputType inputType, TouchPhase touchPhase, Vector2 screenPosition)
+        public bool TryCancel()
         {
-            // A world left-click (press) drops the selection; right-click (touch: tap release) picks a site.
-            if (inputType == InputType.Selection && touchPhase == TouchPhase.Began)
+            if (_selectedSite == null)
             {
-                ClearSelection();
-                return;
+                return false;
             }
 
-            if (inputType != InputType.ShipInput || touchPhase != TouchPhase.Ended)
-            {
-                return;
-            }
+            ClearSelection();
+            return true;
+        }
 
+        // A world left-click drops the selection; a right-click picks a site.
+        private void HandleWorldPressed(Vector2 screenPosition)
+        {
+            ClearSelection();
+        }
+
+        private void HandleWorldCommanded(Vector2 screenPosition)
+        {
             foreach (CaptureSitePresenter site in _sites)
             {
                 if (site.CanPlayerBuild &&
@@ -257,6 +270,7 @@ namespace EmpireAtWar.Services.CaptureSites
                     ClearSelection();
                     _selectedSite = site;
                     site.SetSelected(true);
+                    _cancelRouter.Focus(this);
                     return;
                 }
             }
@@ -271,6 +285,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
             _selectedSite.SetSelected(false);
             _selectedSite = null;
+            _cancelRouter.Unfocus(this);
         }
 
         private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
@@ -316,6 +331,7 @@ namespace EmpireAtWar.Services.CaptureSites
             if (site == _selectedSite)
             {
                 _selectedSite = null;
+                _cancelRouter.Unfocus(this);
             }
 
             site.StartConstruction(facilityType);

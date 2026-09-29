@@ -3,10 +3,10 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Model;
-using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UiRouting;
+using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using Zenject;
 
@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
     /// Player superweapon buttons: a ready weapon starts targeting, the next valid enemy click fires it.
     /// Binds to the core UI through its route so it works regardless of container initialization order.
     /// </summary>
-    public sealed class SuperWeaponPresenter : IInitializable, ILateDisposable, ISkirmishUiRoute
+    public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute
     {
         private readonly SuperWeaponModel _model;
         private readonly ILocalPlayer _localPlayer;
@@ -24,16 +24,16 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly ISuperWeaponFireService _fireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private readonly IInputService _input;
         private readonly UnitActionTargetingModel _unitTargeting;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
 
         public SuperWeaponPresenter(SuperWeaponModel model, SuperWeaponTargetingModel targeting,
             ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
-            ISkirmishRouteNavigation routeNavigation, IInputService input,
+            ISkirmishRouteNavigation routeNavigation,
             UnitActionTargetingModel unitTargeting, IShipAbilityTargeting abilities,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer, IUiService uiService, IUiCancelRouter cancelRouter)
+            : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _model = model;
@@ -41,7 +41,6 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _fireService = fireService;
             _viewProvider = viewProvider;
             _routeNavigation = routeNavigation;
-            _input = input;
             _unitTargeting = unitTargeting;
             _abilities = abilities;
         }
@@ -74,7 +73,6 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _targeting.TargetSubmitted += HandleTargetSubmitted;
             _unitTargeting.Changed += HandleUnitTargetingChanged;
             _abilities.TargetingChanged += HandleAbilityTargetingChanged;
-            _input.OnEscapePressed += _targeting.Cancel;
 
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
                 _view.SetState(type, _model.GetState(type));
@@ -90,8 +88,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _targeting.TargetSubmitted -= HandleTargetSubmitted;
             _unitTargeting.Changed -= HandleUnitTargetingChanged;
             _abilities.TargetingChanged -= HandleAbilityTargetingChanged;
-            _input.OnEscapePressed -= _targeting.Cancel;
             _targeting.Cancel();
+            Unfocus();
             _view.Dispose();
             _view = null;
         }
@@ -135,6 +133,18 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_abilities.IsWaitingForTarget) _targeting.Cancel();
         }
 
-        private void RenderPending() => _view.SetPending(_targeting.Pending);
+        // A pending target selection makes this the selected UI, so Escape cancels it first.
+        protected override bool HandleCancel()
+        {
+            _targeting.Cancel();
+            return true;
+        }
+
+        private void RenderPending()
+        {
+            _view.SetPending(_targeting.Pending);
+            if (_targeting.Pending != null) Focus();
+            else Unfocus();
+        }
     }
 }

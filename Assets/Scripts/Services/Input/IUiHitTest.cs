@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace EmpireAtWar.Services.InputService
+namespace EmpireAtWar.Services.Input
 {
     public interface IUiHitTest
     {

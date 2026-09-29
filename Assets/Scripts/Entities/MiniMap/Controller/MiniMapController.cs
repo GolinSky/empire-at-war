@@ -3,7 +3,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Services.UnitOrders;
@@ -16,14 +16,14 @@ using Zenject;
 
 namespace EmpireAtWar.Controllers.MiniMap
 {
-    public class MiniMapController : Controller<MiniMapData>,
+    public class MiniMapController : UiController,
         IInitializable, ILateTickable, ILateDisposable,
         ISkirmishUiRoute
     {
         private readonly ICameraService _cameraService;
-        private readonly IInputService _inputService;
+        private readonly MiniMapData _model;
+        private readonly IInputLock _inputLock;
         private readonly TimerPoolService _timerPoolService;
-        private readonly IUiService _uiService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
         private IMiniMapView _miniMapView;
@@ -33,33 +33,34 @@ namespace EmpireAtWar.Controllers.MiniMap
             MiniMapData model,
             IMapModelObserver mapModel,
             ICameraService cameraService,
-            IInputService inputService,
+            IInputLock inputLock,
             TimerPoolService timerPoolService,
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
             List<IMiniMapObstacleSource> obstacleSources,
             IPlayerRoster roster,
-            ILocalPlayer localPlayer) : base(model)
+            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _cameraService = cameraService;
-            _inputService = inputService;
+            _model = model;
+            _inputLock = inputLock;
             _timerPoolService = timerPoolService;
-            _uiService = uiService;
             _routeNavigation = routeNavigation;
             _orderInput = orderInput;
-            Model.MapRange = mapModel.SizeRange;            
-            Model.ClearBases();
+            _model.MapRange = mapModel.SizeRange;            
+            _model.ClearBases();
             foreach (PlayerSlot player in roster.Players)
             {
-                Model.AddBase(mapModel.GetStationPosition(player.Id), player.Id, localPlayer.IsHostile(player.Id));
+                _model.AddBase(mapModel.GetStationPosition(player.Id), player.Id, localPlayer.IsHostile(player.Id));
             }
             // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
             Physics.SyncTransforms();
             foreach (IMiniMapObstacleSource obstacleSource in obstacleSources)
             {
                 Bounds bounds = obstacleSource.WorldBounds;
-                Model.AddObstacle(new MiniMapObstacle(
+                _model.AddObstacle(new MiniMapObstacle(
                     bounds.center.x,
                     bounds.center.z,
                     bounds.extents.x,
@@ -70,7 +71,7 @@ namespace EmpireAtWar.Controllers.MiniMap
     
         public void Initialize()
         {
-            _inputService.OnBlocked += UpdateBlockState;
+            _inputLock.LockChanged += UpdateBlockState;
             LateTick();
             _routeNavigation.RegisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
@@ -79,18 +80,18 @@ namespace EmpireAtWar.Controllers.MiniMap
         
         public void LateTick()
         {
-            Model.CameraMark.Clear();
-            var footprint = _cameraService.GetGroundFootprint(Model.MapRange.Min, Model.MapRange.Max);
+            _model.CameraMark.Clear();
+            var footprint = _cameraService.GetGroundFootprint(_model.MapRange.Min, _model.MapRange.Max);
             for (int i = 0; i < footprint.Count; i++)
             {
                 Vector3 point = footprint[i];
-                Model.CameraMark.AddVertex(point.x, point.z);
+                _model.CameraMark.AddVertex(point.x, point.z);
             }
         }
 
         public void LateDispose()
         {
-            _inputService.OnBlocked -= UpdateBlockState;
+            _inputLock.LockChanged -= UpdateBlockState;
             if (_miniMapView != null)
             {
                 _miniMapView.OnCameraMoveRequested -= MoveTo;
@@ -105,7 +106,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         {
             if (_miniMapView == null)
             {
-                BaseUi ui = _uiService.CreateUi(UiType.MiniMap, parentTransform);
+                BaseUi ui = UiService.CreateUi(UiType.MiniMap, parentTransform);
                 _miniMapView = ui as IMiniMapView
                     ?? throw new System.InvalidOperationException(
                         "The minimap prefab does not contain IMiniMapView.");
@@ -135,7 +136,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private void OrderMove(Vector3 worldPoint)
         {
             // Match world input: taps on an obstacle are not move targets.
-            if (Model.IsObstacleAt(worldPoint)) return;
+            if (_model.IsObstacleAt(worldPoint)) return;
             if (_orderInput.TryIssueMove(worldPoint))
             {
                 _miniMapView.PlayMoveTarget(worldPoint);
@@ -155,12 +156,12 @@ namespace EmpireAtWar.Controllers.MiniMap
                 _unblockCoroutine = _timerPoolService.Invoke(() =>
                 {
                     _unblockCoroutine = null;
-                    Model.IsInputBlocked = isBlocked;
+                    _model.IsInputBlocked = isBlocked;
                 }, 1f);
             }
             else
             {
-                Model.IsInputBlocked = isBlocked;
+                _model.IsInputBlocked = isBlocked;
             }
         }
     }

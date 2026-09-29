@@ -12,6 +12,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
@@ -20,7 +21,6 @@ using UnityEngine;
 using ViewComponents;
 using Zenject;
 using Object = UnityEngine.Object;
-using InputServiceImpl = EmpireAtWar.Services.InputService.InputService;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Services.Reinforcement
@@ -37,7 +37,8 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _playerFactionModel;
         private readonly ReinforcementData _data;
-        private readonly InputServiceImpl _inputService;
+        private readonly IInputLock _inputLock;
+        private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
         private readonly ShipFactory _shipFactory;
         private readonly SquadronFactory _squadronFactory;
@@ -58,12 +59,14 @@ namespace EmpireAtWar.Services.Reinforcement
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
         private bool _hasBattleEnded;
+        private IDisposable _placementLock;
 
         public ReinforcementService(
             ReinforcementModel model,
             PlayerFactionModel playerFactionModel,
             ReinforcementData data,
-            InputServiceImpl inputService,
+            IInputLock inputLock,
+            IPointerInput pointer,
             ICameraService cameraService,
             ShipFactory shipFactory,
             SquadronFactory squadronFactory,
@@ -81,7 +84,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _model = model;
             _playerFactionModel = playerFactionModel;
             _data = data;
-            _inputService = inputService;
+            _inputLock = inputLock;
+            _pointer = pointer;
             _cameraService = cameraService;
             _shipFactory = shipFactory;
             _squadronFactory = squadronFactory;
@@ -97,13 +101,13 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void Initialize()
         {
-            _inputService.OnEndDrag += Interrupt;
+            _pointer.PrimaryReleased += Interrupt;
             _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _inputService.OnEndDrag -= Interrupt;
+            _pointer.PrimaryReleased -= Interrupt;
             _battleVictoryNotifier.RemoveObserver(this);
         }
 
@@ -111,7 +115,8 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             _hasBattleEnded = true;
             CancelPlacement();
-            _inputService.Block(true);
+            // The battle is over: gameplay input stays locked for the rest of the scene.
+            _inputLock.Acquire();
         }
 
         private void CancelPlacement()
@@ -123,7 +128,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             _spawnReinforcement.Destroy();
-            _inputService.Block(false);
+            _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(false);
         }
 
@@ -145,7 +150,7 @@ namespace EmpireAtWar.Services.Reinforcement
             }
 
             _spawnReinforcement.Destroy();
-            _inputService.Block(false);
+            _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(canSpawn);
         }
 
@@ -194,7 +199,7 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            Vector3 position = _cameraService.GetWorldPoint(_inputService.TouchPosition, _spawnReinforcement.Position);
+            Vector3 position = _cameraService.GetWorldPoint(_pointer.Position, _spawnReinforcement.Position);
             position.y = 0;
             _spawnReinforcement.UpdatePosition(position);
             _spawnReinforcement.SetPlacementValidity(IsPlacementValid(position));
@@ -296,8 +301,10 @@ namespace EmpireAtWar.Services.Reinforcement
 
         private void StartSpawnSequence(SpawnType spawnType)
         {
+            // A placement that is still running would otherwise keep its input lock forever.
+            CancelPlacement();
             _currentSpawnType = spawnType;
-            _inputService.Block(true);
+            _placementLock = _inputLock.Acquire();
             _model.IsTrySpawning = true;
         }
 

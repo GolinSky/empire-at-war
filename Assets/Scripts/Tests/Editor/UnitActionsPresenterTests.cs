@@ -16,10 +16,11 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using NUnit.Framework;
 using UnityEngine;
@@ -31,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
         private readonly List<GameObject> _objects = new List<GameObject>();
         private FakeView _view;
         private FakeSelection _selection;
-        private FakeInput _input;
+        private FakeCancelInput _input;
+        private UiCancelRouter _cancelRouter;
         private FakeAbilities _abilities;
         private UnitActionTargetingModel _targeting;
         private FakeHandler _handler;
@@ -44,14 +46,17 @@ namespace EmpireAtWar.Tests.Editor
         {
             _view = new FakeView();
             _selection = new FakeSelection();
-            _input = new FakeInput();
+            _input = new FakeCancelInput();
+            _cancelRouter = new UiCancelRouter(_input);
+            _cancelRouter.Initialize();
             _abilities = new FakeAbilities();
             _targeting = new UnitActionTargetingModel();
             _handler = new FakeHandler(_targeting);
             _orders = new FakeOrders();
             _session = new FakeSession();
             _presenter = new UnitActionsPresenter(new FakeProvider(_view),
-                _selection, _input, _abilities, _targeting, _handler, _orders, _session);
+                _selection, _abilities, _targeting, _handler, _orders, _session,
+                new FakeUiService(), _cancelRouter);
             _presenter.Initialize();
         }
 
@@ -59,6 +64,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             _presenter.LateDispose();
+            _cancelRouter.Dispose();
             foreach (GameObject obj in _objects) UnityEngine.Object.DestroyImmediate(obj);
         }
 
@@ -196,30 +202,20 @@ namespace EmpireAtWar.Tests.Editor
             public void RemoveObserver(IObserver<ISelectionSubject> observer) => _observers.Remove(observer);
         }
 
-        private sealed class FakeInput : IInputService
+        private sealed class FakeCancelInput : ICancelInput
         {
-            public event Action<Vector2> OnSwipe;
-            public event Action<Vector2> OnCameraPan;
-            public event Action OnLeftMousePressed;
-            public event Action<Vector2> OnPrimaryDragStarted;
-            public event Action<Vector2> OnPrimaryDragChanged;
-            public event Action<Vector2> OnPrimaryDragEnded;
-            public event Action OnEscapePressed;
-            public event Action OnWaypointModifierReleased;
-            public event Action OnSelectAllUnitsPressed;
-            public event Action OnSelectVisibleUnitsPressed;
-            public event Action<bool> OnBlocked;
-            public event Action<InputType, TouchPhase, Vector2> OnInput;
-            public event Action<Vector2> OnEndDrag;
-            public event Action<float> OnZoom;
-            public string Id => nameof(FakeInput);
-            public TouchPhase CurrentTouchPhase => default;
-            public Vector2 TouchPosition => default;
-            public bool SupportsHover => true;
-            public bool IsWaypointModifierPressed => false;
-            public Vector2 CameraMove => default;
-            public int TapCount => 1;
-            public void Escape() => OnEscapePressed?.Invoke();
+            public event Action CancelPressed;
+            public void Escape() => CancelPressed?.Invoke();
+        }
+
+        private sealed class FakeUiService : IUiService
+        {
+            public Transform DefaultCanvasTransform => throw new NotSupportedException();
+            public Transform DynamicCanvasTransform => throw new NotSupportedException();
+            public Transform PopupCanvasTransform => throw new NotSupportedException();
+            public BaseUi CreateUi(UiType uiType) => throw new NotSupportedException();
+            public BaseUi CreateUi(UiType uiType, Transform parent) => throw new NotSupportedException();
+            public void SetHudVisible(bool isVisible) => throw new NotSupportedException();
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting

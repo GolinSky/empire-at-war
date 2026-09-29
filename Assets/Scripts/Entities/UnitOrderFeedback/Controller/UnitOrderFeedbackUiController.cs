@@ -12,10 +12,9 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.UnitOrderFeedback
 {
-    public sealed class UnitOrderFeedbackUiController : IUnitOrderFeedbackPresenter,
+    public sealed class UnitOrderFeedbackUiController : UiController, IUnitOrderFeedbackPresenter,
         IInitializable, ILateTickable, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
@@ -27,12 +26,12 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private int _placedWaypointCount;
 
         public UnitOrderFeedbackUiController(IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ICameraService cameraService, IEntityLocator entityLocator,
             IUnitOrderService orders, UnitActionTargetingModel targeting,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
-            _uiService = uiService;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
             _orders = orders;
@@ -41,8 +40,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         public void Initialize()
         {
-            _ui = (IUnitOrderFeedbackUi)_uiService.CreateUi(
-                UiType.UnitOrderFeedback, _uiService.DefaultCanvasTransform);
+            _ui = (IUnitOrderFeedbackUi)UiService.CreateUi(
+                UiType.UnitOrderFeedback, UiService.DefaultCanvasTransform);
             _ui.SetPresenter(this);
             _ui.Initialize();
             _orders.OrderIssued += HandleOrder;

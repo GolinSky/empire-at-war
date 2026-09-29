@@ -7,7 +7,7 @@ using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.InputService;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 using ViewComponents;
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly HardPointOverlayModel _model;
         private readonly HardPointOverlayData _data;
         private readonly ISelectionQuery _selectionQuery;
-        private readonly IInputService _inputService;
+        private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
         private readonly IUnitOrderService _orderService;
         private readonly ICinematicCameraModelObserver _cinematicCamera;
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             HardPointOverlayModel model,
             HardPointOverlayData data,
             ISelectionQuery selectionQuery,
-            IInputService inputService,
+            IPointerInput pointer,
             ICameraService cameraService,
             IUnitOrderService orderService,
             ICinematicCameraModelObserver cinematicCamera,
@@ -50,7 +50,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _model = model;
             _data = data;
             _selectionQuery = selectionQuery;
-            _inputService = inputService;
+            _pointer = pointer;
             _cameraService = cameraService;
             _orderService = orderService;
             _cinematicCamera = cinematicCamera;
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 _model.ClearTarget();
             }
 
-            if (!_inputService.SupportsHover || _cinematicCamera.IsActive)
+            if (_cinematicCamera.IsActive)
             {
                 _model.Inspect(null, UnitOrderModel.NO_HARD_POINT, false);
                 _view.HideMarkersFrom(0);
@@ -83,7 +83,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 return;
             }
 
-            UpdateInspection(_inputService.TouchPosition);
+            UpdateInspection(_pointer.Position);
             Render();
         }
 

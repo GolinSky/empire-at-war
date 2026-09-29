@@ -5,9 +5,8 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
-    public class SettingsRouteController : ISettingsRoute, ISettingsRouteNavigation, ILateDisposable
+    public class SettingsRouteController : UiController, ISettingsRoute, ISettingsRouteNavigation, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly ISettingsService _settingsService;
         private readonly SettingsModel _model;
 
@@ -15,10 +14,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public SettingsRouteController(
             IUiService uiService,
+            IUiCancelRouter cancelRouter,
             ISettingsService settingsService,
-            SettingsModel model)
+            SettingsModel model) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
             _settingsService = settingsService;
             _model = model;
         }
@@ -31,7 +30,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
             if (_ui == null)
             {
-                BaseUi ui = _uiService.CreateUi(UiType.Settings);
+                BaseUi ui = UiService.CreateUi(UiType.Settings);
                 _ui = ui as ISettingsUi
                     ?? throw new InvalidOperationException(
                         "The settings prefab does not implement ISettingsUi.");
@@ -45,11 +44,20 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             }
 
             _ui.Show();
+            Focus();
         }
 
         public void Close()
         {
             _ui.Hide();
+            Unfocus();
+        }
+
+        // Escape closes the open menu screen and returns to the main menu.
+        protected override bool HandleCancel()
+        {
+            Close();
+            return true;
         }
 
         public void SelectQualityPreset(int index)

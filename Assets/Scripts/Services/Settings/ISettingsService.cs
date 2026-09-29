@@ -7,5 +7,7 @@ namespace EmpireAtWar.Services.Settings
         string[] GetQualityPresets();
         int GetCurrentQualityPresetIndex();
         void SetQualityPreset(int index);
+        string LoadInputBindingOverrides();
+        void SaveInputBindingOverrides(string overridesJson);
     }
 }

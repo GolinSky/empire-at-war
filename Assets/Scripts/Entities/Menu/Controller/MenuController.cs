@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.MiniMap;
-using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Menu;
-using EmpireAtWar.Services.InputService;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -15,46 +13,39 @@ namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
     
-    public class MenuController : Controller<MenuData>, IPauseMenuPresenter, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
+    public class MenuController : UiController, IPauseMenuPresenter, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
     {
-        private readonly IUiService _uiService;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
-        private readonly IInputService _inputService;
-        private readonly ICinematicCameraModelObserver _cinematicCameraModel;
+        private readonly IUiCancelRouter _cancelRouter;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
-        private bool _isMenuOpen;
         private bool _hasBattleEnded;
 
         public MenuController(
-            MenuData model,
             IUiService uiService,
-            IInputService inputService,
-            INotifier<BattleResult> battleVictoryNotifier,
-            ICinematicCameraModelObserver cinematicCameraModel) : base(model)
+            IUiCancelRouter cancelRouter,
+            INotifier<BattleResult> battleVictoryNotifier) : base(uiService, cancelRouter)
         {
-            _uiService = uiService;
-            _inputService = inputService;
+            _cancelRouter = cancelRouter;
             _battleVictoryNotifier = battleVictoryNotifier;
-            _cinematicCameraModel = cinematicCameraModel;
         }
         
         public void Initialize()
         {
-            BaseUi ui = _uiService.CreateUi(UiType.PauseMenu);
+            BaseUi ui = UiService.CreateUi(UiType.PauseMenu);
             _ui = ui as IPauseMenuUiView
                 ?? throw new InvalidOperationException(
                     "The skirmish pause menu prefab does not implement IPauseMenuUiView.");
             _ui.SetPresenter(this);
             _ui.Initialize();
             _ui.SetMenuVisible(false);
-            _inputService.OnEscapePressed += ToggleMenu;
+            _cancelRouter.CancelUnhandled += OpenMenu;
             _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _inputService.OnEscapePressed -= ToggleMenu;
+            _cancelRouter.CancelUnhandled -= OpenMenu;
             _battleVictoryNotifier.RemoveObserver(this);
             if (_ui != null)
             {
@@ -64,8 +55,8 @@ namespace EmpireAtWar.Controllers.Menu
 
         public void ExitSkirmish()
         {
-            _isMenuOpen = false;
             _ui.SetMenuVisible(false);
+            Unfocus();
             UpdateState(UserNotifierState.ExitGame);
         }
 
@@ -79,15 +70,11 @@ namespace EmpireAtWar.Controllers.Menu
             SetMenuOpen(true);
         }
 
-        private void ToggleMenu()
+        // Unconsumed Escape opens the menu; the open menu is focused, so the next Escape closes it.
+        protected override bool HandleCancel()
         {
-            // Escape leaves the cinematic camera instead of opening the menu.
-            if (_cinematicCameraModel.IsActive)
-            {
-                return;
-            }
-
-            SetMenuOpen(!_isMenuOpen);
+            SetMenuOpen(false);
+            return true;
         }
 
         private void SetMenuOpen(bool isOpen)
@@ -97,8 +84,16 @@ namespace EmpireAtWar.Controllers.Menu
                 return;
             }
 
-            _isMenuOpen = isOpen;
             _ui.SetMenuVisible(isOpen);
+            if (isOpen)
+            {
+                Focus();
+            }
+            else
+            {
+                Unfocus();
+            }
+
             UpdateState(isOpen
                 ? UserNotifierState.InMenu
                 : UserNotifierState.InGame);
