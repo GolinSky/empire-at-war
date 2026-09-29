@@ -189,6 +189,38 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Fields_StayOutOfStationFootprints()
+        {
+            PlayerRoster teamGame = TestPlayers.CreateTeamGame();
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                for (int seed = 0; seed < SEED_COUNT; seed++)
+                {
+                    MapLayout layout = _generator.Generate(mapSize, teamGame.Players, new Random(seed));
+                    foreach (PlayerSlot player in teamGame.Players)
+                    {
+                        Vector3 station = layout.GetStationPosition(player.Id);
+                        float footprint = _settings.GetStationRadius(player.Faction) + _settings.ZoneClearance;
+                        foreach (AsteroidField field in layout.Fields)
+                        {
+                            foreach (FieldVolume volume in field.Volumes)
+                            {
+                                Assert.That(MapGeometry.Distance(volume.Center, station) - volume.Radius,
+                                    Is.GreaterThanOrEqualTo(footprint), $"{mapSize} seed {seed} volume");
+                            }
+
+                            foreach (AsteroidSpot rock in field.Rocks)
+                            {
+                                Assert.That(MapGeometry.Distance(rock.Position, station),
+                                    Is.GreaterThanOrEqualTo(footprint), $"{mapSize} seed {seed} rock");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
         public void Rocks_FollowTheLayerShares()
         {
             int[] counts = new int[Enum.GetValues(typeof(AsteroidSize)).Length];
