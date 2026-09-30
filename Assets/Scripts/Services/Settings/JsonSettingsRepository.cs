@@ -5,8 +5,8 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Settings
 {
     /// <summary>
-    /// Stores settings in one JSON file under the persistent-data directory.
-    /// Writes go to a temporary file first and replace the saved file atomically, keeping one backup.
+    /// Stores settings in one JSON file. Writes go to a temporary file first and replace the saved file atomically,
+    /// keeping one backup. An unreadable file is copied aside for diagnosis and its backup is loaded instead.
     /// </summary>
     public sealed class JsonSettingsRepository : ISettingsRepository
     {
@@ -15,24 +15,34 @@ namespace EmpireAtWar.Services.Settings
         private const string TEMP_SUFFIX = ".tmp";
         private const string CORRUPT_SUFFIX = ".corrupt";
 
-        private readonly string _path = Path.Combine(Application.persistentDataPath, FILE_NAME);
+        private readonly string _path;
 
-        public bool TryLoad(out SettingsData data)
+        /// <param name="directory">Folder that holds the settings file, e.g. <c>Application.persistentDataPath</c>.</param>
+        public JsonSettingsRepository(string directory)
         {
+            _path = Path.Combine(directory, FILE_NAME);
+        }
+
+        public SettingsLoadStatus Load(out SettingsData data)
+        {
+            string backupPath = _path + BACKUP_SUFFIX;
+            if (!File.Exists(_path) && !File.Exists(backupPath))
+            {
+                data = null;
+                return SettingsLoadStatus.Missing;
+            }
+
             if (TryRead(_path, out data))
             {
-                return true;
+                return SettingsLoadStatus.Loaded;
             }
 
-            string backupPath = _path + BACKUP_SUFFIX;
             if (File.Exists(_path))
             {
-                // Keep the unreadable file for diagnosis, then fall back to the last good copy.
-                File.Copy(_path, _path + CORRUPT_SUFFIX, true);
-                Debug.LogWarning($"Settings file '{_path}' is unreadable; loading its backup.");
+                PreserveUnreadableFile();
             }
 
-            return TryRead(backupPath, out data);
+            return TryRead(backupPath, out data) ? SettingsLoadStatus.Loaded : SettingsLoadStatus.Unreadable;
         }
 
         public void Save(SettingsData data)
@@ -49,6 +59,19 @@ namespace EmpireAtWar.Services.Settings
             }
         }
 
+        private void PreserveUnreadableFile()
+        {
+            try
+            {
+                File.Copy(_path, _path + CORRUPT_SUFFIX, true);
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                Debug.LogWarning($"Could not copy unreadable settings file '{_path}': {exception.Message}");
+            }
+        }
+
+        // Corrupt JSON and a file locked by another process (antivirus, cloud sync) both count as unreadable.
         private static bool TryRead(string path, out SettingsData data)
         {
             data = null;
@@ -62,9 +85,10 @@ namespace EmpireAtWar.Services.Settings
                 data = SettingsData.FromJson(File.ReadAllText(path));
                 return true;
             }
-            catch (ArgumentException exception)
+            catch (Exception exception) when (exception is ArgumentException || exception is IOException ||
+                                              exception is UnauthorizedAccessException)
             {
-                Debug.LogWarning($"Settings file '{path}' has invalid JSON: {exception.Message}");
+                Debug.LogWarning($"Settings file '{path}' is unreadable: {exception.Message}");
                 return false;
             }
         }

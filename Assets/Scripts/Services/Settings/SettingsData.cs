@@ -43,6 +43,13 @@ namespace EmpireAtWar.Services.Settings
             return data;
         }
 
+        /// <summary>Field-by-field comparison; cheap enough to run on every edit.</summary>
+        public bool Matches(SettingsData other)
+        {
+            return display.Matches(other.display) && graphics.Matches(other.graphics) &&
+                   audio.Matches(other.audio) && camera.Matches(other.camera) && input.Matches(other.input);
+        }
+
         public SettingsData Clone()
         {
             return FromJson(ToJson());

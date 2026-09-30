@@ -45,8 +45,12 @@ namespace EmpireAtWar.SceneContext
             Container
                 .BindInterfacesNonLazyExt<TimerPoolTick>()
                 .BindInterfacesExt<GameController>()
-                .BindInterfacesExt<SceneService>()
-                .BindInterfacesExt<JsonSettingsRepository>()
+                .BindInterfacesExt<SceneService>();
+            Container
+                .BindInterfacesTo<JsonSettingsRepository>()
+                .AsSingle()
+                .WithArguments(Application.persistentDataPath);
+            Container
                 // Settings appliers run in this binding order: display, quality, audio, then input bindings.
                 .BindInterfacesExt<DisplaySettingsApplier>()
                 .BindInterfacesExt<GraphicsSettingsApplier>()

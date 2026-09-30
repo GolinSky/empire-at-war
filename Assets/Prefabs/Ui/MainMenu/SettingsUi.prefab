@@ -314,7 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 330504029521760691}
-  key: Edge scrolling
+  key: Mute when unfocused
 --- !u!1 &123279503868293112
 GameObject:
   m_ObjectHideFlags: 0
@@ -6202,7 +6202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 4703255450521410321}
-  key: Pan speed
+  key: Music volume
 --- !u!1 &3056379907119944550
 GameObject:
   m_ObjectHideFlags: 0
@@ -6448,7 +6448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 4311103877149359284}
-  key: Pan speed
+  key: Master volume
 --- !u!1 &3100461772576832849
 GameObject:
   m_ObjectHideFlags: 0
@@ -7543,7 +7543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 200999160659054105}
-  key: Pan speed
+  key: Voice volume
 --- !u!1 &3561370531589330002
 GameObject:
   m_ObjectHideFlags: 0
@@ -8845,6 +8845,11 @@ MonoBehaviour:
   - {fileID: 3720404189098333886}
   - {fileID: 8780810114805992431}
   - {fileID: 7677010204706054866}
+  - {fileID: 1321066007713325178}
+  - {fileID: 3169292870115584218}
+  - {fileID: 7549765179334362408}
+  - {fileID: 7205655128614789874}
+  - {fileID: 6557858404070486620}
 --- !u!1 &4100595712599618371
 GameObject:
   m_ObjectHideFlags: 0
@@ -14384,7 +14389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 3280085782466675110}
-  key: Pan speed
+  key: Effects volume
 --- !u!1 &6520368446991864661
 GameObject:
   m_ObjectHideFlags: 0

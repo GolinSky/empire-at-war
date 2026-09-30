@@ -31,7 +31,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private readonly IDisplayOptions _displayOptions;
         private readonly IAudioSettingsPreview _audioPreview;
         private readonly SettingsModel _model;
+        private static readonly string[] FRAME_RATE_LIMIT_LABELS = FormatFrameRateLimits();
+
         private IReadOnlyList<Vector2Int> _resolutions = new Vector2Int[0];
+        private string[] _resolutionLabels = new string[0];
 
         private SettingsData Draft => _settings.Draft;
 
@@ -49,9 +52,16 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _model = model;
         }
 
-        public void Refresh()
+        /// <summary>Reads monitor modes once per screen opening; edits reuse the cached lists.</summary>
+        public void Open()
         {
             _resolutions = _displayOptions.Resolutions;
+            _resolutionLabels = FormatResolutions();
+            Refresh();
+        }
+
+        public void Refresh()
+        {
             GraphicsSettingsData graphics = Draft.Graphics;
             DisplaySettingsData display = Draft.Display;
 
@@ -62,11 +72,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     true),
                 new SettingsChoice(WINDOW_MODE_LABELS, Array.IndexOf(WINDOW_MODES, display.WindowMode), true),
                 new SettingsChoice(
-                    FormatResolutions(),
+                    _resolutionLabels,
                     FindResolutionIndex(display),
                     display.WindowMode != DisplayWindowMode.Borderless),
                 new SettingsChoice(
-                    FormatFrameRateLimits(),
+                    FRAME_RATE_LIMIT_LABELS,
                     Math.Max(0, Array.IndexOf(FRAME_RATE_LIMITS, graphics.FrameRateLimit)),
                     !graphics.VSync),
                 graphics.VSync);

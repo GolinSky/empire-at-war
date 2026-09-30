@@ -16,7 +16,8 @@ namespace EmpireAtWar.Services.Settings
         /// <summary>Applies the draft. A display change must then be kept or reverted before anything is saved.</summary>
         SettingsApplyResult Apply();
 
-        void KeepDisplay();
+        /// <summary>Returns <see cref="SettingsApplyResult.Committed"/> or <see cref="SettingsApplyResult.SaveFailed"/>.</summary>
+        SettingsApplyResult KeepDisplay();
 
         /// <summary>Restores the saved display and aborts this Apply; other draft edits stay pending.</summary>
         void RevertDisplay();
