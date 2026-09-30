@@ -189,8 +189,8 @@ namespace EmpireAtWar.Tests.Editor
                 IsDestroyed = isDestroyed;
             }
 
-            public event Action OnDestroy;
-            public event Action OnValueChanged;
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
             public Transform Transform { get; }
             public bool IsDestroyed { get; }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
