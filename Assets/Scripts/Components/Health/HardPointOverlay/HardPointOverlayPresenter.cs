@@ -31,7 +31,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly ICameraService _cameraService;
         private readonly IUnitOrderService _orderService;
         private readonly ICinematicCameraModelObserver _cinematicCamera;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
 
         public HardPointOverlayPresenter(
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             ICameraService cameraService,
             IUnitOrderService orderService,
             ICinematicCameraModelObserver cinematicCamera,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             ILocalPlayer localPlayer)
         {
             _view = view;

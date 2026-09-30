@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ViewComponents
 {
-    public class FogOfWarSystem : MonoBehaviour
+    public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
     {
         private const int MAX_TEXTURE_RESOLUTION = 512;
 

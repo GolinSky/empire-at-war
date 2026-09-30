@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private Vector3 _startPosition;
         private Quaternion _startRotation;
         private PlayerId _owner;
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private ILocalPlayer _localPlayer;
         private bool _sharesLocalVision;
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         [Inject]
         private void Construct(SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation,
-            PlayerId owner, FogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer)
+            PlayerId owner, IFogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer)
         {
             SetModel(model);
             _startPosition = startPosition;

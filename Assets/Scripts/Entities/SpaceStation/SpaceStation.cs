@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.SpaceStation
     {
         [SerializeField] private Renderer[] explosionHullRenderers;
 
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private ILocalPlayer _localPlayer;
         private PlayerId _owner;
         private IHealthComponent _healthComponent;
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         [Inject]
         private void Construct(
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             PlayerId owner,
             IHealthComponent healthComponent,
             IRadarComponent radarComponent,

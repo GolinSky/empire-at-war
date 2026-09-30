@@ -18,13 +18,13 @@ namespace EmpireAtWar.Components.FogOfWar
         [SerializeField] private HardPoint[] hardPoints;
 
         private readonly List<Renderer> _renderers = new List<Renderer>();
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private List<IIonStunViewSource> _ionStunSources;
         private bool _isHidden;
         private bool _isReleased;
 
         [Inject]
-        private void Construct(FogOfWarSystem fogOfWarSystem, List<IIonStunViewSource> ionStunSources)
+        private void Construct(IFogOfWarSystem fogOfWarSystem, List<IIonStunViewSource> ionStunSources)
         {
             _fogOfWarSystem = fogOfWarSystem;
             _ionStunSources = ionStunSources;

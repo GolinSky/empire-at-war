@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
-        private readonly FogOfWarSystem _fog;
+        private readonly IFogOfWarSystem _fog;
         private readonly UnitOrderSettings _settings;
         private readonly PlayerId _side;
         private readonly IPlayerRelations _relations;
@@ -28,7 +28,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            FogOfWarSystem fog, UnitOrderSettings settings, PlayerId side,
+            IFogOfWarSystem fog, UnitOrderSettings settings, PlayerId side,
             IPlayerRelations relations, ILocalPlayer localPlayer)
         {
             _relations = relations;

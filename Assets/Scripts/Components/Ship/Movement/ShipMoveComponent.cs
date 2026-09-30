@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
         private IShipNavigationService _shipNavigationService;
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
         private ILocalPlayer _localPlayer;
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private void Construct(ShipMoveModel model,
             Vector3 startPosition, PlayerId owner, IMapModelObserver mapModel,
             IStationFacingService stationFacingService,
-            IShipNavigationService shipNavigationService, FogOfWarSystem fogOfWarSystem,
+            IShipNavigationService shipNavigationService, IFogOfWarSystem fogOfWarSystem,
             IRadarModelObserver radarModel, CombatModifiers modifiers, IWeaponFacing weaponFacing,
             ILocalPlayer localPlayer)
         {

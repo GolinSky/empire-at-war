@@ -35,7 +35,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private ICameraService _cameraService;
         private CameraData _cameraData;
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private PlayerId _owner;
         private ILocalPlayer _localPlayer;
         private Vector3 _anchor;
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         [Inject]
         private void Construct(SelectionModel model, ICameraService cameraService, CameraData cameraData,
-            FogOfWarSystem fogOfWarSystem, PlayerId owner, ILocalPlayer localPlayer)
+            IFogOfWarSystem fogOfWarSystem, PlayerId owner, ILocalPlayer localPlayer)
         {
             SetModel(model);
             _cameraService = cameraService;
