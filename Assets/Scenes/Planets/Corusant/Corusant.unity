@@ -2399,8 +2399,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewComponents: []
   <ModelDependencies>k__BackingField: []
-  planetTransform: {fileID: 3730045982124430311}
-  cloudTransform: {fileID: 9144353121359452204}
+  planetRenderers:
+  - {fileID: 556099085464727485}
+  cloudRenderers:
+  - {fileID: 2998813116494977384}
+  - {fileID: 3426651624932496663}
 --- !u!114 &8797581386183861240
 MonoBehaviour:
   m_ObjectHideFlags: 0
