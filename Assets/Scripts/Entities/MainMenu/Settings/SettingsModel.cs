@@ -15,6 +15,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public SettingsChoice FrameRateLimit { get; private set; } = SettingsChoice.Empty;
         public bool VSync { get; private set; }
 
+        public float MasterVolume { get; private set; }
+        public float MusicVolume { get; private set; }
+        public float VoiceVolume { get; private set; }
+        public float SfxVolume { get; private set; }
+        public bool MuteWhenUnfocused { get; private set; }
+
         public float PanSpeed { get; private set; }
         public float ZoomSpeed { get; private set; }
         public bool EdgeScrolling { get; private set; }
@@ -38,6 +44,21 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Resolution = resolution;
             FrameRateLimit = frameRateLimit;
             VSync = vSync;
+            Changed?.Invoke();
+        }
+
+        public void SetAudio(
+            float masterVolume,
+            float musicVolume,
+            float voiceVolume,
+            float sfxVolume,
+            bool muteWhenUnfocused)
+        {
+            MasterVolume = masterVolume;
+            MusicVolume = musicVolume;
+            VoiceVolume = voiceVolume;
+            SfxVolume = sfxVolume;
+            MuteWhenUnfocused = muteWhenUnfocused;
             Changed?.Invoke();
         }
 

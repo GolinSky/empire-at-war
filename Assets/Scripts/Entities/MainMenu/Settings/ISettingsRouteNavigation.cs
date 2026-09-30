@@ -13,6 +13,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         void SelectFrameRateLimit(int index);
         void SetVSync(bool isOn);
 
+        void SetMasterVolume(float volume);
+        void SetMusicVolume(float volume);
+        void SetVoiceVolume(float volume);
+        void SetSfxVolume(float volume);
+        void SetMuteWhenUnfocused(bool isOn);
+
         void SetPanSpeed(float multiplier);
         void SetZoomSpeed(float multiplier);
         void SetEdgeScrolling(bool isOn);

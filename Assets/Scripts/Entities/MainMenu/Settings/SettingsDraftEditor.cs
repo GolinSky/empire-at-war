@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.Settings;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private readonly ISettingsService _settings;
         private readonly IGraphicsOptions _graphicsOptions;
         private readonly IDisplayOptions _displayOptions;
+        private readonly IAudioSettingsPreview _audioPreview;
         private readonly SettingsModel _model;
         private IReadOnlyList<Vector2Int> _resolutions = new Vector2Int[0];
 
@@ -37,8 +39,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             ISettingsService settings,
             IGraphicsOptions graphicsOptions,
             IDisplayOptions displayOptions,
+            IAudioSettingsPreview audioPreview,
             SettingsModel model)
         {
+            _audioPreview = audioPreview;
             _settings = settings;
             _graphicsOptions = graphicsOptions;
             _displayOptions = displayOptions;
@@ -66,6 +70,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     Math.Max(0, Array.IndexOf(FRAME_RATE_LIMITS, graphics.FrameRateLimit)),
                     !graphics.VSync),
                 graphics.VSync);
+
+            AudioSettingsData audio = Draft.Audio;
+            _model.SetAudio(
+                audio.MasterVolume,
+                audio.MusicVolume,
+                audio.VoiceVolume,
+                audio.SfxVolume,
+                audio.MuteWhenUnfocused);
 
             CameraSettingsData camera = Draft.Camera;
             _model.SetCamera(
@@ -104,6 +116,43 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SetVSync(bool isOn)
         {
             Draft.Graphics.VSync = isOn;
+            Refresh();
+        }
+
+        public void SetMasterVolume(float volume)
+        {
+            Draft.Audio.MasterVolume = volume;
+            PreviewAudio();
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            Draft.Audio.MusicVolume = volume;
+            PreviewAudio();
+        }
+
+        public void SetVoiceVolume(float volume)
+        {
+            Draft.Audio.VoiceVolume = volume;
+            PreviewAudio();
+        }
+
+        public void SetSfxVolume(float volume)
+        {
+            Draft.Audio.SfxVolume = volume;
+            PreviewAudio();
+        }
+
+        public void SetMuteWhenUnfocused(bool isOn)
+        {
+            Draft.Audio.MuteWhenUnfocused = isOn;
+            PreviewAudio();
+        }
+
+        /// <summary>Volumes are heard while editing; Discard re-applies the saved volumes.</summary>
+        public void PreviewAudio()
+        {
+            _audioPreview.Preview(Draft.Audio);
             Refresh();
         }
 

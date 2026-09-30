@@ -26,6 +26,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsDropdownRow frameRateLimitRow;
         [SerializeField] private SettingsToggleRow vSyncRow;
 
+        [SerializeField] private SettingsSliderRow masterVolumeRow;
+        [SerializeField] private SettingsSliderRow musicVolumeRow;
+        [SerializeField] private SettingsSliderRow voiceVolumeRow;
+        [SerializeField] private SettingsSliderRow sfxVolumeRow;
+        [SerializeField] private SettingsToggleRow muteWhenUnfocusedRow;
+
         [SerializeField] private SettingsSliderRow panSpeedRow;
         [SerializeField] private SettingsSliderRow zoomSpeedRow;
         [SerializeField] private SettingsToggleRow edgeScrollingRow;
@@ -83,6 +89,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             frameRateLimitRow.Render(_model.FrameRateLimit);
             vSyncRow.Render(_model.VSync);
 
+            masterVolumeRow.Render(_model.MasterVolume);
+            musicVolumeRow.Render(_model.MusicVolume);
+            voiceVolumeRow.Render(_model.VoiceVolume);
+            sfxVolumeRow.Render(_model.SfxVolume);
+            muteWhenUnfocusedRow.Render(_model.MuteWhenUnfocused);
+
             panSpeedRow.Render(_model.PanSpeed);
             zoomSpeedRow.Render(_model.ZoomSpeed);
             edgeScrollingRow.Render(_model.EdgeScrolling);
@@ -130,6 +142,17 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             vSyncRow.Initialize();
             vSyncRow.ValueChanged += _navigation.SetVSync;
 
+            masterVolumeRow.Initialize();
+            masterVolumeRow.ValueChanged += _navigation.SetMasterVolume;
+            musicVolumeRow.Initialize();
+            musicVolumeRow.ValueChanged += _navigation.SetMusicVolume;
+            voiceVolumeRow.Initialize();
+            voiceVolumeRow.ValueChanged += _navigation.SetVoiceVolume;
+            sfxVolumeRow.Initialize();
+            sfxVolumeRow.ValueChanged += _navigation.SetSfxVolume;
+            muteWhenUnfocusedRow.Initialize();
+            muteWhenUnfocusedRow.ValueChanged += _navigation.SetMuteWhenUnfocused;
+
             panSpeedRow.Initialize();
             panSpeedRow.ValueChanged += _navigation.SetPanSpeed;
             zoomSpeedRow.Initialize();
@@ -152,6 +175,17 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             frameRateLimitRow.Dispose();
             vSyncRow.ValueChanged -= _navigation.SetVSync;
             vSyncRow.Dispose();
+
+            masterVolumeRow.ValueChanged -= _navigation.SetMasterVolume;
+            masterVolumeRow.Dispose();
+            musicVolumeRow.ValueChanged -= _navigation.SetMusicVolume;
+            musicVolumeRow.Dispose();
+            voiceVolumeRow.ValueChanged -= _navigation.SetVoiceVolume;
+            voiceVolumeRow.Dispose();
+            sfxVolumeRow.ValueChanged -= _navigation.SetSfxVolume;
+            sfxVolumeRow.Dispose();
+            muteWhenUnfocusedRow.ValueChanged -= _navigation.SetMuteWhenUnfocused;
+            muteWhenUnfocusedRow.Dispose();
 
             panSpeedRow.ValueChanged -= _navigation.SetPanSpeed;
             panSpeedRow.Dispose();

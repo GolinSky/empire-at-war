@@ -11,6 +11,7 @@ using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Timing;
 using Utilities.ScriptUtils.Time;
 using UnityEngine;
+using UnityEngine.Audio;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext
@@ -18,6 +19,7 @@ namespace EmpireAtWar.SceneContext
     public class ProjectContextInstaller : MonoInstaller
     {
         [SerializeField] private CoroutineService coroutineService;
+        [SerializeField] private AudioMixer audioMixer;
         
         public override void InstallBindings()
         {
@@ -38,15 +40,17 @@ namespace EmpireAtWar.SceneContext
             Container.BindModel<SceneData>(assetService);
 
             Container.Bind<TimerPoolService>().AsSingle();
+            Container.Bind<AudioMixer>().FromInstance(audioMixer).AsSingle();
 
             Container
                 .BindInterfacesNonLazyExt<TimerPoolTick>()
                 .BindInterfacesExt<GameController>()
                 .BindInterfacesExt<SceneService>()
                 .BindInterfacesExt<JsonSettingsRepository>()
-                // Settings appliers run in this binding order: display, quality, then input bindings.
+                // Settings appliers run in this binding order: display, quality, audio, then input bindings.
                 .BindInterfacesExt<DisplaySettingsApplier>()
                 .BindInterfacesExt<GraphicsSettingsApplier>()
+                .BindInterfacesExt<AudioSettingsApplier>()
                 .BindInterfacesExt<SettingsService>()
                 .BindInterfacesExt<AudioService>()
                 .BindInterfacesExt<MusicService>()
