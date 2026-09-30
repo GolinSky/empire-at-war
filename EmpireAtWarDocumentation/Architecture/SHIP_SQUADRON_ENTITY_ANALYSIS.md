@@ -4,7 +4,7 @@
 
 - Static review: 2026-09-25; revision `0efa88cb`; branch `fix/battle-related-bugs`.
 - Findings describe code before the 2026-09-26 implementation.
-- Execution status: [[TODOs/Ship_Squadron_Entity_Simplification_Plan]].
+- Execution status: [[TODOs/Refactoring/Ship_Squadron_Entity_Simplification_Plan]].
 
 ## Rules
 
@@ -32,4 +32,4 @@
 ## Files
 
 - [[SHIP_SQUADRON_ENTITY_ANALYSIS - Research]] — dependency tables, 38-read breakdown, state analysis, source evidence.
-- [[SCRIPTS_CODE_AUDIT_2026-09-12]], [[TODOs/Ship_Movement_Simplification_Plan]], [[TODOs/SHIP_ACTIONS_PLAN]].
+- [[SCRIPTS_CODE_AUDIT_2026-09-12]], [[TODOs/Refactoring/Ship_Movement_Simplification_Plan]], [[Done/Features/SHIP_ACTIONS_PLAN]].

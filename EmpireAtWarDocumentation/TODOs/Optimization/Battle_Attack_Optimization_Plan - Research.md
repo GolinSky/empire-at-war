@@ -1,0 +1,558 @@
+---
+category: Optimization
+status: in-progress
+---
+# Battle attack and projectile optimization plan
+
+- Working reference: [[TODOs/Optimization/Battle_Attack_Optimization_Plan]].
+- Detailed plan/evidence; recorded status and dates retained.
+
+- Created: 2026-09-16
+- Status: Phases 1–3 implemented.
+  - Phase 4 serial targeting changes and Phase 5 Jobs paths implemented; battle parity and performance validation remain pending.
+  - Phase 6 unit materials prepared, Forward+ / GPU Resident Drawer enabled, and PlanetView shadow reception disabled.
+  - Actual instanced-draw evidence and a matched performance comparison remain pending; the latest battle capture still shows GPU pressure.
+- Scope: Attack logic, busy state, projectile reuse and ownership, target iteration, Jobs + Burst, and a limited material/shader instancing check.
+
+- The order is **simplify and correct → measure → pool → measure → centralize scheduling → measure → simplify targeting → measure → apply Jobs + Burst → measure → selectively apply instancing**.
+- Finish and review each phase before the next.
+- General quality, lighting, shadows and resolution changes remain outside the original scope.
+- The user's subsequent requests authorize the Phase 6 instancing path and disabling shadow reception only on the PlanetView mesh; all other shadow settings remain unchanged.
+
+## Evidence and assumptions
+
+- Ordinary projectiles reuse turret objects; no GameObject instantiation per shot.
+- Separate lifetimes: hardpoint sequence, leased projectile effect, scheduled damage event.
+- Keep their busy/lifetime state separate.
+
+- `WeaponHardPointView.AttackCoroutine` sets busy, emits a salvo, waits between shots, waits for every retained turret to become idle, then clears busy.
+  - There is no explicit hardpoint cancellation/release path.
+- `WeaponComponent.Release` stops existing delayed-damage coroutines, but does not coordinate cancellation of the hardpoint firing coroutine or release its projectile views.
+- Destroying an individual weapon hardpoint does not stop its in-progress salvo.
+  - The delayed-hit validation also checks the target group but not the individual target hardpoint's destroyed state.
+  - Correct both cases explicitly rather than preserving them as intended behavior.
+- Ordinary `TurretView.ResetParent` detaches the effect.
+  - No corresponding owner-release cleanup exists.
+  - These objects can survive their ship within the loaded scene; the capture does not prove growth over time.
+- `GetTurret` scans the entire retained list on acquisition.
+  - Idle retained `TurretView` components continue receiving `Update`.
+- Each salvo shot starts a delayed-damage coroutine.
+  - Salvos allocate waits and use `WaitWhile` plus an `Any` scan to determine completion.
+- Target selection scans the main group first, then additional groups newest to oldest, retaining unit order within each group.
+  - `CanAttack` rotates the weapon for in-range candidates before checking local yaw, including candidates that fail the angle check.
+- `RocketLauncherHardPointView.Attack` bypasses the base busy-state contract, but the subclass currently has no serialized or construction references.
+  - Latent correctness risk; battle cost unproven.
+
+- The existing capture `battle_20260916_083653_628` provides a historical baseline, not a promised performance gain:
+
+| Metric | Observed |
+| --- | --- |
+| Sample | 589 frames, 10.017 seconds; Unity Editor, Apple M2, target 60 FPS |
+| Weapon ticks | 42 callbacks/frame; 0.327 ms average, 0.510 ms p95 |
+| Ordinary turret updates | 1,096 callbacks/frame including idle; 0.596 ms average, 0.711 ms p95 |
+| Projectile acquisition | 848 requests; zero instances created in the instrumented instantiate branch |
+| Total managed allocation | About 48 KB/frame; not yet attributed specifically to attacks |
+
+- `Weapon.TryFire` is nested in `Weapon.Tick`; do not add their times.
+- Callback counts are not a count of live particles.
+- The measured weapon cost is small enough that job overhead could outweigh its benefit at this fleet size.
+- We will still build the requested batched Jobs path, compare it with the simplified serial path, and retain the faster execution policy for each workload.
+
+## Behavior contract and intended ownership
+
+- Preserve these behaviors; document bugs and intended corrections separately.
+
+- One round-robin hardpoint attempt per eligible weapon tick; successful firing advances the outer fire cooldown.
+- Main-target priority, additional-group order, and first eligible unit selection.
+  - `ResetTarget` currently clears only the main target.
+- Salvo size and interval, weapon delay, range/arc boundaries, and scaled-time pause behavior.
+- One damage event per emitted shot.
+  - Ordinary damage is scheduled after returned travel duration; projectile busy time includes its configured delay plus travel duration.
+  - Laser damage uses growth duration, while its visual lifetime also includes hold duration.
+  - A laser contact raycast currently does not determine damage timing.
+- Damage amount currently uses live target distance at impact time.
+  - Preserve that calculation at main-thread impact commit; do not substitute launch distance or a stale targeting snapshot.
+- Owner release cancels future shots and outstanding damage.
+  - Existing in-flight visuals may finish under explicit pool ownership and then return; they must not survive indefinitely or apply damage after cancellation.
+- Intended correction: destroying a firing hardpoint cancels its remaining, un-emitted salvo shots.
+  - Already emitted shots keep their scheduled impacts while the firing ship remains alive; releasing the whole owner still cancels them.
+- Intended correction: if the selected target hardpoint is destroyed before impact, discard that impact.
+  - Do not redirect damage to another hardpoint.
+  - Apply the same rule in serial and job commits, including a generation check if identities are reused.
+  - A cancelled attack cannot become active again through an old callback or job result.
+- Busy means a sequence is emitting or waiting for its leased effects to finish.
+  - Ready, cooling down, and a projectile being available are distinct concepts.
+  - Do not make a hardpoint ready earlier just to increase throughput.
+
+- Proposed responsibilities; adapt names to existing conventions.
+
+| Layer | Responsibility |
+| --- | --- |
+| Model: `AttackSequenceState`, targeting rules, impact records | Pure C# state and rules; no `UnityEngine` references, coroutines, GameObjects, or health-view lookups |
+| Presenter/system: scene-scoped `CombatAttackCoordinator` | Own registrations, simulation clock, snapshot construction, execution order, job dependencies, cancellation and main-thread commits |
+| Entity adapter: existing `WeaponComponent` | Bridge commands/owner lifecycle into the coordinator and resolve current domain targets through interfaces |
+| Views: hardpoint and projectile views | Render aim, particles and beams; report effect completion; contain no target-selection or damage rules |
+| Projectile pool | Own all effect instances and leases, including detached active effects; manage available/active collections and teardown |
+| Jobs adapter | Convert domain snapshots to persistent native buffers and run Burst numeric selection/progression; keep Unity Collections/Jobs details outside the pure model |
+
+- One combat coordinator batches work; focused helpers own state and pools.
+- Reuse interfaces and DI.
+- No global movement/radar/rendering manager, whole-unit ECS conversion, or new projectile trajectories.
+
+## Phase 1 — Simplify attack flow and fix busy/cancellation behavior
+
+### Pre-change timeline (recorded before implementation)
+
+- Ordinary and dual hardpoints began a salvo immediately, emitted one shot per iteration, waited `DelayBetweenShots` after every shot including the last, then waited until all retained turret views reported idle.
+  - The hardpoint was busy throughout.
+- Each emitted ordinary shot scheduled damage after its returned travel duration; its turret stayed busy for configured projectile delay plus travel duration.
+  - Laser damage used growth duration, while its visual also held after growth.
+- Owner release stopped pending damage coroutines but did not stop an active hardpoint salvo.
+  - Destroying a firing hardpoint did not stop its remaining shots.
+  - A target group destroyed before impact was rejected, but a destroyed target hardpoint within a surviving group was not.
+
+- [ ] Record the current target, salvo, busy and impact timeline for ordinary, dual and laser weapons before changing it.
+  - Include owner death during a salvo and target death before impact.
+- [ ] Express the sequence with explicit states such as Ready, Emitting, WaitingForEffects and Released.
+  - Keep cooldown timestamps separate; derive busy from one authoritative sequence state.
+- [ ] Separate eligibility, aim, beginning a sequence, emitting one shot, and finishing/cancelling a sequence into readable operations.
+  - Keep the existing scheduler temporarily so this phase changes one concern at a time.
+- [ ] Reject overlapping starts.
+  - Provide a single cancellation/release operation that clears sequence bookkeeping and prevents later shot/damage callbacks.
+  - Invoke it from the owner lifecycle before views disappear.
+- [ ] Apply the explicit destruction rules above: stop remaining emissions when a firing hardpoint dies, retain already emitted impacts until owner release, and skip delayed hits whose target hardpoint has died.
+  - Cover each case separately in manual validation.
+- [ ] Define one projectile completion contract for particle and laser effects.
+  - Ensure every successful lease completes exactly once and cannot be reused while still active.
+- [ ] If the rocket subclass is retained, route it through the same busy/start/cancel contract.
+  - Do not add new rocket prefab usage.
+- [ ] Add development-only counters/checks for starts, rejected busy starts, emitted shots, scheduled/applied/cancelled impacts, active sequences and unmatched completions.
+  - Track invariants through explicit registrations, not scene searches each frame.
+
+- **Likely files:** `WeaponComponent`, `WeaponHardPointView`, `BaseTurretView`, `TurretView`, `LaserTurretView`, and the unused rocket override only for its shared contract.
+- Extract the sequence model without unrelated formatting or weapon balance changes.
+
+- **Review gate:** No duplicate start, stuck busy state, post-release emission or post-release damage.
+- Busy duration, shot counts and impact times match the behavior contract.
+- Pause/resume, target reset, hardpoint destruction and owner death all terminate or resume correctly.
+- Compile and inspect diagnostics; capture representative firing and compare CPU/allocation cost.
+- Correctness/readability is the purpose of this phase; require no meaningful regression, not an invented FPS target.
+
+## Phase 2 — Make projectile reuse and ownership explicit
+
+- [ ] Replace full retained-list acquisition scans with an available stack/queue and explicit active leases.
+  - Preserve per-weapon configuration; a reused instance must not inherit a previous owner's speed, damage-related duration, color or target state.
+- [ ] Give every instance an owner in the pool, even when its Transform is detached.
+  - Owner release retires idle effects and transfers remaining active effects to a finite drain-to-completion path, or returns them immediately only where visuals permit.
+- [ ] Return each effect exactly once after its actual completion contract.
+  - Do not use damage time alone as the visual-reuse deadline.
+- [ ] Disable idle components/GameObjects appropriately so idle retained effects stop receiving update callbacks.
+  - Validate that particle tails, lasers and completion notifications still finish correctly.
+- [ ] Prewarm from measured concurrent demand for each effect/configuration key.
+  - Grow in controlled increments when required; record high-water marks and expansion counts.
+  - Cap retained idle capacity and retire excess after use.
+- [ ] Do not drop gameplay shots to satisfy a visual pool cap.
+  - Any optional visual overflow policy must be explicit and must preserve damage/sequence behavior.
+- [ ] Add pool created/reused/active/available/returned/retired counts, acquisition cost, and ownerless-active count.
+  - Teardown must account for every instance.
+
+- **Likely files:** Hardpoint/projectile views, their factory/pool seam, owner-release integration, and capture counters.
+- Begin with the smallest pool lifetime that can safely drain effects after owner release; share across owners only with correct reconfiguration.
+
+- **Review gate:** Repeated fire → ship death → reinforcement cycles do not accumulate detached objects.
+- After effects finish there are no unowned active views; retained capacity is bounded and intentional.
+- Warmed steady firing creates no new instances within measured demand.
+- Idle update callbacks fall, acquisition time does not grow linearly with retained pool size, and shots/damage remain identical.
+- Measure cold spawning separately from warmed reuse.
+
+## Phase 3 — Replace per-shot coroutines with a dedicated attack scheduler
+
+- [x] Introduce a scene-scoped coordinator through existing battle DI.
+  - Register/unregister weapon presenters explicitly; support ships and stations that use the same weapon path.
+- [x] Move salvo progression and delayed damage into reusable state/impact records with a scaled simulation clock.
+  - Eliminate per-shot enumerators, delegates, `WaitForSeconds`, `WaitWhile/Any`, and linear removal of coroutine handles.
+- [x] Use dense active records and a due-time structure suited to the measured workload.
+  - Begin with a simple due-time scan or queue; add a heap/time buckets only if evidence justifies it.
+- [x] Model next shot time, shots remaining, pending impacts and effect completion separately.
+  - Keep stable owner/target identifiers plus generation/version checks so reused registrations cannot receive old work.
+- [x] Use a stable event sequence for equal due times.
+  - Revalidate owner and target before committing damage; cancellation removes/invalidates all associated work according to the owner-versus-hardpoint rules.
+  - Compute distance-dependent damage from current positions at impact, matching the existing path.
+- [x] Preserve frame-quantized waits deliberately, with no catch-up burst after a long frame.
+  - See timing comparison below.
+- [x] Keep this implementation serial first so it becomes the reference for Jobs.
+  - Remove the replaced path; avoid maintaining two separate combat rule implementations.
+  - Parity validation remains pending.
+
+- Phase 3 timing comparison: the old `WaitForSeconds` countdown began at the end of the emitting frame and resumed in the first later frame that met the delay.
+- The scheduler records `Time.time + delay` at emission, allows the next event no earlier than the following frame, and emits at most one shot from each sequence per frame.
+- Impacts are committed in an explicitly early Zenject `LateTick`, after ordinary `Update` firing.
+- The end-of-frame countdown origin and coroutine-versus-`LateTick` commit phase can shift an event by a frame or change same-frame observer visibility.
+- These differences require manual battle parity checks before the review gate can be accepted.
+
+- **Review gate:** Shots per salvo, target IDs, impact order/timestamps, cooldowns and cancellation agree with the reference scenario, including pauses and long frames.
+- The attack scheduling path allocates no managed memory per shot after warmup, confirmed by attribution rather than only global GC bytes.
+- Queue size drains after combat/release.
+- Compare scheduler CPU time and p95/p99 against Phase 2 before advancing.
+
+## Phase 4 — Simplify enemy and hardpoint iteration
+
+- [x] Extract deterministic eligibility/selection from `CanAttack` into a side-effect-free calculation.
+  - Capture weapon world/parent orientation and relevant positions once; apply the final aim on the main thread.
+- [ ] Preserve first-match target priority and the visible final aim after rejected in-range candidates.
+  - Verify local yaw wrapping, rotated/scaled parents, boundary angles, zero-distance directions and moving targets before replacing the old calculation.
+- [ ] Maintain ordered candidate spans per eligible weapon: main group first, then additional groups newest to oldest, preserving hardpoint order.
+  - Share position/alive snapshots across weapons rather than repeatedly reading the same Transform.
+- [x] Remove destroyed/stale registrations while preserving order.
+  - Rebuild candidate membership when target commands, group membership or lifecycle changes, not by allocating nested collections on every attempt.
+- [ ] Use cheap alive/faction/range rejection before arc math.
+  - Use squared distances and equivalent geometry where parity is established.
+  - Do not silently replace first-match selection with nearest-target selection or sticky target caching.
+- [x] Track candidate visits, snapshot work, selection time and invalidations.
+  - Add spatial pruning or a lower reacquisition frequency only as a measured follow-up if candidate work remains large and behavior stays acceptable.
+
+- **Review gate:** The simplified serial selector chooses the same targets and aim outcomes for the reference scenarios.
+- Steady-state candidate preparation/selection does not allocate; repeated Transform reads and dead-target scans fall.
+- Compare the entire preparation + selection + commit cost, not just the innermost loop.
+- This phase supplies the same numeric input/output contract to the Jobs implementation.
+
+- Phase 4 implementation note: `WeaponTargetSelector` calculates range, local yaw and world aim without rotating the view during candidate checks.
+- Each weapon retains a flat ordered candidate list, refreshes it on target commands and unit membership changes, and removes destroyed hardpoints on destruction-only events.
+- Position snapshots are reused within one weapon attempt, including when the main target appears again in the additional list.
+- Cross-weapon position sharing remains pending: the current weapon and movement Update order is not established, so a frame-wide lazy cache could give later weapons stale moving-target positions.
+- The original distance comparison is retained until boundary parity is checked.
+- Development counters track candidate visits, unique position reads, rebuild cost, selection cost and invalidations.
+- Unity recompile and two filtered EditMode smoke checks (five tests) passed; the angle/target parity scenarios and CPU/allocation comparison require the manual battle validation excluded from this run.
+
+## Phase 5 — Apply batched Jobs + Burst to targeting and attack progression
+
+- Implement and measure 5A before 5B; checkpoint each.
+
+### 5A: numeric target selection
+
+- [x] Declare direct dependencies for the APIs used without upgrading unrelated packages.
+  - Current lock resolves Burst **1.8.29**, Collections **6.4.0** and Mathematics **1.3.3** transitively; Entities is not required.
+- [x] Reuse native buffers for weapon state, candidate spans, target snapshots and result slots.
+  - Grow only at capacity boundaries.
+  - Avoid an all-weapons × all-targets intermediate matrix when candidate spans suffice.
+- [x] Schedule one batch across eligible weapons.
+  - Each job entry scans its ordered span and returns the chosen target index plus any final aim result needed for parity.
+  - Burst handles range/arc math and selection; no managed `AttackData`, `IHardPointModel`, Transform, or Unity object access in worker code.
+- [ ] Schedule after input snapshots are final, complete once at the established commit point, and commit in stable registration/sequence order.
+  - Explicitly preserve simulation ordering relative to movement/commands; do not introduce one-frame targeting latency as an accidental optimization.
+- [x] Revalidate target/owner generation, alive state, busy state and relevant command version before firing.
+  - For invalidated snapshots, use the serial reference path when required to preserve same-frame behavior, and count these fallbacks.
+
+### 5B: numeric attack sequence progression
+
+- [x] Batch cooldown/salvo/impact due-state advancement over active attack records.
+  - Produce bounded per-record due-shot/due-impact requests with stable sequence IDs, not worker-thread callbacks.
+- [x] Main-thread commits acquire/play pooled effects, feed actual returned shot duration back into impact state, calculate live impact-time distance/damage, apply health commands and process completion/cancellation.
+  - Preserve one impact per emitted shot and the documented ordinary/laser timing differences.
+- [x] Keep Unity particle APIs, Transform/LineRenderer writes, direct physics calls, health mutation and lifecycle events on the main thread.
+  - Laser raycasts remain outside this migration; batch physics only in a later, independently measured change if needed.
+- [x] Complete dependent work before resizing, reusing or disposing buffers and during scene teardown/domain reload.
+  - Ensure one writer owns each native slot and results cannot survive an owner-generation change.
+- [ ] Compare job execution with the same serial rules at small, representative and stress fleet sizes.
+  - Avoid one job per weapon followed immediately by `Complete`.
+  - Choose a measured crossover threshold; use the serial path below it.
+
+- **Review gate:** No target/shot/damage/cancellation mismatches, job safety errors, native-buffer leaks or lifecycle races.
+- Measure snapshot construction, scheduling, job duration, main-thread wait/`Complete`, commit, allocations and overall combat CPU cost.
+- Accept the Jobs path only where the total cost improves repeatedly.
+- If 5B costs more than the serial scheduler, retain the serial progression and record the result; do not force a slower path merely to use Jobs.
+
+- Dedicated attack system; no whole-unit/projectile ECS rewrite.
+- Reconsider Entities only if measured storage/lifecycle costs justify it.
+
+## Phase 6 — Material/shader checks and selective GPU instancing
+
+### Initial ship/projectile audit (historical)
+
+- Read-only Unity asset inspection covered all **11 prefabs under `Assets/Prefabs/Models/Ships`** (including the reinforcement preview) and **3 projectile prefabs**.
+- It found **49 distinct material asset paths** referenced by existing renderers, with material instancing disabled on each.
+- One path is a model with embedded material data, so this is not a count of all possible material subassets.
+- The dynamically created laser renderer was checked separately through its code and configured material.
+- The current platform supports instancing and SRP Batcher is enabled.
+- These are eligibility findings, not a demonstrated speedup.
+
+| Asset/category | Current setup | Planned action |
+| --- | --- | --- |
+| Repeated ship hulls/submeshes | Mostly URP Lit; Venator capital and Arquitens use Complex Lit; some ship/lamp materials use Autodesk Interactive | Group repeated mesh + submesh + shared material combinations. Check actual shader variants and SRP batching, then benchmark a representative repeated unit before enabling a broader set |
+| Package default `Lit.mat` / embedded Lucrehulk material | Some ship renderers reference package-owned or model-embedded material assets | Do not edit package-cache assets. If an override is justified, use a project-owned material and explicit affected prefab references |
+| `Projectile.prefab` / `ProjectileMaterial.mat` | Particle render mode **Stretch**; renderer instancing flag already true; URP Particles/Unlit; material flag false | Current renderer mode is not a mesh-particle instancing candidate. The installed shader has procedural instancing support, but a material toggle alone does not change this limitation |
+| `DualProjectile.prefab` / `DualProjectileMaterial.mat` | **Stretch**, renderer flag true; **Legacy Shaders/Particles/Additive (Soft)**; material flag false | Record renderer and shader compatibility blockers. A URP shader or mesh-particle conversion is a separate visual change requiring appearance and performance comparison |
+| `LaserProjectile.prefab` / `LazerProjectileMaterial.mat` | `LaserTurretView.Awake` creates a LineRenderer; configured material uses URP Particles/Unlit | Do not treat this as repeated MeshRenderer geometry that a material checkbox can instance |
+| Shields / spawn preview | `ShieldView` and `UnitSpawnView` obtain per-renderer material instances for animation/tint | Audit actual sharing and per-instance properties before selecting an instancing approach; do not globally replace them with property blocks without checking the SRP Batcher tradeoff |
+
+### Implementation and acceptance
+
+- [x] Add an opt-in Editor audit/report listing renderer type, mesh/submesh, shared material identity, shader, material instancing flag, particle render mode and SRP compatibility/blockers.
+  - It must report eligibility separately from actual instanced draw evidence.
+- [ ] For compatible repeated unit geometry, compare the existing SRP path with an actual instancing path.
+  - The 2026-09-17 user request permits preparing supported project-owned unit materials by enabling their instancing flags, independently of this still-pending performance comparison.
+  - Do not globally disable SRP Batcher or toggle unsupported/unrelated materials.
+- [ ] Verify actual instanced draws with Frame Debugger and measure CPU submission/frame cost in the same scenario.
+  - A checked material flag or lower draw count alone is insufficient acceptance evidence.
+- [x] For current stretched particles and lasers, mark the simple checkbox optimization inapplicable.
+  - If a mesh-particle/shader experiment is justified, keep it isolated, preserve stretching/color/softness/beam appearance, and keep it only after a measured benefit.
+  - Do not turn this phase into a VFX/rendering rewrite.
+- [x] Import/save only changed assets through official Unity tooling and check for serialization, shader and import errors.
+  - Retain a precise list of affected materials/prefabs for rollback.
+
+- **Initial scoped candidate (historical):** GPU instancing was enabled only on `Assets/Art/Models/Other/sci-fi-lamps/source/glass.mat` (`m_EnableInstancingVariants: 0 → 1`).
+- No prefab, shader, particle, laser, SRP Batcher, or package asset was changed.
+- The shared material appeared on repeated lamp meshes in ship prefabs; the audit found 32 renderer/material rows across three mesh/submesh combinations.
+- Unity saved and force-imported the material, then confirmed the flag and shader support.
+- This established eligibility only; it did not establish actual instanced draws or a performance benefit.
+
+### Review of repeated-unit instancing — 2026-09-17
+
+- The intended asset model is **one shared material asset per visual material slot/type, reused by every copy**, not a newly created material per spawned unit.
+- Repeating the same ship, platform or mining facility is a valid instancing workload.
+- Matching material alone is insufficient: grouping also depends on the same mesh, submesh, shader pass/variant and compatible renderer state.
+- A multi-part ship can produce several instanced draws.
+- Reducing a ship to a single material is optional and would require separate texture/UV work where appearances differ; it is not a prerequisite for instancing its repeated parts.
+
+- Its audit omitted `Assets/Prefabs/Models/DefendStation`, `MiningFacilities` and `Stations`.
+- A material checkbox comparison did not select a rendering path that actually uses instancing.
+  - The effective Editor pipeline is `URP-HighFidelity` (quality level 2, High Fidelity), with Forward rendering, SRP Batcher enabled and GPU Resident Drawer disabled.
+  - `URP-Performant` is the default pipeline fallback, not the effective quality override.
+  - For compatible ordinary MeshRenderers, SRP Batcher takes priority over conventional GPU instancing.
+  - Enabling the checkbox can therefore leave the existing draw path unchanged.
+
+- Normal production hulls preserve their serialized shared materials.
+- `ShieldView.Start` obtains unique material instances and animates texture offsets; `UnitSpawnView.Awake` does the same for placement-preview tinting.
+- Those renderers do not satisfy shared-material grouping merely because their source asset has instancing enabled.
+- Keep their appearance intact until a separate shader/property design is verified.
+- Do not blanket-replace these accesses with property blocks: non-instanced properties can block conventional instancing, and property blocks also affect SRP Batcher/GPU Resident Drawer eligibility.
+
+- The user's requested material-flag preparation is separate from the performance acceptance gate below.
+- It does not authorize a global SRP Batcher disable, shader migration, material merging, or a quality/rendering-path change.
+
+### Material preparation completed — 2026-09-17
+
+- Inspected **15 unit prefabs**, including the reinforcement preview: **391 MeshRenderers, 534 material slots and 59 distinct material objects**.
+  - All 59 use supported URP shaders with instancing support: 46 Lit, 9 Autodesk Interactive, 2 Complex Lit, 1 Unlit and 1 Simple Lit.
+  - No null mesh-material references or shader compilation errors were found.
+- Enabled instancing on **52 existing project-owned materials**; the lamp `glass.mat` was already enabled.
+  - Each existing material diff changes only `m_EnableInstancingVariants: 0 → 1`.
+- Created **6 shared project-owned copies** in the existing `Assets/Art/Materials` folder: `UnitDefaultLit.mat`, `MiningFacilityHull.mat`, and `Lucrehulk_Shape_019.mat` through `Lucrehulk_Shape_022.mat`.
+  - Their effective shader properties, textures/UV transforms, keywords, render queue, GI settings and enabled passes match the originals; instancing is enabled.
+  - Original package/model subassets remain untouched.
+- Replaced **13 material-slot references in 5 prefabs**: `HeavyDreadnoughtShipView`, `LucrehulkShipView`, `StarDestroyer2ShipView`, `MiningFacilityView` and `RepublicSpaceStationView`.
+  - Copies are shared assets, not per-instance materials.
+  - Unity's prefab save also serialized existing default component fields/blank metadata; no gameplay settings were intentionally changed.
+- Result: **all 59 shared material assets referenced by unit MeshRenderers have instancing enabled**.
+  - Particle and line renderers remain outside this checkbox-based mesh-instancing scope.
+  - Shield and preview runtime material cloning still limits actual sharing.
+- `Tools/Performance/Audit Battle Instancing` now covers all four unit categories plus the 3 projectile prefabs, producing **562 renderer/material rows across 18 prefabs**.
+  - A potential candidate no longer requires duplicate references inside the prefab inventory: repetition can come from spawning copies.
+  - Shader-name SRP classification in this tool remains advisory, not a shader-pass or draw-call measurement.
+- Setup issue to inspect visually: Venator's `RepublicVenator2/rep_venator_body0_model0/ShieldsVfx` has **2 mesh submeshes but 1 material slot**.
+  - This predates the changes and was left intact.
+  - Ships are also not single-renderer assets: `StarDestroyer2ShipView` alone has **260 MeshRenderers and 313 material slots**, including inactive hierarchy objects.
+  - Material instancing does not collapse all these distinct parts into one ship draw.
+- Unity saved/imported the material and prefab changes.
+  - The expanded audit compiled successfully, and post-change shader/import/serialization diagnostics contained no new errors.
+  - No Play Mode session, automated test runner, visual comparison or performance benchmark was run.
+
+- Local evidence: `Library/UnitInstancingAudit.json` (final inventory), `Library/UnitInstancingAuditBeforeOverrides.json` (initial material identities/flag changes), `Library/UnitInstancingOriginalFlagChanges.txt` (52 modified existing materials), `Library/UnitInstancingMaterialOverrides.json` (6 source-to-copy mappings and 5 prefabs), `Library/UnitInstancingCopyVerification.json` (effective property comparison), and `Library/BattleInstancingAudit.tsv` (repeatable audit).
+- Library files are generated local evidence, not authoritative or tracked documentation.
+
+### User's post-change capture — 2026-09-17 10:14 UTC
+
+- **Decision: material preparation verified; fleet GPU instancing and performance improvement are not demonstrated.** Read-only live checks confirm all 59 material flags remain enabled.
+- All five shaders' active subshaders return SRP Batcher compatibility code 0.
+- The prefab inventory has no property blocks or Batching Static flags on its 391 MeshRenderers; runtime shield/preview behavior remains a separate concern.
+
+- Effective settings: High Fidelity quality override, `URP-HighFidelity.asset`, Forward renderer, SRP Batcher on, GPU Resident Drawer **Disabled**, GPU occlusion culling off.
+- Apple M2/Metal supports instancing and compute.
+- Unity's `IsGPUResidentDrawerSupportedBySRP` returns **false**, explicitly because the renderer is not Forward+/Deferred+.
+- `EditorGraphicsSettings.batchRendererGroupShaderStrippingMode` is **KeepIfEntitiesGraphics**, rather than the required Keep All for the proposed GPU Resident Drawer path.
+- No project-owned explicit `RenderMeshInstanced`, `RenderMeshIndirect` or `BatchRendererGroup` submission exists in `Assets/Scripts`.
+
+- Latest files: `Application.persistentDataPath/BattleCaptures/battle_20260917_101407_564_summary.txt` and matching `.csv`.
+- This is after the material preparation: 502 frames, 10.005 seconds, Unity 6000.4.7f1 Editor, Apple M2, High Fidelity, 2940×1506, time scale 1, VSync 0, target 60 FPS.
+
+| Metric | Average | p95 |
+| --- | ---: | ---: |
+| Frame duration | 19.870 ms | 33.562 ms |
+| CPU main thread | 8.869 ms | 15.976 ms |
+| CPU render thread | 6.050 ms | 6.570 ms |
+| GPU frame | 23.766 ms | 38.042 ms |
+| Triangles | 22.37 million | 44.98 million |
+| SetPass calls | 165.48 | 348 |
+| Managed allocation | 32,359 bytes/frame | 97,989 bytes/frame |
+
+- GPU values exist for only **357/502 frames**; timing is asynchronous and CPU timings include waits.
+- The worst frame is 215.099 ms.
+- This is consistent with substantial GPU/rendering pressure in heavier frames, but does not identify a particular shader, shadow pass or material as the cause.
+- Instancing can reduce CPU submission; it does not eliminate the geometry or pixel work of repeated units.
+
+- Draw-call and batch counters are unavailable for all 502 frames.
+- Frame Debugger currently retains **0 events**, and the Editor is back in the clean MainMenuScene outside Play Mode.
+- Therefore there is no recorded draw-event proof to reconstruct from this capture.
+- The prior captures have different conditions/workloads and are not a controlled before/after comparison.
+
+- The capture includes **276 projectile Instantiate marker callbacks** and 621 acquisition callbacks; it includes pool growth, not exclusively warmed reuse.
+  - Instantiate time is 0.237 ms average, 0.995 ms p95 and 6.958 ms maximum.
+  - These samples are nested under acquisition and must not be added to it.
+- `Battle.Weapon.TryFire` has only 11 callbacks, but source inspection shows it wraps `TryFireWeapon`, the serial path.
+  - Normal `CommitTargetSelection` attacks do not emit that marker.
+  - Do **not** interpret this as only 11 shots/target selections or compare it with pre-Jobs totals as equivalent coverage.
+  - Jobs scheduling/completion is not represented by dedicated CSV columns.
+- High Fidelity uses 4096 main-light shadow resolution, four cascades, 1000 shadow distance, soft shadows, HDR and active full-resolution SSAO.
+  - All 15 unit prefabs have zero LODGroups.
+  - These are concrete candidates for a GPU pass/geometry investigation, not measured cost attribution.
+  - The instancing-disabled outline features are inactive and do not explain the current capture.
+
+- **Next controlled experiment:** use Forward+ plus GPU Resident Drawer **Instanced Drawing**, keep SRP Batcher enabled, and set BatchRendererGroup variants to **Keep All**; validate renderer/material eligibility and preserve appearance.
+- Verify actual **Hybrid Batch Group** events in Frame Debugger, then compare the same warmed repeated-unit scene and a representative battle against the existing SRP baseline.
+- This review did not change rendering settings or run a new battle.
+- GPU Resident Drawer and draw evidence: [Unity setup](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/gpu-resident-drawer.html), [performance considerations](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/gpu-resident-drawer-performance.html).
+
+### GPU Resident Drawer enabled and latest battle — 2026-09-17 10:47 UTC
+
+- Following the user's instruction to apply an actual instancing path, the active High Fidelity renderer now uses **Forward+**, GPU Resident Drawer **Instanced Drawing**, SRP Batcher **enabled**, and BatchRendererGroup variant stripping **Keep All**.
+- Unity's pipeline compatibility check passes.
+- Forward+ was chosen as the smaller transition from the existing Forward renderer, not as a measured winner over Deferred+.
+- Both clustered paths support GPU Resident Drawer.
+
+- Newest capture: `Application.persistentDataPath/BattleCaptures/battle_20260917_104702_273_summary.txt` and matching `.csv`; 458 frames over 10.006 seconds, Unity 6000.4.7f1 Editor, Apple M2, High Fidelity, 2940×1506, time scale 1, VSync 0, target 60.
+
+| Metric | Average | p95 | p99 |
+| --- | ---: | ---: | ---: |
+| Frame duration | 21.786 ms | 40.501 ms | 52.803 ms |
+| CPU main thread | 8.138 ms | 16.053 ms | 17.361 ms |
+| CPU render thread | 3.470 ms | 5.222 ms | 5.607 ms |
+| GPU frame | 28.711 ms | 41.918 ms | 45.654 ms |
+| Triangles | 19.11 million | 44.28 million | 50.51 million |
+| SetPass calls | 147.66 | 312 | 336 |
+| Managed allocation | 20,029 bytes/frame | 38,261 bytes/frame | 56,359 bytes/frame |
+
+- 65.1% of frames exceed 16.67 ms, and 15.1% exceed 33.33 ms.
+- GPU timings exist for 359/458 frames; draw-call and batch counters remain unavailable.
+- Relative to 10:14, average render-thread time fell 42.6%, while average GPU time rose 20.8% and frame p95 rose 20.7%.
+- The workload differs (about 26 rather than 30 ship callbacks/frame, different pool state), so this does not prove which rendering change caused the difference.
+- It is consistent with reduced CPU submission cost while GPU work remains the limiting concern.
+- The capture cannot prove active instanced draws.
+
+- There were **zero projectile Instantiate calls** in this capture.
+- Pool acquisition averaged 0.055 ms (0.131 ms p95); turret updates averaged 0.359 ms (0.481 ms p95).
+- Pool expansion does not explain this run's slow frames.
+- `TryFire` still covers only the serial path; no dedicated Jobs scheduling/completion timing is present.
+
+- Deferred+ is a reasonable next matched comparison for a battle with many overlapping lights.
+- Forward+ ignores the old per-object additional-light limit, so the stored limit of 8 no longer bounds per-object lighting work.
+- This is a possible source of additional GPU cost, not a measured attribution.
+- Deferred+ adds G-buffer work, and transparent objects/forward-only shaders still use forward rendering.
+- Neither path merges different ship meshes into one instance group or removes their geometry cost.
+- See [Unity rendering-path comparison](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/rendering-paths-comparison.html) and [Forward+ light limits](https://docs.unity3d.com/6000.4/Documentation/Manual/urp/rendering/forward-rendering-paths.html).
+
+### PlanetView shadow reception — applied after the 10:47 capture
+
+- The user clarified: **only the PlanetView mesh / battle background must stop receiving shadows; all other objects remain unchanged**.
+
+- Disabled `receiveShadows` on the explicitly bound planet mesh in both `Corusant.unity` and `Kamino.unity`.
+  - Cloud meshes and every shadow-casting setting are unchanged.
+- Their Autodesk Interactive Shader Graphs have shadow reception compiled in and expose no usable per-material receive-shadows switch.
+  - Created two project-owned variants in `Assets/Art/Shaders`, `PlanetAutodeskInteractiveNoShadows` and `PlanetAutodeskInteractiveMaskedNoShadows`, and assigned them only to the two planet materials.
+- Generated shader comparison shows only the shader name and `_RECEIVE_SHADOWS_OFF` define differ from the originals, in both Forward and G-buffer passes.
+  - Material textures, colors and other properties are unchanged.
+- Unity imported the shaders without shader errors, saved both materials and scenes, and restored the clean MainMenu scene.
+  - No new import/serialization errors appeared.
+  - No Play Mode session, automated tests or post-change performance capture was run.
+
+- Next comparison: run the same warmed mixed-fleet battle/camera with Forward+ and Deferred+, keeping GPU Resident Drawer, resolution, ship composition, lights and other shadow settings identical.
+- Compare GPU/frame p95 and capture Hybrid Batch Group draw evidence.
+- If GPU time remains high, prioritize pass timings and geometry/LOD reduction over additional material flags.
+- No Deferred+ switch or broader shadow/quality changes were applied in this follow-up.
+
+### Corrected comparison procedure
+
+1. Use 100 copies of one production unit type, with the same mesh/material asset references.
+   - Compare ships, platforms and mining facilities separately before using a mixed fleet.
+   - Keep camera, visibility, resolution, shadows, quality, motion and effects identical between runs.
+2. Record the current SRP Batcher baseline.
+   - The checkbox-enabled version is an eligibility/control comparison; if Frame Debugger still shows the SRP path, record **no conventional instanced draws demonstrated**.
+3. For an actual instancing comparison, use an isolated `Graphics.RenderMeshInstanced` submission for the selected repeated geometry, or separately evaluate GPU Resident Drawer with a compatible Forward+/Deferred+ renderer and shader variants.
+   - These are subsequent rendering changes, not part of the material-flag preparation.
+   - Retain SRP Batcher for unrelated rendering.
+4. Inspect the target mesh/submesh/material draws in Frame Debugger.
+   - Conventional instancing should show instanced draws; GPU Resident Drawer uses its BatchRendererGroup path.
+   - Check appearance, shadows, shields and placement previews.
+   - Measure warmed CPU render submission and frame-time median/p95/p99, plus GPU time when available.
+   - Repeat matched captures, then check representative full battles.
+5. Accept only demonstrated improvements without visual regressions.
+   - Instancing reduces submission overhead; it does not remove the geometry, pixel shading, transparency or gameplay work of 100 units.
+   - Missing GPU measurements are not zero GPU cost.
+
+- No representative battle or instanced-draw capture was performed during this review.
+- The inspected Editor scene was the clean `MainMenuScene`, outside Play Mode; its statistics cannot establish battle performance.
+
+- The four captures available during the initial review also do not supply a matched instancing comparison: later runs changed time scale, used a 2940×72 Game view, or had different callback/creation counts.
+- TryFire marker coverage also changed with the Jobs path, so its totals alone do not establish comparable firing activity.
+- Draw-call/batch counters were unavailable, and no capture contains Frame Debugger evidence.
+- The historical baseline recorded p95 frame time 21.585 ms, GPU time 22.099 ms and main-thread time 13.056 ms, with p95 triangle count about 12.79 million.
+- This suggests investigating GPU work as well as CPU submission; it does not establish which materials or units caused the cost, or that instancing will remove it.
+
+- **Review gate:** Compatibility report has no unsupported assumptions; instancing is visibly active where claimed; appearance is unchanged; representative repeated measurements show a benefit.
+- Otherwise retain the current material path and mark the candidate “no demonstrated benefit” or “incompatible with current renderer.” This phase can legitimately finish without asset changes.
+
+- Unity references: [GPU instancing and pipeline restrictions](https://docs.unity3d.com/6000.4/Documentation/Manual/GPUInstancing.html), [SRP Batcher compatibility and scoped alternatives](https://docs.unity3d.com/Manual/SRPBatcher-Incompatible.html), [particle instancing shader requirements](https://docs.unity3d.com/6000.4/Documentation/ScriptReference/ParticleSystemRenderer-enableGPUInstancing.html), [particle mesh-render-mode requirement](https://docs.unity3d.com/Manual/PartSysInstancing.html).
+- Installed URP 17.4.0 shader source was also inspected; the Built-in Pipeline particle examples must not be copied into URP unchanged.
+
+## Checkpoint procedure after every phase
+
+1. Review the scoped diff and behavior contract.
+   - Use one implementation writer; use an independent reviewer where useful.
+   - Keep each phase independently revertible without undoing earlier accepted phases or unrelated user changes.
+2. Compile, inspect relevant console/import diagnostics, and perform the manual battle/lifecycle scenarios.
+   - Do not run automated tests unless the user explicitly requests them.
+   - Do not discard dirty scenes to validate a change.
+3. Capture matched small, representative and stress battles, keeping fleet composition, shot mix, camera, Editor layout and time scale consistent.
+   - Repeat enough captures to distinguish changes from run variation.
+   - Include firing, cold pool growth, warmed firing and post-death cleanup.
+   - Editor Play Mode is the primary reported environment; confirm larger performance claims in a Development Player later.
+4. Compare CPU mean/p95/p99, allocation attribution, candidate visits, shots/impacts, active/idle/orphan effect counts and scheduler/job costs.
+   - Use native CPU Timeline for coroutine or wait attribution when CSV totals cannot answer the question.
+   - Keep Deep Profile off initially.
+   - A frame-rate cap can hide CPU headroom gains; FPS alone is not the acceptance criterion.
+5. Write the result below: what changed, captures used, before/after metrics, behavior checks, remaining risks, and **accept / revise / revert**.
+   - Begin the next phase only after the current gate is resolved.
+   - If user battle input/capture is needed, leave that phase explicitly awaiting validation rather than marking it complete.
+
+- The existing capture command uses a ten-second window; duration itself is not the acceptance criterion.
+- Samples must cover the relevant battle/lifecycle event.
+- Add only the diagnostic counters required by the current phase, using bounded buffers and no per-frame logs or scene searches.
+
+| Phase | Status | Evidence and decision |
+| --- | --- | --- |
+| 1. Readable attack states and busy/cancellation | Implemented; awaiting manual validation | Explicit sequence state and effect leases, owner/hardpoint cancellation, target-hardpoint impact rejection, rocket shared path, and development counters. Unity recompile completed without errors; one filtered EditMode health-model smoke test passed; independent diff review found no material defect. No battle or performance capture was run, so firing/pause/lifecycle parity and CPU/allocation impact remain unverified. |
+| 2. Projectile ownership and reuse | Implemented; awaiting manual validation and measured prewarm calibration | A per-hardpoint pool uses an available stack and active lease map. Idle effects are inactive and retained up to one salvo's capacity; excess effects retire. Active effects detach and drain on owner release. Particle completion waits for live particles as well as the configured busy time. Development counters track created, reused, active, available, returned, retired, expansions, high-water and ownerless-active effects; the existing acquisition profiler marker remains. Independent review found idle-destruction bookkeeping and retained laser target state issues; both were corrected. Unity recompile completed without errors and one filtered EditMode smoke test passed. No battle or performance capture was run at the user's request. `prewarmEffects` defaults to zero until concurrent demand is measured and configured; visual/lifecycle parity and capacity measurements remain unverified. |
+| 3. Serial attack/impact scheduler | Implemented; awaiting manual parity and performance validation | Scene-scoped serial coordinator now owns salvo and impact records, scaled due times, stable tie order, owner and target generations, and cancellation. Per-shot and salvo coroutines were removed. Unity recompile completed without errors; a filtered three-test EditMode smoke check passed. Independent review identified the changed coroutine-to-late-tick ordering; explicit early late-tick priority was added. No battle, logic-parity run or performance capture was run at the user's request. Timing parity, per-shot allocation attribution, scheduler CPU cost and queue drain remain unverified. |
+| 4. Target iteration and numeric rules | Serial implementation in progress; parity and measurement pending | Side-effect-free aim, ordered candidate lists, hardpoint invalidation, per-attempt position snapshots and diagnostics are implemented. Shared cross-weapon snapshots await a defined movement/attack update phase. Two filtered EditMode smoke checks (five tests) passed; no battle or performance test was run at the user's request. |
+| 5A. Jobs + Burst targeting | Implemented; parity and crossover measurement pending | Eligible weapon ticks queue ordered candidate spans; one Burst `IJobParallelFor` handles batches of eight or more, followed by stable main-thread commits. Smaller batches and invalidated requests use the serial selector. Persistent native buffers are reused and disposed with the scene coordinator. The first shot now commits in the same frame's early `LateTick` rather than its weapon's `Tick`; exact movement/command ordering and numeric arc parity remain unverified. The threshold is provisional, not measured. |
+| 5B. Jobs + Burst sequence progression | Implemented; parity and crossover measurement pending | One Burst due-state job scans 64 or more pending sequence/impact records; sorted due events reuse the serial main-thread commit path and revalidate event identity after cancellations. Persistent buffers are released on coordinator disposal. The threshold is provisional; managed event lookups and synchronous completion may cost more than the serial scheduler. No battle or performance capture was run. Unity recompile reported no errors, and a filtered three-test EditMode smoke check passed. |
+| 6. Instancing | All unit mesh-material flags prepared; actual rendering/performance comparison pending | Audited 15 unit prefabs, 391 MeshRenderers and 59 materials. Enabled 52 existing materials, retained 1 already enabled material, and created 6 property-equivalent shared material copies with 13 slot replacements across 5 prefabs. All 59 referenced mesh materials now have instancing enabled. Expanded the reusable audit to platforms, mining facilities and stations: 562 rows across 18 unit/projectile prefabs. Compile/import/save checks passed. SRP Batcher still takes priority for compatible normal renderers; actual instanced draws, appearance parity and performance benefit remain unverified. See the corrected comparison procedure above. |
+
+## Source map and execution constraints
+
+- Primary existing code: `Assets/Scripts/Components/Weapon/WeaponComponent.cs`; `Components/ViewComponents/Health/WeaponHardPointView.cs`; `Components/ViewComponents/Weapon/{BaseTurretView,TurretView,LaserTurretView}.cs`; `Components/AttackComponent/AttackData.cs`; `Components/Health/{HealthComponent,HardPointAdapter}.cs`; ship/station combat presenters and battle installers.
+- Paths after the first are relative to `Assets/Scripts`.
+
+- Diagnostic baseline: `Docs/BATTLE_PERFORMANCE_REVIEW.md`, `Assets/Scripts/Services/Timing/BattlePerformanceCapture*.cs`, `BattleProfilerMarkers.cs`, and the capture files under the application's `BattleCaptures` directory.
+- The earlier review's rendering observations are historical and are not part of this implementation scope.
+
+- Use Serena for live C# symbols and the official `unity` CLI for Unity operations.
+- Before creating new asset folders, read [[Architecture/PROJECT_ORGANIZATION|PROJECT_ORGANIZATION]] through the configured vault tooling as required by repository policy.
+- Preserve metadata and serialized field names.
+- Do not use Graphify, run unrequested tests, or modify Obsidian configuration.
+- Jobs guidance: [scheduling and completion](https://docs.unity3d.com/Manual/job-system-creating-jobs.html); use current package documentation for the installed versions during implementation.
+
+- Planning contributors: `battle_code_review` / code_explorer (configured gpt-5.6-luna, medium reasoning) confirmed lifecycle/busy/target behavior; `attack_jobs_plan` / unity_architect (configured gpt-5.6-sol, high reasoning) defined batching and migration boundaries and reviewed the completed plan.
+- Its destruction and impact-distance findings are incorporated above.
+- Effective models were not exposed by the runner.
+- Parent audited materials and synthesized this plan.
+- No gameplay, material or prefab changes were made while creating it.
