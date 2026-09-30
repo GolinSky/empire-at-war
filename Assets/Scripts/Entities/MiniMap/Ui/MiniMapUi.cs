@@ -41,6 +41,8 @@ namespace EmpireAtWar.Views.MiniMap
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
         private Vector2Range _mapRange;
+        private float _markerAlpha = HIGHLIGHT_MARK_ALPHA;
+        private Tween _markerFade;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         public event Action<Vector3> OnCameraMoveRequested;
@@ -69,8 +71,10 @@ namespace EmpireAtWar.Views.MiniMap
             Model.OnMarkAdded -= AddMark;
             Model.OnMarkerAdded -= AddMarker;
             Model.OnMarkerRemoved -= RemoveMarker;
+            mapImage.DOKill();
             cameraFootprintView.DOKill();
             obstacleView.DOKill();
+            if (_markerFade != null) _markerFade.Kill();
         }
 
         private void AddMark(MarkData markData)
@@ -206,23 +210,37 @@ namespace EmpireAtWar.Views.MiniMap
             if(Model.IsInputBlocked) return;
 
             DoFade(HIGHLIGHT_MARK_ALPHA, HIGHLIGHT_DURATION);
-            mapImage.DOFade(HIGHLIGHT_MAP_ALPHA, HIGHLIGHT_DURATION);
+            mapImage.DOKill();
+            mapImage.DOFade(HIGHLIGHT_MAP_ALPHA, HIGHLIGHT_DURATION).SetLink(gameObject);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
+            mapImage.DOKill();
+            mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION).SetLink(gameObject);
             DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }
 
 
         private void DoFade(float alpha, float duration)
         {
-            cameraFootprintView.DOFade(alpha, duration);
-            obstacleView.DOFade(alpha, duration);
+            cameraFootprintView.DOKill();
+            obstacleView.DOKill();
+            cameraFootprintView.DOFade(alpha, duration).SetLink(gameObject);
+            obstacleView.DOFade(alpha, duration).SetLink(gameObject);
+            if (_markerFade != null) _markerFade.Kill();
+            _markerFade = DOTween.To(() => _markerAlpha, UpdateMarkerAlpha, alpha, duration)
+                .SetLink(gameObject).OnKill(() => _markerFade = null);
+        }
+
+        private void UpdateMarkerAlpha(float alpha)
+        {
+            _markerAlpha = alpha;
             for (var i = 0; i < _mapMarkers.Count; i++)
             {
-                _mapMarkers[i].DOFade(alpha, duration);
+                Color color = _mapMarkers[i].color;
+                color.a = alpha;
+                _mapMarkers[i].color = color;
             }
         }
     }
