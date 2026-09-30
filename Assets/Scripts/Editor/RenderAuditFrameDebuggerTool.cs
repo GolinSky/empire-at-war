@@ -13,6 +13,9 @@ namespace EmpireAtWar.Editor
     internal static class RenderAuditFrameDebuggerTool
     {
         private const int LOCAL_EDITOR_CONNECTION = -1;
+        // Each event is replayed and repainted (~50 ms), so a heavy frame can take
+        // minutes; the cap keeps one frame near a minute. Truncation is recorded.
+        internal const int DEFAULT_MAX_EVENTS = 1000;
         private static CaptureOperation _activeCapture;
         private static Type _utilityType;
         private static PropertyInfo _enabled;
@@ -38,17 +41,17 @@ namespace EmpireAtWar.Editor
             };
         }
 
-[MenuItem("Tools/Render Audit/Capture Frame Debugger (2 frames)")]
+[MenuItem("Tools/Render Audit/Capture Frame Debugger (1 frame)")]
         private static void CaptureFromMenu()
         {
-            Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(CaptureFrameDebugger(2, 120)));
+            Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(CaptureFrameDebugger(1, 120)));
         }
 
         [CliCommand("render_audit_frame_debugger", "Captures fresh Frame Debugger event data to Logs/RenderAudit.")]
         public static object CaptureFrameDebugger(
             [CliArg("frames", "Number of distinct stepped frames to capture.")] int frames = 2,
             [CliArg("timeout_seconds", "Real-time timeout for the capture.")] int timeoutSeconds = 15,
-            [CliArg("max_events", "Maximum events to export for each captured frame.")] int maxEvents = 5000)
+            [CliArg("max_events", "Maximum events to export for each captured frame.")] int maxEvents = DEFAULT_MAX_EVENTS)
         {
             var directory = RenderAuditCaptureStatus.CreateCaptureDirectory("frame-debugger");
             var started = BeginCapture(directory, "standalone", frames, timeoutSeconds, maxEvents, result => RenderAuditCaptureStatus.WriteJson(directory, "capture-status.json", result));
@@ -269,7 +272,9 @@ namespace EmpireAtWar.Editor
             private int _repaintsRemaining;
             private PropertyInfo _limit;
             private EditorWindow _gameView;
+            private EditorWindow _frameDebuggerWindow;
             private Action _setSceneRepaintDirty;
+            private int _progressId;
 
             internal CaptureOperation(string directory, string phase, int framesRequested, int timeoutSeconds, int maxEvents, Action<Dictionary<string, object>> completed)
             {
@@ -288,7 +293,11 @@ namespace EmpireAtWar.Editor
 
                 _limit = _utilityType.GetProperty("limit", BindingFlags.Public | BindingFlags.Static);
                 _gameView = EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.GameView", true));
+                // Shown without focus so the replayed events are visible while the Game View keeps rendering.
+                _frameDebuggerWindow = EditorWindow.GetWindow(typeof(EditorWindow).Assembly.GetType("UnityEditor.FrameDebuggerWindow", true), false, "Frame Debugger", false);
                 _setSceneRepaintDirty = (Action)Delegate.CreateDelegate(typeof(Action), typeof(EditorApplication).GetMethod("SetSceneRepaintDirty", BindingFlags.NonPublic | BindingFlags.Static));
+                _progressId = Progress.Start("Render Audit: Frame Debugger", $"Stepping {_framesRequested} frame(s); keep the Editor paused until it finishes.");
+                Debug.Log($"Render Audit Frame Debugger: capturing {_framesRequested} frame(s), up to {_maxEvents} events each. The Editor stays paused until it finishes; progress is in the Background Tasks indicator. Unpausing cancels the capture.");
                 _wasPaused = EditorApplication.isPaused;
                 EditorApplication.isPaused = true;
                 EditorApplication.update += Tick;
@@ -362,6 +371,7 @@ namespace EmpireAtWar.Editor
 
                         _descriptors = ToList((IEnumerable)_getFrameEvents.Invoke(null, null)).Take((int)_count.GetValue(null)).ToList();
                         _eventIndex = 0;
+                        ReportProgress();
                         SelectEvent();
                         return;
                     }
@@ -386,6 +396,7 @@ namespace EmpireAtWar.Editor
 
                     _capturedEvents.Add(entry);
                     _eventIndex++;
+                    ReportProgress();
                     if (_eventIndex < Math.Min(_descriptors.Count, _maxEvents))
                     {
                         SelectEvent();
@@ -408,6 +419,15 @@ namespace EmpireAtWar.Editor
             {
                 _setSceneRepaintDirty.Invoke();
                 _gameView.Repaint();
+                _frameDebuggerWindow.Repaint();
+            }
+
+            private void ReportProgress()
+            {
+                var eventTotal = Math.Min(_descriptors.Count, _maxEvents);
+                var frameFraction = eventTotal == 0 ? 0f : (float)_eventIndex / eventTotal;
+                Progress.Report(_progressId, (_frameIdentities.Count + frameFraction) / _framesRequested,
+                    $"Frame {_frameIdentities.Count + 1}/{_framesRequested}, event {_eventIndex}/{eventTotal}");
             }
 
             private void SelectEvent()
@@ -455,6 +475,12 @@ namespace EmpireAtWar.Editor
                     return;
                 _finished = true;
                 EditorApplication.update -= Tick;
+                Progress.Finish(_progressId, status switch
+                {
+                    "completed" => Progress.Status.Succeeded,
+                    "cancelled" => Progress.Status.Canceled,
+                    _ => Progress.Status.Failed
+                });
                 try
                 {
                     InvokeSetEnabled(false);

@@ -23,10 +23,10 @@ namespace EmpireAtWar.Editor
             };
         }
 
-[MenuItem("Tools/Render Audit/Capture All (2 frames)")]
+[MenuItem("Tools/Render Audit/Capture All (2 frames, 1 Frame Debugger frame)")]
         private static void CaptureFromMenu()
         {
-            Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(StartCapture(2, 180)));
+            Debug.Log(Newtonsoft.Json.JsonConvert.SerializeObject(StartCapture(2, 180, 1)));
         }
 
         [MenuItem("Tools/Render Audit/Cancel Capture")]
@@ -41,7 +41,8 @@ namespace EmpireAtWar.Editor
         [CliCommand("render_audit_capture", "Runs bounded profiler, Render Graph, Rendering Debugger, and Frame Debugger capture phases.")]
         public static object StartCapture(
             [CliArg("frames", "Rendered frames for each frame-based phase.")] int frames = 2,
-            [CliArg("timeout_seconds", "Real-time timeout across all phases.")] int timeoutSeconds = 30)
+            [CliArg("timeout_seconds", "Real-time timeout across all phases.")] int timeoutSeconds = 30,
+            [CliArg("frame_debugger_frames", "Stepped frames for the Frame Debugger phase, the slowest one.")] int frameDebuggerFrames = 2)
         {
             if (_activeCapture != null || RenderAuditProfilerTool.IsCapturing || RenderAuditRenderGraphTool.IsCapturing || RenderAuditFrameDebuggerTool.IsCapturing)
             {
@@ -57,15 +58,15 @@ namespace EmpireAtWar.Editor
                 return unsupported;
             }
 
-            if (frames < 1 || timeoutSeconds < 1)
+            if (frames < 1 || timeoutSeconds < 1 || frameDebuggerFrames < 1)
             {
-                var error = RenderAuditCaptureStatus.CreateResult("error", "frames and timeout_seconds must both be at least one.");
+                var error = RenderAuditCaptureStatus.CreateResult("error", "frames, timeout_seconds, and frame_debugger_frames must all be at least one.");
                 error["capture_directory"] = directory;
                 RenderAuditCaptureStatus.WriteJson(directory, "capture-status.json", error);
                 return error;
             }
 
-            _activeCapture = new CaptureOperation(directory, frames, timeoutSeconds);
+            _activeCapture = new CaptureOperation(directory, frames, frameDebuggerFrames, timeoutSeconds);
             _activeCapture.Start();
             return GetCaptureStatus();
         }
@@ -97,15 +98,17 @@ namespace EmpireAtWar.Editor
         {
             private readonly string _directory;
             private readonly int _frames;
+            private readonly int _frameDebuggerFrames;
             private readonly double _deadline;
             private readonly List<object> _phases = new();
             private int _phaseIndex;
             private bool _finished;
 
-            internal CaptureOperation(string directory, int frames, int timeoutSeconds)
+            internal CaptureOperation(string directory, int frames, int frameDebuggerFrames, int timeoutSeconds)
             {
                 _directory = directory;
                 _frames = frames;
+                _frameDebuggerFrames = frameDebuggerFrames;
                 _deadline = EditorApplication.timeSinceStartup + timeoutSeconds;
             }
 
@@ -192,7 +195,7 @@ namespace EmpireAtWar.Editor
 
             private void StartFrameDebuggerPhase()
             {
-                var result = RenderAuditFrameDebuggerTool.BeginCapture(_directory, "frame_debugger", _frames, GetRemainingSeconds(), 5000, FinishPhase);
+                var result = RenderAuditFrameDebuggerTool.BeginCapture(_directory, "frame_debugger", _frameDebuggerFrames, GetRemainingSeconds(), RenderAuditFrameDebuggerTool.DEFAULT_MAX_EVENTS, FinishPhase);
                 if ((string)result["status"] != "running")
                 {
                     FinishPhase(result);
