@@ -549,6 +549,8 @@ MonoBehaviour:
     type: 3}
   unitExplosionPrefab: {fileID: 856421663429402426, guid: ad12607a43b672a44b753a7397fe2083,
     type: 3}
+  rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
+    type: 2}
 --- !u!114 &8744064952395461264
 MonoBehaviour:
   m_ObjectHideFlags: 0

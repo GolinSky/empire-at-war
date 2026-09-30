@@ -665,16 +665,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
-  _startingOwner: 3
   _isCapturable: 1
   _captureDuration: 10
   _radius: 270
   _sphereRenderer: {fileID: 5725095360330420120}
   _captureCanvas: {fileID: 1101914148242906406}
+  _captureCanvasScaler: {fileID: 2685166790453926460}
   _captureProgress: {fileID: 8654983422565621743}
   _statusText: {fileID: 7261505759188685563}
   _neutralColor: {r: 0.48, g: 0.55, b: 0.62, a: 0.08}
   _playerColor: {r: 0.18, g: 0.53, b: 0.68, a: 0.1}
+  _allyColor: {r: 0.27, g: 0.62, b: 0.43, a: 0.1}
   _opponentColor: {r: 0.68, g: 0.27, b: 0.29, a: 0.1}
   _contestedColor: {r: 0.73, g: 0.56, b: 0.23, a: 0.1}
 --- !u!1 &8029592657182946327

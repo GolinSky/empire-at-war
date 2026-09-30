@@ -13,12 +13,11 @@ namespace EmpireAtWar.Utils
 
         private readonly GameObject _gameObject;
         private readonly LineRenderer _line;
-        private readonly Material _material;
         private readonly IRangeDebugObserver _rangeDebug;
         private readonly ISelectionModelObserver _selection;
         private float _radius = -1f;
 
-        public DebugRangeCircle(string name, Color color, IRangeDebugObserver rangeDebug,
+        public DebugRangeCircle(string name, Color color, Material lineMaterial, IRangeDebugObserver rangeDebug,
             ISelectionModelObserver selection)
         {
             _rangeDebug = rangeDebug;
@@ -30,8 +29,7 @@ namespace EmpireAtWar.Utils
             _line.loop = true;
             _line.positionCount = SEGMENTS;
             _line.widthMultiplier = LINE_WIDTH;
-            _material = new Material(Shader.Find("Sprites/Default"));
-            _line.sharedMaterial = _material;
+            _line.sharedMaterial = lineMaterial;
             _line.startColor = color;
             _line.endColor = color;
             _line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -57,7 +55,6 @@ namespace EmpireAtWar.Utils
 
         public void Destroy()
         {
-            Object.Destroy(_material);
             Object.Destroy(_gameObject);
         }
     }

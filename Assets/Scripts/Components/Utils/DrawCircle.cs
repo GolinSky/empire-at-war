@@ -17,7 +17,6 @@ namespace EmpireAtWar
         private void CreatePoints()
         {
             _y = transform.position.y;
-            lineRenderer = GetComponent<LineRenderer>();
             lineRenderer.positionCount = segments + 1; 
             float angle = 0f;
             for (int i = 0; i < (segments + 1); i++)

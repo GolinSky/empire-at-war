@@ -10,7 +10,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -46,7 +45,7 @@ namespace EmpireAtWar.Components.Weapon
         private WeaponsData _weaponsData;
         private DamageMatrixData _damageMatrix;
         private IRadarModelObserver _radarModel;
-        private IRangeDebugObserver _rangeDebug;
+        private DebugRangeCircleFactory _rangeCircleFactory;
         private ISelectionModelObserver _selection;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
@@ -72,14 +71,14 @@ namespace EmpireAtWar.Components.Weapon
         [Inject]
         private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
             WeaponsData weaponsData, DamageMatrixData damageMatrix, IRadarModelObserver radarModel,
-            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection)
+            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection)
         {
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _weaponsData = weaponsData;
             _damageMatrix = damageMatrix;
             _radarModel = radarModel;
-            _rangeDebug = rangeDebug;
+            _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
         }
         
@@ -102,7 +101,7 @@ namespace EmpireAtWar.Components.Weapon
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _attackRangeCircle = new DebugRangeCircle("AttackRange", Color.red, _rangeDebug, _selection);
+            _attackRangeCircle = _rangeCircleFactory.Create("AttackRange", Color.red, _selection);
 #endif
         }
 

@@ -13,7 +13,6 @@ using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Selection;
-using EmpireAtWar.Services.Cheats;
 
 namespace EmpireAtWar.Components.Radar
 {
@@ -36,7 +35,7 @@ namespace EmpireAtWar.Components.Radar
         private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
         private readonly List<RadarContact> _contacts = new List<RadarContact>();
         private ILayerService _layerService;
-        private IRangeDebugObserver _rangeDebug;
+        private DebugRangeCircleFactory _rangeCircleFactory;
         private ISelectionModelObserver _selection;
         private IPlayerRelations _relations;
         private Vector3 _position;
@@ -48,12 +47,12 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService,
-            IRangeDebugObserver rangeDebug, ISelectionModelObserver selection, IPlayerRelations relations)
+            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection, IPlayerRelations relations)
         {
             SetModel(model);
             _entityLocator = entityLocator;
             _layerService = layerService;
-            _rangeDebug = rangeDebug;
+            _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
             _relations = relations;
         }
@@ -66,7 +65,7 @@ namespace EmpireAtWar.Components.Radar
 
             _layerService.Apply(gameObject, LayerKey.Unit, true);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _radarRangeCircle = new DebugRangeCircle("RadarRange", new Color(0.2f, 0.6f, 1f), _rangeDebug, _selection);
+            _radarRangeCircle = _rangeCircleFactory.Create("RadarRange", new Color(0.2f, 0.6f, 1f), _selection);
 #endif
         }
 

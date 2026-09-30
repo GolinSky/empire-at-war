@@ -11,7 +11,7 @@ namespace EmpireAtWar
 
         private void Awake()
         {
-            _rectTransform = GetComponent<RectTransform>();
+            _rectTransform = (RectTransform)transform;
         }
 
         private void Update()

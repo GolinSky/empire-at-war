@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
@@ -23,17 +22,10 @@ namespace EmpireAtWar.Ui.Base
 
         public override void InstallBindings()
         {
-            var prefab = _assetService.Load<GameObject>($"{_uiType}{DEFAULT_NAME}");
+            var prefab = _assetService.LoadComponent<BaseUi>($"{_uiType}{DEFAULT_NAME}");
 
-            var instance = Object.Instantiate(prefab, _parent, false);
-            Container.InjectGameObject(instance);
-
-            var component = instance.GetComponent<BaseUi>();
-
-            if (component == null)
-            {
-                throw new Exception($"Prefab for {_uiType} does not contain a BaseUi component.");
-            }
+            var component = Object.Instantiate(prefab, _parent, false);
+            Container.InjectGameObject(component.gameObject);
 
             Container.BindInterfacesTo(component.GetType())
                 .FromInstance(component)
