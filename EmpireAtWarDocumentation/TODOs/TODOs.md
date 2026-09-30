@@ -87,6 +87,13 @@
   - **Status**: steps 1–7 implemented; Unity compile clean; shared clip data, pool, mixer, bindings, and persistence inspected.
   - **Remaining**: step 8 listening, ≥20-ship profiler, pause/music/exit acceptance. Open `MainMenuScene` has unsaved changes; no Play Mode or automated tests run.
 
+- [ ] **Refactor camera system (input guard, smoothing util, scroll fix, cinematic data)**
+  - **Plan**: [[TODOs/Refactoring/Camera_System_Refactor_Plan|Camera System Refactor Plan]]
+  - **Rule**: `CameraService` owns the input-lock rule; `CameraInput` has no `enabled` fallback.
+  - **Decision**: `VelocitySmoothing` stays in `Assets/Scripts/Components/Utils/`.
+  - **Status**: sections 1–4 implemented; Unity compile clean; asset values, GUIDs and Addressables entry verified.
+  - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic acceptance; open `MainMenuScene` has unsaved changes. No automated tests run.
+
 ### Tooling
 
 - [ ] **Set up Jenkins local Windows builds**
