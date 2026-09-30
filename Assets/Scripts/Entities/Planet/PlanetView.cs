@@ -1,28 +1,37 @@
 ﻿using EmpireAtWar.Views.ViewImpl;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Entities.Planet
 {
-    public class PlanetView:View<IPlanetModelObserver>, ITickable
+    public class PlanetView : View<IPlanetModelObserver>
     {
-        [SerializeField] protected Transform planetTransform;
-        [SerializeField] private Transform cloudTransform;
-        
+        private static readonly int _rotationId = Shader.PropertyToID("_PlanetRotation");
+        private static readonly int _rotationStartTimeId = Shader.PropertyToID("_PlanetRotationStartTime");
+
+        [SerializeField] private MeshRenderer[] planetRenderers;
+        [SerializeField] private MeshRenderer[] cloudRenderers;
+
         protected override void OnInitialize()
         {
-            
+            var properties = new MaterialPropertyBlock();
+            SetRotation(planetRenderers, Model.PlanetOrbitSpeed, properties);
+            SetRotation(cloudRenderers, Model.CloudOrbitSpeed, properties);
         }
 
         protected override void OnDispose()
         {
-            
         }
 
-        public void Tick()
+        private static void SetRotation(MeshRenderer[] renderers, float speed, MaterialPropertyBlock properties)
         {
-            planetTransform.eulerAngles += Model.PlanetRotation;
-            cloudTransform.eulerAngles += Model.CloudRotation;
+            foreach (var renderer in renderers)
+            {
+                var axis = renderer.transform.InverseTransformDirection(Vector3.forward);
+                renderer.GetPropertyBlock(properties);
+                properties.SetVector(_rotationId, new Vector4(axis.x, axis.y, axis.z, speed));
+                properties.SetFloat(_rotationStartTimeId, Time.time);
+                renderer.SetPropertyBlock(properties);
+            }
         }
     }
 }
