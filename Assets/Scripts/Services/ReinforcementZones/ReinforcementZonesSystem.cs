@@ -65,7 +65,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
-        private IAssetService _repository;
+        private IAssetService _assetService;
         private ShipsData _shipsData;
         private ReinforcementZoneView[] _zoneViews;
         private IPlayerRoster _roster;
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IShipService shipService,
             IEntityLocator entityLocator,
             ReinforcementZoneData data,
-            IAssetService repository,
+            IAssetService assetService,
             ShipsData shipsData,
             IMapModelObserver mapModel,
             IShipNavigationService shipNavigationService,
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _shipService = shipService;
             _entityLocator = entityLocator;
             _data = data;
-            _repository = repository;
+            _assetService = assetService;
             _shipsData = shipsData;
             _mapModel = mapModel;
             _shipNavigationService = shipNavigationService;
@@ -412,7 +412,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             string dataPath = _shipsData.GetShipDataPath(shipType);
-            ShipData shipData = _repository.Load<ShipData>(dataPath);
+            ShipData shipData = _assetService.Load<ShipData>(dataPath);
             if (shipData == null)
             {
                 throw new InvalidOperationException(

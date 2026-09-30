@@ -10,14 +10,14 @@ namespace EmpireAtWar.Extentions
         {
         }
 
-        public void BindFromNewComponent<TView>(IAssetService repository, Transform parent)
+        public void BindFromNewComponent<TView>(IAssetService assetService, Transform parent)
             where TView : IView
         {
             string pathToFile = ConstructName<TView>();
 
             Container
                 .BindInterfacesAndSelfTo<TView>()
-                .FromComponentInNewPrefab(repository.Load<GameObject>(pathToFile))
+                .FromComponentInNewPrefab(assetService.Load<GameObject>(pathToFile))
                 .UnderTransform(parent)
                 .AsSingle();
         }

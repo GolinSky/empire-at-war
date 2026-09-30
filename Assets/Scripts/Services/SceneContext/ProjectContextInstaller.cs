@@ -19,7 +19,7 @@ namespace EmpireAtWar.SceneContext
     {
         [SerializeField] private CoroutineService coroutineService;
         
-        private IAssetService _repository;
+        private IAssetService _assetService;
     
         public override void InstallBindings()
         {
@@ -32,13 +32,13 @@ namespace EmpireAtWar.SceneContext
             
             Container.BindInterfacesExt<AddressableAssetService>();
         
-            _repository = Container.Resolve<IAssetService>();
+            _assetService = Container.Resolve<IAssetService>();
         
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
-                .BindFromNewScriptable<GameData>(_repository); //todo: change it
+                .BindFromNewScriptable<GameData>(_assetService); //todo: change it
 
-            Container.BindModel<SceneData>(_repository);
+            Container.BindModel<SceneData>(_assetService);
 
             Container.Bind<TimerPoolService>().AsSingle();
 

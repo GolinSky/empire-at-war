@@ -9,12 +9,12 @@ namespace EmpireAtWar.Entities.SpaceStation
     public class SpaceStationFactory:PlaceholderFactory<PlayerId, FactionType, Vector3, SpaceStation>
     {
         private readonly DiContainer _container;
-        private readonly IAssetService _repository;
+        private readonly IAssetService _assetService;
 
-        public SpaceStationFactory(DiContainer container, IAssetService repository)
+        public SpaceStationFactory(DiContainer container, IAssetService assetService)
         {
             _container = container;
-            _repository = repository;
+            _assetService = assetService;
         }
     }
 }
