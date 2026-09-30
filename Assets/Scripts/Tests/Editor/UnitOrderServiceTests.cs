@@ -259,7 +259,6 @@ namespace EmpireAtWar.Tests.Editor
             public IEntity GetEntity(long id) => EntitiesList.Find(entity => entity.Id == id);
             public bool TryGetEntity(long id, out IEntity entity)
             { entity = GetEntity(id); return entity != null; }
-            public bool IsStationOperational(PlayerId side) => true;
             public bool TryGetEntity(RaycastHit hit, out IEntity entity)
             { entity = null; return false; }
             public bool TryGetEntity(Collider collider, out IEntity entity)

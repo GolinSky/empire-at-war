@@ -36,6 +36,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.StationFacing;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
@@ -84,6 +85,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesNonLazyExt<FpsUiController>();
 
         Container.BindInterfacesExt<EntityLocator>();
+        Container.BindInterfacesExt<StationRegistry>();
+        Container.BindInterfacesExt<SquadronRegistry>();
         Container.BindInterfacesExt<SquadronLauncher>();
         
 

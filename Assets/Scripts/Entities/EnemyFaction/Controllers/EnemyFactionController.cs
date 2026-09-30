@@ -4,7 +4,7 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacement;
-        private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
         private readonly ISquadronLauncher _squadronLauncher;
         private readonly IEnemySquadronCommander _squadronCommander;
         private readonly PlayerSlot _owner;
@@ -72,7 +72,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             IEnemyStructurePlacementService structurePlacement,
-            IEntityLocator entityLocator,
+            IStationRegistry stationRegistry,
             ISquadronLauncher squadronLauncher,
             IEnemySquadronCommander squadronCommander,
             PlayerSlot owner,
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _structurePlacement = structurePlacement;
-            _entityLocator = entityLocator;
+            _stationRegistry = stationRegistry;
             _squadronLauncher = squadronLauncher;
             _squadronCommander = squadronCommander;
         }
@@ -104,7 +104,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Handle(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(Owner))
+            if (!_stationRegistry.IsStationOperational(Owner))
             {
                 _purchaseChain.Revert(unitRequest);
                 return;

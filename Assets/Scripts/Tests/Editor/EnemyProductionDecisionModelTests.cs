@@ -3,7 +3,6 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
@@ -13,6 +12,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -433,7 +433,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new StructurePlacementServiceStub(),
-                    new OperationalEntityLocator(),
+                    new OperationalStationRegistry(),
                     owner);
 
                 strategy.Start();
@@ -504,7 +504,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new StructurePlacementServiceStub(),
-                    new OperationalEntityLocator(),
+                    new OperationalStationRegistry(),
                     owner);
 
                 strategy.Start();
@@ -642,28 +642,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class OperationalEntityLocator : IEntityLocator
+        private sealed class OperationalStationRegistry : IStationRegistry
         {
-            public string Id => nameof(OperationalEntityLocator);
-            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
-            public event Action<IEntity> EntityAdded { add { } remove { } }
-            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public string Id => nameof(OperationalStationRegistry);
             public bool IsStationOperational(PlayerId owner) => true;
-            public void AddEntity(IEntity entity) { }
-            public void RemoveEntity(IEntity entity) { }
-            public IEntity GetEntity(long entityId) => throw new NotImplementedException();
-            public bool TryGetEntity(long entityId, out IEntity entity) =>
-                throw new NotImplementedException();
-            public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
-            {
-                entity = null;
-                return false;
-            }
-            public bool TryGetEntity(Collider collider, out IEntity entity)
-            {
-                entity = null;
-                return false;
-            }
         }
 
         private sealed class RecordingPurchaseProcessor : IEnemyPurchaseProcessor

@@ -9,6 +9,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using ShipEntity = EmpireAtWar.Ship.Ship;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Services.Cheats
         private readonly ShipFactory _shipFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
         private readonly SuperWeaponModel _superWeaponModel;
         private readonly RangeDebugModel _rangeDebugModel;
         private readonly List<IEntity> _ownEntities = new List<IEntity>();
@@ -43,6 +45,7 @@ namespace EmpireAtWar.Services.Cheats
             ShipFactory shipFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
+            IStationRegistry stationRegistry,
             SuperWeaponModel superWeaponModel,
             RangeDebugModel rangeDebugModel,
             PlayerSlot owner)
@@ -53,6 +56,7 @@ namespace EmpireAtWar.Services.Cheats
             _shipFactory = shipFactory;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
+            _stationRegistry = stationRegistry;
             _superWeaponModel = superWeaponModel;
             _rangeDebugModel = rangeDebugModel;
         }
@@ -85,7 +89,7 @@ namespace EmpireAtWar.Services.Cheats
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (!_entityLocator.IsStationOperational(_owner.Id))
+            if (!_stationRegistry.IsStationOperational(_owner.Id))
             {
                 return false;
             }

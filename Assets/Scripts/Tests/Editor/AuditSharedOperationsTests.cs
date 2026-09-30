@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEngine;
@@ -93,16 +94,14 @@ namespace EmpireAtWar.Tests.Editor
                 FakeEntity inside = CreateEntity(1, TestPlayers.Human, 5f, true, false, objects);
                 FakeEntity outside = CreateEntity(2, TestPlayers.Enemy, 6f, true, false, objects);
                 locator.AddEntity(inside);
+                SquadronRegistry registry = new SquadronRegistry(locator);
                 locator.AddEntity(outside);
                 locator.AddEntity(CreateEntity(3, TestPlayers.Enemy, 0f, true, true, objects));
                 locator.AddEntity(CreateEntity(4, TestPlayers.Enemy, 0f, false, false, objects));
-                List<IEntity> squadrons = new List<IEntity>();
                 CaptureTallyBuilder tally = new CaptureTallyBuilder(TestPlayers.CreateDuel());
 
-                locator.CollectLivingSquadrons(squadrons);
-                Assert.That(squadrons, Is.EquivalentTo(new IEntity[] { inside, outside }));
-
-                squadrons.AddSquadronStrength(position => position.x <= 5f, 0.5f, tally);
+                registry.AddSquadronStrength(position => position.x <= 5f, 0.5f, tally);
+                registry.Dispose();
                 CaptureTally humanOnly = tally.Build();
                 Assert.That(humanOnly.LeadingPlayer, Is.EqualTo(TestPlayers.Human));
                 Assert.That(humanOnly.Advantage, Is.EqualTo(0.5f));

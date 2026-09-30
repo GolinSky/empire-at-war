@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using UnityEngine;
 using Zenject;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly FactionsData _factionsData;
         private readonly ISuperWeaponFireService _fireService;
         private readonly IEntityLocator _entities;
+        private readonly IStationRegistry _stationRegistry;
         private readonly Dictionary<SuperWeaponType, float> _chargeTimeLeft =
             new Dictionary<SuperWeaponType, float>();
         private readonly List<SuperWeaponType> _charging = new List<SuperWeaponType>();
@@ -36,6 +38,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemySuperWeaponController(SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel, FactionsData factionsData, ISuperWeaponFireService fireService,
             IEntityLocator entities,
+            IStationRegistry stationRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -45,6 +48,7 @@ namespace EmpireAtWar.Services.Enemy
             _factionsData = factionsData;
             _fireService = fireService;
             _entities = entities;
+            _stationRegistry = stationRegistry;
         }
 
         public void Tick()
@@ -84,7 +88,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 _chargeTimeLeft.Remove(type);
-                if (_entities.IsStationOperational(_owner.Id))
+                if (_stationRegistry.IsStationOperational(_owner.Id))
                 {
                     _model.CompleteCharging(type);
                     continue;
@@ -98,7 +102,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (!_entities.IsStationOperational(_owner.Id) ||
+            if (!_stationRegistry.IsStationOperational(_owner.Id) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
                 !_economyModel.TrySpend(data.Price))

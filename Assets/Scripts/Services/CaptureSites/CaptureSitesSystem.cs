@@ -2,11 +2,10 @@ using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
-using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -26,10 +25,9 @@ namespace EmpireAtWar.Services.CaptureSites
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
-        private readonly List<IEntity> _squadrons = new List<IEntity>();
         private CaptureSiteView[] _siteViews;
         private IShipService _shipService;
-        private IEntityLocator _entityLocator;
+        private ISquadronRegistry _squadronRegistry;
         private CaptureSiteData _data;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
@@ -46,7 +44,7 @@ namespace EmpireAtWar.Services.CaptureSites
         [Inject]
         private void Construct(
             IShipService shipService,
-            IEntityLocator entityLocator,
+            ISquadronRegistry squadronRegistry,
             CaptureSiteData data,
             FogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
@@ -60,7 +58,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             _siteViews = siteViews;
             _shipService = shipService;
-            _entityLocator = entityLocator;
+            _squadronRegistry = squadronRegistry;
             _data = data;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
@@ -113,7 +111,6 @@ namespace EmpireAtWar.Services.CaptureSites
                 ClearSelection();
             }
 
-            _entityLocator.CollectLivingSquadrons(_squadrons);
             foreach (CaptureSitePresenter site in _sites)
             {
                 site.TickCapture(deltaTime, TallySite(site));
@@ -342,7 +339,7 @@ namespace EmpireAtWar.Services.CaptureSites
             Func<Vector3, bool> contains = position => site.Contains(position);
             _tally.Clear();
             _shipService.AddShipStrength(contains, _tally);
-            _squadrons.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
+            _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
             return _tally.Build();
         }
 
@@ -356,16 +353,9 @@ namespace EmpireAtWar.Services.CaptureSites
                 }
             }
 
-            foreach (IEntity squadron in _squadrons)
-            {
-                if (_roster.IsHostile(owner, squadron.Owner) &&
-                    site.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return _squadronRegistry.HasSquadronInside(
+                position => site.Contains(position),
+                squadronOwner => _roster.IsHostile(owner, squadronOwner));
         }
 
         private ISiteFacilityBuilder GetBuilder(PlayerId owner)
