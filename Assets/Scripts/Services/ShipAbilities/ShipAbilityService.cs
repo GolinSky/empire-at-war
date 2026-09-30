@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = 0; i < casters.Count; i++)
             {
                 if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                    FindSlot(command, id) is ShipAbilitySlot slot &&
+                    TryFindSlot(command, id, out ShipAbilitySlot slot) &&
                     slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
                 {
                     cancel = true;
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 for (int i = 0; i < casters.Count; i++)
                 {
                     if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                        FindSlot(command, id) is ShipAbilitySlot slot &&
+                        TryFindSlot(command, id, out ShipAbilitySlot slot) &&
                         slot.State == ShipAbilityState.Active && slot.Definition.CanCancel)
                         Stop(slot);
                 }
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = 0; i < casters.Count; i++)
             {
                 if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                    FindSlot(command, id) is ShipAbilitySlot slot &&
+                    TryFindSlot(command, id, out ShipAbilitySlot slot) &&
                     slot.State == ShipAbilityState.Ready && !command.Health.IsDestroyed)
                 {
                     definition = slot.Definition;
@@ -107,8 +107,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
-            ShipAbilitySlot slot = FindSlot(caster, id);
-            if (slot == null || slot.State != ShipAbilityState.Ready || caster.Health.IsDestroyed)
+            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || slot.State != ShipAbilityState.Ready || caster.Health.IsDestroyed)
                 return false;
             ShipAbilityDefinition definition = slot.Definition;
             if (definition.RequiresEnemyTarget &&
@@ -169,11 +168,19 @@ namespace EmpireAtWar.Services.ShipAbilities
             ability.Stop();
         }
 
-        private static ShipAbilitySlot FindSlot(IShipAbilityFacade caster, ShipAbilityId id)
+        private static bool TryFindSlot(IShipAbilityFacade caster, ShipAbilityId id, out ShipAbilitySlot slot)
         {
             for (int i = 0; i < caster.Slots.Count; i++)
-                if (caster.Slots[i].Id == id) return caster.Slots[i];
-            return null;
+            {
+                if (caster.Slots[i].Id == id)
+                {
+                    slot = caster.Slots[i];
+                    return true;
+                }
+            }
+
+            slot = null;
+            return false;
         }
     }
 }

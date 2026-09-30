@@ -47,11 +47,7 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
-            AttackData attackData = _attackDataFactory.ConstructData(enemy);
-            if (attackData != null)
-            {
-                _weaponComponent.AddTarget(attackData, AttackType.Base);
-            }
+            _weaponComponent.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.Base);
         }
 
         private void Release()

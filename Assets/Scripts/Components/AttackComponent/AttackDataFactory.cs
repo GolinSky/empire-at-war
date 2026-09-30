@@ -14,15 +14,10 @@ namespace EmpireAtWar.Components.AttackComponent
     {
         public AttackData ConstructData(IEntity entity, HardPointType hardPointType = HardPointType.Any)
         {
-            if (entity.TryGetFacade(out IHealthFacade healthFacade))
-            {
-                AttackData attackData = new AttackData(
-                    entity.HealthModel,
-                    healthFacade,
-                    hardPointType);
-                return attackData;
-            }
-            return null;
+            return new AttackData(
+                entity.HealthModel,
+                entity.GetFacade<IHealthFacade>(),
+                hardPointType);
         }
 
         public AttackData ConstructHardPointData(IEntity entity, int hardPointId)

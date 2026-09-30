@@ -148,6 +148,17 @@ namespace EmpireAtWar.Tests.Editor
             service.LateDispose();
         }
 
+        [Test]
+        public void UnknownAbilityId_TryActivateReturnsFalse()
+        {
+            FakeFactory factory = new FakeFactory();
+            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+
+            Assert.That(service.TryActivate(caster, ShipAbilityId.ProtonBeam, null), Is.False);
+            Assert.That(factory.Created, Is.Empty);
+        }
+
         private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false,
             float recoveryDelay = 6f)
         {
