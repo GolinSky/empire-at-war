@@ -8,6 +8,7 @@ if (Test-Path -LiteralPath "$homePath\config.xml") { throw 'Existing Jenkins con
 New-Item -ItemType Directory -Path $installed,"$homePath\init.groovy.d" -Force | Out-Null
 Get-ChildItem -LiteralPath $PSScriptRoot -File | Copy-Item -Destination $installed
 Copy-Item -LiteralPath "$PSScriptRoot\Start-Jenkins.ps1" -Destination "$root\Start-Jenkins.ps1"
+Copy-Item -LiteralPath "$PSScriptRoot\Stop-Jenkins.ps1" -Destination "$root\Stop-Jenkins.ps1"
 $credentialFile = "$root\admin-login.json"
 if (-not (Test-Path -LiteralPath $credentialFile)) {
     $bytes = New-Object byte[] 32
