@@ -10,6 +10,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -37,7 +38,8 @@ namespace EmpireAtWar.Tests.Editor
                 _reinforcementModel,
                 new ShipFactory(),
                 new FakeReinforcementZonesSystem(),
-                new OperationalEntityLocator(),
+                new EmptyEntityLocator(),
+                new OperationalStationRegistry(),
                 _superWeaponModel,
                 new RangeDebugModel(),
                 TestPlayers.CreateDuel().Get(TestPlayers.Human));
@@ -181,13 +183,18 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class OperationalEntityLocator : IEntityLocator
+        private sealed class OperationalStationRegistry : IStationRegistry
         {
-            public string Id => nameof(OperationalEntityLocator);
+            public string Id => nameof(OperationalStationRegistry);
+            public bool IsStationOperational(PlayerId owner) => true;
+        }
+
+        private sealed class EmptyEntityLocator : IEntityLocator
+        {
+            public string Id => nameof(EmptyEntityLocator);
             public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
             public event Action<IEntity> EntityAdded { add { } remove { } }
             public event Action<IEntity> EntityRemoved { add { } remove { } }
-            public bool IsStationOperational(PlayerId owner) => true;
             public void AddEntity(IEntity entity) { }
             public void RemoveEntity(IEntity entity) { }
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();

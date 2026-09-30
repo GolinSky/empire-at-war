@@ -7,13 +7,13 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new UnavailableStructurePlacement(),
-                    new OperationalEntityLocator(),
+                    new OperationalStationRegistry(),
                     null,
                     null,
                     TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -126,7 +126,7 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimitModel,
                     reinforcementData,
                     new UnavailableStructurePlacement(),
-                    new OperationalEntityLocator(),
+                    new OperationalStationRegistry(),
                     null,
                     null,
                     TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -191,7 +191,7 @@ namespace EmpireAtWar.Tests.Editor
                 new EnemyUnitLimitModel(),
                 null,
                 structurePlacement,
-                new OperationalEntityLocator(),
+                new OperationalStationRegistry(),
                 null,
                 null,
                 TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
@@ -242,28 +242,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class OperationalEntityLocator : IEntityLocator
+        private sealed class OperationalStationRegistry : IStationRegistry
         {
-            public string Id => nameof(OperationalEntityLocator);
-            public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
-            public event Action<IEntity> EntityAdded { add { } remove { } }
-            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public string Id => nameof(OperationalStationRegistry);
             public bool IsStationOperational(PlayerId owner) => true;
-            public void AddEntity(IEntity entity) { }
-            public void RemoveEntity(IEntity entity) { }
-            public IEntity GetEntity(long entityId) => throw new NotImplementedException();
-            public bool TryGetEntity(long entityId, out IEntity entity) =>
-                throw new NotImplementedException();
-            public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
-            {
-                entity = null;
-                return false;
-            }
-            public bool TryGetEntity(Collider collider, out IEntity entity)
-            {
-                entity = null;
-                return false;
-            }
         }
 
         private static void SetBackingField<T>(

@@ -2,7 +2,7 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacementService;
-        private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
 
         private float _decisionTimer;
         private int _observedReleaseVersion;
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
             IEnemyStructurePlacementService structurePlacementService,
-            IEntityLocator entityLocator,
+            IStationRegistry stationRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -57,7 +57,7 @@ namespace EmpireAtWar.Services.Enemy
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _structurePlacementService = structurePlacementService;
-            _entityLocator = entityLocator;
+            _stationRegistry = stationRegistry;
         }
 
         public void Start()
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
-            if (!_entityLocator.IsStationOperational(_owner.Id))
+            if (!_stationRegistry.IsStationOperational(_owner.Id))
             {
                 return;
             }

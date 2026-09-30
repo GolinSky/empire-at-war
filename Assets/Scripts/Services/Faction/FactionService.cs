@@ -1,7 +1,7 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
@@ -30,7 +30,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly PlayerSlot _owner;
         private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
         private readonly IEconomyProvider _economyProvider;
-        private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly SuperWeaponModel _superWeapons;
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.Factions
             ISelectionService selectionService,
             LazyInject<IPurchaseProcessor> purchaseMediator,
             IEconomyProvider economyProvider,
-            IEntityLocator entityLocator,
+            IStationRegistry stationRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -58,7 +58,7 @@ namespace EmpireAtWar.Services.Factions
             _selectionService = selectionService;
             _purchaseMediator = purchaseMediator;
             _economyProvider = economyProvider;
-            _entityLocator = entityLocator;
+            _stationRegistry = stationRegistry;
         }
 
         public void Initialize()
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(_owner.Id))
+            if (!_stationRegistry.IsStationOperational(_owner.Id))
             {
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest)
@@ -141,7 +141,7 @@ namespace EmpireAtWar.Services.Factions
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
         {
-            if (!_entityLocator.IsStationOperational(_owner.Id) ||
+            if (!_stationRegistry.IsStationOperational(_owner.Id) ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {

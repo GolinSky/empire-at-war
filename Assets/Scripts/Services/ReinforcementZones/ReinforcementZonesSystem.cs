@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
@@ -12,6 +11,7 @@ using EmpireAtWar.Ship;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using ViewComponents;
@@ -54,9 +54,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private readonly Dictionary<ShipType, float> _shipNavigationRadii =
             new Dictionary<ShipType, float>();
-        private readonly List<IEntity> _squadrons = new List<IEntity>();
         private IShipService _shipService;
-        private IEntityLocator _entityLocator;
+        private ISquadronRegistry _squadronRegistry;
         private FogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IPointerInput _pointer;
@@ -76,7 +75,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         [Inject]
         private void Construct(
             IShipService shipService,
-            IEntityLocator entityLocator,
+            ISquadronRegistry squadronRegistry,
             ReinforcementZoneData data,
             IAssetService assetService,
             ShipsData shipsData,
@@ -90,7 +89,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ILocalPlayer localPlayer)
         {
             _shipService = shipService;
-            _entityLocator = entityLocator;
+            _squadronRegistry = squadronRegistry;
             _data = data;
             _assetService = assetService;
             _shipsData = shipsData;
@@ -122,13 +121,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public void Tick()
         {
-            _entityLocator.CollectLivingSquadrons(_squadrons);
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 _tally.Clear();
                 Func<Vector3, bool> contains = zone.Contains;
                 _shipService.AddShipStrength(contains, _tally);
-                _squadrons.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
+                _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
 
                 if (zone.Tick(Time.deltaTime, _tally.Build()))
                 {
