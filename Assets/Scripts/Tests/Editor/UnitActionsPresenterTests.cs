@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             _session = new FakeSession();
             _presenter = new UnitActionsPresenter(new FakeProvider(_view),
                 _selection, _abilities, _targeting, _handler, _orders, _session,
-                new FakeUiService(), _cancelRouter);
+                new FakeUiService(), _cancelRouter, null, null);
             _presenter.Initialize();
         }
 

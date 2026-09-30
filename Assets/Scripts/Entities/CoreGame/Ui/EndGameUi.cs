@@ -3,10 +3,11 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
+using EmpireAtWar.Components.Ui.Tooltip;
 
 namespace EmpireAtWar.Views.Game
 {
-    public sealed class EndGameUi : BaseUi, IEndGameView
+    public sealed class EndGameUi : BaseUi, IEndGameView, ITooltipHoverView
     {
         [SerializeField] private TMP_Text outcomeText;
         [SerializeField] private TMP_Text reasonText;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private TMP_Text playerBaseText;
         [SerializeField] private TMP_Text enemyBaseText;
         [SerializeField] private UnityEngine.UI.Button returnToMenuButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action ReturnToMenuRequested = delegate { };
 

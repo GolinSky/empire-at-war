@@ -1,4 +1,5 @@
-﻿using System;
+using EmpireAtWar.Components.Ui.Tooltip;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
@@ -15,6 +16,10 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private List<PipelineView> pipelineViews;
 
         private Dictionary<UnitLimitKey, PipelineView> _workingPipelines = new Dictionary<UnitLimitKey, PipelineView>();
+        public void RegisterTooltips(TooltipHoverView hover)
+        {
+            foreach (PipelineView view in pipelineViews) hover.Register(view.TooltipTrigger);
+        }
 
         public void Init(Action<string> cancelBuilding)
         {

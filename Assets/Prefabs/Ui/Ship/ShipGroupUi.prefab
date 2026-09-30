@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3698710472969280425}
   - component: {fileID: 310996803678537034}
   - component: {fileID: 7593833382429375788}
+  - component: {fileID: 931127532763160008}
   m_Layer: 5
   m_Name: ShipGroup
   m_TagString: Untagged
@@ -224,6 +225,21 @@ MonoBehaviour:
   entryPrefab: {fileID: 3201764120452726311, guid: c67b3f91948d87045b48e6cc114d4ad1,
     type: 3}
   abilityBar: {fileID: 2183574966513205322}
+  tooltipTrigger: {fileID: 931127532763160008}
+--- !u!114 &931127532763160008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770452615868199123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 8244759908091720269}
+  key: 
 --- !u!1 &2457066146483919848
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,6 +528,7 @@ GameObject:
   - component: {fileID: 3201764120452726311}
   - component: {fileID: 4003304680418406474}
   - component: {fileID: 7183365233243781895}
+  - component: {fileID: 7388196516709072211}
   m_Layer: 5
   m_Name: ShipGroupUi
   m_TagString: Untagged
@@ -561,6 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ShipGroupUi
   canvasGroup: {fileID: 4003304680418406474}
   groupPrefab: {fileID: 7593833382429375788}
+  tooltipHover: {fileID: 7388196516709072211}
 --- !u!225 &4003304680418406474
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -593,3 +611,16 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &7388196516709072211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5749101046437683160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers: []

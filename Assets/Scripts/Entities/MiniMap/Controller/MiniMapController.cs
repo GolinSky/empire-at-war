@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
@@ -28,6 +31,8 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly IPlayerOrderInputHandler _orderInput;
         private IMiniMapView _miniMapView;
         private CustomCoroutine _unblockCoroutine;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         
         public MiniMapController(
             MiniMapData model,
@@ -41,9 +46,11 @@ namespace EmpireAtWar.Controllers.MiniMap
             IPlayerOrderInputHandler orderInput,
             List<IMiniMapObstacleSource> obstacleSources,
             IPlayerRoster roster,
-            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
+            ILocalPlayer localPlayer,
+            ITooltipService tooltips) : base(uiService, cancelRouter)
         {
             _cameraService = cameraService;
+            _tooltips = new TooltipRequests(tooltips);
             _model = model;
             _inputLock = inputLock;
             _timerPoolService = timerPoolService;
@@ -94,6 +101,7 @@ namespace EmpireAtWar.Controllers.MiniMap
             _inputLock.LockChanged -= UpdateBlockState;
             if (_miniMapView != null)
             {
+                _tooltipHover.Dispose();
                 _miniMapView.OnCameraMoveRequested -= MoveTo;
                 _miniMapView.OnMoveOrderRequested -= OrderMove;
             }
@@ -112,6 +120,8 @@ namespace EmpireAtWar.Controllers.MiniMap
                         "The minimap prefab does not contain IMiniMapView.");
                 _miniMapView.OnCameraMoveRequested += MoveTo;
                 _miniMapView.OnMoveOrderRequested += OrderMove;
+                _tooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_miniMapView).TooltipHover, HandleTooltipHover, _tooltips);
             }
             else
             {
@@ -125,7 +135,27 @@ namespace EmpireAtWar.Controllers.MiniMap
             else
             {
                 _miniMapView.Hide();
+                _tooltips.HideAll();
             }
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
+        {
+            if (key is MiniMapMarker marker)
+            {
+                _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked && marker.Visible,
+                    () => new TooltipContent(marker.MarkType.ToString(),
+                        marker.MarkType == MarkType.ReinforcementZone
+                            ? "Deploy reinforcements inside a friendly zone."
+                            : marker.MarkType == MarkType.CaptureSite
+                                ? "Move units into the ring to capture this construction site."
+                                : "Click to move the camera here.",
+                        status: $"Owner: {marker.Owner}"));
+                return;
+            }
+            _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked,
+                () => new TooltipContent(key.ToString() == "Station" ? "Station" : "Minimap",
+                    "Click or drag to move the camera. Right-click to issue a move order. Obstacles block move targets."));
         }
         
         private void MoveTo(Vector3 worldPoint)

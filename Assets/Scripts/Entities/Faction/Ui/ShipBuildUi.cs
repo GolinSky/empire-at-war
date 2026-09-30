@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
@@ -22,9 +23,11 @@ namespace EmpireAtWar.Views.Factions
         void Hide();
     }
 
-    public class ShipBuildUi : BaseUi, IShipBuildUi
+    public class ShipBuildUi : BaseUi, IShipBuildUi, ITooltipHoverView
     {
         [SerializeField] private BuildPipelineView pipelineView;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private IShipBuildPresenter _presenter;
         private bool _isInitialized;
@@ -49,6 +52,7 @@ namespace EmpireAtWar.Views.Factions
             }
 
             pipelineView.Init(_presenter.CancelBuilding);
+            pipelineView.RegisterTooltips(tooltipHover);
             _isInitialized = true;
         }
 

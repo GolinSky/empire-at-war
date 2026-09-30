@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
         private Predicate<float> _canPlayerAfford;
+        private ITooltipService _tooltips;
 
         [Inject]
         private void Construct(
@@ -54,9 +56,11 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRegistry playerRegistry,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
-            CaptureSiteView[] siteViews)
+            CaptureSiteView[] siteViews,
+            ITooltipService tooltips)
         {
             _siteViews = siteViews;
+            _tooltips = tooltips;
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
@@ -79,7 +83,8 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 CaptureSiteModel model = new CaptureSiteModel(
                     view.CaptureDuration, _data.CaptureSpeedPerNetShip, _roster);
-                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data, _localPlayer);
+                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data, _localPlayer,
+                    _tooltips, price => GetBuilder(_localPlayer.Id).CanAfford(price));
                 site.BuildRequested += HandleBuildRequested;
                 _sites.Add(site);
             }

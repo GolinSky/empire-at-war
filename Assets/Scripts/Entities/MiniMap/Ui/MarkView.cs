@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+using EmpireAtWar.Components.Ui.Tooltip;
+using DG.Tweening;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.MiniMap;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace EmpireAtWar.Views.MiniMap
 
         [SerializeField] private Image iconImage;
         [SerializeField] private RectTransform rectTransform;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
         
         private IMiniMapPositionConvector _miniMapPositionConvector;
         private IPlayerColors _playerColors;
@@ -29,6 +32,7 @@ namespace EmpireAtWar.Views.MiniMap
             rectTransform.anchoredPosition = position;
             rectTransform.sizeDelta = Vector2.one * STATION_SIZE;
             iconImage.sprite = sprite;
+            tooltipTrigger.SetKey("Station");
         }
         
         public void SetData(
@@ -42,8 +46,9 @@ namespace EmpireAtWar.Views.MiniMap
             _playerColors = playerColors;
             rectTransform.SetParent(parent, false);
             iconImage.sprite = sprite;
-            iconImage.raycastTarget = false;
+            iconImage.raycastTarget = true;
             _marker = marker;
+            tooltipTrigger.SetKey(marker);
             rectTransform.sizeDelta = Vector2.one * (marker.MarkType == MarkType.Ship
                 ? SHIP_SIZE
                 : PLATFORM_SIZE);

@@ -1373,6 +1373,7 @@ GameObject:
   - component: {fileID: 948320431149769060}
   - component: {fileID: 951174659636094189}
   - component: {fileID: 9185642876437749069}
+  - component: {fileID: 3720404189098333886}
   m_Layer: 5
   m_Name: ZoomSpeedRow
   m_TagString: Untagged
@@ -1436,6 +1437,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsSliderRow
   slider: {fileID: 5419797836003716209}
   valueText: {fileID: 4634166015208544490}
+--- !u!114 &3720404189098333886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647215356112840540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 948320431149769060}
+  key: Zoom speed
 --- !u!1 &655042185660618460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1715,6 +1730,7 @@ GameObject:
   - component: {fileID: 4924753599896084290}
   - component: {fileID: 1527502542089702726}
   - component: {fileID: 861510915720328814}
+  - component: {fileID: 6760701261394917319}
   m_Layer: 5
   m_Name: ResolutionRow
   m_TagString: Untagged
@@ -1776,6 +1792,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsDropdownRow
   dropdown: {fileID: 7464319435059147739}
+--- !u!114 &6760701261394917319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1005163295046218490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4924753599896084290}
+  key: Resolution
 --- !u!1 &1084180151023057910
 GameObject:
   m_ObjectHideFlags: 0
@@ -2955,6 +2985,7 @@ GameObject:
   - component: {fileID: 5351791786574939628}
   - component: {fileID: 7080956275961128330}
   - component: {fileID: 795568998231347489}
+  - component: {fileID: 8780810114805992431}
   m_Layer: 5
   m_Name: EdgeScrollingRow
   m_TagString: Untagged
@@ -3017,6 +3048,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsToggleRow
   toggle: {fileID: 956032852946404983}
   stateText: {fileID: 5783158244050432929}
+--- !u!114 &8780810114805992431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1600287784757593584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 5351791786574939628}
+  key: Edge scrolling
 --- !u!1 &1613763157517716807
 GameObject:
   m_ObjectHideFlags: 0
@@ -4066,6 +4111,7 @@ GameObject:
   - component: {fileID: 5281073931473115837}
   - component: {fileID: 2142953842719914190}
   - component: {fileID: 2131522675600675753}
+  - component: {fileID: 7552631690995784711}
   m_Layer: 5
   m_Name: BindingButton
   m_TagString: Untagged
@@ -4256,6 +4302,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &7552631690995784711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2964477348361952659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 2797767079868818224}
+  key: 
 --- !u!1 &3056379907119944550
 GameObject:
   m_ObjectHideFlags: 0
@@ -5393,6 +5453,7 @@ GameObject:
   - component: {fileID: 3094376101493776419}
   - component: {fileID: 4726304573150952286}
   - component: {fileID: 9057968896249152503}
+  - component: {fileID: 3982450014881649062}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -5583,6 +5644,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &3982450014881649062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3561370531589330002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 3174642815044267883}
+  key: Close
 --- !u!1 &3711699415182324217
 GameObject:
   m_ObjectHideFlags: 0
@@ -6427,6 +6502,7 @@ GameObject:
   - component: {fileID: 6215877517377226150}
   - component: {fileID: 1197885878271084570}
   - component: {fileID: 6091553307987835861}
+  - component: {fileID: 3725741920920459286}
   m_Layer: 5
   m_Name: SettingsUi
   m_TagString: Untagged
@@ -6469,6 +6545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 6091553307987835861}
   closeButton: {fileID: 4726304573150952286}
+  tooltipHover: {fileID: 3725741920920459286}
   applyButton: {fileID: 8616130414433798983}
   discardButton: {fileID: 4009213099301995090}
   resetDefaultsButton: {fileID: 4354133042325239641}
@@ -6496,6 +6573,32 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3725741920920459286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4082562394569656993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 8443824716549251965}
+  - {fileID: 1579775357128196751}
+  - {fileID: 2565202021671305452}
+  - {fileID: 3982450014881649062}
+  - {fileID: 5621369385777926170}
+  - {fileID: 6760701261394917319}
+  - {fileID: 7728779120374735515}
+  - {fileID: 1755261288051194365}
+  - {fileID: 779705787587938394}
+  - {fileID: 6922917386047393006}
+  - {fileID: 3720404189098333886}
+  - {fileID: 8780810114805992431}
+  - {fileID: 7677010204706054866}
 --- !u!1 &4100595712599618371
 GameObject:
   m_ObjectHideFlags: 0
@@ -7399,6 +7502,7 @@ GameObject:
   - component: {fileID: 4955181674730621648}
   - component: {fileID: 6677772723377995923}
   - component: {fileID: 4405913627443716327}
+  - component: {fileID: 1755261288051194365}
   m_Layer: 5
   m_Name: FrameRateLimitRow
   m_TagString: Untagged
@@ -7460,6 +7564,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsDropdownRow
   dropdown: {fileID: 5041806069182931369}
+--- !u!114 &1755261288051194365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4752507612028210116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4955181674730621648}
+  key: Frame rate
 --- !u!1 &4896977016649434494
 GameObject:
   m_ObjectHideFlags: 0
@@ -9270,6 +9388,7 @@ GameObject:
   - component: {fileID: 3380071566919463209}
   - component: {fileID: 3542094372026708662}
   - component: {fileID: 7521994566099137192}
+  - component: {fileID: 7677010204706054866}
   m_Layer: 5
   m_Name: InvertZoomRow
   m_TagString: Untagged
@@ -9332,6 +9451,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsToggleRow
   toggle: {fileID: 7537618137232150249}
   stateText: {fileID: 1056112638861032702}
+--- !u!114 &7677010204706054866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5620272836112853864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 3380071566919463209}
+  key: Invert zoom
 --- !u!1 &5681635781440686648
 GameObject:
   m_ObjectHideFlags: 0
@@ -9694,6 +9827,7 @@ GameObject:
   - component: {fileID: 2659510104514198285}
   - component: {fileID: 2953683162117751771}
   - component: {fileID: 3371316034757443029}
+  - component: {fileID: 5621369385777926170}
   m_Layer: 5
   m_Name: WindowModeRow
   m_TagString: Untagged
@@ -9755,6 +9889,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsDropdownRow
   dropdown: {fileID: 4921528266306675684}
+--- !u!114 &5621369385777926170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5706877392006535458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 2659510104514198285}
+  key: Window mode
 --- !u!1 &5902479325426951460
 GameObject:
   m_ObjectHideFlags: 0
@@ -10107,6 +10255,8 @@ MonoBehaviour:
   bindingButton: {fileID: 2142953842719914190}
   bindingText: {fileID: 6472747092630452887}
   resetButton: {fileID: 6393659062523309466}
+  bindingTooltip: {fileID: 7552631690995784711}
+  resetTooltip: {fileID: 6834470104644864098}
 --- !u!1 &5996196728644546147
 GameObject:
   m_ObjectHideFlags: 0
@@ -10275,6 +10425,7 @@ GameObject:
   - component: {fileID: 8092380641696956716}
   - component: {fileID: 6393659062523309466}
   - component: {fileID: 5454089219248781380}
+  - component: {fileID: 6834470104644864098}
   m_Layer: 5
   m_Name: ResetButton
   m_TagString: Untagged
@@ -10465,6 +10616,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &6834470104644864098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025916558276705288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 1848679584772763496}
+  key: 
 --- !u!1 &6032539950821384077
 GameObject:
   m_ObjectHideFlags: 0
@@ -10836,6 +11001,7 @@ GameObject:
   - component: {fileID: 1394848231024465958}
   - component: {fileID: 6955476240674121406}
   - component: {fileID: 4712915219055909321}
+  - component: {fileID: 7728779120374735515}
   m_Layer: 5
   m_Name: QualityRow
   m_TagString: Untagged
@@ -10897,6 +11063,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsDropdownRow
   dropdown: {fileID: 1580923629584134564}
+--- !u!114 &7728779120374735515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6443108795960668605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 1394848231024465958}
+  key: Quality
 --- !u!1 &6520368446991864661
 GameObject:
   m_ObjectHideFlags: 0
@@ -11754,6 +11934,7 @@ GameObject:
   - component: {fileID: 1310380742855100246}
   - component: {fileID: 4009213099301995090}
   - component: {fileID: 2105909199804123908}
+  - component: {fileID: 1579775357128196751}
   m_Layer: 5
   m_Name: DiscardButton
   m_TagString: Untagged
@@ -11944,6 +12125,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &1579775357128196751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7034641349544656426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 445683441080866683}
+  key: Discard
 --- !u!1 &7046905282660198292
 GameObject:
   m_ObjectHideFlags: 0
@@ -11956,6 +12151,7 @@ GameObject:
   - component: {fileID: 4164033653619305057}
   - component: {fileID: 8616130414433798983}
   - component: {fileID: 24730286411336756}
+  - component: {fileID: 8443824716549251965}
   m_Layer: 5
   m_Name: ApplyButton
   m_TagString: Untagged
@@ -12146,6 +12342,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &8443824716549251965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046905282660198292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7242405720566980280}
+  key: Apply
 --- !u!1 &7097556209980825712
 GameObject:
   m_ObjectHideFlags: 0
@@ -12385,6 +12595,7 @@ GameObject:
   - component: {fileID: 901839617995989659}
   - component: {fileID: 8470325181152129806}
   - component: {fileID: 8204454806702957111}
+  - component: {fileID: 779705787587938394}
   m_Layer: 5
   m_Name: VSyncRow
   m_TagString: Untagged
@@ -12447,6 +12658,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsToggleRow
   toggle: {fileID: 3766933625664432642}
   stateText: {fileID: 4239922500247986704}
+--- !u!114 &779705787587938394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7193834336156160939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 901839617995989659}
+  key: VSync
 --- !u!1 &7246873942290600478
 GameObject:
   m_ObjectHideFlags: 0
@@ -12759,6 +12984,7 @@ GameObject:
   - component: {fileID: 4298060700242251535}
   - component: {fileID: 4354133042325239641}
   - component: {fileID: 6457334049771195088}
+  - component: {fileID: 2565202021671305452}
   m_Layer: 5
   m_Name: ResetDefaultsButton
   m_TagString: Untagged
@@ -12949,6 +13175,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &2565202021671305452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7375937811175359769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4569428108892517996}
+  key: Defaults
 --- !u!1 &7417357162988585479
 GameObject:
   m_ObjectHideFlags: 0
@@ -13882,6 +14122,7 @@ GameObject:
   - component: {fileID: 201470404148630956}
   - component: {fileID: 1891601230911196043}
   - component: {fileID: 9048428951568066011}
+  - component: {fileID: 6922917386047393006}
   m_Layer: 5
   m_Name: PanSpeedRow
   m_TagString: Untagged
@@ -13945,6 +14186,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MainMenu.Settings.SettingsSliderRow
   slider: {fileID: 6115014300209658758}
   valueText: {fileID: 6900652926277317187}
+--- !u!114 &6922917386047393006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8044187644952184154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 201470404148630956}
+  key: Pan speed
 --- !u!1 &8070210766627820055
 GameObject:
   m_ObjectHideFlags: 0

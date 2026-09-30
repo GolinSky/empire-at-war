@@ -448,6 +448,7 @@ GameObject:
   - component: {fileID: 1388160401501369970}
   - component: {fileID: 5294919370127645030}
   - component: {fileID: 2099210716804571404}
+  - component: {fileID: 5291788870097249229}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -638,6 +639,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &5291788870097249229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879753934439208531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 6062431871381251686}
+  key: Exit
 --- !u!1 &5105402932696670994
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,6 +1023,7 @@ GameObject:
   - component: {fileID: 5546277046765130251}
   - component: {fileID: 4566893665544095418}
   - component: {fileID: 5403863935626769418}
+  - component: {fileID: 4684956950431152732}
   m_Layer: 5
   m_Name: ResumeButton
   m_TagString: Untagged
@@ -1198,6 +1214,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &4684956950431152732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5702612653077991952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 8388086655914264057}
+  key: Resume
 --- !u!1 &5997524999777950843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,6 +1562,7 @@ GameObject:
   - component: {fileID: 7797296270573641130}
   - component: {fileID: 2942095103991715270}
   - component: {fileID: 1180694155874166261}
+  - component: {fileID: 6699929545119764882}
   m_Layer: 5
   m_Name: PauseMenuUi
   m_TagString: Untagged
@@ -1583,6 +1614,7 @@ MonoBehaviour:
   resumeButton: {fileID: 4566893665544095418}
   exitButton: {fileID: 5294919370127645030}
   menuPanel: {fileID: 26848829901883186}
+  tooltipHover: {fileID: 6699929545119764882}
 --- !u!225 &1180694155874166261
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1595,3 +1627,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &6699929545119764882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054926391531620057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 4684956950431152732}
+  - {fileID: 5291788870097249229}

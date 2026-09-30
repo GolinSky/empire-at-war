@@ -2543,6 +2543,7 @@ GameObject:
   - component: {fileID: 4143231267783831255}
   - component: {fileID: 8574131427204254626}
   - component: {fileID: 4326194416240367334}
+  - component: {fileID: 1859526243727756018}
   m_Layer: 5
   m_Name: ObjectiveText
   m_TagString: Untagged
@@ -2591,7 +2592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2670,6 +2671,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1859526243727756018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6582546745825629227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4143231267783831255}
+  key: Objective
 --- !u!1 &6682869243387034276
 GameObject:
   m_ObjectHideFlags: 0
@@ -3683,6 +3698,7 @@ GameObject:
   - component: {fileID: 3657893542428532567}
   - component: {fileID: 269668444289572278}
   - component: {fileID: 6665165784142602056}
+  - component: {fileID: 8462123680937775235}
   m_Layer: 5
   m_Name: EndGameUi
   m_TagString: Untagged
@@ -3747,6 +3763,22 @@ MonoBehaviour:
   playerBaseText: {fileID: 4620928503193631194}
   enemyBaseText: {fileID: 3768029340768691560}
   returnToMenuButton: {fileID: 6660385083498568738}
+  tooltipHover: {fileID: 8462123680937775235}
+--- !u!114 &8462123680937775235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8728991705254803484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 4470700110468854490}
+  - {fileID: 1859526243727756018}
 --- !u!1 &9006181634920639863
 GameObject:
   m_ObjectHideFlags: 0
@@ -3760,6 +3792,7 @@ GameObject:
   - component: {fileID: 1319503953203032780}
   - component: {fileID: 1125801284465829410}
   - component: {fileID: 6660385083498568738}
+  - component: {fileID: 4470700110468854490}
   m_Layer: 5
   m_Name: ReturnToMenuButton
   m_TagString: Untagged
@@ -3970,6 +4003,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4470700110468854490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9006181634920639863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 1198857074586379626}
+  key: Return to menu
 --- !u!1 &9009537933151249310
 GameObject:
   m_ObjectHideFlags: 0

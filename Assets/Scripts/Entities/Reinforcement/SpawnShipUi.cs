@@ -1,4 +1,5 @@
-﻿using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Views.Reinforcement;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace EmpireAtWar
         [SerializeField] private Image backgroundImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
        
         private IReinforcementVisitor _reinforcementVisitor;
         
@@ -42,6 +45,7 @@ namespace EmpireAtWar
         void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request)
         {
             Request = request;
+            tooltipTrigger.SetKey(request);
             _reinforcementVisitor = reinforcementVisitor;
             iconImage.sprite = request.FactionData.Icon;
             unitCapacityText.text = request.FactionData.UnitCapacity.ToString();

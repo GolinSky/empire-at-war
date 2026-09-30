@@ -58,6 +58,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private SpawnType _currentSpawnType;
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
+        private UnitRequest _currentRequest;
         private bool _hasBattleEnded;
         private IDisposable _placementLock;
 
@@ -147,6 +148,7 @@ namespace EmpireAtWar.Services.Reinforcement
             if (canSpawn)
             {
                 SpawnReinforcement(spawnPosition);
+                _model.ConsumeReinforcement(_currentRequest);
             }
 
             _spawnReinforcement.Destroy();
@@ -238,6 +240,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(UnitRequest request)
         {
+            _currentRequest = request;
             if (_hasBattleEnded || !_stationRegistry.IsStationOperational(_owner.Id))
             {
                 _model.InvokeSpawnShipEvent(false);

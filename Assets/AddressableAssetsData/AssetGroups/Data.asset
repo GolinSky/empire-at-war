@@ -85,8 +85,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cdb94166dd02cbf4e96265875ea992ce
+    m_Address: TooltipSettings
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed3478929e387c44ea030eb69f10bf51
     m_Address: Delta7SquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5fb2ca4ac1d3a848a445314158b9a6e
+    m_Address: TooltipIconData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

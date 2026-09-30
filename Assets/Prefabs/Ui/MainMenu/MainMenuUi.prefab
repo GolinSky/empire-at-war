@@ -490,6 +490,7 @@ GameObject:
   - component: {fileID: 7591177091574827051}
   - component: {fileID: 7259654646338060828}
   - component: {fileID: 1455783549099095902}
+  - component: {fileID: 4359271857706635602}
   m_Layer: 5
   m_Name: StartDemoButton
   m_TagString: Untagged
@@ -680,6 +681,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &4359271857706635602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4276730825043621534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4466847454820052259}
+  key: Skirmish
 --- !u!1 &5357127145474936592
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,6 +867,7 @@ GameObject:
   - component: {fileID: 8916914548755719865}
   - component: {fileID: 7849887689591581002}
   - component: {fileID: 3306770629838111483}
+  - component: {fileID: 7104147356750639584}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -1042,6 +1058,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &7104147356750639584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5940774957625899143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4900034826824365626}
+  key: Quit
 --- !u!1 &6300282049906800805
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1085,7 @@ GameObject:
   - component: {fileID: 5321049060276107008}
   - component: {fileID: 438907039119797536}
   - component: {fileID: 1921191959141574646}
+  - component: {fileID: 7351203436577930736}
   m_Layer: 5
   m_Name: MainMenuUi
   m_TagString: Untagged
@@ -1133,6 +1164,7 @@ MonoBehaviour:
   startDemoButton: {fileID: 7259654646338060828}
   optionsButton: {fileID: 7959810965066805952}
   quitApplicationButton: {fileID: 7849887689591581002}
+  tooltipHover: {fileID: 7351203436577930736}
 --- !u!225 &1921191959141574646
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1145,6 +1177,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &7351203436577930736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6300282049906800805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 4359271857706635602}
+  - {fileID: 4536811886436999244}
+  - {fileID: 7104147356750639584}
 --- !u!1 &6373692745017430674
 GameObject:
   m_ObjectHideFlags: 0
@@ -1483,6 +1531,7 @@ GameObject:
   - component: {fileID: 9210788870308837038}
   - component: {fileID: 7959810965066805952}
   - component: {fileID: 1312337613105362297}
+  - component: {fileID: 4536811886436999244}
   m_Layer: 5
   m_Name: OptionsButton
   m_TagString: Untagged
@@ -1673,3 +1722,17 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &4536811886436999244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7261642251574836333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 9214493257919918282}
+  key: Settings

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 {
     public interface IHardPointOverlayView
@@ -8,7 +6,5 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         float ScaleFactor { get; }
         void ShowMarker(int slot, HardPointMarkerData data);
         void HideMarkersFrom(int slot);
-        void ShowTooltip(Vector2 anchorScreenPosition, string title, string body);
-        void HideTooltip();
     }
 }

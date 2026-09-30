@@ -9968,6 +9968,7 @@ GameObject:
   - component: {fileID: 1816669437403630039}
   - component: {fileID: 5783099442315661780}
   - component: {fileID: 6789805196522983419}
+  - component: {fileID: 3554621317909797509}
   m_Layer: 5
   m_Name: BattleAsteroidOption
   m_TagString: Untagged
@@ -10176,6 +10177,21 @@ MonoBehaviour:
   button: {fileID: 5783099442315661780}
   nameText: {fileID: 1097209172111093536}
   costText: {fileID: 8068281073332852173}
+  tooltipTrigger: {fileID: 3554621317909797509}
+--- !u!114 &3554621317909797509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5023632356986088882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7357796872937274447}
+  key: 
 --- !u!1 &5026954957348599031
 GameObject:
   m_ObjectHideFlags: 0
@@ -15799,6 +15815,7 @@ GameObject:
   - component: {fileID: 3638891677285050866}
   - component: {fileID: 3606563208718366053}
   - component: {fileID: 1013643940011584259}
+  - component: {fileID: 8165163757318597284}
   m_Layer: 5
   m_Name: Status
   m_TagString: Untagged
@@ -15847,7 +15864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -15925,6 +15942,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8165163757318597284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7680341966263005050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 3638891677285050866}
+  key: Status
 --- !u!1 &7709822485624676461
 GameObject:
   m_ObjectHideFlags: 0
@@ -16465,6 +16496,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4331496685745970303}
   - component: {fileID: 3985789703454499298}
+  - component: {fileID: 5501161914677533251}
   m_Layer: 0
   m_Name: BattleAsteroidCaptureSite
   m_TagString: Untagged
@@ -16522,6 +16554,7 @@ MonoBehaviour:
   screenHeightFraction: 0.24
   progressFill: {fileID: 4196554380287589507}
   statusText: {fileID: 1013643940011584259}
+  tooltipHover: {fileID: 5501161914677533251}
   buildOptions: {fileID: 6336633168693918123}
   facilityOptions:
   - {fileID: 6716953088847223563}
@@ -16531,6 +16564,20 @@ MonoBehaviour:
   allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.1}
   opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.1}
   contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.14}
+--- !u!114 &5501161914677533251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7989754913337272775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 8165163757318597284}
 --- !u!1 &7995180106793164387
 GameObject:
   m_ObjectHideFlags: 0
@@ -17655,6 +17702,7 @@ GameObject:
   - component: {fileID: 5226360634064841123}
   - component: {fileID: 327611099528315577}
   - component: {fileID: 6716953088847223563}
+  - component: {fileID: 3127397168762009866}
   m_Layer: 5
   m_Name: MiningOption
   m_TagString: Untagged
@@ -17863,6 +17911,21 @@ MonoBehaviour:
   button: {fileID: 327611099528315577}
   nameText: {fileID: 4430508583053746701}
   costText: {fileID: 3530786589371526221}
+  tooltipTrigger: {fileID: 3127397168762009866}
+--- !u!114 &3127397168762009866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8634519716976093244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 8272495935864325169}
+  key: 
 --- !u!1 &8653234175484996946
 GameObject:
   m_ObjectHideFlags: 0

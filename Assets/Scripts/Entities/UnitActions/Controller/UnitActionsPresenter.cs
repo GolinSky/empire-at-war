@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
@@ -27,13 +30,18 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             new Dictionary<UnitActionId, bool>();
         private IUnitActionsView _view;
         private bool _battleEnded;
+        private readonly TooltipRequests _tooltips;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private TooltipHoverSubscription _tooltipHover;
 
         public UnitActionsPresenter(IUnitActionsViewProvider coreUi,
             ISelectionService selection,
             IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
             IPlayerOrderInputHandler inputHandler, IUnitOrderService orders,
             ISkirmishSessionModelObserver session,
-            IUiService uiService, IUiCancelRouter cancelRouter) : base(uiService, cancelRouter)
+            IUiService uiService, IUiCancelRouter cancelRouter,
+            ITooltipService tooltips,
+            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
         {
             _coreUi = coreUi;
             _selection = selection;
@@ -42,12 +50,17 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             _inputHandler = inputHandler;
             _orders = orders;
             _session = session;
+            _tooltips = new TooltipRequests(tooltips);
+            _bindings = bindings;
         }
 
         public void Initialize()
         {
             _view = _coreUi.UnitActionsView;
             _view.Initialize();
+            if (_view is ITooltipHoverView hover)
+                _tooltipHover = new TooltipHoverSubscription(
+                    hover.TooltipHover, HandleTooltipHover, _tooltips);
             _view.ActionPressed += HandleAction;
             _selection.AddObserver(this);
             _abilities.TargetingChanged += HandleAbilityTargeting;
@@ -57,6 +70,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         public void LateDispose()
         {
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             _view.ActionPressed -= HandleAction;
             _selection.RemoveObserver(this);
             Unfocus();
@@ -64,6 +78,39 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             _targeting.Changed -= RefreshPending;
             _view.Dispose();
             _targeting.Cancel();
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
+        {
+            UnitActionId action = Enum.Parse<UnitActionId>((string)key);
+            _tooltips.Show(source, action, anchor, () => !_session.IsBattleEnded && Snapshot().Count > 0,
+                () => BuildTooltip(action));
+        }
+
+        private TooltipContent BuildTooltip(UnitActionId action)
+        {
+            string command = TooltipBindings.Get(_bindings, "Battle", "Command");
+            string cancel = TooltipBindings.Get(_bindings, "Ui", "Cancel");
+            string description = action switch
+            {
+                UnitActionId.Attack => $"Attack an enemy unit or hardpoint. Choose a target with {command}. Cancel with {cancel}.",
+                UnitActionId.AttackMove => $"Move to a point and engage threats on the way. Choose empty space with {command}. Cancel with {cancel}.",
+                UnitActionId.Stop => "Stop movement and clear the current order.",
+                UnitActionId.Guard => $"Follow and protect a friendly or allied unit. Engage threats, then return. Choose with {command}; cancel with {cancel}.",
+                UnitActionId.WaypointMove => $"Choose successive points with {command}. Click this command again to finish. Cancel with {cancel}.",
+                UnitActionId.Hunt => "Seek and engage enemy units automatically.",
+                UnitActionId.Retreat => "Withdraw from the battlefield.",
+                UnitActionId.Move => $"Choose empty space with {command} to move the selected units.",
+                _ => throw new ArgumentOutOfRangeException(nameof(action))
+            };
+            string shortcut = action == UnitActionId.WaypointMove
+                ? TooltipBindings.Get(_bindings, "Battle", "QueueWaypoint") : "";
+            return new TooltipContent(action.ToString(), description,
+                shortcut: shortcut,
+                requirements: _availability[action] ? null : new[]
+                {
+                    new TooltipRequirement("Select a unit that supports this command", false)
+                });
         }
 
         public void UpdateState(ISelectionSubject subject)

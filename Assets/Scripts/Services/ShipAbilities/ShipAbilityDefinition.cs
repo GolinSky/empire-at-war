@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         [Header("Ui")]
         [SerializeField] private Sprite icon;
         [SerializeField] private string displayName;
+        [SerializeField, TextArea] private string description;
+        [SerializeField] private string iconKey;
         [Header("Timing")]
         [SerializeField] private float duration;
         [SerializeField] private float recoveryDelay;
@@ -24,6 +26,8 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public Sprite Icon => icon;
         public string DisplayName => displayName;
+        public string Description => description;
+        public string IconKey => iconKey;
         public float Duration => duration;
         public float RecoveryDelay => recoveryDelay;
         public bool CanCancel => canCancel;

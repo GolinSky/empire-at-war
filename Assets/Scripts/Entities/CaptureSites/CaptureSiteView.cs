@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView
+    public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView, ITooltipHoverView
     {
         private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
         private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
@@ -29,6 +30,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         private float screenHeightFraction = 0.24f;
         [SerializeField] private Image progressFill;
         [SerializeField] private TMP_Text statusText;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private GameObject buildOptions;
         [SerializeField] private SiteFacilityOptionView[] facilityOptions = Array.Empty<SiteFacilityOptionView>();
         [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
@@ -58,6 +61,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             foreach (SiteFacilityOptionView option in facilityOptions)
             {
                 option.Pressed += HandleOptionPressed;
+                tooltipHover.Register(option.TooltipTrigger);
             }
         }
 

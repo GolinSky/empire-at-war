@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using TMPro;
@@ -8,6 +9,9 @@ namespace EmpireAtWar.Views.Factions
 {
     public class FactionUnitUi : MonoBehaviour
     {
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
+        public void SetAvailable(bool available) => purchaseButton.interactable = available;
         [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TextMeshProUGUI unitPriceText;
         [SerializeField] private Image unitIconImage;
@@ -28,6 +32,7 @@ namespace EmpireAtWar.Views.Factions
             Level = factionData.AvailableLevel;
             _factionView = factionView;
             _unitRequest = unitRequest;
+            tooltipTrigger.SetKey(unitRequest);
         }
 
         private void OnDestroy()

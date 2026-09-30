@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using EmpireAtWar.Components.Ui.Tooltip;
+using System.Globalization;
 using EmpireAtWar.Models.Economy;
 using System;
 using EmpireAtWar.Ui.Base;
@@ -17,9 +18,11 @@ namespace EmpireAtWar.Views.Economy
         void Dispose();
     }
 
-    public class EconomyUi : BaseUi, IEconomyUi
+    public class EconomyUi : BaseUi, IEconomyUi, ITooltipHoverView
     {
         [SerializeField] private TextMeshProUGUI moneyText;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private IEconomyModelObserver _model;
         private bool _isInitialized;

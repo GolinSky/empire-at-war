@@ -1,7 +1,10 @@
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MainMenu;
 using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Extentions;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +16,14 @@ namespace EmpireAtWar
 
         public override void InstallBindings()
         {
+            Container.BindScriptableObject<TooltipSettings>(Repository);
+            Container.BindScriptableObject<TooltipIconData>(Repository);
+            Container.Bind<TooltipTiming>().FromMethod(context =>
+                context.Container.Resolve<TooltipSettings>().Timing).AsSingle();
+            Container.Bind<ITooltipClock>().To<TooltipClock>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TooltipModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TooltipService>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<TooltipUiController>().AsSingle().NonLazy();
             Container
                 .BindInterfacesAndSelfTo<UiService>()
                 .FromComponentInNewPrefab(Repository.LoadPrefab(nameof(UiService)))

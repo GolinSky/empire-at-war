@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5732775408491011721}
   - component: {fileID: 6383676077182969046}
   - component: {fileID: 6185335331752354387}
+  - component: {fileID: 5982671618044511339}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -59,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -75,6 +76,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5982671618044511339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104486789183679601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 5732775408491011721}
+  key: 
 --- !u!1 &2553412668345948304
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,6 +293,7 @@ MonoBehaviour:
   backgroundImage: {fileID: 6597382864997038084}
   unitCapacityText: {fileID: 4050306462234272236}
   unitCountText: {fileID: 288562003435635639}
+  tooltipTrigger: {fileID: 5982671618044511339}
 --- !u!114 &6597382864997038084
 MonoBehaviour:
   m_ObjectHideFlags: 0

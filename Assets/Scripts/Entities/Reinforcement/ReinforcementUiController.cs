@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -19,6 +22,9 @@ namespace EmpireAtWar.Presenters.Reinforcement
         private readonly ISkirmishRouteNavigation _routeNavigation;
 
         private IReinforcementUi _ui;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
+        private bool _isTooltipActive;
 
         public ReinforcementUiController(
             IUiService uiService,
@@ -26,12 +32,14 @@ namespace EmpireAtWar.Presenters.Reinforcement
             IReinforcementService reinforcementService,
             ReinforcementModel model,
             ReinforcementData data,
-            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
+            ISkirmishRouteNavigation routeNavigation,
+            ITooltipService tooltips) : base(uiService, cancelRouter)
         {
             _reinforcementService = reinforcementService;
             _model = model;
             _data = data;
             _routeNavigation = routeNavigation;
+            _tooltips = new TooltipRequests(tooltips);
         }
 
         public void Initialize()
@@ -52,6 +60,7 @@ namespace EmpireAtWar.Presenters.Reinforcement
 
             if (_ui != null)
             {
+                _tooltipHover.Dispose();
                 _ui.Dispose();
             }
         }
@@ -77,6 +86,8 @@ namespace EmpireAtWar.Presenters.Reinforcement
 
         public void Activate(bool isActive, Transform parentTransform)
         {
+            _isTooltipActive = isActive;
+            if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
                 BaseUi ui = UiService.CreateUi(
@@ -90,6 +101,9 @@ namespace EmpireAtWar.Presenters.Reinforcement
                 _ui.SetPresenter(this);
                 _ui.SetData(_data);
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_ui).TooltipHover,
+                    HandleTooltipHover, _tooltips);
             }
             else
             {
@@ -104,6 +118,24 @@ namespace EmpireAtWar.Presenters.Reinforcement
             {
                 _ui.Hide();
             }
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
+        {
+            if (key is UnitRequest request)
+                _tooltips.Show(source, request.Id, anchor, () => _isTooltipActive && _model.GetReserveCount(request) > 0,
+                    () => UnitTooltipContent.Build(request.FactionData, new[]
+                    {
+                        new TooltipStat("Available reserves", _model.GetReserveCount(request)),
+                        new TooltipStat("Population", request.FactionData.UnitCapacity),
+                        new TooltipStat("Used population", _model.CurrentUnitCapacity, _model.MaxUnitCapacity)
+                    }, status: request.FactionData.UnitCapacity > _model.CapacityLeft
+                        ? "Population limit reached" : request is ShipUnitRequest || request is EmpireAtWar.Controllers.Factions.SquadronUnitRequest
+                            ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately."
+                            : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy."));
+            else
+                _tooltips.Show(source, key, anchor, () => _isTooltipActive,
+                    () => new TooltipContent("Reinforcements", "Close the reinforcement panel."));
         }
     }
 }

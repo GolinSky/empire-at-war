@@ -79,7 +79,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             {
                 _model.Inspect(null, UnitOrderModel.NO_HARD_POINT, false);
                 _view.HideMarkersFrom(0);
-                _view.HideTooltip();
                 return;
             }
 
@@ -138,7 +137,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
 
             _view.HideMarkersFrom(slot);
-            RenderTooltip();
         }
 
         private bool TryShowMarker(int slot, IEntity ship, IHardPointStatus hardPoint)
@@ -158,32 +156,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 _model.IsTargeted(ship, hardPoint.Id),
                 hardPoint.IsDestroyed));
             return true;
-        }
-
-        private void RenderTooltip()
-        {
-            IEntity ship = _model.InspectedShip;
-            if (ship == null || _model.HoveredHardPointId == UnitOrderModel.NO_HARD_POINT)
-            {
-                _view.HideTooltip();
-                return;
-            }
-
-            IHardPointsFacade hardPoints = ship.GetFacade<IHardPointsFacade>();
-            IHardPointStatus hardPoint = hardPoints.HardPoints[_model.HoveredHardPointId];
-            HardPointOverlayEntry entry = _data.Get(hardPoint.HardPointType);
-            TryGetScreenPosition(hardPoint, out Vector2 anchor);
-
-            string title = $"{entry.DisplayName} {GetOrdinal(hardPoints.HardPoints, hardPoint):00}";
-            string status = hardPoint.IsDestroyed ? "Destroyed" : "Operational";
-            string body = $"{status} · HP: {hardPoint.Health:N0} / {hardPoint.MaxHealth:N0}";
-            if (hardPoints.MaxShields > 0f)
-            {
-                body += $"\nShip shields: {ship.HealthModel.Shields:N0} / {hardPoints.MaxShields:N0} — shared";
-            }
-
-            body += $"\n{entry.Description}";
-            _view.ShowTooltip(anchor, title, body);
         }
 
         private int FindMarkerAt(IEntity ship, Vector2 cursor, float hitHalfSize)
@@ -275,19 +247,5 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private static bool IsInside(Vector2 position, Vector2 cursor, float halfSize) =>
             Mathf.Abs(position.x - cursor.x) <= halfSize && Mathf.Abs(position.y - cursor.y) <= halfSize;
-
-        private static int GetOrdinal(IReadOnlyList<IHardPointStatus> hardPoints, IHardPointStatus hardPoint)
-        {
-            int ordinal = 0;
-            for (int id = 0; id <= hardPoint.Id; id++)
-            {
-                if (hardPoints[id].HardPointType == hardPoint.HardPointType)
-                {
-                    ordinal++;
-                }
-            }
-
-            return ordinal;
-        }
     }
 }

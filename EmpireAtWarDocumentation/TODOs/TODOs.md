@@ -12,7 +12,8 @@
   - **Plan**: [[TODOs/Features/Tooltip_System_Plan|Tooltip System Plan]]
   - **Research**: [[TODOs/Features/Tooltip_System_Plan - Research|Tooltip coverage catalog and codebase findings]]
   - **Rule**: only `ITooltipService` shows or hides tooltips; views → presenter → service; `UiController` is not bound to the service.
-  - **Remaining**: Phases 0–8; nothing implemented yet.
+  - **Status**: Phases 0–8 implemented; pure service, saved MPUIKit UI, presenter integrations, and 13 per-unit matchup assets. Compilation and asset-reference inspection clean; sample tooltip visually checked.
+  - **Remaining**: in-game acceptance (disabled cards, live refresh/rebind, fog/drag/HUD/route lifecycle, screen edges and teardown). EditMode tests authored; execute only on request.
 
 - [ ] **Close settings audit follow-ups** (Wave 1)
   - **Plan**: [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; parent [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]

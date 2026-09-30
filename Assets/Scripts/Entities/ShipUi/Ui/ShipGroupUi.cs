@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.Squadrons;
@@ -11,7 +12,7 @@ using Zenject;
 
 namespace EmpireAtWar.Views
 {
-    public class ShipGroupUi : BaseUi, IShipGroupUi
+    public class ShipGroupUi : BaseUi, IShipGroupUi, ITooltipHoverView
     {
         private const float MAX_ICON_SIZE = 220f;
         private const float MIN_ICON_SIZE = 96f;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Views
         private const float PANEL_PADDING = 8f;
 
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
         private IShipUiModelObserver _model;
@@ -72,6 +75,7 @@ namespace EmpireAtWar.Views
             Action<ShipAbilityId> pressAbility)
         {
             ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+            group.SetTooltipHover(tooltipHover);
             group.Configure(shipType, _icons.GetShipIcon(shipType), ships, _model,
                 _presenter.SelectShipGroup, pressAbility);
             group.gameObject.SetActive(true);
@@ -83,6 +87,7 @@ namespace EmpireAtWar.Views
             Action<ShipAbilityId> pressAbility)
         {
             ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+            group.SetTooltipHover(tooltipHover);
             group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), squadrons, _model,
                 _presenter.SelectSquadronGroup, pressAbility);
             group.gameObject.SetActive(true);

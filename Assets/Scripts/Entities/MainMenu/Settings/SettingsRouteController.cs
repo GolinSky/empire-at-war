@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Settings;
@@ -29,6 +32,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private readonly SettingsModel _model;
 
         private ISettingsUi _ui;
+        private bool _isOpen;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         private float _displayRevertTime;
         private int _shownSecondsLeft;
 
@@ -39,13 +45,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             IInputBindings bindings,
             SettingsDraftEditor draftEditor,
             KeyBindingEditor keyBindingEditor,
-            SettingsModel model) : base(uiService, cancelRouter)
+            SettingsModel model, ITooltipService tooltips) : base(uiService, cancelRouter)
         {
             _settingsService = settingsService;
             _bindings = bindings;
             _draftEditor = draftEditor;
             _keyBindingEditor = keyBindingEditor;
             _model = model;
+            _tooltips = new TooltipRequests(tooltips);
         }
 
         public void Open()
@@ -64,6 +71,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 _ui.SetModel(_model);
                 _ui.SetNavigation(this);
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             }
             else
             {
@@ -71,6 +80,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             }
 
             _ui.Show();
+            _isOpen = true;
             Focus();
         }
 
@@ -84,6 +94,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 return;
             }
 
+            _tooltips.HideAll();
+            _isOpen = false;
             _ui.Hide();
             Unfocus();
         }
@@ -207,7 +219,40 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             if (_ui != null)
             {
                 _ui.Dispose();
+                _tooltipHover.Dispose();
             }
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) {
+            if (key is ValueTuple<int, bool> binding)
+            {
+                _tooltips.Show(source, key, anchor, () => _isOpen, () =>
+                {
+                    KeyBindingRowState row = _model.Bindings[binding.Item1];
+                    return new TooltipContent(row.ActionLabel,
+                        binding.Item2 ? "Restore this binding to its default." : "Click, then press a key or button to rebind. Escape cancels.",
+                        shortcut: row.BindingLabel);
+                });
+                return;
+            }
+            _tooltips.Show(source, key, anchor, () => _isOpen, () =>
+                new TooltipContent((string)key, (string)key switch
+                {
+                    "Apply" => "Apply and save changes. Display changes require confirmation.",
+                    "Discard" => "Discard changes and restore the saved settings.",
+                    "Defaults" => "Restore default settings in the current draft. Apply to save them.",
+                    "Close" => "Close settings. Unsaved changes require a choice.",
+                    "Pan speed" => $"Camera pan speed: {_model.PanSpeed:0.#}.",
+                    "Zoom speed" => $"Camera zoom speed: {_model.ZoomSpeed:0.#}.",
+                    "Edge scrolling" => $"Move the camera at screen edges. Currently {(_model.EdgeScrolling ? "On" : "Off")}.",
+                    "Invert zoom" => $"Reverse camera zoom input. Currently {(_model.InvertZoom ? "On" : "Off")}.",
+                    "VSync" => $"Synchronize presentation with the display refresh rate. Currently {(_model.VSync ? "On" : "Off")}.",
+                    "Window mode" => "Choose fullscreen or windowed display mode.",
+                    "Resolution" => "Choose the display resolution.",
+                    "Quality" => "Choose the graphics quality preset.",
+                    "Frame rate" => "Set the frame rate limit. VSync may override it.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
         }
 
         private void UpdateDisplayCountdown()

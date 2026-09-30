@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 5233012742759148230}
   - component: {fileID: 5414019587864275134}
   - component: {fileID: 841658973533068309}
+  - component: {fileID: 8296329231468388648}
   m_Layer: 5
   m_Name: ShipBuildUi
   m_TagString: Untagged
@@ -139,6 +140,7 @@ MonoBehaviour:
     - {fileID: 2277834254656644971}
     - {fileID: 8611951640737950688}
     - {fileID: 5411321087284174246}
+  tooltipHover: {fileID: 8296329231468388648}
 --- !u!225 &841658973533068309
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -151,6 +153,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8296329231468388648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789349732807915449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers: []
 --- !u!1001 &982734321543438214
 PrefabInstance:
   m_ObjectHideFlags: 0

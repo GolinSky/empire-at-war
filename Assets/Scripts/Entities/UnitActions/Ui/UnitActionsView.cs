@@ -1,12 +1,15 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.UnitActions.Ui
 {
-    public sealed class UnitActionsView : MonoBehaviour, IUnitActionsView
+    public sealed class UnitActionsView : MonoBehaviour, IUnitActionsView, ITooltipHoverView
     {
         [SerializeField] private List<UnitActionButton> buttons;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action<UnitActionId> ActionPressed;
 

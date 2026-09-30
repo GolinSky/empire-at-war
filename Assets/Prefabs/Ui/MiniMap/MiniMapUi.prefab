@@ -78,6 +78,7 @@ GameObject:
   - component: {fileID: 7655334293289922460}
   - component: {fileID: 2757812043472730455}
   - component: {fileID: 8576872378924644243}
+  - component: {fileID: 1384033077702593502}
   m_Layer: 5
   m_Name: MiniMap
   m_TagString: Untagged
@@ -507,6 +508,7 @@ GameObject:
   - component: {fileID: 3894093650467998914}
   - component: {fileID: 7032466655325374716}
   - component: {fileID: 561109845514918980}
+  - component: {fileID: 1162141742112872326}
   m_Layer: 5
   m_Name: MiniMapUi
   m_TagString: Untagged
@@ -548,6 +550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 561109845514918980}
   miniMapRectTransform: {fileID: 8329699231137349153}
+  tooltipHover: {fileID: 1162141742112872326}
   iconParent: {fileID: 7655334293289922460}
   mapImage: {fileID: 8576872378924644243}
   cameraFootprintView: {fileID: 5546350535368456053}
@@ -565,6 +568,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1162141742112872326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9008054160743074511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 1384033077702593502}
 --- !u!1001 &70501131710492922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -689,5 +706,23 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5289665125518178922}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4792388556683557940, guid: 111da0e7ec1cc6947a00c56e2ab5d401,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1384033077702593502}
   m_SourcePrefab: {fileID: 100100000, guid: 111da0e7ec1cc6947a00c56e2ab5d401, type: 3}
+--- !u!114 &1384033077702593502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4790568209056582862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7655334293289922460}
+  key: Minimap

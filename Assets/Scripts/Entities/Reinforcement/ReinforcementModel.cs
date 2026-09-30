@@ -29,6 +29,7 @@ namespace EmpireAtWar.Models.Reinforcement
         private readonly ReinforcementData _data;
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();
         private readonly Dictionary<SquadronType, FactionData> _squadronFactionData = new();
+        private readonly Dictionary<UnitLimitKey, int> _reserveCounts = new();
 
         private int _currentUnitCapacity;
 
@@ -104,7 +105,20 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public void AddReinforcement(UnitRequest unitRequest)
         {
+            UnitLimitKey key = UnitLimitKey.From(unitRequest);
+            _reserveCounts[key] = GetReserveCount(unitRequest) + 1;
             OnReinforcementAdded?.Invoke(unitRequest);
+        }
+
+        public int GetReserveCount(UnitRequest request) =>
+            _reserveCounts.TryGetValue(UnitLimitKey.From(request), out int count) ? count : 0;
+
+        public void ConsumeReinforcement(UnitRequest request)
+        {
+            UnitLimitKey key = UnitLimitKey.From(request);
+            int remaining = _reserveCounts[key] - 1;
+            if (remaining == 0) _reserveCounts.Remove(key);
+            else _reserveCounts[key] = remaining;
         }
     }
 }

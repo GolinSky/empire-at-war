@@ -15,13 +15,14 @@ namespace EmpireAtWar.Ui.Base
         void SetHudVisible(bool isVisible);
     }
     
-    public class UiService : MonoBehaviour, IUiService
+    public class UiService : MonoBehaviour, IUiService, IHudVisibilityObserver
     {
         [SerializeField] private Canvas defaultCanvas;
         [SerializeField] private Canvas dynamicCanvas;
         [SerializeField] private Canvas popupCanvas;
 
         private UiFactory _uiFacade;
+        public bool IsHudVisible { get; private set; } = true;
 
         public Transform DefaultCanvasTransform => defaultCanvas.transform;
         public Transform DynamicCanvasTransform => dynamicCanvas.transform;
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Ui.Base
 
         public void SetHudVisible(bool isVisible)
         {
+            IsHudVisible = isVisible;
             defaultCanvas.enabled = isVisible;
             dynamicCanvas.enabled = isVisible;
         }

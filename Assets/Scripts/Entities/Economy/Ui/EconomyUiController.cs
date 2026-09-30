@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.UiRouting;
@@ -15,15 +18,29 @@ namespace EmpireAtWar.Presenters.Economy
         private readonly ISkirmishRouteNavigation _routeNavigation;
 
         private IEconomyUi _ui;
+        private readonly TooltipRequests _tooltips;
+        private readonly EmpireAtWar.Services.Economy.EconomyService _economy;
+        private readonly EmpireAtWar.Models.Economy.EconomyData _data;
+        private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
+        private TooltipHoverSubscription _tooltipHover;
+        private bool _isTooltipActive;
 
         public EconomyUiController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IEconomyModelObserver model,
-            ISkirmishRouteNavigation routeNavigation) : base(uiService, cancelRouter)
+            ISkirmishRouteNavigation routeNavigation,
+            ITooltipService tooltips,
+            EmpireAtWar.Services.Economy.EconomyService economy,
+            EmpireAtWar.Models.Economy.EconomyData data,
+            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
             _model = model;
             _routeNavigation = routeNavigation;
+            _tooltips = new TooltipRequests(tooltips);
+            _economy = economy;
+            _data = data;
+            _reinforcements = reinforcements;
         }
 
         public void Initialize()
@@ -41,12 +58,15 @@ namespace EmpireAtWar.Presenters.Economy
 
             if (_ui != null)
             {
+                _tooltipHover.Dispose();
                 _ui.Dispose();
             }
         }
 
         public void Activate(bool isActive, Transform parentTransform)
         {
+            _isTooltipActive = isActive;
+            if (!isActive) _tooltips.HideAll();
             if (_ui == null)
             {
                 BaseUi ui = UiService.CreateUi(
@@ -58,6 +78,9 @@ namespace EmpireAtWar.Presenters.Economy
 
                 _ui.SetModel(_model);
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_ui).TooltipHover,
+                    HandleTooltipHover, _tooltips);
             }
             else
             {
@@ -73,5 +96,17 @@ namespace EmpireAtWar.Presenters.Economy
                 _ui.Hide();
             }
         }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _isTooltipActive, () =>
+                new TooltipContent("Economy",
+                    $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and mining facilities increase income.",
+                    stats: new[]
+                    {
+                        new TooltipStat("Credits", _model.Money),
+                        new TooltipStat("Income per payment", _economy.TotalIncome),
+                        new TooltipStat("Population", _reinforcements.CurrentUnitCapacity,
+                            _reinforcements.MaxUnitCapacity)
+                    }));
     }
 }

@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
@@ -206,6 +207,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class NoCaptureSites : ICaptureSitesSystem
         {
+            public IReadOnlyList<CaptureSitePresenter> Sites =>
+                Array.Empty<CaptureSitePresenter>();
             public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
 
             public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)

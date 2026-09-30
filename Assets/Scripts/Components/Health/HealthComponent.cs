@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource
+        IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource
     {
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
         [SerializeField] private Shield shieldView;
@@ -59,6 +59,10 @@ namespace EmpireAtWar.Components.Ship.Health
         public ShipClass ShipClass => Model.ShipClass;
         public HardPointModel[] HardPointModels => Model.HardPointModels;
         public float Hull => Model.Hull;
+        public float MaxHull => Model.MaxHull;
+        public float ShieldRegeneration => Model.IsLostShieldGenerator ? 0f
+            : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier;
+        public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
         public float HullPercentage => Model.HullPercentage;
         public float Shields => Model.Shields;
         public float ShieldPercentage => Model.ShieldPercentage;

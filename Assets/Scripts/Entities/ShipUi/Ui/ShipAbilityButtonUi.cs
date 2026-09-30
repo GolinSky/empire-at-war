@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Views
         [SerializeField] private Image cooldownFill;
         [SerializeField] private GameObject activeHighlight;
         [SerializeField] private GameObject targetingHighlight;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
         private IReadOnlyList<ShipAbilitySlot> _slots;
         private Action<ShipAbilityId> _onPressed;
@@ -29,6 +32,7 @@ namespace EmpireAtWar.Views
         {
             Id = id;
             _slots = slots;
+            tooltipTrigger.SetKey(slots);
             _onPressed = onPressed;
             icon.sprite = sprite;
             cooldownFill.sprite = sprite;

@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 6000234965536414120}
   - component: {fileID: 343085362510412067}
   - component: {fileID: 8126718479396284143}
+  - component: {fileID: 8760911751907223931}
   m_Layer: 5
   m_Name: Pipeline
   m_TagString: Untagged
@@ -588,6 +589,7 @@ MonoBehaviour:
   icon: {fileID: 1476845257366614190}
   countText: {fileID: 7642809965788677034}
   skipButton: {fileID: 343085362510412067}
+  tooltipTrigger: {fileID: 8760911751907223931}
 --- !u!114 &343085362510412067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,6 +745,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &8760911751907223931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8111265280006504731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7704571122944932377}
+  key: 
 --- !u!1 &8958695367400096148
 GameObject:
   m_ObjectHideFlags: 0

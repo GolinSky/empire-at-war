@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75cc8f0b4fe2a2641bebf9a29dc47a7f
+    m_Address: TooltipUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 77d87142c06b4e141a480ea7991e6cde
     m_Address: ShipGroupUi
     m_ReadOnly: 0

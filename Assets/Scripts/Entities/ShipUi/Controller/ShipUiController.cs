@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons;
 using System;
@@ -34,6 +37,11 @@ namespace EmpireAtWar.Controllers.ShipUi
         private IShipUi _shipUi;
         private IShipGroupUi _shipGroupUi;
         private bool _isRouteActive;
+        private readonly TooltipRequests _tooltips;
+        private readonly EmpireAtWar.Models.Factions.FactionsData _factions;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private TooltipHoverSubscription _shipTooltipHover;
+        private TooltipHoverSubscription _groupTooltipHover;
 
         public ShipUiController(
             IUiService uiService,
@@ -42,13 +50,19 @@ namespace EmpireAtWar.Controllers.ShipUi
             ShipUiModel model,
             ISkirmishRouteNavigation routeNavigation,
             ShipAbilityService abilityService,
-            ICameraService cameraService) : base(uiService, cancelRouter)
+            ICameraService cameraService,
+            ITooltipService tooltips,
+            EmpireAtWar.Models.Factions.FactionsData factions,
+            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _model = model;
             _routeNavigation = routeNavigation;
             _abilityService = abilityService;
             _cameraService = cameraService;
+            _tooltips = new TooltipRequests(tooltips);
+            _factions = factions;
+            _bindings = bindings;
         }
 
         public void Initialize()
@@ -65,6 +79,8 @@ namespace EmpireAtWar.Controllers.ShipUi
             _abilityService.TargetingChanged -= UpdateTargeting;
             if (_shipUi != null)
             {
+                _shipTooltipHover.Dispose();
+                _groupTooltipHover.Dispose();
                 _shipUi.Dispose();
                 _shipGroupUi.Dispose();
             }
@@ -84,6 +100,10 @@ namespace EmpireAtWar.Controllers.ShipUi
                 _shipGroupUi.SetModel(_model);
                 _shipGroupUi.SetPresenter(this);
                 _shipGroupUi.Initialize();
+                _shipTooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_shipUi).TooltipHover, HandleTooltipHover, _tooltips);
+                _groupTooltipHover = new TooltipHoverSubscription(
+                    ((ITooltipHoverView)_shipGroupUi).TooltipHover, HandleTooltipHover, _tooltips);
             }
             else
             {
@@ -92,6 +112,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             _isRouteActive = isActive;
+            if (!isActive) _tooltips.HideAll();
             RefreshSelection();
         }
 
@@ -132,6 +153,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             _playerSelectionContext = subject.PlayerSelectionContext;
+            _tooltips.HideAll();
             _abilityService.CancelTargeting();
             UpdateSelection();
         }
@@ -228,7 +250,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
                     entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
-                        entity.HealthModel, () => FocusEntity(entity)));
+                        entity.HealthModel, () => FocusEntity(entity), entity));
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, entries, id => _abilityService.Press(casters, id));
@@ -252,6 +274,42 @@ namespace EmpireAtWar.Controllers.ShipUi
             }
 
             return false;
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _isRouteActive && _model.HasShips,
+                () => BuildTooltip(key));
+
+        private TooltipContent BuildTooltip(object key)
+        {
+            if (key is string action && action == "Focus")
+                return new TooltipContent("Focus selected ship", "Click to move the camera to the selected ship.");
+            if (key is string selection && selection == "Selection")
+                return new TooltipContent("Clear selection", "Click to deselect the current ship.");
+            if (key is IReadOnlyList<ShipAbilitySlot> slots)
+                return ShipAbilityTooltipContent.Build(slots, _bindings);
+            if (key is EmpireAtWar.Models.ShipUi.ShipUiEntry entry)
+                return EntityTooltipContent.Build(entry.Entity, _factions);
+            if (key is ShipType || key is SquadronType)
+            {
+                int count = 0;
+                int damaged = 0;
+                foreach (IEntity entity in _playerSelectionContext.Entities)
+                {
+                    bool match = key is ShipType shipType && entity.Model is IShipModelObserver ship && ship.ShipType == shipType ||
+                        key is SquadronType squadronType && entity.Model is ISquadronModelObserver squadron && squadron.SquadronType == squadronType;
+                    if (!match || entity.HealthModel.IsDestroyed) continue;
+                    count++;
+                    if (entity.HealthModel.HullPercentage < 1f) damaged++;
+                }
+                var data = key is ShipType type ? _factions.GetShipFactionData(type) : _factions.GetSquadronFactionData((SquadronType)key);
+                return UnitTooltipContent.Build(data, new[]
+                {
+                    new TooltipStat("Selected", count),
+                    new TooltipStat("Damaged", damaged)
+                }, status: "Click to select this unit type.");
+            }
+            return EntityTooltipContent.Build(_playerSelectionContext.Entity, _factions);
         }
     }
 }

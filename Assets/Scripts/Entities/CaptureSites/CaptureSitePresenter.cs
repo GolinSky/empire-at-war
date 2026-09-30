@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
@@ -6,7 +9,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 {
     public sealed class CaptureSitePresenter : IDisposable
     {
-        private static readonly SiteFacilityType[] FACILITY_TYPES =
+        private static readonly SiteFacilityType[] FacilityTypes =
             (SiteFacilityType[])Enum.GetValues(typeof(SiteFacilityType));
 
         private readonly CaptureSiteModel _model;
@@ -14,6 +17,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly CaptureSiteData _data;
         private readonly ILocalPlayer _localPlayer;
         private bool _isSelected;
+        private readonly TooltipRequests _tooltips;
+        private readonly TooltipHoverSubscription _tooltipHover;
+        private readonly Predicate<float> _canAfford;
 
         public event Action<CaptureSitePresenter, SiteFacilityType> BuildRequested;
 
@@ -21,13 +27,19 @@ namespace EmpireAtWar.Entities.CaptureSites
             CaptureSiteModel model,
             ICaptureSiteView view,
             CaptureSiteData data,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer,
+            ITooltipService tooltips,
+            Predicate<float> canAfford)
         {
             _localPlayer = localPlayer;
             _model = model;
             _view = view;
             _data = data;
-            foreach (SiteFacilityType facilityType in FACILITY_TYPES)
+            _canAfford = canAfford;
+            _tooltips = new TooltipRequests(tooltips);
+            _tooltipHover = new TooltipHoverSubscription(
+                ((ITooltipHoverView)view).TooltipHover, HandleTooltipHover, _tooltips);
+            foreach (SiteFacilityType facilityType in FacilityTypes)
             {
                 SiteFacilityCost cost = data.GetCost(facilityType);
                 _view.ConfigureOption(facilityType, cost.Name.ToUpperInvariant(),
@@ -40,6 +52,9 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         public PlayerId Owner => _model.Owner;
+        public CaptureSiteState State => _model.State;
+        public float CaptureProgress => _model.CaptureProgress;
+        public float ConstructionProgress => _model.ConstructionProgress;
         public bool IsCapturable => _model.IsCapturable;
         public bool CanStartConstruction => _model.CanStartConstruction;
         public bool CanPlayerBuild => _localPlayer.IsLocal(_model.Owner) && _model.CanStartConstruction;
@@ -54,6 +69,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Dispose()
         {
             _view.BuildPressed -= HandleBuildPressed;
+            _tooltipHover.Dispose();
         }
 
         public SiteFacilityCost GetCost(SiteFacilityType facilityType)
@@ -119,7 +135,7 @@ namespace EmpireAtWar.Entities.CaptureSites
                 return;
             }
 
-            foreach (SiteFacilityType facilityType in FACILITY_TYPES)
+            foreach (SiteFacilityType facilityType in FacilityTypes)
             {
                 _view.SetOptionInteractable(facilityType, canPlayerAfford(_data.GetCost(facilityType).Price));
             }
@@ -128,6 +144,32 @@ namespace EmpireAtWar.Entities.CaptureSites
         private void HandleBuildPressed(SiteFacilityType facilityType)
         {
             BuildRequested?.Invoke(this, facilityType);
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
+        {
+            _tooltips.Show(source, key, anchor, () => IsRevealed, () =>
+            {
+                if (key is SiteFacilityType type)
+                {
+                    SiteFacilityCost cost = _data.GetCost(type);
+                    return new TooltipContent(cost.Name,
+                        $"Construct {cost.Name} at this owned capture site.", stats: new[]
+                        {
+                            new TooltipStat("Cost (credits)", cost.Price),
+                            new TooltipStat("Build time (s)", cost.BuildTime)
+                        }, requirements: new[]
+                        {
+                            new TooltipRequirement("Owned empty site", CanPlayerBuild),
+                            new TooltipRequirement($"{cost.Price:0} credits", _canAfford(cost.Price))
+                        });
+                }
+                return new TooltipContent("Capture site",
+                    "Move units into the ring to capture it. Select an owned empty site to choose a facility.",
+                    stats: new[] { new TooltipStat("Capture (%)", CaptureProgress * 100f),
+                        new TooltipStat("Construction (%)", ConstructionProgress * 100f) },
+                    status: $"Owner: {Owner} · {State} · {FacilityType}");
+            });
         }
     }
 }
