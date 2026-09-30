@@ -207,8 +207,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class NoCaptureSites : ICaptureSitesSystem
         {
-            public IReadOnlyList<CaptureSitePresenter> Sites =>
-                Array.Empty<CaptureSitePresenter>();
+            public IReadOnlyList<ICaptureSite> Sites =>
+                Array.Empty<ICaptureSite>();
             public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
 
             public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)

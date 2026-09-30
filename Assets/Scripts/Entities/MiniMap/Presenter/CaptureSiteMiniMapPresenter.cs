@@ -11,20 +11,20 @@ namespace EmpireAtWar.Presenters.MiniMap
     /// </summary>
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable
     {
-        private readonly CaptureSitesSystem _captureSitesSystem;
-        private readonly MiniMapMarkerCollection<CaptureSitePresenter> _markers;
+        private readonly ICaptureSitesSystem _captureSitesSystem;
+        private readonly MiniMapMarkerCollection<ICaptureSite> _markers;
 
         public CaptureSiteMiniMapPresenter(
             MiniMapData miniMapData,
-            CaptureSitesSystem captureSitesSystem)
+            ICaptureSitesSystem captureSitesSystem)
         {
-            _markers = new MiniMapMarkerCollection<CaptureSitePresenter>(miniMapData);
+            _markers = new MiniMapMarkerCollection<ICaptureSite>(miniMapData);
             _captureSitesSystem = captureSitesSystem;
         }
 
         public void Initialize()
         {
-            foreach (CaptureSitePresenter site in _captureSitesSystem.Sites)
+            foreach (ICaptureSite site in _captureSitesSystem.Sites)
             {
                 MiniMapMarker marker = new MiniMapMarker(MarkType.CaptureSite, site.Owner);
                 marker.SetPosition(site.Center.x, site.Center.z);
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void LateTick()
         {
-            foreach (KeyValuePair<CaptureSitePresenter, MiniMapMarker> pair in _markers.Pairs)
+            foreach (KeyValuePair<ICaptureSite, MiniMapMarker> pair in _markers.Pairs)
             {
                 RefreshMarker(pair.Key, pair.Value);
             }
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _markers.Clear();
         }
 
-        private static void RefreshMarker(CaptureSitePresenter site, MiniMapMarker marker)
+        private static void RefreshMarker(ICaptureSite site, MiniMapMarker marker)
         {
             if (site.IsRevealed)
             {

@@ -80,7 +80,7 @@ namespace EmpireAtWar.Entities.Tooltip
             else
             {
                 Vector3 world = _camera.GetWorldPoint(point, Vector3.zero);
-                foreach (var site in _sites.Sites)
+                foreach (ICaptureSite site in _sites.Sites)
                 {
                     if (!site.IsRevealed || !site.Contains(world)) continue;
                     _handle = _tooltips.Show(new TooltipContentProvider(this, site,
