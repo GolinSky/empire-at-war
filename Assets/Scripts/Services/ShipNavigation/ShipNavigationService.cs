@@ -262,15 +262,25 @@ namespace EmpireAtWar.Services.ShipNavigation
                     candidate,
                     mapRange,
                     clearance);
-                ShipAvoidancePlanner.TryResolveDestination(
-                    candidate,
-                    origin,
-                    _mapObstacleContacts,
-                    agent.NavigationHeight,
-                    heightTolerance,
-                    clearance,
-                    mapRange,
-                    out Vector3 destination);
+                // Only the requested point snaps to the edge of the obstacle it lands in
+                // (24 edge points, each checked against every contact). A ring slot inside
+                // an obstacle is simply skipped: the rings already search outward for open
+                // water, and snapping every slot made one plan cost several milliseconds.
+                Vector3 destination = candidate;
+                destination.y = agent.NavigationHeight;
+                if (candidateIndex == 0)
+                {
+                    ShipAvoidancePlanner.TryResolveDestination(
+                        candidate,
+                        origin,
+                        _mapObstacleContacts,
+                        agent.NavigationHeight,
+                        heightTolerance,
+                        clearance,
+                        mapRange,
+                        out destination);
+                }
+
                 if (!ShipAvoidancePlanner.IsPointClear(
                         destination,
                         _mapObstacleContacts,
