@@ -2,10 +2,8 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Data;
-using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Mvc;
@@ -124,20 +122,13 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public void Tick()
         {
-            CollectSquadrons();
+            _entityLocator.CollectLivingSquadrons(_squadrons);
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 _tally.Clear();
-                _shipService.AddShipStrength(zone.Contains, _tally);
-
-                // A squadron is positioned at the centroid of its fighters.
-                foreach (IEntity squadron in _squadrons)
-                {
-                    if (zone.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
-                    {
-                        _tally.Add(squadron.Owner, _data.SquadronCaptureWeight);
-                    }
-                }
+                Func<Vector3, bool> contains = zone.Contains;
+                _shipService.AddShipStrength(contains, _tally);
+                _squadrons.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
 
                 if (zone.Tick(Time.deltaTime, _tally.Build()))
                 {
@@ -149,18 +140,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 bool isHovered = isRevealed &&
                     zone.Contains(_cameraService.GetWorldPoint(_pointer.Position, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
-            }
-        }
-
-        private void CollectSquadrons()
-        {
-            _squadrons.Clear();
-            foreach (IEntity entity in _entityLocator.Entities)
-            {
-                if (entity.Model is ISquadronModelObserver && !entity.HealthModel.IsDestroyed)
-                {
-                    _squadrons.Add(entity);
-                }
             }
         }
 

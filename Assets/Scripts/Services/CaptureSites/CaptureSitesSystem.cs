@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ship;
@@ -114,7 +113,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 ClearSelection();
             }
 
-            CollectSquadrons();
+            _entityLocator.CollectLivingSquadrons(_squadrons);
             foreach (CaptureSitePresenter site in _sites)
             {
                 site.TickCapture(deltaTime, TallySite(site));
@@ -338,32 +337,12 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        private void CollectSquadrons()
-        {
-            _squadrons.Clear();
-            foreach (IEntity entity in _entityLocator.Entities)
-            {
-                if (entity.Model is ISquadronModelObserver && !entity.HealthModel.IsDestroyed)
-                {
-                    _squadrons.Add(entity);
-                }
-            }
-        }
-
         private CaptureTally TallySite(CaptureSitePresenter site)
         {
+            Func<Vector3, bool> contains = position => site.Contains(position);
             _tally.Clear();
-            _shipService.AddShipStrength(position => site.Contains(position), _tally);
-
-            // A squadron is positioned at the centroid of its fighters.
-            foreach (IEntity squadron in _squadrons)
-            {
-                if (site.Contains(squadron.GetFacade<IEntityTransformFacade>().Transform.position))
-                {
-                    _tally.Add(squadron.Owner, _data.SquadronCaptureWeight);
-                }
-            }
-
+            _shipService.AddShipStrength(contains, _tally);
+            _squadrons.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
             return _tally.Build();
         }
 
