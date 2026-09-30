@@ -45,10 +45,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 throw new InvalidOperationException("Cannot play an effect from a released pool.");
             }
 
+            Transform targetTransform = target.Transform;
             ShotEffect effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType,
                 GetImpactSize(attackData.TargetClass), isHit);
-            float duration = effect.Fire(_owner, target.Transform, aimOffset, _profile);
+            float duration = effect.Fire(_owner, targetTransform, aimOffset, _profile);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
