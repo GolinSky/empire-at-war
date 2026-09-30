@@ -22,6 +22,11 @@ tags:
 - Chosen: extend `Services/Ship/ShipPopulation.cs`, or add a sibling `SquadronPopulation`, with `AddSquadronStrength(IReadOnlyList<IEntity> squadrons, Func<Vector3,bool> contains, float weight, CaptureTallyBuilder tally)` plus one `CollectLivingSquadrons(IEntityLocator, List<IEntity>)`.
 - Why: both systems keep their own weight (`_data.SquadronCaptureWeight`) and per-area policy.
 - Avoid: a base class for both systems; a spatial index (not measured).
+- 2026-09-30 superseded: static `SquadronPopulation` extensions → injected `ISquadronRegistry` (`Services/Squadron/SquadronRegistry.cs`).
+  - Why: hidden static dependency; both systems rescanned every entity each tick.
+  - Registry tracks squadrons via `IEntityLocator.EntityAdded/EntityRemoved`; filters `IsDestroyed` at query time (entities stay in the locator until `LateDispose`).
+  - API: `AddSquadronStrength(contains, weight, tally)`, `HasSquadronInside(contains, isOwnerIncluded)` (used by `CaptureSitesSystem.HasHostileUnits`; semantics unchanged, now live instead of last-tick snapshot).
+- Same pass: `IEntityLocator.IsStationOperational` → `IStationRegistry` (`Services/Station/StationRegistry.cs`, ns `EmpireAtWar.Services.Stations`); `BaseEntity` no longer references `SpaceStation`.
 
 ## Files (owned)
 - `Assets/Scripts/Services/CaptureSites/CaptureSitesSystem.cs`
@@ -39,4 +44,5 @@ tags:
 ## Verification
 - Compile clean. Manual: capture a site with ships only, squadrons only, and a mix; a reinforcement zone flips owner at the same speed as before.
 - 2026-09-30: `unity command recompile` → no errors in owned files. Full compile blocked by unrelated WIP (`DebugRangeCircleFactory.cs(21,24) CS1729`). Tests not run.
-- TODO: manual capture/zone playtest.
+- 2026-09-30 registry refactor: clean recompile (0 `error CS` in Editor.log, runtime + editor/test assemblies). Tests not run.
+- TODO: manual capture/zone playtest; station-loss → production/reinforcement/super-weapon blocking playtest.
