@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models

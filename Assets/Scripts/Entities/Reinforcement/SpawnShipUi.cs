@@ -1,4 +1,4 @@
-﻿using EmpireAtWar.Models.Factions;
+﻿using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Views.Reinforcement;
 using TMPro;
 using UnityEngine;
@@ -9,11 +9,11 @@ namespace EmpireAtWar
 {
     public interface ISpawnShipUi
     {
-        string UnitType { get; }
+        UnitRequest Request { get; }
         void DecreaseUnitCount();
         void AddUnit();
         void Activate(bool isActive);
-        void Init(IReinforcementVisitor reinforcementVisitor, string unitType, FactionData factionData);
+        void Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request);
     }
     
     public class SpawnShipUi : MonoBehaviour, IBeginDragHandler, IDragHandler, ISpawnShipUi
@@ -32,19 +32,19 @@ namespace EmpireAtWar
         private int _count;
         private bool _isBlocked;
         
-        public string UnitType { get; private set; }
+        public UnitRequest Request { get; private set; }
 
         private void Awake()
         {
             _originColor = backgroundImage.color;
         }
 
-        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, string unitType, FactionData factionData)
+        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request)
         {
-            UnitType = unitType;
+            Request = request;
             _reinforcementVisitor = reinforcementVisitor;
-            iconImage.sprite = factionData.Icon;
-            unitCapacityText.text = factionData.UnitCapacity.ToString();
+            iconImage.sprite = request.FactionData.Icon;
+            unitCapacityText.text = request.FactionData.UnitCapacity.ToString();
             _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();
         }

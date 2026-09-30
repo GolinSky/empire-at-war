@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace EmpireAtWar.Views.Factions
 
         [SerializeField] private List<PipelineView> pipelineViews;
 
-        private Dictionary<string, PipelineView> _workingPipelines = new Dictionary<string, PipelineView>();
+        private Dictionary<UnitLimitKey, PipelineView> _workingPipelines = new Dictionary<UnitLimitKey, PipelineView>();
 
         public void Init(Action<string> cancelBuilding)
         {
@@ -34,14 +35,13 @@ namespace EmpireAtWar.Views.Factions
             RemoveMissingPipelines(snapshots);
             foreach (ProductionQueueSnapshot snapshot in snapshots)
             {
-                if (!_workingPipelines.TryGetValue(
-                        snapshot.UnitRequest.Id,
-                        out PipelineView pipelineView))
+                UnitLimitKey key = UnitLimitKey.From(snapshot.UnitRequest);
+                if (!_workingPipelines.TryGetValue(key, out PipelineView pipelineView))
                 {
                     pipelineView = pipelineViews.FirstOrDefault(view => !view.IsBusy)
                         ?? throw new InvalidOperationException(
                             "Production snapshot exceeds the configured pipeline view capacity.");
-                    _workingPipelines.Add(snapshot.UnitRequest.Id, pipelineView);
+                    _workingPipelines.Add(key, pipelineView);
                 }
 
                 pipelineView.Render(snapshot);
@@ -51,13 +51,13 @@ namespace EmpireAtWar.Views.Factions
 
         private void RemoveMissingPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
-            HashSet<string> activeIds = new HashSet<string>(
-                snapshots.Select(snapshot => snapshot.UnitRequest.Id));
-            List<string> completedIds = _workingPipelines.Keys
+            HashSet<UnitLimitKey> activeIds = new HashSet<UnitLimitKey>(
+                snapshots.Select(snapshot => UnitLimitKey.From(snapshot.UnitRequest)));
+            List<UnitLimitKey> completedIds = _workingPipelines.Keys
                 .Where(id => !activeIds.Contains(id))
                 .ToList();
 
-            foreach (string completedId in completedIds)
+            foreach (UnitLimitKey completedId in completedIds)
             {
                 PipelineView pipelineView = _workingPipelines[completedId];
                 pipelineView.Activate(false);

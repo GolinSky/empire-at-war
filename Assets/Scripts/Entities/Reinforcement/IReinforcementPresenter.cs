@@ -1,8 +1,10 @@
+using EmpireAtWar.Controllers.Factions;
+
 namespace EmpireAtWar.Presenters.Reinforcement
 {
     public interface IReinforcementPresenter
     {
-        void TrySpawnReinforcement(string id);
+        void TrySpawnReinforcement(UnitRequest request);
         void Show();
         void Hide();
     }

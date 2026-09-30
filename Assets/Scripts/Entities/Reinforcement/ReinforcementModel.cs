@@ -11,7 +11,7 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         event Action<int> OnCapacityChanged;
         event Action<bool> OnSpawnUnit;
-        event Action<string, FactionData> OnReinforcementAdded;
+        event Action<UnitRequest> OnReinforcementAdded;
         bool IsTrySpawning { get; }
         int MaxUnitCapacity { get; }
         int CurrentUnitCapacity { get; }
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         public event Action<int> OnCapacityChanged;
         public event Action<bool> OnSpawnUnit;
-        public event Action<string, FactionData> OnReinforcementAdded;
+        public event Action<UnitRequest> OnReinforcementAdded;
 
         private readonly ReinforcementData _data;
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();
@@ -104,7 +104,7 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public void AddReinforcement(UnitRequest unitRequest)
         {
-            OnReinforcementAdded?.Invoke(unitRequest.Id, unitRequest.FactionData);
+            OnReinforcementAdded?.Invoke(unitRequest);
         }
     }
 }

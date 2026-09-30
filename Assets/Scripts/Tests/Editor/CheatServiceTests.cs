@@ -69,18 +69,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             FactionData factionData = new FactionData();
             ShipUnitRequest request = new ShipUnitRequest(factionData, ShipType.Venator);
-            string addedId = null;
-            FactionData addedData = null;
-            _reinforcementModel.OnReinforcementAdded += (id, data) =>
-            {
-                addedId = id;
-                addedData = data;
-            };
+            UnitRequest addedRequest = null;
+            _reinforcementModel.OnReinforcementAdded += added => addedRequest = added;
 
             _service.AddShipReinforcement(request);
 
-            Assert.That(addedId, Is.EqualTo(nameof(ShipType.Venator)));
-            Assert.That(addedData, Is.SameAs(factionData));
+            Assert.That(addedRequest, Is.SameAs(request));
+            Assert.That(addedRequest.FactionData, Is.SameAs(factionData));
         }
 
         [Test]
