@@ -11,7 +11,7 @@
 - SOLID / GRASP / GoF / Clean Architecture → review checklists.
 - Avoid use-case interactors, domain services, and extra layers.
 
-- Follow-up plan: [[TODOs/Ship_Squadron_Entity_Simplification_Plan]].
+- Follow-up plan: [[TODOs/Refactoring/Ship_Squadron_Entity_Simplification_Plan]].
 - **Implemented 2026-09-26**: the findings below describe the code before that change.
 - See the plan's execution record.
 
@@ -222,4 +222,4 @@ flowchart TD
 - `MonoComponent.Id` is marked `// remove this`; `Controller` / `Command` base classes and `IController.GetModel()` exist mostly for the entity base type constraint.
 - `SquadronPilot.GetRadius` scans all hard points each call and is used by both `Squadron` and pilot — fine now, cache if profiling shows it.
 
-- Related: [[SCRIPTS_CODE_AUDIT_2026-09-12]], [[TODOs/Ship_Movement_Simplification_Plan]], [[TODOs/SHIP_ACTIONS_PLAN]].
+- Related: [[SCRIPTS_CODE_AUDIT_2026-09-12]], [[TODOs/Refactoring/Ship_Movement_Simplification_Plan]], [[Done/Features/SHIP_ACTIONS_PLAN]].

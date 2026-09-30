@@ -62,6 +62,33 @@ When detailed research is necessary, separate it:
 - `Topic.md` — concise working knowledge; keep it easy to scan.
 - `Topic - Research.md` — detailed explanations and sources.
 
+## Obsidian Plan Lifecycle
+
+Plan maintenance is part of the task. When creating, executing, or completing a vault plan, update its note and backlog entry through `empire-vault` before the final response; do not wait for a separate cleanup request.
+
+### Categories and Locations
+
+- Use one primary category: `Features`, `Bugs`, `Refactoring`, `Optimization`, `Tooling`, or `Documentation`. Choose by the plan's main outcome; preserve its filename.
+- Active plans live in `TODOs/<Category>/`; completed plans live in `Done/<Category>/`. Example: `TODOs/Bugs/Ship_Order_Fix.md` → `Done/Bugs/Ship_Order_Fix.md`.
+- Keep `<Topic> - Research.md` and any plan-specific supporting notes beside their plan. Leave shared reference notes in their existing locations.
+- `TODOs/TODOs.md` remains the backlog index. Group active entries by category under `Active Tasks`; group completed entries by category under `Done`. Active sections contain only unfinished work.
+
+### Working Flow
+
+1. Read the plan, its research companion, and its backlog entry before implementation. Verify recorded progress against live source; vault snapshots and checked boxes alone do not prove completion.
+2. When creating or touching a plan, categorize it and place it in the matching active or completed folder. Use frontmatter `category` matching the folder and `status`: `todo`, `in-progress`, `blocked`, or `done`; preserve unrelated metadata.
+3. During work, check off completed steps and record remaining work, blockers, and relevant verification evidence. Keep partially completed or unverified plans active; do not mark an entire plan done because one phase is finished.
+4. Mark a plan `done` only when all agreed scope is complete and applicable verification is satisfied. Record `completed` as `YYYY-MM-DD` using the user's local date, plus a concise outcome and verification result. Follow the existing prohibition on automated tests unless explicitly requested; never claim unrun tests passed.
+5. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
+6. Search for links to moved paths and repair affected backlog, dashboard, and note links; do not assume a move rewrites links automatically. Read back the moved notes and index, confirm the old paths are absent, and verify affected links resolve.
+
+### Edge Cases
+
+- If work is reopened, move the plan and companions back to `TODOs/<Category>/`, restore an unchecked active backlog entry, update status, and remove the current `completed` field; preserve useful completion history in the note.
+- Cancelled or superseded work is not completed work. Record that disposition explicitly and remove it from active tasks without claiming success.
+- If completion is uncertain, keep the plan active and record what must be verified. Only reconcile plans related to the current task unless the user requests a broader backlog cleanup.
+- If a vault write or move fails, report the exact unfinished maintenance in the final response. Never claim the plan was archived when only its checkbox or status changed.
+
 ## Unity Tooling
 
 - Use Unity's official `unity` CLI command; do not call `unity-cli` or `unity-mcp-cli`.

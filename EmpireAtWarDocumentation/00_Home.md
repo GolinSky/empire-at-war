@@ -3,8 +3,13 @@
 ## TODOs
 
 - [[TODOs/TODOs|Project Backlog & Active Tasks]]
-- [[TODOs/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
-- [[TODOs/UI_Service_Refactoring|Fix UI Service Architecture (Move to UI Prefabs)]]
+- [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Battle Attack & Projectile Optimization Plan]]
+- [[TODOs/Refactoring/UI_Service_Refactoring|Fix UI Service Architecture (Move to UI Prefabs)]]
+
+## Done
+
+- [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders)]]
+- [[Done/Refactoring/Project_Organization_Remediation_Plan|Project Organization & Asset Naming]]
 
 ## Architecture
 
