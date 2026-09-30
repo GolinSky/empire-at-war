@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using UnityEditor;
+using UnityEditor.Toolbars;
 using UnityEngine;
 
 namespace UnityToolbarExtender
@@ -8,43 +8,55 @@ namespace UnityToolbarExtender
     [InitializeOnLoad]
     public static class ToolbarTimeScale
     {
-        private static float[] m_Timescales = new[] { 0f, 0.05f, 0.1f, 0.25f, 0.5f, 1f };
-        private static string m_Style = "Dropdown";
+        private const string ELEMENT_PATH = "Empire At War/Time Scale";
+        private static readonly float[] _timescales = { 0f, 0.05f, 0.1f, 0.25f, 0.5f, 1f };
+        private static float _lastTimeScale;
 
         static ToolbarTimeScale()
         {
-            ToolbarExtender.RightToolbarGUI.Add(OnToolbarGUI);
+            _lastTimeScale = Time.timeScale;
+            EditorApplication.update += RefreshWhenTimeScaleChanges;
         }
 
-        private static void OnToolbarGUI()
+        [MainToolbarElement(ELEMENT_PATH, defaultDockPosition = MainToolbarDockPosition.Right)]
+        private static MainToolbarElement CreateTimeScaleDropdown()
         {
-            DropdownButton(
-                Array.IndexOf<float>(m_Timescales, Time.timeScale),
-                m_Timescales
-            );
+            return new MainToolbarDropdown(
+                new MainToolbarContent(ToString(Time.timeScale), "Select simulation time scale."),
+                ShowTimeScaleMenu);
         }
 
-        private static void DropdownButton(int index, float[] values)
+        private static void ShowTimeScaleMenu(Rect dropdownRect)
         {
-            var label = new GUIContent(ToString(Time.timeScale));
-            var style = new GUIStyle(m_Style);
-            var width = GUILayout.Width(56);
-            
-            var button = EditorGUILayout.DropdownButton(label, FocusType.Passive, style, width);
-            if (button)
+            var menu = new GenericMenu();
+            foreach (var timeScale in _timescales)
             {
-                var menu = new GenericMenu();
-
-                for (var i = 0; i < values.Length; i++)
-                    menu.AddItem(new GUIContent(ToString(values[i])), i == index, OnSelect, values[i]);
-
-                menu.DropDown(GUILayoutUtility.GetLastRect());
+                menu.AddItem(new GUIContent(ToString(timeScale)), Mathf.Approximately(timeScale, Time.timeScale), SetTimeScale, timeScale);
             }
+
+            menu.DropDown(dropdownRect);
         }
 
-        private static void OnSelect(object i)
+        private static void SetTimeScale(object value)
         {
-            Time.timeScale = (float)i;
+            Time.timeScale = (float)value;
+            RefreshTimeScaleDropdown();
+        }
+
+        private static void RefreshWhenTimeScaleChanges()
+        {
+            if (Mathf.Approximately(_lastTimeScale, Time.timeScale))
+            {
+                return;
+            }
+
+            RefreshTimeScaleDropdown();
+        }
+
+        private static void RefreshTimeScaleDropdown()
+        {
+            _lastTimeScale = Time.timeScale;
+            MainToolbar.Refresh(ELEMENT_PATH);
         }
 
         private static string ToString(float timeScale)
