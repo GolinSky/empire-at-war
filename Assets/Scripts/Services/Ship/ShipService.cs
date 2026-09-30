@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using UnityEngine;
 
 namespace EmpireAtWar.Ship
 {
@@ -13,10 +15,15 @@ namespace EmpireAtWar.Ship
 
         void Add(IShipEntity entity);
         void Remove(IShipEntity entity);
+
+        /// <summary>Adds every ship inside the area to the capture tally; a ship weighs 1.</summary>
+        void AddShipStrength(Func<Vector3, bool> contains, CaptureStrengthBuilder tally);
     }
 
     public class ShipService : Service, IShipService
     {
+        private const float SHIP_CAPTURE_STRENGTH = 1f;
+
         private readonly List<IShipEntity> _shipEntities = new List<IShipEntity>();
 
         public event Action<IShipEntity> ShipAdded;
@@ -35,6 +42,17 @@ namespace EmpireAtWar.Ship
             if (_shipEntities.Remove(entity))
             {
                 ShipRemoved?.Invoke(entity);
+            }
+        }
+
+        public void AddShipStrength(Func<Vector3, bool> contains, CaptureStrengthBuilder tally)
+        {
+            foreach (IShipEntity ship in _shipEntities)
+            {
+                if (contains(ship.WorldPosition))
+                {
+                    tally.Add(ship.Owner, SHIP_CAPTURE_STRENGTH);
+                }
             }
         }
     }

@@ -46,6 +46,21 @@ namespace EmpireAtWar.Services.Stations
             return false;
         }
 
+        public bool TryGetLivingStation(PlayerId owner, out IEntity station)
+        {
+            foreach (IEntity candidate in _stations)
+            {
+                if (candidate.Owner == owner && !candidate.HealthModel.IsDestroyed)
+                {
+                    station = candidate;
+                    return true;
+                }
+            }
+
+            station = null;
+            return false;
+        }
+
         private void HandleEntityAdded(IEntity entity)
         {
             if (entity.Model is ISpaceStationModelObserver)
