@@ -3,6 +3,7 @@ using EmpireAtWar.Extentions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.CoroutineService;
+using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.SceneService;
@@ -46,6 +47,10 @@ namespace EmpireAtWar.SceneContext
                 .BindInterfacesNonLazyExt<TimerPoolTick>()
                 .BindInterfacesExt<GameController>()
                 .BindInterfacesExt<SceneService>()
+                .BindInterfacesExt<JsonSettingsRepository>()
+                // Settings appliers run in this binding order: display, quality, then input bindings.
+                .BindInterfacesExt<DisplaySettingsApplier>()
+                .BindInterfacesExt<GraphicsSettingsApplier>()
                 .BindInterfacesExt<SettingsService>()
                 .BindInterfacesExt<AudioService>()
                 .BindInterfacesExt<UniqueIdGenerator>()

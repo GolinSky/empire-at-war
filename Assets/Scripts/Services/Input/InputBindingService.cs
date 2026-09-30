@@ -1,142 +1,227 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Services.Settings;
 using UnityEngine.InputSystem;
-using Zenject;
 
 namespace EmpireAtWar.Services.Input
 {
     /// <summary>
-    /// Rebinds actions of the shared <see cref="GameInputActions"/> and persists the overrides through settings.
+    /// Rebinds actions of the shared <see cref="GameInputActions"/> and applies saved overrides from settings.
     /// </summary>
-    public sealed class InputBindingService : IInputBindings, IInitializable, IDisposable
+    public sealed class InputBindingService : IInputBindings, ISettingsApplier, IDisposable
     {
+        private const string UNBOUND_LABEL = "Unbound";
+        private const string CANCEL_REBIND_PATH = "<Keyboard>/escape";
+        private const string POINTER_POSITION_PATH = "<Pointer>/position";
+        private const string POINTER_DELTA_PATH = "<Pointer>/delta";
+
         private readonly InputActionAsset _asset;
-        private readonly ISettingsService _settingsService;
+        private readonly List<BindingSlot> _slots;
+        private readonly List<InputActionMap> _suspendedMaps = new List<InputActionMap>();
+        private List<BindingSlot> _pendingConflicts = new List<BindingSlot>();
         private InputActionRebindingExtensions.RebindingOperation _operation;
+        private BindingSlot _reboundSlot;
+        private string _previousOverridePath;
+        private string _previousEffectivePath;
 
         public event Action BindingsChanged;
 
-        public InputBindingService(InputActionsProvider provider, ISettingsService settingsService)
+        public IReadOnlyList<BindingSlot> RebindableSlots => _slots;
+        public IReadOnlyList<BindingSlot> PendingConflicts => _pendingConflicts;
+
+        public InputBindingService(InputActionsProvider provider)
         {
             _asset = provider.Actions.asset;
-            _settingsService = settingsService;
+            _slots = BindingSlotCatalog.Build(provider.Actions.Camera.Get(), provider.Actions.Battle.Get());
         }
 
-        public void Initialize()
+        public void Apply(SettingsData settings)
         {
-            string overridesJson = _settingsService.LoadInputBindingOverrides();
+            string overridesJson = settings.Input.BindingOverridesJson;
+            if (ExportOverrides() == overridesJson)
+            {
+                return;
+            }
+
+            _asset.RemoveAllBindingOverrides();
             if (!string.IsNullOrEmpty(overridesJson))
             {
                 _asset.LoadBindingOverridesFromJson(overridesJson);
             }
+
+            BindingsChanged?.Invoke();
         }
 
         public void Dispose()
         {
             if (_operation != null)
             {
-                _operation.Dispose();
-                _operation = null;
+                FinishRebind();
             }
         }
 
-        public string GetBindingDisplayString(InputAction action, int bindingIndex)
+        public string GetBindingDisplayString(BindingSlot slot)
         {
-            return action.GetBindingDisplayString(bindingIndex);
+            string display = slot.Action.GetBindingDisplayString(slot.BindingIndex);
+            return string.IsNullOrEmpty(display) ? UNBOUND_LABEL : display;
         }
 
-        public void StartRebind(InputAction action, int bindingIndex, Action<RebindResult> completed)
+        public void StartRebind(BindingSlot slot, Action<RebindResult> completed)
         {
-            if (_operation != null)
+            if (_operation != null || _pendingConflicts.Count > 0)
             {
                 throw new InvalidOperationException("A rebind is already in progress.");
             }
 
-            bool wasEnabled = action.enabled;
-            string previousOverridePath = action.bindings[bindingIndex].overridePath;
-            // An action must be disabled while it is being rebound.
-            action.Disable();
-            _operation = action.PerformInteractiveRebinding(bindingIndex)
+            InputBinding binding = slot.Action.bindings[slot.BindingIndex];
+            _reboundSlot = slot;
+            _previousOverridePath = binding.overridePath;
+            _previousEffectivePath = binding.effectivePath;
+            // Capture owns the keyboard: no gameplay or UI action (Escape included) may react meanwhile.
+            SuspendEnabledMaps();
+            _operation = slot.Action.PerformInteractiveRebinding(slot.BindingIndex)
+                .WithControlsExcluding(POINTER_POSITION_PATH)
+                .WithControlsExcluding(POINTER_DELTA_PATH)
+                .WithCancelingThrough(CANCEL_REBIND_PATH)
                 .OnComplete(_ =>
                 {
-                    FinishRebind(action, wasEnabled);
-                    completed(ApplyRebind(action, bindingIndex, previousOverridePath));
+                    FinishRebind();
+                    completed(EvaluateRebind());
                 })
                 .OnCancel(_ =>
                 {
-                    FinishRebind(action, wasEnabled);
+                    FinishRebind();
                     completed(RebindResult.Canceled);
                 })
                 .Start();
         }
 
-        public void ResetBinding(InputAction action, int bindingIndex)
+        public bool ResolveConflict(ConflictResolution resolution)
         {
-            action.RemoveBindingOverride(bindingIndex);
-            Save();
-        }
-
-        public void ResetAll()
-        {
-            _asset.RemoveAllBindingOverrides();
-            Save();
-        }
-
-        private RebindResult ApplyRebind(InputAction action, int bindingIndex, string previousOverridePath)
-        {
-            if (HasConflict(action, bindingIndex))
+            switch (resolution)
             {
-                if (string.IsNullOrEmpty(previousOverridePath))
-                {
-                    action.RemoveBindingOverride(bindingIndex);
-                }
-                else
-                {
-                    action.ApplyBindingOverride(bindingIndex, previousOverridePath);
-                }
-
-                return RebindResult.Conflict;
-            }
-
-            Save();
-            return RebindResult.Completed;
-        }
-
-        private void FinishRebind(InputAction action, bool wasEnabled)
-        {
-            _operation.Dispose();
-            _operation = null;
-            if (wasEnabled)
-            {
-                action.Enable();
-            }
-        }
-
-        // Two actions of one map sharing a control would fire together.
-        private static bool HasConflict(InputAction action, int bindingIndex)
-        {
-            InputBinding rebound = action.bindings[bindingIndex];
-            foreach (InputAction mapAction in action.actionMap.actions)
-            {
-                for (int i = 0; i < mapAction.bindings.Count; i++)
-                {
-                    InputBinding binding = mapAction.bindings[i];
-                    bool isSameBinding = mapAction == action && i == bindingIndex;
-                    if (!isSameBinding && !binding.isComposite &&
-                        binding.effectivePath == rebound.effectivePath)
+                case ConflictResolution.Replace:
+                    foreach (BindingSlot conflict in _pendingConflicts)
                     {
-                        return true;
+                        conflict.Action.ApplyBindingOverride(conflict.BindingIndex, string.Empty);
                     }
+
+                    break;
+                case ConflictResolution.Swap:
+                    if (!TrySwap())
+                    {
+                        return false;
+                    }
+
+                    break;
+                case ConflictResolution.Cancel:
+                    RestoreOverride(_reboundSlot, _previousOverridePath);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(resolution), resolution, null);
+            }
+
+            _pendingConflicts = new List<BindingSlot>();
+            BindingsChanged?.Invoke();
+            return true;
+        }
+
+        public bool HasConflicts()
+        {
+            foreach (BindingSlot slot in _slots)
+            {
+                if (BindingConflicts.Find(slot, _slots).Count > 0)
+                {
+                    return true;
                 }
             }
 
             return false;
         }
 
-        private void Save()
+        public void ResetBinding(BindingSlot slot)
         {
-            _settingsService.SaveInputBindingOverrides(_asset.SaveBindingOverridesAsJson());
+            slot.Action.RemoveBindingOverride(slot.BindingIndex);
             BindingsChanged?.Invoke();
+        }
+
+        public void ResetAll()
+        {
+            _asset.RemoveAllBindingOverrides();
+            BindingsChanged?.Invoke();
+        }
+
+        public string ExportOverrides()
+        {
+            return _asset.SaveBindingOverridesAsJson();
+        }
+
+        private RebindResult EvaluateRebind()
+        {
+            _pendingConflicts = BindingConflicts.Find(_reboundSlot, _slots);
+            if (_pendingConflicts.Count > 0)
+            {
+                return RebindResult.Conflict;
+            }
+
+            BindingsChanged?.Invoke();
+            return RebindResult.Completed;
+        }
+
+        private bool TrySwap()
+        {
+            if (_pendingConflicts.Count != 1)
+            {
+                return false;
+            }
+
+            BindingSlot other = _pendingConflicts[0];
+            string otherOverridePath = other.Action.bindings[other.BindingIndex].overridePath;
+            other.Action.ApplyBindingOverride(other.BindingIndex, _previousEffectivePath);
+            if (BindingConflicts.Find(other, _slots).Count > 0 || BindingConflicts.Find(_reboundSlot, _slots).Count > 0)
+            {
+                RestoreOverride(other, otherOverridePath);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void RestoreOverride(BindingSlot slot, string overridePath)
+        {
+            if (overridePath == null)
+            {
+                slot.Action.RemoveBindingOverride(slot.BindingIndex);
+            }
+            else
+            {
+                slot.Action.ApplyBindingOverride(slot.BindingIndex, overridePath);
+            }
+        }
+
+        private void SuspendEnabledMaps()
+        {
+            foreach (InputActionMap map in _asset.actionMaps)
+            {
+                if (map.enabled)
+                {
+                    _suspendedMaps.Add(map);
+                    map.Disable();
+                }
+            }
+        }
+
+        // Button actions re-enabled while the captured key is still held do not fire until it is pressed again.
+        private void FinishRebind()
+        {
+            _operation.Dispose();
+            _operation = null;
+            foreach (InputActionMap map in _suspendedMaps)
+            {
+                map.Enable();
+            }
+
+            _suspendedMaps.Clear();
         }
     }
 }

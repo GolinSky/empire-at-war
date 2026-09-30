@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Settings;
 using UnityEngine;
 using Zenject;
 
@@ -31,11 +32,14 @@ namespace EmpireAtWar.Services.Camera
         private CameraData _cameraData;
         private IMapModelObserver _mapModel;
         private ICameraInput _cameraInput;
+        private ICameraPreferences _preferences;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
 
         public string Id => nameof(CameraService);
+
+        private float PanSpeed => _cameraData.PanSpeed * _preferences.Camera.PanSpeedMultiplier;
 
         public Vector3 CameraPosition => transform.position;
         public Transform CameraTransform => transform;
@@ -51,8 +55,10 @@ namespace EmpireAtWar.Services.Camera
         public void Constructor(
             CameraData cameraData,
             ICameraInput cameraInput,
-            IMapModelObserver mapModel)
+            IMapModelObserver mapModel,
+            ICameraPreferences preferences)
         {
+            _preferences = preferences;
             _cameraData = cameraData;
             _mapModel = mapModel;
             _cameraInput = cameraInput;
@@ -128,7 +134,7 @@ namespace EmpireAtWar.Services.Camera
             _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
                 _keyboardVelocity,
                 _keyboardInput,
-                _cameraData.PanSpeed,
+                PanSpeed,
                 _cameraData.PanAcceleration,
                 _cameraData.PanDeceleration,
                 Time.unscaledDeltaTime);
@@ -146,7 +152,7 @@ namespace EmpireAtWar.Services.Camera
         {
             Vector2 normalizedDirection = Vector2.ClampMagnitude(direction, 1f);
             Vector3 move = GetPlanarDirection(normalizedDirection) *
-                _cameraData.PanSpeed *
+                PanSpeed *
                 Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move));
         }
@@ -166,7 +172,13 @@ namespace EmpireAtWar.Services.Camera
         private void ZoomCamera(float scrollDelta)
         {
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
-            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * _cameraData.ZoomSpeed * Time.unscaledDeltaTime;
+            if (_preferences.Camera.InvertZoom)
+            {
+                scrollDelta = -scrollDelta;
+            }
+
+            float zoomSpeed = _cameraData.ZoomSpeed * _preferences.Camera.ZoomSpeedMultiplier;
+            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * zoomSpeed * Time.unscaledDeltaTime;
 
             if (!_cameraData.ZoomRange.IsInRange(newPosition.y))
                 return;
