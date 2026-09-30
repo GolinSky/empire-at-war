@@ -32,6 +32,12 @@ namespace EmpireAtWar.Services.Settings
             set => frameRateLimit = value;
         }
 
+        public bool Matches(GraphicsSettingsData other)
+        {
+            return qualityPreset == other.qualityPreset && vSync == other.vSync &&
+                   frameRateLimit == other.frameRateLimit;
+        }
+
         public void Sanitize()
         {
             qualityPreset ??= string.Empty;

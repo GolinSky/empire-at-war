@@ -69,6 +69,7 @@ namespace EmpireAtWar.Services.SceneService
 
         public void Initialize()
         {
+            Application.backgroundLoadingPriority = ThreadPriority.High;
             SceneManager.sceneLoaded += HandleLoadingScene;
 
             TargetScene = _sceneModel.GetCurrentScene();

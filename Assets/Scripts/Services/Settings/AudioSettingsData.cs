@@ -43,6 +43,13 @@ namespace EmpireAtWar.Services.Settings
             set => muteWhenUnfocused = value;
         }
 
+        public bool Matches(AudioSettingsData other)
+        {
+            return masterVolume == other.masterVolume && musicVolume == other.musicVolume &&
+                   voiceVolume == other.voiceVolume && sfxVolume == other.sfxVolume &&
+                   muteWhenUnfocused == other.muteWhenUnfocused;
+        }
+
         public void Sanitize()
         {
             masterVolume = ClampVolume(masterVolume);

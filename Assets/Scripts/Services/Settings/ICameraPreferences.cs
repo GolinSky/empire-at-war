@@ -1,8 +1,11 @@
 namespace EmpireAtWar.Services.Settings
 {
-    /// <summary>Read access to the saved camera preferences. Read on use so an Apply takes effect immediately.</summary>
+    /// <summary>Read-only saved camera preferences. Read on use so an Apply takes effect immediately.</summary>
     public interface ICameraPreferences
     {
-        CameraSettingsData Camera { get; }
+        float PanSpeedMultiplier { get; }
+        float ZoomSpeedMultiplier { get; }
+        bool EdgeScrolling { get; }
+        bool InvertZoom { get; }
     }
 }

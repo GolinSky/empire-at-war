@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
@@ -13,13 +15,16 @@ namespace EmpireAtWar.Services.Settings
 
         private readonly ISettingsRepository _repository;
         private readonly List<ISettingsApplier> _appliers;
-        private string _savedJson;
 
         public SettingsData Saved { get; private set; }
         public SettingsData Draft { get; private set; }
-        public bool IsDirty => Draft.ToJson() != _savedJson;
+        public bool IsDirty => !Draft.Matches(Saved);
         public bool IsAwaitingDisplayConfirmation { get; private set; }
-        public CameraSettingsData Camera => Saved.Camera;
+
+        public float PanSpeedMultiplier => Saved.Camera.PanSpeedMultiplier;
+        public float ZoomSpeedMultiplier => Saved.Camera.ZoomSpeedMultiplier;
+        public bool EdgeScrolling => Saved.Camera.EdgeScrolling;
+        public bool InvertZoom => Saved.Camera.InvertZoom;
 
         /// <param name="appliers">Applied in binding order, so display changes run before quality and input.</param>
         public SettingsService(ISettingsRepository repository, List<ISettingsApplier> appliers)
@@ -30,15 +35,19 @@ namespace EmpireAtWar.Services.Settings
 
         public void Initialize()
         {
-            Application.backgroundLoadingPriority = ThreadPriority.High;
-
-            if (!_repository.TryLoad(out SettingsData loaded))
+            switch (_repository.Load(out SettingsData loaded))
             {
-                loaded = ImportLegacySettings();
-                _repository.Save(loaded);
+                case SettingsLoadStatus.Missing:
+                    loaded = ImportLegacySettings();
+                    TrySave(loaded);
+                    break;
+                case SettingsLoadStatus.Unreadable:
+                    // Run on defaults but leave the file alone; only an explicit Apply overwrites it.
+                    loaded = new SettingsData();
+                    break;
             }
 
-            SetSaved(loaded);
+            Saved = loaded;
             Draft = loaded.Clone();
             ApplyAll(Saved);
         }
@@ -53,14 +62,13 @@ namespace EmpireAtWar.Services.Settings
                 return SettingsApplyResult.AwaitingDisplayConfirmation;
             }
 
-            Commit();
-            return SettingsApplyResult.Committed;
+            return Commit();
         }
 
-        public void KeepDisplay()
+        public SettingsApplyResult KeepDisplay()
         {
             IsAwaitingDisplayConfirmation = false;
-            Commit();
+            return Commit();
         }
 
         public void RevertDisplay()
@@ -82,17 +90,30 @@ namespace EmpireAtWar.Services.Settings
             Draft = new SettingsData();
         }
 
-        private void Commit()
+        // Save before promoting, so a failed write never reports the draft as saved.
+        private SettingsApplyResult Commit()
         {
-            // Save before promoting, so a failed write never reports the draft as saved.
-            _repository.Save(Draft);
-            SetSaved(Draft.Clone());
+            if (!TrySave(Draft))
+            {
+                return SettingsApplyResult.SaveFailed;
+            }
+
+            Saved = Draft.Clone();
+            return SettingsApplyResult.Committed;
         }
 
-        private void SetSaved(SettingsData saved)
+        private bool TrySave(SettingsData settings)
         {
-            Saved = saved;
-            _savedJson = saved.ToJson();
+            try
+            {
+                _repository.Save(settings);
+                return true;
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                Debug.LogError($"Could not save settings: {exception.Message}");
+                return false;
+            }
         }
 
         private void ApplyAll(SettingsData settings)

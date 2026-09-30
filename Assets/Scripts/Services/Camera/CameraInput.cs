@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.Camera
         {
             get
             {
-                Vector2 direction = _preferences.Camera.EdgeScrolling
+                Vector2 direction = _preferences.EdgeScrolling
                     ? GetEdgeScrollDirection(_pointer.Position)
                     : Vector2.zero;
                 // Ctrl+A selects units; its A key must not also move the camera.

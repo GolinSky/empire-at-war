@@ -12,15 +12,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 {
     public class SettingsRouteController : UiController, ISettingsRoute, ISettingsRouteNavigation, ITickable, ILateDisposable
     {
-        private const float DISPLAY_CONFIRMATION_SECONDS = 15f;
         private const string APPLIED_MESSAGE = "Settings applied.";
+        private const string SAVE_FAILED_MESSAGE = "Settings are active but could not be saved. Apply again to retry.";
         private const string DISCARDED_MESSAGE = "Changes discarded.";
         private const string DEFAULTS_MESSAGE = "Defaults restored. Apply to keep them.";
         private const string DISPLAY_REVERTED_MESSAGE = "Display change reverted.";
         private const string CONFLICTS_MESSAGE = "Resolve key binding conflicts before applying.";
-
-        private static readonly SettingsPromptAction[] DISPLAY_ACTIONS =
-            { SettingsPromptAction.Revert, SettingsPromptAction.Keep };
 
         private static readonly SettingsPromptAction[] UNSAVED_ACTIONS =
             { SettingsPromptAction.Apply, SettingsPromptAction.Discard, SettingsPromptAction.Stay };
@@ -35,8 +32,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private bool _isOpen;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
-        private float _displayRevertTime;
-        private int _shownSecondsLeft;
+        private readonly DisplayConfirmationCountdown _displayCountdown = new DisplayConfirmationCountdown();
 
         public SettingsRouteController(
             IUiService uiService,
@@ -59,7 +55,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         {
             _model.SetStatus(string.Empty);
             _model.SetPrompt(SettingsPrompt.None);
-            _draftEditor.Refresh();
+            _draftEditor.Open();
             _keyBindingEditor.Refresh();
 
             if (_ui == null)
@@ -132,15 +128,15 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 return;
             }
 
-            if (_settingsService.Apply() == SettingsApplyResult.AwaitingDisplayConfirmation)
+            SettingsApplyResult result = _settingsService.Apply();
+            if (result == SettingsApplyResult.AwaitingDisplayConfirmation)
             {
-                _displayRevertTime = Time.unscaledTime + DISPLAY_CONFIRMATION_SECONDS;
-                _shownSecondsLeft = -1;
+                _displayCountdown.Start(Time.unscaledTime);
                 UpdateDisplayCountdown();
                 return;
             }
 
-            ShowResult(APPLIED_MESSAGE);
+            ShowApplyResult(result);
         }
 
         public void DiscardChanges()
@@ -179,8 +175,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             switch (action)
             {
                 case SettingsPromptAction.Keep:
-                    _settingsService.KeepDisplay();
-                    ShowResult(APPLIED_MESSAGE);
+                    ShowApplyResult(_settingsService.KeepDisplay());
                     break;
                 case SettingsPromptAction.Revert:
                     _settingsService.RevertDisplay();
@@ -252,6 +247,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Zoom speed" => $"Camera zoom speed: {_model.ZoomSpeed:0.#}.",
                     "Edge scrolling" => $"Move the camera at screen edges. Currently {(_model.EdgeScrolling ? "On" : "Off")}.",
                     "Invert zoom" => $"Reverse camera zoom input. Currently {(_model.InvertZoom ? "On" : "Off")}.",
+                    "Master volume" => "Overall game volume. Changes are heard immediately.",
+                    "Music volume" => "Volume of the soundtrack.",
+                    "Voice volume" => "Volume of unit acknowledgements and alerts.",
+                    "Effects volume" => "Volume of weapons, engines, and explosions.",
+                    "Mute when unfocused" => $"Silence the game while its window is in the background. Currently {(_model.MuteWhenUnfocused ? "On" : "Off")}.",
                     "VSync" => $"Synchronize presentation with the display refresh rate. Currently {(_model.VSync ? "On" : "Off")}.",
                     "Window mode" => "Choose fullscreen or windowed display mode.",
                     "Resolution" => "Choose the display resolution.",
@@ -263,23 +263,22 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         private void UpdateDisplayCountdown()
         {
-            int secondsLeft = Mathf.CeilToInt(_displayRevertTime - Time.unscaledTime);
-            if (secondsLeft <= 0)
+            float now = Time.unscaledTime;
+            if (_displayCountdown.IsExpired(now))
             {
                 ChoosePromptAction(SettingsPromptAction.Revert);
                 return;
             }
 
-            if (secondsLeft == _shownSecondsLeft)
+            if (_displayCountdown.TryUpdatePrompt(now, out SettingsPrompt prompt))
             {
-                return;
+                _model.SetPrompt(prompt);
             }
+        }
 
-            _shownSecondsLeft = secondsLeft;
-            _model.SetPrompt(new SettingsPrompt(
-                SettingsPromptKind.DisplayConfirmation,
-                $"Keep these display settings?\nReverting in {secondsLeft} s.",
-                DISPLAY_ACTIONS));
+        private void ShowApplyResult(SettingsApplyResult result)
+        {
+            ShowResult(result == SettingsApplyResult.SaveFailed ? SAVE_FAILED_MESSAGE : APPLIED_MESSAGE);
         }
 
         // Apply from the unsaved-changes prompt closes only once nothing is left pending.

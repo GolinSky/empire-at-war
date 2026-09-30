@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.Camera
 
         public string Id => nameof(CameraService);
 
-        private float PanSpeed => _cameraData.PanSpeed * _preferences.Camera.PanSpeedMultiplier;
+        private float PanSpeed => _cameraData.PanSpeed * _preferences.PanSpeedMultiplier;
 
         public Vector3 CameraPosition => transform.position;
         public Transform CameraTransform => transform;
@@ -192,12 +192,12 @@ namespace EmpireAtWar.Services.Camera
         private void ZoomCamera(float scrollDelta)
         {
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
-            if (_preferences.Camera.InvertZoom)
+            if (_preferences.InvertZoom)
             {
                 scrollDelta = -scrollDelta;
             }
 
-            float zoomSpeed = _cameraData.ZoomSpeed * _preferences.Camera.ZoomSpeedMultiplier;
+            float zoomSpeed = _cameraData.ZoomSpeed * _preferences.ZoomSpeedMultiplier;
             Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * zoomSpeed * Time.unscaledDeltaTime;
 
             if (!_cameraData.ZoomRange.IsInRange(newPosition.y))

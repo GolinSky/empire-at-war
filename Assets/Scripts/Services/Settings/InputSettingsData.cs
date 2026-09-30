@@ -14,5 +14,10 @@ namespace EmpireAtWar.Services.Settings
             get => bindingOverridesJson;
             set => bindingOverridesJson = value;
         }
+
+        public bool Matches(InputSettingsData other)
+        {
+            return bindingOverridesJson == other.bindingOverridesJson;
+        }
     }
 }

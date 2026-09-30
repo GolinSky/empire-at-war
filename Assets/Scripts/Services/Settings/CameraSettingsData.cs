@@ -39,6 +39,13 @@ namespace EmpireAtWar.Services.Settings
             set => invertZoom = value;
         }
 
+        public bool Matches(CameraSettingsData other)
+        {
+            return panSpeedMultiplier == other.panSpeedMultiplier &&
+                   zoomSpeedMultiplier == other.zoomSpeedMultiplier &&
+                   edgeScrolling == other.edgeScrolling && invertZoom == other.invertZoom;
+        }
+
         public void Sanitize()
         {
             panSpeedMultiplier = ClampMultiplier(panSpeedMultiplier);

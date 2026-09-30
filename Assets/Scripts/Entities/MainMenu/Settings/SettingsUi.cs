@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.Ui.Tooltip;
-using System;
 using System.Collections.Generic;
 using EmpireAtWar.Ui.Base;
 using TMPro;
@@ -61,11 +60,6 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             if (_isInitialized)
             {
                 return;
-            }
-
-            if (_model == null || _navigation == null)
-            {
-                throw new InvalidOperationException("Settings UI dependencies must be set before initialization.");
             }
 
             closeButton.onClick.AddListener(_navigation.Close);
