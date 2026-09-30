@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.FogOfWar;
+using Unity.Collections;
 using UnityEngine;
 
 namespace ViewComponents
@@ -7,6 +8,7 @@ namespace ViewComponents
     public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
     {
         private const int MAX_TEXTURE_RESOLUTION = 512;
+        private const float BYTE_MAX = 255f;
 
         
         [SerializeField] private MeshFilter meshFilter;
@@ -47,7 +49,6 @@ namespace ViewComponents
         }
 
         private Texture2D _fogTexture;
-        private Color[] _fogPixels;
         private FogVisibilityGridModel _grid;
 
         private List<VisionSource> _activeSources = new List<VisionSource>();
@@ -77,18 +78,19 @@ namespace ViewComponents
             }
 
             _fogMaterial = fogRenderer.material;
-            _fogTexture = new Texture2D(textureResolution, textureResolution, TextureFormat.RGBA32, false);
+            // The shader reads only .r; a one-byte mask written in place avoids building
+            // and copying a full Color[] of the map every frame the fog fades.
+            _fogTexture = new Texture2D(textureResolution, textureResolution, TextureFormat.R8, false);
             _fogTexture.wrapMode = TextureWrapMode.Clamp;
             _fogTexture.filterMode = FilterMode.Bilinear;
 
             _grid = new FogVisibilityGridModel(textureResolution);
-            _fogPixels = new Color[textureResolution * textureResolution];
-            for (int i = 0; i < _fogPixels.Length; i++)
+            NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
+            for (int i = 0; i < pixels.Length; i++)
             {
-                _fogPixels[i] = Color.black;
+                pixels[i] = 0;
             }
 
-            _fogTexture.SetPixels(_fogPixels);
             _fogTexture.Apply();
             _fogMaterial.SetTexture("_MainTex", _fogTexture);
         }
@@ -113,12 +115,12 @@ namespace ViewComponents
 
             if (_grid.Fade(fadeSpeed * Time.deltaTime))
             {
-                for (int i = 0; i < _fogPixels.Length; i++)
+                NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
+                for (int i = 0; i < pixels.Length; i++)
                 {
-                    _fogPixels[i].r = _grid.GetVisibility(i);
+                    pixels[i] = (byte)(_grid.GetVisibility(i) * BYTE_MAX + 0.5f);
                 }
 
-                _fogTexture.SetPixels(_fogPixels);
                 _fogTexture.Apply();
             }
         }

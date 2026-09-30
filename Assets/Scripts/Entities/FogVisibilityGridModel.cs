@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace EmpireAtWar.Models.FogOfWar
 {
@@ -8,6 +9,8 @@ namespace EmpireAtWar.Models.FogOfWar
 
         private readonly float[] _current;
         private readonly float[] _target;
+        private readonly Dictionary<(int, float), float[]> _falloffs =
+            new Dictionary<(int, float), float[]>();
 
         public int Resolution { get; }
 
@@ -43,23 +46,47 @@ namespace EmpireAtWar.Models.FogOfWar
             int maxX = Math.Min(Math.Max(centerX + outerRadius, 0), Resolution - 1);
             int minY = Math.Min(Math.Max(centerY - outerRadius, 0), Resolution - 1);
             int maxY = Math.Min(Math.Max(centerY + outerRadius, 0), Resolution - 1);
-            float sqrOuterRadius = outerRadius * outerRadius;
+            int sqrOuterRadius = outerRadius * outerRadius;
+            float[] falloff = GetFalloff(radius, edgeSoftness, sqrOuterRadius);
 
             for (int y = minY; y <= maxY; y++)
             {
+                int dy = y - centerY;
+                int rowOffset = y * Resolution;
                 for (int x = minX; x <= maxX; x++)
                 {
-                    float distSqr = (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY);
+                    int dx = x - centerX;
+                    int distSqr = dx * dx + dy * dy;
                     if (distSqr > sqrOuterRadius) continue;
 
-                    // The registered radius is the middle of the
-                    // feather, so its border is exactly half visible.
-                    float visibility = FogVisibilityModel.CalculateSoftVisibility(
-                        (float)Math.Sqrt(distSqr), radius, edgeSoftness) * intensity;
-                    int index = y * Resolution + x;
-                    _target[index] = Math.Max(_target[index], visibility);
+                    float visibility = falloff[distSqr] * intensity;
+                    int index = rowOffset + x;
+                    if (visibility > _target[index]) _target[index] = visibility;
                 }
             }
+        }
+
+        // Pixel distances are integers, so the soft falloff only ever takes one value per
+        // squared distance. Caching it per radius replaces a sqrt and a falloff evaluation
+        // per pixel with an array read; the result is identical.
+        private float[] GetFalloff(int radius, float edgeSoftness, int sqrOuterRadius)
+        {
+            if (_falloffs.TryGetValue((radius, edgeSoftness), out float[] falloff))
+            {
+                return falloff;
+            }
+
+            // The registered radius is the middle of the
+            // feather, so its border is exactly half visible.
+            falloff = new float[sqrOuterRadius + 1];
+            for (int distSqr = 0; distSqr <= sqrOuterRadius; distSqr++)
+            {
+                falloff[distSqr] = FogVisibilityModel.CalculateSoftVisibility(
+                    (float)Math.Sqrt(distSqr), radius, edgeSoftness);
+            }
+
+            _falloffs.Add((radius, edgeSoftness), falloff);
+            return falloff;
         }
 
         /// <summary>Moves current visibility toward the targets; returns true when any cell changed.</summary>
