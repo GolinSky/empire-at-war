@@ -426,7 +426,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
                             ["rendering_counters"] = counters,
                             ["rendering_metrics"] = SummarizeRenderingCounters(counters),
                             ["counter_scope"] = "Editor-hosted player with profileEditor disabled; rendering counters can still include Editor rendering.",
-                            ["cpu_hotspot_note"] = "Top 40 markers per thread by self time. Inclusive time overlaps parent/child scopes; waits remain visible. Times are milliseconds.",
+                            ["cpu_hotspot_note"] = "Top 40 marker IDs per thread by self time. Unnamed markers retain a null name and their marker_id. Inclusive time overlaps parent/child scopes; waits remain visible. Times are milliseconds.",
                             ["threads"] = threads
                         });
                     }
@@ -437,9 +437,10 @@ private static Dictionary<string, object> CaptureRenderingStats()
 
             private static object CaptureCpuHotspots(RawFrameDataView view)
             {
-                var totals = new Dictionary<string, (int Calls, double Total, double Self)>();
+                var totals = new Dictionary<int, (string Name, int Calls, double Total, double Self)>();
                 for (var sample = 0; sample < view.sampleCount; sample++)
                 {
+                    var markerId = view.GetSampleMarkerId(sample);
                     var name = view.GetSampleName(sample);
                     var duration = view.GetSampleTimeMs(sample);
                     double self = duration;
@@ -450,13 +451,14 @@ private static Dictionary<string, object> CaptureRenderingStats()
                         child += 1 + view.GetSampleChildrenCountRecursive(child);
                     }
 
-                    totals.TryGetValue(name, out var total);
-                    totals[name] = (total.Calls + 1, total.Total + duration, total.Self + Math.Max(0, self));
+                    totals.TryGetValue(markerId, out var total);
+                    totals[markerId] = (name, total.Calls + 1, total.Total + duration, total.Self + Math.Max(0, self));
                 }
 
                 return totals.OrderByDescending(pair => pair.Value.Self).Take(40).Select(pair => new
                 {
-                    marker = pair.Key,
+                    marker_id = pair.Key,
+                    marker = pair.Value.Name,
                     calls = pair.Value.Calls,
                     inclusive_ms = pair.Value.Total,
                     self_ms = pair.Value.Self

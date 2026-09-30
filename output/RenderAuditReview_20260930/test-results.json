@@ -1,0 +1,27 @@
+{
+  "status": "completed",
+  "duration": 1.16,
+  "summary": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RenderAuditProfilerToolTests.CpuHotspots_PreserveMarkerIdentityCallCountsAndInclusiveTime",
+      "Status": "Passed",
+      "Duration": 0.4516665,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.RenderAuditProfilerToolTests.FrameSummaries_ExportRecordingContainingUnnamedSamples",
+      "Status": "Passed",
+      "Duration": 0.3505226,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}
