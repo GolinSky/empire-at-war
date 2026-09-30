@@ -1,4 +1,4 @@
-using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Components.Ship.Audio;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -8,7 +8,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Cruise_EmitsOneAccelerationCue()
         {
-            var model = new ShipEngineAudioModel();
+            var model = new ShipEngineAudioState();
             Assert.That(model.Advance(1f, 0.1f), Is.True);
             for (int i = 0; i < 50; i++)
                 Assert.That(model.Advance(1f, 0.1f), Is.False);
@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SpeedBoost_RaisesPitchInputAndEmitsAnotherCue()
         {
-            var model = new ShipEngineAudioModel();
+            var model = new ShipEngineAudioState();
             model.Advance(1f, 0.1f);
             model.Advance(1f, 2f);
             float cruiseSpeed = model.Speed;
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Stop_FadesEngineAndAllowsNextDepartureCue()
         {
-            var model = new ShipEngineAudioModel();
+            var model = new ShipEngineAudioState();
             model.Advance(1f, 1f);
             float movingSpeed = model.Speed;
 
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void RapidStopStart_DoesNotStackAccelerationCues()
         {
-            var model = new ShipEngineAudioModel();
+            var model = new ShipEngineAudioState();
             model.Advance(1f, 0.1f);
             model.Advance(0f, 0.1f);
             Assert.That(model.Advance(1f, 0.1f), Is.False);
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Pause_PreservesEngineAndAccelerationState()
         {
-            var model = new ShipEngineAudioModel();
+            var model = new ShipEngineAudioState();
             model.Advance(1f, 0.1f);
             float speed = model.Speed;
 

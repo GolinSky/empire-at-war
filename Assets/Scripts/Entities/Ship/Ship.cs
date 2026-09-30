@@ -9,6 +9,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Models.Factions;
@@ -56,6 +57,8 @@ namespace EmpireAtWar.Ship
         private LazyInject<IEntity> _entity;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
+        private IWeaponFireEvents _weaponFireEvents;
+        private IReadOnlyList<ShipAbilitySlot> _audioAbilities;
         private EntityComponentLifecycle _componentLifecycle;
         private PlayerId _owner;
         private bool _isReleased;
@@ -91,6 +94,7 @@ namespace EmpireAtWar.Ship
             LazyInject<IEntity> entity,
             PlayerId owner,
             IAudioShipComponent audioShipComponent,
+            IWeaponFireEvents weaponFireEvents,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             List<IMonoComponent> monoComponents,
             ILayerService layerService,
@@ -107,6 +111,7 @@ namespace EmpireAtWar.Ship
             _entity = entity;
             _owner = owner;
             _audioShipComponent = audioShipComponent;
+            _weaponFireEvents = weaponFireEvents;
             _audioDialogShipComponent = audioDialogShipComponent;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
@@ -122,6 +127,11 @@ namespace EmpireAtWar.Ship
 
         public void Initialize()
         {
+            _audioAbilities = _entity.Value.GetFacade<IShipAbilityFacade>().Slots;
+            _audioShipComponent.InitializeAudio(_entity.Value, _audioAbilities);
+            _weaponFireEvents.ShotEmitted += _audioShipComponent.PlayWeaponShot;
+            foreach (ShipAbilitySlot ability in _audioAbilities)
+                ability.Changed += _audioShipComponent.HandleAbilityChanged;
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
             {
@@ -209,6 +219,9 @@ namespace EmpireAtWar.Ship
 
         private void Unsubscribe()
         {
+            _weaponFireEvents.ShotEmitted -= _audioShipComponent.PlayWeaponShot;
+            foreach (ShipAbilitySlot ability in _audioAbilities)
+                ability.Changed -= _audioShipComponent.HandleAbilityChanged;
             if (_enginesUnitModel != null)
             {
                 _enginesUnitModel.OnHardPointHealthChanged -= HandleEnginesData;
@@ -248,6 +261,7 @@ namespace EmpireAtWar.Ship
         private void SynchronizeComponents()
         {
             _radarComponent.SetPosition(_shipMoveComponent.CurrentPosition);
+            _audioShipComponent.UpdateAudio();
         }
 
         private void HandleEnginesData()

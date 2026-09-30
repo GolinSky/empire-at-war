@@ -7,7 +7,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     [Serializable]
-    public class ShipMoveModel : PureModel
+    public class ShipMoveModel : PureModel, EmpireAtWar.Components.Ship.Audio.IShipEngineAudioObserver
     {
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         private const float POSITION_TOLERANCE = 0.05f;

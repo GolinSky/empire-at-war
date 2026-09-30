@@ -60,11 +60,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3c3e6847e2f3d68408516d8339afde3f
-    m_Address: AudioShipData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3de703d0a2c0ac5428de8b8f64093d18
     m_Address: FactionsData
     m_ReadOnly: 0
@@ -82,11 +77,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5d122ff846ebd9c42b0d93d92110997b
     m_Address: ShipUiData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7a4bfb5f7b726044ab56858e9a73e245
-    m_Address: AudioShipDialogData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

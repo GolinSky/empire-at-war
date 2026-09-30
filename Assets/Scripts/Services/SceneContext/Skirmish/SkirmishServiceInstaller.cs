@@ -7,7 +7,6 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Audio;
-using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
@@ -28,15 +27,21 @@ namespace EmpireAtWar.SceneContext.Skirmish
         [SerializeField] private ImpactEffectView impactEffectPrefab;
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
         [SerializeField] private Material rangeDebugLineMaterial;
+        [SerializeField] private ShipSfxData shipSfxData;
+        [SerializeField] private ShipSfxSources shipSfxSourcesPrefab;
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
         {
             Container.BindInstance(unitExplosionPrefab);
-            Container.Bind<IWeaponAudioView>().To<WeaponAudioView>()
-                .FromComponentInNewPrefab(Repository.Load<AudioShipData>(nameof(AudioShipData)).WeaponAudioPrefab)
+            Container.Bind<ShipSfxData>().FromInstance(shipSfxData).AsSingle();
+            Container.Bind<ShipSfxSources>()
+                .FromComponentInNewPrefab(shipSfxSourcesPrefab)
+                .UnderTransform(transform)
                 .AsSingle();
-            Container.BindInterfacesAndSelfTo<WeaponAudioPresenter>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ShipSfxService>().AsSingle().NonLazy();
+            Container.BindTickableExecutionOrder<ShipSfxService>(1000);
+            Container.BindDisposableExecutionOrder<ShipSfxService>(-1000);
             Container.Bind<IImpactEffectView>().To<ImpactEffectView>()
                 .FromComponentInNewPrefab(impactEffectPrefab).AsSingle().NonLazy();
             Container.Bind<ImpactEffectPresenter>().AsSingle();

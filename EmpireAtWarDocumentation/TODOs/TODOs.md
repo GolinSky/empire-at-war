@@ -80,6 +80,12 @@
   - **Plan**: [[TODOs/Refactoring/Injection_And_Guard_Conventions|Injection and Guard Conventions]]
   - **Blocked**: Wave 1 merge; user decision on MonoBehaviour `[Inject]` style.
 
+- [ ] **Refactor audio system (AudioService / Music / Ship SFX)**
+  - **Plan**: [[TODOs/Refactoring/Audio_System_Refactor_Plan|Audio System Refactor Plan]]
+  - **Rule**: `IAudioService` plays source+clip only; music in `IMusicService`; all ship SFX via `IShipSfxService.Try*` (may refuse).
+  - **Status**: steps 1–7 implemented; Unity compile clean; shared clip data, pool, mixer, bindings, and persistence inspected.
+  - **Remaining**: step 8 listening, ≥20-ship profiler, pause/music/exit acceptance. Open `MainMenuScene` has unsaved changes; no Play Mode or automated tests run.
+
 ### Tooling
 
 - [ ] **Set up Jenkins local Windows builds**

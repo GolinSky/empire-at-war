@@ -551,6 +551,9 @@ MonoBehaviour:
     type: 3}
   rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
     type: 2}
+  shipSfxData: {fileID: 11400000, guid: 972628407566d0e458e3f5410913c76d, type: 2}
+  shipSfxSourcesPrefab: {fileID: 8526247814071835242, guid: ef603ca36e26a6f448a4eb74e87984c2,
+    type: 3}
 --- !u!114 &8744064952395461264
 MonoBehaviour:
   m_ObjectHideFlags: 0

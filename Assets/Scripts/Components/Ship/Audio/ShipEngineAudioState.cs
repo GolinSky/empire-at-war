@@ -1,8 +1,8 @@
 using System;
 
-namespace EmpireAtWar.Services.Audio
+namespace EmpireAtWar.Components.Ship.Audio
 {
-    public sealed class ShipEngineAudioModel
+    public sealed class ShipEngineAudioState
     {
         private const float RESPONSE = 4f;
         private const float SURGE_INTERVAL = 1.5f;

@@ -13,7 +13,6 @@ using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
-using EmpireAtWar.Services.Audio;
 using UnityEngine;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -75,35 +74,14 @@ namespace EmpireAtWar.Ship
 
         private void BindAudio()
         {
-            AudioShipData audioShipData = Repository.Load<AudioShipData>(nameof(AudioShipData));
-            Container.Bind<AudioShipData>()
-                .FromNewScriptableObject(audioShipData)
-                .AsSingle();
-            Container.Bind<ILateDisposable>().To<AudioShipData>().FromResolve();
-            Container.Bind<AudioShipModel>().AsSingle();
-            Container.Bind<IAudioShipModelObserver>().To<AudioShipModel>().FromResolve();
+            Container.Bind<IShipEngineAudioObserver>().To<ShipMoveModel>().FromResolve();
             Container.BindInterfacesAndSelfTo<AudioShipComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
-
-            Container.Bind<IShipSfxView>().To<ShipSfxView>()
-                .FromComponentInNewPrefab(audioShipData.ShipSfx.ViewPrefab)
-                .UnderTransform(context => context.Container.ResolveId<Transform>(EntityBindType.ViewTransform))
-                .AsSingle();
-            Container.BindInterfacesTo<ShipSfxPresenter>().AsSingle().NonLazy();
+                .FromComponentsInHierarchy().AsCached();
 
             // Voice lines only play for the local player's own ships.
-            if (!_localPlayer.IsLocal(_owner))
-                return;
-
-            Container.Bind<AudioShipDialogData>()
-                .FromNewScriptableObject(Repository.Load<AudioShipDialogData>(nameof(AudioShipDialogData)))
-                .AsSingle();
-            Container.Bind<AudioShipDialogModel>().AsSingle();
-            Container.Bind<IAudioShipDialogModelObserver>().To<AudioShipDialogModel>().FromResolve();
+            if (!_localPlayer.IsLocal(_owner)) return;
             Container.BindInterfacesAndSelfTo<AudioDialogShipComponent>()
-                .FromComponentsInHierarchy()
-                .AsCached();
+                .FromComponentsInHierarchy().AsCached();
         }
 
         private void BindOrders()
