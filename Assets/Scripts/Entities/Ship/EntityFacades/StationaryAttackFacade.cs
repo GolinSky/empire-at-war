@@ -18,11 +18,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
             _attackDataFactory = attackDataFactory;
         }
 
-        public void FocusFire(IEntity target)
-        {
-            AttackData data = _attackDataFactory.ConstructData(target);
-            if (data != null) _weapon.AddTarget(data, AttackType.MainTarget);
-        }
+        public void FocusFire(IEntity target) =>
+            _weapon.AddTarget(_attackDataFactory.ConstructData(target), AttackType.MainTarget);
 
         // Stations cannot move, so the formation offset does not apply.
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>

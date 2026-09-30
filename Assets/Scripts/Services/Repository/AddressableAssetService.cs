@@ -19,7 +19,9 @@ namespace EmpireAtWar.Repository
         public TComponent LoadComponent<TComponent>(string key) where TComponent : Component
         {
             GameObject prefab = LoadPrefab(key);
-            return prefab != null ? prefab.GetComponent<TComponent>() : null;
+            if (prefab == null || !prefab.TryGetComponent(out TComponent component))
+                throw new MissingComponentException($"Addressable prefab '{key}' has no {typeof(TComponent).Name}.");
+            return component;
         }
         
         

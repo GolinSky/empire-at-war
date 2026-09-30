@@ -21,12 +21,12 @@ namespace EmpireAtWar.Services.SceneService
 
         public SceneReference GetScene(SceneType sceneType)
         {
-            if (SceneDictionary.ContainsKey(sceneType))
+            if (SceneDictionary.TryGetValue(sceneType, out SceneReference scene))
             {
-                return SceneDictionary[sceneType];
+                return scene;
             }
 
-            return null;
+            throw new KeyNotFoundException($"{nameof(SceneData)} has no scene for {nameof(SceneType)}.{sceneType}.");
         }
 
         public SceneType GetCurrentScene()
