@@ -1,7 +1,6 @@
 using System;
-using EmpireAtWar.Controllers.Factions;
 
-namespace EmpireAtWar.Entities.EnemyFaction.Models
+namespace EmpireAtWar.Controllers.Factions
 {
     public readonly struct UnitLimitKey : IEquatable<UnitLimitKey>
     {

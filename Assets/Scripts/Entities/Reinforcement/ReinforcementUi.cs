@@ -1,7 +1,6 @@
 using System;
-using EmpireAtWar.Entities.Squadrons;
 using System.Collections.Generic;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.Visitor;
 using EmpireAtWar.Presenters.Reinforcement;
@@ -38,7 +37,7 @@ namespace EmpireAtWar.Views.Reinforcement
         [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
 
-        private readonly Dictionary<string, ISpawnShipUi> _spawnUnitUiDictionary = new();
+        private readonly Dictionary<UnitLimitKey, ISpawnShipUi> _spawnUnitUiDictionary = new();
 
         private IReinforcementModelObserver _model;
         private IReinforcementPresenter _presenter;
@@ -98,8 +97,9 @@ namespace EmpireAtWar.Views.Reinforcement
             Dispose();
         }
 
-        private void AddUi(string key, FactionData factionData)
+        private void AddUi(UnitRequest request)
         {
+            UnitLimitKey key = UnitLimitKey.From(request);
             if (_spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
             {
                 shipUi.AddUnit();
@@ -107,17 +107,9 @@ namespace EmpireAtWar.Views.Reinforcement
             else
             {
                 ISpawnShipUi spawnShipUi = Instantiate(_data.ReinforcementButton, spawnTransform);
-                spawnShipUi.Init(this, key, factionData);
+                spawnShipUi.Init(this, request);
                 _spawnUnitUiDictionary.Add(key, spawnShipUi);
-
-                if (Enum.TryParse(key, out ShipType result))
-                {
-                    ActivateShipUnitUi(result, spawnShipUi);
-                }
-                else if (Enum.TryParse(key, out SquadronType squadronType))
-                {
-                    spawnShipUi.Activate(_model.CanSpawnUnit(squadronType));
-                }
+                ActivateUnitUi(spawnShipUi);
             }
         }
 
@@ -125,16 +117,9 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: {capacity}/{_model.MaxUnitCapacity}";
 
-            foreach (KeyValuePair<string, ISpawnShipUi> entry in _spawnUnitUiDictionary)
+            foreach (ISpawnShipUi spawnShipUi in _spawnUnitUiDictionary.Values)
             {
-                if (Enum.TryParse(entry.Key, out ShipType result))
-                {
-                    ActivateShipUnitUi(result, entry.Value);
-                }
-                else if (Enum.TryParse(entry.Key, out SquadronType squadronType))
-                {
-                    entry.Value.Activate(_model.CanSpawnUnit(squadronType));
-                }
+                ActivateUnitUi(spawnShipUi);
             }
         }
 
@@ -176,17 +161,26 @@ namespace EmpireAtWar.Views.Reinforcement
 
             _presenter.Hide();
             _currentSpawnUnitUi = spawnShipUi;
-            _presenter.TrySpawnReinforcement(spawnShipUi.UnitType);
+            _presenter.TrySpawnReinforcement(spawnShipUi.Request);
         }
 
         public void OnRelease(ISpawnShipUi spawnShipUi)
         {
-            _spawnUnitUiDictionary.Remove(spawnShipUi.UnitType);
+            _spawnUnitUiDictionary.Remove(UnitLimitKey.From(spawnShipUi.Request));
         }
 
-        private void ActivateShipUnitUi(ShipType shipType, ISpawnShipUi shipUnitUi)
+        // Structures have no unit capacity cost, so only ships and squadrons are gated.
+        private void ActivateUnitUi(ISpawnShipUi spawnShipUi)
         {
-            shipUnitUi.Activate(_model.CanSpawnUnit(shipType));
+            switch (spawnShipUi.Request)
+            {
+                case ShipUnitRequest shipUnitRequest:
+                    spawnShipUi.Activate(_model.CanSpawnUnit(shipUnitRequest.Key));
+                    break;
+                case SquadronUnitRequest squadronUnitRequest:
+                    spawnShipUi.Activate(_model.CanSpawnUnit(squadronUnitRequest.Key));
+                    break;
+            }
         }
     }
 }

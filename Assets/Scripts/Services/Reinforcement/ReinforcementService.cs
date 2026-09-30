@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.Reinforcement
 {
     public interface IReinforcementService
     {
-        void TrySpawnReinforcement(string id);
+        void TrySpawnReinforcement(UnitRequest request);
     }
 
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
@@ -236,7 +236,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _nextChain?.Handle(request);
         }
 
-        public void TrySpawnReinforcement(string id)
+        public void TrySpawnReinforcement(UnitRequest request)
         {
             if (_hasBattleEnded || !_entityLocator.IsStationOperational(_owner.Id))
             {
@@ -244,25 +244,26 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            if (Enum.TryParse(id, out ShipType shipType))
+            switch (request)
             {
-                TrySpawnShip(shipType);
-            }
-            else if (Enum.TryParse(id, out SquadronType squadronType))
-            {
-                TrySpawnSquadron(squadronType);
-            }
-            else if (Enum.TryParse(id, out MiningFacilityType facilityType))
-            {
-                StartSpawnSequence(SpawnType.MiningFacility);
-                _currentFacilityType = facilityType;
-                _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(facilityType));
-            }
-            else if (Enum.TryParse(id, out DefendPlatformType defendPlatformType))
-            {
-                StartSpawnSequence(SpawnType.DefendPlatform);
-                _currentPlatformType = defendPlatformType;
-                _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(defendPlatformType));
+                case ShipUnitRequest shipUnitRequest:
+                    TrySpawnShip(shipUnitRequest.Key);
+                    break;
+                case SquadronUnitRequest squadronUnitRequest:
+                    TrySpawnSquadron(squadronUnitRequest.Key);
+                    break;
+                case MiningFacilityUnitRequest miningFacilityUnitRequest:
+                    StartSpawnSequence(SpawnType.MiningFacility);
+                    _currentFacilityType = miningFacilityUnitRequest.Key;
+                    _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(_currentFacilityType));
+                    break;
+                case DefendPlatformUnitRequest defendPlatformUnitRequest:
+                    StartSpawnSequence(SpawnType.DefendPlatform);
+                    _currentPlatformType = defendPlatformUnitRequest.Key;
+                    _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(_currentPlatformType));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(request));
             }
         }
 

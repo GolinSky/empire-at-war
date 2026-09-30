@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.UiRouting;
@@ -55,9 +56,9 @@ namespace EmpireAtWar.Presenters.Reinforcement
             }
         }
 
-        public void TrySpawnReinforcement(string id)
+        public void TrySpawnReinforcement(UnitRequest request)
         {
-            _reinforcementService.TrySpawnReinforcement(id);
+            _reinforcementService.TrySpawnReinforcement(request);
         }
 
         public void Show()

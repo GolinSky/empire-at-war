@@ -1,3 +1,4 @@
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using NUnit.Framework;
 
