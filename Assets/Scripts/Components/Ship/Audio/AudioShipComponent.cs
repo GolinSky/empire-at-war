@@ -1,110 +1,123 @@
-using EmpireAtWar.Services.Audio;
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Extentions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Audio;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Audio
 {
-    public interface IAudioShipComponent : IComponent
+    public sealed class AudioShipComponent : MonoBehaviour, IAudioShipComponent, IMonoComponent
     {
-        void PlayHyperSpace();
-        void HandleEnemyDetected();
-    }
+        private IShipSfxService _audio;
+        private ShipSfxData _data;
+        private IShipEngineAudioObserver _movement;
+        private ILocalPlayer _localPlayer;
+        private Transform _viewTransform;
+        private IEntity _ship;
+        private IReadOnlyList<ShipAbilitySlot> _abilities;
+        private ShipAbilityState[] _states;
+        private ShipAbilityAudioProfile[] _sounds;
+        private readonly ShipEngineAudioState _engine = new ShipEngineAudioState();
+        private Vector3 _previousPosition;
+        private float _alarmReadyAt;
+        private bool _initialized;
 
-    public class AudioShipComponent : MonoComponent<AudioShipModel>, IAudioShipComponent, IInitializable,
-        ILateDisposable
-    {
-        [SerializeField] private AudioSource source;
-        [SerializeField] private AudioSource hyperSpaceSource;
+        public string Id => nameof(AudioShipComponent);
 
-        private AudioShipData _data;
-        private IAudioService _audioService;
-        private ITimer _alarmTimer;
-        private IWeaponFireEvents _weaponFireEvents;
-        private WeaponAudioPresenter _weaponAudio;
-        
         [Inject]
-        private void Construct(
-            AudioShipModel model,
-            AudioShipData data,
-            IAudioService audioService,
-            IWeaponFireEvents weaponFireEvents,
-            WeaponAudioPresenter weaponAudio)
+        private void Construct(IShipSfxService audio, ShipSfxData data, IShipEngineAudioObserver movement,
+            ILocalPlayer localPlayer, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
-            SetModel(model);
+            _audio = audio;
             _data = data;
-            _audioService = audioService;
-            _weaponFireEvents = weaponFireEvents;
-            _weaponAudio = weaponAudio;
-            _alarmTimer = TimerFactory.ConstructTimer(Model.AlarmDelay);
+            _movement = movement;
+            _localPlayer = localPlayer;
+            _viewTransform = viewTransform;
         }
 
-        public void Initialize()
+        public void InitializeAudio(IEntity ship, IReadOnlyList<ShipAbilitySlot> abilities)
         {
-            Model.OnOneShotRequested += PlayOneShot;
-            _weaponFireEvents.ShotEmitted += PlayWeaponShot;
-        }
-
-        public void LateDispose()
-        {
-            Release();
-        }
-
-        public override void Release()
-        {
-            Model.OnOneShotRequested -= PlayOneShot;
-            _weaponFireEvents.ShotEmitted -= PlayWeaponShot;
-            _weaponAudio.Release(this);
-        }
-
-        private void PlayWeaponShot(WeaponProfile profile, Transform muzzle)
-        {
-            if (!isActiveAndEnabled) return;
-            _weaponAudio.PlayShot(this, profile, muzzle);
-        }
-
-        private void OnDisable()
-        {
-            if (_weaponAudio != null) _weaponAudio.Release(this);
-        }
-        
-        public void HandleEnemyDetected()
-        {
-            if (_alarmTimer.IsComplete)
+            _ship = ship;
+            _abilities = abilities;
+            _states = new ShipAbilityState[abilities.Count];
+            _sounds = new ShipAbilityAudioProfile[abilities.Count];
+            for (int i = 0; i < abilities.Count; i++)
             {
-                if (_audioService.CanPlayAlarm())
+                _states[i] = abilities[i].State;
+                _sounds[i] = _data.GetAbility(abilities[i].Id);
+            }
+            _previousPosition = _viewTransform.position;
+            _initialized = true;
+        }
+
+        public void UpdateAudio()
+        {
+            if (!_initialized || Time.deltaTime <= 0f) return;
+            Vector3 position = _viewTransform.position;
+            float speed = _movement.Phase == MovementPhase.Moving && _movement.Speed > 0f
+                ? Vector3.Distance(position, _previousPosition) / Time.deltaTime / _movement.Speed : 0f;
+            _previousPosition = position;
+            if (_engine.Advance(speed, Time.deltaTime))
+                _audio.TryPlayOneShot(_ship, _data.Acceleration, position);
+            _audio.TryHoldLoop(_ship, _data.Engine, position, Mathf.Clamp01(_engine.Speed),
+                0.65f + _engine.Speed * 0.45f);
+            for (int i = 0; i < _abilities.Count; i++)
+                if (_states[i] == ShipAbilityState.Active)
+                    _audio.TryHoldLoop(_ship, _sounds[i].Execution, position, 1f, 1f);
+        }
+
+        public void HandleAbilityChanged()
+        {
+            if (!_initialized) return;
+            for (int i = 0; i < _states.Length; i++)
+            {
+                ShipAbilityState state = _abilities[i].State;
+                if (state == _states[i]) continue;
+                ShipAbilityState previous = _states[i];
+                _states[i] = state;
+                switch (state)
                 {
-                    _alarmTimer.StartTimer();
-                    Model.PlayAlarm();
-                    _audioService.RegisterAlarmPlaying();
+                    case ShipAbilityState.Active:
+                        _audio.TryPlayOneShot(_ship, _sounds[i].Start, _viewTransform.position);
+                        break;
+                    case ShipAbilityState.Recovering:
+                        _audio.TryPlayOneShot(_ship, _sounds[i].End, _viewTransform.position);
+                        break;
+                    case ShipAbilityState.Ready:
+                        if (previous == ShipAbilityState.Recovering && _localPlayer.IsLocal(_ship.Owner))
+                            _audio.TryPlayOneShot(_ship, _sounds[i].Restore, _viewTransform.position);
+                        break;
                 }
             }
         }
-        
-        public void PlayHyperSpace()
+
+        public void PlayWeaponShot(WeaponProfile profile, Transform muzzle)
         {
-            Model.PlayHyperSpace();
+            if (_initialized) _audio.TryPlayWeaponShot(_ship, profile, muzzle);
         }
 
-        private void PlayOneShot(AudioShipModel.OneShot oneShot)
+        public void HandleEnemyDetected()
         {
-            switch (oneShot)
-            {
-                case AudioShipModel.OneShot.HyperSpace:
-                    hyperSpaceSource.PlayOneShot(_data.GetHyperSpaceClip());
-                    break;
-                case AudioShipModel.OneShot.Alarm:
-                    PlayOneShot(_data.GetAlarmClip());
-                    break;
-            }
+            if (Time.time < _alarmReadyAt) return;
+            if (_audio.TryPlayOneShot(_ship, _data.Alarm, _viewTransform.position))
+                _alarmReadyAt = Time.time + _data.AlarmDelay;
         }
 
-        private void PlayOneShot(AudioClip clip)
+        public void PlayHyperSpace() => _audio.TryPlayOneShot(_ship, _data.Hyperspace, _viewTransform.position);
+
+        public void Release()
         {
-            source.PlayOneShot(clip);
+            if (!_initialized) return;
+            _initialized = false;
+            _audio.ReleaseShip(_ship);
         }
+
+        private void OnDisable() => Release();
     }
 }

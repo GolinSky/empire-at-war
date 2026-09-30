@@ -105,13 +105,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: AudioShipData
-      value:
-        m_AssetGUID: 3c3e6847e2f3d68408516d8339afde3f
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: FactionsData
       value:
         m_AssetGUID: 3de703d0a2c0ac5428de8b8f64093d18
@@ -129,13 +122,6 @@ MonoBehaviour:
     - key: ShipUiData
       value:
         m_AssetGUID: 5d122ff846ebd9c42b0d93d92110997b
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: AudioShipDialogData
-      value:
-        m_AssetGUID: 7a4bfb5f7b726044ab56858e9a73e245
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

@@ -53,6 +53,7 @@ namespace EmpireAtWar.SceneContext
                 .BindInterfacesExt<GraphicsSettingsApplier>()
                 .BindInterfacesExt<SettingsService>()
                 .BindInterfacesExt<AudioService>()
+                .BindInterfacesExt<MusicService>()
                 .BindInterfacesExt<UniqueIdGenerator>()
                 .BindInterfacesExt<InputActionsProvider>()
                 .BindInterfacesExt<InputBindingService>()

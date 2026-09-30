@@ -8,19 +8,15 @@ namespace EmpireAtWar.Services.Audio
     public sealed class ShipAbilityAudioProfile
     {
         [SerializeField] private ShipAbilityId abilityId;
-        [SerializeField] private AudioClip startClip;
-        [SerializeField] private AudioClip executionLoop;
-        [SerializeField] private AudioClip endClip;
-        [SerializeField] private AudioClip restoreClip;
-        [SerializeField, Range(0f, 1f)] private float cueVolume = 0.5f;
-        [SerializeField, Range(0f, 1f)] private float executionVolume = 0.12f;
+        [SerializeField] private SfxProfile start;
+        [SerializeField] private SfxProfile execution;
+        [SerializeField] private SfxProfile end;
+        [SerializeField] private SfxProfile restore;
 
         public ShipAbilityId AbilityId => abilityId;
-        public AudioClip StartClip => startClip;
-        public AudioClip ExecutionLoop => executionLoop;
-        public AudioClip EndClip => endClip;
-        public AudioClip RestoreClip => restoreClip;
-        public float CueVolume => cueVolume;
-        public float ExecutionVolume => executionVolume;
+        public SfxProfile Start => start;
+        public SfxProfile Execution => execution;
+        public SfxProfile End => end;
+        public SfxProfile Restore => restore;
     }
 }
