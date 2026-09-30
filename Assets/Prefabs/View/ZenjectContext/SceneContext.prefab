@@ -547,7 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   impactEffectPrefab: {fileID: 2053978733039751709, guid: 11b47c313b274964b8d7b31e5eb9fdf7,
     type: 3}
-  unitExplosionPrefab: {fileID: 856421663429402426, guid: ad12607a43b672a44b753a7397fe2083,
+  unitExplosionPrefab: {fileID: 3090607528868399422, guid: f10908be1d4de884d9dc2c25b8094618,
     type: 3}
   rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
     type: 2}
