@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   height: -5
+  meshRenderers:
+  - {fileID: 41666552141810487}
 --- !u!54 &2204769058743215675
 Rigidbody:
   m_ObjectHideFlags: 0

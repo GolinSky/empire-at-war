@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   height: 5
+  meshRenderers:
+  - {fileID: 3131415016298726243}
 --- !u!1 &1754466376956157639
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,11 +5,14 @@ namespace EmpireAtWar.Views.Reinforcement
 {
     public class UnitSpawnView : MonoBehaviour
     {
+        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
+
         [SerializeField] private float height;
-        
+        [SerializeField] private MeshRenderer[] meshRenderers;
+
         private List<Collider> _triggeredCollider = new List<Collider>();
-        private MeshRenderer[] _meshRendererList;
-        private List<Material> _meshMaterials = new List<Material>();
+        // A property block tints every renderer without creating Material instances.
+        private MaterialPropertyBlock _propertyBlock;
         private Color _canBeSpawnedColor;
         private Color _blockedColor = Color.red;
         private bool _isPlacementValid;
@@ -19,12 +22,8 @@ namespace EmpireAtWar.Views.Reinforcement
 
         private void Awake()
         {
-            _meshRendererList = GetComponentsInChildren<MeshRenderer>();
-            for (var i = 0; i < _meshRendererList.Length; i++)
-            {
-                _meshMaterials.Add(_meshRendererList[i].material);
-            }
-            _canBeSpawnedColor = _meshMaterials[0].color;
+            _propertyBlock = new MaterialPropertyBlock();
+            _canBeSpawnedColor = meshRenderers[0].sharedMaterial.GetColor(BASE_COLOR_ID);
             UpdateColor();
         }
 
@@ -62,16 +61,17 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             if(_triggeredCollider.Contains(other))
                 _triggeredCollider.Remove(other);
-            
+
             UpdateColor();
         }
 
         private void UpdateColor()
         {
-            Color color = CanSpawn ? _canBeSpawnedColor : _blockedColor;
-            for (var i = 0; i < _meshMaterials.Count; i++)
+            _propertyBlock.SetColor(BASE_COLOR_ID, CanSpawn ? _canBeSpawnedColor : _blockedColor);
+            for (var i = 0; i < meshRenderers.Length; i++)
             {
-                _meshMaterials[i].color = color;
+                // Slot 0 is the hologram material; later slots keep their own look.
+                meshRenderers[i].SetPropertyBlock(_propertyBlock, 0);
             }
         }
     }

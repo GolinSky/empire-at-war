@@ -218,3 +218,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   height: 10
+  meshRenderers:
+  - {fileID: 5786364970990917502}
