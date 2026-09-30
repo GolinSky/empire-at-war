@@ -30,6 +30,12 @@
 
 ### Optimization
 
+- [ ] **Optimize battle particle rendering**
+  - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Particle rendering optimization]]
+  - **Research**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|2026-09-30 capture and prefab analysis]]
+  - **Status**: Profiler export repaired; 2 regression tests passed; original recording recovered; 65 prefabs / 111 particle systems inspected.
+  - **Remaining**: compare ~200 FPS battle start with ~12 FPS mid-battle; prioritize ship/navigation CPU growth and accumulating combat effects. Star reduction deferred pending isolation.
+
 - [ ] **Optimize battle attacks and projectile reuse**
   - **Plan**: [[TODOs/Optimization/Battle_Attack_Optimization_Plan|Phased attack, pooling, Jobs + Burst, and instancing plan]]
   - **Execution**: Complete and analyze each phase before advancing; start with readable attack states and busy/cancellation fixes.
