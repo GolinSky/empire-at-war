@@ -51,6 +51,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.Bind<DebugRangeCircleFactory>().AsSingle().WithArguments(rangeDebugLineMaterial);
             
             Container.BindScriptableObject<CameraData>(Repository);
+            Container.BindScriptableObject<CinematicCameraData>(Repository);
             Container.BindScriptableObject<SharedSelectionData>(Repository);
             Container.Bind<MarqueeSelectionModel>().AsSingle();
             Container

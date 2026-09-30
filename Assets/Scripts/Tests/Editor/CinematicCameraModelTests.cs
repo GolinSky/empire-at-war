@@ -4,12 +4,32 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Services.Camera;
 using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
+using Random = System.Random;
 using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Tests.CinematicCamera
 {
     public sealed class CinematicCameraModelTests
     {
+        private CinematicCameraData _settings;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _settings = ScriptableObject.CreateInstance<CinematicCameraData>();
+            EditorUtility.CopySerialized(
+                AssetDatabase.LoadAssetAtPath<CinematicCameraData>(
+                    "Assets/Settings/Data/Models/Camera/CinematicCameraData.asset"), _settings);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            UnityEngine.Object.DestroyImmediate(_settings);
+        }
+
         [Test]
         public void Sequencer_NeverRepeatsShotTypeAndKeepsDurationInRange()
         {
@@ -42,8 +62,7 @@ namespace EmpireAtWar.Tests.CinematicCamera
         [Test]
         public void Scorer_PrefersRecentlyDamagedUnitInsideEngagement()
         {
-            CinematicCameraSettings settings = new CinematicCameraSettings();
-            CinematicInterestScorer scorer = new CinematicInterestScorer(settings, new Random(1), TestPlayers.CreateDuel());
+            CinematicInterestScorer scorer = new CinematicInterestScorer(_settings, new Random(1), TestPlayers.CreateDuel());
             CinematicCandidate[] candidates =
             {
                 new(1, new NumericsVector3(0f, 0f, 0f), ShipClass.Frigate, TestPlayers.Human, 0.5f),
@@ -61,7 +80,7 @@ namespace EmpireAtWar.Tests.CinematicCamera
         [Test]
         public void Scorer_ReturnsFalseWithoutCandidates()
         {
-            CinematicInterestScorer scorer = new CinematicInterestScorer(new CinematicCameraSettings(), new Random(1), TestPlayers.CreateDuel());
+            CinematicInterestScorer scorer = new CinematicInterestScorer(_settings, new Random(1), TestPlayers.CreateDuel());
 
             Assert.That(scorer.TrySelect(Array.Empty<CinematicCandidate>(), -1, out _), Is.False);
         }

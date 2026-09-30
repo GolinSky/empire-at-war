@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private const long NO_TARGET = -1;
 
         private readonly CinematicCameraModel _model;
-        private readonly CinematicCameraSettings _settings;
+        private readonly CinematicCameraData _settings;
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointer;
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
 
         public CinematicCameraPresenter(
             CinematicCameraModel model,
-            CameraData cameraData,
+            CinematicCameraData cinematicCameraData,
             ICameraService cameraService,
             IInputLock inputLock,
             IPointerInput pointer,
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _model = model;
-            _settings = cameraData.Cinematic;
+            _settings = cinematicCameraData;
             _cameraService = cameraService;
             _inputLock = inputLock;
             _pointer = pointer;

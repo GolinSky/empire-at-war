@@ -7,19 +7,15 @@ namespace EmpireAtWar.Services.Camera
     [Serializable]
     public struct CinematicClassProfile
     {
-        [SerializeField] private ShipClass shipClass;
-        [SerializeField] private float interestWeight;
-        [SerializeField] private float framingDistance;
+        [field: SerializeField] public ShipClass ShipClass { get; private set; }
+        [field: SerializeField] public float InterestWeight { get; private set; }
+        [field: SerializeField] public float FramingDistance { get; private set; }
 
         public CinematicClassProfile(ShipClass shipClass, float interestWeight, float framingDistance)
         {
-            this.shipClass = shipClass;
-            this.interestWeight = interestWeight;
-            this.framingDistance = framingDistance;
+            ShipClass = shipClass;
+            InterestWeight = interestWeight;
+            FramingDistance = framingDistance;
         }
-
-        public ShipClass ShipClass => shipClass;
-        public float InterestWeight => interestWeight;
-        public float FramingDistance => framingDistance;
     }
 }

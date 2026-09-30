@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d4a884c5b82a164f85f931e51ad6987, type: 3}
+  m_Name: CinematicCameraData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Camera.CinematicCameraData
+  <MinShotDuration>k__BackingField: 3
+  <MaxShotDuration>k__BackingField: 8
+  <DestroyedTargetLinger>k__BackingField: 1.5
+  <ActivitySampleInterval>k__BackingField: 0.5
+  <FollowSharpness>k__BackingField: 3
+  <WideShotDistanceMultiplier>k__BackingField: 2.5
+  <DamageMemorySeconds>k__BackingField: 4
+  <DamageWeight>k__BackingField: 6
+  <EngagementRadius>k__BackingField: 250
+  <NearbyEnemyWeight>k__BackingField: 1
+  <MaxCountedEnemies>k__BackingField: 5
+  <RepeatTargetPenalty>k__BackingField: 0.35
+  <ScoreJitter>k__BackingField: 0.3
+  <ClassProfiles>k__BackingField:
+  - <ShipClass>k__BackingField: 0
+    <InterestWeight>k__BackingField: 1.5
+    <FramingDistance>k__BackingField: 20
+  - <ShipClass>k__BackingField: 1
+    <InterestWeight>k__BackingField: 1.5
+    <FramingDistance>k__BackingField: 20
+  - <ShipClass>k__BackingField: 2
+    <InterestWeight>k__BackingField: 2
+    <FramingDistance>k__BackingField: 45
+  - <ShipClass>k__BackingField: 3
+    <InterestWeight>k__BackingField: 3
+    <FramingDistance>k__BackingField: 70
+  - <ShipClass>k__BackingField: 4
+    <InterestWeight>k__BackingField: 4
+    <FramingDistance>k__BackingField: 110
+  - <ShipClass>k__BackingField: 5
+    <InterestWeight>k__BackingField: 5
+    <FramingDistance>k__BackingField: 170
+  - <ShipClass>k__BackingField: 6
+    <InterestWeight>k__BackingField: 2
+    <FramingDistance>k__BackingField: 200

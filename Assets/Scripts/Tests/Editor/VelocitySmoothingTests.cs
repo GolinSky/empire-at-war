@@ -1,15 +1,15 @@
-using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Utils;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Camera
 {
-    public sealed class CameraPanSmoothingTests
+    public sealed class VelocitySmoothingTests
     {
         [Test]
-        public void UpdateVelocity_AcceleratesWithoutJumpingToMaximumSpeed()
+        public void MoveTowardsTarget_AcceleratesWithoutJumpingToMaximumSpeed()
         {
-            Vector2 velocity = CameraPanSmoothing.UpdateVelocity(
+            Vector2 velocity = VelocitySmoothing.MoveTowardsTarget(
                 Vector2.zero,
                 Vector2.right,
                 500f,
@@ -21,9 +21,9 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void UpdateVelocity_DeceleratesWithoutStoppingImmediately()
+        public void MoveTowardsTarget_DeceleratesWithoutStoppingImmediately()
         {
-            Vector2 velocity = CameraPanSmoothing.UpdateVelocity(
+            Vector2 velocity = VelocitySmoothing.MoveTowardsTarget(
                 new Vector2(500f, 0f),
                 Vector2.zero,
                 500f,
@@ -35,9 +35,9 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void UpdateVelocity_NormalizesDiagonalInput()
+        public void MoveTowardsTarget_NormalizesDiagonalInput()
         {
-            Vector2 velocity = CameraPanSmoothing.UpdateVelocity(
+            Vector2 velocity = VelocitySmoothing.MoveTowardsTarget(
                 Vector2.zero,
                 Vector2.one,
                 500f,

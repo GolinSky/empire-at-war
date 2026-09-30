@@ -8,11 +8,11 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
 {
     public class CinematicInterestScorer
     {
-        private readonly CinematicCameraSettings _settings;
+        private readonly CinematicCameraData _settings;
         private readonly Random _random;
         private readonly IPlayerRelations _relations;
 
-        public CinematicInterestScorer(CinematicCameraSettings settings, Random random, IPlayerRelations relations)
+        public CinematicInterestScorer(CinematicCameraData settings, Random random, IPlayerRelations relations)
         {
             _relations = relations;
             _settings = settings;
