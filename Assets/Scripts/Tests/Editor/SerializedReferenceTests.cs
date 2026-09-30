@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.SceneContext.Skirmish;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.MainMenu.Settings;
@@ -80,7 +81,11 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MiniMapUi), "cameraFootprintView"),
             new SerializedReference(typeof(PauseMenuUi), "resumeButton"),
             new SerializedReference(typeof(PauseMenuUi), "exitButton"),
-            new SerializedReference(typeof(PauseMenuUi), "menuPanel")
+            new SerializedReference(typeof(PauseMenuUi), "menuPanel"),
+            new SerializedReference(typeof(ReinforcementZoneView), "_captureCanvasScaler"),
+            new SerializedReference(typeof(SkirmishServiceInstaller), "rangeDebugLineMaterial"),
+            new SerializedReference(typeof(DrawCircle), "lineRenderer"),
+            new SerializedReference(typeof(PlanetInstaller), "view")
         };
 
         [Test]

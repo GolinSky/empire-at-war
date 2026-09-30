@@ -24,6 +24,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
         [SerializeField, Min(1f)] private float _radius = 45f;
         [SerializeField] private MeshRenderer _sphereRenderer;
         [SerializeField] private Canvas _captureCanvas;
+        [SerializeField] private CanvasScaler _captureCanvasScaler;
         [SerializeField] private Image _captureProgress;
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private Color _neutralColor = new Color(0.48f, 0.55f, 0.62f, 0.08f);
@@ -55,11 +56,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
             {
                 _captureCanvas.overrideSorting = true;
                 _captureCanvas.sortingOrder = 100;
-                CanvasScaler scaler = _captureCanvas.GetComponent<CanvasScaler>();
-                if (scaler != null)
-                {
-                    scaler.dynamicPixelsPerUnit = 10f;
-                }
+                _captureCanvasScaler.dynamicPixelsPerUnit = 10f;
             }
         }
 

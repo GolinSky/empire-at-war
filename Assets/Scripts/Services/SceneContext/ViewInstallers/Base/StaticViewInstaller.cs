@@ -17,11 +17,6 @@ namespace EmpireAtWar
         [Inject]
         protected IAssetService Repository { get; }
         
-        private void OnValidate()
-        {
-            view = GetComponent<View>();
-        }
-        
         public override void InstallBindings()
         {
             if (bindMonoComponent)

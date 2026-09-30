@@ -19,6 +19,7 @@ using EmpireAtWar.ViewComponents.Health;
 using Zenject;
 using UnityEngine;
 using EmpireAtWar.ViewComponents.Weapon;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
@@ -26,6 +27,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
     {
         [SerializeField] private ImpactEffectView impactEffectPrefab;
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
+        [SerializeField] private Material rangeDebugLineMaterial;
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()
@@ -41,6 +43,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
             Container.BindInterfacesAndSelfTo<RangeDebugModel>().AsSingle();
+            Container.Bind<DebugRangeCircleFactory>().AsSingle().WithArguments(rangeDebugLineMaterial);
             
             Container.BindScriptableObject<CameraData>(Repository);
             Container.BindScriptableObject<SharedSelectionData>(Repository);
