@@ -149,7 +149,7 @@ namespace EmpireAtWar.Editor
                     }
                 }
 
-                RenderPipelineManager.endFrameRendering += HandleEndFrameRendering;
+                RenderPipelineManager.endContextRendering += HandleEndFrameRendering;
                 EditorApplication.update += Tick;
                 EditorApplication.QueuePlayerLoopUpdate();
             }
@@ -159,7 +159,7 @@ namespace EmpireAtWar.Editor
                 Complete("cancelled", $"Render Graph capture cancelled: {reason}.");
             }
 
-            private void HandleEndFrameRendering(ScriptableRenderContext context, Camera[] cameras)
+            private void HandleEndFrameRendering(ScriptableRenderContext context, List<Camera> cameras)
             {
                 var frameNumber = _frameIdentities.Count + 1;
                 var artifact = $"render-graph-frame-{frameNumber:D2}.json";
@@ -171,7 +171,7 @@ namespace EmpireAtWar.Editor
                     ["rendered_at_utc"] = DateTime.UtcNow.ToString("O"),
                     ["unity_frame"] = Time.frameCount,
                     ["artifact"] = artifact,
-                    ["camera_count"] = cameras.Length,
+                    ["camera_count"] = cameras.Count,
                     ["valid_execution_count"] = snapshot["valid_execution_count"]
                 });
             }
@@ -241,7 +241,7 @@ namespace EmpireAtWar.Editor
 
             private void Complete(string status, string message)
             {
-                RenderPipelineManager.endFrameRendering -= HandleEndFrameRendering;
+                RenderPipelineManager.endContextRendering -= HandleEndFrameRendering;
                 EditorApplication.update -= Tick;
                 try
                 {

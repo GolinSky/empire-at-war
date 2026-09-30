@@ -52,7 +52,7 @@ namespace EmpireAtWar.Editor
             GameObject refCamGo = null;
             GameObject refVenatorGo = null;
 
-            foreach (GameObject go in UnityEngine.Object.FindObjectsOfType<GameObject>())
+            foreach (GameObject go in UnityEngine.Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
             {
                 if (go.name.Contains("ScreenShotBlueprintCamera")) refCamGo = go;
                 if (go.name.Contains("VenatorShipView")) refVenatorGo = go;

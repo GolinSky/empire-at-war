@@ -226,7 +226,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
                 ProfilerDriver.enabled = true;
                 ProfilerDriver.profileEditor = false;
                 _firstProfilerFrameIndex = ProfilerDriver.lastFrameIndex + 1;
-                RenderPipelineManager.endFrameRendering += HandleEndFrameRendering;
+                RenderPipelineManager.endContextRendering += HandleEndFrameRendering;
                 ProfilerDriver.NewProfilerFrameRecorded += HandleNewProfilerFrameRecorded;
                 EditorApplication.update += Tick;
                 EditorApplication.QueuePlayerLoopUpdate();
@@ -237,7 +237,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
                 Complete("cancelled", $"Profiler capture cancelled: {reason}.");
             }
 
-            private void HandleEndFrameRendering(ScriptableRenderContext context, Camera[] cameras)
+            private void HandleEndFrameRendering(ScriptableRenderContext context, List<Camera> cameras)
             {
                 if (_flushPending)
                 {
@@ -248,7 +248,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
                 {
                     ["rendered_at_utc"] = DateTime.UtcNow.ToString("O"),
                     ["unity_frame"] = Time.frameCount,
-                    ["camera_count"] = cameras.Length,
+                    ["camera_count"] = cameras.Count,
                     ["camera_names"] = GetCameraNames(cameras),
                     ["unity_stats"] = CaptureRenderingStats()
                 });
@@ -328,7 +328,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
 
             private void Complete(Dictionary<string, object> result)
             {
-                RenderPipelineManager.endFrameRendering -= HandleEndFrameRendering;
+                RenderPipelineManager.endContextRendering -= HandleEndFrameRendering;
                 ProfilerDriver.NewProfilerFrameRecorded -= HandleNewProfilerFrameRecorded;
                 EditorApplication.update -= Tick;
                 try
@@ -342,9 +342,9 @@ private static Dictionary<string, object> CaptureRenderingStats()
                 }
             }
 
-            private static List<string> GetCameraNames(Camera[] cameras)
+            private static List<string> GetCameraNames(List<Camera> cameras)
             {
-                var cameraNames = new List<string>(cameras.Length);
+                var cameraNames = new List<string>(cameras.Count);
                 foreach (var camera in cameras)
                 {
                     cameraNames.Add(camera.name);
