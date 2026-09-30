@@ -20,9 +20,9 @@ namespace EmpireAtWar
         protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
 
         [Inject]
-        public void Constructor(IAssetService repository, Vector3 startPosition)
+        public void Constructor(IAssetService assetService, Vector3 startPosition)
         {
-            Repository = repository;
+            Repository = assetService;
             _startPosition = startPosition;
         }
 

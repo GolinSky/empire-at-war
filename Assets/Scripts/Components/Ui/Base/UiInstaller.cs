@@ -9,21 +9,21 @@ namespace EmpireAtWar.Ui.Base
     public class UiInstaller: Installer
     {
         private const string DEFAULT_NAME = "Ui";
-        private IAssetService _repository;
+        private IAssetService _assetService;
         private UiType _uiType;
         private Transform _parent;
         
         [Inject]
-        public void Constructor(IAssetService repository, UiType uiType, Transform parent)
+        public void Constructor(IAssetService assetService, UiType uiType, Transform parent)
         {
             _parent = parent;
             _uiType = uiType;
-            _repository = repository;
+            _assetService = assetService;
         }
 
         public override void InstallBindings()
         {
-            var prefab = _repository.Load<GameObject>($"{_uiType}{DEFAULT_NAME}");
+            var prefab = _assetService.Load<GameObject>($"{_uiType}{DEFAULT_NAME}");
 
             var instance = Object.Instantiate(prefab, _parent, false);
             Container.InjectGameObject(instance);

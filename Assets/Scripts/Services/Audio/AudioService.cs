@@ -39,14 +39,14 @@ namespace EmpireAtWar.Services.Audio
         private float _lastTimePlaySfx;
         
        
-        public AudioService(ISceneService sceneService, IAssetService repository, IGameModelObserver gameModelObserver)
+        public AudioService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver)
         {
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;
-            _musicAudioModel = repository.Load<MusicAudioData>(nameof(MusicAudioData));
-            _backgroundSource = Object.Instantiate(repository.LoadComponent<AudioSource>(SOURCE_PATH));
+            _musicAudioModel = assetService.Load<MusicAudioData>(nameof(MusicAudioData));
+            _backgroundSource = Object.Instantiate(assetService.LoadComponent<AudioSource>(SOURCE_PATH));
             _musicVolume = _backgroundSource.volume;
-            _dialogSource = Object.Instantiate(repository.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
+            _dialogSource = Object.Instantiate(assetService.LoadComponent<AudioSource>(DIALOG_SOURCE_PATH));
             Object.DontDestroyOnLoad(_backgroundSource);
             Object.DontDestroyOnLoad(_dialogSource);
             _random = new Random();

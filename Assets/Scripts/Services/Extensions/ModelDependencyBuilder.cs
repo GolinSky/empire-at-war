@@ -11,14 +11,14 @@ namespace EmpireAtWar.Extentions
         {
         }
 
-        public DiContainer BindFromNewScriptable<TModel>(IAssetService repository,  Action onCompleted = null)
+        public DiContainer BindFromNewScriptable<TModel>(IAssetService assetService,  Action onCompleted = null)
             where TModel : Data
         {
             string pathToFile = ConstructName<TModel>();
             
             Container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(pathToFile))
+                .FromNewScriptableObject(assetService.Load<TModel>(pathToFile))
                 .AsSingle()
                 .OnInstantiated((context, o) =>
                 {
@@ -27,14 +27,14 @@ namespace EmpireAtWar.Extentions
             return Container;
         }
 
-        public DiContainer BindFromNewScriptable<TModel>(IAssetService repository, object id, Action onCompleted = null)
+        public DiContainer BindFromNewScriptable<TModel>(IAssetService assetService, object id, Action onCompleted = null)
             where TModel : Data
         {
             string pathToFile = ConstructName<TModel>();
             
             Container
                 .BindInterfacesAndSelfTo<TModel>()
-                .FromNewScriptableObject(repository.Load<TModel>(pathToFile))
+                .FromNewScriptableObject(assetService.Load<TModel>(pathToFile))
                 .AsSingle()
                 .WithConcreteId(id)
                 .OnInstantiated((context, o) =>

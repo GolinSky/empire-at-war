@@ -38,7 +38,7 @@ namespace EmpireAtWar.Extentions
         
         public static DiContainer BindModel<TModel>(
             this DiContainer container,
-            IAssetService repository,
+            IAssetService assetService,
             string prefix = null,
             string postfix = null)
          where TModel: Data
@@ -46,19 +46,19 @@ namespace EmpireAtWar.Extentions
             ModelDependencyBuilder
                 .ConstructBuilder(container)
                 .AppendToPath(prefix, postfix)
-                .BindFromNewScriptable<TModel>(repository);
+                .BindFromNewScriptable<TModel>(assetService);
             return container;
         }
         
         public static DiContainer BindScriptableObject<T>(
             this DiContainer container,
-            IAssetService repository,
+            IAssetService assetService,
             string path = null)
             where T: ScriptableObject
         {
             container
                 .BindInterfacesAndSelfTo<T>()
-                .FromNewScriptableObject(repository.Load<T>(path ?? ConstructName<T>()))
+                .FromNewScriptableObject(assetService.Load<T>(path ?? ConstructName<T>()))
                 .AsSingle();
             return container;
         }

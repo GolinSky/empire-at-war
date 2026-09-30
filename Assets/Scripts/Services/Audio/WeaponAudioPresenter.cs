@@ -28,11 +28,11 @@ namespace EmpireAtWar.Services.Audio
         private bool _paused;
         private bool _isDisposed;
 
-        public WeaponAudioPresenter(IWeaponAudioView view, ICameraService camera, IAssetService repository)
+        public WeaponAudioPresenter(IWeaponAudioView view, ICameraService camera, IAssetService assetService)
         {
             _view = view;
             _camera = camera;
-            _data = repository.Load<AudioShipData>(nameof(AudioShipData));
+            _data = assetService.Load<AudioShipData>(nameof(AudioShipData));
             _budget = new WeaponAudioBudget(view.Capacity);
             _emitters = new Transform[view.Capacity];
             _sounds = new WeaponAudioProfile[view.Capacity];
