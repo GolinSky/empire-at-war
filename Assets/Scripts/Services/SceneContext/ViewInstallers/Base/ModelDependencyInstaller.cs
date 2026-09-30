@@ -17,7 +17,7 @@ namespace EmpireAtWar
             ModelDependency[] viewModels = _view.ModelDependencies;
             foreach (ModelDependency viewModel in viewModels)
             {
-                Container.Inject(viewModel);
+                Container.QueueForInject(viewModel);
                 Container
                     .BindInterfacesTo(viewModel.GetType())
                     .FromComponentOn(viewModel.gameObject)
