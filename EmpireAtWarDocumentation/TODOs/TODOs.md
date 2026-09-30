@@ -8,6 +8,25 @@
   - **Plan**: [[TODOs/Features/Ship_Abilities_Plan|Ship Abilities Plan]]
   - **Remaining**: implementation review and acceptance evidence; commit `dc869bbb` recorded review as needed.
 
+- [ ] **Implement UI tooltip system**
+  - **Plan**: [[TODOs/Features/Tooltip_System_Plan|Tooltip System Plan]]
+  - **Research**: [[TODOs/Features/Tooltip_System_Plan - Research|Tooltip coverage catalog and codebase findings]]
+  - **Rule**: only `ITooltipService` shows or hides tooltips; views → presenter → service; `UiController` is not bound to the service.
+  - **Remaining**: Phases 0–8; nothing implemented yet.
+
+- [ ] **Close settings audit follow-ups** (Wave 1)
+  - **Plan**: [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; parent [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
+
+### Bugs
+
+- [ ] **Fix scene-teardown pool errors and material leaks** (Wave 1)
+  - **Plan**: [[TODOs/Bugs/Scene_Teardown_And_Material_Leaks|Scene Teardown and Material Leaks]]
+  - **Status**: steps 1–5 in `38f3e681`; compile clean. **Remaining**: manual skirmish exit check and placement material-count check.
+
+- [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1)
+  - **Plan**: [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
+  - **Status**: code + tests in `32c5f1a1`. **Remaining**: clean compile (blocked by other Wave 1 WIP) and manual skirmish check.
+
 ### Optimization
 
 - [ ] **Optimize battle attacks and projectile reuse**
@@ -38,9 +57,28 @@
   - **Plan**: [[TODOs/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan|Ship Lit Autodesk Material Conversion Plan]]
   - **Blocked**: recorded user visual approval of `Logs/ShipLitConversion/2026-09-28/review.html`.
 
-- [ ] **Resolve codebase audit follow-up findings**
-  - **Plan**: [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|Codebase audit overview]]
-  - **Remaining**: [[TODOs/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30|Current re-audit findings]]; original 17 fixes are implemented.
+- [ ] **Coordinate audit remediation (parallel plans)**
+  - **Plan**: [[TODOs/Refactoring/Audit_Remediation_Coordination|Audit Remediation Coordination]]: waves, file ownership, Unity lane.
+  - **Remaining**: Wave 1 (6 plans) → Wave 2 (2 plans). Input system deferred.
+
+- [ ] **Deduplicate capture/reinforcement squadron tally** (Wave 1)
+  - **Plan**: [[TODOs/Refactoring/Capture_Reinforcement_Tally_Dedup|Capture Reinforcement Tally Dedup]]
+  - **Remaining**: code + tests committed; manual capture/zone playtest pending.
+
+- [ ] **Type unit request / reinforcement identity keys** (Wave 1)
+  - **Plan**: [[TODOs/Refactoring/Unit_Request_Identity_Keys|Unit Request Identity Keys]]
+  - **Remaining**: code committed (`cd7b6edb`), compiles clean; manual build-queue + all four reinforcement kinds playtest pending.
+
+- [ ] **Remove runtime component lookups** (Wave 1)
+  - **Plan**: [[TODOs/Refactoring/Explicit_Component_Binding|Explicit Component Binding]]
+
+- [ ] **Split multi-type files and fix placement** (Wave 2)
+  - **Plan**: [[TODOs/Refactoring/Type_File_Split_And_Placement|Type File Split and Placement]]
+  - **Blocked**: Wave 1 merge; user decision on interface+impl pairs.
+
+- [ ] **Apply injection and guard conventions** (Wave 2)
+  - **Plan**: [[TODOs/Refactoring/Injection_And_Guard_Conventions|Injection and Guard Conventions]]
+  - **Blocked**: Wave 1 merge; user decision on MonoBehaviour `[Inject]` style.
 
 ### Tooling
 
@@ -63,6 +101,11 @@
   - **Verification**: live order APIs, action-prefab bindings, and acceptance-test sources checked; no tests or Play Mode run in this review.
 
 ### Refactoring
+
+- [x] **Resolve codebase audit 2026-09-27**
+  - **Plan**: [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|Codebase audit overview]]
+  - **Completed**: 2026-09-30. The original 17 fixes are implemented. The follow-up findings from [[Done/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30|the re-audit]] are superseded by the Audit Remediation plans.
+  - **Verification**: live-source checks recorded in notes 09–11; no tests run in the re-audit passes.
 
 - [x] **Fix Project Organization & Asset Naming Defects**
   - **Plan**: [[Done/Refactoring/Project_Organization_Remediation_Plan|Project Organization & Asset Naming Remediation Plan]]

@@ -13,9 +13,9 @@ category: Refactoring
 
 > [!info] Implementation update
 > D1, optional D2, and D3 implemented. The follow-up request authorized the two capture-system call-site changes. ShipPopulation.CountShips shares containment/faction counting; the other agent's weighted-squadron behavior remains in each system.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## D1 — Formation-coordinate adapters are repeated
 

@@ -13,12 +13,12 @@ category: Refactoring
 
 > [!info] Implementation update
 > C3 and C4 implemented: target-selection batch and buffers extracted; owner checks/event ordering retained; fog projection unified, component lookups removed, sharedMesh used and serialized renderer bound.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 > [!warning] Follow-up 2026-09-28
-> `FogVisibilityGridModel`/`FogVisibilityModel` sit loose in the `Scripts/Entities` root. CombatAttackCoordinator is still 506 lines. See [[TODOs/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
+> `FogVisibilityGridModel`/`FogVisibilityModel` sit loose in the `Scripts/Entities` root. CombatAttackCoordinator is still 506 lines. See [[Done/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
 
 ## C3 — CombatAttackCoordinator owns two batching pipelines plus telemetry
 

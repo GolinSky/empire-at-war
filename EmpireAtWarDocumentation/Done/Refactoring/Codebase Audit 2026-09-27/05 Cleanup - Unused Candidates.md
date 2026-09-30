@@ -13,9 +13,9 @@ category: Refactoring
 
 > [!info] Implementation update
 > L1 and L2 implemented: CollectionUtility deleted through AssetDatabase; unused custom-path branch and cached name removed.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## L1 — CollectionUtility has no located callers
 

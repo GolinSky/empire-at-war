@@ -13,12 +13,12 @@ category: Refactoring
 
 > [!info] Implementation update
 > L3 and L4 implemented: SelectionType relocated/namespace updated, empty NavigationService removed, vendor code moved with metadata/license material, listed types split.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 > [!warning] Follow-up 2026-09-28
-> L3 left `Components/Utils/Scenes/` empty, with its `.meta` still tracked. L4 covered only the files it listed; 79 files still declare more than one top-level type. See [[TODOs/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
+> L3 left `Components/Utils/Scenes/` empty, with its `.meta` still tracked. L4 covered only the files it listed; 79 files still declare more than one top-level type. See [[Done/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|the follow-up sweep]].
 
 ## L3 — Domain placement and vendor ownership are unclear
 

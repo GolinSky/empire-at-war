@@ -9,7 +9,7 @@ category: Refactoring
 
 # Implementation results — 27 September 2026
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Status of all 17 entries]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Status of all 17 entries]]
 
 ## Outcome
 

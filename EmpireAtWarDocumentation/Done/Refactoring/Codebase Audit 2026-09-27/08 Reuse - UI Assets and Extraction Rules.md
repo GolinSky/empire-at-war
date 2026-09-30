@@ -13,9 +13,9 @@ category: Refactoring
 
 > [!info] Implementation update
 > R3 implemented using injected IShipIconProvider backed by existing ShipUiData; selection model and observer no longer expose Sprite lookup.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## R3 — ShipUiModel doubles as an icon repository
 

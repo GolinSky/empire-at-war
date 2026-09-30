@@ -5,11 +5,17 @@ tags:
   - index
 created: 2026-09-27
 updated: 2026-09-30
-status: in-progress
+status: done
 category: Refactoring
+completed: 2026-09-30
 ---
 
 # Codebase audit — implementation status
+
+> [!success] Closed 2026-09-30
+> - Outcome: the original 17 fixes are implemented (see 09). The open follow-up findings (notes 10–11) are superseded by the per-group plans in [[TODOs/Refactoring/Audit_Remediation_Coordination|Audit Remediation Coordination]].
+> - Input findings (IN1, IN5–IN8) are deferred at the user's request. IN2–IN4 were closed by settings commit `5ae00d3b` (not re-verified).
+> - Verification: the source checks are recorded in 09–11. No tests were run in the re-audit passes.
 
 ## Lifecycle Review
 
@@ -19,15 +25,15 @@ category: Refactoring
 - The attached correction plan has been implemented for **all 17 entries**.
 - The follow-up request authorized completing D3 and D4, focused tests, and committing this task's changes.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|Read implementation results and verification]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|Read implementation results and verification]]
 
 > [!warning] Follow-up sweep 2026-09-28
 > All 17 entries were re-verified as present at f3fdf3d4. Two leftovers remain: an empty `Utils/Scenes` folder (from L3) and the fog models loose in the `Entities` root (from C4). The same issue classes still exist elsewhere: 79 multi-type files, silent null returns, property injection in services, a string-keyed pipeline dictionary, and hand-rolled owner counting in BattleVictoryService.
-> [[TODOs/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|Read the follow-up sweep]]
+> [[Done/Refactoring/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|Read the follow-up sweep]]
 
 > [!warning] Re-audit 2026-09-30 (current)
 > Covers the input refactor plus 49 commits. P2: marquee stuck on input lock, pool teardown on destroyed views, material instance leaks, silent null returns.
-> [[TODOs/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30|Read the re-audit]]
+> [[Done/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30|Read the re-audit]]
 
 | ID | Status | Result |
 |---|---|---|
@@ -62,10 +68,10 @@ category: Refactoring
 
 | Category | Note 1 | Note 2 |
 |---|---|---|
-| Complexity | [[TODOs/Refactoring/Codebase Audit 2026-09-27/01 Complexity - State and Input\|State/input]] | [[TODOs/Refactoring/Codebase Audit 2026-09-27/02 Complexity - Combat and Fog\|Combat/fog]] |
-| Duplication | [[TODOs/Refactoring/Codebase Audit 2026-09-27/03 Duplication - Coordinates and Population\|Coordinates/population]] | [[TODOs/Refactoring/Codebase Audit 2026-09-27/04 Duplication - Markers Keys and Tooling\|Markers/keys/tooling]] |
-| Cleanup | [[TODOs/Refactoring/Codebase Audit 2026-09-27/05 Cleanup - Unused Candidates\|Unused candidates]] | [[TODOs/Refactoring/Codebase Audit 2026-09-27/06 Structure - Placement and Type Files\|Placement/type files]] |
-| Reuse | [[TODOs/Refactoring/Codebase Audit 2026-09-27/07 Reuse - Combat and Radar Boundaries\|Combat/radar]] | [[TODOs/Refactoring/Codebase Audit 2026-09-27/08 Reuse - UI Assets and Extraction Rules\|UI/extraction rules]] |
+| Complexity | [[Done/Refactoring/Codebase Audit 2026-09-27/01 Complexity - State and Input\|State/input]] | [[Done/Refactoring/Codebase Audit 2026-09-27/02 Complexity - Combat and Fog\|Combat/fog]] |
+| Duplication | [[Done/Refactoring/Codebase Audit 2026-09-27/03 Duplication - Coordinates and Population\|Coordinates/population]] | [[Done/Refactoring/Codebase Audit 2026-09-27/04 Duplication - Markers Keys and Tooling\|Markers/keys/tooling]] |
+| Cleanup | [[Done/Refactoring/Codebase Audit 2026-09-27/05 Cleanup - Unused Candidates\|Unused candidates]] | [[Done/Refactoring/Codebase Audit 2026-09-27/06 Structure - Placement and Type Files\|Placement/type files]] |
+| Reuse | [[Done/Refactoring/Codebase Audit 2026-09-27/07 Reuse - Combat and Radar Boundaries\|Combat/radar]] | [[Done/Refactoring/Codebase Audit 2026-09-27/08 Reuse - UI Assets and Extraction Rules\|UI/extraction rules]] |
 
 ## Scope
 
