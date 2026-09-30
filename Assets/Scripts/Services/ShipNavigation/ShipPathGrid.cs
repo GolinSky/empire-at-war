@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.Timing;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -116,6 +117,14 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool TryGetNearestReachable(Vector3 position, float height, out Vector3 nearest)
         {
             EnsureFlood();
+            using (BattleProfilerMarkers.NavigationNearestReachable.Auto())
+            {
+                return TryFindNearestReachableCell(position, height, out nearest);
+            }
+        }
+
+        private bool TryFindNearestReachableCell(Vector3 position, float height, out Vector3 nearest)
+        {
             float2 target = new float2(position.x, position.z);
             int best = -1;
             float bestDistance = float.PositiveInfinity;
@@ -171,6 +180,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                 return;
             }
 
+            using (BattleProfilerMarkers.NavigationFlood.Auto())
+            {
+                Flood();
+            }
+        }
+
+        private void Flood()
+        {
             int cellCount = _cells.Count;
             _blocked = new NativeArray<byte>(
                 cellCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);

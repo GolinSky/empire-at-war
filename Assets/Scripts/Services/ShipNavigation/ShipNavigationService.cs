@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipNavigation
@@ -120,6 +121,24 @@ namespace EmpireAtWar.Services.ShipNavigation
                 throw new ArgumentNullException(nameof(obstacleContacts));
             }
 
+            using (BattleProfilerMarkers.NavigationPlan.Auto())
+            {
+                return PlanRoute(agent, forward, requestedDestination, obstacleContacts,
+                    heightTolerance, clearance, mapRange, preserveCourse, reserveAsPending);
+            }
+        }
+
+        private ShipNavigationPlan PlanRoute(
+            IShipNavigationAgent agent,
+            Vector3 forward,
+            Vector3 requestedDestination,
+            IReadOnlyList<RadarContact> obstacleContacts,
+            float heightTolerance,
+            float clearance,
+            Vector2Range mapRange,
+            bool preserveCourse,
+            bool reserveAsPending)
+        {
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts);
@@ -203,6 +222,24 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector2Range mapRange,
             out ShipRoutePlan routePlan)
         {
+            using (BattleProfilerMarkers.NavigationCandidates.Auto())
+            {
+                return TryPlanNearCandidates(agent, registrationId, forward, center,
+                    pathGrid, heightTolerance, clearance, mapRange, out routePlan);
+            }
+        }
+
+        private bool TryPlanNearCandidates(
+            IShipNavigationAgent agent,
+            int registrationId,
+            Vector3 forward,
+            Vector3 center,
+            ShipPathGrid pathGrid,
+            float heightTolerance,
+            float clearance,
+            Vector2Range mapRange,
+            out ShipRoutePlan routePlan)
+        {
             Vector3 origin = agent.NavigationPosition;
             float candidateSpacing = agent.NavigationRadius * 2f;
             bool isFound = false;
@@ -249,15 +286,20 @@ namespace EmpireAtWar.Services.ShipNavigation
                     continue;
                 }
 
-                ShipRoutePlan candidatePlan = ShipRoutePlanner.Build(
-                    agent,
-                    forward,
-                    destination,
-                    _mapObstacleContacts,
-                    pathGrid,
-                    _waypoints,
-                    heightTolerance,
-                    clearance);
+                ShipRoutePlan candidatePlan;
+                using (BattleProfilerMarkers.NavigationRouteBuild.Auto())
+                {
+                    candidatePlan = ShipRoutePlanner.Build(
+                        agent,
+                        forward,
+                        destination,
+                        _mapObstacleContacts,
+                        pathGrid,
+                        _waypoints,
+                        heightTolerance,
+                        clearance);
+                }
+
                 if (!candidatePlan.IsStationary &&
                     (!isFound || candidatePlan.Route.Length < routePlan.Route.Length))
                 {

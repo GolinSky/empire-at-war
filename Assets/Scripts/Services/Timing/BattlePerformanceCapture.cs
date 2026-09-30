@@ -45,7 +45,12 @@ namespace EmpireAtWar.Services.Timing
         private const int DUE_BATCH_SCHEDULE = 29;
         private const int DUE_BATCH_COMPLETE = 30;
         private const int DUE_BATCH_APPLY = 31;
-        private const int METRIC_COUNT = 32;
+        private const int NAVIGATION_PLAN = 32;
+        private const int NAVIGATION_CANDIDATES = 33;
+        private const int NAVIGATION_ROUTE_BUILD = 34;
+        private const int NAVIGATION_FLOOD = 35;
+        private const int NAVIGATION_NEAREST_REACHABLE = 36;
+        private const int METRIC_COUNT = 37;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
         private static readonly string[] _metricNames =
@@ -53,7 +58,8 @@ namespace EmpireAtWar.Services.Timing
             "frame_duration_ns", "main_thread_ns", "render_thread_ns", "gpu_frame_ns", "gc_allocated_bytes", "draw_calls", "setpass_calls", "batches", "triangles",
             "ship_tick_ns", "weapon_tick_ns", "weapon_try_fire_ns", "projectile_get_or_create_ns", "projectile_instantiate_ns", "projectile_turret_update_ns", "projectile_laser_update_ns", "radar_scan_ns",
             "target_batch_ns", "target_batch_capture_ns", "target_batch_prepare_ns", "target_batch_serial_ns", "target_batch_job_ns", "target_batch_schedule_ns", "target_batch_complete_ns", "target_batch_apply_ns",
-            "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns"
+            "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns",
+            "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns"
         };
 
         private static readonly string[] _markerNames =
@@ -80,7 +86,12 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.DUE_BATCH_JOB,
             BattleProfilerMarkers.DUE_BATCH_SCHEDULE,
             BattleProfilerMarkers.DUE_BATCH_COMPLETE,
-            BattleProfilerMarkers.DUE_BATCH_APPLY
+            BattleProfilerMarkers.DUE_BATCH_APPLY,
+            BattleProfilerMarkers.NAVIGATION_PLAN,
+            BattleProfilerMarkers.NAVIGATION_CANDIDATES,
+            BattleProfilerMarkers.NAVIGATION_ROUTE_BUILD,
+            BattleProfilerMarkers.NAVIGATION_FLOOD,
+            BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE
         };
 
         private static readonly string[] _workloadNames =
@@ -356,6 +367,11 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(DUE_BATCH_SCHEDULE, BattleProfilerMarkers.DueBatchSchedule);
             StartMarkerRecorder(DUE_BATCH_COMPLETE, BattleProfilerMarkers.DueBatchComplete);
             StartMarkerRecorder(DUE_BATCH_APPLY, BattleProfilerMarkers.DueBatchApply);
+            StartMarkerRecorder(NAVIGATION_PLAN, BattleProfilerMarkers.NavigationPlan);
+            StartMarkerRecorder(NAVIGATION_CANDIDATES, BattleProfilerMarkers.NavigationCandidates);
+            StartMarkerRecorder(NAVIGATION_ROUTE_BUILD, BattleProfilerMarkers.NavigationRouteBuild);
+            StartMarkerRecorder(NAVIGATION_FLOOD, BattleProfilerMarkers.NavigationFlood);
+            StartMarkerRecorder(NAVIGATION_NEAREST_REACHABLE, BattleProfilerMarkers.NavigationNearestReachable);
         }
 
         private void StartRecorder(int index, ProfilerCategory category, string name, ProfilerRecorderOptions options)

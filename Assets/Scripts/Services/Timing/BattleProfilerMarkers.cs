@@ -27,6 +27,11 @@ namespace EmpireAtWar.Services.Timing
         public const string PROJECTILE_TURRET_UPDATE = "Battle.Projectile.TurretUpdate";
         public const string PROJECTILE_LASER_UPDATE = "Battle.Projectile.LaserUpdate";
         public const string RADAR_SCAN = "Battle.Radar.Scan";
+        public const string NAVIGATION_PLAN = "Battle.Navigation.Plan";
+        public const string NAVIGATION_CANDIDATES = "Battle.Navigation.Candidates";
+        public const string NAVIGATION_ROUTE_BUILD = "Battle.Navigation.RouteBuild";
+        public const string NAVIGATION_FLOOD = "Battle.Navigation.Flood";
+        public const string NAVIGATION_NEAREST_REACHABLE = "Battle.Navigation.NearestReachable";
 
         public static readonly ProfilerMarker ShipTick = new ProfilerMarker(SHIP_TICK);
         public static readonly ProfilerMarker WeaponTick = new ProfilerMarker(WEAPON_TICK);
@@ -51,5 +56,11 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker ProjectileTurretUpdate = new ProfilerMarker(PROJECTILE_TURRET_UPDATE);
         public static readonly ProfilerMarker ProjectileLaserUpdate = new ProfilerMarker(PROJECTILE_LASER_UPDATE);
         public static readonly ProfilerMarker RadarScan = new ProfilerMarker(RADAR_SCAN);
+        public static readonly ProfilerMarker NavigationPlan = new ProfilerMarker(NAVIGATION_PLAN);
+        public static readonly ProfilerMarker NavigationCandidates = new ProfilerMarker(NAVIGATION_CANDIDATES);
+        public static readonly ProfilerMarker NavigationRouteBuild = new ProfilerMarker(NAVIGATION_ROUTE_BUILD);
+        public static readonly ProfilerMarker NavigationFlood = new ProfilerMarker(NAVIGATION_FLOOD);
+        public static readonly ProfilerMarker NavigationNearestReachable =
+            new ProfilerMarker(NAVIGATION_NEAREST_REACHABLE);
     }
 }
