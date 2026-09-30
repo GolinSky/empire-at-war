@@ -57,7 +57,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public float ConstructionProgress => _model.ConstructionProgress;
         public bool IsCapturable => _model.IsCapturable;
         public bool CanStartConstruction => _model.CanStartConstruction;
-        public bool CanPlayerBuild => _localPlayer.IsLocal(_model.Owner) && _model.CanStartConstruction;
+        public bool CanPlayerBuild => _localPlayer.IsFriendly(_model.Owner) && _model.CanStartConstruction;
         public SiteFacilityType FacilityType => _model.FacilityType;
         public Vector3 Center => _view.Center;
         public Vector3 FacilityPosition => _view.FacilityPosition;
@@ -123,7 +123,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void SetVisibility(bool isVisible, bool isHovered, Predicate<float> canPlayerAfford)
         {
             IsRevealed = isVisible;
-            // The facility choice only appears after the player selects their empty site.
+            // The facility choice only appears after the player selects a friendly empty site.
             bool showBuildOptions = isVisible && _isSelected && CanPlayerBuild;
             bool isActive = _model.CapturingPlayer != PlayerId.None || _model.IsContested ||
                 _model.State == CaptureSiteState.Constructing;
@@ -154,18 +154,18 @@ namespace EmpireAtWar.Entities.CaptureSites
                 {
                     SiteFacilityCost cost = _data.GetCost(type);
                     return new TooltipContent(cost.Name,
-                        $"Construct {cost.Name} at this owned capture site.", stats: new[]
+                        $"Construct {cost.Name} at this friendly capture site.", stats: new[]
                         {
                             new TooltipStat("Cost (credits)", cost.Price),
                             new TooltipStat("Build time (s)", cost.BuildTime)
                         }, requirements: new[]
                         {
-                            new TooltipRequirement("Owned empty site", CanPlayerBuild),
+                            new TooltipRequirement("Friendly empty site", CanPlayerBuild),
                             new TooltipRequirement($"{cost.Price:0} credits", _canAfford(cost.Price))
                         });
                 }
                 return new TooltipContent("Capture site",
-                    "Move units into the ring to capture it. Select an owned empty site to choose a facility.",
+                    "Move units into the ring to capture it. Select a friendly empty site to choose a facility.",
                     stats: new[] { new TooltipStat("Capture (%)", CaptureProgress * 100f),
                         new TooltipStat("Construction (%)", ConstructionProgress * 100f) },
                     status: $"Owner: {Owner} · {State} · {FacilityType}");
