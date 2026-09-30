@@ -130,7 +130,7 @@ namespace EmpireAtWar.Editor
                 return new Dictionary<string, object>
                 {
                     ["name"] = unityObject.name,
-                    ["instance_id"] = unityObject.GetInstanceID()
+                    ["instance_id"] = unityObject.GetEntityId().ToString()
                 };
             }
 

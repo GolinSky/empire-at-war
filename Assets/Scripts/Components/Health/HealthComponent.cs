@@ -151,7 +151,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
         public bool Equal(IHealthModelObserver modelObserver)
         {
-            return this == modelObserver;
+            return this == (UnityEngine.Object)modelObserver;
         }
 
         public void Tick()
