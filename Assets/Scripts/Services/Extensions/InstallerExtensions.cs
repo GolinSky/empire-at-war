@@ -1,12 +1,54 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
+using Zenject.Internal;
 
 namespace EmpireAtWar.Extentions
 {
     public static class InstallerExtensions
     {
+        public static TComponent InstantiatePrefabForInstall<TComponent>(
+            this DiContainer container, TComponent prefab, Transform parent, GameObjectContext context)
+            where TComponent : Component
+        {
+            var inactiveParent = new GameObject("InstallerPrefabParent");
+            inactiveParent.SetActive(false);
+
+            TComponent component;
+            try
+            {
+                component = UnityEngine.Object.Instantiate(prefab, inactiveParent.transform, false);
+                component.gameObject.SetActive(false);
+                component.transform.SetParent(parent, false);
+            }
+            finally
+            {
+                if (Application.isPlaying)
+                    UnityEngine.Object.Destroy(inactiveParent);
+                else
+                    UnityEngine.Object.DestroyImmediate(inactiveParent);
+            }
+
+            ZenUtilInternal.AddStateMachineBehaviourAutoInjectersUnderGameObject(component.gameObject);
+            var behaviours = new List<MonoBehaviour>();
+            ZenUtilInternal.GetInjectableMonoBehavioursUnderGameObject(component.gameObject, behaviours);
+            foreach (MonoBehaviour behaviour in behaviours)
+                container.QueueForInject(behaviour);
+
+            if (prefab.gameObject.activeSelf && !container.IsValidating)
+                context.PostResolve += Activate;
+
+            return component;
+
+            void Activate()
+            {
+                context.PostResolve -= Activate;
+                component.gameObject.SetActive(true);
+            }
+        }
+
         //todo: rename it 
         public static DiContainer BindInterfacesExt<TEntity>(this DiContainer container)
         {

@@ -17,7 +17,7 @@ namespace EmpireAtWar
         {
             foreach (ViewComponent component in _view.ViewComponents)
             {
-                Container.Inject(component);
+                Container.QueueForInject(component);
                 Container
                     .BindInterfacesTo(component.GetType())
                     .FromComponentOn(component.gameObject)

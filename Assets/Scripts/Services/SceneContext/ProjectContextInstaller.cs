@@ -10,7 +10,6 @@ using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Timing;
 using Utilities.ScriptUtils.Time;
-using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 
@@ -20,8 +19,6 @@ namespace EmpireAtWar.SceneContext
     {
         [SerializeField] private CoroutineService coroutineService;
         
-        private IAssetService _assetService;
-    
         public override void InstallBindings()
         {
             Container
@@ -31,15 +28,14 @@ namespace EmpireAtWar.SceneContext
                 .AsSingle();
             
             
-            Container.BindInterfacesExt<AddressableAssetService>();
-        
-            _assetService = Container.Resolve<IAssetService>();
+            var assetService = new AddressableAssetService();
+            Container.BindInterfacesAndSelfTo<AddressableAssetService>().FromInstance(assetService).AsSingle();
         
             ModelDependencyBuilder
                 .ConstructBuilder(Container)
-                .BindFromNewScriptable<GameData>(_assetService); //todo: change it
+                .BindFromNewScriptable<GameData>(assetService); //todo: change it
 
-            Container.BindModel<SceneData>(_assetService);
+            Container.BindModel<SceneData>(assetService);
 
             Container.Bind<TimerPoolService>().AsSingle();
 

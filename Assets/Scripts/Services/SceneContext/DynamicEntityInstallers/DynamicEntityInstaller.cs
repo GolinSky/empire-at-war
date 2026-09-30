@@ -13,6 +13,7 @@ namespace EmpireAtWar
         private const string VIEW_POSTFIX = "View";
 
         private Vector3 _startPosition;
+        private GameObjectContext _context;
 
         protected IAssetService Repository { get; private set; }
 
@@ -20,10 +21,11 @@ namespace EmpireAtWar
         protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
 
         [Inject]
-        public void Constructor(IAssetService assetService, Vector3 startPosition)
+        public void Constructor(IAssetService assetService, Vector3 startPosition, GameObjectContext context)
         {
             Repository = assetService;
             _startPosition = startPosition;
+            _context = context;
         }
 
         public sealed override void InstallBindings()
@@ -35,17 +37,14 @@ namespace EmpireAtWar
 
             InstallFeatures(data);
 
-            Container.BindInterfacesAndSelfTo<TEntity>()
-                .FromComponentInNewPrefab(Repository.Load<GameObject>(PrefabPath))
-                .UnderTransform(transform)
-                .AsSingle();
+            TEntity entity = Container.InstantiatePrefabForInstall(
+                Repository.LoadComponent<TEntity>(PrefabPath), transform, _context);
+            Container.BindInterfacesAndSelfTo<TEntity>().FromInstance(entity).AsSingle();
             Container.Bind<Transform>()
                 .WithId(EntityBindType.ViewTransform)
-                .FromResolveGetter<TEntity>(entity => entity.transform)
+                .FromResolveGetter<TEntity>(view => view.transform)
                 .AsCached();
 
-            // Spawned during install on purpose: FromComponentsInHierarchy bindings need the view in the hierarchy.
-            TEntity entity = Container.Resolve<TEntity>();
             Container.Install<EntityInstaller>(new object[] { entity });
         }
 
