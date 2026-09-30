@@ -67,7 +67,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private ReinforcementZoneView[] _zoneViews;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
-        private CaptureTallyBuilder _tally;
+        private CaptureStrengthBuilder _tally;
 
         public event Action OwnershipChanged;
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _zoneViews = zoneViews;
             _roster = roster;
             _localPlayer = localPlayer;
-            _tally = new CaptureTallyBuilder(roster);
+            _tally = new CaptureStrengthBuilder(roster);
         }
 
         public void Initialize()

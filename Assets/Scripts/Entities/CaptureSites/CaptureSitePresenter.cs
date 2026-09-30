@@ -70,7 +70,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         /// <returns>True when the site changed owner.</returns>
-        public bool TickCapture(float deltaTime, CaptureTally tally)
+        public bool TickCapture(float deltaTime, CaptureStrength tally)
         {
             return _model.TickCapture(deltaTime, tally);
         }

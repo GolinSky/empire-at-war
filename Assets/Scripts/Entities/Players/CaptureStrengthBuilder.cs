@@ -3,13 +3,13 @@ using System.Collections.Generic;
 namespace EmpireAtWar.Models.Players
 {
     /// <summary>Accumulates unit strength inside one capture circle; reuse it with <see cref="Clear"/> each tick.</summary>
-    public sealed class CaptureTallyBuilder
+    public sealed class CaptureStrengthBuilder
     {
         private readonly IPlayerRoster _roster;
         private readonly float[] _playerStrengths = new float[MatchRules.MAX_PLAYERS];
         private readonly Dictionary<TeamId, float> _teamStrengths = new Dictionary<TeamId, float>();
 
-        public CaptureTallyBuilder(IPlayerRoster roster)
+        public CaptureStrengthBuilder(IPlayerRoster roster)
         {
             _roster = roster;
         }
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Models.Players
             _playerStrengths[owner.Index] += strength;
         }
 
-        public CaptureTally Build()
+        public CaptureStrength Build()
         {
             _teamStrengths.Clear();
             foreach (PlayerSlot slot in _roster.Players)
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Models.Players
                 }
             }
 
-            return new CaptureTally(
+            return new CaptureStrength(
                 FindStrongestPlayer(leadingTeam),
                 leadingStrength - runnerUpStrength,
                 _teamStrengths.Count);

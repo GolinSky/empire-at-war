@@ -40,9 +40,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>Tally of a circle holding the given strength per player.</summary>
-        public static CaptureTally Tally(IPlayerRoster roster, params (PlayerId Player, float Strength)[] units)
+        public static CaptureStrength Tally(IPlayerRoster roster, params (PlayerId Player, float Strength)[] units)
         {
-            CaptureTallyBuilder builder = new CaptureTallyBuilder(roster);
+            CaptureStrengthBuilder builder = new CaptureStrengthBuilder(roster);
             foreach ((PlayerId player, float strength) in units)
             {
                 builder.Add(player, strength);
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>Duel tally with human strength first and enemy strength second.</summary>
-        public static CaptureTally DuelTally(IPlayerRoster roster, float humanStrength, float enemyStrength)
+        public static CaptureStrength DuelTally(IPlayerRoster roster, float humanStrength, float enemyStrength)
         {
             return Tally(roster, (Human, humanStrength), (Enemy, enemyStrength));
         }

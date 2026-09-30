@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerRegistry _playerRegistry;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
-        private CaptureTallyBuilder _tally;
+        private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
         private Predicate<float> _canPlayerAfford;
 
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _playerRegistry = playerRegistry;
             _roster = roster;
             _localPlayer = localPlayer;
-            _tally = new CaptureTallyBuilder(roster);
+            _captureStrengthBuilder = new CaptureStrengthBuilder(roster);
         }
 
         public IReadOnlyList<CaptureSitePresenter> Sites => _sites;
@@ -113,7 +113,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
             foreach (CaptureSitePresenter site in _sites)
             {
-                site.TickCapture(deltaTime, TallySite(site));
+                site.TickCapture(deltaTime, CalculateCaptureStrength(site));
                 if (site.TickConstruction(deltaTime))
                 {
                     GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition, site.ReleaseFacility);
@@ -334,13 +334,13 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        private CaptureTally TallySite(CaptureSitePresenter site)
+        private CaptureStrength CalculateCaptureStrength(CaptureSitePresenter site)
         {
             Func<Vector3, bool> contains = position => site.Contains(position);
-            _tally.Clear();
-            _shipService.AddShipStrength(contains, _tally);
-            _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
-            return _tally.Build();
+            _captureStrengthBuilder.Clear();
+            _shipService.AddShipStrength(contains, _captureStrengthBuilder);
+            _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
+            return _captureStrengthBuilder.Build();
         }
 
         private bool HasHostileUnits(CaptureSitePresenter site, PlayerId owner)
