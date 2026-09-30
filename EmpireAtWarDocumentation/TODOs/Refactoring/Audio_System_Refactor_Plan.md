@@ -149,6 +149,7 @@ public interface IShipSfxService
 - Voice volume 0.5; SFX duck gain 0.4 (≈−7.96 dB). Music and voice set `ignoreListenerPause=true` at runtime; one scene service handles pause.
 - `Ship` forwards weapon/ability events and ticks audio requests. Movement is read through `IShipEngineAudioObserver`; components implement `IMonoComponent` without a dummy model.
 - `ShipSfxService` is 257 lines (exceeds 200). Kept as the single admission/mixing owner per this plan; possible future split: source playback/lifetime adapter and admission policy, only after approval.
+- Skirmish fog binding includes interfaces and the concrete service, preserving the audio dependency alongside the concurrent fog-interface refactor.
 - Obsolete audio assets and script types removed through Unity; deleted Addressables entries/mappings removed without changing group/folder structure. Changed assets saved and selectively reserialized.
 
 ## TODO / Open
