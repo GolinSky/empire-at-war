@@ -17,7 +17,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     public static class BattleAsteroidAssetBuilder
     {
         private const string CANNON_MODEL_PATH =
-            "Assets/Art/Models/Cannons/heavy-turbolaser-cannon-v1/Heavy Turbolaser Cannon V1.fbx";
+            "Assets/Art/Models/Cannons/HeavyTurbolaserCannon/HeavyTurbolaserCannon.fbx";
         private const string SOURCE_VIEW_PATH = "Assets/Prefabs/Models/DefendStation/DefendPlatformView.prefab";
         private const string VIEW_PATH = "Assets/Prefabs/Models/DefendStation/AsteroidDefendPlatformView.prefab";
         private const string INSTALLER_PATH = "Assets/Prefabs/View/AsteroidDefendPlatformInstaller.prefab";
