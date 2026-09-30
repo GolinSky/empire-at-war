@@ -33,6 +33,7 @@ namespace EmpireAtWar.Components.Weapon
             public int HardPointGeneration;
             public AttackData TargetGroup;
             public IHardPointModel Target;
+            public int TargetGeneration;
             public int ShotsRemaining;
             public float NextTime;
             public int EarliestFrame;
@@ -107,6 +108,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before firing.");
+            if (!targetGroup.CanTarget(target) || !targetGroup.Contains(target)) return;
             if (!hardPoint.TryStartScheduledSequence(out int hardPointGeneration)) return;
 
             int shots = hardPoint.ShotsPerSalvo;
@@ -116,6 +118,7 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
+            int targetGeneration = target.Generation;
             hardPoint.EmitScheduledShot(targetGroup, target, hardPointGeneration);
             if (!hardPoint.IsEmitting(hardPointGeneration)) return;
 
@@ -128,6 +131,7 @@ namespace EmpireAtWar.Components.Weapon
                 HardPointGeneration = hardPointGeneration,
                 TargetGroup = targetGroup,
                 Target = target,
+                TargetGeneration = targetGeneration,
                 ShotsRemaining = shots - 1,
                 NextTime = Time.time + hardPoint.DelayBetweenShots,
                 EarliestFrame = Time.frameCount + 1,
@@ -440,7 +444,10 @@ namespace EmpireAtWar.Components.Weapon
             if (!IsRegistered(sequence.Owner, sequence.OwnerGeneration) ||
                 !sequence.HardPoint.IsEmitting(sequence.HardPointGeneration)) return;
 
-            if (sequence.ShotsRemaining == 0)
+            if (sequence.ShotsRemaining == 0 ||
+                sequence.Target.Generation != sequence.TargetGeneration ||
+                !sequence.TargetGroup.CanTarget(sequence.Target) ||
+                !sequence.TargetGroup.Contains(sequence.Target))
             {
                 sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
                 return;
