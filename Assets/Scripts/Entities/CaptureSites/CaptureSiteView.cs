@@ -229,7 +229,8 @@ namespace EmpireAtWar.Entities.CaptureSites
                     $"{(owner == OwnerRelation.Own ? "BUILDING" : ownerLabel)} {facilityName} " +
                     $"{Mathf.RoundToInt(Mathf.Clamp01(constructionProgress) * 100f)}%",
                 CaptureSiteState.Operational => $"{ownerLabel} {facilityName}",
-                CaptureSiteState.Owned => owner == OwnerRelation.Own ? "ALLIED SITE - SELECT TO BUILD" : $"{ownerLabel} SITE",
+                CaptureSiteState.Owned => owner == OwnerRelation.Own || owner == OwnerRelation.Ally
+                    ? $"{ownerLabel} SITE - SELECT TO BUILD" : $"{ownerLabel} SITE",
                 _ => "NEUTRAL SITE"
             };
         }

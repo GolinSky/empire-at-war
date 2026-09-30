@@ -237,7 +237,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 // Paying for a site that hostile units are about to take would waste the credits.
                 if (site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
                 {
-                    return TryStartConstruction(site, ChooseFacilityType(owner));
+                    return TryStartConstruction(site, ChooseFacilityType(owner), owner);
                 }
             }
 
@@ -291,9 +291,9 @@ namespace EmpireAtWar.Services.CaptureSites
 
         private void HandleBuildRequested(CaptureSitePresenter site, SiteFacilityType facilityType)
         {
-            if (_localPlayer.IsLocal(site.Owner) && site.CanStartConstruction)
+            if (site.CanPlayerBuild)
             {
-                TryStartConstruction(site, facilityType);
+                TryStartConstruction(site, facilityType, _localPlayer.Id);
             }
         }
 
@@ -322,9 +322,9 @@ namespace EmpireAtWar.Services.CaptureSites
             return battleAsteroidCount < miningCount ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
         }
 
-        private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType)
+        private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType, PlayerId payer)
         {
-            if (!GetBuilder(site.Owner).TrySpend(site.GetCost(facilityType).Price))
+            if (!GetBuilder(payer).TrySpend(site.GetCost(facilityType).Price))
             {
                 return false;
             }
