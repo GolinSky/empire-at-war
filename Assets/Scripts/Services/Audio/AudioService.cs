@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
 using EmpireAtWar.Mvc;
+using Utilities.ScriptUtils.Time;
 using Zenject;
 using Random = System.Random;
 
@@ -35,8 +36,8 @@ namespace EmpireAtWar.Services.Audio
         private bool _isMusicPlaying;
         private bool _isFadingOut;
         private float _musicFadeDuration;
-        private float _lastTimePlayAlarm;
-        private float _lastTimePlaySfx;
+        private readonly ITimer _alarmTimer = TimerFactory.ConstructTimer(SOUND_DELAY);
+        private readonly ITimer _sfxTimer = TimerFactory.ConstructTimer(SOUND_DELAY);
         
        
         public AudioService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver)
@@ -126,19 +127,19 @@ namespace EmpireAtWar.Services.Audio
 
         public void PlayOneShot(AudioClip audioClip, AudioType audioType)
         {
-            if(_lastTimePlaySfx + SOUND_DELAY > Time.time) return;
-            _lastTimePlaySfx = Time.time;
+            if (!_sfxTimer.IsComplete) return;
+            _sfxTimer.StartTimer();
             _dialogSource.PlayOneShot(audioClip);
         }
 
         public bool CanPlayAlarm()
         {
-            return _lastTimePlayAlarm + SOUND_DELAY < Time.time;
+            return _alarmTimer.IsComplete;
         }
 
         public void RegisterAlarmPlaying()
         {
-            _lastTimePlayAlarm = Time.time;
+            _alarmTimer.StartTimer();
         }
     }
 }
