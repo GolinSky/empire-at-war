@@ -5,6 +5,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
+using Utilities.ScriptUtils.Time;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -27,11 +28,11 @@ namespace EmpireAtWar.ViewComponents.Health
         private ImpactEffectPresenter _impactPresenter;
         private float _maxAttackDistance;
         private float _missSpread;
-        private float _readyTime;
+        private readonly ITimer _reloadTimer = TimerFactory.ConstructTimer();
 
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
-        public bool IsBusy => _sequence.IsBusy || Time.time < _readyTime;
+        public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete;
         public float MaxAttackDistance => _maxAttackDistance;
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
@@ -80,7 +81,7 @@ namespace EmpireAtWar.ViewComponents.Health
         internal bool TryStartScheduledSequence(out int generation)
         {
             if (!_sequence.TryStart(out generation)) return false;
-            _readyTime = Time.time + _profile.Reload * _modifiers.FireDelayMultiplier;
+            _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier).StartTimer();
             return true;
         }
 
