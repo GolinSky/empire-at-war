@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
+using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
@@ -26,7 +27,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private MaterialPropertyBlock _properties;
         private Vector3 _extents;
         private float _intensity;
-        private float _nextArcTime;
+        private readonly ITimer _arcRefreshTimer = TimerFactory.ConstructTimer(ARC_REFRESH_INTERVAL);
         private bool _active;
 
         public void Configure(Bounds bounds)
@@ -65,8 +66,8 @@ namespace EmpireAtWar.ViewComponents.Health
             SetVisible(true);
             _properties.SetFloat("_Opacity", _intensity);
             shimmer.SetPropertyBlock(_properties);
-            bool refresh = Time.time >= _nextArcTime;
-            if (refresh) _nextArcTime = Time.time + ARC_REFRESH_INTERVAL;
+            bool refresh = _arcRefreshTimer.IsComplete;
+            if (refresh) _arcRefreshTimer.StartTimer();
             for (int i = 0; i < arcs.Length; i++)
             {
                 Color color = arcColor;
