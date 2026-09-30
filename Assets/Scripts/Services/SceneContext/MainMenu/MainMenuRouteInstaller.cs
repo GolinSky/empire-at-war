@@ -15,6 +15,8 @@ namespace EmpireAtWar
             Container.Bind<TeamColorPalette>().FromInstance(teamColorPalette).AsSingle();
             Container.Bind<SkirmishModel>().AsSingle();
             Container.Bind<SettingsModel>().AsSingle();
+            Container.Bind<SettingsDraftEditor>().AsSingle();
+            Container.Bind<KeyBindingEditor>().AsSingle();
             Container.BindInterfacesTo<SkirmishRouteController>().AsSingle();
             Container.BindInterfacesTo<SettingsRouteController>().AsSingle();
         }

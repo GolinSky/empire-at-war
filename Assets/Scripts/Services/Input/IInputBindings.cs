@@ -1,19 +1,36 @@
 using System;
-using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 namespace EmpireAtWar.Services.Input
 {
+    /// <summary>
+    /// Edits the live binding overrides. Nothing is persisted here: the settings screen copies
+    /// <see cref="ExportOverrides"/> into the settings draft, and Apply/Discard load the result back.
+    /// </summary>
     public interface IInputBindings
     {
         event Action BindingsChanged;
 
-        string GetBindingDisplayString(InputAction action, int bindingIndex);
+        /// <summary>Camera and Battle bindings the player may change; pointer axes and Escape are excluded.</summary>
+        IReadOnlyList<BindingSlot> RebindableSlots { get; }
 
-        /// <summary>Waits for the next key or button; Escape cancels. Composite parts are rebound by part index.</summary>
-        void StartRebind(InputAction action, int bindingIndex, Action<RebindResult> completed);
+        /// <summary>Conflicting slots left by the last rebind, awaiting <see cref="ResolveConflict"/>.</summary>
+        IReadOnlyList<BindingSlot> PendingConflicts { get; }
 
-        void ResetBinding(InputAction action, int bindingIndex);
+        string GetBindingDisplayString(BindingSlot slot);
+
+        /// <summary>Waits for the next key or button with all input suspended; Escape cancels.</summary>
+        void StartRebind(BindingSlot slot, Action<RebindResult> completed);
+
+        /// <summary>Returns false when a swap would leave another conflict; the conflict then stays pending.</summary>
+        bool ResolveConflict(ConflictResolution resolution);
+
+        bool HasConflicts();
+
+        void ResetBinding(BindingSlot slot);
 
         void ResetAll();
+
+        string ExportOverrides();
     }
 }

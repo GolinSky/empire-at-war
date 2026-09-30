@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Settings;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +14,7 @@ namespace EmpireAtWar.Services.Camera
         private readonly GameInputActions.CameraActions _camera;
         private readonly GameInputActions.BattleActions _battle;
         private readonly IPointerInput _pointer;
+        private readonly ICameraPreferences _preferences;
 
         public event Action<Vector2> Panned;
         public event Action<float> Zoomed;
@@ -26,7 +28,9 @@ namespace EmpireAtWar.Services.Camera
                     return Vector2.zero;
                 }
 
-                Vector2 direction = GetEdgeScrollDirection(_pointer.Position);
+                Vector2 direction = _preferences.Camera.EdgeScrolling
+                    ? GetEdgeScrollDirection(_pointer.Position)
+                    : Vector2.zero;
                 // Ctrl+A selects units; its A key must not also move the camera.
                 if (!_battle.SelectVisible.IsPressed() && !_battle.SelectAll.IsPressed())
                 {
@@ -37,8 +41,9 @@ namespace EmpireAtWar.Services.Camera
             }
         }
 
-        public CameraInput(InputActionsProvider provider, IPointerInput pointer)
+        public CameraInput(InputActionsProvider provider, IPointerInput pointer, ICameraPreferences preferences)
         {
+            _preferences = preferences;
             _camera = provider.Actions.Camera;
             _battle = provider.Actions.Battle;
             _pointer = pointer;
