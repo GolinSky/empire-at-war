@@ -310,6 +310,15 @@ namespace EmpireAtWar.Editor
                         return;
                     }
 
+                    // Frame stepping only works while paused. An unpause mid-capture would
+                    // leave the Frame Debugger holding the game frozen, so release it instead.
+                    if (!EditorApplication.isPaused)
+                    {
+                        _wasPaused = false;
+                        Complete("cancelled", $"Frame Debugger capture cancelled: Editor was unpaused at frame {_frameIdentities.Count + 1}, event {_eventIndex}; completed frames remain on disk.");
+                        return;
+                    }
+
                     if (!(bool)_enabled.GetValue(null))
                     {
                         if (_stepDelay > 0)

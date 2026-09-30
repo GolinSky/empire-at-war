@@ -23,7 +23,6 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
-        private const float FAILED_PLAN_RETRY_DELAY = 0.5f;
 
         [SerializeField] private Ease hyperSpaceEase;
         [SerializeField] private LineRenderer lineRenderer;
@@ -135,11 +134,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             requestedPosition.y = Model.Height;
             Vector3 requested = ShipAvoidancePlanner.ClampToMap(requestedPosition,
                 _mapModel.SizeRange, NavigationRadius);
-            // Pursuit re-requests a drifting target every tick; after a failed plan
-            // those requests wait out the retry delay instead of each re-planning.
-            if (Model.IsRetryingFailedDestination(requested.ToNumerics(), Time.time,
-                    NavigationRadius))
-                return Model.Destination.ToUnity();
             Vector3 destination = requested;
             if (Model.IsSameRequest(requested.ToNumerics()) &&
                 _shipNavigationService.IsPositionClear(this,
@@ -256,8 +250,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             {
                 // Nowhere reachable to go: the ship holds position instead of retrying.
                 _motion.StopPath();
-                Model.FailPlan(transform.position.ToNumerics(), destination.ToNumerics(),
-                    Time.time + FAILED_PLAN_RETRY_DELAY);
+                Model.Arrive(transform.position.ToNumerics());
                 return;
             }
             Model.Accept(plan.Destination.ToNumerics());

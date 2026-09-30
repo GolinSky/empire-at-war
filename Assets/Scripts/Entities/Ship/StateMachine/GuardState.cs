@@ -23,6 +23,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 _offset;
         private bool _isReturning;
         private Vector3 _pursuitDestination;
+        private Vector3 _followDestination;
+        private bool _isFollowing;
 
         public GuardState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory,
@@ -45,7 +47,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _isReturning = false;
         }
 
-        public void Enter() => Follow();
+        // A fresh guard order always moves, even if the ship is still on an older course.
+        public void Enter()
+        {
+            _isFollowing = false;
+            Follow();
+        }
 
         public void Tick(float deltaTime)
         {
@@ -82,6 +89,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget != null)
             {
+                // Any chase move replaces the follow course, so the next Follow must re-path.
+                _isFollowing = false;
                 Vector3 target = _engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
@@ -102,7 +111,19 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weapon.ResetTarget();
         }
 
-        private void Follow() => _movement.MoveToPosition(
-            _friendlyTransform.position + _offset);
+        // A moving friendly shifts the follow point every tick; re-path only once it
+        // drifts past half the follow radius instead of planning a route per tick.
+        private void Follow()
+        {
+            Vector3 destination = _friendlyTransform.position + _offset;
+            float updateDistance = Mathf.Max(_movement.NavigationRadius,
+                _settings.GuardFollowRadius * 0.5f);
+            if (_isFollowing && _movement.IsMoving &&
+                (destination - _followDestination).sqrMagnitude < updateDistance * updateDistance)
+                return;
+            _isFollowing = true;
+            _followDestination = destination;
+            _movement.MoveToPosition(destination);
+        }
     }
 }
