@@ -28,6 +28,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private int _member;
         private IEntity _engagementTarget;
         private Vector3 _destination;
+        private Vector3 _pursuitDestination;
 
         public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory)
@@ -70,7 +71,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _engagementTarget = _engagement.SelectTarget(_member, _rangeTo);
                 if (_engagementTarget != null)
+                {
                     _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
+                    // A new target always breaks off the course to the attack-move point.
+                    _pursuitDestination = _engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position;
+                    if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
+                        _movement.MoveToPosition(_pursuitDestination, preserveCourse: true);
+                }
             }
 
             if (_engagementTarget != null)
@@ -81,7 +88,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     if (_movement.IsMoving) _movement.Stop();
                     _movement.LookAtTarget(target);
                 }
-                else _movement.MoveToPosition(target, preserveCourse: true);
+                else _pursuitDestination = ShipEngagement.Pursue(_movement, _weapon, target,
+                    _pursuitDestination);
             }
         }
 

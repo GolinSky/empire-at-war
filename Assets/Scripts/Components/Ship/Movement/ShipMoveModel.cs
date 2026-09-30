@@ -14,8 +14,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private readonly IShipMoveData _shipMoveData;
         private readonly CombatModifiers _modifiers;
         private float _speedCoefficient = 1f;
-        private NumericsVector3? _failedDestination;
-        private float _failedRetryTime;
 
         public float Speed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
         public float Height => _shipMoveData.Height;
@@ -58,16 +56,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             (Phase != MovementPhase.Arriving || PendingDestination.HasValue) &&
             PositionsEqual(Destination, destination);
 
-        /// <summary>
-        /// True while a request near a destination that just failed to plan should
-        /// be dropped instead of re-running the full route search every tick.
-        /// </summary>
-        public bool IsRetryingFailedDestination(NumericsVector3 destination, float time,
-            float tolerance) =>
-            _failedDestination.HasValue && time < _failedRetryTime &&
-            NumericsVector3.DistanceSquared(_failedDestination.Value, destination) <
-            tolerance * tolerance;
-
         public void Request(NumericsVector3 destination)
         {
             LastRequest = destination;
@@ -79,7 +67,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             Destination = destination;
             PendingDestination = null;
             Phase = MovementPhase.Moving;
-            _failedDestination = null;
         }
 
         public void Queue(NumericsVector3 destination)
@@ -110,17 +97,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             Phase = MovementPhase.Idle;
         }
 
-        public void FailPlan(NumericsVector3 position, NumericsVector3 destination,
-            float retryTime)
-        {
-            Arrive(position);
-            _failedDestination = destination;
-            _failedRetryTime = retryTime;
-        }
-
         public void StopAt(NumericsVector3 position)
         {
-            _failedDestination = null;
             PendingDestination = null;
             LastRequest = null;
             Destination = position;
