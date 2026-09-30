@@ -28,7 +28,7 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
 
-        public bool Tick(float deltaTime, CaptureTally tally)
+        public bool Tick(float deltaTime, CaptureStrength tally)
         {
             bool ownerChanged = _model.Tick(deltaTime, tally);
             Render();

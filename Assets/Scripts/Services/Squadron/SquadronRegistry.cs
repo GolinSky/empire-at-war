@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.Squadrons
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
         }
 
-        public void AddSquadronStrength(Func<Vector3, bool> contains, float weight, CaptureTallyBuilder tally)
+        public void AddSquadronStrength(Func<Vector3, bool> contains, float weight, CaptureStrengthBuilder tally)
         {
             foreach (IEntity squadron in _squadrons)
             {

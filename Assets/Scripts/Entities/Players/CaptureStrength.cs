@@ -4,11 +4,11 @@ namespace EmpireAtWar.Models.Players
     /// Who is winning a capture circle this frame. Strength is summed per team; the strongest team
     /// captures for its strongest player, at a speed set by its lead over the runner-up team.
     /// </summary>
-    public readonly struct CaptureTally
+    public readonly struct CaptureStrength
     {
         private const float TIE_EPSILON = 0.001f;
 
-        public CaptureTally(PlayerId leadingPlayer, float advantage, int presentTeamCount)
+        public CaptureStrength(PlayerId leadingPlayer, float advantage, int presentTeamCount)
         {
             LeadingPlayer = leadingPlayer;
             Advantage = advantage;

@@ -29,17 +29,17 @@ namespace EmpireAtWar.Tests.Editor
             ships.Add(new FakeShip(TestPlayers.Enemy, 3f));
             ships.Add(new FakeShip(TestPlayers.Enemy, 8f));
             ships.Add(new FakeShip(PlayerId.None, 2f));
-            CaptureTallyBuilder tally = new CaptureTallyBuilder(TestPlayers.CreateDuel());
+            CaptureStrengthBuilder tally = new CaptureStrengthBuilder(TestPlayers.CreateDuel());
 
             ships.AddShipStrength(position => position.x <= 5f, tally);
-            CaptureTally bothSides = tally.Build();
+            CaptureStrength bothSides = tally.Build();
             Assert.That(bothSides.PresentTeamCount, Is.EqualTo(2));
             Assert.That(bothSides.IsContested, Is.True);
 
             ships.Remove(player);
             tally.Clear();
             ships.AddShipStrength(position => position.x <= 5f, tally);
-            CaptureTally enemyOnly = tally.Build();
+            CaptureStrength enemyOnly = tally.Build();
             Assert.That(enemyOnly.LeadingPlayer, Is.EqualTo(TestPlayers.Enemy));
             Assert.That(enemyOnly.Advantage, Is.EqualTo(1f));
 
@@ -98,11 +98,11 @@ namespace EmpireAtWar.Tests.Editor
                 locator.AddEntity(outside);
                 locator.AddEntity(CreateEntity(3, TestPlayers.Enemy, 0f, true, true, objects));
                 locator.AddEntity(CreateEntity(4, TestPlayers.Enemy, 0f, false, false, objects));
-                CaptureTallyBuilder tally = new CaptureTallyBuilder(TestPlayers.CreateDuel());
+                CaptureStrengthBuilder tally = new CaptureStrengthBuilder(TestPlayers.CreateDuel());
 
                 registry.AddSquadronStrength(position => position.x <= 5f, 0.5f, tally);
                 registry.Dispose();
-                CaptureTally humanOnly = tally.Build();
+                CaptureStrength humanOnly = tally.Build();
                 Assert.That(humanOnly.LeadingPlayer, Is.EqualTo(TestPlayers.Human));
                 Assert.That(humanOnly.Advantage, Is.EqualTo(0.5f));
             }

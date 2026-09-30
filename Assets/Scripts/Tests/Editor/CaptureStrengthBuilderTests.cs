@@ -5,14 +5,14 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    public sealed class CaptureTallyBuilderTests
+    public sealed class CaptureStrengthBuilderTests
     {
         [Test]
         public void Build_ThreeTeams_AdvantageIsLeadOverRunnerUp()
         {
             PlayerRoster freeForAll = CreateFreeForAll();
 
-            CaptureTally tally = TestPlayers.Tally(freeForAll,
+            CaptureStrength tally = TestPlayers.Tally(freeForAll,
                 (new PlayerId(0), 1f), (new PlayerId(1), 4f), (new PlayerId(2), 3f));
 
             Assert.That(tally.LeadingPlayer, Is.EqualTo(new PlayerId(1)));
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             PlayerRoster freeForAll = CreateFreeForAll();
 
-            CaptureTally tally = TestPlayers.Tally(freeForAll, (new PlayerId(0), 2f), (new PlayerId(2), 2f));
+            CaptureStrength tally = TestPlayers.Tally(freeForAll, (new PlayerId(0), 2f), (new PlayerId(2), 2f));
 
             Assert.That(tally.IsTied, Is.True);
             Assert.That(tally.IsContested, Is.True);
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Build_EmptyCircle_HasNoUnitsAndNoLeader()
         {
-            CaptureTally tally = TestPlayers.Tally(CreateFreeForAll());
+            CaptureStrength tally = TestPlayers.Tally(CreateFreeForAll());
 
             Assert.That(tally.HasUnits, Is.False);
             Assert.That(tally.LeadingPlayer, Is.EqualTo(PlayerId.None));

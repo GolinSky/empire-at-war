@@ -30,7 +30,7 @@ namespace EmpireAtWar.Models.ReinforcementZones
         public bool IsContested { get; private set; }
 
         /// <returns>True when the zone changed owner.</returns>
-        public bool Tick(float deltaTime, CaptureTally tally)
+        public bool Tick(float deltaTime, CaptureStrength tally)
         {
             IsContested = tally.IsContested;
 
