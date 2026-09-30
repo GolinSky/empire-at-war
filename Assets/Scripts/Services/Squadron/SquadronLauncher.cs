@@ -2,32 +2,27 @@ using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Services.Squadrons
 {
     /// <summary>Launches bought squadrons from the hangar of the owner's space station.</summary>
     public sealed class SquadronLauncher : ISquadronLauncher
     {
-        private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
 
-        public SquadronLauncher(IEntityLocator entityLocator)
+        public SquadronLauncher(IStationRegistry stationRegistry)
         {
-            _entityLocator = entityLocator;
+            _stationRegistry = stationRegistry;
         }
 
         public ISquadron LaunchFromStation(PlayerId owner, SquadronType squadronType)
         {
-            foreach (IEntity entity in _entityLocator.Entities)
+            if (_stationRegistry.TryGetLivingStation(owner, out IEntity station) &&
+                station.TryGetFacade(out IHangarCommand hangar))
             {
-                if (entity.Owner == owner &&
-                    entity.Model is ISpaceStationModelObserver &&
-                    !entity.HealthModel.IsDestroyed &&
-                    entity.TryGetFacade(out IHangarCommand hangar))
-                {
-                    return hangar.Launch(squadronType);
-                }
+                return hangar.Launch(squadronType);
             }
 
             throw new InvalidOperationException(

@@ -13,6 +13,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEngine;
@@ -246,6 +247,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(OperationalStationRegistry);
             public bool IsStationOperational(PlayerId owner) => true;
+            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
+                throw new NotImplementedException();
         }
 
         private static void SetBackingField<T>(
