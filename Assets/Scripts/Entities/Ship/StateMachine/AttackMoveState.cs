@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly Func<IEntity, float> _rangeTo;
+        private AttackMoveEngagement _nextEngagement;
         private AttackMoveEngagement _engagement;
         private int _member;
         private IEntity _engagementTarget;
@@ -43,11 +44,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void SetData(Vector3 destination, AttackMoveEngagement engagement)
         {
             _destination = destination;
-            _engagement = engagement;
+            // Applied on Enter: SetData runs before Exit, which must leave the engagement it joined.
+            _nextEngagement = engagement;
         }
 
         public void Enter()
         {
+            _engagement = _nextEngagement;
             _engagementTarget = null;
             _member = _engagement.Join();
             _movement.MoveToPosition(_destination);
