@@ -187,6 +187,8 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Refactoring/Camera_System_Refactor_Plan.md",
+    "TODOs/Refactoring/Audio_System_Refactor_Plan.md",
     "TODOs/Features/Tooltip_System_Plan - Research.md",
     "TODOs/Features/Tooltip_System_Plan.md",
     "Done/Refactoring/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30.md",
@@ -213,8 +215,6 @@
     "TODOs/Bugs",
     "TODOs/Refactoring/Audit_Remediation_Coordination.md",
     "TODOs/Refactoring/UI_Service_Refactoring.md",
-    "TODOs/Refactoring/SkirmishOrchestrator_Refactoring_Plan - Research.md",
-    "TODOs/Refactoring/Ship_Squadron_Entity_Simplification_Plan - Research.md",
     "TODOs/Refactoring/Codebase Audit 2026-09-27",
     "TODOs/Refactoring",
     "TODOs/Optimization",
