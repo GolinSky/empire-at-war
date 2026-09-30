@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Pooling;
 using EmpireAtWar.ViewComponents.Wreck;
 using UnityEngine;
-using UnityEngine.Pool;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.UnitWreck
 {
@@ -20,11 +19,10 @@ namespace EmpireAtWar.Services.UnitWreck
     public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IDisposable
     {
         private readonly IPlayerRoster _roster;
-        private readonly Dictionary<UnitWreckData, ObjectPool<UnitWreckView>> _pools =
-            new Dictionary<UnitWreckData, ObjectPool<UnitWreckView>>();
+        private readonly Dictionary<UnitWreckData, ViewPool<UnitWreckView>> _pools =
+            new Dictionary<UnitWreckData, ViewPool<UnitWreckView>>();
         private readonly List<ActiveWreck> _activeWrecks = new List<ActiveWreck>();
         private readonly System.Random _random = new System.Random();
-        private Transform _root;
 
         public UnitWreckService(IPlayerRoster roster)
         {
@@ -65,37 +63,23 @@ namespace EmpireAtWar.Services.UnitWreck
                 Release(i);
             }
 
-            foreach (ObjectPool<UnitWreckView> pool in _pools.Values)
+            foreach (ViewPool<UnitWreckView> pool in _pools.Values)
             {
                 pool.Dispose();
             }
 
             _pools.Clear();
-            if (_root != null)
-            {
-                Object.Destroy(_root.gameObject);
-            }
         }
 
-        private ObjectPool<UnitWreckView> GetPool(UnitWreckData data)
+        private ViewPool<UnitWreckView> GetPool(UnitWreckData data)
         {
-            if (_pools.TryGetValue(data, out ObjectPool<UnitWreckView> pool))
+            if (_pools.TryGetValue(data, out ViewPool<UnitWreckView> pool))
             {
                 return pool;
             }
 
-            if (_root == null)
-            {
-                _root = new GameObject("UnitWrecks").transform;
-            }
-
-            pool = new ObjectPool<UnitWreckView>(
-                () => Object.Instantiate(data.Prefab, _root),
-                actionOnRelease: view => view.Hide(),
-                actionOnDestroy: view => Object.Destroy(view.gameObject),
-                collectionCheck: false,
-                defaultCapacity: data.MaxActive,
-                maxSize: data.MaxActive);
+            pool = new ViewPool<UnitWreckView>(data.Prefab, $"UnitWrecks_{data.name}", view => view.Hide(),
+                data.MaxActive);
             _pools.Add(data, pool);
             return pool;
         }

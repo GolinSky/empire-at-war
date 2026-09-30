@@ -93,6 +93,13 @@ namespace ViewComponents
             _fogMaterial.SetTexture("_MainTex", _fogTexture);
         }
 
+        // Renderer.material returns an instance this component owns; the mask texture is created here too.
+        private void OnDestroy()
+        {
+            Destroy(_fogMaterial);
+            Destroy(_fogTexture);
+        }
+
         private void Update()
         {
             _timer += Time.deltaTime;

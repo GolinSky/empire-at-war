@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Pooling;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
-using UnityEngine.Pool;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.UnitExplosion
 {
@@ -15,17 +14,14 @@ namespace EmpireAtWar.Services.UnitExplosion
         private const int MAX_IDLE_EXPLOSIONS = 32;
 
         private readonly UnitExplosionView _prefab;
-        private readonly ObjectPool<UnitExplosionView> _pool;
+        private readonly ViewPool<UnitExplosionView> _pool;
         private readonly List<UnitExplosionView> _active = new List<UnitExplosionView>();
-        private Transform _root;
 
         public UnitExplosionService(UnitExplosionView prefab)
         {
             _prefab = prefab;
-            _pool = new ObjectPool<UnitExplosionView>(Create,
-                actionOnRelease: view => view.Hide(),
-                actionOnDestroy: view => Object.Destroy(view.gameObject),
-                maxSize: MAX_IDLE_EXPLOSIONS);
+            _pool = new ViewPool<UnitExplosionView>(prefab, "UnitExplosions", view => view.Hide(),
+                MAX_IDLE_EXPLOSIONS);
         }
 
         public void Spawn(IReadOnlyList<Renderer> hullRenderers)
@@ -64,20 +60,6 @@ namespace EmpireAtWar.Services.UnitExplosion
 
             _active.Clear();
             _pool.Dispose();
-            if (_root != null)
-            {
-                Object.Destroy(_root.gameObject);
-            }
-        }
-
-        private UnitExplosionView Create()
-        {
-            if (_root == null)
-            {
-                _root = new GameObject("UnitExplosions").transform;
-            }
-
-            return Object.Instantiate(_prefab, _root);
         }
     }
 }
