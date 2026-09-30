@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.CaptureSites
 {
     public interface ICaptureSitesSystem
     {
-        IReadOnlyList<CaptureSitePresenter> Sites { get; }
+        IReadOnlyList<ICaptureSite> Sites { get; }
         bool IsPositionInAnySite(Vector3 position, float clearance = 0f);
         bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position);
         bool TryGetThreatenedSite(PlayerId owner, out Vector3 position);

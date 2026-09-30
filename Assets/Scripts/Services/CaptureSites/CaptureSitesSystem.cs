@@ -75,7 +75,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _captureStrengthBuilder = new CaptureStrengthBuilder(roster);
         }
 
-        public IReadOnlyList<CaptureSitePresenter> Sites => _sites;
+        public IReadOnlyList<ICaptureSite> Sites => _sites;
 
         public void Initialize()
         {

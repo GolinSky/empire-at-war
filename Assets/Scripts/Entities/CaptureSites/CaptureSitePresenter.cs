@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSitePresenter : IDisposable
+    public sealed class CaptureSitePresenter : ICaptureSite, IDisposable
     {
         private static readonly SiteFacilityType[] FacilityTypes =
             (SiteFacilityType[])Enum.GetValues(typeof(SiteFacilityType));
