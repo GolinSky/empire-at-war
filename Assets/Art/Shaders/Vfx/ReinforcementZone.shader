@@ -9,10 +9,10 @@ Shader "EmpireAtWar/ReinforcementZone"
 
     SubShader
     {
-        Tags { "RenderType" = "Transparent" "Queue" = "Overlay" "RenderPipeline" = "UniversalPipeline" }
+        Tags { "RenderType" = "Transparent" "Queue" = "Transparent-100" "RenderPipeline" = "UniversalPipeline" }
         Blend SrcAlpha OneMinusSrcAlpha
         ZWrite Off
-        ZTest Always
+        ZTest LEqual
         Cull Off
 
         Pass
@@ -78,8 +78,7 @@ Shader "EmpireAtWar/ReinforcementZone"
                     sceneDepth = LinearDepthToEyeDepth(rawDepth);
                 }
 
-                // Keep the tactical outline complete over nebulae, hulls and placement previews.
-                // Only the interior fades against opaque geometry.
+                // Soften the interior where the zone intersects opaque geometry.
                 fillAlpha *= saturate((sceneDepth - input.eyeDepth) / _DepthFadeDistance);
                 half alpha = max(fillAlpha, max(outlineAlpha, borderAlpha));
                 return half4(color, alpha);
