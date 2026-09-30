@@ -665,6 +665,7 @@ GameObject:
   - component: {fileID: 8004768724727160765}
   - component: {fileID: 4509796837337812236}
   - component: {fileID: 1285134625951875716}
+  - component: {fileID: 3627180451923874115}
   m_Layer: 5
   m_Name: OptionsButton
   m_TagString: Untagged
@@ -739,7 +740,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1285134625951875716}
   m_OnClick:
     m_PersistentCalls:
@@ -1612,6 +1613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 1180694155874166261}
   resumeButton: {fileID: 4566893665544095418}
+  optionsButton: {fileID: 4509796837337812236}
   exitButton: {fileID: 5294919370127645030}
   menuPanel: {fileID: 26848829901883186}
   tooltipHover: {fileID: 6699929545119764882}
@@ -1641,4 +1643,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
   triggers:
   - {fileID: 4684956950431152732}
+  - {fileID: 3627180451923874115}
   - {fileID: 5291788870097249229}
+--- !u!114 &3627180451923874115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5105402932696670994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 9177908287492684847}
+  key: Options

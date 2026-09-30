@@ -8,17 +8,18 @@ namespace EmpireAtWar.Views.Menu
     public class PauseMenuUi : BaseUi, IPauseMenuUiView, ITooltipHoverView
     {
         [SerializeField] private Button resumeButton;
+        [SerializeField] private Button optionsButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private TooltipHoverView tooltipHover;
         public TooltipHoverView TooltipHover => tooltipHover;
 
-        private IPauseMenuPresenter _presenter;
+        private IPauseMenuRouteNavigation _navigation;
         private bool _isInitialized;
 
-        public void SetPresenter(IPauseMenuPresenter presenter)
+        public void SetNavigation(IPauseMenuRouteNavigation navigation)
         {
-            _presenter = presenter;
+            _navigation = navigation;
         }
 
         public void Initialize()
@@ -28,14 +29,15 @@ namespace EmpireAtWar.Views.Menu
                 return;
             }
 
-            if (_presenter == null)
+            if (_navigation == null)
             {
                 throw new System.InvalidOperationException(
-                    "PauseMenuUi presenter must be set before initialization.");
+                    "PauseMenuUi navigation must be set before initialization.");
             }
 
-            exitButton.onClick.AddListener(_presenter.ExitSkirmish);
-            resumeButton.onClick.AddListener(_presenter.ResumeGame);
+            resumeButton.onClick.AddListener(_navigation.Close);
+            optionsButton.onClick.AddListener(_navigation.OpenSettings);
+            exitButton.onClick.AddListener(_navigation.ExitSkirmish);
             _isInitialized = true;
         }
 
@@ -46,8 +48,9 @@ namespace EmpireAtWar.Views.Menu
                 return;
             }
 
-            exitButton.onClick.RemoveListener(_presenter.ExitSkirmish);
-            resumeButton.onClick.RemoveListener(_presenter.ResumeGame);
+            resumeButton.onClick.RemoveListener(_navigation.Close);
+            optionsButton.onClick.RemoveListener(_navigation.OpenSettings);
+            exitButton.onClick.RemoveListener(_navigation.ExitSkirmish);
             _isInitialized = false;
         }
 

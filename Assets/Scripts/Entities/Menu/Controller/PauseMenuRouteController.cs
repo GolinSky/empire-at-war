@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Models.Menu;
+using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -15,52 +15,72 @@ using Zenject;
 namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
-    
-    public class MenuController : UiController, IPauseMenuPresenter, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
+
+    public class PauseMenuRouteController : UiController, IPauseMenuRoute, IPauseMenuRouteNavigation, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
     {
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IUiCancelRouter _cancelRouter;
+        private readonly ISettingsRoute _settingsRoute;
         private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
         private bool _hasBattleEnded;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
-        public MenuController(
+        public PauseMenuRouteController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
+            ISettingsRoute settingsRoute,
             INotifier<BattleResult> battleVictoryNotifier,
             ITooltipService tooltips) : base(uiService, cancelRouter)
         {
             _cancelRouter = cancelRouter;
+            _settingsRoute = settingsRoute;
             _battleVictoryNotifier = battleVictoryNotifier;
             _tooltips = new TooltipRequests(tooltips);
         }
-        
+
         public void Initialize()
         {
             BaseUi ui = UiService.CreateUi(UiType.PauseMenu);
             _ui = ui as IPauseMenuUiView
                 ?? throw new InvalidOperationException(
                     "The skirmish pause menu prefab does not implement IPauseMenuUiView.");
-            _ui.SetPresenter(this);
+            _ui.SetNavigation(this);
             _ui.Initialize();
             _tooltipHover = new TooltipHoverSubscription(
                 ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _ui.SetMenuVisible(false);
-            _cancelRouter.CancelUnhandled += OpenMenu;
+            _cancelRouter.CancelUnhandled += Open;
             _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _cancelRouter.CancelUnhandled -= OpenMenu;
+            _cancelRouter.CancelUnhandled -= Open;
             _battleVictoryNotifier.RemoveObserver(this);
             if (_ui != null)
             {
                 _tooltipHover.Dispose();
                 _ui.Dispose();
             }
+        }
+
+        public void Open()
+        {
+            SetMenuOpen(true);
+        }
+
+        public void Close()
+        {
+            SetMenuOpen(false);
+        }
+
+        // Settings opens above the pause menu and takes cancel focus; closing it returns here.
+        public void OpenSettings()
+        {
+            _tooltips.HideAll();
+            _settingsRoute.Open();
         }
 
         public void ExitSkirmish()
@@ -70,20 +90,10 @@ namespace EmpireAtWar.Controllers.Menu
             UpdateState(UserNotifierState.ExitGame);
         }
 
-        public void ResumeGame()
-        {
-            SetMenuOpen(false);
-        }
-
-        public void OpenMenu()
-        {
-            SetMenuOpen(true);
-        }
-
         // Unconsumed Escape opens the menu; the open menu is focused, so the next Escape closes it.
         protected override bool HandleCancel()
         {
-            SetMenuOpen(false);
+            Close();
             return true;
         }
 
@@ -112,8 +122,13 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => !_hasBattleEnded, () =>
-                new TooltipContent((string)key,
-                    (string)key == "Resume" ? "Close the pause menu and resume the battle." : "Exit this battle and return to the main menu."));
+                new TooltipContent((string)key, (string)key switch
+                {
+                    "Resume" => "Close the pause menu and resume the battle.",
+                    "Options" => "Edit display, camera and key-binding settings.",
+                    "Exit" => "Exit this battle and return to the main menu.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
 
         public void UpdateState(BattleResult result)
         {
