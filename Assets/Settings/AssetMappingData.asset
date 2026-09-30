@@ -532,3 +532,24 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: TooltipUi
+      value:
+        m_AssetGUID: 75cc8f0b4fe2a2641bebf9a29dc47a7f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TooltipSettings
+      value:
+        m_AssetGUID: cdb94166dd02cbf4e96265875ea992ce
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TooltipIconData
+      value:
+        m_AssetGUID: f5fb2ca4ac1d3a848a445314158b9a6e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

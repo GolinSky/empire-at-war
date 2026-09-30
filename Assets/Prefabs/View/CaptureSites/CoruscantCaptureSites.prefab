@@ -48,11 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a5d5081594bae46aca6b951a764d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.CaptureSites.CaptureSitesSystem
-  siteViews:
-  - {fileID: 5360196478100287518}
-  - {fileID: 7934912510447575764}
-  - {fileID: 991397723995029071}
-  - {fileID: 7157367342482131083}
 --- !u!1001 &1620736702118224683
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,18 +122,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1620736702118224683}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5360196478100287518 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6637528760554246965, guid: 0f332f34959cd7a4888c408770bff249,
-    type: 3}
-  m_PrefabInstance: {fileID: 1620736702118224683}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
 --- !u!1001 &3603800949602234849
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -213,18 +196,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3603800949602234849}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7934912510447575764 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6637528760554246965, guid: 0f332f34959cd7a4888c408770bff249,
-    type: 3}
-  m_PrefabInstance: {fileID: 3603800949602234849}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
 --- !u!1001 &4220568172464054189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -299,18 +270,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4220568172464054189}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &991397723995029071 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3985789703454499298, guid: 069e7efc0ad60934d87d3b1c4b8dfb91,
-    type: 3}
-  m_PrefabInstance: {fileID: 4220568172464054189}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
 --- !u!1001 &6054048681209997673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -379,18 +338,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 069e7efc0ad60934d87d3b1c4b8dfb91, type: 3}
---- !u!114 &7157367342482131083 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3985789703454499298, guid: 069e7efc0ad60934d87d3b1c4b8dfb91,
-    type: 3}
-  m_PrefabInstance: {fileID: 6054048681209997673}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
 --- !u!4 &7500987598007579926 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4331496685745970303, guid: 069e7efc0ad60934d87d3b1c4b8dfb91,

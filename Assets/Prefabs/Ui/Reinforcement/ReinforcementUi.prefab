@@ -1308,6 +1308,7 @@ GameObject:
   - component: {fileID: 7096633721722856091}
   - component: {fileID: 6149023881478231343}
   - component: {fileID: 5064385528668758250}
+  - component: {fileID: 3445057175679080111}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -1498,6 +1499,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &3445057175679080111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5572922256917087042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 6448653497803615835}
+  key: Close
 --- !u!1 &7316082388000223717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1665,6 +1680,7 @@ GameObject:
   - component: {fileID: 6356698934928085127}
   - component: {fileID: 6402506525792237653}
   - component: {fileID: 7540030169161493753}
+  - component: {fileID: 7512777994941608494}
   m_Layer: 5
   m_Name: ReinforcementUi
   m_TagString: Untagged
@@ -1706,6 +1722,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 7540030169161493753}
   spawnTransform: {fileID: 812305163281907676}
+  tooltipHover: {fileID: 7512777994941608494}
   closeButton: {fileID: 6149023881478231343}
   panelCanvasGroup: {fileID: 4767199979424165482}
   unitCapacityText: {fileID: 7008870773025925324}
@@ -1721,6 +1738,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &7512777994941608494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8197294553891939371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 3445057175679080111}
 --- !u!1 &8206913793986213746
 GameObject:
   m_ObjectHideFlags: 0

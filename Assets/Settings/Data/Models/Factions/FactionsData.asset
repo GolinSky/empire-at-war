@@ -19,6 +19,11 @@ MonoBehaviour:
         keyValue:
         - key: 0
           value:
+            description: Heavy turbolasers engage large ships. Carrier squadrons
+              screen the fleet.
+            role: "Capital \xB7 Heavy gunship / carrier"
+            iconKey: d899a22bd6d129e46a5aed14df2b81fa:21300000
+            matchups: {fileID: 11400000, guid: 653d9ec29b63e8247ad326a382bd4671, type: 2}
             <Name>k__BackingField: 'Venator '
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 4
@@ -29,6 +34,11 @@ MonoBehaviour:
               type: 3}
         - key: 2
           value:
+            description: Medium turbolasers and dual lasers escort larger ships against
+              light targets.
+            role: "Frigate \xB7 Escort"
+            iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+            matchups: {fileID: 11400000, guid: e4f86e22329ba2b4a8badf3dd9a5816f, type: 2}
             <Name>k__BackingField: Arquitens
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
@@ -39,6 +49,11 @@ MonoBehaviour:
               type: 3}
         - key: 1
           value:
+            description: Medium turbolasers, lasers and proton torpedoes support
+              the battle line.
+            role: "Capital \xB7 Multirole support"
+            iconKey: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
+            matchups: {fileID: 11400000, guid: 22df59b8a5884e9458874b118fc3b7a0, type: 2}
             <Name>k__BackingField: Acclamator
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 2
@@ -49,6 +64,11 @@ MonoBehaviour:
               type: 3}
         - key: 4
           value:
+            description: Heavy turbolasers and ion cannons concentrate fire on large
+              ships.
+            role: "Capital \xB7 Heavy battle line"
+            iconKey: 71f48afd28fd17340a87652ce16e4712:21300000
+            matchups: {fileID: 11400000, guid: 6280957ca609340419e921268a1388f0, type: 2}
             <Name>k__BackingField: Star destroyer-2
             <MaxCount>k__BackingField: 5
             <AvailableLevel>k__BackingField: 5
@@ -59,6 +79,11 @@ MonoBehaviour:
               type: 3}
         - key: 5
           value:
+            description: Heavy ion cannons strip shields while heavy turbolasers
+              damage large targets.
+            role: "Frigate \xB7 Shield breaker"
+            iconKey: 003f227a5109a5745879774b3be70886:21300000
+            matchups: {fileID: 11400000, guid: b1f3c971db8c60640b5dbd3818bb1322, type: 2}
             <Name>k__BackingField: Heavy Dreadnought
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
@@ -69,6 +94,11 @@ MonoBehaviour:
               type: 3}
         - key: 6
           value:
+            description: Lasers, ion fire and concussion missiles protect the fleet
+              against light targets.
+            role: "Corvette \xB7 Light screen"
+            iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+            matchups: {fileID: 11400000, guid: f39746bde7f9b514282749a973ba31c5, type: 2}
             <Name>k__BackingField: Thranta
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 1
@@ -82,6 +112,11 @@ MonoBehaviour:
         keyValue:
         - key: 100
           value:
+            description: Heavy and medium turbolasers, supported by ion cannons,
+              engage large ships.
+            role: "Capital \xB7 Battle line / carrier"
+            iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+            matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
             <Name>k__BackingField: Providence
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 5
@@ -92,6 +127,11 @@ MonoBehaviour:
               type: 3}
         - key: 101
           value:
+            description: Medium turbolasers provide supporting fire against smaller
+              warships.
+            role: "Frigate \xB7 Fire support"
+            iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+            matchups: {fileID: 11400000, guid: 2565f6fe8bb5a3243986c21b8d92a67b, type: 2}
             <Name>k__BackingField: Recusant
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 3
@@ -102,6 +142,10 @@ MonoBehaviour:
               type: 3}
         - key: 102
           value:
+            description: Medium turbolasers concentrate fire on corvettes and frigates.
+            role: "Frigate \xB7 Medium gunship"
+            iconKey: abf3987a701188747b639680e9203c3e:21300000
+            matchups: {fileID: 11400000, guid: 8178ba0fff7501a4887859b5e2e4069e, type: 2}
             <Name>k__BackingField: Munificent
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 1
@@ -112,6 +156,10 @@ MonoBehaviour:
               type: 3}
         - key: 103
           value:
+            description: Heavy and medium turbolasers defend a large carrier hull.
+            role: "Heavy capital \xB7 Carrier / heavy gunship"
+            iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+            matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
             <Name>k__BackingField: Lucrehulk
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 4
@@ -127,6 +175,11 @@ MonoBehaviour:
         keyValue:
         - key: 0
           value:
+            description: A squadron of fighters. Surviving members share orders and
+              take damage individually.
+            role: "Fighter squadron \xB7 Interceptor"
+            iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+            matchups: {fileID: 11400000, guid: 699d32504c7039d4d972668fe3f4b64b, type: 2}
             <Name>k__BackingField: Delta-7 Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -137,6 +190,11 @@ MonoBehaviour:
               type: 3}
         - key: 1
           value:
+            description: A squadron of fighters. Surviving members share orders and
+              take damage individually.
+            role: "Fighter squadron \xB7 Interceptor"
+            iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
+            matchups: {fileID: 11400000, guid: 5b8d183986aa6104291623ddd0143550, type: 2}
             <Name>k__BackingField: A-Wing Interceptor Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -150,6 +208,11 @@ MonoBehaviour:
         keyValue:
         - key: 100
           value:
+            description: A squadron of fighters. Surviving members share orders and
+              take damage individually.
+            role: "Fighter squadron \xB7 Interceptor"
+            iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
+            matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
             <Name>k__BackingField: Belbullab-22 Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -162,6 +225,10 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value:
+        description: Construct at an owned capture site to provide recurring credits.
+        role: Mining facility
+        iconKey: c54029d425acba74c9c5d702e49710b6:21300000
+        matchups: {fileID: 0}
         <Name>k__BackingField: Mining Facility
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 0
@@ -174,6 +241,10 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value:
+        description: Construct at an owned capture site to defend the area.
+        role: Defensive platform
+        iconKey: 9e99f16d754a042a3b1b0f2d25045f52:21300000
+        matchups: {fileID: 0}
         <Name>k__BackingField: XQ-6
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 1
@@ -191,6 +262,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -204,6 +280,11 @@ MonoBehaviour:
                 multiplier: 1.2
                 shipClasses: 
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 3439a93046dd31a448344298833364aa:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -220,6 +301,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -233,6 +319,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 0200000003000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: de8c71c05a08b16478644e8902c29205:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -246,6 +337,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 020000000300000004000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 1fe567856ec608444bd8fdb96f5b5f81:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -262,6 +358,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 46e861879378cc441bb7260e899b7559:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Shields I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -275,6 +376,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 0200000003000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 8dc6d5756d4d85e4a82d1107e1b2de33:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Shields II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -288,6 +394,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 020000000300000004000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 151b2593d21bbfb4a83f12dc07572dc0:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Shields III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -304,6 +415,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -317,6 +433,11 @@ MonoBehaviour:
                 multiplier: 1.15
                 shipClasses: 06000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: fba4e190fee1ba649bfd1055db270112:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -330,6 +451,11 @@ MonoBehaviour:
                 multiplier: 1.3
                 shipClasses: 06000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 78c07bc3183d5cd48a7e826898d024e0:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -346,6 +472,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Reinforced Structures
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -365,6 +496,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -378,6 +514,11 @@ MonoBehaviour:
                 multiplier: 1.2
                 shipClasses: 
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 3439a93046dd31a448344298833364aa:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -394,6 +535,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -407,6 +553,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 0200000003000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: de8c71c05a08b16478644e8902c29205:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -420,6 +571,11 @@ MonoBehaviour:
                 multiplier: 1.25
                 shipClasses: 020000000300000004000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 1fe567856ec608444bd8fdb96f5b5f81:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -436,6 +592,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Engines I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -449,6 +610,11 @@ MonoBehaviour:
                 multiplier: 1.15
                 shipClasses: 0200000003000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: f40f252f163e62c49ab2093396b1a551:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Engines II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -462,6 +628,11 @@ MonoBehaviour:
                 multiplier: 1.15
                 shipClasses: 020000000300000004000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: e22f2c4c60208dd4292fcdc9811151ef:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Engines III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -478,6 +649,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -491,6 +667,11 @@ MonoBehaviour:
                 multiplier: 1.15
                 shipClasses: 06000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: fba4e190fee1ba649bfd1055db270112:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -504,6 +685,11 @@ MonoBehaviour:
                 multiplier: 1.3
                 shipClasses: 06000000
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: 78c07bc3183d5cd48a7e826898d024e0:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -520,6 +706,11 @@ MonoBehaviour:
           value:
             tiers:
             - factionData:
+                description: Research this upgrade for your faction. Completed research
+                  improves the affected units.
+                role: Research
+                iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+                matchups: {fileID: 0}
                 <Name>k__BackingField: Reinforced Structures
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -536,6 +727,11 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value:
+        description: Construct one shot. Fire at an enemy ship or structure, then
+          rebuild to fire again. Fighters are not valid targets.
+        role: Superweapon construction
+        iconKey: 2e60ab884151e074caf67bb570ba533b:21300000
+        matchups: {fileID: 0}
         <Name>k__BackingField: Ion Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -546,6 +742,11 @@ MonoBehaviour:
           type: 3}
     - key: 1
       value:
+        description: Construct one shot. Fire at an enemy ship or structure, then
+          rebuild to fire again. Fighters are not valid targets.
+        role: Superweapon construction
+        iconKey: c09ba886d721a5b48ae81ff6b7ddf9bb:21300000
+        matchups: {fileID: 0}
         <Name>k__BackingField: Hypervelocity Gun
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -556,6 +757,11 @@ MonoBehaviour:
           type: 3}
     - key: 2
       value:
+        description: Construct one shot. Fire at an enemy ship or structure, then
+          rebuild to fire again. Fighters are not valid targets.
+        role: Superweapon construction
+        iconKey: 3f8628327c2f7ab4d905d41954f545b1:21300000
+        matchups: {fileID: 0}
         <Name>k__BackingField: Plasma Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -565,7 +771,11 @@ MonoBehaviour:
         <Icon>k__BackingField: {fileID: 21300000, guid: 3f8628327c2f7ab4d905d41954f545b1,
           type: 3}
   levelFactionsData:
-  - <Name>k__BackingField: Level 2
+  - description: Upgrade the station to unlock higher-level production.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    matchups: {fileID: 0}
+    <Name>k__BackingField: Level 2
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 1
     <Price>k__BackingField: 100
@@ -573,7 +783,11 @@ MonoBehaviour:
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
-  - <Name>k__BackingField: Level 3
+  - description: Upgrade the station to unlock higher-level production.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    matchups: {fileID: 0}
+    <Name>k__BackingField: Level 3
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 2
     <Price>k__BackingField: 200
@@ -581,7 +795,11 @@ MonoBehaviour:
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
-  - <Name>k__BackingField: Level 4
+  - description: Upgrade the station to unlock higher-level production.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    matchups: {fileID: 0}
+    <Name>k__BackingField: Level 4
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 3
     <Price>k__BackingField: 400
@@ -589,7 +807,11 @@ MonoBehaviour:
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
-  - <Name>k__BackingField: Level 5
+  - description: Upgrade the station to unlock higher-level production.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    matchups: {fileID: 0}
+    <Name>k__BackingField: Level 5
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 4
     <Price>k__BackingField: 800

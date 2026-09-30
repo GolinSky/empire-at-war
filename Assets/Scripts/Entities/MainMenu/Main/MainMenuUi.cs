@@ -2,14 +2,17 @@ using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using EmpireAtWar.Components.Ui.Tooltip;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
 {
-    public class MainMenuUi : BaseUi, IMainMenuUi
+    public class MainMenuUi : BaseUi, IMainMenuUi, ITooltipHoverView
     {
         [SerializeField] private Button startDemoButton;
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button quitApplicationButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private IMainMenuModel _model;
         private IMainRouteNavigation _navigation;

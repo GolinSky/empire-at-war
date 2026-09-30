@@ -25,6 +25,7 @@ namespace EmpireAtWar.Models.Health
 
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
+        public float MaxHull => _data.Hull;
         public float HullPercentage => _data.Hull <= 0f ? 0f : Hull / _data.Hull;
         public float Shields { get; private set; }
         public float ShieldPercentage => _data.Shields <= 0f ? 0f : Shields / _data.Shields;

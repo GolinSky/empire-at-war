@@ -1,6 +1,6 @@
 ---
 category: Features
-status: todo
+status: in-progress
 created: 2026-09-30
 tags:
   - ui
@@ -76,14 +76,31 @@ tags:
 | Tabs / filters / camera / cinematic / pause / settings | One sentence: function, current state, shortcut |
 | Control-group button | Group number, member count, select/focus/reassign inputs |
 
-## Codebase Findings (2026-09-30)
+## Implementation (2026-09-30)
 
-- `UiController` (`Components/Ui/Base/UiController.cs`) injects `IUiService` + `IUiCancelRouter` only. Keep it that way.
-- `IUiService` has `CreateUi(UiType, Transform)`, `PopupCanvasTransform`, and `SetHudVisible`. `UiType` goes up to `Fps = 14`.
-- `BaseUi.SetVisibility` forces `CanvasGroup.blocksRaycasts = true`, so the tooltip prefab must have no raycast targets.
-- `UiInstaller` loads the prefab `<UiType>Ui` via `IAssetService` and binds `BaseUi` + interfaces in a sub-container.
-- `FactionData` fields: `Name`, `MaxCount`, `AvailableLevel`, `Price`, `BuildTime`, `UnitCapacity`, `Icon` (Sprite). It has no description or role field yet, so Phase 3 may need them.
-- `IInputBindings.GetBindingDisplayString(BindingSlot)` and the `BindingsChanged` event cover shortcut display.
-- `DamageMatrixData` gives accuracy per `(DamageType, ShipClass)`. This is a candidate source for matchups.
-- No `EventSystem.IsPointerOverGameObject` usage was found, so the UI-over-world priority check is new work (Phase 6).
-- Only `MiniMapUi` currently uses `IPointerEnterHandler`.
+- `UiType.Tooltip = 15`; `UiInstaller` loads `TooltipUi` through the existing type-name mapping.
+- `TooltipService` → `TooltipModel` events → `TooltipUiController` → `ITooltipUi`. The base `UiController` has no tooltip dependency.
+- `TooltipSettings` defaults: delay `0.35 s`, refresh `0.1 s`, cursor offset `(18, 24) px`, edge padding `12 px`; time uses `Time.unscaledDeltaTime`.
+- Views publish events through `TooltipTrigger` / `TooltipHoverView`. Presenters subscribe with `TooltipHoverSubscription` and own their `TooltipRequests`.
+- Same source + key preserves the delay; source or key replacement restarts it. Repeated production-row renders preserve hover; recycling a hovered row publishes its new key.
+- UI: `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab`; settings/icons/matchups: `Assets/Settings/Data/Tooltip/`. Main Menu and skirmish installers bind the service independently.
+- `FactionData` now has `Description`, `Role`, `IconKey`, and a per-unit `UnitMatchupData` reference. `ShipAbilityDefinition` now has `Description` and `IconKey`.
+- Matchups use authored asset rows. Initial roles/rows use current weapon loadouts; the heavy dreadnought remains the existing `Frigate` class with heavy turbolasers and ion cannons.
+
+### Live sources
+- World picking: `ISelectionQuery.TryFindAt(Vector2, out SelectionEntry)`; UI priority uses the existing `IUiHitTest.IsOverUi(Vector2)`.
+- Marquee suppression: `IPointerGestures.DragStarted/DragEnded`. World cursor: `IPointerInput.Position`. Enemy validity checks the existing fog system.
+- Hull/shields: `IHealthTooltipObserver` adds capacities and regeneration to the existing health observer; lost shield generators suppress regeneration.
+- Orders: `IUnitOrderObserverFacade` exposes ship/squadron order state through entity facades.
+- Reserves: `ReinforcementModel.GetReserveCount`; successful deployment consumes one reserve. Population is charged on deployment.
+- Research: next-tier `ResearchEffect` multipliers and affected classes. Queues supply counts and remaining build time; cancellation refunds the item's recorded cost.
+- Superweapon `Charging` is production construction; consumption requires another build. Fighters are rejected by current `CanTarget`; there is no separate recharge timer or ability resource cost.
+- Obstacles expose movement obstruction; no nebula damage/visibility effects, control-group UI, or in-battle objective/notification widgets were found. Battle-result objective text has a tooltip.
+
+### Verification
+- Compilation clean; automated tests authored and unrun per repository policy.
+- Saved prefab inspection: `26` hover owners and `98` triggers; no missing tooltip references or raycast targets in the tooltip panel/row prefabs.
+- `13` matchup assets resolve their sprite keys. `TooltipUi` is in the existing Addressables `Ui` group; settings/icons are in `Data`.
+- A populated Venator tooltip was rendered and visually inspected in an isolated preview scene.
+- Manual in-game acceptance remains in the active plan: disabled cards, live values/rebinding, fog loss, marquee/HUD/route lifecycle, placement edges, and scene teardown.
+- Catalog fields without a live source remain absent: carrier origin, population reservations, and a separate operational superweapon recharge timer.

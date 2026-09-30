@@ -57,6 +57,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public string Id => GetType().Name;
         public Vector3 WorldPosition => _flight.Centroid;
         public float NavigationRadius => Data.NavigationRadius;
+        public UnitOrderType CurrentOrder => _orders.Current;
 
         [Inject]
         private void Construct(ISquadronFlightComponent flight, IHealthComponent health, IRadarComponent radar,

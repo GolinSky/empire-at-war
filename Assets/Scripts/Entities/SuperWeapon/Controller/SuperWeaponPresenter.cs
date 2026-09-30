@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
@@ -27,12 +30,20 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly UnitActionTargetingModel _unitTargeting;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
+        private readonly TooltipRequests _tooltips;
+        private readonly SuperWeaponData _data;
+        private readonly EmpireAtWar.Models.Factions.IPlayerFactionModelObserver _faction;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private TooltipHoverSubscription _tooltipHover;
 
         public SuperWeaponPresenter(SuperWeaponModel model, SuperWeaponTargetingModel targeting,
             ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
             ISkirmishRouteNavigation routeNavigation,
             UnitActionTargetingModel unitTargeting, IShipAbilityTargeting abilities,
-            ILocalPlayer localPlayer, IUiService uiService, IUiCancelRouter cancelRouter)
+            ILocalPlayer localPlayer, IUiService uiService, IUiCancelRouter cancelRouter,
+            ITooltipService tooltips, SuperWeaponData data,
+            EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction,
+            EmpireAtWar.Services.Input.IInputBindings bindings)
             : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
@@ -43,6 +54,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _routeNavigation = routeNavigation;
             _unitTargeting = unitTargeting;
             _abilities = abilities;
+            _tooltips = new TooltipRequests(tooltips);
+            _data = data;
+            _faction = faction;
+            _bindings = bindings;
         }
 
         public void Initialize()
@@ -67,6 +82,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_view != null) return;
             _view = _viewProvider.SuperWeaponsView;
             _view.Initialize();
+            _tooltipHover = new TooltipHoverSubscription(
+                ((ITooltipHoverView)_view).TooltipHover,
+                HandleTooltipHover, _tooltips);
             _view.Pressed += HandlePressed;
             _model.OnStateChanged += HandleStateChanged;
             _targeting.Changed += RenderPending;
@@ -82,6 +100,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private void Unbind()
         {
             if (_view == null) return;
+            _tooltipHover.Dispose();
             _view.Pressed -= HandlePressed;
             _model.OnStateChanged -= HandleStateChanged;
             _targeting.Changed -= RenderPending;
@@ -92,6 +111,34 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             Unfocus();
             _view.Dispose();
             _view = null;
+        }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
+        {
+            SuperWeaponType type = Enum.Parse<SuperWeaponType>((string)key);
+            _tooltips.Show(source, type, anchor, () => _view != null, () =>
+            {
+                SuperWeaponProfile profile = _data.GetProfile(type);
+                SuperWeaponState state = _model.GetState(type);
+                float remaining = 0f;
+                foreach (var queue in _faction.GetProductionQueueSnapshots())
+                    if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request && request.Key == type)
+                        remaining = queue.RemainingBuildTime;
+                return new TooltipContent(type.ToString(),
+                    $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
+                    stats: new[]
+                    {
+                        new TooltipStat("Damage per shot", profile.Weapon.Damage),
+                        new TooltipStat("Shots", profile.Weapon.ShotsPerSalvo),
+                        new TooltipStat("Range", profile.Weapon.Range),
+                        new TooltipStat("Firing delay (s)", profile.FiringDelay),
+                        new TooltipStat("Area damage", profile.AreaDamage),
+                        new TooltipStat("Area radius", profile.AreaRadius),
+                        new TooltipStat("Stun duration (s)", profile.StunDuration)
+                    }, status: state == SuperWeaponState.Charging ? $"Construction: {remaining:0.#} s remaining"
+                        : state == SuperWeaponState.Ready ? "Ready: click to select a target"
+                        : "Unavailable: build a new charge at the station");
+            });
         }
 
         private void HandlePressed(SuperWeaponType type)

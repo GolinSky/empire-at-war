@@ -20,5 +20,6 @@ namespace EmpireAtWar.Ui.Base
         Skirmish = 12,
         Settings = 13,
         Fps = 14,
+        Tooltip = 15,
     }
 }

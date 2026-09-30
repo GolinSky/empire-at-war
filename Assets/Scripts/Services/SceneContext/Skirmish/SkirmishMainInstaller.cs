@@ -1,3 +1,5 @@
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Entities.Fps;
 using EmpireAtWar.SceneContext;
@@ -56,6 +58,17 @@ public class SkirmishMainInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.BindScriptableObject<TooltipSettings>(Repository);
+        Container.BindScriptableObject<TooltipIconData>(Repository);
+        Container.Bind<TooltipTiming>().FromMethod(context =>
+            context.Container.Resolve<TooltipSettings>().Timing).AsSingle();
+        Container.Bind<ITooltipClock>()
+            .To<TooltipClock>().AsSingle();
+        Container.BindInterfacesAndSelfTo<TooltipModel>().AsSingle();
+        Container.BindInterfacesAndSelfTo<TooltipService>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<TooltipUiController>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<TooltipLifecyclePresenter>().AsSingle().NonLazy();
+        Container.BindInterfacesTo<WorldTooltipPresenter>().AsSingle().NonLazy();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
         Container.BindScriptableObject<CaptureSiteData>(Repository);
         Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();

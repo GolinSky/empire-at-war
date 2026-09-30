@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Models.ShipUi;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views
 {
-    public class ShipUi : BaseUi, IShipUi
+    public class ShipUi : BaseUi, IShipUi, ITooltipHoverView
     {
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Views
         [SerializeField] private ShipAbilityBarUi abilityBar;
         [SerializeField] private Image healthFill;
         [SerializeField] private Image shieldFill;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private IShipUiModelObserver _model;
         private IShipIconProvider _icons;
@@ -35,8 +38,11 @@ namespace EmpireAtWar.Views
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
         public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
-        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots) =>
+        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots)
+        {
+            abilityBar.SetTooltipHover(tooltipHover);
             abilityBar.SetSlots(slots, _presenter.PressAbility);
+        }
 
         public void SetHealth(IHealthModelObserver health)
         {
@@ -78,6 +84,7 @@ namespace EmpireAtWar.Views
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;
             abilityBar.SetModel(model);
+            abilityBar.SetTooltipHover(tooltipHover);
             abilityBar.SetSlots(entry.AbilitySlots, entry.PressAbility);
             SetHealth(entry.Health);
             disableSelectionButton.onClick.AddListener(HandleSelection);

@@ -35,8 +35,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public bool HasUnits => !IsDestroyed && Members.Length > 0;
         public bool HasLiveHardPoints => AliveCount > 0;
         public int AliveCount { get; private set; }
-        private float MaxHull => _data.MemberHull * Members.Length;
-        private float MaxShields => _data.MemberShields * Members.Length;
+        public float MaxHull => _data.MemberHull * Members.Length;
+        public float MaxShields => _data.MemberShields * Members.Length;
 
         public SquadronHealthModel(ISquadronHealthData data, DamageMatrixData damageMatrix,
             CombatModifiers modifiers)

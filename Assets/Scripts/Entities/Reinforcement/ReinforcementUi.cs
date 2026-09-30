@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
@@ -28,11 +29,13 @@ namespace EmpireAtWar.Views.Reinforcement
         void Dispose();
     }
 
-    public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor
+    public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor, ITooltipHoverView
     {
         private const string UNIT_CAPACITY_TEXT = "REINFORCEMENTS";
 
         [SerializeField] private Transform spawnTransform;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button closeButton;
         [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
@@ -108,6 +111,7 @@ namespace EmpireAtWar.Views.Reinforcement
             {
                 ISpawnShipUi spawnShipUi = Instantiate(_data.ReinforcementButton, spawnTransform);
                 spawnShipUi.Init(this, request);
+                tooltipHover.Register(((SpawnShipUi)spawnShipUi).TooltipTrigger);
                 _spawnUnitUiDictionary.Add(key, spawnShipUi);
                 ActivateUnitUi(spawnShipUi);
             }

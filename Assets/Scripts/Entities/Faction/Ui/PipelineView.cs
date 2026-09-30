@@ -1,4 +1,5 @@
-﻿using System;
+using EmpireAtWar.Components.Ui.Tooltip;
+using System;
 using EmpireAtWar.Models.Factions;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private Button skipButton;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
         
         private Action<string> _cancelBuilding;
         private string _id;
@@ -40,6 +43,7 @@ namespace EmpireAtWar.Views.Factions
             }
 
             _id = snapshot.UnitRequest.Id;
+            tooltipTrigger.SetKey(_id);
             icon.sprite = snapshot.UnitRequest.FactionData.Icon;
             countText.text = snapshot.Count.ToString();
             int buildTime = snapshot.UnitRequest.FactionData.BuildTime;

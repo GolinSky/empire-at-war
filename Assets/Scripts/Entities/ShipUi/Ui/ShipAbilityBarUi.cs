@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -16,6 +17,8 @@ namespace EmpireAtWar.Views
         private readonly Dictionary<ShipAbilityId, List<ShipAbilitySlot>> _groups =
             new Dictionary<ShipAbilityId, List<ShipAbilitySlot>>();
         private IShipUiModelObserver _model;
+        private TooltipHoverView _tooltipHover;
+        public void SetTooltipHover(TooltipHoverView hover) => _tooltipHover = hover;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
 
@@ -41,6 +44,7 @@ namespace EmpireAtWar.Views
                     _buttons.Add(Instantiate(buttonPrefab, buttonParent));
                 _buttons[buttonIndex].Configure(group.Key, group.Value,
                     group.Value[0].Definition.Icon, onPressed);
+                if (_tooltipHover != null) _tooltipHover.Register(_buttons[buttonIndex].TooltipTrigger);
                 _buttons[buttonIndex].gameObject.SetActive(true);
                 buttonIndex++;
             }

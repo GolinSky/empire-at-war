@@ -1170,6 +1170,7 @@ GameObject:
   - component: {fileID: 707211160199377556}
   - component: {fileID: 1726747046274357170}
   - component: {fileID: 2294613257933650423}
+  - component: {fileID: 6859298081814019723}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -1385,6 +1386,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &6859298081814019723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345955002691044941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7486958125620140214}
+  key: Planet
 --- !u!1 &363393703195442820
 GameObject:
   m_ObjectHideFlags: 0
@@ -3647,6 +3662,7 @@ GameObject:
   - component: {fileID: 8863721830041423852}
   - component: {fileID: 3552685957119649429}
   - component: {fileID: 8208254108558652321}
+  - component: {fileID: 4530806217166712708}
   m_Layer: 5
   m_Name: SlotRow4
   m_TagString: Untagged
@@ -3814,6 +3830,20 @@ MonoBehaviour:
   factionDropdown: {fileID: 3828919560437979495}
   teamDropdown: {fileID: 99472912830700870}
   colorDropdown: {fileID: 8494406625098343391}
+--- !u!114 &4530806217166712708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096250967652362398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4511067981750272889}
+  key: Player
 --- !u!1 &1111898082376943170
 GameObject:
   m_ObjectHideFlags: 0
@@ -7844,6 +7874,7 @@ GameObject:
   - component: {fileID: 5726921672918722871}
   - component: {fileID: 2171233162235445292}
   - component: {fileID: 2051366848128691256}
+  - component: {fileID: 588184768435716038}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -8059,6 +8090,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &588184768435716038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2495632572236850534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 8603407908699115804}
+  key: Victory condition
 --- !u!1 &2504781973941943390
 GameObject:
   m_ObjectHideFlags: 0
@@ -10839,6 +10884,7 @@ GameObject:
   - component: {fileID: 3486600226437124262}
   - component: {fileID: 3476980470238896765}
   - component: {fileID: 8964886706763092541}
+  - component: {fileID: 2274914584484233559}
   m_Layer: 5
   m_Name: SlotRow3
   m_TagString: Untagged
@@ -11006,6 +11052,20 @@ MonoBehaviour:
   factionDropdown: {fileID: 6845554842797571585}
   teamDropdown: {fileID: 1781308820002373469}
   colorDropdown: {fileID: 450381437475674226}
+--- !u!114 &2274914584484233559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3473134013669348930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 3687380853830088514}
+  key: Player
 --- !u!1 &3535090480093753984
 GameObject:
   m_ObjectHideFlags: 0
@@ -11462,6 +11522,7 @@ GameObject:
   - component: {fileID: 8216491493233073441}
   - component: {fileID: 7688771277786310211}
   - component: {fileID: 5175845760478647685}
+  - component: {fileID: 6760657784384195827}
   m_Layer: 5
   m_Name: SlotRow2
   m_TagString: Untagged
@@ -11629,6 +11690,20 @@ MonoBehaviour:
   factionDropdown: {fileID: 8972332712461218015}
   teamDropdown: {fileID: 7759412305296005885}
   colorDropdown: {fileID: 7342825137327511551}
+--- !u!114 &6760657784384195827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3746036788646698980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 167576958667428643}
+  key: Player
 --- !u!1 &3785991336620682836
 GameObject:
   m_ObjectHideFlags: 0
@@ -12566,6 +12641,7 @@ GameObject:
   - component: {fileID: 6215877517377226150}
   - component: {fileID: 4666495235759102847}
   - component: {fileID: 6091553307987835861}
+  - component: {fileID: 4827029018432807445}
   m_Layer: 5
   m_Name: SkirmishUi
   m_TagString: Untagged
@@ -12618,6 +12694,7 @@ MonoBehaviour:
   victoryConditionDropdown: {fileID: 2171233162235445292}
   startingMoneySlider: {fileID: 7476319599465114112}
   startingMoneyText: {fileID: 4372128502141099759}
+  tooltipHover: {fileID: 4827029018432807445}
 --- !u!225 &6091553307987835861
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -12630,6 +12707,29 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4827029018432807445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4082562394569656993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 1585302522339281733}
+  - {fileID: 6669834369751146844}
+  - {fileID: 6859298081814019723}
+  - {fileID: 7256244528438868415}
+  - {fileID: 588184768435716038}
+  - {fileID: 6170973381232258853}
+  - {fileID: 228923420283533017}
+  - {fileID: 6760657784384195827}
+  - {fileID: 2274914584484233559}
+  - {fileID: 4530806217166712708}
 --- !u!1 &4097399130985655684
 GameObject:
   m_ObjectHideFlags: 0
@@ -18355,6 +18455,7 @@ GameObject:
   - component: {fileID: 8717070058266947731}
   - component: {fileID: 6985095973032348232}
   - component: {fileID: 5825747044699140594}
+  - component: {fileID: 7256244528438868415}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -18567,6 +18668,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &7256244528438868415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5895343630234593275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7043099679365862820}
+  key: Map size
 --- !u!1 &6004146021193171742
 GameObject:
   m_ObjectHideFlags: 0
@@ -19307,6 +19422,7 @@ GameObject:
   - component: {fileID: 4420758687002989623}
   - component: {fileID: 3260133808248072582}
   - component: {fileID: 645012449499221730}
+  - component: {fileID: 228923420283533017}
   m_Layer: 5
   m_Name: SlotRow1
   m_TagString: Untagged
@@ -19474,6 +19590,20 @@ MonoBehaviour:
   factionDropdown: {fileID: 8151915972916847527}
   teamDropdown: {fileID: 498544222200338876}
   colorDropdown: {fileID: 5838584205569690721}
+--- !u!114 &228923420283533017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6263024571357841088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 8429116790414342918}
+  key: Player
 --- !u!1 &6301541829936708238
 GameObject:
   m_ObjectHideFlags: 0
@@ -20888,6 +21018,7 @@ GameObject:
   - component: {fileID: 2921580354993103423}
   - component: {fileID: 7705600912149352972}
   - component: {fileID: 2307174749804794478}
+  - component: {fileID: 6669834369751146844}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -21078,6 +21209,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &6669834369751146844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6905542424772569212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 2117040478984312040}
+  key: Close
 --- !u!1 &6927290264667332865
 GameObject:
   m_ObjectHideFlags: 0
@@ -21493,6 +21638,7 @@ GameObject:
   - component: {fileID: 4164033653619305057}
   - component: {fileID: 8616130414433798983}
   - component: {fileID: 1777660979941078820}
+  - component: {fileID: 1585302522339281733}
   m_Layer: 5
   m_Name: StartGameButton
   m_TagString: Untagged
@@ -21683,6 +21829,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &1585302522339281733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046905282660198292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7242405720566980280}
+  key: Start battle
 --- !u!1 &7093327180966730027
 GameObject:
   m_ObjectHideFlags: 0
@@ -28164,6 +28324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4314948466214779705}
   - component: {fileID: 7476319599465114112}
+  - component: {fileID: 6170973381232258853}
   m_Layer: 0
   m_Name: StartingMoneySlider
   m_TagString: Untagged
@@ -28244,6 +28405,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6170973381232258853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9066962522993197224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4314948466214779705}
+  key: Starting credits
 --- !u!1 &9102507339480041223
 GameObject:
   m_ObjectHideFlags: 0

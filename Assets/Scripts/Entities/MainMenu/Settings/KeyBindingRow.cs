@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using TMPro;
 using UnityEngine;
@@ -11,6 +12,16 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private Button bindingButton;
         [SerializeField] private TMP_Text bindingText;
         [SerializeField] private Button resetButton;
+        [SerializeField] private TooltipTrigger bindingTooltip;
+        [SerializeField] private TooltipTrigger resetTooltip;
+
+        public void RegisterTooltips(TooltipHoverView hover)
+        {
+            bindingTooltip.SetKey((_row, false));
+            resetTooltip.SetKey((_row, true));
+            hover.Register(bindingTooltip);
+            hover.Register(resetTooltip);
+        }
 
         private int _row;
         private Action<int> _rebind;

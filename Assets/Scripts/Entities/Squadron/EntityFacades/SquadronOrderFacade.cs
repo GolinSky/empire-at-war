@@ -6,12 +6,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 {
-    public sealed class SquadronOrderFacade : IMoveFacade, IAttackFacade, IAttackMoveFacade, IStopFacade,
+    public sealed class SquadronOrderFacade : IUnitOrderObserverFacade, IMoveFacade, IAttackFacade, IAttackMoveFacade, IStopFacade,
         IGuardFacade, IWaypointMoveFacade, IHuntFacade, IRetreatFacade
     {
         private readonly Squadron _squadron;
 
         public SquadronOrderFacade(Squadron squadron) => _squadron = squadron;
+        public UnitOrderType CurrentOrder => _squadron.CurrentOrder;
 
         public Vector3 WorldPosition => _squadron.WorldPosition;
         public float NavigationRadius => _squadron.NavigationRadius;

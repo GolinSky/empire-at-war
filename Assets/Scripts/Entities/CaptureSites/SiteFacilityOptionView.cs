@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text costText;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
         public event Action<SiteFacilityType> Pressed;
 
@@ -32,6 +35,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         {
             nameText.text = displayName;
             costText.text = costLabel;
+            tooltipTrigger.SetKey(facilityType);
         }
 
         public void SetInteractable(bool isInteractable)

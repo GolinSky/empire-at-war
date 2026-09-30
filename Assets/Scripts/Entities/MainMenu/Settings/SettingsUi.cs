@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Ui.Base;
@@ -7,11 +8,13 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
-    public class SettingsUi : BaseUi, ISettingsUi
+    public class SettingsUi : BaseUi, ISettingsUi, ITooltipHoverView
     {
         private const string UNSAVED_CHANGES_MESSAGE = "Unsaved changes";
 
         [SerializeField] private Button closeButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button applyButton;
         [SerializeField] private Button discardButton;
         [SerializeField] private Button resetDefaultsButton;
@@ -173,6 +176,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 KeyBindingRow row = Instantiate(keyBindingRowTemplate, keyBindingRowTemplate.transform.parent);
                 row.gameObject.SetActive(true);
                 row.Initialize(_keyBindingRows.Count, _navigation.StartRebind, _navigation.ResetBinding);
+                row.RegisterTooltips(tooltipHover);
                 _keyBindingRows.Add(row);
             }
 

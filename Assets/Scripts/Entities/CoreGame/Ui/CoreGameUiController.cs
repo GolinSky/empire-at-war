@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
@@ -31,6 +34,10 @@ namespace EmpireAtWar.Presenters.Game
         private ICoreGameUi _ui;
         private EndGamePresenter _endGamePresenter;
         private ISelectionContext _lastSelectionContext;
+        private readonly TooltipRequests _tooltips;
+        private readonly ITooltipService _tooltipService;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private TooltipHoverSubscription _tooltipHover;
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
@@ -42,13 +49,18 @@ namespace EmpireAtWar.Presenters.Game
             ISkirmishSessionModelObserver sessionModel,
             ISkirmishFlow skirmishFlow,
             INotifier<BattleResult> battleVictoryNotifier,
-            ICinematicCameraController cinematicCamera) : base(uiService, cancelRouter)
+            ICinematicCameraController cinematicCamera,
+            ITooltipService tooltips,
+            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _sessionModel = sessionModel;
             _skirmishFlow = skirmishFlow;
             _battleVictoryNotifier = battleVictoryNotifier;
             _cinematicCamera = cinematicCamera;
+            _tooltips = new TooltipRequests(tooltips);
+            _tooltipService = tooltips;
+            _bindings = bindings;
         }
 
         public void Initialize()
@@ -57,10 +69,12 @@ namespace EmpireAtWar.Presenters.Game
             _ui.SetModel(_sessionModel);
             _ui.SetPresenter(this);
             _ui.Initialize();
+            _tooltipHover = new TooltipHoverSubscription(
+                ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _endGamePresenter = new EndGamePresenter(
                 _battleVictoryNotifier,
                 _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
-                _skirmishFlow.ExitSkirmish);
+                _skirmishFlow.ExitSkirmish, _tooltipService);
             _selectionService.AddObserver(this);
 
             foreach (KeyValuePair<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>
@@ -105,6 +119,7 @@ namespace EmpireAtWar.Presenters.Game
             if (_ui != null)
             {
                 _ui.Dispose();
+                _tooltipHover.Dispose();
             }
         }
 
@@ -262,5 +277,16 @@ namespace EmpireAtWar.Presenters.Game
             return !_routeStates.TryGetValue(position, out bool isActive) ||
                    isActive;
         }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => !_sessionModel.IsBattleEnded, () =>
+                new TooltipContent((string)key, (string)key switch
+                {
+                    "Pause" => "Pause or resume the battle.",
+                    "Speed" => "Switch the battle speed.",
+                    "Reinforcements" => "Open or close available reinforcements. Drag a card into a friendly deployment zone.",
+                    "Cinematic" => $"Enter cinematic camera mode. Exit with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
     }
 }

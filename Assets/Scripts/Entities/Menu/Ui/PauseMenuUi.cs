@@ -1,14 +1,17 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.Menu
 {
-    public class PauseMenuUi : BaseUi, IPauseMenuUiView
+    public class PauseMenuUi : BaseUi, IPauseMenuUiView, ITooltipHoverView
     {
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private IPauseMenuPresenter _presenter;
         private bool _isInitialized;

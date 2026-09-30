@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
@@ -28,9 +29,11 @@ namespace EmpireAtWar.Views.Factions
         void Dispose();
     }
 
-    public class FactionUi : BaseUi, IFactionUi, IFactionView
+    public class FactionUi : BaseUi, IFactionUi, IFactionView, ITooltipHoverView
     {
         [SerializeField] private FactionUnitUi factionUnitPrefab;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
@@ -198,6 +201,7 @@ namespace EmpireAtWar.Views.Factions
         {
             FactionUnitUi unitUi = Instantiate(factionUnitPrefab, _unitParent);
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
+            tooltipHover.Register(unitUi.TooltipTrigger);
             _factionUnitsUi.Add(unitUi);
             return unitUi;
         }
@@ -236,6 +240,7 @@ namespace EmpireAtWar.Views.Factions
                     levelData,
                     _model.CurrentLevel);
             _levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
+            tooltipHover.Register(_levelFactionUnitUi.TooltipTrigger);
             _factionUnitsUi.Add(_levelFactionUnitUi);
         }
 
@@ -280,8 +285,8 @@ namespace EmpireAtWar.Views.Factions
             for (int i = 0; i < _factionUnitsUi.Count; i++)
             {
                 FactionUnitUi unitUi = _factionUnitsUi[i];
-                unitUi.SetActive(
-                    isSelectionVisible && unitUi.Level <= _model.CurrentLevel);
+                unitUi.SetActive(isSelectionVisible);
+                unitUi.SetAvailable(_presenter.IsUnitAvailable(unitUi.FactionData));
             }
         }
     }

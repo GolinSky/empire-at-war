@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using EmpireAtWar.Services.Player;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace EmpireAtWar.Views.MiniMap
         Vector2 GetPosition(Vector3 worldPos);
         Vector2 GetSize(float worldDiameter);
     }
-    public class MiniMapUi : BaseUi<IMiniMapModelObserver>, IMiniMapView, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable
+    public class MiniMapUi : BaseUi<IMiniMapModelObserver>, IMiniMapView, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable, ITooltipHoverView
     {
         private const float HIGHLIGHT_DURATION = 0.3f;
         private const float HIGHLIGHT_MAP_ALPHA = 1f;
@@ -28,6 +29,8 @@ namespace EmpireAtWar.Views.MiniMap
         [Inject] private IPlayerColors PlayerColors { get; }
 
         [SerializeField] private RectTransform miniMapRectTransform;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         [SerializeField] private CameraFootprintView cameraFootprintView;
@@ -74,6 +77,7 @@ namespace EmpireAtWar.Views.MiniMap
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
+            tooltipHover.Register(view.TooltipTrigger);
             if (markData is BaseMarkData baseMark)
             {
                 view.IconImage.color = PlayerColors.GetColor(baseMark.Owner);
@@ -85,6 +89,7 @@ namespace EmpireAtWar.Views.MiniMap
         {
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData(this, PlayerColors, iconParent, marker, Model.GetIcon(marker.MarkType));
+            tooltipHover.Register(view.TooltipTrigger);
             _markerViews.Add(marker, view);
             _mapMarkers.Add(view.IconImage);
         }

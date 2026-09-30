@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -24,6 +25,14 @@ namespace EmpireAtWar.Views
         [SerializeField] private GridLayoutGroup entriesLayout;
         [SerializeField] private ShipUi entryPrefab;
         [SerializeField] private ShipAbilityBarUi abilityBar;
+        [SerializeField] private TooltipTrigger tooltipTrigger;
+        private TooltipHoverView _tooltipHover;
+        public void SetTooltipHover(TooltipHoverView hover)
+        {
+            _tooltipHover = hover;
+            _tooltipHover.Register(tooltipTrigger);
+            abilityBar.SetTooltipHover(hover);
+        }
 
         private Action _onClicked;
         private int _shipCount;
@@ -36,12 +45,14 @@ namespace EmpireAtWar.Views
             IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility)
         {
             Configure(shipType.ToString(), icon, ships, model, () => onClicked(shipType), pressAbility);
+            tooltipTrigger.SetKey(shipType);
         }
 
         public void Configure(SquadronType squadronType, Sprite icon, IReadOnlyList<ShipUiEntry> squadrons,
             IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility)
         {
             Configure(squadronType.ToString(), icon, squadrons, model, () => onClicked(squadronType), pressAbility);
+            tooltipTrigger.SetKey(squadronType);
         }
 
         private void Configure(string label, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
@@ -57,6 +68,7 @@ namespace EmpireAtWar.Views
             {
                 ShipUi entry = Instantiate(entryPrefab, entriesLayout.transform);
                 entry.ConfigureEntry(icon, model, ships[i], HandleClick);
+                entry.TooltipHover.ForwardTo(_tooltipHover, ships[i]);
                 entry.gameObject.SetActive(true);
                 for (int j = 0; j < ships[i].AbilitySlots.Count; j++)
                 {

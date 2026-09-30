@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 9096992407391473688}
   - component: {fileID: 1598169822330211070}
   - component: {fileID: 5685622320469238615}
+  - component: {fileID: 4307810411101252927}
   m_Layer: 5
   m_Name: ShipIcon
   m_TagString: Untagged
@@ -434,6 +435,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4307810411101252927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4645711731058623630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 4857806400498251321}
+  key: Focus
 --- !u!1 &4780455102027284731
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,6 +461,7 @@ GameObject:
   - component: {fileID: 2771153474630945994}
   - component: {fileID: 5121309695918399779}
   - component: {fileID: 6334947701094778549}
+  - component: {fileID: 6633642001346033511}
   m_Layer: 0
   m_Name: ShipCard
   m_TagString: Untagged
@@ -638,6 +654,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6633642001346033511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4780455102027284731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 1079771970304263130}
+  key: Selection
 --- !u!1 &5749101046437683160
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,6 +680,7 @@ GameObject:
   - component: {fileID: 88558583102079023}
   - component: {fileID: 3201764120452726311}
   - component: {fileID: 4003304680418406474}
+  - component: {fileID: 5305379609667457441}
   m_Layer: 5
   m_Name: ShipUi
   m_TagString: Untagged
@@ -705,6 +736,7 @@ MonoBehaviour:
   abilityBar: {fileID: 8962644063851557097}
   healthFill: {fileID: 9203836035738565003}
   shieldFill: {fileID: 7775859001743815216}
+  tooltipHover: {fileID: 5305379609667457441}
 --- !u!225 &4003304680418406474
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -717,6 +749,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &5305379609667457441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5749101046437683160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 4307810411101252927}
+  - {fileID: 4307810411101252927}
+  - {fileID: 6633642001346033511}
+  - {fileID: 6121178477370168912}
+  - {fileID: 7399808071370262978}
 --- !u!1 &6854711012682174634
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,6 +778,7 @@ GameObject:
   - component: {fileID: 7986435980258168880}
   - component: {fileID: 1246485991636885156}
   - component: {fileID: 9203836035738565003}
+  - component: {fileID: 6121178477370168912}
   m_Layer: 0
   m_Name: HealthFill
   m_TagString: Untagged
@@ -776,7 +827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
   m_Color: {r: 0.25, g: 0.9, b: 0.42, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -873,6 +924,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &6121178477370168912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6854711012682174634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7986435980258168880}
+  key: Hull
 --- !u!1 &7199230597168866718
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,6 +949,7 @@ GameObject:
   - component: {fileID: 7010595418908085158}
   - component: {fileID: 7080411963822217129}
   - component: {fileID: 7775859001743815216}
+  - component: {fileID: 7399808071370262978}
   m_Layer: 0
   m_Name: ShieldFill
   m_TagString: Untagged
@@ -932,7 +998,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
   m_Color: {r: 0.2, g: 0.72, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1029,6 +1095,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &7399808071370262978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7199230597168866718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 7010595418908085158}
+  key: Shields
 --- !u!1 &7422184043045789584
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,6 +31,13 @@ namespace EmpireAtWar.Models.Factions
             return factionDataWrapper.Dictionary[factionType].Dictionary;
         }
 
+        public FactionData GetShipFactionData(ShipType shipType)
+        {
+            foreach (FactionDataWrapper wrapper in factionDataWrapper.Dictionary.Values)
+                if (wrapper.Dictionary.TryGetValue(shipType, out FactionData data)) return data;
+            throw new KeyNotFoundException($"No faction data for ship {shipType}.");
+        }
+
         public Dictionary<SquadronType, FactionData> GetSquadronFactionData(FactionType factionType)
         {
             return squadronFactionDataWrapper.Dictionary[factionType].Dictionary;

@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Commands.Game;
 using System;
 using EmpireAtWar.Models.SkirmishGame;
@@ -13,9 +14,11 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.Game
 {
-    public class CoreGameUi : BaseUi, ICoreGameUi
+    public class CoreGameUi : BaseUi, ICoreGameUi, ITooltipHoverView
     {
         [SerializeField] private Button timeButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button speedUpButton;
         [SerializeField] private Button reinforcementButton;
         [SerializeField] private Button videoModeButton;

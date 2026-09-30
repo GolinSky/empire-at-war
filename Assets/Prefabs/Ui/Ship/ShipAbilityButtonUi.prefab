@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 8998038558258408976}
   - component: {fileID: 7781393529263135368}
   - component: {fileID: 4333302952280616436}
+  - component: {fileID: 2469834788194866533}
   m_Layer: 5
   m_Name: ShipAbilityButtonUi
   m_TagString: Untagged
@@ -611,6 +612,7 @@ MonoBehaviour:
   cooldownFill: {fileID: 1081435193368007592}
   activeHighlight: {fileID: 7204472508398069273}
   targetingHighlight: {fileID: 8134688379684884667}
+  tooltipTrigger: {fileID: 2469834788194866533}
 --- !u!114 &4333302952280616436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +633,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2469834788194866533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8341970245074214916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 3819496379867737245}
+  key: 
 --- !u!1 &8519584100480755296
 GameObject:
   m_ObjectHideFlags: 0

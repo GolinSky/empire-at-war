@@ -1,12 +1,15 @@
+using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Ui
 {
-    public sealed class SuperWeaponsView : MonoBehaviour, ISuperWeaponsView
+    public sealed class SuperWeaponsView : MonoBehaviour, ISuperWeaponsView, ITooltipHoverView
     {
         [SerializeField] private List<SuperWeaponButton> buttons;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action<SuperWeaponType> Pressed;
 

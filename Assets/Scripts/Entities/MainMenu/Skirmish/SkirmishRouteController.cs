@@ -7,6 +7,9 @@ using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
 using Zenject;
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
@@ -17,17 +20,21 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private readonly SkirmishModel _model;
 
         private ISkirmishUi _ui;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
+        private bool _isOpen;
 
         public SkirmishRouteController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IGameCommand gameCommand,
             SkirmishModel model,
-            TeamColorPalette teamColorPalette) : base(uiService, cancelRouter)
+            TeamColorPalette teamColorPalette, ITooltipService tooltips) : base(uiService, cancelRouter)
         {
             _teamColorPalette = teamColorPalette;
             _gameCommand = gameCommand;
             _model = model;
+            _tooltips = new TooltipRequests(tooltips);
         }
 
         public void Open()
@@ -42,14 +49,19 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 _ui.SetNavigation(this);
                 _ui.SetData(_teamColorPalette);
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(((ITooltipHoverView)_ui).TooltipHover,
+                    HandleTooltipHover, _tooltips);
             }
 
             _ui.Show();
+            _isOpen = true;
             Focus();
         }
 
         public void Close()
         {
+            _isOpen = false;
+            _tooltips.HideAll();
             _ui.Hide();
             Unfocus();
         }
@@ -121,7 +133,22 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             if (_ui != null)
             {
                 _ui.Dispose();
+                _tooltipHover.Dispose();
             }
         }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent((string)key,
+                (string)key switch
+                {
+                    "Start battle" => _model.CanStart ? "Start the battle with the current setup." : "Choose at least two opposing teams to start a battle.",
+                    "Close" => "Return to the main menu.",
+                    "Planet" => $"Choose the battlefield. Current: {_model.Planet}.",
+                    "Map size" => $"Choose the generated battlefield size. Current: {_model.MapSize}.",
+                    "Victory condition" => $"Choose the battle objective. Current: {_model.VictoryCondition}.",
+                    "Starting credits" => $"Credits per player at battle start: {_model.StartingMoney:0}.",
+                    "Player" => "Choose the occupant, AI difficulty, faction, team and colour. Players on the same team are allies.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
     }
 }

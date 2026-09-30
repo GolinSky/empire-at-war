@@ -1,6 +1,6 @@
 ---
 category: Features
-status: todo
+status: in-progress
 created: 2026-09-30
 tags:
   - ui
@@ -101,56 +101,54 @@ I<Feature>Presenter (UiController) ──►  WorldTooltipPresenter
   - Why: keeps `UnityEngine` out of the logic layer (MVP rule).
 - **Chosen:** make tooltip graphics non-raycast instead of changing `BaseUi` visibility.
   - Why: `BaseUi.SetVisibility` forces `blocksRaycasts = true`. With no raycast targets inside, the prefab never blocks.
-- **Open:** where Strong/Weak Against data comes from.
-  - Option A: authored per unit in a new `UnitMatchupData`.
-  - Option B: derived from `DamageMatrixData` accuracy per `ShipClass`.
-  - Decide in Phase 7. The recommendation is A, validated against B in an EditMode test.
+- **Chosen:** authored per unit in a new `UnitMatchupData`, as requested on 2026-09-30.
+  - Why: unit roles and matchups are explicit balance data; `DamageMatrixData` accuracy is not the tooltip's source of truth.
 
 ## Implementation
 
 ### Phase 0: Prep
-- [ ] Read `PROJECT_ORGANIZATION`, `UI_CODE_BUILD_GUIDE`, and `UI_UX_GUIDELINES`. Confirm the folders `Services/Tooltip/`, `Entities/Tooltip/`, and `Components/Ui/Tooltip/`.
-- [ ] Find the existing world-hover or pointer raycast source in `Services/Input`, `Services/Selection`, and `PointerInput`. Record its API here.
+- [x] Read `PROJECT_ORGANIZATION`, `UI_CODE_BUILD_GUIDE`, and `UI_UX_GUIDELINES`. Confirm the folders `Services/Tooltip/`, `Entities/Tooltip/`, and `Components/Ui/Tooltip/`.
+- [x] Find the existing world-hover or pointer raycast source in `Services/Input`, `Services/Selection`, and `PointerInput`. Record its API here.
 
 ### Phase 1: Tooltip service (logic)
-- [ ] Add `ITooltipService`, `TooltipService`, `TooltipModel`, `ITooltipModelObserver`, `ITooltipContentProvider`, `TooltipContent` (+ row types), `TooltipAnchor`, `TooltipHandle`, and `TooltipSettings`. One type per file.
-- [ ] Delay: the delay only counts down while the same `Key` is requested. A different key restarts it. Showing happens after `showDelay`.
-- [ ] Refresh: while visible, `IsValid == false` → hide. Otherwise `Build()` → `ContentChanged` when the content differs.
-- [ ] Write EditMode tests for delay, key reuse, stale-handle hide, replacement, invalid-provider hide, and `HideAll`. Run them only on request.
+- [x] Add `ITooltipService`, `TooltipService`, `TooltipModel`, `ITooltipModelObserver`, `ITooltipContentProvider`, `TooltipContent` (+ row types), `TooltipAnchor`, `TooltipHandle`, and `TooltipSettings`. One type per file.
+- [x] Delay: the delay only counts down while the same `Key` is requested. A different key restarts it. Showing happens after `showDelay`.
+- [x] Refresh: while visible, `IsValid == false` → hide. Otherwise `Build()` → `ContentChanged` when the content differs.
+- [x] Write EditMode tests for delay, key reuse, stale-handle hide, replacement, invalid-provider hide, and `HideAll`. Run them only on request.
 
 ### Phase 2: Tooltip UI
-- [ ] Add `UiType.Tooltip = 15`.
-- [ ] Create the prefab `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab` with MPUIKit panel styling. Every graphic has `raycastTarget = false`. Include `CanvasGroup`.
-- [ ] Register the Addressable key `TooltipUi` in the `Ui` group.
-- [ ] Add `TooltipUi`, the sub-widgets, `TooltipIconData`, and `TooltipUiController`.
-- [ ] Bind `TooltipSettings`, `TooltipModel`, `TooltipService`, and `TooltipUiController` in `SkirmishMainInstaller`. Add `MainMenuInstaller` only when a menu target is added.
-- [ ] Write EditMode tests: the prefab resolves to `ITooltipUi`, serialized references are assigned, and no graphic has `raycastTarget` set.
+- [x] Add `UiType.Tooltip = 15`.
+- [x] Create the prefab `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab` with MPUIKit panel styling. Every graphic has `raycastTarget = false`. Include `CanvasGroup`.
+- [x] Register the Addressable key `TooltipUi` in the `Ui` group.
+- [x] Add `TooltipUi`, the sub-widgets, `TooltipIconData`, and `TooltipUiController`.
+- [x] Bind `TooltipSettings`, `TooltipModel`, `TooltipService`, and `TooltipUiController` in `SkirmishMainInstaller`. Add `MainMenuInstaller` only when a menu target is added.
+- [x] Write EditMode tests: the prefab resolves to `ITooltipUi`, serialized references are assigned, and no graphic has `raycastTarget` set.
 
 ### Phase 3: First integration (station roster card)
-- [ ] Add `TooltipTrigger` to the `FactionUnitUi` card. `FactionUi` forwards hover → `IFactionPresenter.OnUnitHoverStarted(ShipType, anchor)` / `OnUnitHoverEnded()`.
-- [ ] `FactionUiController` builds a provider from `FactionData`: `Name`, `Price`, `BuildTime`, `UnitCapacity`, `AvailableLevel`. The Requirements section shows "Requires Station Level N", "Missing X credits", and "Population limit reached".
+- [x] Add `TooltipTrigger` to the `FactionUnitUi` card. `FactionUi.TooltipHover` forwards C# hover events → `FactionUiController.HandleTooltipHover` → `TooltipRequests` → `ITooltipService`.
+- [x] `FactionUiController` builds a provider from `FactionData`: `Name`, `Price`, `BuildTime`, `UnitCapacity`, `AvailableLevel`. The Requirements section shows "Requires Station Level N", "Missing X credits", and "Population limit reached".
 - [ ] Verify the tooltip shows on disabled cards and that the delay and replacement behave correctly.
 
 ### Phase 4: Commands, abilities, superweapon
-- [ ] `UnitActionsPresenter`: command buttons show name, shortcut, behaviour, target, and cancel input. The shortcut comes from `IInputBindings.GetBindingDisplayString(slot)`, so a rebind updates on the next refresh.
-- [ ] Ability buttons show effect, range, duration, cooldown, and readiness. With several ships selected, show "N of M ready". Toggles show On/Off.
-- [ ] `SuperWeaponPresenter` shows construction, charging, and cooldown phases separately, plus valid targets (including fighters).
+- [x] `UnitActionsPresenter`: command buttons show name, shortcut, behaviour, target, and cancel input. The shortcut comes from `IInputBindings.GetBindingDisplayString(slot)`, so a rebind updates on the next refresh.
+- [x] Ability buttons show effect, range, duration, cooldown, and readiness. With several ships selected, show "N of M ready". Toggles show On/Off.
+- [x] `SuperWeaponPresenter` shows the actual construction / ready / unavailable states, firing delay, damage, range, area and stun values. Current targeting rejects fighters; no separate recharge timer exists.
 
 ### Phase 5: HUD panels
-- [ ] Ship portrait / `ShipUiController` shows the ship info plus its current order. Grouped icons show type, count, and damaged count.
-- [ ] `EconomyUiController` shows credits, income, and population (used/max).
-- [ ] `ReinforcementUiController` shows reinforcement cards. `ShipBuildUiController` shows production queue items (progress, remaining time, refund).
+- [x] Ship portrait / `ShipUiController` shows the ship info plus its current order. Grouped icons show type, count, and damaged count.
+- [x] `EconomyUiController` shows credits, income, and population (used/max).
+- [x] `ReinforcementUiController` shows reinforcement cards. `ShipBuildUiController` shows production queue items (progress, remaining time, refund).
 
 ### Phase 6: World hover
-- [ ] Add `WorldTooltipPresenter` for ships, squadrons (whole squadron), hardpoints (what is lost when destroyed), and capture sites.
-- [ ] Enemy content respects visibility / fog-of-war rules. A provider becomes invalid when the target is no longer visible.
-- [ ] Anchor = cursor offset. Suppress the world tooltip while the pointer is over UI or during drag-marquee.
+- [x] Add `WorldTooltipPresenter` for ships, squadrons (whole squadron), hardpoints (what is lost when destroyed), and capture sites.
+- [x] Enemy content respects visibility / fog-of-war rules. A provider becomes invalid when the target is no longer visible.
+- [x] Anchor = cursor offset. Suppress the world tooltip while the pointer is over UI or during drag-marquee.
 
 ### Phase 7: Matchups
-- [ ] Resolve the open matchup-data decision and author the Strong/Weak Against rows. Use icon rows, not text only.
+- [x] Resolve the open matchup-data decision and author the Strong/Weak Against rows. Use icon rows, not text only.
 
 ### Phase 8: Remaining targets
-- [ ] Minimap controls and markers, hazards, objectives, and pause/settings/camera buttons. Add each only if the feature exists in the game.
+- [x] Minimap controls and markers, hazards, objectives, and pause/settings/camera buttons. Add each only if the feature exists in the game.
 
 ## Edge Cases
 
@@ -162,15 +160,37 @@ I<Feature>Presenter (UiController) ──►  WorldTooltipPresenter
 - Hovering over a UI panel that covers a ship → only the UI tooltip shows; the world tooltip is suppressed.
 - Feature presenter disposed while its tooltip is shown → it calls `Hide(handle)` in `LateDispose`.
 
-## Files (planned)
+## Files
 
-- `Assets/Scripts/Services/Tooltip/` holds the service, model, provider interface, content, anchor, handle, and settings.
-- `Assets/Scripts/Entities/Tooltip/` holds `TooltipUiController`, `ITooltipUi`, `TooltipUi`, the sub-widgets, `TooltipIconData`, and `WorldTooltipPresenter`.
+- `Assets/Scripts/Services/Tooltip/` holds the service, model, provider interface, content, anchor, handle, and plain timing.
+- `Assets/Scripts/Entities/Tooltip/` holds `TooltipUiController`, `ITooltipUi`, `TooltipUi`, the sub-widgets, `TooltipSettings`, `TooltipIconData`, unit matchup data, content helpers, and `WorldTooltipPresenter`.
 - `Assets/Scripts/Components/Ui/Tooltip/TooltipTrigger.cs`.
 - `Assets/Scripts/Components/Ui/Base/UiType.cs` gets the new `Tooltip` entry. `UiController.cs` is **unchanged**.
-- `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab`, `Assets/Settings/TooltipSettings.asset`, `Assets/Settings/TooltipIconData.asset`.
+- `Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab`, `Assets/Settings/Data/Tooltip/TooltipSettings.asset`, `Assets/Settings/Data/Tooltip/TooltipIconData.asset`, and `Assets/Settings/Data/Tooltip/Matchups/`.
 - `Assets/Scripts/Services/SceneContext/Skirmish/SkirmishMainInstaller.cs` gets the new bindings.
 
 ## TODO
 
-- [ ] Phase 0 through Phase 8 above.
+- [ ] In-game acceptance: hover disabled station cards, switch targets rapidly, close routes, hide HUD, and exit the scene.
+- [ ] In-game acceptance: live health / production / abilities / rebinding, fog loss, marquee suppression, minimap markers, and screen-edge placement.
+- [ ] Run the authored EditMode tests only when explicitly requested.
+
+## Implementation (2026-09-30)
+- Pure service / model: `0.35 s` delay, `0.1 s` live refresh, source + key reuse, stale-handle protection, invalid-target hide, unscaled clock.
+- Views publish hover events through `TooltipHoverView`; presenters own providers. `UiController.cs` remains unchanged.
+- UI: popup canvas, MPUIKit panel, reusable rows, icon-key catalog, screen-edge flip / clamp, all graphics non-raycast.
+- Coverage: roster / upgrades / research, commands / abilities / superweapons, selection / economy / reserves / queues, world units / hardpoints / capture sites / obstacles, minimap / menu / setup / settings / battle result.
+- Matchups: `13` per-unit assets for current faction roster definitions. Roles and initial matchups use current prefab weapons; these are editable tactical guidance.
+- World input: `ISelectionQuery.TryFindAt(Vector2, out SelectionEntry)`, `IPointerInput.Position`, `IUiHitTest.IsOverUi(Vector2)`, `IPointerGestures.DragStarted/DragEnded`.
+- Superweapons: `Charging` currently means construction. After consumption the charge is unavailable until rebuilt. Fighter eligibility follows `ISuperWeaponFireService.CanTarget`.
+- Population is a deployment gate, not a production gate. Reserve quantity comes from `ReinforcementModel`; successful deployment consumes it.
+
+### Verification
+- Unity compilation completed without C# errors; no automated tests executed.
+- Saved asset inspection: `26` hover owners, `98` triggers, no missing tooltip references; all `13` matchup assets resolve their icon keys.
+- Addressables verified: `TooltipUi` → existing `Ui` group; `TooltipSettings` and `TooltipIconData` → existing `Data` group; type-key mappings saved.
+- Sample Venator tooltip rendered in an isolated preview scene and visually inspected; no scene or Play Mode changes made for verification.
+- `TooltipServiceTests.cs`: delay, reuse, ownership, replacement, stale hide, invalid provider, live refresh, and `HideAll`.
+- `TooltipPrefabTests.cs`: interface / CanvasGroup, assigned widget references, and non-raycast graphics.
+- `TooltipTriggerTests.cs`: same-key hover reuse, hovered-row recycling, and disable cleanup. All three test files are authored and unrun.
+- Plan remains `in-progress` until the in-game acceptance checks above are recorded.

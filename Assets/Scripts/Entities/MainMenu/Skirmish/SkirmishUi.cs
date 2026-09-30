@@ -8,10 +8,11 @@ using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using EmpireAtWar.Components.Ui.Tooltip;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
-    public class SkirmishUi : BaseUi, ISkirmishUi
+    public class SkirmishUi : BaseUi, ISkirmishUi, ITooltipHoverView
     {
         // Labels for the AI rows, in SkirmishSlotOccupant order (Closed .. AiUltraHard).
         private static readonly string[] AI_OCCUPANT_OPTIONS =
@@ -27,6 +28,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private Slider startingMoneySlider;
         [SerializeField] private TMP_Text startingMoneyText;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private ISkirmishModelObserver _model;
         private ISkirmishRouteNavigation _navigation;

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6397796856056037375}
   - component: {fileID: 8879219678879860384}
   - component: {fileID: 7608207804413390026}
+  - component: {fileID: 598200728392410401}
   m_Layer: 5
   m_Name: EconomyUi
   m_TagString: Untagged
@@ -52,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 7608207804413390026}
   moneyText: {fileID: 8538319484462828056}
+  tooltipHover: {fileID: 598200728392410401}
 --- !u!225 &7608207804413390026
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -64,6 +66,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &598200728392410401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491582524155302127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 6076563903796576126}
 --- !u!1 &4859799027161427492
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,6 +351,7 @@ GameObject:
   - component: {fileID: 6169813078310414020}
   - component: {fileID: 795673745798391314}
   - component: {fileID: 8538319484462828056}
+  - component: {fileID: 6076563903796576126}
   m_Layer: 5
   m_Name: MoneyText
   m_TagString: Untagged
@@ -462,3 +479,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6076563903796576126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9144931710910531171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 6169813078310414020}
+  key: Economy

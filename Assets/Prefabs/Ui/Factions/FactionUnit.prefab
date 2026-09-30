@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8771476772782200598}
   - component: {fileID: 9037979142701862360}
   - component: {fileID: 2058160215538798344}
+  - component: {fileID: 6138838567896221846}
   m_Layer: 5
   m_Name: FactionUnit
   m_TagString: Untagged
@@ -98,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c403bee61b3fd04fb902d7f523008ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipTrigger: {fileID: 6138838567896221846}
   unitNameText: {fileID: 1504153883890589335}
   unitPriceText: {fileID: 2925843535256204605}
   unitIconImage: {fileID: 4859507491399935640}
@@ -221,6 +223,20 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &6138838567896221846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259683070922718735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4f4fef554e0234193d46757d53d154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
+  anchorRect: {fileID: 1460586841284908476}
+  key: 
 --- !u!1 &461959193894815860
 GameObject:
   m_ObjectHideFlags: 0

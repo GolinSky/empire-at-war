@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1168781857408660717}
   - component: {fileID: 9220919144486463678}
   - component: {fileID: 4118319410730507669}
+  - component: {fileID: 5558452487761606446}
   m_Layer: 5
   m_Name: FactionUi
   m_TagString: Untagged
@@ -62,6 +63,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 4118319410730507669}
   factionUnitPrefab: {fileID: 8771476772782200598, guid: d6ad7d4d3fdd06749bdf9a6e650793fa,
     type: 3}
+  tooltipHover: {fileID: 5558452487761606446}
 --- !u!114 &9220919144486463678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,3 +96,16 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &5558452487761606446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111893382535395372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers: []
