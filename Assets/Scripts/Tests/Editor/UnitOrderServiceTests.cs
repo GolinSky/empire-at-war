@@ -226,8 +226,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public FakeHealth(Transform transform) { Transform = transform; }
             public bool IsDestroyedValue { get; set; }
-            public event Action OnDestroy;
-            public event Action OnValueChanged;
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -249,8 +249,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeLocator : IEntityLocator
         {
-            public event Action<IEntity> EntityAdded;
-            public event Action<IEntity> EntityRemoved;
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
             public string Id => nameof(FakeLocator);
             public List<IEntity> EntitiesList { get; } = new List<IEntity>();
             public IReadOnlyCollection<IEntity> Entities => EntitiesList;
@@ -267,7 +267,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeZones : IReinforcementZonesSystem
         {
-            public event Action OwnershipChanged;
+            public event Action OwnershipChanged { add { } remove { } }
             public Vector3 Center => new Vector3(-100f, 0f, 50f);
             public PlayerId LastSide { get; private set; }
             public bool TryGetDefaultZoneCenter(PlayerId side, out Vector3 point)

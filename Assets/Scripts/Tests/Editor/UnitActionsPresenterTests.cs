@@ -263,7 +263,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeSession : ISkirmishSessionModelObserver
         {
-            public event Action<GameTimeMode> OnGameTimeModeChanged;
+            public event Action<GameTimeMode> OnGameTimeModeChanged { add { } remove { } }
             public GameTimeMode EffectiveTimeMode => default;
             public bool IsBattleEnded => false;
         }
@@ -317,8 +317,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public FakeHealth(Transform transform) { Transform = transform; }
-            public event Action OnDestroy;
-            public event Action OnValueChanged;
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;

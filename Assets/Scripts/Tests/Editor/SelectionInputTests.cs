@@ -198,7 +198,7 @@ namespace EmpireAtWar.Tests.Selection
         private sealed class FakeMarqueeSelectionPresenter :
             IMarqueeSelectionPresenter
         {
-            public event Action<MarqueeRectangle> Completed;
+            public event Action<MarqueeRectangle> Completed { add { } remove { } }
         }
 
         private sealed class FakeSelectionCommand : IEntitySelectionFacade

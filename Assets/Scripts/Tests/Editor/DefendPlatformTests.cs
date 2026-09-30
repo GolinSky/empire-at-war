@@ -70,8 +70,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class HealthModelStub : IHealthModelObserver
         {
-            public event Action OnDestroy;
-            public event Action OnValueChanged;
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass => ShipClass.Structure;
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RadarComponentStub : IRadarComponent
         {
             public string Id => nameof(RadarComponentStub);
-            public event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
+            public event Action<IReadOnlyList<RadarContact>> ContactsUpdated { add { } remove { } }
             public ObservableList<EmpireAtWar.Entities.BaseEntity.IEntity> Enemies => null;
             public Vector3 Position { get; private set; }
 

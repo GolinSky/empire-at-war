@@ -149,8 +149,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public event Action OnDestroy;
-            public event Action OnValueChanged;
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
