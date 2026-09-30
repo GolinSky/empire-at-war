@@ -152,6 +152,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void ResetToDefaults()
         {
             _settingsService.ResetDraftToDefaults();
+            _draftEditor.PreviewAudio();
             _keyBindingEditor.ResetAll();
             ShowResult(DEFAULTS_MESSAGE);
         }
@@ -161,6 +162,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SelectResolution(int index) => _draftEditor.SelectResolution(index);
         public void SelectFrameRateLimit(int index) => _draftEditor.SelectFrameRateLimit(index);
         public void SetVSync(bool isOn) => _draftEditor.SetVSync(isOn);
+        public void SetMasterVolume(float volume) => _draftEditor.SetMasterVolume(volume);
+        public void SetMusicVolume(float volume) => _draftEditor.SetMusicVolume(volume);
+        public void SetVoiceVolume(float volume) => _draftEditor.SetVoiceVolume(volume);
+        public void SetSfxVolume(float volume) => _draftEditor.SetSfxVolume(volume);
+        public void SetMuteWhenUnfocused(bool isOn) => _draftEditor.SetMuteWhenUnfocused(isOn);
         public void SetPanSpeed(float multiplier) => _draftEditor.SetPanSpeed(multiplier);
         public void SetZoomSpeed(float multiplier) => _draftEditor.SetZoomSpeed(multiplier);
         public void SetEdgeScrolling(bool isOn) => _draftEditor.SetEdgeScrolling(isOn);

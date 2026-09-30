@@ -14,12 +14,14 @@ namespace EmpireAtWar.Services.Settings
         [SerializeField] private int schemaVersion = CURRENT_SCHEMA_VERSION;
         [SerializeField] private DisplaySettingsData display = new DisplaySettingsData();
         [SerializeField] private GraphicsSettingsData graphics = new GraphicsSettingsData();
+        [SerializeField] private AudioSettingsData audio = new AudioSettingsData();
         [SerializeField] private CameraSettingsData camera = new CameraSettingsData();
         [SerializeField] private InputSettingsData input = new InputSettingsData();
 
         public int SchemaVersion => schemaVersion;
         public DisplaySettingsData Display => display;
         public GraphicsSettingsData Graphics => graphics;
+        public AudioSettingsData Audio => audio;
         public CameraSettingsData Camera => camera;
         public InputSettingsData Input => input;
 
@@ -36,6 +38,7 @@ namespace EmpireAtWar.Services.Settings
             data.schemaVersion = CURRENT_SCHEMA_VERSION;
             data.display.Sanitize();
             data.graphics.Sanitize();
+            data.audio.Sanitize();
             data.camera.Sanitize();
             return data;
         }

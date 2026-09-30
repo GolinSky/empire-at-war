@@ -13,6 +13,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         SettingsChoice FrameRateLimit { get; }
         bool VSync { get; }
 
+        float MasterVolume { get; }
+        float MusicVolume { get; }
+        float VoiceVolume { get; }
+        float SfxVolume { get; }
+        bool MuteWhenUnfocused { get; }
+
         float PanSpeed { get; }
         float ZoomSpeed { get; }
         bool EdgeScrolling { get; }
