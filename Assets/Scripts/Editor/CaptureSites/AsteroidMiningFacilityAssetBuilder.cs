@@ -15,7 +15,7 @@ namespace EmpireAtWar.Editor.CaptureSites
     public static class AsteroidMiningFacilityAssetBuilder
     {
         public const string MODEL_PATH =
-            "Assets/Art/Models/Station/space-station-asteroid-mining-facility/Space Mining Facility.dae";
+            "Assets/Art/Models/SpaceStations/AsteroidMiningFacility/AsteroidMiningFacility.dae";
         // Recentres the model's XZ footprint on the site pivot; shared by the site's rocks and scaffold.
         public static readonly Vector3 MODEL_OFFSET = new Vector3(-7f, 0f, -3.5f);
 
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string SOURCE_DATA_PATH = "Assets/Settings/Data/Models/MiningFacilities/MiningFacilityData.asset";
         private const string DATA_PATH = "Assets/Settings/Data/Models/MiningFacilities/AsteroidMiningFacilityData.asset";
         private const string SHIELD_MESH_PATH = "Assets/Art/Models/ShieldSurface.asset";
-        private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/ShipShield.mat";
+        private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/Vfx/ShipShield.mat";
         private const float SHIELD_VISIBILITY_RADIUS = 6f;
         private const float SHIELD_WAVE_SPEED = 10f;
         private const float SHIELD_WAVE_WIDTH = 1.2f;

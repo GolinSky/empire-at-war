@@ -17,6 +17,10 @@
   - **Details**: See [[UI_Service_Refactoring|UI Service Refactoring]]
   - **Reference**: [[UI_REFACTORING_PLAYBOOK|UI_REFACTORING_PLAYBOOK.md]]
 
+- [x] **Fix Project Organization & Asset Naming Defects**
+  - **Plan**: [[Project_Organization_Remediation_Plan|Project Organization & Asset Naming Remediation Plan]]
+  - **Research**: [[Project_Organization_Remediation_Plan - Research|Full Audit & Naming Mapping Catalog]]
+
 ## Architecture Backlog
 
 - [ ] Audit gameplay services for direct `IUiService` or `BaseUi` references.

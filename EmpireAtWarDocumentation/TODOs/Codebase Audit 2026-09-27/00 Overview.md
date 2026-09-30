@@ -4,7 +4,7 @@ tags:
   - refactoring
   - index
 created: 2026-09-27
-updated: 2026-09-28
+updated: 2026-09-30
 status: implemented
 ---
 
@@ -18,6 +18,10 @@ status: implemented
 > [!warning] Follow-up sweep 2026-09-28
 > All 17 entries were re-verified as present at f3fdf3d4. Two leftovers remain: an empty `Utils/Scenes` folder (from L3) and the fog models loose in the `Entities` root (from C4). The same issue classes still exist elsewhere: 79 multi-type files, silent null returns, property injection in services, a string-keyed pipeline dictionary, and hand-rolled owner counting in BattleVictoryService.
 > [[TODOs/Codebase Audit 2026-09-27/10 Follow-up Sweep 2026-09-28|Read the follow-up sweep]]
+
+> [!warning] Re-audit 2026-09-30 (current)
+> Covers the input refactor plus 49 commits. P2: marquee stuck on input lock, pool teardown on destroyed views, material instance leaks, silent null returns.
+> [[TODOs/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30|Read the re-audit]]
 
 | ID | Status | Result |
 |---|---|---|

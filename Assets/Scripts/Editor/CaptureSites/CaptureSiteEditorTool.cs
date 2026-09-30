@@ -24,7 +24,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string DATA_FOLDER = "Assets/Settings/Data/Models/CaptureSites";
         private const string DATA_PATH = DATA_FOLDER + "/CaptureSiteData.asset";
         private const string RING_MATERIAL_PATH = "Assets/Art/Materials/ReinforcementZones/ReinforcementZone.mat";
-        private const string HOLOGRAM_MATERIAL_PATH = "Assets/Art/Materials/Hologram.mat";
+        private const string HOLOGRAM_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Hologram.mat";
         private static readonly Color PANEL_COLOR = new Color32(0x08, 0x0C, 0x14, 0xF5);
         private static readonly Color PANEL_OUTLINE_COLOR = new Color32(0x1F, 0x87, 0xE6, 0xD9);
         private static readonly Color CARD_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xFF);

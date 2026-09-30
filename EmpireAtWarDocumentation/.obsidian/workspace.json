@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Ship_Movement_Simplification_Plan - Research.md",
+                "file": "Architecture/PROJECT_ORGANIZATION.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Ship_Movement_Simplification_Plan - Research"
+              "title": "PROJECT_ORGANIZATION"
             }
           }
         ]
@@ -80,7 +80,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 664.5
   },
   "right": {
     "id": "5211f2974bfd8b63",
@@ -185,8 +185,13 @@
       "bases:Create new base": false
     }
   },
-  "active": "3a9effa0e3d39806",
+  "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Codebase Audit 2026-09-27/11 Re-audit 2026-09-30.md",
+    "TODOs/Project_Organization_Remediation_Plan - Research.md",
+    "TODOs/Project_Organization_Remediation_Plan.md",
+    "Architecture/PROJECT_ORGANIZATION.md",
+    "TODOs/Ship_Movement_Simplification_Plan - Research.md",
     "TODOs/JENKINS_SETUP_PLAN - Research.md",
     "TODOs/JENKINS_SETUP_PLAN.md",
     "TODOs/JENKINS_LOCAL_BUILDS_PLAN - Research.md",
@@ -195,7 +200,6 @@
     "TODOs/SkirmishOrchestrator_Refactoring_Plan - Research.md",
     "TODOs/ShipLit_Autodesk_Material_Conversion_Plan - Research.md",
     "TODOs/Ship_Squadron_Entity_Simplification_Plan - Research.md",
-    "TODOs/Ship_Movement_Simplification_Plan - Research.md",
     "TODOs/SHIP_ACTIONS_PLAN - Research.md",
     "TODOs/Ship_Abilities_Plan - Research.md",
     "TODOs/Battle_Attack_Optimization_Plan - Research.md",
@@ -209,10 +213,6 @@
     "TODOs/Codebase Audit 2026-09-27/08 Reuse - UI Assets and Extraction Rules.md",
     "TODOs/Codebase Audit 2026-09-27/07 Reuse - Combat and Radar Boundaries.md",
     "TODOs/Codebase Audit 2026-09-27/06 Structure - Placement and Type Files.md",
-    "TODOs/Codebase Audit 2026-09-27/05 Cleanup - Unused Candidates.md",
-    "TODOs/Codebase Audit 2026-09-27/04 Duplication - Markers Keys and Tooling.md",
-    "TODOs/Codebase Audit 2026-09-27/03 Duplication - Coordinates and Population.md",
-    "TODOs/Codebase Audit 2026-09-27/02 Complexity - Combat and Fog.md",
     "TODOs/Codebase Audit 2026-09-27",
     "GameDesign",
     "Artifacts/Codex_Audit_2026-09-13/inventory.json",
