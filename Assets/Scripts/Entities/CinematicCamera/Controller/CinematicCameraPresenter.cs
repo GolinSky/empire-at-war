@@ -26,7 +26,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointer;
         private readonly IEntityLocator _entityLocator;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ISkirmishSessionModelObserver _sessionModel;
         private readonly ILocalPlayer _localPlayer;
         private readonly CinematicActivityTracker _activityTracker = new();
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IEntityLocator entityLocator,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             ISkirmishSessionModelObserver sessionModel,
             IPlayerRoster roster,
             ILocalPlayer localPlayer) : base(uiService, cancelRouter)

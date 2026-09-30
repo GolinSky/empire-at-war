@@ -29,7 +29,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private CaptureSiteData _data;
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IPointerInput _pointer;
         private IPointerGestures _gestures;
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Services.CaptureSites
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
             CaptureSiteData data,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IPointerInput pointer,
             IPointerGestures gestures,

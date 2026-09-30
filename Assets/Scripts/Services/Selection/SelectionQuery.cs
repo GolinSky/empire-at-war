@@ -29,12 +29,12 @@ namespace EmpireAtWar.Services.Battle
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
         public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer,
-            FogOfWarSystem fogOfWarSystem)
+            IFogOfWarSystem fogOfWarSystem)
         {
             _localPlayer = localPlayer;
             _fogOfWarSystem = fogOfWarSystem;

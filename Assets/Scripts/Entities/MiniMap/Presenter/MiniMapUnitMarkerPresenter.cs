@@ -17,7 +17,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly PlayerId _owner;
         private readonly SelectionType _selectionType;
         private readonly IHealthModelObserver _healthModel;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
         private MiniMapMarker _marker;
 
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             PlayerId owner,
             SelectionType selectionType,
             IHealthModelObserver healthModel,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             ILocalPlayer localPlayer)
         {
             _localPlayer = localPlayer;

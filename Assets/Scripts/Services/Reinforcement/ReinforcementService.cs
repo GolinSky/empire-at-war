@@ -46,7 +46,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly ICaptureSitesSystem _captureSites;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
@@ -74,7 +74,7 @@ namespace EmpireAtWar.Services.Reinforcement
             DefendPlatformFactory defendPlatformFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             ICaptureSitesSystem captureSites,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,

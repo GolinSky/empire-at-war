@@ -56,7 +56,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             new Dictionary<ShipType, float>();
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
-        private FogOfWarSystem _fogOfWarSystem;
+        private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IPointerInput _pointer;
         private ReinforcementZoneData _data;
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ShipsData shipsData,
             IMapModelObserver mapModel,
             IShipNavigationService shipNavigationService,
-            FogOfWarSystem fogOfWarSystem,
+            IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IPointerInput pointer,
             ReinforcementZoneView[] zoneViews,

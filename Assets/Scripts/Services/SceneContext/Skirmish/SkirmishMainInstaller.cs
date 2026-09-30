@@ -141,7 +141,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container
             .BindInterfacesExt<UnitRequestFactory>();
 
-        Container.BindEntityExt(fogOfWarSystem);
+        Container.Bind<IFogOfWarSystem>().FromInstance(fogOfWarSystem).AsSingle();
 
     }
 

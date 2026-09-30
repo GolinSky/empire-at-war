@@ -15,12 +15,12 @@ namespace EmpireAtWar.Entities.Squadrons
         private const float VISIBLE_THRESHOLD = 0.5f;
 
         private readonly IEntityLocator _entityLocator;
-        private readonly FogOfWarSystem _fogOfWarSystem;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly PlayerId _side;
         private readonly IPlayerRelations _relations;
         private readonly bool _respectsFog;
 
-        public SquadronTargetSelector(IEntityLocator entityLocator, FogOfWarSystem fogOfWarSystem,
+        public SquadronTargetSelector(IEntityLocator entityLocator, IFogOfWarSystem fogOfWarSystem,
             PlayerId side, IPlayerRelations relations, ILocalPlayer localPlayer)
         {
             _relations = relations;
