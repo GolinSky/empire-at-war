@@ -58,7 +58,6 @@ namespace EmpireAtWar.Services.Battle
         public void Initialize()
         {
             _gestures.WorldPressed += HandleWorldPressed;
-            _gestures.WorldClicked += SelectAt;
             _selectionInput.SelectAllRequested += HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested += HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
@@ -68,7 +67,6 @@ namespace EmpireAtWar.Services.Battle
         public void LateDispose()
         {
             _gestures.WorldPressed -= HandleWorldPressed;
-            _gestures.WorldClicked -= SelectAt;
             _selectionInput.SelectAllRequested -= HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
