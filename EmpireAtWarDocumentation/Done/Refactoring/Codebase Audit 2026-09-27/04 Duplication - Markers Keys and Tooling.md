@@ -13,9 +13,9 @@ category: Refactoring
 
 > [!info] Implementation update
 > D4, D5 and D6 implemented. The follow-up request explicitly authorized D4: MiniMapMarkerCollection owns registration/cleanup by composition, while both presenters retain their own marker construction and visibility policies.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## D4 — Minimap presenters repeat marker lifetime bookkeeping
 

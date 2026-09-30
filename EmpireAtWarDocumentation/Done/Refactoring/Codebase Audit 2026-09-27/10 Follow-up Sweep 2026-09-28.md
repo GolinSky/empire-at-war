@@ -9,7 +9,7 @@ category: Refactoring
 
 # Follow-up sweep — 28 September 2026
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]] · [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|Implementation results]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]] · [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|Implementation results]]
 
 - Read-only pass at HEAD f3fdf3d4.
 - No project files were changed.

@@ -13,9 +13,9 @@ category: Refactoring
 
 > [!info] Implementation update
 > R1 and R2 implemented: weapon rules accept plain accuracy/range/roll values; radar's unused masks are deleted and dependencies are constructor-injected. Existing ObservableList remains; radar is not claimed to be completely Unity-free.
-> See [[TODOs/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
+> See [[Done/Refactoring/Codebase Audit 2026-09-27/09 Implementation Results|implementation results and verification]]. Evidence/line numbers below describe the original audit snapshot unless marked implemented.
 
-- [[TODOs/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
+- [[Done/Refactoring/Codebase Audit 2026-09-27/00 Overview|← Audit overview]]
 
 ## R1 — WeaponModel contains engine data and random sampling
 
