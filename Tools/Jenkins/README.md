@@ -4,6 +4,7 @@
 - Runs as the signed-in Windows user, bound only to `127.0.0.1:8080`.
 - Admin credentials: `F:\Jenkins\admin-login.json`, restricted to the current user and SYSTEM. Never commit this file.
 - Start: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File F:\Jenkins\Start-Jenkins.ps1`.
+- Stop: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File F:\Jenkins\Stop-Jenkins.ps1`. Use while builds are idle; this terminates the Jenkins Java process, verifies its exit, and removes the PID file.
 - Runtime: `F:\Jenkins\app`; home: `F:\Jenkins\data`; startup logs: `F:\Jenkins\logs`.
 - Installation versions and SHA256 hashes: `F:\Jenkins\app\installation.json`.
 
@@ -42,7 +43,7 @@
 ## Updating the installed job
 
 1. Review and commit changes to this folder on `main`.
-2. While Jenkins is idle, copy the committed tools to `F:\Jenkins\app\build-tools` and `Start-Jenkins.ps1` to `F:\Jenkins`.
+2. While Jenkins is idle, copy the committed tools to `F:\Jenkins\app\build-tools` and `Start-Jenkins.ps1` / `Stop-Jenkins.ps1` to `F:\Jenkins`.
 3. Update the job's Pipeline script to the exact committed `Jenkinsfile` through its authenticated configuration UI/API.
 4. Record the tools SHA in `F:\Jenkins\app\build-tools-commit.txt`. Restarting Jenkins does not automatically update the job.
 
