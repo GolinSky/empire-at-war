@@ -23,6 +23,7 @@ using EmpireAtWar.Entities.UnitOrderFeedback;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -106,7 +107,11 @@ public class SkirmishMainInstaller : MonoInstaller
         BindPlayers();
         
         Container.BindModel<MenuData>(Repository);
-        Container.BindInterfacesNonLazyExt<MenuController>();
+        Container.Bind<SettingsModel>().AsSingle();
+        Container.Bind<SettingsDraftEditor>().AsSingle();
+        Container.Bind<KeyBindingEditor>().AsSingle();
+        Container.BindInterfacesTo<SettingsRouteController>().AsSingle();
+        Container.BindInterfacesNonLazyExt<PauseMenuRouteController>();
         
         Container.BindScriptableObject<ShipUiData>(Repository);
         Container.BindScriptableObject<ShipAbilityCatalog>(Repository);
