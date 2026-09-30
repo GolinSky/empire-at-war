@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Settings;
+using EmpireAtWar.Services.Input;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using Zenject;
 
@@ -33,6 +35,7 @@ namespace EmpireAtWar.Services.Camera
         private IMapModelObserver _mapModel;
         private ICameraInput _cameraInput;
         private ICameraPreferences _preferences;
+        private IInputLock _inputLock;
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
@@ -56,8 +59,10 @@ namespace EmpireAtWar.Services.Camera
             CameraData cameraData,
             ICameraInput cameraInput,
             IMapModelObserver mapModel,
-            ICameraPreferences preferences)
+            ICameraPreferences preferences,
+            IInputLock inputLock)
         {
+            _inputLock = inputLock;
             _preferences = preferences;
             _cameraData = cameraData;
             _mapModel = mapModel;
@@ -70,12 +75,14 @@ namespace EmpireAtWar.Services.Camera
             _keyboardVelocity = Vector2.zero;
             _cameraInput.Zoomed += ZoomCamera;
             _cameraInput.Panned += PanCamera;
+            _inputLock.LockChanged += OnLockChanged;
         }
 
         public void LateDispose()
         {
             _cameraInput.Zoomed -= ZoomCamera;
             _cameraInput.Panned -= PanCamera;
+            _inputLock.LockChanged -= OnLockChanged;
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
         }
@@ -130,8 +137,13 @@ namespace EmpireAtWar.Services.Camera
 
         public void Tick()
         {
+            if (_inputLock.IsLocked)
+            {
+                return;
+            }
+
             _keyboardInput = _cameraInput.Move;
-            _keyboardVelocity = CameraPanSmoothing.UpdateVelocity(
+            _keyboardVelocity = VelocitySmoothing.MoveTowardsTarget(
                 _keyboardVelocity,
                 _keyboardInput,
                 PanSpeed,
@@ -155,6 +167,14 @@ namespace EmpireAtWar.Services.Camera
                 PanSpeed *
                 Time.unscaledDeltaTime;
             SetPosition(ClampPosition(CameraPosition + move));
+        }
+
+        private void OnLockChanged(bool isLocked)
+        {
+            if (isLocked)
+            {
+                _keyboardVelocity = Vector2.zero;
+            }
         }
 
         private Vector3 GetPlanarDirection(Vector2 input)

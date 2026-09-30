@@ -390,7 +390,7 @@ namespace EmpireAtWar.Services.Input
                     ""id"": ""1917346b-f29e-47a9-9ece-d888f1a0fc46"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""invert"",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""ZoomScroll"",
                     ""isComposite"": false,

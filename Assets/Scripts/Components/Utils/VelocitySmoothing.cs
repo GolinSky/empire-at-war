@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace EmpireAtWar.Services.Camera
+namespace EmpireAtWar.Utils
 {
-    public static class CameraPanSmoothing
+    public static class VelocitySmoothing
     {
-        public static Vector2 UpdateVelocity(
+        public static Vector2 MoveTowardsTarget(
             Vector2 currentVelocity,
             Vector2 inputDirection,
             float maximumSpeed,

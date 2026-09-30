@@ -23,11 +23,6 @@ namespace EmpireAtWar.Services.Camera
         {
             get
             {
-                if (!_camera.enabled)
-                {
-                    return Vector2.zero;
-                }
-
                 Vector2 direction = _preferences.Camera.EdgeScrolling
                     ? GetEdgeScrollDirection(_pointer.Position)
                     : Vector2.zero;
@@ -51,11 +46,6 @@ namespace EmpireAtWar.Services.Camera
 
         public void Tick()
         {
-            if (!_camera.enabled)
-            {
-                return;
-            }
-
             if (_camera.DragPan.IsPressed())
             {
                 Vector2 dragDelta = _camera.DragDelta.ReadValue<Vector2>();
