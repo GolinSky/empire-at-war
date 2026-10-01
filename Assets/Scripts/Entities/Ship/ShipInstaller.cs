@@ -43,7 +43,6 @@ namespace EmpireAtWar.Ship
         {
             Container.BindEntityExt(_owner);
             Container.BindEntityExt(_shipType);
-            Container.BindInterfacesAndSelfTo<ShipModel>().AsSingle();
 
             Container
                 .BindSelectionFeature(SelectionType.Ship)

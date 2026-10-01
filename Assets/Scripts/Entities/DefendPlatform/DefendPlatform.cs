@@ -28,7 +28,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private ILayerService _layerService;
 
         [Inject] private DefendPlatformData Data { get; }
-        [Inject] private DefendPlatformModel RootModel { get; }
 
         public event Action OnRelease;
 
@@ -55,11 +54,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _context = context;
             _owner = owner;
             _layerService = layerService;
-        }
-
-        public IModel GetModel()
-        {
-            return RootModel;
         }
 
         public void Initialize()
