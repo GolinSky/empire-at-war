@@ -51,7 +51,6 @@ namespace EmpireAtWar.Entities.Squadrons
         private bool _isReleased;
 
         [Inject] private SquadronData Data { get; }
-        [Inject] private SquadronModel Model { get; }
 
         public event Action Released;
 
@@ -82,8 +81,6 @@ namespace EmpireAtWar.Entities.Squadrons
             _entity = entity;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
         }
-
-        public IModel GetModel() => Model;
 
         public void Initialize()
         {

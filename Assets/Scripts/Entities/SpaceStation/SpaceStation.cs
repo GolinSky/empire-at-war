@@ -30,7 +30,6 @@ namespace EmpireAtWar.Entities.SpaceStation
         private FactionType _factionType;
 
         [Inject] private SpaceStationData Data { get; }
-        [Inject] private SpaceStationModel RootModel { get; }
 
         public string Id => GetType().Name;
 
@@ -59,11 +58,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             _explosionService = explosionService;
             _context = context;
             _factionType = factionType;
-        }
-
-        public IModel GetModel()
-        {
-            return RootModel;
         }
 
         public void Initialize()

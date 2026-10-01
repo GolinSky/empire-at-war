@@ -67,11 +67,6 @@ namespace EmpireAtWar.Entities.MiningFacility
             _research = research;
         }
 
-        public IModel GetModel()
-        {
-            return RootModel;
-        }
-
         public void Initialize()
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;

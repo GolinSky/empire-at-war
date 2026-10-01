@@ -69,7 +69,6 @@ namespace EmpireAtWar.Ship
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
         [Inject] private ShipType ShipType { get; }
-        [Inject] private ShipModel RootModel { get; }
 
         public event Action<ShipType> OnRelease;
 
@@ -116,11 +115,6 @@ namespace EmpireAtWar.Ship
             _wreckService = wreckService;
             _explosionService = explosionService;
             _context = context;
-        }
-
-        public IModel GetModel()
-        {
-            return RootModel;
         }
 
         public void Initialize()
