@@ -28,10 +28,12 @@ created: 2026-09-30
    - Repeat ≥3 captures covering ≥10 seconds each for idle/movement/firing/deaths; record source revision.
    - Compare frame/CPU/render/GPU median/p95/p99, draw/SetPass counts and particle Update/Geometry markers.
    - Temporarily isolate stars, nebula, engine trails and beam smoke one family at a time in a diagnostic run; restore afterward.
-   - Also attribute `Battle.Ship.Tick` and `ShipPathGrid.EnsureFlood`: 7–8 synchronous flood jobs/frame in the two recorded frames.
+   - Raw timeline reviewed: 8 flood jobs/frame; 8/7 execute on main thread; 8 navigation-containing ticks account for ~96% of ship-tick time. Capture order/state and Plan-reason data next.
 4. [ ] Investigate ship/navigation CPU growth first.
    - Attribute `Battle.Ship.Tick` inclusive/self time and route queries to active orders and ships; distinguish computation, waits and allocations.
-   - Measure `ShipPathGrid.EnsureFlood` frequency, grid sizes and invalidation; block-grid and flood jobs currently schedule and complete synchronously.
+   - Source review: each Plan creates/disposes a full-map grid; jobs complete immediately; managed candidate checks and route construction remain outside Jobs.
+   - Check stopped/out-of-range Hunt/Guard and congested formation retries; these source paths can request routes every tick.
+   - Measure Plan reasons, candidate counts, grid sizes and managed route validation before selecting a fix.
    - Propose route reuse/invalidation or scheduling changes only after attribution; preserve movement, obstacle avoidance and command responsiveness.
 5. [ ] Reduce persistent beam-hit smoke and fire overlap.
    - `ppfxPipelineFire`: 100/s, lifetime 1–6 s; capture shows ~348–359 quads per named draw.

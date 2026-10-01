@@ -15,7 +15,7 @@ status: in-progress
   - **Apply** (engine state): `ISettingsApplier.Apply(SettingsData)`; implementations live with their system; must be idempotent.
   - **Observe** (gameplay): narrow read-only interfaces, e.g. `ICameraPreferences`; read on use, no event.
 - Binding persistence: Unity override JSON (`SaveBindingOverridesAsJson`) stored in `SettingsData.Input`. Why: enough until chord capture. Avoid: a second typed binding store.
-- Settings screen lives only in MainMenu → no live preview; values apply on Apply.
+- No live preview except audio volumes; other values apply on Apply.
 
 ## Implementation
 
@@ -40,7 +40,12 @@ status: in-progress
 - [x] Phase 2 — input migration, conflicts, Escape-safe capture (closes audit IN2–IN4)
 - [x] Phase 3 — quality preset, VSync, FPS cap, window mode, resolution + confirmation
 - [x] Phase 4 — camera preferences
-- [ ] Phase 5 — audio (blocked: no AudioMixer in project)
+- [x] Phase 5 — audio: `AudioSettingsApplier` (`Services/Audio`) sets `MasterVolume` / `MusicVolume` / `VoiceVolume` / `SfxVolume` on `Assets/Audio/AudioMixer.mixer`
+  - dB = authored level + `20·log10(volume)`; volume 0 → −80 dB; 1 keeps authored mix (Master authored −10 dB).
+  - Mixer injected via `ProjectContextInstaller.audioMixer`; `SfxDuckVolume` stays owned by `ShipSfxService`.
+  - Sliders preview live through `IAudioSettingsPreview`; Discard re-applies saved volumes.
+  - Mute when unfocused (default On) → master −80 dB via `Application.focusChanged`; stored volume untouched.
+  - Verified 2026-09-30 Play Mode: 50% master → −16.02 dB, 25% music → −12.04 dB, Discard restores, unfocused → −80 dB.
 - [x] Phase 6 — settings screen UI
 - Verified 2026-09-30 in Play Mode: rows render, Apply writes file, unsaved prompt, Discard, conflict detection (Up=S → Move Down; Ctrl+A ≠ A). No automated tests run.
 
