@@ -315,10 +315,9 @@ namespace EmpireAtWar.Services.Reinforcement
         private bool IsPlacementValid(Vector3 position)
         {
             return _stationRegistry.IsStationOperational(_owner.Id) &&
-                (_currentSpawnType == SpawnType.Ship
-                ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position) &&
-                  _reinforcementZonesSystem.IsShipSpawnPositionClear(_currentShipType, position)
-                : _currentSpawnType == SpawnType.Squadron
+                // Ship hull overlap is checked by the spawn view's trigger; the spawned ship
+                // resolves its own navigation clearance to the nearest free point.
+                (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
                 ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position)
                 :!_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&

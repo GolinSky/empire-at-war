@@ -140,11 +140,6 @@ namespace EmpireAtWar.Tests.Editor
                 destination.Clear();
             }
 
-            public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
-            {
-                return true;
-            }
-
             public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
             {
                 position = default;

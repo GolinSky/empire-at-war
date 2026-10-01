@@ -162,7 +162,6 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f) => false;
             public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position) => false;
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
-            public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position) => true;
 
             public void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination)
             {

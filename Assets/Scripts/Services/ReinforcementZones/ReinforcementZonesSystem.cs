@@ -28,7 +28,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
         void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination);
         bool IsPositionInAlliedZone(PlayerId owner, Vector3 position);
         int GetOwnedCapturableZoneCount(PlayerId owner);
-        bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position);
         bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
         bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position);
         bool TryGetDefaultZoneExitPosition(
@@ -196,7 +195,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
         }
 
-        public bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
+        private bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
         {
             float navigationRadius = GetNavigationRadius(shipType);
             return _shipNavigationService.IsPositionClear(
