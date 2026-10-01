@@ -6,10 +6,10 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.UnitOrders
 {
@@ -210,7 +210,7 @@ namespace EmpireAtWar.Services.UnitOrders
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (entity.Owner != side ||
-                    !(entity.Model is ISpaceStationModelObserver) || !IsAlive(entity)) continue;
+                    !entity.IsPlayerBase() || !IsAlive(entity)) continue;
                 Vector3 station = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_zones.TryGetDefaultZoneCenter(side, out Vector3 zone))
                     throw new InvalidOperationException(

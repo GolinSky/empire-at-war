@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.Units;
 using System;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -15,7 +16,6 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views;
 using UnityEngine;
@@ -131,12 +131,12 @@ namespace EmpireAtWar.Controllers.ShipUi
 
         public void SelectShipGroup(ShipType shipType)
         {
-            _selectionService.SelectCurrentShipsByType(shipType);
+            _selectionService.SelectCurrentUnitsByType(UnitTypeId.Ship(shipType));
         }
 
         public void SelectSquadronGroup(SquadronType squadronType)
         {
-            _selectionService.SelectCurrentSquadronsByType(squadronType);
+            _selectionService.SelectCurrentUnitsByType(UnitTypeId.Squadron(squadronType));
         }
 
         public void PressAbility(ShipAbilityId id) =>
@@ -164,12 +164,13 @@ namespace EmpireAtWar.Controllers.ShipUi
                             _playerSelectionContext.SelectionType == SelectionType.Ship;
             ShipType? selectedShipType = null;
             SquadronType? selectedSquadronType = null;
-            if (hasShips && _playerSelectionContext.Count == 1)
+            if (hasShips && _playerSelectionContext.Count == 1 &&
+                _playerSelectionContext.Entity.TryGetFacade(out IUnitTypeFacade unit))
             {
-                if (_playerSelectionContext.Entity.Model is IShipModelObserver ship)
-                    selectedShipType = ship.ShipType;
-                else if (_playerSelectionContext.Entity.Model is ISquadronModelObserver squadron)
-                    selectedSquadronType = squadron.SquadronType;
+                if (unit.UnitTypeId.IsShip)
+                    selectedShipType = unit.UnitTypeId.ShipType;
+                else
+                    selectedSquadronType = unit.UnitTypeId.SquadronType;
             }
 
             _model.UpdateSelection(hasShips, selectedShipType, selectedSquadronType);
@@ -196,11 +197,11 @@ namespace EmpireAtWar.Controllers.ShipUi
                         continue;
                     if (entity.TryGetFacade(out IShipAbilityFacade abilityCommand))
                         _abilitySlots.AddRange(abilityCommand.Slots);
-                    if (!hasGroup) continue;
-                    if (entity.Model is IShipModelObserver ship)
-                        AddToGroup(groups, ship.ShipType, entity);
-                    else if (entity.Model is ISquadronModelObserver squadron)
-                        AddToGroup(squadrons, squadron.SquadronType, entity);
+                    if (!hasGroup || !entity.TryGetFacade(out IUnitTypeFacade unit)) continue;
+                    if (unit.UnitTypeId.IsShip)
+                        AddToGroup(groups, unit.UnitTypeId.ShipType, entity);
+                    else
+                        AddToGroup(squadrons, unit.UnitTypeId.SquadronType, entity);
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
@@ -292,17 +293,20 @@ namespace EmpireAtWar.Controllers.ShipUi
                 return EntityTooltipContent.Build(entry.Entity);
             if (key is ShipType || key is SquadronType)
             {
+                UnitTypeId unitTypeId = key is ShipType shipType
+                    ? UnitTypeId.Ship(shipType)
+                    : UnitTypeId.Squadron((SquadronType)key);
                 int count = 0;
                 int damaged = 0;
                 foreach (IEntity entity in _playerSelectionContext.Entities)
                 {
-                    bool match = key is ShipType shipType && entity.Model is IShipModelObserver ship && ship.ShipType == shipType ||
-                        key is SquadronType squadronType && entity.Model is ISquadronModelObserver squadron && squadron.SquadronType == squadronType;
-                    if (!match || entity.HealthModel.IsDestroyed) continue;
+                    if (!entity.IsUnitType(unitTypeId) || entity.HealthModel.IsDestroyed) continue;
                     count++;
                     if (entity.HealthModel.HullPercentage < 1f) damaged++;
                 }
-                var data = key is ShipType type ? _factions.GetShipFactionData(type) : _factions.GetSquadronFactionData((SquadronType)key);
+                var data = unitTypeId.IsShip
+                    ? _factions.GetShipFactionData(unitTypeId.ShipType)
+                    : _factions.GetSquadronFactionData(unitTypeId.SquadronType);
                 return UnitTooltipContent.Build(data, new[]
                 {
                     new TooltipStat("Selected", count),

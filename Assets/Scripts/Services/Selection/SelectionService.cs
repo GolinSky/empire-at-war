@@ -3,14 +3,12 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Input;
-using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -85,36 +83,12 @@ namespace EmpireAtWar.Services.Battle
             ClearSelection(context.Scope);
         }
 
-        public void SelectCurrentShipsByType(ShipType shipType)
+        public void SelectCurrentUnitsByType(UnitTypeId unitTypeId)
         {
             _selectionBuffer.Clear();
             foreach (IEntity entity in _playerSelectionContext.Entities)
             {
-                if (entity.Model is IShipModelObserver ship &&
-                    ship.ShipType == shipType &&
-                    !entity.HealthModel.IsDestroyed &&
-                    entity.TryGetFacade(out IEntitySelectionFacade command))
-                {
-                    _selectionBuffer.Add(new SelectionEntry(entity, command));
-                }
-            }
-
-            if (_selectionBuffer.Count == 0)
-            {
-                return;
-            }
-
-            _lastTappedEntityId = null;
-            SetSelection(SelectionScope.Local, _selectionBuffer);
-        }
-
-        public void SelectCurrentSquadronsByType(SquadronType squadronType)
-        {
-            _selectionBuffer.Clear();
-            foreach (IEntity entity in _playerSelectionContext.Entities)
-            {
-                if (entity.Model is ISquadronModelObserver squadron &&
-                    squadron.SquadronType == squadronType &&
+                if (entity.IsUnitType(unitTypeId) &&
                     !entity.HealthModel.IsDestroyed &&
                     entity.TryGetFacade(out IEntitySelectionFacade command))
                 {

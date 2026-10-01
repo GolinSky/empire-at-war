@@ -8,10 +8,8 @@ using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using NUnit.Framework;
 using UnityEngine;
@@ -120,7 +118,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeEntity ship = Entity(1, TestPlayers.Enemy);
             FakeEntity station = Entity(2, TestPlayers.Enemy,
-                Array.Empty<Type>(), new FakeStationModel());
+                Array.Empty<Type>(), new PlayerBaseFacade());
             station.Health.Transform.position = new Vector3(200f, 0f, 0f);
             _locator.EntitiesList.Add(station);
             _orders.IssueRetreat(new IEntity[] { ship });
@@ -132,12 +130,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private FakeEntity Entity(long id, PlayerId side, Type[] commands = null,
-            IModelObserver model = null)
+            IEntityFacade role = null)
         {
             GameObject obj = new GameObject("Unit " + id);
             _objects.Add(obj);
             FakeEntity entity = new FakeEntity(id, side, new FakeHealth(obj.transform),
-                model, commands);
+                role, commands);
             return entity;
         }
 
@@ -164,18 +162,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly HashSet<Type> _commands;
             public FakeEntity(long id, PlayerId side, FakeHealth health,
-                IModelObserver model, Type[] commands)
+                IEntityFacade role, Type[] commands)
             {
                 Id = id;
                 Owner = side;
                 Health = health;
-                Model = model;
+                _role = role;
                 Command = new FakeCommand();
                 _commands = commands == null ? null : new HashSet<Type>(commands);
             }
             public long Id { get; }
             public PlayerId Owner { get; }
-            public IModelObserver Model { get; }
+            private readonly IEntityFacade _role;
             public FakeHealth Health { get; }
             public IHealthModelObserver HealthModel => Health;
             public FakeCommand Command { get; }
@@ -185,9 +183,14 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
-                if (_commands == null || _commands.Contains(typeof(TCommand)))
+                if (_role is TCommand roleFacade)
                 {
-                    command = (TCommand)(IEntityFacade)Command;
+                    command = roleFacade;
+                    return true;
+                }
+                if ((_commands == null || _commands.Contains(typeof(TCommand))) && Command is TCommand allowed)
+                {
+                    command = allowed;
                     return true;
                 }
                 command = default;
@@ -245,7 +248,6 @@ namespace EmpireAtWar.Tests.Editor
                 Array.Empty<IHardPointModel>();
         }
 
-        private sealed class FakeStationModel : ISpaceStationModelObserver { }
 
         private sealed class FakeLocator : IEntityLocator
         {

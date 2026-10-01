@@ -5,13 +5,10 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Ship;
 using UnityEngine;
 using ViewComponents;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -74,7 +71,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results)
         {
-            if (!IsUnit(selected.Entity.Model))
+            if (!selected.Entity.IsUnit())
             {
                 return;
             }
@@ -85,7 +82,7 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.Id == selected.Entity.Id ||
                     entity.HealthModel.IsDestroyed ||
                     entity.Owner != selected.Entity.Owner ||
-                    !IsSameUnitType(selected.Entity.Model, entity.Model) ||
+                    !selected.Entity.IsSameUnitType(entity) ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     continue;
@@ -101,7 +98,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (!_localPlayer.IsLocal(entity.Owner) ||
                     entity.HealthModel.IsDestroyed ||
-                    !IsUnit(entity.Model) ||
+                    !entity.IsUnit() ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command))
                 {
                     continue;
@@ -117,7 +114,7 @@ namespace EmpireAtWar.Services.Battle
             {
                 if (!_localPlayer.IsLocal(entity.Owner) ||
                     entity.HealthModel.IsDestroyed ||
-                    !IsUnit(entity.Model) ||
+                    !entity.IsUnit() ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
                     !(command is ISelectionPositionProvider positionProvider))
                 {
@@ -180,18 +177,6 @@ namespace EmpireAtWar.Services.Battle
         private bool IsHiddenByFog(IEntity entity) =>
             !_localPlayer.IsFriendly(entity.Owner) &&
             _fogOfWarSystem.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position);
-
-        private static bool IsUnit(IModelObserver model) =>
-            model is IShipModelObserver || model is ISquadronModelObserver;
-
-        private static bool IsSameUnitType(IModelObserver first, IModelObserver second)
-        {
-            if (first is IShipModelObserver firstShip)
-                return second is IShipModelObserver secondShip && firstShip.ShipType == secondShip.ShipType;
-            return first is ISquadronModelObserver firstSquadron &&
-                   second is ISquadronModelObserver secondSquadron &&
-                   firstSquadron.SquadronType == secondSquadron.SquadronType;
-        }
 
         private readonly struct MarqueeCandidate
         {

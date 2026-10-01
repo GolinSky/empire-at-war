@@ -9,9 +9,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
@@ -139,8 +137,7 @@ namespace EmpireAtWar.Tests.Editor
             public ISelectionContext PlayerSelectionContext => this;
             public ISelectionContext OtherSelectionContext => null;
             public void RemoveSelectable(ISelectionContext context) { }
-            public void SelectCurrentShipsByType(ShipType type) { }
-            public void SelectCurrentSquadronsByType(EmpireAtWar.Entities.Squadrons.SquadronType type) { }
+            public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
             public void AddObserver(IObserver<ISelectionSubject> observer) { }
             public void RemoveObserver(IObserver<ISelectionSubject> observer) { }
         }
@@ -230,7 +227,6 @@ namespace EmpireAtWar.Tests.Editor
             public FakeEntity(long id, PlayerId side, Transform transform)
             { Id = id; Owner = side; HealthModel = new FakeHealth(transform); }
             public long Id { get; }
-            public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade

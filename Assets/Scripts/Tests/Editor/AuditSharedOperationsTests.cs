@@ -6,7 +6,6 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
@@ -15,6 +14,7 @@ using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -121,7 +121,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject gameObject = new GameObject("Squadron");
             gameObject.transform.position = new Vector3(x, 0f, 0f);
             objects.Add(gameObject);
-            return new FakeEntity(id, owner, isSquadron ? new FakeSquadronModel() : null,
+            return new FakeEntity(id, owner, isSquadron ? new UnitTypeFacade(UnitTypeId.Squadron(default)) : null,
                 new FakeHealth(gameObject.transform, isDestroyed));
         }
 
@@ -133,7 +133,6 @@ namespace EmpireAtWar.Tests.Editor
                 WorldPosition = new Vector3(x, 0f, 0f);
             }
 
-            public IShipModelObserver ModelObserver => null;
             public PlayerId Owner { get; }
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 1f;
@@ -144,16 +143,16 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerId owner, EmpireAtWar.Mvc.IModelObserver model, FakeHealth health)
+            public FakeEntity(long id, PlayerId owner, IEntityFacade role, FakeHealth health)
             {
                 Id = id;
                 Owner = owner;
-                Model = model;
+                _role = role;
                 HealthModel = health;
             }
 
             public long Id { get; }
-            public EmpireAtWar.Mvc.IModelObserver Model { get; }
+            private readonly IEntityFacade _role;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
 
@@ -171,14 +170,15 @@ namespace EmpireAtWar.Tests.Editor
                     return true;
                 }
 
+                if (_role is TFacade roleFacade)
+                {
+                    facade = roleFacade;
+                    return true;
+                }
+
                 facade = default;
                 return false;
             }
-        }
-
-        private sealed class FakeSquadronModel : ISquadronModelObserver
-        {
-            public SquadronType SquadronType => default;
         }
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade

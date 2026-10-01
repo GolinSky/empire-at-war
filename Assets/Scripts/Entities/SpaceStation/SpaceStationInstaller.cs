@@ -31,6 +31,7 @@ namespace EmpireAtWar.SpaceStation
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
             Container.BindInterfacesAndSelfTo<SpaceStationModel>().AsSingle();
             Container.BindInterfacesExt<SpaceStationTooltipFacade>();
+            Container.BindInterfacesExt<PlayerBaseFacade>();
 
             Container
                 .BindSelectionFeature(SelectionType.Base)

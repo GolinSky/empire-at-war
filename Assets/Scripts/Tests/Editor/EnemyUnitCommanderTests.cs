@@ -150,7 +150,6 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeShip : IShipEntity
         {
             public FakeShip(long id, Vector3 position) { EntityId = id; WorldPosition = position; }
-            public IShipModelObserver ModelObserver => null;
             public PlayerId Owner => TestPlayers.Enemy;
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 5f;
@@ -222,7 +221,6 @@ namespace EmpireAtWar.Tests.Editor
             public FakeEntity(long id, PlayerId side, IHealthModelObserver health)
             { Id = id; Owner = side; HealthModel = health; }
             public long Id { get; }
-            public EmpireAtWar.Mvc.IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade

@@ -11,10 +11,8 @@ using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
@@ -196,8 +194,7 @@ namespace EmpireAtWar.Tests.Editor
                     observer.UpdateState(this);
             }
             public void RemoveSelectable(ISelectionContext context) { }
-            public void SelectCurrentShipsByType(ShipType type) { }
-            public void SelectCurrentSquadronsByType(EmpireAtWar.Entities.Squadrons.SquadronType type) { }
+            public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
             public void AddObserver(IObserver<ISelectionSubject> observer) => _observers.Add(observer);
             public void RemoveObserver(IObserver<ISelectionSubject> observer) => _observers.Remove(observer);
         }
@@ -279,7 +276,6 @@ namespace EmpireAtWar.Tests.Editor
                 _allowed = commands == null ? null : new HashSet<Type>(commands);
             }
             public long Id { get; }
-            public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner => TestPlayers.Human;
             public FakeCommand Command { get; }
@@ -289,8 +285,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
-                if (_allowed == null || _allowed.Contains(typeof(TCommand)))
-                { command = (TCommand)(IEntityFacade)Command; return true; }
+                if ((_allowed == null || _allowed.Contains(typeof(TCommand))) && Command is TCommand allowed)
+                { command = allowed; return true; }
                 command = default;
                 return false;
             }

@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Squadrons.Flight;
@@ -63,6 +64,7 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInterfacesExt<SquadronOrderFacade>();
             Container.BindInterfacesExt<HealthFacade>();
             Container.BindInterfacesExt<SquadronTooltipFacade>();
+            Container.BindInterfacesAndSelfTo<UnitTypeFacade>().AsSingle().WithArguments(UnitTypeId.Squadron(_squadronType));
         }
     }
 }

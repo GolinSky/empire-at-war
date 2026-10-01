@@ -229,7 +229,6 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public long Id => 1;
-            public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
 

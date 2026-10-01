@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Squadrons
 {
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Services.Squadrons
 
         private void HandleEntityAdded(IEntity entity)
         {
-            if (entity.Model is ISquadronModelObserver)
+            if (entity.IsSquadron())
             {
                 _squadrons.Add(entity);
             }
