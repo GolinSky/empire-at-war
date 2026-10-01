@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
@@ -30,12 +31,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public event Action<ShotEffect, int> EffectDestroyed;
 
         public int LeaseId => _leaseId;
+        protected bool IsStrikecraftTarget { get; private set; }
         protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
             DamageType damageType, float size, bool isHit)
         {
             _impactPresenter = presenter;
+            //todo: add ShipClass.Interceptor. Add bool api for return if it is a fighter
+            IsStrikecraftTarget = target.ShipClass == ShipClass.Fighter || target.ShipClass == ShipClass.Bomber;
             _impactTarget = isHit ? target : null;
             _impactDamageType = damageType;
             _impactSize = size;
