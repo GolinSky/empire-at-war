@@ -60,7 +60,15 @@ category: Refactoring
 
 - `SkirmishSessionModel` naming versus narrower time model + battle signal.
 - Controller-owned UI visibility; optional `SkirmishUiRouteRegistry` split.
-- `EndGamePresenter` keeps its file placement; only its owner changes.
+
+## Decision: File Placement (2026-10-01)
+
+- `Entities/CoreGame/` → `SkirmishOrchestrator.cs` only.
+- `Entities/CoreGameUi/Controller/` → `CoreGameUiController`, `ISkirmishFlow` (consumer-owned contract).
+- `Entities/CoreGameUi/Ui/` → `CoreGameUi`, `ICoreGameUi`, `ICoreGamePresenter`.
+- `Entities/EndGameUi/Controller/` → `EndGamePresenter`; `Entities/EndGameUi/Ui/` → `EndGameUi`, `IEndGameView`.
+- `Entities/SkirmishSession/Model/` → `SkirmishSessionModel`, `ISkirmishSessionModelObserver`.
+- Moved via `AssetDatabase`; GUIDs preserved; namespaces unchanged. Research note paths below predate this move.
 
 ## Files
 
