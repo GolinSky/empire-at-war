@@ -5,6 +5,8 @@ namespace EmpireAtWar.Components.Combat
 {
     public sealed class CombatModifiers
     {
+        private const float UNMODIFIED_MULTIPLIER = 1f;
+
         private readonly List<CombatStatModifier> _active = new List<CombatStatModifier>();
 
         public event Action Changed;
@@ -22,6 +24,10 @@ namespace EmpireAtWar.Components.Combat
         public float SpeedMultiplier { get; private set; } = 1f;
         public float ShieldRegenMultiplier { get; private set; } = 1f;
         public float DamageTakenMultiplier { get; private set; } = 1f;
+
+        public bool IsDamageDealtModified() => DamageMultiplier != UNMODIFIED_MULTIPLIER;
+        public bool IsSpeedModified() => SpeedMultiplier != UNMODIFIED_MULTIPLIER;
+        public bool IsDamageTakenModified() => DamageTakenMultiplier != UNMODIFIED_MULTIPLIER;
 
         public void Add(CombatStatModifier modifier)
         {

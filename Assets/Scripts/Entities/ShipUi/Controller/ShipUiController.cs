@@ -289,7 +289,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings);
             if (key is EmpireAtWar.Models.ShipUi.ShipUiEntry entry)
-                return EntityTooltipContent.Build(entry.Entity, _factions);
+                return EntityTooltipContent.Build(entry.Entity);
             if (key is ShipType || key is SquadronType)
             {
                 int count = 0;
@@ -309,7 +309,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                     new TooltipStat("Damaged", damaged)
                 }, status: "Click to select this unit type.");
             }
-            return EntityTooltipContent.Build(_playerSelectionContext.Entity, _factions);
+            return EntityTooltipContent.Build(_playerSelectionContext.Entity);
         }
     }
 }

@@ -38,6 +38,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             Container.BindEntityExt(_owner);
             Container.BindEntityExt(_squadronType);
+            Container.BindInterfacesAndSelfTo<SquadronModel>().AsSingle();
             Container.BindEntityExt(_startRotation);
 
             Container
@@ -61,6 +62,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
             Container.BindInterfacesExt<SquadronOrderFacade>();
             Container.BindInterfacesExt<HealthFacade>();
+            Container.BindInterfacesExt<SquadronTooltipFacade>();
         }
     }
 }

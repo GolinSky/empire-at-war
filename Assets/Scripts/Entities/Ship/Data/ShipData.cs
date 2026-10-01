@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Ship;
@@ -11,7 +10,6 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
-using Zenject;
 
 namespace EmpireAtWar.Entities.Ship.Data
 {
@@ -23,11 +21,9 @@ namespace EmpireAtWar.Entities.Ship.Data
     }
 
     [CreateAssetMenu(fileName = "ShipData", menuName = "Data/ShipData")]
-    public class ShipData : Mvc.Data, IModel, IShipModelObserver, IShipData,
+    public class ShipData : Mvc.Data, IShipData,
         IShipMoveData, IHealthData, IRadarData, IHangarData
     {
-        [Inject] public ShipType ShipType { get; private set; }
-
         [Header("Ship Settings")]
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
 

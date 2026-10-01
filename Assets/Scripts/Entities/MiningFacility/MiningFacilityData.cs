@@ -1,18 +1,12 @@
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.MiningFacility
 {
-    public interface IMiningFacilityModelObserver : IUnitModelObserver
-    {
-
-    }
-
     [CreateAssetMenu(fileName = nameof(MiningFacilityData), menuName = "Data/MiningFacilityData")]
-    public class MiningFacilityData : Data, IModel, IMiningFacilityModelObserver
+    public class MiningFacilityData : Data
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
         [Tooltip("Optional. Empty = the facility is only removed; set = a breaking wreck replaces it.")]

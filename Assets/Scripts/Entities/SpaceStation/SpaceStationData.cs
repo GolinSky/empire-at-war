@@ -1,7 +1,6 @@
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
@@ -9,11 +8,8 @@ using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public interface ISpaceStationModelObserver:IModelObserver, IUnitModelObserver
-    {
-    }
     [CreateAssetMenu(fileName = nameof(SpaceStationData), menuName = "Data/SpaceStationData")]
-    public class SpaceStationData:Data, IModel, ISpaceStationModelObserver
+    public class SpaceStationData:Data
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
         [Tooltip("Optional wreck of each faction's station. A faction without one is only removed.")]

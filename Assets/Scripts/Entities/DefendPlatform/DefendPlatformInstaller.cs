@@ -26,6 +26,8 @@ namespace EmpireAtWar
             Container.BindEntityExt(_owner);
             Container.BindEntityExt(_defendPlatformType);
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
+            Container.BindInterfacesAndSelfTo<DefendPlatformModel>().AsSingle();
+            Container.BindInterfacesExt<DefendPlatformTooltipFacade>();
 
             Container
                 .BindSelectionFeature(SelectionType.DefendPlatform)
