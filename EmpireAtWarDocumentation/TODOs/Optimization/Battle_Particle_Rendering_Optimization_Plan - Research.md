@@ -77,6 +77,71 @@ created: 2026-09-30
 - Unity mesh-particle instancing guidance: https://docs.unity3d.com/Manual/PartSysInstancing.html.
 - The generic Built-in instancing shader examples must not be copied unchanged into URP.
 
+### Jobs investigation — 2026-09-30
+
+- Scope: live navigation, ship combat states, target/due attack batching; full raw sample ancestry from the original two-frame recording.
+- Unity 6000.4.7f1; Burst 1.8.29, Collections 6.4.0, Mathematics 1.3.3. Profiler names confirm Burst execution.
+- Diagnostic script/data: `output/RenderAuditReview_20260930/{InspectJobTimeline.cs,job-timeline.json}`; Profiler buffer restored after inspection.
+- No gameplay code, scenes or VFX changed; no new automated test run.
+
+| Raw timeline measurement | Frame 0 | Frame 1 |
+| --- | ---: | ---: |
+| All ship tick calls | 46 | 46 |
+| All ship ticks inclusive | 55.45 ms | 46.95 ms |
+| Eight ticks containing navigation job samples | 53.38 ms | 44.90 ms |
+| Main-thread Complete calls inside ship ticks | 34 | 31 |
+| Those Complete scopes inclusive | 19.71 ms | 19.90 ms |
+| Flood jobs: all threads | 8 | 8 |
+| Flood jobs executing on main thread | 8 | 7 |
+| Main-thread flood execution | 16.84 ms | 15.06 ms |
+| Worker flood execution | none | 1 job / 2.09 ms |
+| Route extraction jobs: all threads | 18 | 15 |
+| Slowest ship tick inclusive / self | 17.37 / 14.66 ms | 17.82 / 15.01 ms |
+| GC.Alloc calls inside all ship ticks | 1,352 | 750 |
+
+- Complete, WaitForJobGroupID and job timings are nested; do not add them to ship-tick inclusive time.
+- Eight navigation-containing tick invocations account for ~96% of ship-tick inclusive time in both frames; ship identity/state is not recorded.
+- Flood ancestry: `Ship.Tick → Battle.Ship.Tick → JobHandle.Complete → WaitForJobGroupID → NavigationFloodJob (Burst)`.
+- Block-grid jobs do run on workers in both frames. Main-thread work stealing is specifically confirmed for the flood jobs.
+- Longest tick in each frame contains one grid-block sample, one flood sample and five main-thread route-extraction samples.
+- Ship self time remains 35.69/27.00 ms outside instrumented child markers; candidate resolution, route construction/validation and synchronization are not individually timed.
+- GC.Alloc call counts are allocation frequency, not allocated bytes or evidence that GC collection explains the slowdown.
+
+### Source findings
+1. **Immediate completion serializes requests.** `ShipPathGrid.cs:83,185,211` schedules and immediately completes route, block-grid and flood jobs.
+   - No retained JobHandle or cross-request dependency graph; callers explicitly require same-frame results.
+   - `NavigationFloodJob` and `NavigationRouteJob` are `IJob`; only `NavigationGridBlockJob` is `IJobParallelFor`.
+   - Job scheduling alone does not remove main-thread stalls. Unity documents delayed completion and work-stealing markers: https://docs.unity3d.com/Manual/job-system-creating-jobs.html and https://docs.unity3d.com/Manual/profiler-markers.html.
+2. **Each Plan owns a short-lived grid.** `ShipNavigationService.cs:128` creates/disposes `ShipPathGrid`; `_isFlooded` only reuses results within that Plan's destination candidates.
+   - Flood execution allocates nine NativeArray/NativeList containers including obstacle data and open/closed sets; later Plan calls rebuild them.
+   - Direct clear routes bypass the flood, so not every Plan necessarily executes navigation jobs.
+3. **Flood traverses all reachable cells.** `NavigationFloodJob.cs:50` processes its heap until empty, without a goal-specific stop.
+   - The capped square-map grid is roughly 161×161 ≈26,000 nodes; actual capture grid dimensions were not recorded.
+   - This supports multiple destination candidates and nearest-reachable fallback; replacing it with A* requires preserving those behaviors.
+4. **Managed candidate work amplifies cost.** `TryPlanNear` considers center + 16 rings × 8 candidates = 129/pass; a failed pass may trigger another pass around the nearest reachable position.
+   - Success exits at the next ring boundary, so it still evaluates the rest of the first successful ring.
+   - `TryResolveDestination` tries 24 edge positions per blocking contact; each position checks contacts again.
+   - `ShipRoutePlanner.Build` builds/validates curved, turned and polyline alternatives; `IsRouteClear` checks route samples against contacts on the main thread.
+   - `ShipBezierRoute` allocates segment/arc/sample arrays (24 arc intervals, 12 debug intervals per segment). Full contacts include idle registered ships.
+   - These are verified cost multipliers, not individually attributed milliseconds in the capture.
+5. **Stopped pursuit can retry every tick.** `ShipEngagement.cs:29` suppresses replanning only when IsMoving AND target drift is below threshold.
+   - Hunt/Guard call Pursue each tick outside firing range; if planning leaves the ship stationary, the same target can trigger planning again next tick.
+   - `AttackTargetState.UpdateFormationMove` has a similar stationary/out-of-range closing path; non-formation attack already has destination guards.
+   - Source establishes the retry paths; the recording does not establish which state triggered its eight requests.
+6. **Attack Jobs are not the largest measured scopes here.** Target batch total 1.48/1.33 ms; target Complete 0.03/0.02 ms.
+   - Due batch total 0.54/2.34 ms; due Apply 0.51/2.31 ms; due Complete ~0.03/~0.02 ms.
+   - These paths already batch records and reuse capacity; their job synchronization is much cheaper in this recording than navigation completion.
+
+### Recommended investigation order
+1. Instrument Plan reason/count, requesting order/state, destination-candidate count, grid size, contact count and managed route construction/validation.
+2. Reproduce stopped/out-of-range Hunt/Guard and congested formation pursuit; suppress redundant failed retries until target/obstacles/order change or an explicit retry interval elapses.
+3. Reduce managed duplicate candidate/route work and reuse native buffers; cache only with correct origin, clearance, obstacle and reservation validity.
+4. If needed, stage independent navigation requests: schedule block→flood work with dependencies, finish later and apply in stable order.
+   - Retain same-frame responsiveness if achievable; otherwise document latency explicitly.
+   - Shared service scratch lists and sequential destination reservations cannot be accessed concurrently without a request snapshot and deterministic commit design.
+5. Evaluate goal-bounded search only after measuring candidate/fallback demand; compare against the existing full-flood behavior.
+6. Capture matched start/mid-battle and Development Player runs before claiming a complete explanation of ~200→12 FPS.
+
 ## Files
 - Capture events: `Logs/RenderAudit/20260930T165740445Z-capture/frame-debugger-frame-{01,02}.json`.
 - Snapshot settings/timings: `Logs/RenderAudit/20260930T165740445Z-capture/rendering-debugger.json`.

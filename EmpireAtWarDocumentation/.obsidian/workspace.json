@@ -187,6 +187,8 @@
   },
   "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research.md",
+    "TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan.md",
     "TODOs/Refactoring/Camera_System_Refactor_Plan.md",
     "TODOs/Refactoring/Audio_System_Refactor_Plan.md",
     "TODOs/Features/Tooltip_System_Plan - Research.md",
@@ -213,8 +215,6 @@
     "TODOs/Bugs/Fail_Fast_Null_Returns.md",
     "TODOs/Bugs/Scene_Teardown_And_Material_Leaks.md",
     "TODOs/Bugs",
-    "TODOs/Refactoring/Audit_Remediation_Coordination.md",
-    "TODOs/Refactoring/UI_Service_Refactoring.md",
     "TODOs/Refactoring/Codebase Audit 2026-09-27",
     "TODOs/Refactoring",
     "TODOs/Optimization",

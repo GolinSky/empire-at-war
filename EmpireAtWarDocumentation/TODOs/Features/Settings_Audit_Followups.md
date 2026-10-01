@@ -1,6 +1,6 @@
 ---
 category: Features
-status: todo
+status: in-progress
 created: 2026-09-30
 tags:
   - code-audit
@@ -32,13 +32,16 @@ tags:
 - `ProjectContextInstaller.cs`: only the settings binding lines, if ST2 needs a path argument.
 
 ## Steps
-1. [ ] ST2: the `JsonSettingsRepository` constructor takes the directory path; the installer passes `Application.persistentDataPath`.
-2. [ ] ST1: tests for SettingsData, repository (temp dir), service (fake repository + recording applier), draft editor (fake options), route controller prompt transitions (Escape per prompt kind, 15 s revert via injected time or `Tick`). Run only on request.
-3. [ ] ST3: compute `IsDirty` from a cheap comparison, or cache it and invalidate it on draft edit. Cache resolutions per `Refresh(open)`, not per edit.
-4. [ ] ST4: expose a read-only view (e.g. `ICameraSettings` getters), or return a clone.
-5. [ ] ST5: decide the policy. Unreadable/locked file on load → log and fall back to defaults without overwriting. Save failure → show a status message and keep the draft dirty.
-6. [ ] ST6: remove the guard; add a prefab test asserting SettingsUi references (`SkirmishUiPrefabTests`-style).
-7. [ ] ST7: move `backgroundLoadingPriority` to the bootstrap/scene loading owner; extract the display countdown if the controller is touched anyway.
+1. [x] ST2: `JsonSettingsRepository(string directory)`; `ProjectContextInstaller` binds `.WithArguments(Application.persistentDataPath)`.
+2. [x] ST1: tests written, **not run** (run only on request): `SettingsDataTests`, `JsonSettingsRepositoryTests` (temp dir, corrupt → `.bak` + `.corrupt`, locked file), `SettingsServiceTests` (fake repo + recording applier), `SettingsDraftEditorTests` (fake options), `DisplayConfirmationCountdownTests`, `SettingsUiPrefabTests`.
+   - Route-controller prompt/Escape transitions not unit-tested: needs a fake `ISettingsUi`/`BaseUi`; countdown covered via `DisplayConfirmationCountdown` instead.
+3. [x] ST3: `IsDirty` = `SettingsData.Matches` (field compare per section, no JSON). `SettingsDraftEditor.Open()` caches resolutions + labels per opening; frame-rate labels static; `GraphicsSettingsApplier` caches `QualitySettings.names`.
+4. [x] ST4: `ICameraPreferences` exposes getters only (`PanSpeedMultiplier`, `ZoomSpeedMultiplier`, `EdgeScrolling`, `InvertZoom`), read from saved settings.
+5. [x] ST5: `ISettingsRepository.Load` → `SettingsLoadStatus` (`Loaded` / `Missing` / `Unreadable`). Corrupt or locked (`IOException`, `UnauthorizedAccessException`) → backup, else defaults without overwriting. Save failure → `SettingsApplyResult.SaveFailed`, status message, draft stays dirty.
+6. [x] ST6: guard removed from `SettingsUi.Initialize`; `SettingsUiPrefabTests` asserts references, volume slider ranges, unique + registered tooltip keys.
+7. [x] ST7: `backgroundLoadingPriority` → `SceneService.Initialize`; countdown → `DisplayConfirmationCountdown`.
+- Also fixed: audio rows had cloned tooltip keys (`Pan speed`, `Edge scrolling`) and were not registered in `TooltipHoverView.triggers`; now own keys + tooltip texts.
+- Verified 2026-09-30: compile clean; prefab references assigned (editor eval); Play Mode open → edit → Discard, audio tooltip hover, no console errors.
 
 ## Verification
 - Compile clean. Manual Play Mode: change each row → Apply → restart → values persist; display change → Revert/Keep/timeout; corrupt `settings.json` → loads the `.bak`.

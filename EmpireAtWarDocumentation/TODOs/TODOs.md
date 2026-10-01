@@ -17,6 +17,8 @@
 
 - [ ] **Close settings audit follow-ups** (Wave 1)
   - **Plan**: [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; parent [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
+  - **Status**: ST1–ST7 implemented; compile clean; Play Mode smoke check done.
+  - **Remaining**: run the new settings EditMode tests (on request); manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 
 ### Bugs
 
@@ -33,7 +35,7 @@
 - [ ] **Optimize battle particle rendering**
   - **Plan**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan|Particle rendering optimization]]
   - **Research**: [[TODOs/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research|2026-09-30 capture and prefab analysis]]
-  - **Status**: Profiler export repaired; 2 regression tests passed; original recording recovered; 65 prefabs / 111 particle systems inspected.
+  - **Status**: Profiler export repaired; 2 regression tests passed; original recording recovered; 65 prefabs / 111 particle systems inspected. Jobs review confirms immediate completion, main-thread flood execution and per-Plan grid rebuilds.
   - **Remaining**: compare ~200 FPS battle start with ~12 FPS mid-battle; prioritize ship/navigation CPU growth and accumulating combat effects. Star reduction deferred pending isolation.
 
 - [ ] **Optimize battle attacks and projectile reuse**
