@@ -29,7 +29,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         private GameObjectContext _context;
         private FactionType _factionType;
 
-        [Inject] private SpaceStationData RootModel { get; }
+        [Inject] private SpaceStationData Data { get; }
+        [Inject] private SpaceStationModel RootModel { get; }
 
         public string Id => GetType().Name;
 
@@ -95,10 +96,10 @@ namespace EmpireAtWar.Entities.SpaceStation
             }
             if (playDeathAnimation)
             {
-                EntityComponentData componentData = RootModel.ComponentData;
+                EntityComponentData componentData = Data.ComponentData;
                 _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
-                if (RootModel.TryGetWreck(_factionType, out UnitWreckData wreck))
+                if (Data.TryGetWreck(_factionType, out UnitWreckData wreck))
                 {
                     _wreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
                 }

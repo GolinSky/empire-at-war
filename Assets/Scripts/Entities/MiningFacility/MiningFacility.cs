@@ -32,12 +32,13 @@ namespace EmpireAtWar.Entities.MiningFacility
         private ILayerService _layerService;
         private IFactionResearchModelObserver _research;
 
-        [Inject] private MiningFacilityData RootModel { get; }
+        [Inject] private MiningFacilityData Data { get; }
+        [Inject] private MiningFacilityModel RootModel { get; }
 
         public event Action OnRelease;
 
         public string Id => GetType().Name;
-        public float Income => RootModel.Income * _research.IncomeMultiplier;
+        public float Income => RootModel.BaseIncome * _research.IncomeMultiplier;
 
         [Inject]
         private void Construct(
@@ -104,12 +105,12 @@ namespace EmpireAtWar.Entities.MiningFacility
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
-                EntityComponentData componentData = RootModel.ComponentData;
+                EntityComponentData componentData = Data.ComponentData;
                 _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
-                if (RootModel.Wreck != null)
+                if (Data.Wreck != null)
                 {
-                    _wreckService.Spawn(RootModel.Wreck, transform, _owner, componentData.DestroyDelay);
+                    _wreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);

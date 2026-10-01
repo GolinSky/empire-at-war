@@ -27,6 +27,8 @@ namespace EmpireAtWar.MiningFacility
             Container.BindEntityExt(_owner);
             Container.BindEntityExt(_miningFacilityType);
             Container.BindInterfacesTo<EntityComponentData>().FromInstance(data.ComponentData);
+            Container.BindInterfacesAndSelfTo<MiningFacilityModel>().AsSingle().WithArguments(data.Income);
+            Container.BindInterfacesExt<MiningFacilityTooltipFacade>();
 
             Container
                 .BindSelectionFeature(SelectionType.MiningFacility)

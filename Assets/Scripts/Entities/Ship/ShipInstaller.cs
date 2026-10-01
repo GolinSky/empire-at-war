@@ -42,6 +42,7 @@ namespace EmpireAtWar.Ship
         {
             Container.BindEntityExt(_owner);
             Container.BindEntityExt(_shipType);
+            Container.BindInterfacesAndSelfTo<ShipModel>().AsSingle();
 
             Container
                 .BindSelectionFeature(SelectionType.Ship)
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesExt<ShipAbilityFacade>();
             Container.BindInterfacesExt<ShipOrderFacade>();
             Container.BindInterfacesExt<ShipDestroyFacade>();
+            Container.BindInterfacesExt<ShipTooltipFacade>();
         }
 
         private void BindAudio()

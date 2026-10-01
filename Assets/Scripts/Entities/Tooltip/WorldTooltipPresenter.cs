@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
@@ -26,7 +25,6 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly IUiHitTest _ui;
         private readonly IPointerGestures _gestures;
         private readonly ITooltipService _tooltips;
-        private readonly FactionsData _factions;
         private readonly IFogOfWarSystem _fog;
         private readonly ILocalPlayer _local;
         private readonly IHudVisibilityObserver _hud;
@@ -39,13 +37,13 @@ namespace EmpireAtWar.Entities.Tooltip
         private bool _dragging;
 
         public WorldTooltipPresenter(ISelectionQuery query, IPointerInput pointer, IUiHitTest ui,
-            IPointerGestures gestures, ITooltipService tooltips, FactionsData factions, IFogOfWarSystem fog,
+            IPointerGestures gestures, ITooltipService tooltips, IFogOfWarSystem fog,
             ILocalPlayer local, IHudVisibilityObserver hud, IHardPointHoverObserver hardPointHover,
             HardPointOverlayData hardPointData, ICaptureSitesSystem sites, ICameraService camera,
             List<IMiniMapObstacleSource> obstacles)
         {
             _query = query; _pointer = pointer; _ui = ui; _gestures = gestures; _tooltips = tooltips;
-            _factions = factions; _fog = fog; _local = local; _hud = hud;
+            _fog = fog; _local = local; _hud = hud;
             _hardPointHover = hardPointHover; _hardPointData = hardPointData; _sites = sites; _camera = camera;
             _obstacles = obstacles;
         }
@@ -75,7 +73,7 @@ namespace EmpireAtWar.Entities.Tooltip
             {
                 IEntity entity = selection.Entity;
                 _handle = _tooltips.Show(new TooltipContentProvider(this, entity.Id,
-                    () => CanHover && IsVisible(entity), () => EntityTooltipContent.Build(entity, _factions)), anchor);
+                    () => CanHover && IsVisible(entity), () => EntityTooltipContent.Build(entity)), anchor);
             }
             else
             {

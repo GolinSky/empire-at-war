@@ -27,7 +27,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private PlayerId _owner;
         private ILayerService _layerService;
 
-        [Inject] private DefendPlatformData RootModel { get; }
+        [Inject] private DefendPlatformData Data { get; }
+        [Inject] private DefendPlatformModel RootModel { get; }
 
         public event Action OnRelease;
 
@@ -91,12 +92,12 @@ namespace EmpireAtWar.Entities.DefendPlatform
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
                 OnRelease?.Invoke();
-                EntityComponentData componentData = RootModel.ComponentData;
+                EntityComponentData componentData = Data.ComponentData;
                 _explosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the platform entity is destroyed.
-                if (RootModel.Wreck != null)
+                if (Data.Wreck != null)
                 {
-                    _wreckService.Spawn(RootModel.Wreck, transform, _owner, componentData.DestroyDelay);
+                    _wreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);

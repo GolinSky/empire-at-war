@@ -4,16 +4,13 @@ using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using Zenject;
 
 namespace EmpireAtWar.Entities.Squadrons.Data
 {
     [CreateAssetMenu(fileName = "SquadronData", menuName = "Data/SquadronData")]
-    public class SquadronData : Mvc.Data, IModel, ISquadronModelObserver, IFighterFlightData,
+    public class SquadronData : Mvc.Data, IFighterFlightData,
         ISquadronHealthData, IRadarData
     {
-        [Inject] public SquadronType SquadronType { get; private set; }
-
         [Header("Orders")]
         [Tooltip("Radius used when compacting group move orders.")]
         [field: SerializeField] public float NavigationRadius { get; private set; } = 6f;
