@@ -4,10 +4,10 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Ship;
 using UnityEngine;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -97,8 +97,8 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 1; i < _targets.Count; i++)
             {
                 IEntity candidate = _targets[i];
-                bool candidateShip = candidate.Model is IShipModelObserver;
-                bool bestShip = best.Model is IShipModelObserver;
+                bool candidateShip = candidate.IsShip();
+                bool bestShip = best.IsShip();
                 if (candidateShip && !bestShip ||
                     candidateShip == bestShip &&
                     candidate.HealthModel.HullPercentage < best.HealthModel.HullPercentage)

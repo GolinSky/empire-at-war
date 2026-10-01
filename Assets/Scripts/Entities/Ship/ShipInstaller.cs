@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Audio;
@@ -72,6 +73,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesExt<ShipOrderFacade>();
             Container.BindInterfacesExt<ShipDestroyFacade>();
             Container.BindInterfacesExt<ShipTooltipFacade>();
+            Container.BindInterfacesAndSelfTo<UnitTypeFacade>().AsSingle().WithArguments(UnitTypeId.Ship(_shipType));
         }
 
         private void BindAudio()

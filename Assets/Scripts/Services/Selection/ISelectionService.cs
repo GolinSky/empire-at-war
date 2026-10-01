@@ -1,5 +1,4 @@
-using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Battle
@@ -9,7 +8,6 @@ namespace EmpireAtWar.Services.Battle
         ISelectionContext PlayerSelectionContext { get; }
         ISelectionContext OtherSelectionContext { get; }
         void RemoveSelectable(ISelectionContext selectionContext);
-        void SelectCurrentShipsByType(ShipType shipType);
-        void SelectCurrentSquadronsByType(SquadronType squadronType);
+        void SelectCurrentUnitsByType(UnitTypeId unitTypeId);
     }
 }

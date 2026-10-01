@@ -31,7 +31,6 @@ namespace EmpireAtWar.Ship
 {
     public interface IShipEntity
     {
-        IShipModelObserver ModelObserver { get; }
         PlayerId Owner { get; }
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
@@ -81,7 +80,6 @@ namespace EmpireAtWar.Ship
         public float NavigationSpeed => _shipMoveComponent.NavigationSpeed;
         public long EntityId => _entity.Value.Id;
         public UnitOrderType CurrentOrder => _orders.CurrentOrder;
-        IShipModelObserver IShipEntity.ModelObserver => RootModel;
 
         [Inject]
         private void Construct(

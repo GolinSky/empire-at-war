@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Stations
 {
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Services.Stations
 
         private void HandleEntityAdded(IEntity entity)
         {
-            if (entity.Model is ISpaceStationModelObserver)
+            if (entity.IsPlayerBase())
             {
                 _stations.Add(entity);
             }

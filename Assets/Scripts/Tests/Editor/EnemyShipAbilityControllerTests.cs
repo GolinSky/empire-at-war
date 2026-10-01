@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
@@ -112,7 +111,6 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public long Id { get; }
-            public IModelObserver Model => null;
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
 

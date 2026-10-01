@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Player;
@@ -10,6 +9,7 @@ using EmpireAtWar.Mvc;
 using UnityEngine;
 using Zenject;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -107,7 +107,7 @@ namespace EmpireAtWar.Services.Battle
 
             foreach (GameEntity entity in _entityLocator.Entities)
             {
-                if (entity.Model is ISpaceStationModelObserver)
+                if (entity.IsPlayerBase())
                 {
                     _aliveBases[entity.Owner.Index] |= !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
                 }

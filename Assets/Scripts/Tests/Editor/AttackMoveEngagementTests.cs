@@ -81,7 +81,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public FakeEntity(long id) => Id = id;
             public long Id { get; }
-            public EmpireAtWar.Mvc.IModelObserver Model => null;
             public FakeHealth Health { get; } = new FakeHealth();
             public IHealthModelObserver HealthModel => Health;
             public PlayerId Owner => TestPlayers.Enemy;

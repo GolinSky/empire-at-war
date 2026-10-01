@@ -1,8 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Mvc;
-using EmpireAtWar.Ship;
 using Zenject;
 
 namespace EmpireAtWar.Entities.BaseEntity
@@ -12,7 +10,6 @@ namespace EmpireAtWar.Entities.BaseEntity
         long Id { get; }
         bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade;
         TFacade GetFacade<TFacade>() where TFacade : IEntityFacade;
-        IModelObserver Model { get; }
         IHealthModelObserver HealthModel { get; }
         
         PlayerId Owner { get; }
@@ -23,15 +20,13 @@ namespace EmpireAtWar.Entities.BaseEntity
         private readonly IEntityFacade[] _facades;
         private readonly IEntityLocator _entityLocator;
         public long Id { get;  }
-        
-        public IModelObserver Model { get; }
+
         public IHealthModelObserver HealthModel { get; }
         public PlayerId Owner { get; }
 
         public Entity(
             long id,
             IEntityFacade[] facades,
-            IUnitModelObserver modelObserver,
             IHealthModelObserver healthModel,
             IEntityLocator entityLocator,
             PlayerId owner)
@@ -40,7 +35,6 @@ namespace EmpireAtWar.Entities.BaseEntity
             _entityLocator = entityLocator;
             Owner = owner;
             Id = id;
-            Model = modelObserver;
             HealthModel = healthModel;
         }
         

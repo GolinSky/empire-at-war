@@ -6,14 +6,13 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Mvc;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -87,16 +86,16 @@ namespace EmpireAtWar.Services.Enemy
             bool hasCaptureTarget = hasThreatenedSite ||
                 TryGetClosestCaptureTarget(origin, out captureTarget) ||
                 _captureSites.TryGetRaidTarget(self, origin, out captureTarget);
-            GameEntity ownBase = FindClosestEntity<ISpaceStationModelObserver>(owner => owner == self, origin);
+            GameEntity ownBase = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == self, origin);
             Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position : origin;
 
             // With several enemies the AI commits to one of them so it does not split its fleet.
             PlayerId focusEnemy = FindFocusEnemy(home);
-            GameEntity enemyBaseTarget = FindClosestEntity<ISpaceStationModelObserver>(
+            GameEntity enemyBaseTarget = FindClosestEntity(EntityRoles.IsPlayerBase,
                 owner => owner == focusEnemy,
                 origin);
             // Any hostile ship is a fair fleet target; the closest one wins.
-            GameEntity enemyFleetTarget = FindClosestEntity<IShipModelObserver>(
+            GameEntity enemyFleetTarget = FindClosestEntity(EntityRoles.IsShip,
                 owner => _roster.IsHostile(self, owner),
                 origin);
             // Strength is compared against the whole team of the focused enemy.
@@ -140,7 +139,7 @@ namespace EmpireAtWar.Services.Enemy
         private PlayerId FindFocusEnemy(Vector3 home)
         {
             PlayerId self = _owner.Id;
-            GameEntity closestStation = FindClosestEntity<ISpaceStationModelObserver>(
+            GameEntity closestStation = FindClosestEntity(EntityRoles.IsPlayerBase,
                 owner => _roster.IsHostile(self, owner),
                 home);
             if (closestStation != null)
@@ -148,7 +147,7 @@ namespace EmpireAtWar.Services.Enemy
                 return closestStation.Owner;
             }
 
-            GameEntity closestShip = FindClosestEntity<IShipModelObserver>(
+            GameEntity closestShip = FindClosestEntity(EntityRoles.IsShip,
                 owner => _roster.IsHostile(self, owner),
                 home);
             return closestShip != null ? closestShip.Owner : PlayerId.None;
@@ -226,15 +225,14 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
-        private GameEntity FindClosestEntity<TModel>(Predicate<PlayerId> includeOwner, Vector3 origin)
-            where TModel : IModelObserver
+        private GameEntity FindClosestEntity(Predicate<GameEntity> hasRole, Predicate<PlayerId> includeOwner, Vector3 origin)
         {
             GameEntity closest = null;
             float closestDistance = float.MaxValue;
             foreach (GameEntity entity in _entityLocator.Entities)
             {
                 if (!includeOwner(entity.Owner) ||
-                    entity.Model is not TModel ||
+                    !hasRole(entity) ||
                     entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits)
                 {
