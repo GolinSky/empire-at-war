@@ -119,7 +119,7 @@ namespace EmpireAtWar.Services.Enemy
                 throw new ArgumentNullException(nameof(ship));
             }
 
-            EvaluateAndExecute();
+            HandleWorldChanged();
         }
 
         private void HandleShipRemoved(IShipEntity ship)
@@ -130,7 +130,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             _zoneExitTargets.Remove(ship);
-            EvaluateAndExecute();
+            HandleWorldChanged();
         }
 
         private void HandleEntityChanged(GameEntity entity)
@@ -140,12 +140,14 @@ namespace EmpireAtWar.Services.Enemy
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            EvaluateAndExecute();
+            HandleWorldChanged();
         }
 
         private void HandleWorldChanged()
         {
-            EvaluateAndExecute();
+            // Removal events also arrive during teardown, after zone views may be destroyed.
+            // Defer world queries to the next gameplay tick.
+            _decisionTimer = 0f;
         }
 
         private void EvaluateAndExecute()
