@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField, Tooltip("Visual rock layers; shares are relative weights of the rock count.")]
         private DictionaryWrapper<AsteroidSize, RockLayerSettings> rockLayers;
 
-        [field: SerializeField, Min(0f), Tooltip("Free gap between the largest station footprint and both adjacent borders.")]
+        [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
         public float StationEdgeDistance { get; private set; } = 125f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;
         [field: SerializeField, Min(0f)] public float ZoneClearance { get; private set; } = 30f;

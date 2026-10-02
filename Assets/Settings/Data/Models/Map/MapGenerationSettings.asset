@@ -17,8 +17,8 @@ MonoBehaviour:
     - key: 0
       value:
         <Bounds>k__BackingField:
-          <Min>k__BackingField: {x: -1800, y: -1800}
-          <Max>k__BackingField: {x: 1800, y: 1800}
+          <Min>k__BackingField: {x: -2000, y: -2000}
+          <Max>k__BackingField: {x: 2000, y: 2000}
         <CapturableZoneCount>k__BackingField: 2
         <MiningSiteCount>k__BackingField: 2
         <BattleSiteCount>k__BackingField: 2
@@ -41,8 +41,8 @@ MonoBehaviour:
     - key: 1
       value:
         <Bounds>k__BackingField:
-          <Min>k__BackingField: {x: -2700, y: -2700}
-          <Max>k__BackingField: {x: 2700, y: 2700}
+          <Min>k__BackingField: {x: -3000, y: -3000}
+          <Max>k__BackingField: {x: 3000, y: 3000}
         <CapturableZoneCount>k__BackingField: 3
         <MiningSiteCount>k__BackingField: 4
         <BattleSiteCount>k__BackingField: 2

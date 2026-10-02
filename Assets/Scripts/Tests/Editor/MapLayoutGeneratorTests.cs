@@ -91,8 +91,13 @@ namespace EmpireAtWar.Tests.Editor
                 Vector3 republic = layout.GetStationPosition(TestPlayers.Human);
                 Vector3 separatist = layout.GetStationPosition(TestPlayers.Enemy);
 
-                Assert.That(separatist.x, Is.EqualTo(-republic.x).Within(TOLERANCE));
-                Assert.That(separatist.z, Is.EqualTo(-republic.z).Within(TOLERANCE));
+                // Each station is inset by its own footprint, so mixed factions mirror only by corner.
+                Assert.That(Mathf.Sign(separatist.x), Is.EqualTo(-Mathf.Sign(republic.x)));
+                Assert.That(Mathf.Sign(separatist.z), Is.EqualTo(-Mathf.Sign(republic.z)));
+                Assert.That(Mathf.Abs(republic.x), Is.EqualTo(layout.SizeRange.Max.x -
+                    _settings.GetStationRadius(FactionType.Republic) - _settings.StationEdgeDistance).Within(TOLERANCE));
+                Assert.That(Mathf.Abs(separatist.x), Is.EqualTo(layout.SizeRange.Max.x -
+                    _settings.GetStationRadius(FactionType.Separatist) - _settings.StationEdgeDistance).Within(TOLERANCE));
                 Assert.That(Mathf.Abs(republic.x), Is.GreaterThan(layout.SizeRange.Max.x * 0.5f));
                 Assert.That(Mathf.Abs(republic.z), Is.GreaterThan(layout.SizeRange.Max.y * 0.5f));
             }
