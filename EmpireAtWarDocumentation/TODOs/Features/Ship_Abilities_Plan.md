@@ -44,7 +44,11 @@ status: in-progress
 
 - `Ready` → `Active` → `Recovering` → `Ready`.
 - Catalog: 7 IDs; 7 transparent icons at 256×256, readable at 64 px.
-- Starting duration: 8–15 s; recovery: 30–60 s; beam damage ≈3× heaviest shot.
+- `BoostWeaponPower` / Fire All Batteries: damage ×2; weapon reload time ×0.3; speed ×1; damage taken ×1; active 7 s; recovery 50 s after the effect ends.
+- `Assault`: damage ×2; weapon reload time ×0.5; speed ×2; damage taken ×1; active 7 s; recovery 50 s after the effect ends. Enemy-target attack order retained.
+- 2026-10-02 balance pass: both descriptions updated; weapons-only burst has ≈6.67× theoretical DPS; Assault has ≈4× theoretical DPS plus double speed.
+- Verification: live catalog readback matches saved asset; catalog is not dirty; no new Unity console errors after the edit. No automated tests or Play Mode run; wider implementation acceptance remains pending.
+- Existing unsaved `ProtonBeamSettings.damage = 6000` was preserved when saving the shared catalog; its existing description still says 600.
 - Venator: `ProtonBeam` + `BoostShieldPower`.
 
 ## Edge Cases

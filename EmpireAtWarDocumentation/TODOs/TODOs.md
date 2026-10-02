@@ -6,6 +6,7 @@
 
 - [ ] **Review ship abilities implementation**
   - **Plan**: [[TODOs/Features/Ship_Abilities_Plan|Ship Abilities Plan]]
+  - **Status**: 2026-10-02 balance/descriptions updated: Boost Weapon Power = damage ×2 / reload ×0.3 / speed ×1; Assault = damage ×2 / reload ×0.5 / speed ×2; both active 7 s, then recovery 50 s. Unity live readback and saved asset verified; no new console errors; no automated tests or Play Mode run.
   - **Remaining**: implementation review and acceptance evidence; commit `dc869bbb` recorded review as needed.
 
 - [ ] **Implement UI tooltip system**

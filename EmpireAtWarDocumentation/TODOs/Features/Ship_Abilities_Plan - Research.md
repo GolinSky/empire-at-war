@@ -5,6 +5,8 @@ status: in-progress
 # Ship Abilities — Implementation Plan (for Codex)
 
 - Working reference: [[TODOs/Features/Ship_Abilities_Plan]].
+- 2026-10-02 balance pass: catalog values and descriptions saved through Unity; live readback and disk diff verified; no new console errors. No automated tests or Play Mode run.
+- Weapons burst retains the `BoostWeaponPower` ID/display name; Assault retains its targeted attack and ×2 fire rate. Wider implementation acceptance remains pending.
 - Detailed plan/evidence; recorded status and dates retained.
 
 ## Goal
@@ -101,8 +103,8 @@ status: in-progress
 | `Invulnerability` / `InvulnerabilityAbility` | Falcon-like | self | no | Adds the modifier (`DamageTakenMultiplier = 0`) | Removes the modifier |
 | `BoostShieldPower` / `BoostShieldPowerAbility` | Nebulon-B / MC | self | **yes** | Adds the modifier (shield regen ↑, speed ↓, damage ↓) | Removes the modifier |
 | `BoostEnginePower` / `BoostEnginePowerAbility` | Corvette | self | **yes** | Adds the modifier (speed ↑, damage ↓) | Removes the modifier |
-| `BoostWeaponPower` / `BoostWeaponPowerAbility` | Acclamator / Victory | self | **yes** | Adds the modifier (damage ↑, speed ↓, damage taken ↑) | Removes the modifier |
-| `Assault` / `AssaultAbility` | Admonitor-like | enemy | no | Adds the modifier (fire delay ×0.5, damage ×2) and orders the caster to attack the target through its `IAttackCommand` | Removes the modifier |
+| `BoostWeaponPower` / `BoostWeaponPowerAbility` | Acclamator / Victory | self | **yes** | Fire All Batteries: damage ×2, reload time ×0.3, speed ×1, damage taken ×1; active 7 s, then recovery 50 s | Removes the modifier |
+| `Assault` / `AssaultAbility` | Admonitor-like | enemy | no | Damage ×2, reload time ×0.5, speed ×2; active 7 s, then recovery 50 s; orders the caster to attack through `IAttackFacade` | Removes the modifier |
 | `ConcentrateFire` / `ConcentrateFireAbility` | Home One | enemy | no | Finds friendly ships within `CommandRadius` through `IEntityLocator`, orders each to attack the target through its `IAttackCommand` and adds the modifier to each | Removes the modifier from exactly those ships |
 
 - Adding a new ability:

@@ -1,5 +1,6 @@
 namespace EmpireAtWar.Models.Factions
 {
+    //todo: not scalable - refactor
     public enum ShipType
     {
         //republic
@@ -10,12 +11,12 @@ namespace EmpireAtWar.Models.Factions
         StarDestroyer2 = 4,
         HeavyDreadnought = 5,
         Thranta = 6,
-        
+
         //separatist
         Providence = 100,
         Recusant = 101,
         Munificent = 102,
         Lucrehulk = 103,
-        
+
     }
 }
