@@ -56,10 +56,8 @@ namespace EmpireAtWar.Views
         {
             _model.OnSelectionChanged += UpdateVisibility;
             abilityBar.SetModel(_model);
-            _onSelected = _presenter.CloseSelection;
-            _onFocused = _presenter.FocusSelection;
-            disableSelectionButton.onClick.AddListener(HandleSelection);
-            focusButton.onClick.AddListener(HandleFocus);
+            disableSelectionButton.enabled = false;
+            focusButton.enabled = false;
             _isInitialized = true;
             UpdateVisibility();
         }

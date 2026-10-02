@@ -25,6 +25,7 @@ namespace EmpireAtWar
         [SerializeField] private Image backgroundImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
+        [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
        
@@ -48,7 +49,8 @@ namespace EmpireAtWar
             tooltipTrigger.SetKey(request);
             _reinforcementVisitor = reinforcementVisitor;
             iconImage.sprite = request.FactionData.Icon;
-            unitCapacityText.text = request.FactionData.UnitCapacity.ToString();
+            unitCapacityText.text = $"{request.FactionData.UnitCapacity} CAP";
+            unitNameText.text = request.FactionData.Name.ToUpperInvariant();
             _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();
         }

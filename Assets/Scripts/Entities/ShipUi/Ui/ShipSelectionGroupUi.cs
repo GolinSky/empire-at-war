@@ -14,10 +14,10 @@ namespace EmpireAtWar.Views
 {
     public sealed class ShipSelectionGroupUi : MonoBehaviour
     {
-        private const float HEADER_HEIGHT = 70f;
-        private const float PADDING = 8f;
+        private const float HEADER_HEIGHT = 22f;
+        private const float PADDING = 2f;
         private const float SPACING = 6f;
-        private const float SHIP_HEADER_HEIGHT = 36f;
+        private const float SHIP_HEADER_HEIGHT = 100f;
 
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text typeLabel;
@@ -36,7 +36,6 @@ namespace EmpireAtWar.Views
 
         private Action _onClicked;
         private int _shipCount;
-        private int _abilityCount;
 
         private void Awake() => button.onClick.AddListener(HandleClick);
         private void OnDestroy() => button.onClick.RemoveListener(HandleClick);
@@ -63,7 +62,6 @@ namespace EmpireAtWar.Views
             typeLabel.text = $"{label}  ×{ships.Count}";
 
             List<ShipAbilitySlot> slots = new List<ShipAbilitySlot>();
-            HashSet<ShipAbilityId> abilities = new HashSet<ShipAbilityId>();
             for (int i = 0; i < ships.Count; i++)
             {
                 ShipUi entry = Instantiate(entryPrefab, entriesLayout.transform);
@@ -74,10 +72,8 @@ namespace EmpireAtWar.Views
                 {
                     ShipAbilitySlot slot = ships[i].AbilitySlots[j];
                     slots.Add(slot);
-                    abilities.Add(slot.Id);
                 }
             }
-            _abilityCount = abilities.Count;
             abilityBar.SetModel(model);
             abilityBar.SetSlots(slots, pressAbility);
         }
@@ -86,12 +82,12 @@ namespace EmpireAtWar.Views
         {
             int columns = GetColumns(iconSize, height);
             return Mathf.Max(columns * (iconSize + SPACING) - SPACING,
-                _abilityCount * 36f) + PADDING * 2f;
+                196f) + PADDING * 2f;
         }
 
         public void SetLayout(float x, float iconSize, float height)
         {
-            groupRect.anchoredPosition = new Vector2(x, -PADDING);
+            groupRect.anchoredPosition = new Vector2(x, 0f);
             groupRect.sizeDelta = new Vector2(GetWidth(iconSize, height), height);
             entriesLayout.cellSize = new Vector2(iconSize, iconSize + SHIP_HEADER_HEIGHT);
             entriesLayout.constraintCount = GetColumns(iconSize, height);

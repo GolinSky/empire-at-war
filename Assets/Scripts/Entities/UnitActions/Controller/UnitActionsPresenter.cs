@@ -83,7 +83,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
         {
             UnitActionId action = Enum.Parse<UnitActionId>((string)key);
-            _tooltips.Show(source, action, anchor, () => !_session.IsBattleEnded && Snapshot().Count > 0,
+            _tooltips.Show(source, action, anchor, () => !_session.IsBattleEnded,
                 () => BuildTooltip(action));
         }
 
@@ -168,15 +168,13 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         private void RefreshAvailability()
         {
-            bool any = false;
             foreach (UnitActionId action in Enum.GetValues(typeof(UnitActionId)))
             {
                 bool available = !_session.IsBattleEnded && HasReceiver(action);
                 _availability[action] = available;
                 _view.SetAvailable(action, available);
-                any |= available;
             }
-            _view.SetVisible(any);
+            _view.SetVisible(true);
         }
 
         private bool HasReceiver(UnitActionId action)

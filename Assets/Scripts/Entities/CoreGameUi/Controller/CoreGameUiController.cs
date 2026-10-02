@@ -20,8 +20,8 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Game
 {
     public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
-        IUnitActionsViewProvider, ISuperWeaponsViewProvider,
-        IObserver<ISelectionSubject>, IInitializable, ILateDisposable
+        IUnitActionsViewProvider, ISuperWeaponsViewProvider, ICoreGameHudStatus,
+        IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
     {
         private readonly ISelectionService _selectionService;
         private readonly ISkirmishSessionModelObserver _sessionModel;
@@ -38,6 +38,8 @@ namespace EmpireAtWar.Presenters.Game
         private readonly ITooltipService _tooltipService;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private TooltipHoverSubscription _tooltipHover;
+        private string _factionName = "";
+        private int _stationLevel;
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
@@ -243,6 +245,20 @@ namespace EmpireAtWar.Presenters.Game
             _skirmishFlow.TogglePause();
         }
 
+        public void ClearFleetSelection() => _selectionService.RemoveSelectable(_lastSelectionContext);
+
+        public void Tick()
+        {
+            _ui.SetHudStatus(_factionName, _stationLevel,
+                _lastSelectionContext != null ? _lastSelectionContext.Count : 0, _sessionModel.IsBattleEnded);
+        }
+
+        public void SetProductionStatus(string faction, int level)
+        {
+            _factionName = faction;
+            _stationLevel = level;
+        }
+
         public void SpeedUp()
         {
             _skirmishFlow.ToggleSpeedUp();
@@ -284,6 +300,8 @@ namespace EmpireAtWar.Presenters.Game
                 {
                     "Pause" => "Pause or resume the battle.",
                     "Speed" => "Switch the battle speed.",
+                    "Clear fleet" => "Deselect all currently selected units.",
+                    "Orbital" => "Open orbital weapons. Construct a charge at the station, then choose a ready weapon and a target.",
                     "Reinforcements" => "Open or close available reinforcements. Drag a card into a friendly deployment zone.",
                     "Cinematic" => $"Enter cinematic camera mode. Exit with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))

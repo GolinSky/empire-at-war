@@ -31,7 +31,7 @@ namespace EmpireAtWar.Views.Reinforcement
 
     public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor, ITooltipHoverView
     {
-        private const string UNIT_CAPACITY_TEXT = "REINFORCEMENTS";
+        private const string UNIT_CAPACITY_TEXT = "FLEET CAPACITY";
 
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private TooltipHoverView tooltipHover;

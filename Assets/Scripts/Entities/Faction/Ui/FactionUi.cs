@@ -27,6 +27,7 @@ namespace EmpireAtWar.Views.Factions
         void Hide();
         void Initialize();
         void Dispose();
+        void RefreshAvailability(float credits, bool battleEnded);
     }
 
     public class FactionUi : BaseUi, IFactionUi, IFactionView, ITooltipHoverView
@@ -172,6 +173,20 @@ namespace EmpireAtWar.Views.Factions
         public void BuyUnit(UnitRequest unitRequest)
         {
             _presenter.TryPurchaseUnit(unitRequest);
+        }
+
+        public void RefreshAvailability(float credits, bool battleEnded)
+        {
+            if (!_isRouteActive || _model.SelectionType != SelectionType.Base) return;
+            var queues = _model.GetProductionQueueSnapshots();
+            foreach (FactionUnitUi unit in _factionUnitsUi)
+            {
+                bool queued = false;
+                foreach (var queue in queues)
+                    if (queue.UnitRequest.Id == unit.RequestId) queued = true;
+                unit.RenderAvailability(_presenter.IsUnitAvailable(unit.FactionData),
+                    credits >= unit.FactionData.Price, queued, battleEnded);
+            }
         }
 
         public override void Show()

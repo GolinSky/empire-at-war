@@ -11,6 +11,7 @@ using MPUIKIT;
 using Utilities.ScriptUtils.EditorSerialization;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace EmpireAtWar.Views.Game
 {
@@ -39,6 +40,13 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private EndGameUi endGameUi;
         [SerializeField] private UnitActionsView unitActionsView;
         [SerializeField] private SuperWeaponsView superWeaponsView;
+        [SerializeField] private Transform economyRouteParent;
+        [SerializeField] private TMP_Text factionText;
+        [SerializeField] private TMP_Text contentTitle;
+        [SerializeField] private TMP_Text contentStatus;
+        [SerializeField] private GameObject selectionSlots;
+        [SerializeField] private Button clearFleetButton;
+        [SerializeField] private CanvasGroup battleControls;
 
         private ISkirmishSessionModelObserver _model;
         private ICoreGamePresenter _presenter;
@@ -49,6 +57,20 @@ namespace EmpireAtWar.Views.Game
 
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
+
+        public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)
+        {
+            factionText.text = faction.ToUpperInvariant();
+            contentTitle.text = _isFactionLayout ? $"{faction.ToUpperInvariant()} STARBASE" : "FLEET SELECTION";
+            contentStatus.text = _isFactionLayout ? $"LEVEL {level}" : $"{selectionCount} UNITS";
+            timeButton.interactable = !battleEnded;
+            speedUpButton.interactable = !battleEnded;
+            reinforcementButton.interactable = !battleEnded;
+            videoModeButton.interactable = !battleEnded;
+            clearFleetButton.interactable = !battleEnded;
+            battleControls.interactable = !battleEnded && IsVisible;
+            battleControls.blocksRaycasts = !battleEnded && IsVisible;
+        }
 
         public void SetModel(ISkirmishSessionModelObserver model)
         {
@@ -73,6 +95,7 @@ namespace EmpireAtWar.Views.Game
             speedUpButton.onClick.AddListener(_presenter.SpeedUp);
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.AddListener(_presenter.StartCinematic);
+            clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
             _model.OnGameTimeModeChanged += UpdateSprites;
             UpdateSprites(_model.EffectiveTimeMode);
             _isInitialized = true;
@@ -89,6 +112,7 @@ namespace EmpireAtWar.Views.Game
             speedUpButton.onClick.RemoveListener(_presenter.SpeedUp);
             reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
+            clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
             _model.OnGameTimeModeChanged -= UpdateSprites;
             _isInitialized = false;
         }
@@ -112,64 +136,40 @@ namespace EmpireAtWar.Views.Game
         public void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection)
         {
             if (_hasContentLayout && _isFactionLayout == isFactionSelection &&
-                _isShipGroupLayout == isShipGroupSelection)
-            {
-                if (isFactionSelection || isShipGroupSelection)
-                {
-                    contentScroll.horizontalNormalizedPosition = 0f;
-                }
-
-                return;
-            }
-
+                _isShipGroupLayout == isShipGroupSelection) return;
             _hasContentLayout = true;
             _isFactionLayout = isFactionSelection;
             _isShipGroupLayout = isShipGroupSelection;
+            bool hasHeader = isFactionSelection || isShipGroupSelection;
+            panelImage.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, hasHeader ? 274f : 222f);
+            contentTitle.gameObject.SetActive(hasHeader);
+            contentStatus.gameObject.SetActive(hasHeader);
+            selectionSlots.SetActive(!hasHeader);
+            clearFleetButton.gameObject.SetActive(isShipGroupSelection);
+            contentStatus.rectTransform.anchoredPosition = new Vector2(isShipGroupSelection ? -112f : -14f, -9f);
+            contentScroll.viewport.offsetMin = new Vector2(14f, 12f);
+            contentScroll.viewport.offsetMax = new Vector2(-14f, hasHeader ? -42f : -12f);
             RectTransform content = (RectTransform)contentRouteParent;
             contentGrid.enabled = !isShipGroupSelection;
-            if (isShipGroupSelection)
-            {
-                contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-                content.anchorMin = new Vector2(0f, 0f);
-                content.anchorMax = new Vector2(1f, 1f);
-                content.pivot = new Vector2(0f, 0.5f);
-                content.anchoredPosition = Vector2.zero;
-                content.sizeDelta = Vector2.zero;
-                contentScroll.horizontal = true;
-                contentScroll.vertical = false;
-                contentScroll.horizontalNormalizedPosition = 0f;
-            }
-            else
-            {
-                contentGrid.cellSize = isFactionSelection
-                    ? factionCellSize
-                    : shipCellSize;
-                contentGrid.spacing = new Vector2(20f, 20f);
-                contentGrid.padding = new RectOffset(36, 36, 18, 18);
-                contentGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
-                contentGrid.startAxis = isFactionSelection
-                    ? GridLayoutGroup.Axis.Vertical
-                    : GridLayoutGroup.Axis.Horizontal;
-                contentGrid.childAlignment = TextAnchor.UpperLeft;
-                contentGrid.constraint = isFactionSelection
-                    ? GridLayoutGroup.Constraint.FixedRowCount
-                    : GridLayoutGroup.Constraint.FixedColumnCount;
-                contentGrid.constraintCount = isFactionSelection ? 2 : 1;
-                contentSizeFitter.horizontalFit = isFactionSelection
-                    ? ContentSizeFitter.FitMode.PreferredSize
-                    : ContentSizeFitter.FitMode.Unconstrained;
-                contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-                content.anchorMin = new Vector2(0f, 1f);
-                content.anchorMax = new Vector2(isFactionSelection ? 0f : 1f, 1f);
-                content.pivot = new Vector2(isFactionSelection ? 0f : 0.5f, 1f);
-                content.anchoredPosition = Vector2.zero;
-                content.sizeDelta = Vector2.zero;
-                contentScroll.horizontal = isFactionSelection;
-                contentScroll.vertical = !isFactionSelection;
-                contentScroll.horizontalNormalizedPosition = 0f;
-                contentScroll.verticalNormalizedPosition = 1f;
-            }
+            contentGrid.cellSize = isFactionSelection ? factionCellSize : shipCellSize;
+            contentGrid.spacing = new Vector2(8f, 8f);
+            contentGrid.padding = new RectOffset();
+            contentGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+            contentGrid.startAxis = GridLayoutGroup.Axis.Vertical;
+            contentGrid.childAlignment = TextAnchor.UpperLeft;
+            contentGrid.constraint = GridLayoutGroup.Constraint.FixedRowCount;
+            contentGrid.constraintCount = isFactionSelection ? 2 : 1;
+            contentSizeFitter.horizontalFit = isShipGroupSelection
+                ? ContentSizeFitter.FitMode.Unconstrained : ContentSizeFitter.FitMode.PreferredSize;
+            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+            content.anchorMin = new Vector2(0f, 0f);
+            content.anchorMax = new Vector2(isShipGroupSelection ? 1f : 0f, 1f);
+            content.pivot = new Vector2(0f, 1f);
+            content.anchoredPosition = Vector2.zero;
+            content.sizeDelta = Vector2.zero;
+            contentScroll.horizontal = true;
+            contentScroll.vertical = false;
+            contentScroll.horizontalNormalizedPosition = 0f;
         }
 
         public Transform GetRouteParent(SkirmishUiRoutePosition position)
@@ -183,6 +183,7 @@ namespace EmpireAtWar.Views.Game
                 case SkirmishUiRoutePosition.BuildPipeline:
                     return buildPipelineRouteParent;
                 case SkirmishUiRoutePosition.Economy:
+                    return economyRouteParent;
                 case SkirmishUiRoutePosition.Reinforcement:
                 case SkirmishUiRoutePosition.SuperWeapon:
                     return transform;

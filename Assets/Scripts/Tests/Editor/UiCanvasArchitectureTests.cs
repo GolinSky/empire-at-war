@@ -312,6 +312,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SpeedUp() => SpeedUpCount++;
             public void ToggleReinforcement() => ReinforcementCount++;
             public void StartCinematic() => CinematicCount++;
+            public void ClearFleetSelection() { }
         }
     }
 }

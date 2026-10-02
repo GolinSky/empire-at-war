@@ -19,7 +19,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
     /// Player superweapon buttons: a ready weapon starts targeting, the next valid enemy click fires it.
     /// Binds to the core UI through its route so it works regardless of container initialization order.
     /// </summary>
-    public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute
+    public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute, ITickable
     {
         private readonly SuperWeaponModel _model;
         private readonly ILocalPlayer _localPlayer;
@@ -35,6 +35,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly EmpireAtWar.Models.Factions.IPlayerFactionModelObserver _faction;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private TooltipHoverSubscription _tooltipHover;
+        private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
+        private bool _isOpen;
 
         public SuperWeaponPresenter(SuperWeaponModel model, SuperWeaponTargetingModel targeting,
             ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
@@ -43,7 +45,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             ILocalPlayer localPlayer, IUiService uiService, IUiCancelRouter cancelRouter,
             ITooltipService tooltips, SuperWeaponData data,
             EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction,
-            EmpireAtWar.Services.Input.IInputBindings bindings)
+            EmpireAtWar.Services.Input.IInputBindings bindings,
+            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session)
             : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
@@ -58,6 +61,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _data = data;
             _faction = faction;
             _bindings = bindings;
+            _session = session;
         }
 
         public void Initialize()
@@ -86,6 +90,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 ((ITooltipHoverView)_view).TooltipHover,
                 HandleTooltipHover, _tooltips);
             _view.Pressed += HandlePressed;
+            _view.ToggleRequested += TogglePopup;
+            _view.CloseRequested += ClosePopup;
             _model.OnStateChanged += HandleStateChanged;
             _targeting.Changed += RenderPending;
             _targeting.TargetSubmitted += HandleTargetSubmitted;
@@ -102,6 +108,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_view == null) return;
             _tooltipHover.Dispose();
             _view.Pressed -= HandlePressed;
+            _view.ToggleRequested -= TogglePopup;
+            _view.CloseRequested -= ClosePopup;
+            _isOpen = false;
             _model.OnStateChanged -= HandleStateChanged;
             _targeting.Changed -= RenderPending;
             _targeting.TargetSubmitted -= HandleTargetSubmitted;
@@ -143,6 +152,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandlePressed(SuperWeaponType type)
         {
+            if (_session.IsBattleEnded) return;
             if (_targeting.Pending == type)
             {
                 _targeting.Cancel();
@@ -157,6 +167,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandleTargetSubmitted(SuperWeaponType type, IEntity target)
         {
+            if (_session.IsBattleEnded) return;
             // Invalid picks such as fighters keep the weapon waiting for a proper target.
             if (!_fireService.CanTarget(_localPlayer.Id, target)) return;
             _targeting.Cancel();
@@ -172,26 +183,63 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandleUnitTargetingChanged()
         {
-            if (_unitTargeting.Pending != null) _targeting.Cancel();
+            if (_unitTargeting.Pending != null) ClosePopup();
         }
 
         private void HandleAbilityTargetingChanged()
         {
-            if (_abilities.IsWaitingForTarget) _targeting.Cancel();
+            if (_abilities.IsWaitingForTarget) ClosePopup();
         }
 
         // A pending target selection makes this the selected UI, so Escape cancels it first.
         protected override bool HandleCancel()
         {
-            _targeting.Cancel();
+            if (_targeting.Pending != null) _targeting.Cancel();
+            else ClosePopup();
             return true;
         }
 
         private void RenderPending()
         {
             _view.SetPending(_targeting.Pending);
-            if (_targeting.Pending != null) Focus();
+            if (_targeting.Pending != null || _isOpen) Focus();
             else Unfocus();
+        }
+
+        private void TogglePopup()
+        {
+            if (_session.IsBattleEnded) return;
+            if (_isOpen)
+            {
+                ClosePopup();
+                return;
+            }
+            _isOpen = true;
+            _view.SetOpen(true);
+            RenderPending();
+        }
+
+        private void ClosePopup()
+        {
+            _isOpen = false;
+            _view.SetOpen(false);
+            _targeting.Cancel();
+            RenderPending();
+        }
+
+        public void Tick()
+        {
+            if (_view == null) return;
+            _view.SetBattleAvailable(!_session.IsBattleEnded);
+            if (_session.IsBattleEnded)
+            {
+                if (_isOpen || _targeting.Pending != null) ClosePopup();
+                return;
+            }
+            if (!_isOpen) return;
+            foreach (var queue in _faction.GetProductionQueueSnapshots())
+                if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request)
+                    _view.SetRemaining(request.Key, queue.RemainingBuildTime);
         }
     }
 }

@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace EmpireAtWar.Views
 {
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Views
         [SerializeField] private GameObject activeHighlight;
         [SerializeField] private GameObject targetingHighlight;
         [SerializeField] private TooltipTrigger tooltipTrigger;
+        [SerializeField] private TMP_Text cooldownText;
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
         private IReadOnlyList<ShipAbilitySlot> _slots;
@@ -46,10 +48,12 @@ namespace EmpireAtWar.Views
             float lowestProgress = 1f;
             bool active = false;
             bool interactable = false;
+            float remaining = float.MaxValue;
             for (int i = 0; i < _slots.Count; i++)
             {
                 ShipAbilitySlot slot = _slots[i];
                 lowestProgress = Mathf.Min(lowestProgress, slot.Progress01);
+                remaining = Mathf.Min(remaining, slot.TimeLeft);
                 active |= slot.State == ShipAbilityState.Active;
                 interactable |= slot.State == ShipAbilityState.Ready ||
                     slot.State == ShipAbilityState.Active && slot.Definition.CanCancel;
@@ -58,6 +62,8 @@ namespace EmpireAtWar.Views
             activeHighlight.SetActive(active);
             targetingHighlight.SetActive(_waiting);
             button.interactable = interactable;
+            cooldownText.text = _waiting ? "TARGET" : !interactable && remaining > 0f
+                ? $"{Mathf.CeilToInt(remaining)}s" : "";
         }
 
         private void HandleClick() => _onPressed(Id);

@@ -26,6 +26,8 @@ namespace EmpireAtWar.Views.Factions
     public class ShipBuildUi : BaseUi, IShipBuildUi, ITooltipHoverView
     {
         [SerializeField] private BuildPipelineView pipelineView;
+        [SerializeField] private TMPro.TMP_Text currentUnitText;
+        [SerializeField] private GameObject queuePanel;
         [SerializeField] private TooltipHoverView tooltipHover;
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -75,6 +77,8 @@ namespace EmpireAtWar.Views.Factions
             }
 
             pipelineView.Render(snapshots);
+            queuePanel.SetActive(snapshots.Count > 0);
+            currentUnitText.text = snapshots.Count > 0 ? snapshots[0].UnitRequest.FactionData.Name.ToUpperInvariant() : "";
         }
 
     }
