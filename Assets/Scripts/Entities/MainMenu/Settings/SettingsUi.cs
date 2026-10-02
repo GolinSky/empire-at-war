@@ -10,6 +10,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
     public class SettingsUi : BaseUi, ISettingsUi, ITooltipHoverView
     {
         private const string UNSAVED_CHANGES_MESSAGE = "Unsaved changes";
+        private const string SETTINGS_SCOPE_MESSAGE = "Changes apply across all categories.";
 
         [SerializeField] private Button closeButton;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -98,9 +99,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
             applyButton.interactable = _model.IsDirty;
             discardButton.interactable = _model.IsDirty;
-            statusText.text = _model.StatusMessage.Length == 0 && _model.IsDirty
-                ? UNSAVED_CHANGES_MESSAGE
-                : _model.StatusMessage;
+            statusText.text = _model.StatusMessage.Length != 0
+                ? _model.StatusMessage
+                : _model.IsDirty ? UNSAVED_CHANGES_MESSAGE : SETTINGS_SCOPE_MESSAGE;
+            statusText.color = _model.IsDirty ? new Color32(231, 189, 105, 255) : new Color32(123, 156, 175, 255);
             promptView.Render(_model.Prompt);
         }
 

@@ -47,6 +47,12 @@ status: in-progress
   - Mute when unfocused (default On) → master −80 dB via `Application.focusChanged`; stored volume untouched.
   - Verified 2026-09-30 Play Mode: 50% master → −16.02 dB, 25% music → −12.04 dB, Discard restores, unfocused → −80 dB.
 - [x] Phase 6 — settings screen UI
+  - 2026-10-02: fullscreen `SettingsUi.prefab`; Audio / Display / Controls / Camera tabs use `ToggleGroup` + `SettingsCategoryTab` and separate `CanvasGroup` panels. Hidden panels have alpha 0, interaction and raycasts disabled.
+  - Display groups screen + graphics; Controls retains the inactive rebinding-row template and has its own scroll area. Apply / Discard / Reset All Settings stay outside category panels.
+  - Penpot: [06 · Settings — four clickable category screens](https://design.penpot.app/#/workspace?team-id=19c47d73-0a5d-8067-8008-ba41b7ce6810&project-id=19c47d73-0a5d-8067-8008-ba41b7ce88ca&file-id=71b39894-c9c5-81cd-8008-ba57254d0595&page-id=0a9544de-1801-8012-8008-ba9aeb21e9f6).
+  - Penpot styling implemented: main-menu starfield, Rajdhani typography, beveled `HudFrame` panels, selected-tab accents, grouped rows, sliders, checkboxes, dropdowns, footer actions and confirmation card. Empty status shows “Changes apply across all categories.”; unsaved status uses amber.
+  - Verified: prefab imported and saved; both changed scripts have no diagnostics; settings, tab, rebinding-template and prompt Inspector references assigned. Isolated 1920×1080 previews inspected for all four categories; Controls renders 21 live-asset bindings with 1294 px content in a 438 px viewport. Audio/Display/Camera content fits its viewport.
+  - No automated tests, Play Mode session or live rebind capture run for this layout change. Live category/rebind acceptance remains pending.
 - Verified 2026-09-30 in Play Mode: rows render, Apply writes file, unsaved prompt, Discard, conflict detection (Up=S → Move Down; Ctrl+A ≠ A). No automated tests run.
 
 ## TODO
@@ -55,6 +61,5 @@ status: in-progress
 - Texture / shadow / AA / render scale rows (needs owned runtime URP asset copies).
 - Required-action protection on Replace; reset-page / profile presets.
 - `SettingsRouteController` ≈ 250 lines → consider extracting display countdown.
-- Pre-existing: `CloseButtonText` uses `✕`, font renders a box; guideline wants ASCII `X`.
 - Verify display change + Keep/Revert in a Windows standalone build.
 - Audit follow-ups (tests, per-edit allocations, mutable preferences, I/O failure policy): [[TODOs/Features/Settings_Audit_Followups]].

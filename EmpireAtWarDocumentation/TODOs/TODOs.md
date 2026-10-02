@@ -17,7 +17,7 @@
 
 - [ ] **Close settings audit follow-ups** (Wave 1)
   - **Plan**: [[TODOs/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; parent [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
-  - **Status**: ST1–ST7 implemented; compile clean; Play Mode smoke check done.
+  - **Status**: ST1–ST7 implemented; prior Play Mode smoke check done. 2026-10-02: fullscreen Audio / Display / Controls / Camera Penpot design implemented in the prefab, including main-menu styling and selected-tab states. Import, script diagnostics, Inspector references and all four isolated previews checked; 21 bindings render in Controls. Live category/rebind interaction remains unverified.
   - **Remaining**: run the new settings EditMode tests (on request); manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
 
 ### Bugs
