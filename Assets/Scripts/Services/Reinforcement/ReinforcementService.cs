@@ -5,6 +5,7 @@ using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -50,6 +51,8 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IStationFacingService _stationFacingService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
+        private readonly ShipsData _shipsData;
+        private readonly IAssetService _assetService;
 
         private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
@@ -79,6 +82,8 @@ namespace EmpireAtWar.Services.Reinforcement
             IStationFacingService stationFacingService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
+            ShipsData shipsData,
+            IAssetService assetService,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -98,6 +103,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _stationFacingService = stationFacingService;
             _stationRegistry = stationRegistry;
             _battleVictoryNotifier = battleVictoryNotifier;
+            _shipsData = shipsData;
+            _assetService = assetService;
         }
 
         public void Initialize()
@@ -280,6 +287,9 @@ namespace EmpireAtWar.Services.Reinforcement
             StartSpawnSequence(SpawnType.Ship);
             _currentShipType = shipType;
             _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(shipType));
+            // The preview hovers where the ship will actually fly.
+            _spawnReinforcement.SetHeight(
+                _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType)).Height);
         }
 
         private void TrySpawnSquadron(SquadronType squadronType)

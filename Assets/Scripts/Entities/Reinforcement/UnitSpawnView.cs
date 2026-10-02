@@ -13,6 +13,8 @@ namespace EmpireAtWar.Views.Reinforcement
         private List<Collider> _triggeredCollider = new List<Collider>();
         // A property block tints every renderer without creating Material instances.
         private MaterialPropertyBlock _propertyBlock;
+        // Material slots per renderer that use the hologram material and get tinted.
+        private List<int>[] _hologramSlots;
         private Color _canBeSpawnedColor;
         private Color _blockedColor = Color.red;
         private bool _isPlacementValid;
@@ -23,7 +25,20 @@ namespace EmpireAtWar.Views.Reinforcement
         private void Awake()
         {
             _propertyBlock = new MaterialPropertyBlock();
-            _canBeSpawnedColor = meshRenderers[0].sharedMaterial.GetColor(BASE_COLOR_ID);
+            Material hologram = meshRenderers[0].sharedMaterial;
+            _canBeSpawnedColor = hologram.GetColor(BASE_COLOR_ID);
+            _hologramSlots = new List<int>[meshRenderers.Length];
+            for (var i = 0; i < meshRenderers.Length; i++)
+            {
+                Material[] materials = meshRenderers[i].sharedMaterials;
+                _hologramSlots[i] = new List<int>();
+                for (var slot = 0; slot < materials.Length; slot++)
+                {
+                    if (materials[slot] == hologram)
+                        _hologramSlots[i].Add(slot);
+                }
+            }
+
             UpdateColor();
         }
 
@@ -36,6 +51,12 @@ namespace EmpireAtWar.Views.Reinforcement
         {
             position.y = height;
             transform.position = position;
+        }
+
+        public void SetHeight(float value)
+        {
+            height = value;
+            UpdatePosition(transform.position);
         }
 
         public void SetRotation(Quaternion rotation)
@@ -70,8 +91,9 @@ namespace EmpireAtWar.Views.Reinforcement
             _propertyBlock.SetColor(BASE_COLOR_ID, CanSpawn ? _canBeSpawnedColor : _blockedColor);
             for (var i = 0; i < meshRenderers.Length; i++)
             {
-                // Slot 0 is the hologram material; later slots keep their own look.
-                meshRenderers[i].SetPropertyBlock(_propertyBlock, 0);
+                // Only hologram slots are tinted; other materials keep their own look.
+                foreach (int slot in _hologramSlots[i])
+                    meshRenderers[i].SetPropertyBlock(_propertyBlock, slot);
             }
         }
     }
