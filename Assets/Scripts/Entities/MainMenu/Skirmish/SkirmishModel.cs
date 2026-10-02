@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
@@ -30,13 +31,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public IReadOnlyList<SkirmishSlotSetup> Slots => _slots;
         public int TeamCount => MatchRules.MAX_PLAYERS;
+        public int ActivePlayerCount => _slots.Count(slot => slot.IsOpen);
+        public int ActiveTeamCount => CountOpenTeams();
         public PlanetType Planet { get; private set; }
         public MapSize MapSize { get; private set; }
         public BattleVictoryCondition VictoryCondition { get; private set; }
         public float MinStartingMoney => MIN_STARTING_MONEY;
         public float MaxStartingMoney => MAX_STARTING_MONEY;
         public float StartingMoney { get; private set; } = DEFAULT_STARTING_MONEY;
-        public bool CanStart => CountOpenTeams() >= 2;
+        public bool CanStart => ActiveTeamCount >= 2;
 
         /// <param name="occupant">Row 0 always stays the human; other rows pick Closed or an AI level.</param>
         public void SelectSlotOccupant(int slotIndex, SkirmishSlotOccupant occupant)

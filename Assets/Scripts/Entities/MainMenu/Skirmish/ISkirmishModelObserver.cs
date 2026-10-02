@@ -12,6 +12,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         IReadOnlyList<SkirmishSlotSetup> Slots { get; }
         int TeamCount { get; }
+        int ActivePlayerCount { get; }
+        int ActiveTeamCount { get; }
         PlanetType Planet { get; }
         MapSize MapSize { get; }
         BattleVictoryCondition VictoryCondition { get; }

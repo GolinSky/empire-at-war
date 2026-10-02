@@ -50,9 +50,9 @@ namespace EmpireAtWar.Tests.Editor
                 }
 
                 Assert.That(root.transform.Find("Background/PlayersField"), Is.Not.Null);
-                Assert.That(root.transform.Find("Background/VictoryConditionField"), Is.Not.Null);
-                Assert.That(root.transform.Find("Background/MapSizeField"), Is.Not.Null);
-                Assert.That(root.transform.Find("Background/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
+                Assert.That(root.transform.Find("Background/BattleSettings/VictoryConditionField"), Is.Not.Null);
+                Assert.That(root.transform.Find("Background/BattleSettings/MapSizeField"), Is.Not.Null);
+                Assert.That(root.transform.Find("Background/BattleSettings/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
             }
             finally
             {
