@@ -4,8 +4,11 @@ namespace EmpireAtWar.Controllers.Factions
 {
     public class ResearchUnitRequest : UnitRequest<ResearchType>
     {
-        public ResearchUnitRequest(FactionData factionData, ResearchType key) : base(factionData, key)
+        public int Tier { get; }
+
+        public ResearchUnitRequest(FactionData factionData, ResearchType key, int tier) : base(factionData, key)
         {
+            Tier = tier;
         }
     }
 }

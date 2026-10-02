@@ -226,7 +226,8 @@ namespace EmpireAtWar.Views.Factions
             if (_research.TryGetNextTier(researchType, out ResearchTierData tier))
             {
                 _researchUnitsUi[researchType] = AddUi(
-                    _unitRequestFactory.ConstructUnitRequest(tier.FactionData, researchType));
+                    _unitRequestFactory.ConstructUnitRequest(tier.FactionData, researchType,
+                        _research.GetCompletedTiers(researchType) + 1));
             }
         }
 
