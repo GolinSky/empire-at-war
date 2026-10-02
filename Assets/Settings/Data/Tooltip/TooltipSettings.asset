@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 730a09b4fd3ce0a4fa427a5a77b99aa4, type: 3}
   m_Name: TooltipSettings
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.TooltipSettings
-  showDelay: 0.35
+  showDelay: 0.7
   refreshInterval: 0.1
   cursorOffset: {x: 18, y: 24}
   screenEdgePadding: 12
