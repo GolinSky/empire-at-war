@@ -34,15 +34,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public MapStation[] Place(Vector2Range bounds, IReadOnlyList<PlayerSlot> players, Random random)
         {
             Vector2 center = (bounds.Min + bounds.Max) * 0.5f;
-            // Every station shares the largest footprint's inset so the corners stay point-symmetric.
-            float largestRadius = 0f;
-            foreach (PlayerSlot player in players)
-            {
-                largestRadius = Mathf.Max(largestRadius, _settings.GetStationRadius(player.Faction));
-            }
-
-            Vector2 cornerOffset = (bounds.Max - bounds.Min) * 0.5f -
-                Vector2.one * (largestRadius + _settings.StationEdgeDistance);
+            Vector2 halfSize = (bounds.Max - bounds.Min) * 0.5f;
             int startCorner = random.Next(CORNER_SIGNS.Length);
             int cornerStep = players.Count == DUEL_PLAYER_COUNT ? OPPOSITE_CORNER_STEP : 1;
 
@@ -56,20 +48,23 @@ namespace EmpireAtWar.Entities.Map.Generation
             for (int i = 0; i < teamOrder.Count; i++)
             {
                 Vector2 sign = CORNER_SIGNS[(startCorner + i * cornerStep) % CORNER_SIGNS.Length];
+                // Each station keeps its own footprint's inset, so mixed factions are not exactly point-symmetric.
+                float radius = _settings.GetStationRadius(teamOrder[i].Faction);
+                Vector2 cornerOffset = halfSize - Vector2.one * (radius + _settings.StationEdgeDistance);
                 Vector2 position = center + Vector2.Scale(sign, cornerOffset);
-                stations[i] = CreateStation(teamOrder[i], position);
+                stations[i] = CreateStation(teamOrder[i], position, radius);
             }
 
             return stations;
         }
 
-        private MapStation CreateStation(PlayerSlot player, Vector2 position)
+        private MapStation CreateStation(PlayerSlot player, Vector2 position, float radius)
         {
             return new MapStation(
                 player.Faction,
                 player.Id,
                 new Vector3(position.x, _settings.StationHeight, position.y),
-                _settings.GetStationRadius(player.Faction));
+                radius);
         }
     }
 }

@@ -47,9 +47,9 @@ namespace EmpireAtWar.Services.Audio
 
         public void LateDispose()
         {
+            // The project context only disposes on quit or Play Mode exit, when Unity also destroys the
+            // DontDestroyOnLoad source in no guaranteed order; touching it here can hit a destroyed object.
             _scenes.OnSceneActivation -= OnSceneLoad;
-            _audio.Stop(_source);
-            Object.Destroy(_source.gameObject);
         }
 
         private void OnSceneLoad(SceneType scene)
