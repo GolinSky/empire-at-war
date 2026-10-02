@@ -31,14 +31,14 @@ namespace EmpireAtWar.Views.Reinforcement
 
     public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor, ITooltipHoverView
     {
-        private const string UNIT_CAPACITY_TEXT = "FLEET CAPACITY";
-
         [SerializeField] private Transform spawnTransform;
+        [SerializeField] private ScrollRect unitScroll;
         [SerializeField] private TooltipHoverView tooltipHover;
         public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button closeButton;
         [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
+        [SerializeField] private UnityEngine.UI.Image capacityFill;
 
         private readonly Dictionary<UnitLimitKey, ISpawnShipUi> _spawnUnitUiDictionary = new();
 
@@ -70,7 +70,7 @@ namespace EmpireAtWar.Views.Reinforcement
                 throw new InvalidOperationException("Reinforcement UI dependencies must be set before initialization.");
             }
 
-            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: 0/{_model.MaxUnitCapacity}";
+            UpdateCapacityData(0);
 
             closeButton.onClick.AddListener(_presenter.Hide);
 
@@ -110,7 +110,7 @@ namespace EmpireAtWar.Views.Reinforcement
             else
             {
                 ISpawnShipUi spawnShipUi = Instantiate(_data.ReinforcementButton, spawnTransform);
-                spawnShipUi.Init(this, request);
+                spawnShipUi.Init(this, request, unitScroll);
                 tooltipHover.Register(((SpawnShipUi)spawnShipUi).TooltipTrigger);
                 _spawnUnitUiDictionary.Add(key, spawnShipUi);
                 ActivateUnitUi(spawnShipUi);
@@ -119,7 +119,9 @@ namespace EmpireAtWar.Views.Reinforcement
 
         private void UpdateCapacityData(int capacity)
         {
-            unitCapacityText.text = $"{UNIT_CAPACITY_TEXT}: {capacity}/{_model.MaxUnitCapacity}";
+            unitCapacityText.text = $"{capacity} / {_model.MaxUnitCapacity}";
+            capacityFill.fillAmount = _model.MaxUnitCapacity > 0
+                ? Mathf.Clamp01((float)capacity / _model.MaxUnitCapacity) : 0f;
 
             foreach (ISpawnShipUi spawnShipUi in _spawnUnitUiDictionary.Values)
             {

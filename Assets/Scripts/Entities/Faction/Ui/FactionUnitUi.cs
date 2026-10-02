@@ -12,7 +12,6 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private TooltipTrigger tooltipTrigger;
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
         public void SetAvailable(bool available) => purchaseButton.interactable = available;
-        [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TextMeshProUGUI unitPriceText;
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
@@ -26,24 +25,21 @@ namespace EmpireAtWar.Views.Factions
             purchaseButton.interactable = unlocked && affordable && !battleEnded;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
             unitPriceText.color = affordable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);
-            stateText.text = !unlocked ? $"LV {Level}" : !affordable ? "CREDITS" : queued ? "QUEUED" : "";
+            stateText.text = unlocked && queued ? "QUEUED" : "";
             queuedHighlight.SetActive(queued);
         }
         private IFactionView _factionView;
         private UnitRequest _unitRequest;
         public FactionData FactionData { get; private set; }
-        public int Level { get; private set; }
 
 
         public void SetData(FactionData factionData, IFactionView factionView, UnitRequest unitRequest)
         {
             FactionData = factionData;
             unitIconImage.sprite = factionData.Icon;
-            unitNameText.text = factionData.Name.ToUpperInvariant();
             unitPriceText.text = factionData.Price.ToString();
             tierText.text = unitRequest is ResearchUnitRequest research ? $"T{research.Tier}" : "";
             purchaseButton.onClick.AddListener(HandleClick);
-            Level = factionData.AvailableLevel;
             _factionView = factionView;
             _unitRequest = unitRequest;
             tooltipTrigger.SetKey(unitRequest);

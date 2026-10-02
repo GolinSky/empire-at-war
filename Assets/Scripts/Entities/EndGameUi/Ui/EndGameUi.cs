@@ -57,8 +57,8 @@ namespace EmpireAtWar.Views.Game
 
             battlefieldText.text = result.Planet.ToString().ToUpperInvariant();
             objectiveText.text = fleetObjective ? "Destroy enemy fleet" : "Destroy opponent base";
-            playerFactionText.text = result.PlayerFaction.ToString();
-            enemyFactionText.text = string.Join(" / ", result.EnemyFactions);
+            playerFactionText.text = result.PlayerFaction.ToString().ToUpperInvariant();
+            enemyFactionText.text = string.Join(" / ", result.EnemyFactions).ToUpperInvariant();
             playerFleetText.text = result.PlayerShipCount.ToString();
             enemyFleetText.text = result.EnemyShipCount.ToString();
             playerBaseText.text = result.IsPlayerBaseAlive ? "Operational" : "Destroyed";

@@ -247,11 +247,10 @@ namespace EmpireAtWar.Controllers.ShipUi
                 List<ShipUiEntry> entries = new List<ShipUiEntry>();
                 foreach (IEntity entity in group.Value)
                 {
-                    IEntity[] caster = { entity };
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
-                    entries.Add(new ShipUiEntry(slots, id => _abilityService.Press(caster, id),
-                        entity.HealthModel, () => FocusEntity(entity), entity));
+                    entries.Add(new ShipUiEntry(slots, entity.HealthModel,
+                        () => FocusEntity(entity), entity));
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, entries, id => _abilityService.Press(casters, id));

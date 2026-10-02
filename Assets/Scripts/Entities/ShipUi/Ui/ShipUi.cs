@@ -72,18 +72,14 @@ namespace EmpireAtWar.Views
             _isInitialized = false;
         }
 
-        public void ConfigureEntry(Sprite icon, IShipUiModelObserver model,
-            ShipUiEntry entry, Action onSelected)
+        public void ConfigureEntry(Sprite icon, ShipUiEntry entry, Action onSelected)
         {
             _isEntry = true;
-            _model = model;
             _onSelected = onSelected;
             _onFocused = entry.Focus;
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;
-            abilityBar.SetModel(model);
-            abilityBar.SetTooltipHover(tooltipHover);
-            abilityBar.SetSlots(entry.AbilitySlots, entry.PressAbility);
+            abilityBar.gameObject.SetActive(false);
             SetHealth(entry.Health);
             disableSelectionButton.onClick.AddListener(HandleSelection);
             focusButton.onClick.AddListener(HandleFocus);

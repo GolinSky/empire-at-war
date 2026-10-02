@@ -14,7 +14,7 @@ namespace EmpireAtWar.Views
 {
     public class ShipGroupUi : BaseUi, IShipGroupUi, ITooltipHoverView
     {
-        private const float CARD_WIDTH = 98f;
+        private const float CARD_WIDTH = 80f;
         private const float GROUP_SPACING = 10f;
 
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
@@ -127,12 +127,11 @@ namespace EmpireAtWar.Views
             _layoutDirty = false;
             if (_groups.Count == 0) return;
 
-            float height = Mathf.Max(220f, size.y);
             float x = 0f;
             for (int i = 0; i < _groups.Count; i++)
             {
-                _groups[i].SetLayout(x, CARD_WIDTH, height);
-                x += _groups[i].GetWidth(CARD_WIDTH, height) + GROUP_SPACING;
+                _groups[i].SetLayout(x, CARD_WIDTH, size.y);
+                x += _groups[i].GetWidth(CARD_WIDTH) + GROUP_SPACING;
             }
             _content.sizeDelta = new Vector2(Mathf.Max(0f, x - GROUP_SPACING - size.x), 0f);
         }

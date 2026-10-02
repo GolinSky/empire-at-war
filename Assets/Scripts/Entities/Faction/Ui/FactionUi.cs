@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Presenters.Factions;
@@ -297,10 +298,12 @@ namespace EmpireAtWar.Views.Factions
         {
             bool isSelectionVisible =
                 _isRouteActive && selectionType == SelectionType.Base;
+            int siblingIndex = 0;
 
-            for (int i = 0; i < _factionUnitsUi.Count; i++)
+            foreach (FactionUnitUi unitUi in _factionUnitsUi.OrderByDescending(
+                         unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
-                FactionUnitUi unitUi = _factionUnitsUi[i];
+                unitUi.transform.SetSiblingIndex(siblingIndex++);
                 unitUi.SetActive(isSelectionVisible);
                 unitUi.SetAvailable(_presenter.IsUnitAvailable(unitUi.FactionData));
             }
