@@ -41,3 +41,14 @@ GRAPHIFY_QUERY_LOG_DISABLE = "1"
 # Compatibility tombstone for the retired mcp-for-unity server.
 [mcp_servers.unityMCP]
 enabled = false
+
+# Use the project-local bridge instead of the inherited user-level connection.
+[mcp_servers.penpot]
+enabled = false
+
+[mcp_servers.penpot-local]
+command = "C:\\Program Files\\nodejs\\node.exe"
+args = ["F:\\Private\\empire-at-war\\Tools\\Penpot\\start.mjs"]
+enabled = true
+startup_timeout_sec = 60
+tool_timeout_sec = 120

@@ -1,5 +1,11 @@
 {
   "mcpServers": {
+    "penpot-local": {
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "F:\\Private\\empire-at-war\\Tools\\Penpot\\start.mjs"
+      ]
+    },
     "empire-vault": {
       "command": "C:\\Program Files\\nodejs\\node.exe",
       "args": [
