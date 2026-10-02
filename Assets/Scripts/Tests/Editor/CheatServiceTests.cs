@@ -135,7 +135,7 @@ namespace EmpireAtWar.Tests.Editor
                 return 0;
             }
 
-            public void CopyOwnedCapturableZoneCenters(PlayerId owner, System.Collections.Generic.List<Vector3> destination)
+            public void CopyOwnedCapturableZoneBounds(PlayerId owner, System.Collections.Generic.List<Bounds> destination)
             {
                 destination.Clear();
             }

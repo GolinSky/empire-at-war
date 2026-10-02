@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         event Action OwnershipChanged;
 
         bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
-        void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination);
+        void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination);
         bool IsPositionInAlliedZone(PlayerId owner, Vector3 position);
         int GetOwnedCapturableZoneCount(PlayerId owner);
         bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
@@ -183,14 +183,14 @@ namespace EmpireAtWar.Services.ReinforcementZones
             return count;
         }
 
-        public void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination)
+        public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
         {
             destination.Clear();
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 if (zone.IsCapturable && zone.Owner == owner)
                 {
-                    destination.Add(zone.Center);
+                    destination.Add(new Bounds(zone.Center, new Vector3(zone.Radius * 2f, 0f, zone.Radius * 2f)));
                 }
             }
         }

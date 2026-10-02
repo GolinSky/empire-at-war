@@ -13,6 +13,7 @@ using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Mvc;
+using UnityEngine;
 using Zenject;
 
 namespace EmpireAtWar.SceneContext
@@ -36,7 +37,13 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();
-            Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle();
+            Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle()
+                .WithArguments(Repository.LoadComponent<BoxCollider>(Owner.Faction + "SpaceStationView"),
+                    new[]
+                    {
+                        Repository.LoadComponent<BoxCollider>("DefendPlatformView"),
+                        Repository.LoadComponent<BoxCollider>("MiningFacilityView")
+                    });
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.BindInterfacesExt<EnemyShipAbilityController>();
             Container.Bind<SuperWeaponModel>().AsSingle();
