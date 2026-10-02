@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Controllers.Factions;
 using System;
 using EmpireAtWar.Models.Factions;
 using TMPro;
@@ -12,6 +13,7 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Image fillIcon;
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI countText;
+        [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private TextMeshProUGUI progressText;
         [SerializeField] private Button skipButton;
         [SerializeField] private TooltipTrigger tooltipTrigger;
@@ -47,6 +49,7 @@ namespace EmpireAtWar.Views.Factions
             tooltipTrigger.SetKey(_id);
             icon.sprite = snapshot.UnitRequest.FactionData.Icon;
             countText.text = snapshot.Count.ToString();
+            tierText.text = snapshot.UnitRequest is ResearchUnitRequest research ? $"T{research.Tier}" : "";
             int buildTime = snapshot.UnitRequest.FactionData.BuildTime;
             fillIcon.fillAmount = buildTime > 0
                 ? 1f - Mathf.Clamp01(snapshot.RemainingBuildTime / buildTime)

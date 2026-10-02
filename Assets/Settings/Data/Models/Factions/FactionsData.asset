@@ -283,7 +283,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 3439a93046dd31a448344298833364aa:21300000
+                iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
@@ -291,7 +291,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 500
                 <BuildTime>k__BackingField: 15
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 3439a93046dd31a448344298833364aa,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 1ef035bcae2fad145ab8ce8fa5776004,
                   type: 3}
               effects:
               - stat: 0
@@ -322,7 +322,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: de8c71c05a08b16478644e8902c29205:21300000
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
@@ -330,7 +330,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: de8c71c05a08b16478644e8902c29205,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
                   type: 3}
               effects:
               - stat: 1
@@ -340,7 +340,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 1fe567856ec608444bd8fdb96f5b5f81:21300000
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
@@ -348,7 +348,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2000
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 1fe567856ec608444bd8fdb96f5b5f81,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
                   type: 3}
               effects:
               - stat: 1
@@ -379,7 +379,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 8dc6d5756d4d85e4a82d1107e1b2de33:21300000
+                iconKey: 46e861879378cc441bb7260e899b7559:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Shields II
                 <MaxCount>k__BackingField: 1
@@ -387,7 +387,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 8dc6d5756d4d85e4a82d1107e1b2de33,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
                   type: 3}
               effects:
               - stat: 4
@@ -397,7 +397,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 151b2593d21bbfb4a83f12dc07572dc0:21300000
+                iconKey: 46e861879378cc441bb7260e899b7559:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Shields III
                 <MaxCount>k__BackingField: 1
@@ -405,7 +405,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2000
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 151b2593d21bbfb4a83f12dc07572dc0,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
                   type: 3}
               effects:
               - stat: 4
@@ -436,7 +436,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: fba4e190fee1ba649bfd1055db270112:21300000
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
@@ -444,7 +444,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: fba4e190fee1ba649bfd1055db270112,
+                <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
                   type: 3}
               effects:
               - stat: 1
@@ -454,7 +454,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 78c07bc3183d5cd48a7e826898d024e0:21300000
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
@@ -462,7 +462,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2800
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 78c07bc3183d5cd48a7e826898d024e0,
+                <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
                   type: 3}
               effects:
               - stat: 1
@@ -517,7 +517,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 3439a93046dd31a448344298833364aa:21300000
+                iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
@@ -525,7 +525,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 500
                 <BuildTime>k__BackingField: 15
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 3439a93046dd31a448344298833364aa,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 1ef035bcae2fad145ab8ce8fa5776004,
                   type: 3}
               effects:
               - stat: 0
@@ -556,7 +556,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: de8c71c05a08b16478644e8902c29205:21300000
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
@@ -564,7 +564,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: de8c71c05a08b16478644e8902c29205,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
                   type: 3}
               effects:
               - stat: 1
@@ -574,7 +574,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 1fe567856ec608444bd8fdb96f5b5f81:21300000
+                iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
@@ -582,7 +582,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2000
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 1fe567856ec608444bd8fdb96f5b5f81,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
                   type: 3}
               effects:
               - stat: 1
@@ -613,7 +613,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: f40f252f163e62c49ab2093396b1a551:21300000
+                iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Engines II
                 <MaxCount>k__BackingField: 1
@@ -621,7 +621,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: f40f252f163e62c49ab2093396b1a551,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
                   type: 3}
               effects:
               - stat: 2
@@ -631,7 +631,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: e22f2c4c60208dd4292fcdc9811151ef:21300000
+                iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Enhanced Engines III
                 <MaxCount>k__BackingField: 1
@@ -639,7 +639,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2000
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: e22f2c4c60208dd4292fcdc9811151ef,
+                <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
                   type: 3}
               effects:
               - stat: 2
@@ -670,7 +670,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: fba4e190fee1ba649bfd1055db270112:21300000
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
@@ -678,7 +678,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 1500
                 <BuildTime>k__BackingField: 20
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: fba4e190fee1ba649bfd1055db270112,
+                <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
                   type: 3}
               effects:
               - stat: 1
@@ -688,7 +688,7 @@ MonoBehaviour:
                 description: Research this upgrade for your faction. Completed research
                   improves the affected units.
                 role: Research
-                iconKey: 78c07bc3183d5cd48a7e826898d024e0:21300000
+                iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
                 matchups: {fileID: 0}
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
@@ -696,7 +696,7 @@ MonoBehaviour:
                 <Price>k__BackingField: 2800
                 <BuildTime>k__BackingField: 25
                 <UnitCapacity>k__BackingField: 0
-                <Icon>k__BackingField: {fileID: 21300000, guid: 78c07bc3183d5cd48a7e826898d024e0,
+                <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
                   type: 3}
               effects:
               - stat: 1

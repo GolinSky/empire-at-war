@@ -12,6 +12,7 @@ namespace EmpireAtWar.Models.Factions
         IReadOnlyCollection<ResearchType> ResearchTypes { get; }
         float IncomeMultiplier { get; }
         bool TryGetNextTier(ResearchType researchType, out ResearchTierData tier);
+        int GetCompletedTiers(ResearchType researchType);
         float GetMultiplier(ResearchStat stat, ShipClass shipClass);
     }
 }

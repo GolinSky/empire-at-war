@@ -14,6 +14,7 @@ namespace EmpireAtWar.Views.Factions
         public void SetAvailable(bool available) => purchaseButton.interactable = available;
         [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TextMeshProUGUI unitPriceText;
+        [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
         [SerializeField] private TextMeshProUGUI stateText;
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Views.Factions
             unitIconImage.sprite = factionData.Icon;
             unitNameText.text = factionData.Name.ToUpperInvariant();
             unitPriceText.text = factionData.Price.ToString();
+            tierText.text = unitRequest is ResearchUnitRequest research ? $"T{research.Tier}" : "";
             purchaseButton.onClick.AddListener(HandleClick);
             Level = factionData.AvailableLevel;
             _factionView = factionView;

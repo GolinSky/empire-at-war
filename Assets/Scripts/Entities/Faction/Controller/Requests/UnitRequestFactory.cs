@@ -13,7 +13,7 @@ namespace EmpireAtWar.Controllers.Factions
         LevelUnitRequest ConstructUnitRequest(FactionData factionData, int level);
         MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType);
         DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType);
-        ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType);
+        ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType, int tier);
         SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType);
     }
 
@@ -44,9 +44,9 @@ namespace EmpireAtWar.Controllers.Factions
             return new DefendPlatformUnitRequest(factionData, platformType);
         }
 
-        public ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType)
+        public ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType, int tier)
         {
-            return new ResearchUnitRequest(factionData, researchType);
+            return new ResearchUnitRequest(factionData, researchType, tier);
         }
 
         public SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType)

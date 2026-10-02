@@ -50,7 +50,7 @@ namespace EmpireAtWar.Models.Factions
             return _multipliers.TryGetValue((stat, shipClass), out float multiplier) ? multiplier : 1f;
         }
 
-        private int GetCompletedTiers(ResearchType researchType)
+        public int GetCompletedTiers(ResearchType researchType)
         {
             return _completedTiers.TryGetValue(researchType, out int completedTiers) ? completedTiers : 0;
         }
