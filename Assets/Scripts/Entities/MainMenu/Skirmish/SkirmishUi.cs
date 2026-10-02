@@ -28,6 +28,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private Slider startingMoneySlider;
         [SerializeField] private TMP_Text startingMoneyText;
+        [SerializeField] private TMP_Text activeSlotsText;
+        [SerializeField] private TMP_Text readinessText;
+        [SerializeField] private TMP_Text matchSummaryText;
+        [SerializeField] private Graphic readinessIndicator;
+        [SerializeField] private CanvasGroup startGameContent;
         [SerializeField] private TooltipHoverView tooltipHover;
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -79,6 +84,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             SetData<PlanetType>(planetsDropdown);
             SetData<MapSize>(mapSizeDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
+            victoryConditionDropdown.options[(int)BattleVictoryCondition.DestroyEnemyFleet].text = "Destroy enemy fleet";
+            victoryConditionDropdown.options[(int)BattleVictoryCondition.DestroyOpponentBase].text = "Destroy opponent base";
+            victoryConditionDropdown.RefreshShownValue();
             SetStartingMoneySliderData();
             Render();
 
@@ -103,14 +111,14 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             return options;
         }
 
-        // Each option name is drawn in its own color, so the dropdown doubles as a swatch.
+        // A colored mark supplies the swatch without depending on a symbol font.
         private static string[] CreateColorOptions(TeamColorPalette palette)
         {
             string[] options = new string[palette.Count];
             for (int i = 0; i < palette.Count; i++)
             {
                 string hex = ColorUtility.ToHtmlStringRGB(palette.GetColor(i));
-                options[i] = $"<b><color=#{hex}>{palette.GetName(i)}</color></b>";
+                options[i] = $"<mark=#{hex}FF padding=\"0,0,-20,-20\">  </mark>  {palette.GetName(i)}";
             }
 
             return options;
@@ -143,7 +151,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             for (int i = 0; i < slotRows.Length; i++)
             {
-                slotRows[i].Render(_model.Slots[i]);
+                slotRows[i].Render(_model.Slots[i], _palette.GetColor(_model.Slots[i].ColorIndex));
             }
 
             // A match needs at least two opposing teams among the open rows.
@@ -153,6 +161,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
             startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
+            activeSlotsText.text = $"{_model.ActivePlayerCount} / {slotRows.Length} SLOTS ACTIVE";
+            readinessText.text = _model.CanStart ? "READY TO DEPLOY" : "OPPOSING TEAM REQUIRED";
+            matchSummaryText.text = _model.CanStart
+                ? $"{_model.ActivePlayerCount} players   /   {_model.ActiveTeamCount} opposing teams   /   ${_model.StartingMoney:N0} per player"
+                : "Enable at least two opposing teams to start.";
+            readinessIndicator.color = _model.CanStart ? new Color32(105, 199, 157, 255) : new Color32(245, 184, 76, 255);
+            startGameContent.alpha = _model.CanStart ? 1f : 0.38f;
         }
 
         public void Dispose()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
@@ -11,13 +12,17 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
     /// </summary>
     public class SkirmishSlotRowView : MonoBehaviour
     {
-        private const string HUMAN_OCCUPANT_LABEL = "You";
+        private const string HUMAN_OCCUPANT_LABEL = "Human";
 
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Dropdown occupantDropdown;
         [SerializeField] private TMP_Dropdown factionDropdown;
         [SerializeField] private TMP_Dropdown teamDropdown;
         [SerializeField] private TMP_Dropdown colorDropdown;
+        [SerializeField] private TMP_Text roleText;
+        [SerializeField] private Graphic colorEdge;
+        [SerializeField] private CanvasGroup configurationGroup;
+        [SerializeField] private CanvasGroup slotLabelGroup;
 
         private int _rowIndex;
         private bool _isHumanRow;
@@ -51,7 +56,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             colorDropdown.onValueChanged.AddListener(HandleColorChanged);
         }
 
-        public void Render(SkirmishSlotSetup slot)
+        public void Render(SkirmishSlotSetup slot, Color playerColor)
         {
             // AI occupant options follow the SkirmishSlotOccupant order, so the enum value is the option index.
             occupantDropdown.SetValueWithoutNotify(_isHumanRow ? 0 : (int)slot.Occupant);
@@ -65,6 +70,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
             colorDropdown.RefreshShownValue();
+            roleText.text = slot.IsHuman ? "YOU" : slot.IsOpen ? "AI" : "OFF";
+            colorEdge.color = playerColor;
+            colorEdge.enabled = slot.IsOpen;
+            configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;
+            slotLabelGroup.alpha = slot.IsOpen ? 1f : 0.5f;
         }
 
         public void Dispose()
