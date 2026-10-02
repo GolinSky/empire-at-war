@@ -8,7 +8,8 @@ namespace EmpireAtWar.Entities.Tooltip
 {
     public static class ShipAbilityTooltipContent
     {
-        public static TooltipContent Build(IReadOnlyList<ShipAbilitySlot> slots, IInputBindings bindings)
+        public static TooltipContent Build(IReadOnlyList<ShipAbilitySlot> slots, IInputBindings bindings,
+            TooltipIconData icons)
         {
             var definition = slots[0].Definition;
             int ready = 0;
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Entities.Tooltip
                 if (slot.State == ShipAbilityState.Active) active++;
                 remaining = Math.Max(remaining, slot.TimeLeft);
             }
-            return new TooltipContent(definition.DisplayName, definition.Description, definition.IconKey,
+            return new TooltipContent(definition.DisplayName, definition.Description, icons.Register(definition.Icon),
                 stats: new[]
                 {
                     new TooltipStat("Range", definition.Range),

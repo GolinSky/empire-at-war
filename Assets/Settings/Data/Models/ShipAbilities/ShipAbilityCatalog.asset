@@ -20,7 +20,6 @@ MonoBehaviour:
         displayName: Proton Beam
         description: Focus a proton beam on an enemy target; deals 600 configured
           beam damage.
-        iconKey: 704f7450173727e43becc6f5e49c86ed:21300000
         duration: 8
         recoveryDelay: 50
         canCancel: 0
@@ -34,7 +33,6 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 5491174c7918a494cb8e2898869953fd, type: 3}
         displayName: Invulnerability
         description: Become immune to incoming damage for the active duration.
-        iconKey: 5491174c7918a494cb8e2898869953fd:21300000
         duration: 8
         recoveryDelay: 60
         canCancel: 0
@@ -49,7 +47,6 @@ MonoBehaviour:
         displayName: Boost Shield Power
         description: Double shield regeneration; reduce damage and movement speed
           by 25%.
-        iconKey: c75079b4b4d09794b8a289fefb0d3b53:21300000
         duration: 15
         recoveryDelay: 40
         canCancel: 1
@@ -63,7 +60,6 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
         displayName: Boost Engine Power
         description: Increase movement speed by 50%; reduce damage by 20%.
-        iconKey: 4c317a4042ef0264383cfd55904a5e0a:21300000
         duration: 12
         recoveryDelay: 35
         canCancel: 1
@@ -78,7 +74,6 @@ MonoBehaviour:
         displayName: Boost Weapon Power
         description: Increase damage by 50%; reduce speed by 20% and take 25% more
           damage.
-        iconKey: 867b122ef4b6b9342ad0f3f66a60f584:21300000
         duration: 12
         recoveryDelay: 40
         canCancel: 1
@@ -93,7 +88,6 @@ MonoBehaviour:
         displayName: Assault
         description: Double damage and halve weapon fire delay during the active
           duration.
-        iconKey: 3cbfaeb7158d3ec4089863ac834197b4:21300000
         duration: 10
         recoveryDelay: 45
         canCancel: 0
@@ -108,7 +102,6 @@ MonoBehaviour:
         displayName: Concentrate Fire
         description: Nearby allies within 400 units gain 25% damage and 20% shorter
           fire delays.
-        iconKey: a4e2bc47fe148694ca2314ad9ae2f3d6:21300000
         duration: 12
         recoveryDelay: 60
         canCancel: 0

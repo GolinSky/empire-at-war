@@ -38,6 +38,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private IShipGroupUi _shipGroupUi;
         private bool _isRouteActive;
         private readonly TooltipRequests _tooltips;
+        private readonly TooltipIconData _tooltipIcons;
         private readonly EmpireAtWar.Models.Factions.FactionsData _factions;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private TooltipHoverSubscription _shipTooltipHover;
@@ -52,6 +53,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             ShipAbilityService abilityService,
             ICameraService cameraService,
             ITooltipService tooltips,
+            TooltipIconData tooltipIcons,
             EmpireAtWar.Models.Factions.FactionsData factions,
             EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
         {
@@ -61,6 +63,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             _abilityService = abilityService;
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltips);
+            _tooltipIcons = tooltipIcons;
             _factions = factions;
             _bindings = bindings;
         }
@@ -287,7 +290,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             if (key is string selection && selection == "Selection")
                 return new TooltipContent("Clear selection", "Click to deselect the current ship.");
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
-                return ShipAbilityTooltipContent.Build(slots, _bindings);
+                return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
             if (key is EmpireAtWar.Models.ShipUi.ShipUiEntry entry)
                 return EntityTooltipContent.Build(entry.Entity);
             if (key is ShipType || key is SquadronType)
