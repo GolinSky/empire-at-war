@@ -686,6 +686,7 @@ namespace EmpireAtWar.Tests.Movement
 
             public Vector3 NavigationPosition { get; }
             public float NavigationHeight { get; }
+            public ShipHullSpan NavigationHullSpan => ShipHullSpan.Unbounded;
             public float NavigationRadius { get; }
             public float NavigationSpeed { get; }
             public float NavigationRotationSpeed { get; }
@@ -734,6 +735,8 @@ namespace EmpireAtWar.Tests.Movement
         {
             public float Speed => 10f;
             public float Height => 0f;
+            public float HullBottom => -1f;
+            public float HullTop => 1f;
             public float RotationSpeed => 30f;
             public float TurnAcceleration => 30f;
             public float HyperSpaceDuration => 1f;

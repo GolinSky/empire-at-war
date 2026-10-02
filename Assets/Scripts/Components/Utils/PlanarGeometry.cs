@@ -2,8 +2,20 @@ using UnityEngine;
 
 namespace EmpireAtWar.Utils
 {
+    /// <summary>Map-plane (XZ) geometry. Gameplay ranges ignore height so ship height tiers
+    /// never change who can see or hit whom.</summary>
     public static class PlanarGeometry
     {
+        public static float Distance(Vector3 first, Vector3 second) =>
+            Mathf.Sqrt(DistanceSquared(first, second));
+
+        public static float DistanceSquared(Vector3 first, Vector3 second)
+        {
+            float deltaX = first.x - second.x;
+            float deltaZ = first.z - second.z;
+            return deltaX * deltaX + deltaZ * deltaZ;
+        }
+
         public static float DistanceToSegmentSquared(Vector2 point, Vector2 start, Vector2 end)
         {
             Vector2 segment = end - start;

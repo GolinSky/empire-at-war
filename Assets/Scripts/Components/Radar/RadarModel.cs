@@ -17,7 +17,6 @@ namespace EmpireAtWar.Components.Radar
 
         public float Range => _data.Range;
         public float Delay => _data.Delay;
-        public float Distance => _data.Distance;
         public PlayerId Owner { get; }
         public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
     }

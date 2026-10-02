@@ -26,6 +26,8 @@ namespace EmpireAtWar.Components.Radar
     {
         private const int INITIAL_HIT_LIMIT = 64;
         private const int MAX_HIT_LIMIT = 2048;
+        // Ranges are planar: the scan box spans every ship height tier.
+        private const float VERTICAL_SCAN_HALF_EXTENT = 1000f;
 
         private IEntityLocator _entityLocator;
         private ITimer _timer;
@@ -59,7 +61,7 @@ namespace EmpireAtWar.Components.Radar
 
         public void Initialize()
         {
-            _halfExtents = new Vector3(Model.Range, Model.Distance * 0.5f, Model.Range);
+            _halfExtents = new Vector3(Model.Range, VERTICAL_SCAN_HALF_EXTENT, Model.Range);
             _timer = TimerFactory.ConstructTimer(Model.Delay);
             _timer.StartTimer();
 
@@ -105,7 +107,8 @@ namespace EmpireAtWar.Components.Radar
                         !entity.HealthModel.IsDestroyed)
                     {
                         if (_relations.IsHostile(Model.Owner, entity.Owner) && entity.HealthModel.HasUnits &&
-                            (entity.GetFacade<IEntityTransformFacade>().Transform.position - _position).sqrMagnitude <=
+                            PlanarGeometry.DistanceSquared(
+                                entity.GetFacade<IEntityTransformFacade>().Transform.position, _position) <=
                             Model.Range * Model.Range)
                         {
                             _detectedEnemies.Add(entity);

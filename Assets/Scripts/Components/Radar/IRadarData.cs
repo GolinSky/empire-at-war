@@ -4,6 +4,5 @@ namespace EmpireAtWar.Components.Radar
     {
         float Range { get; }
         float Delay { get; }
-        float Distance { get; }
     }
 }

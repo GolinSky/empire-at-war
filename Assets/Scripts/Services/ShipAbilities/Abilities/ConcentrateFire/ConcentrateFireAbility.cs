@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
@@ -26,7 +27,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 if (entity.Owner != caster.Entity.Owner || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IShipAbilityFacade ally) ||
                     !entity.TryGetFacade(out IAttackFacade attack) ||
-                    Vector3.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)
+                    PlanarGeometry.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)
                     continue;
 
                 ally.Modifiers.Add(_settings.AllyStatModifier);

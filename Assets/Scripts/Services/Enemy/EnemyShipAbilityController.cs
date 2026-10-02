@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -85,7 +86,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IEntity entity in _entities.Entities)
             {
                 if (!_relations.IsHostile(caster.Entity.Owner, entity.Owner) || entity.HealthModel.IsDestroyed ||
-                    Vector3.Distance(caster.WorldPosition, entity.GetFacade<IEntityTransformFacade>().Transform.position) > range)
+                    PlanarGeometry.Distance(caster.WorldPosition, entity.GetFacade<IEntityTransformFacade>().Transform.position) > range)
                     continue;
                 _targets.Add(entity);
             }

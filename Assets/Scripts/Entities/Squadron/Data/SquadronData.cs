@@ -45,6 +45,5 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Header("Radar")]
         [field: SerializeField] public float Range { get; private set; } = 80f;
         [field: SerializeField] public float Delay { get; private set; } = 0.25f;
-        [field: SerializeField] public float Distance { get; private set; } = 200f;
     }
 }

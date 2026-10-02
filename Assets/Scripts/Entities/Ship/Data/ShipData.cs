@@ -27,7 +27,13 @@ namespace EmpireAtWar.Entities.Ship.Data
 
         [Header("Movement Settings")]
         [field: SerializeField] public float Speed { get; private set; }
-        [field: SerializeField] public float Height { get; private set; }
+        [SerializeField] private ShipHeightTiersData heightTiers;
+        [field: SerializeField] public ShipHeightTier HeightTier { get; private set; }
+        [Tooltip("Baked by Tools/Ships/Bake Hull Heights. Lowest visible hull point relative to the ship height.")]
+        [field: SerializeField] public float HullBottom { get; private set; }
+        [Tooltip("Baked by Tools/Ships/Bake Hull Heights. Highest visible hull point relative to the ship height.")]
+        [field: SerializeField] public float HullTop { get; private set; }
+        public float Height => heightTiers.GetHeight(HeightTier);
         [field: SerializeField] public float RotationSpeed { get; private set; }
         [field: SerializeField] public float TurnAcceleration { get; private set; }
         [field: SerializeField] public float HyperSpaceDuration { get; private set; }
@@ -53,7 +59,6 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
-        [field: SerializeField] public float Distance { get; private set; }
 
         [Header("Abilities")]
         [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();

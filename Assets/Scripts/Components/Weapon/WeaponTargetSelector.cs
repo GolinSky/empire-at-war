@@ -1,4 +1,5 @@
 using UnityEngine;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -8,7 +9,7 @@ namespace EmpireAtWar.Components.Weapon
             Quaternion parentRotation, float maxDistance, float minYaw, float maxYaw,
             out Quaternion worldRotation, out bool isInRange)
         {
-            isInRange = !(Vector3.Distance(targetPosition, origin) > maxDistance);
+            isInRange = !(PlanarGeometry.Distance(targetPosition, origin) > maxDistance);
             if (!isInRange)
             {
                 worldRotation = default;

@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
@@ -201,7 +202,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             Vector3 movementTargetPosition = MovementTargetPosition;
             if (_hasPursuitDestination &&
-                _weaponComponent.HasEnoughRange(Vector3.Distance(
+                _weaponComponent.HasEnoughRange(PlanarGeometry.Distance(
                     _pursuitDestination,
                     TargetPosition)))
             {

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public int Register(
             Func<FormationPoint> currentPosition,
             float navigationRadius,
+            ShipHullSpan hullSpan,
             FormationPoint initialFinalPosition)
         {
             if (currentPosition == null)
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             ValidateRadius(navigationRadius);
-            if (!IsPositionClear(initialFinalPosition, navigationRadius, null))
+            if (!IsPositionClear(initialFinalPosition, navigationRadius, hullSpan, null))
             {
                 throw new InvalidOperationException(
                     "The ship's initial final position is already occupied.");
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             _entries.Add(registrationId, new Entry(
                 currentPosition,
                 navigationRadius,
+                hullSpan,
                 initialFinalPosition));
             return registrationId;
         }
@@ -47,7 +49,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             FormationPoint position,
             float navigationRadius)
         {
-            return IsPositionClear(position, navigationRadius, null);
+            return IsPositionClear(position, navigationRadius, ShipHullSpan.Unbounded, null);
         }
 
         public bool HasClearance(
@@ -55,8 +57,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             FormationPoint position,
             float navigationRadius)
         {
-            GetEntry(registrationId);
-            return IsPositionClear(position, navigationRadius, registrationId);
+            Entry entry = GetEntry(registrationId);
+            return IsPositionClear(position, navigationRadius, entry.HullSpan, registrationId);
         }
 
         public void CommitActiveFinalPosition(
@@ -64,7 +66,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             FormationPoint position)
         {
             Entry entry = GetEntry(registrationId);
-            if (!IsPositionClear(position, entry.NavigationRadius, registrationId))
+            if (!IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
             {
                 throw new InvalidOperationException(
                     "The ship's final position is already occupied.");
@@ -79,7 +81,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             FormationPoint position)
         {
             Entry entry = GetEntry(registrationId);
-            if (!IsPositionClear(position, entry.NavigationRadius, registrationId))
+            if (!IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
             {
                 throw new InvalidOperationException(
                     "The ship's deferred final position is already occupied.");
@@ -92,6 +94,9 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             GetEntry(registrationId).PendingFinalPosition = null;
         }
+
+        public bool HullsOverlap(int registrationId, ShipHullSpan hullSpan) =>
+            GetEntry(registrationId).HullSpan.Overlaps(hullSpan);
 
         public bool IsIdle(int registrationId)
         {
@@ -120,17 +125,20 @@ namespace EmpireAtWar.Services.ShipNavigation
         private bool IsPositionClear(
             FormationPoint position,
             float navigationRadius,
+            ShipHullSpan hullSpan,
             int? ignoredRegistrationId)
         {
             ValidateRadius(navigationRadius);
             foreach (KeyValuePair<int, Entry> pair in _entries)
             {
-                if (pair.Key == ignoredRegistrationId)
+                Entry entry = pair.Value;
+                // Ships whose hulls cannot touch vertically pass over each other.
+                if (pair.Key == ignoredRegistrationId ||
+                    !entry.HullSpan.Overlaps(hullSpan))
                 {
                     continue;
                 }
 
-                Entry entry = pair.Value;
                 if (!FormationModel.HasClearance(
                         position,
                         navigationRadius,
@@ -188,15 +196,18 @@ namespace EmpireAtWar.Services.ShipNavigation
             public Entry(
                 Func<FormationPoint> currentPosition,
                 float navigationRadius,
+                ShipHullSpan hullSpan,
                 FormationPoint activeFinalPosition)
             {
                 CurrentPosition = currentPosition;
                 NavigationRadius = navigationRadius;
+                HullSpan = hullSpan;
                 ActiveFinalPosition = activeFinalPosition;
             }
 
             public Func<FormationPoint> CurrentPosition { get; }
             public float NavigationRadius { get; }
+            public ShipHullSpan HullSpan { get; }
             public FormationPoint? ActiveFinalPosition { get; set; }
             public FormationPoint? PendingFinalPosition { get; set; }
         }

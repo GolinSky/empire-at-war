@@ -10,6 +10,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Zenject;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.SuperWeapons
 {
@@ -167,7 +168,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 // The blast hits the target's whole team, never the shooter's side.
                 if (entity == target || !_relations.IsAllied(entity.Owner, target.Owner) ||
                     entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
-                    Vector3.Distance(center, entity.GetFacade<IEntityTransformFacade>().Transform.position) > profile.AreaRadius)
+                    PlanarGeometry.Distance(center, entity.GetFacade<IEntityTransformFacade>().Transform.position) > profile.AreaRadius)
                     continue;
                 _areaTargets.Add(entity);
             }

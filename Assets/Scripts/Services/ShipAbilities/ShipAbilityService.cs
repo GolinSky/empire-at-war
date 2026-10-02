@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using UnityEngine;
 using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
@@ -113,7 +114,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (definition.RequiresEnemyTarget &&
                 (target == null || target.HealthModel.IsDestroyed ||
                  !_relations.IsHostile(caster.Entity.Owner, target.Owner) ||
-                 Vector3.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
+                 PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
                 return false;
 
             IShipAbility ability = _factory.Create(definition);

@@ -7,6 +7,7 @@ using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
@@ -58,7 +59,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (IsComplete) return;
             Vector3 home = _friendlyTransform.position + _offset;
-            if (Vector3.Distance(_movement.CurrentPosition,
+            if (PlanarGeometry.Distance(_movement.CurrentPosition,
                     _friendlyTransform.position) > _settings.GuardChaseDistance)
                 _isReturning = true;
             if (_engagementTarget != null &&
@@ -69,7 +70,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _engagementTarget = null;
             }
 
-            if (_isReturning && Vector3.Distance(_movement.CurrentPosition, home) <=
+            if (_isReturning && PlanarGeometry.Distance(_movement.CurrentPosition, home) <=
                 _settings.GuardFollowRadius) _isReturning = false;
 
             if (_engagementTarget == null && !_isReturning)
@@ -77,7 +78,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 foreach (IEntity enemy in _radar.Enemies)
                 {
                     if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits ||
-                        Vector3.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
+                        PlanarGeometry.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
                         _settings.GuardChaseDistance) continue;
                     _engagementTarget = enemy;
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
@@ -100,7 +101,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 else _pursuitDestination = ShipEngagement.Pursue(_movement, _weapon, target,
                     _pursuitDestination);
             }
-            else if (Vector3.Distance(_movement.CurrentPosition, home) >
+            else if (PlanarGeometry.Distance(_movement.CurrentPosition, home) >
                      _settings.GuardFollowRadius) Follow();
         }
 
