@@ -89,6 +89,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public void SelectPlanet(PlanetType planet)
         {
             Planet = planet;
+            Changed?.Invoke();
         }
 
         public void SelectMapSize(MapSize mapSize)

@@ -24,6 +24,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button startGameButton;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
         [SerializeField] private TMP_Dropdown planetsDropdown;
+        [SerializeField] private RawImage planetPreviewImage;
+        [SerializeField] private Texture2D coruscantPreview;
+        [SerializeField] private Texture2D kaminoPreview;
         [SerializeField] private TMP_Dropdown mapSizeDropdown;
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private Slider startingMoneySlider;
@@ -157,6 +160,12 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             // A match needs at least two opposing teams among the open rows.
             startGameButton.interactable = _model.CanStart;
             planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
+            planetPreviewImage.texture = _model.Planet switch
+            {
+                PlanetType.Coruscant => coruscantPreview,
+                PlanetType.Kamino => kaminoPreview,
+                _ => throw new ArgumentOutOfRangeException(nameof(_model.Planet), _model.Planet, null)
+            };
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
