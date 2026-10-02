@@ -1,16 +1,18 @@
-# UI/UX Recipe Manual & MPUIKit Standards
+# UI/UX Recipe Manual
 
-- Mandatory standards: UI/UX architecture, visual design, MPUIKit procedural styling.
+- Mandatory standards: UI/UX architecture and visual design.
+- `Assets/ThirdParty/MPUIKit` is an optional tool. Use it when it helps the design; conversion to MPUIKit is not required.
 
 - Codex, Claude, Gemini, and Antigravity **MUST** read and follow this note before creating, modifying, or refactoring UI prefabs/components.
 
-## 1. Procedural Component Rule (MPUIKit Integration)
+## 1. Component Choice (Optional MPUIKit Integration)
 
-- **Use `MPUIKIT.MPImage` for Popup & Menu Panels**: Use `MPUIKIT.MPImage` instead of standard `UnityEngine.UI.Image` components on panels, popup cards, main menu buttons, dropdowns, slider tracks/fills, and standalone dialog containers.
+- **Choose components for the design**: Standard `UnityEngine.UI.Image`, suitable scalable sprites, and `MPUIKIT.MPImage` are allowed on panels, popup cards, buttons, dropdowns, slider tracks/fills, and dialog containers.
+- Use `MPUIKIT.MPImage` when procedural geometry is useful; do not convert existing components solely to satisfy a toolkit rule.
 - **No Legacy Bitmap Sprites**: Do not use low-resolution or fixed bitmap sprites that scale poorly.
   - Remove redundant child `Background` GameObjects containing legacy sprites.
-  - Let `MPImage` render shapes, fills, corner radii, outlines, and falloff directly.
-- **Corner Radii (`Rectangle.CornerRadius`)**:
+  - When using `MPImage`, it can render shapes, fills, corner radii, outlines, and falloff directly.
+- **Corner Radii (use `Rectangle.CornerRadius` when using MPUIKit)**:
   - Root Panels: `Vector4(16, 16, 16, 16)`
   - Sub-Cards & Action Buttons: `Vector4(10, 10, 10, 10)`
   - Input & Dropdown Boxes: `Vector4(8, 8, 8, 8)`
@@ -67,7 +69,7 @@
 
 ### Close Buttons (`CloseButton`)
 
-- Container: `MPImage` (`DrawShape.Circle`, dark slate `#1E293B`, subtle red border outline `#EF4444`, `OutlineWidth = 1.5f`).
+- Container: circle, dark slate `#1E293B`, subtle red border `#EF4444`, width `1.5`. Optional MPUIKit implementation: `MPImage` with `DrawShape.Circle`.
 - Visual Icon: Must contain an explicit child `CloseButtonText` (`TextMeshProUGUI`) displaying a bold standard ASCII `"X"` text icon (Font Size = 22, `#F8FAFC`).
 
 ### Dropdowns (`TMP_Dropdown`)
@@ -78,7 +80,7 @@
 
 ### Money & Value Controls (Sliders)
 
-- For numerical ranges (e.g. Starting Money), prefer an `MPImage` procedural Slider over a Dropdown.
+- For numerical ranges (e.g. Starting Money), prefer a Slider over a Dropdown. MPUIKit styling is optional.
 - Value display text (`StartingMoneyValueText`): `enableAutoSizing = true`, `fontSizeMin = 6`, `fontSizeMax = initial max` (e.g. 26), text color = `#38BDF8`, container width enlarged (`sizeDelta = (110, 40)`) to prevent overlapping or truncation when values scale.
 
 ## 6. Class Inheritance & Serialized Image Binding Safety
@@ -95,7 +97,7 @@
 ## 7. Summary Checklist for AI Agents
 
 - Before committing any UI change, verify:
-- [ ] Are popup/menu panel `Image` components converted to `MPUIKIT.MPImage`?
+- [ ] Do the chosen components support the design? MPUIKit is optional; conversion is not required.
 - [ ] Are all `Button` components configured with `Color Tint` (`m_Transition: 1`) and `m_SpriteState` cleared to `{fileID: 0}`?
 - [ ] Are pre-existing panel `MPImage` outlines, outline colors (`#1F87E6`), and widths (`1.5`) preserved?
 - [ ] Are root GameObjects kept free of background `MPImage` overlays?

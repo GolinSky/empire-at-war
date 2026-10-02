@@ -181,7 +181,9 @@ The complete and authoritative placement rules are in the **`PROJECT_ORGANIZATIO
 - Put major core packages in `Assets/Plugins` and other external assets in `Assets/ThirdParty`.
 - Use `Assets/Sandbox` for temporary prototypes and technical tests.
 
-## UI/UX Recipe Manual & MPUIKit Standards
+## UI/UX Recipe Manual
+
+- `Assets/ThirdParty/MPUIKit` is optional; use it when needed. No mandatory conversion to MPUIKit.
 
 When creating, modifying, or refactoring any UI prefab, component, or view:
 - AI agents must read the **`UI_UX_GUIDELINES`** note in the Obsidian Vault in full on demand via the **Obsidian MCP** tool (`vault_read` or `read_note` / `search_notes` for note `"UI_UX_GUIDELINES"`) before touching UI code or prefabs.
