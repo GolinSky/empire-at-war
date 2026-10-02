@@ -33,7 +33,7 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Transform contentRouteParent;
         [SerializeField] private GridLayoutGroup contentGrid;
         [SerializeField] private Vector2 factionCellSize = new Vector2(150f, 150f);
-        [SerializeField] private Vector2 shipCellSize = new Vector2(300f, 375f);
+        [SerializeField] private Vector2 shipCellSize = new Vector2(80f, 198f);
         [SerializeField] private ContentSizeFitter contentSizeFitter;
         [SerializeField] private ScrollRect contentScroll;
         [SerializeField] private Transform buildPipelineRouteParent;
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Transform economyRouteParent;
         [SerializeField] private TMP_Text factionText;
         [SerializeField] private TMP_Text contentTitle;
-        [SerializeField] private TMP_Text contentStatus;
+        [SerializeField] private GameObject productionLabel;
         [SerializeField] private GameObject selectionSlots;
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
@@ -62,7 +62,6 @@ namespace EmpireAtWar.Views.Game
         {
             factionText.text = faction.ToUpperInvariant();
             contentTitle.text = _isFactionLayout ? $"{faction.ToUpperInvariant()} STARBASE" : "FLEET SELECTION";
-            contentStatus.text = _isFactionLayout ? $"LEVEL {level}" : $"{selectionCount} UNITS";
             timeButton.interactable = !battleEnded;
             speedUpButton.interactable = !battleEnded;
             reinforcementButton.interactable = !battleEnded;
@@ -140,19 +139,19 @@ namespace EmpireAtWar.Views.Game
             _hasContentLayout = true;
             _isFactionLayout = isFactionSelection;
             _isShipGroupLayout = isShipGroupSelection;
-            bool hasHeader = isFactionSelection || isShipGroupSelection;
-            panelImage.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, hasHeader ? 274f : 222f);
+            bool hasHeader = isFactionSelection;
+            panelImage.rectTransform.anchorMax = new Vector2(1f, 0f);
+            panelImage.rectTransform.sizeDelta = new Vector2(-612f, hasHeader ? 274f : 222f);
             contentTitle.gameObject.SetActive(hasHeader);
-            contentStatus.gameObject.SetActive(hasHeader);
+            productionLabel.SetActive(isFactionSelection);
             selectionSlots.SetActive(!hasHeader);
             clearFleetButton.gameObject.SetActive(isShipGroupSelection);
-            contentStatus.rectTransform.anchoredPosition = new Vector2(isShipGroupSelection ? -112f : -14f, -9f);
             contentScroll.viewport.offsetMin = new Vector2(14f, 12f);
             contentScroll.viewport.offsetMax = new Vector2(-14f, hasHeader ? -42f : -12f);
             RectTransform content = (RectTransform)contentRouteParent;
             contentGrid.enabled = !isShipGroupSelection;
             contentGrid.cellSize = isFactionSelection ? factionCellSize : shipCellSize;
-            contentGrid.spacing = new Vector2(8f, 8f);
+            contentGrid.spacing = new Vector2(8f, 6f);
             contentGrid.padding = new RectOffset();
             contentGrid.startCorner = GridLayoutGroup.Corner.UpperLeft;
             contentGrid.startAxis = GridLayoutGroup.Axis.Vertical;

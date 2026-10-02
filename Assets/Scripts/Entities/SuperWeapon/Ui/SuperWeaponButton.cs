@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         [SerializeField] private GameObject pendingHighlight;
         [SerializeField] private TMP_Text stateText;
         [SerializeField] private CanvasGroup contentGroup;
+        [SerializeField] private MPUIKIT.MPImage background;
         private SuperWeaponState _state;
         private bool _pending;
 
@@ -43,6 +44,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             stateText.text = _pending ? "TARGETING" : _state.ToString().ToUpperInvariant();
             stateText.color = _pending || _state == SuperWeaponState.Charging
                 ? new Color32(243, 182, 77, 255) : new Color32(54, 200, 243, 255);
+            background.OutlineColor = _pending ? new Color32(243, 182, 77, 255)
+                : _state == SuperWeaponState.Ready ? new Color32(54, 200, 243, 255)
+                : new Color32(40, 70, 87, 255);
         }
 
         private void HandleClick() => Pressed?.Invoke(weaponType);

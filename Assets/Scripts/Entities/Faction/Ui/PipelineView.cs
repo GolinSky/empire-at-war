@@ -14,7 +14,6 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI countText;
         [SerializeField] private TextMeshProUGUI tierText;
-        [SerializeField] private TextMeshProUGUI progressText;
         [SerializeField] private Button skipButton;
         [SerializeField] private TooltipTrigger tooltipTrigger;
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
@@ -54,7 +53,6 @@ namespace EmpireAtWar.Views.Factions
             fillIcon.fillAmount = buildTime > 0
                 ? 1f - Mathf.Clamp01(snapshot.RemainingBuildTime / buildTime)
                 : 1f;
-            progressText.text = $"{Mathf.FloorToInt(fillIcon.fillAmount * 100f)}%";
         }
 
         public void Activate(bool isActive)

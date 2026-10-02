@@ -14,10 +14,11 @@ namespace EmpireAtWar
         void DecreaseUnitCount();
         void AddUnit();
         void Activate(bool isActive);
-        void Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request);
+        void Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request, ScrollRect scrollRect);
     }
     
-    public class SpawnShipUi : MonoBehaviour, IBeginDragHandler, IDragHandler, ISpawnShipUi
+    public class SpawnShipUi : MonoBehaviour, IInitializePotentialDragHandler,
+        IBeginDragHandler, IDragHandler, IEndDragHandler, ISpawnShipUi
     {
         private const int DEFAULT_COUNT_VALUE = 1;
         
@@ -25,11 +26,12 @@ namespace EmpireAtWar
         [SerializeField] private Image backgroundImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
-        [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
        
         private IReinforcementVisitor _reinforcementVisitor;
+        private ScrollRect _scrollRect;
+        private bool _isScrolling;
         
         private Color _originColor;
         private Color _blockedColor = Color.gray;
@@ -43,14 +45,15 @@ namespace EmpireAtWar
             _originColor = backgroundImage.color;
         }
 
-        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request)
+        void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request,
+            ScrollRect scrollRect)
         {
             Request = request;
             tooltipTrigger.SetKey(request);
             _reinforcementVisitor = reinforcementVisitor;
+            _scrollRect = scrollRect;
             iconImage.sprite = request.FactionData.Icon;
             unitCapacityText.text = $"{request.FactionData.UnitCapacity} CAP";
-            unitNameText.text = request.FactionData.Name.ToUpperInvariant();
             _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();
         }
@@ -78,14 +81,29 @@ namespace EmpireAtWar
             _isBlocked = !isActive;
         }
 
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData) =>
+            _scrollRect.OnInitializePotentialDrag(eventData);
+
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            if(_isBlocked) return;
-            
-            _reinforcementVisitor?.Handle(this);
+            Vector2 delta = eventData.position - eventData.pressPosition;
+            _isScrolling = Mathf.Abs(delta.y) >= Mathf.Abs(delta.x);
+            if (_isScrolling)
+                _scrollRect.OnBeginDrag(eventData);
+            else if (!_isBlocked)
+                _reinforcementVisitor.Handle(this);
         }
-        
-        void IDragHandler.OnDrag(PointerEventData eventData) {}
+
+        void IDragHandler.OnDrag(PointerEventData eventData)
+        {
+            if (_isScrolling) _scrollRect.OnDrag(eventData);
+        }
+
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+        {
+            if (_isScrolling) _scrollRect.OnEndDrag(eventData);
+            _isScrolling = false;
+        }
         
         private void UpdateUnitCountText()
         {
