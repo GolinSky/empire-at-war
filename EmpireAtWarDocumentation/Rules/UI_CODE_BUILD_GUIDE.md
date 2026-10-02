@@ -53,7 +53,8 @@ CreateUi -> SetModel -> SetPresenter -> SetData (if needed) -> Initialize
 - Attach the top-level view to its intended root.
   - Assign its `CanvasGroup` and every serialized control, text, and icon reference in the Inspector.
 - Keep child widgets as focused `MonoBehaviour` components unless they are independent top-level views.
-- Apply [[Rules/UI_UX_GUIDELINES]] for MPUIKit, buttons, color, and preservation of existing icons and panel styling.
+- Apply [[Rules/UI_UX_GUIDELINES]] for buttons, color, and preservation of existing icons and panel styling.
+- `Assets/ThirdParty/MPUIKit` is optional; use it when needed, without requiring conversion of standard UI components.
 - Create or change prefabs with Unity-aware tooling.
   - Preserve metadata and serialized references; complete Unity import and save verification as required by the repository's asset-persistence rules.
 

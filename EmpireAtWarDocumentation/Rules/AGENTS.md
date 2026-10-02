@@ -65,7 +65,9 @@
 - Put major core packages in `Assets/Plugins` and other external assets in `Assets/ThirdParty`.
 - Use `Assets/Sandbox` for temporary prototypes and technical tests.
 
-## UI/UX Recipe Manual & MPUIKit Standards
+## UI/UX Recipe Manual
+
+- `Assets/ThirdParty/MPUIKit` is optional; use it when needed. No mandatory conversion to MPUIKit.
 
 - For new UI features, read [[Rules/UI_CODE_BUILD_GUIDE]] before writing code or creating prefabs.
 
