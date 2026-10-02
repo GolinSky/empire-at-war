@@ -3,11 +3,10 @@ Shader "Custom/URP_FogOfWar"
     Properties
     {
         _MainTex ("Fog Mask Texture", 2D) = "black" {} // Black means no visibility
-        _Color ("Fog Color", Color) = (0.05, 0.05, 0.05, 0.95)
+        _Color ("Cell Color", Color) = (1, 1, 1, 0.15)
         
-        _GridColor ("Grid Color", Color) = (0.2, 0.2, 0.2, 0.8)
         _GridSize ("Grid Cell Size", Float) = 2.0
-        _GridThickness ("Grid Thickness", Float) = 0.05
+        _GridThickness ("Cell Gap (Fraction)", Range(0, 0.5)) = 0.12
     }
     SubShader
     {
@@ -48,7 +47,6 @@ Shader "Custom/URP_FogOfWar"
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
                 float4 _Color;
-                float4 _GridColor;
                 float _GridSize;
                 float _GridThickness;
             CBUFFER_END
@@ -68,25 +66,20 @@ Shader "Custom/URP_FogOfWar"
                 // r channel: 1 means fully visible (no fog), 0 means full fog
                 half visibility = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv).r;
 
-                // Create the grid pattern using world space coordinates (xz plane)
-                float2 gridUv = frac(i.positionWS.xz / _GridSize);
-                
-                // Calculate grid lines (smooth lines for better look)
-                float2 df = fwidth(i.positionWS.xz / _GridSize);
-                float lineThickness = _GridThickness;
-                float2 gridLines = smoothstep(lineThickness + df, lineThickness, gridUv) 
-                                 + smoothstep(1.0 - lineThickness - df, 1.0 - lineThickness, gridUv);
-                
-                half gridIntensity = saturate(gridLines.x + gridLines.y);
-
-                // Blend fog base color with the grid lines
-                half4 fogColor = lerp(_Color, _GridColor, gridIntensity * _GridColor.a);
+                // Fill cell interiors, leaving transparent gaps on the world-space XZ grid.
+                float2 gridPosition = i.positionWS.xz / _GridSize;
+                float2 gridUv = frac(gridPosition);
+                float2 edgeDistance = min(gridUv, 1.0 - gridUv);
+                float halfGap = _GridThickness * 0.5;
+                float2 antialiasWidth = max(fwidth(gridPosition), 0.0001);
+                float2 cellCoverage = smoothstep(halfGap, halfGap + antialiasWidth, edgeDistance);
+                half cellMask = cellCoverage.x * cellCoverage.y;
                 
                 // Calculate final alpha based on visibility. 
                 // If visibility is 1 (revealed), alpha turns to 0 making it fully transparent.
-                half finalAlpha = fogColor.a * (1.0 - visibility);
+                half finalAlpha = _Color.a * cellMask * (1.0 - visibility);
                 
-                return half4(fogColor.rgb, finalAlpha);
+                return half4(_Color.rgb, finalAlpha);
             }
             ENDHLSL
         }
