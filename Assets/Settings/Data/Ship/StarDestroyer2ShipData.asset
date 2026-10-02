@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 7.2000003
-  <Height>k__BackingField: -5
+  <Height>k__BackingField: -10
   <RotationSpeed>k__BackingField: 5
   <TurnAcceleration>k__BackingField: 5
   <HyperSpaceDuration>k__BackingField: 0.6
