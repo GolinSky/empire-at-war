@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         Vector3 NavigationPosition { get; }
         float NavigationHeight { get; }
+        ShipHullSpan NavigationHullSpan { get; }
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
         float NavigationRotationSpeed { get; }
@@ -346,6 +347,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId = _destinationRegistry.Register(
                 () => ToPoint(agent.NavigationPosition),
                 agent.NavigationRadius,
+                agent.NavigationHullSpan,
                 ToPoint(initialFinalPosition));
             _registrationIds.Add(agent, registrationId);
         }
@@ -467,6 +469,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             foreach (KeyValuePair<IShipNavigationAgent, int> pair in _registrationIds)
             {
                 if (pair.Key != plannedAgent &&
+                    _destinationRegistry.HullsOverlap(pair.Value, plannedAgent.NavigationHullSpan) &&
                     _destinationRegistry.IsIdle(pair.Value))
                 {
                     _mapObstacleContacts.Add(new RadarContact(

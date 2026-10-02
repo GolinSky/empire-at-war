@@ -17,6 +17,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public float Speed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
         public float Height => _shipMoveData.Height;
+        public float HullBottom => _shipMoveData.HullBottom;
+        public float HullTop => _shipMoveData.HullTop;
         public float RotationSpeed => _shipMoveData.RotationSpeed;
         public float TurnAcceleration => _shipMoveData.TurnAcceleration;
         public float HyperSpaceDuration => _shipMoveData.HyperSpaceDuration;

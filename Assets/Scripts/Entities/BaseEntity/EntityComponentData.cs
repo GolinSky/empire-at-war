@@ -28,6 +28,5 @@ namespace EmpireAtWar.Entities.BaseEntity
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
-        [field: SerializeField] public float Distance { get; private set; }
     }
 }

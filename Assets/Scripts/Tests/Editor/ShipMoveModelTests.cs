@@ -97,6 +97,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public float Speed => 10f;
             public float Height => 5f;
+            public float HullBottom => -1f;
+            public float HullTop => 1f;
             public float RotationSpeed => 2f;
             public float TurnAcceleration => 2f;
             public float HyperSpaceDuration => 1f;

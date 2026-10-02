@@ -52,6 +52,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public Vector3 NavigationPosition => transform.position;
         public float NavigationHeight => Model.Height;
+        public ShipHullSpan NavigationHullSpan =>
+            new ShipHullSpan(Model.Height + Model.HullBottom, Model.Height + Model.HullTop);
         public float NavigationRadius => Mathf.Max(Model.NavigationRadius, MINIMUM_NAVIGATION_RADIUS);
         public float NavigationSpeed => Model.Speed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
@@ -170,7 +172,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         }
 
         public float GetRange(Vector3 targetPosition) =>
-            Vector3.Distance(transform.position, targetPosition);
+            PlanarGeometry.Distance(transform.position, targetPosition);
 
         public void Stop()
         {

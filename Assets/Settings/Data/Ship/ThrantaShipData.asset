@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 36
-  <Height>k__BackingField: 10
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 6
+  <HullBottom>k__BackingField: -5.7344046
+  <HullTop>k__BackingField: 5.7344007
   <RotationSpeed>k__BackingField: 60
   <TurnAcceleration>k__BackingField: 60
   <HyperSpaceDuration>k__BackingField: 0.6
@@ -40,7 +43,6 @@ MonoBehaviour:
     hullDamageMultiplier: 1
   <Range>k__BackingField: 500
   <Delay>k__BackingField: 0.25
-  <Distance>k__BackingField: 400
   abilities: 04000000
   hangarBays: []
   <HangarInitialDelay>k__BackingField: 4

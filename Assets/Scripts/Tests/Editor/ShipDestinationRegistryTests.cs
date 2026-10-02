@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Movement
             int firstShip = registry.Register(
                 () => new FormationPoint(-50f, 0f),
                 5f,
+                ShipHullSpan.Unbounded,
                 new FormationPoint(0f, 0f));
             registry.ReservePendingFinalPosition(
                 firstShip,
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Tests.Movement
             int ship = registry.Register(
                 () => currentPosition,
                 5f,
+                ShipHullSpan.Unbounded,
                 new FormationPoint(40f, 0f));
 
             registry.Stop(ship);
@@ -54,6 +56,7 @@ namespace EmpireAtWar.Tests.Movement
             int ship = registry.Register(
                 () => new FormationPoint(-50f, 0f),
                 5f,
+                ShipHullSpan.Unbounded,
                 new FormationPoint(0f, 0f));
             registry.ReservePendingFinalPosition(
                 ship,
@@ -76,14 +79,33 @@ namespace EmpireAtWar.Tests.Movement
             registry.Register(
                 () => new FormationPoint(-50f, 0f),
                 5f,
+                ShipHullSpan.Unbounded,
                 new FormationPoint(0f, 0f));
 
             Assert.That(
                 () => registry.Register(
                     () => new FormationPoint(50f, 0f),
                     5f,
+                    ShipHullSpan.Unbounded,
                     new FormationPoint(0f, 0f)),
                 Throws.InvalidOperationException);
+        }
+
+        [Test]
+        public void Register_AllowsShipWhoseHullPassesOverOccupiedPosition()
+        {
+            ShipDestinationRegistry registry = new ShipDestinationRegistry();
+            registry.Register(
+                () => new FormationPoint(-50f, 0f),
+                5f,
+                new ShipHullSpan(-20f, -10f),
+                new FormationPoint(0f, 0f));
+
+            Assert.DoesNotThrow(() => registry.Register(
+                () => new FormationPoint(50f, 0f),
+                5f,
+                new ShipHullSpan(-5f, 5f),
+                new FormationPoint(0f, 0f)));
         }
     }
 }
