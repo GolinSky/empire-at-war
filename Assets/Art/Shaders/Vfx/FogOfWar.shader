@@ -3,7 +3,7 @@ Shader "Custom/URP_FogOfWar"
     Properties
     {
         _MainTex ("Fog Mask Texture", 2D) = "black" {} // Black means no visibility
-        _Color ("Cell Color", Color) = (1, 1, 1, 0.15)
+        _Color ("Cell Color", Color) = (1, 1, 1, 0.03)
         
         _GridSize ("Grid Cell Size", Float) = 2.0
         _GridThickness ("Cell Gap (Fraction)", Range(0, 0.5)) = 0.12
