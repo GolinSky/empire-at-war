@@ -20,6 +20,14 @@ Apply project guidance in this order:
 - `.agents/mcp_config.json`, `.antigravity/mcp_config.json`, and `.gemini/mcp_config.json` mirror local MCP access for their respective agents.
 - `graphify-out/` is generated local state and is never authoritative documentation.
 
+## Penpot Project Scope
+
+- Penpot work for this repository is restricted to the default project in the `EmpireAtWar` workspace. The verified workspace/project IDs and link are recorded in `Tools/Penpot/README.md` under `Allowed project`.
+- Before reading or changing designs, verify that the connected file belongs to that exact workspace and project. Names, the default selection, and a working MCP token do not establish project membership.
+- Match `penpot.currentFile.id` to the verified file before each mutation; reverify membership when the connected file changes. The Plugin API's current file name and ID alone do not identify its parent project.
+- If the connection is missing, mismatched, or unverifiable, stop design operations and request a file from the allowed project. Never fall back to another project or workspace.
+- Work in another Penpot project requires an explicit user instruction changing this scope.
+
 ## Obsidian Configuration Protection
 
 - Never edit, rotate, redact, regenerate, untrack, ignore, delete, or otherwise change Obsidian configuration, credentials, certificates, ports, plugin state, or MCP authentication unless the user explicitly requests an Obsidian configuration change in the active request.

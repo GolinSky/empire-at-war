@@ -1,0 +1,8 @@
+{
+  "name": "empire-at-war-penpot-mcp",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "mcp-remote": "0.14.3"
+  }
+}
