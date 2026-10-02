@@ -25,6 +25,8 @@ namespace EmpireAtWar.Tests.Editor
         private MapStub _map;
         private ZonesStub _zones;
         private EnemyStructurePlacementService _service;
+        private BoxCollider _stationPrefab;
+        private BoxCollider _structurePrefab;
 
         [SetUp]
         public void SetUp()
@@ -32,12 +34,30 @@ namespace EmpireAtWar.Tests.Editor
             _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
             _map = new MapStub();
             _zones = new ZonesStub();
+            _stationPrefab = CreatePrefab(Vector3.one * 10f);
+            _structurePrefab = CreatePrefab(Vector3.one * (32f / Mathf.Sqrt(3f)));
+            _service = CreateService();
+        }
+
+        private EnemyStructurePlacementService CreateService()
+        {
             DiContainer container = new DiContainer();
             container.Bind<IMapModelObserver>().FromInstance(_map);
-            _service = new EnemyStructurePlacementService(
+            return new EnemyStructurePlacementService(
                 new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                _zones, new NoCaptureSites(), new LayersStub(), TestPlayers.CreateDuel().Get(TestPlayers.Enemy));
+                _zones, new NoCaptureSites(), new LayersStub(), TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                _stationPrefab, new[] { _structurePrefab });
+        }
+
+        private BoxCollider CreatePrefab(Vector3 size)
+        {
+            GameObject prefab = new GameObject("Placement prefab");
+            prefab.transform.SetParent(_root.transform);
+            prefab.SetActive(false);
+            BoxCollider collider = prefab.AddComponent<BoxCollider>();
+            collider.size = size;
+            return collider;
         }
 
         [TearDown]
@@ -114,6 +134,58 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(second, Is.EqualTo(first));
         }
 
+        [Test]
+        public void ScaledOffsetStation_SearchesOutsideItsFootprint()
+        {
+            _map.Station = Vector3.zero;
+            _map.SetBounds(-1000f, 1000f);
+            _stationPrefab.center = new Vector3(40f, 15f, -10f);
+            _stationPrefab.size = new Vector3(100f, 30f, 80f);
+            _stationPrefab.transform.localScale = Vector3.one * 3f;
+            _stationPrefab.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+            _service = CreateService();
+
+            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+
+            Vector3 center = _stationPrefab.transform.TransformVector(_stationPrefab.center);
+            center.y = 0f;
+            float radius = new Vector2(150f, 45f).magnitude;
+            Assert.That(Vector3.Distance(position, center), Is.GreaterThan(radius + 16f));
+        }
+
+        [Test]
+        public void ScaledOffsetStructure_RejectsOverlapBeyondLegacyClearance()
+        {
+            _map.Station = Vector3.zero;
+            _map.SetBounds(-1000f, 1000f);
+            _structurePrefab.transform.localScale = Vector3.one * 3f;
+            _structurePrefab.center = new Vector3(3f, 0f, 2f);
+            _service = CreateService();
+            Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
+            Vector3 obstaclePosition = first + Vector3.right * 35f;
+            Block(obstaclePosition, Vector3.one * 4f);
+
+            Assert.That(_service.TryGetPosition(out Vector3 next), Is.True);
+
+            Assert.That(next, Is.Not.EqualTo(first));
+            Assert.That(Vector3.Distance(next, obstaclePosition), Is.GreaterThan(48f));
+        }
+
+        [Test]
+        public void CapturedZone_UsesItsActualRadius()
+        {
+            _map.Station = new Vector3(600f, 0f, 600f);
+            _map.SetBounds(-1000f, 1000f);
+            Block(_map.Station, new Vector3(210f, 40f, 210f));
+            _zones.Radius = 270f;
+            _zones.Centers.Add(Vector3.zero);
+
+            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+
+            Assert.That(position.magnitude, Is.GreaterThan(270f + 16f));
+            Assert.That(position.magnitude, Is.LessThanOrEqualTo(270f + 16f + 36f));
+        }
+
         private GameObject Block(Vector3 position, Vector3 size)
         {
             GameObject obstacle = new GameObject("Occupied structure site");
@@ -158,15 +230,22 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class ZonesStub : IReinforcementZonesSystem
         {
             public List<Vector3> Centers { get; } = new List<Vector3>();
+            public float Radius { get; set; }
             public event Action OwnershipChanged { add { } remove { } }
-            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f) => false;
+            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
+            {
+                return Centers.Exists(center => Vector3.Distance(center, position) <= Radius + clearance);
+            }
             public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position) => false;
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
 
-            public void CopyOwnedCapturableZoneCenters(PlayerId owner, List<Vector3> destination)
+            public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
             {
                 destination.Clear();
-                destination.AddRange(Centers);
+                foreach (Vector3 center in Centers)
+                {
+                    destination.Add(new Bounds(center, new Vector3(Radius * 2f, 0f, Radius * 2f)));
+                }
             }
 
             public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)

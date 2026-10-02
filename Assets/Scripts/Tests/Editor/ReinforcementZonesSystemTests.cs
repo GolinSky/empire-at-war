@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void StructureFallback_UsesOnlyOwnedCapturableZonesAndClearsPreviousCenters()
+        public void StructureFallback_UsesOnlyOwnedCapturableZonesAndClearsPreviousBounds()
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
@@ -56,11 +56,14 @@ namespace EmpireAtWar.Tests.Editor
                     captured,
                     CreateZone(root.transform, TestPlayers.Human, true, Vector3.left * 80f),
                     CreateZone(root.transform, PlayerId.None, true, Vector3.right * 80f));
-                List<Vector3> centers = new List<Vector3> { Vector3.one };
+                List<Bounds> bounds = new List<Bounds> { new Bounds(Vector3.one, Vector3.one) };
 
-                system.CopyOwnedCapturableZoneCenters(TestPlayers.Enemy, centers);
+                system.CopyOwnedCapturableZoneBounds(TestPlayers.Enemy, bounds);
 
-                Assert.That(centers, Is.EqualTo(new[] { captured.Center }));
+                Assert.That(bounds, Has.Count.EqualTo(1));
+                Assert.That(bounds[0].center, Is.EqualTo(captured.Center));
+                Assert.That(bounds[0].extents.x, Is.EqualTo(captured.Radius));
+                Assert.That(bounds[0].extents.z, Is.EqualTo(captured.Radius));
             }
             finally
             {

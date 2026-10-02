@@ -89,9 +89,9 @@ MonoBehaviour:
   stationRadii:
     keyValue:
     - key: 0
-      value: 135
+      value: 396
     - key: 1
-      value: 90
+      value: 261
   planetPrefabs:
     keyValue:
     - key: 0
