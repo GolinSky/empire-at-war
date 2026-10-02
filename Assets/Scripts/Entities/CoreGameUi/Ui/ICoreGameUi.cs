@@ -17,6 +17,7 @@ namespace EmpireAtWar.Views.Game
         void Dispose();
         void SetContentVisible(bool isVisible);
         void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection);
+        void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded);
         Transform GetRouteParent(SkirmishUiRoutePosition position);
         IEndGameView PrepareEndGameView(Transform parent);
     }

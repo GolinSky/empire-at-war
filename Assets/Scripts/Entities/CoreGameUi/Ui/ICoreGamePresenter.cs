@@ -6,5 +6,6 @@ namespace EmpireAtWar.Presenters.Game
         void SpeedUp();
         void ToggleReinforcement();
         void StartCinematic();
+        void ClearFleetSelection();
     }
 }

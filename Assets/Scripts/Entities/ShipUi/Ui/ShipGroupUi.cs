@@ -14,10 +14,8 @@ namespace EmpireAtWar.Views
 {
     public class ShipGroupUi : BaseUi, IShipGroupUi, ITooltipHoverView
     {
-        private const float MAX_ICON_SIZE = 220f;
-        private const float MIN_ICON_SIZE = 96f;
+        private const float CARD_WIDTH = 98f;
         private const float GROUP_SPACING = 10f;
-        private const float PANEL_PADDING = 8f;
 
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -129,27 +127,16 @@ namespace EmpireAtWar.Views
             _layoutDirty = false;
             if (_groups.Count == 0) return;
 
-            float height = Mathf.Max(1f, size.y - PANEL_PADDING * 2f);
-            float iconSize = Mathf.Min(MAX_ICON_SIZE, Mathf.Max(MIN_ICON_SIZE, height - 114f));
-            while (iconSize > MIN_ICON_SIZE && GetTotalWidth(iconSize, height) > size.x)
-                iconSize = Mathf.Max(MIN_ICON_SIZE, iconSize - 4f);
-
-            float x = PANEL_PADDING;
+            float height = Mathf.Max(220f, size.y);
+            float x = 0f;
             for (int i = 0; i < _groups.Count; i++)
             {
-                _groups[i].SetLayout(x, iconSize, height);
-                x += _groups[i].GetWidth(iconSize, height) + GROUP_SPACING;
+                _groups[i].SetLayout(x, CARD_WIDTH, height);
+                x += _groups[i].GetWidth(CARD_WIDTH, height) + GROUP_SPACING;
             }
-            _content.sizeDelta = new Vector2(Mathf.Max(0f,
-                x - GROUP_SPACING + PANEL_PADDING - size.x), 0f);
+            _content.sizeDelta = new Vector2(Mathf.Max(0f, x - GROUP_SPACING - size.x), 0f);
         }
 
-        private float GetTotalWidth(float iconSize, float height)
-        {
-            float width = PANEL_PADDING * 2f + (_groups.Count - 1) * GROUP_SPACING;
-            for (int i = 0; i < _groups.Count; i++)
-                width += _groups[i].GetWidth(iconSize, height);
-            return width;
-        }
+
     }
 }

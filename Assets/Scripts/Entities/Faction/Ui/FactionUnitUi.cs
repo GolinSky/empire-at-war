@@ -16,6 +16,18 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private TextMeshProUGUI unitPriceText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
+        [SerializeField] private TextMeshProUGUI stateText;
+        [SerializeField] private GameObject queuedHighlight;
+        public string RequestId => _unitRequest.Id;
+
+        public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded)
+        {
+            purchaseButton.interactable = unlocked && affordable && !battleEnded;
+            unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
+            unitPriceText.color = affordable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);
+            stateText.text = !unlocked ? $"LV {Level}" : !affordable ? "CREDITS" : queued ? "QUEUED" : "";
+            queuedHighlight.SetActive(queued);
+        }
         private IFactionView _factionView;
         private UnitRequest _unitRequest;
         public FactionData FactionData { get; private set; }
@@ -26,7 +38,7 @@ namespace EmpireAtWar.Views.Factions
         {
             FactionData = factionData;
             unitIconImage.sprite = factionData.Icon;
-            unitNameText.text = factionData.Name;
+            unitNameText.text = factionData.Name.ToUpperInvariant();
             unitPriceText.text = factionData.Price.ToString();
             purchaseButton.onClick.AddListener(HandleClick);
             Level = factionData.AvailableLevel;

@@ -14,7 +14,7 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Factions
 {
     public class FactionUiController : UiController, IFactionPresenter, IInitializable,
-        ILateDisposable, ISkirmishUiRoute
+        ILateDisposable, ISkirmishUiRoute, ITickable
     {
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
@@ -29,6 +29,8 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
         private TooltipHoverSubscription _tooltipHover;
         private bool _isTooltipActive;
+        private readonly EmpireAtWar.Views.Game.ICoreGameHudStatus _hud;
+        private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
 
         public FactionUiController(
             IUiService uiService,
@@ -41,7 +43,9 @@ namespace EmpireAtWar.Presenters.Factions
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltips,
             EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
-            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
+            EmpireAtWar.Views.Game.ICoreGameHudStatus hud,
+            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session) : base(uiService, cancelRouter)
         {
             _factionService = factionService;
             _model = model;
@@ -52,6 +56,8 @@ namespace EmpireAtWar.Presenters.Factions
             _tooltips = new TooltipRequests(tooltips);
             _economy = economy;
             _reinforcements = reinforcements;
+            _hud = hud;
+            _session = session;
         }
 
         public void Initialize()
@@ -80,6 +86,12 @@ namespace EmpireAtWar.Presenters.Factions
         }
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
+
+        public void Tick()
+        {
+            _hud.SetProductionStatus(_model.FactionType.ToString(), _model.CurrentLevel);
+            if (_ui != null) _ui.RefreshAvailability(_economy.Money, _session.IsBattleEnded);
+        }
 
         public void Activate(bool isActive, Transform parentTransform)
         {

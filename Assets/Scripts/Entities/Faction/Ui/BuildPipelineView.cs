@@ -14,15 +14,21 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private CanvasGroup canvasGroup;
 
         [SerializeField] private List<PipelineView> pipelineViews;
+        [SerializeField] private PipelineView pipelinePrefab;
+        [SerializeField] private Transform pipelineParent;
+        private Action<string> _cancelBuilding;
+        private TooltipHoverView _tooltipHover;
 
         private Dictionary<UnitLimitKey, PipelineView> _workingPipelines = new Dictionary<UnitLimitKey, PipelineView>();
         public void RegisterTooltips(TooltipHoverView hover)
         {
+            _tooltipHover = hover;
             foreach (PipelineView view in pipelineViews) hover.Register(view.TooltipTrigger);
         }
 
         public void Init(Action<string> cancelBuilding)
         {
+            _cancelBuilding = cancelBuilding;
             foreach (PipelineView pipelineView in pipelineViews)
             {
                 pipelineView.Init(cancelBuilding);
@@ -43,9 +49,14 @@ namespace EmpireAtWar.Views.Factions
                 UnitLimitKey key = UnitLimitKey.From(snapshot.UnitRequest);
                 if (!_workingPipelines.TryGetValue(key, out PipelineView pipelineView))
                 {
-                    pipelineView = pipelineViews.FirstOrDefault(view => !view.IsBusy)
-                        ?? throw new InvalidOperationException(
-                            "Production snapshot exceeds the configured pipeline view capacity.");
+                    pipelineView = pipelineViews.FirstOrDefault(view => !view.IsBusy);
+                    if (pipelineView == null)
+                    {
+                        pipelineView = UnityEngine.Object.Instantiate(pipelinePrefab, pipelineParent);
+                        pipelineView.Init(_cancelBuilding);
+                        _tooltipHover.Register(pipelineView.TooltipTrigger);
+                        pipelineViews.Add(pipelineView);
+                    }
                     _workingPipelines.Add(key, pipelineView);
                 }
 
