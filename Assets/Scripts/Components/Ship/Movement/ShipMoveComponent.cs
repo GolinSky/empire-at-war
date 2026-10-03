@@ -90,11 +90,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _motion = new ShipMovementTweenPlayer(transform, bodyTransform,
                 lineRenderer, hyperSpaceEase);
             _modifiers.Changed += UpdateRouteSpeed;
-            if (!_shipNavigationService.TryResolveInitialFinalPosition(this,
-                    _startPosition, _mapModel.SizeRange, HEIGHT_TOLERANCE,
-                    out Vector3 resolvedPosition))
-                throw new InvalidOperationException("No clear ship spawn position is available on the map.");
-            _startPosition = resolvedPosition;
+            // The spawner already validated this point; the ship lands exactly where it was placed.
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(),
                 _stationFacingService.GetRotation(_owner).ToNumerics(),
                 _localPlayer.IsLocal(_owner));
@@ -210,13 +206,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
             if (queued.HasValue) Plan(queued.Value.ToUnity());
-            else
-            {
-                Model.Arrive(transform.position.ToNumerics());
-                if (!_shipNavigationService.IsPositionClear(this,
-                        transform.position, NavigationRadius))
-                    Plan(transform.position);
-            }
+            else Model.Arrive(transform.position.ToNumerics());
         }
 
         private void Plan(Vector3 destination, bool preserveCourse = false)

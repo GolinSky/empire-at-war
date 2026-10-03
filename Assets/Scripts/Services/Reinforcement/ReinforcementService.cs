@@ -14,7 +14,6 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
@@ -34,8 +33,6 @@ namespace EmpireAtWar.Services.Reinforcement
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
-        private const float MINIMUM_NAVIGATION_RADIUS = 1f;
-
         private readonly ReinforcementModel _model;
         private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _playerFactionModel;
@@ -52,14 +49,12 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
         private readonly IStationRegistry _stationRegistry;
-        private readonly IShipNavigationService _shipNavigationService;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ShipsData _shipsData;
         private readonly IAssetService _assetService;
 
         private UnitSpawnView _spawnReinforcement;
         private ShipType _currentShipType;
-        private float _currentShipNavigationRadius;
         private SquadronType _currentSquadronType;
         private SpawnType _currentSpawnType;
         private MiningFacilityType _currentFacilityType;
@@ -84,7 +79,6 @@ namespace EmpireAtWar.Services.Reinforcement
             IFogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
             IStationRegistry stationRegistry,
-            IShipNavigationService shipNavigationService,
             INotifier<BattleResult> battleVictoryNotifier,
             ShipsData shipsData,
             IAssetService assetService,
@@ -106,7 +100,6 @@ namespace EmpireAtWar.Services.Reinforcement
             _fogOfWarSystem = fogOfWarSystem;
             _stationFacingService = stationFacingService;
             _stationRegistry = stationRegistry;
-            _shipNavigationService = shipNavigationService;
             _battleVictoryNotifier = battleVictoryNotifier;
             _shipsData = shipsData;
             _assetService = assetService;
@@ -284,11 +277,9 @@ namespace EmpireAtWar.Services.Reinforcement
             StartSpawnSequence(SpawnType.Ship);
             _currentShipType = shipType;
             _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(shipType));
-            ShipData shipData = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
-            // Same radius the spawned ship claims, so a valid preview is never shifted on spawn.
-            _currentShipNavigationRadius = Mathf.Max(shipData.NavigationRadius, MINIMUM_NAVIGATION_RADIUS);
             // The preview hovers where the ship will actually fly.
-            _spawnReinforcement.SetHeight(shipData.Height);
+            _spawnReinforcement.SetHeight(
+                _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType)).Height);
         }
 
         private void TrySpawnSquadron(SquadronType squadronType)
@@ -324,12 +315,9 @@ namespace EmpireAtWar.Services.Reinforcement
         private bool IsPlacementValid(Vector3 position)
         {
             return _stationRegistry.IsStationOperational(_owner.Id) &&
-                // Hull overlap is checked by the spawn view's trigger. Ships also need their
-                // navigation clearance free, otherwise the spawned ship relocates itself.
-                (_currentSpawnType == SpawnType.Ship
-                ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position) &&
-                  _shipNavigationService.IsPositionClear(position, _currentShipNavigationRadius)
-                : _currentSpawnType == SpawnType.Squadron
+                // Ship hull overlap is checked by the spawn view's trigger; the spawned ship
+                // resolves its own navigation clearance to the nearest free point.
+                (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
                 ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position)
                 :!_fogOfWarSystem.IsHidden(position) &&
                   !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&

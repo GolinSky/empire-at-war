@@ -73,7 +73,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Register_RejectsIncomingShipAtOccupiedArrivalPosition()
+        public void Register_AllowsSpawnOverlappingNavigationRadius()
         {
             ShipDestinationRegistry registry = new ShipDestinationRegistry();
             registry.Register(
@@ -82,13 +82,11 @@ namespace EmpireAtWar.Tests.Movement
                 ShipHullSpan.Unbounded,
                 new FormationPoint(0f, 0f));
 
-            Assert.That(
-                () => registry.Register(
-                    () => new FormationPoint(50f, 0f),
-                    5f,
-                    ShipHullSpan.Unbounded,
-                    new FormationPoint(0f, 0f)),
-                Throws.InvalidOperationException);
+            Assert.DoesNotThrow(() => registry.Register(
+                () => new FormationPoint(50f, 0f),
+                5f,
+                ShipHullSpan.Unbounded,
+                new FormationPoint(0f, 0f)));
         }
 
         [Test]
