@@ -83,6 +83,7 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }
 
             public void LookAtTarget(Vector3 position) { }
+            public void LookInDirection(Vector3 direction) { }
 
             public float GetRange(Vector3 position) => 0f;
 

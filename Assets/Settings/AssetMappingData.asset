@@ -560,3 +560,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MalevolenceShipView
+      value:
+        m_AssetGUID: 3dfea5679919bb64381bed73074104ef
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

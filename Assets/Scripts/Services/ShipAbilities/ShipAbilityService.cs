@@ -71,7 +71,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             {
                 if (casters[i].TryGetFacade(out IShipAbilityFacade command) &&
                     TryFindSlot(command, id, out ShipAbilitySlot slot) &&
-                    slot.State == ShipAbilityState.Ready && !command.Health.IsDestroyed)
+                    slot.CanActivate)
                 {
                     definition = slot.Definition;
                     break;
@@ -120,7 +120,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
-            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || slot.State != ShipAbilityState.Ready || caster.Health.IsDestroyed)
+            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || !slot.CanActivate)
                 return false;
             ShipAbilityDefinition definition = slot.Definition;
             if (definition.RequiresEnemyTarget &&
@@ -130,6 +130,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 return false;
 
             IShipAbility ability = _factory.Create(definition);
+            if (ability is IPhasedShipAbility phased && !phased.CanStart(caster, target)) return false;
             ability.Start(caster, definition, target);
             slot.Activate(ability);
             _running.Add(slot);
@@ -143,11 +144,29 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = _running.Count - 1; i >= 0; i--)
             {
                 ShipAbilitySlot slot = _running[i];
-                if (slot.Owner.Health.IsDestroyed)
+                if (slot.Owner.Health.IsDestroyed &&
+                    !(slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility persistent && persistent.SurvivesCasterDeath))
                 {
                     if (slot.State == ShipAbilityState.Active) Stop(slot);
                     _running.RemoveAt(i);
                     continue;
+                }
+
+                if (slot.State == ShipAbilityState.Active && slot.Owner.Modifiers.IsIonDisabled &&
+                    !(slot.RunningAbility is IPhasedShipAbility))
+                {
+                    Stop(slot);
+                    continue;
+                }
+
+                if (slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility phased)
+                {
+                    phased.Advance(deltaTime);
+                    if (phased.IsComplete)
+                    {
+                        Stop(slot);
+                        continue;
+                    }
                 }
 
                 slot.Elapse(deltaTime);

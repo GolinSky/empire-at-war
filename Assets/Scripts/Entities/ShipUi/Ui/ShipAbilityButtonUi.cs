@@ -58,8 +58,7 @@ namespace EmpireAtWar.Views
                 lowestProgress = Mathf.Min(lowestProgress, slot.Progress01);
                 remaining = Mathf.Min(remaining, slot.TimeLeft);
                 active |= slot.State == ShipAbilityState.Active;
-                interactable |= slot.State == ShipAbilityState.Ready ||
-                    slot.State == ShipAbilityState.Active && slot.Definition.CanCancel;
+                interactable |= slot.CanPress;
             }
             cooldownFill.fillAmount = lowestProgress;
             activeHighlight.SetActive(active);

@@ -13,6 +13,10 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public ShipAbilityState State { get; private set; } = ShipAbilityState.Ready;
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
+        public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.IsIonDisabled;
+        public bool CanActivate => IsAvailable && State == ShipAbilityState.Ready;
+        public bool CanPress => IsAvailable && (State == ShipAbilityState.Ready ||
+            State == ShipAbilityState.Active && Definition.CanCancel);
         public float Progress01 => State switch
         {
             ShipAbilityState.Active => Definition.Duration > 0f ? TimeLeft / Definition.Duration : 0f,

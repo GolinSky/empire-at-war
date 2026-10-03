@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Tooltip
             float remaining = 0f;
             foreach (ShipAbilitySlot slot in slots)
             {
-                if (slot.State == ShipAbilityState.Ready) ready++;
+                if (slot.CanActivate) ready++;
                 if (slot.State == ShipAbilityState.Active) active++;
                 remaining = Math.Max(remaining, slot.TimeLeft);
             }
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Entities.Tooltip
                 stats: new[]
                 {
                     new TooltipStat(label: "Range", current: definition.Range),
-                    new TooltipStat(label: "Duration (s)", current: definition.Duration),
+                    new TooltipStat(label: "Duration (s)", current: definition.Settings.GetEffectDuration(definition.Duration)),
                     new TooltipStat(label: "Cooldown (s)", current: definition.RecoveryDelay),
                     new TooltipStat(label: "Remaining (s)", current: remaining)
                 }, status: $"{ready} of {slots.Count} ready · {active} active. " +

@@ -13,23 +13,32 @@ MonoBehaviour:
   m_Name: HardPointOverlayData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayData
   entries:
-  - hardPointType: 0
+  - icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
+    displayName: Ion Pulse Cannon
+    description: Destroying this cannon prevents Ion Pulse from firing from this
+      side.
+    hardPointType: 6
+  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
     displayName: Weapon Battery
     description: Destroying it silences the guns it controls.
-    icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
-  - hardPointType: 1
+    hardPointType: 0
+  - icon: {fileID: 21300000, guid: bf58ccdf2a3217f41a9ea9d694f66bc9, type: 3}
     displayName: Engines
     description: Destroying it cripples the ship's speed.
-    icon: {fileID: 21300000, guid: bf58ccdf2a3217f41a9ea9d694f66bc9, type: 3}
-  - hardPointType: 2
+    hardPointType: 1
+  - icon: {fileID: 21300000, guid: 33e58938768151045937fd04102c2bd5, type: 3}
     displayName: Shield Generator
     description: Destroying it collapses the ship's shields for good.
-    icon: {fileID: 21300000, guid: 33e58938768151045937fd04102c2bd5, type: 3}
-  - hardPointType: 4
+    hardPointType: 2
+  - icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
+    displayName: Supply Dock
+    description: Destroyable supply-dock section. Resupply is not yet implemented.
+    hardPointType: 5
+  - icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
     displayName: Hangar
     description: Destroying it stops fighter launches.
-    icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
-  - hardPointType: 3
+    hardPointType: 4
+  - icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
     displayName: Hull Section
     description: Structural section of the hull.
-    icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
+    hardPointType: 3

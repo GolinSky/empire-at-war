@@ -51,6 +51,25 @@ MonoBehaviour:
       structure: 1
     vsShield: 0.25
     shieldPiercing: 0
+  - damageType: 11
+    damage:
+      fighter: 0.3
+      bomber: 0.3
+      corvette: 1
+      frigate: 1
+      capital: 0.9
+      heavyCapital: 0.8
+      structure: 1
+    accuracy:
+      fighter: 0.25
+      bomber: 0.25
+      corvette: 0.6
+      frigate: 0.85
+      capital: 0.95
+      heavyCapital: 1
+      structure: 1
+    vsShield: 0
+    shieldPiercing: 1
   - damageType: 2
     damage:
       fighter: 0.3

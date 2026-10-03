@@ -20,5 +20,6 @@
         PlanetaryIonCannon = 16,
         HypervelocityGun = 17,
         PlasmaCannon = 18,
+        MassDriver = 19,
     }
 }
