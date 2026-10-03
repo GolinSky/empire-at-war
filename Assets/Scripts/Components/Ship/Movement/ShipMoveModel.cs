@@ -43,15 +43,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             _modifiers = modifiers;
         }
 
-        public void ConfigureSpawnPose(NumericsVector3 position,
-            NumericsQuaternion rotation, bool useHyperSpaceEntry)
+        public void ConfigureSpawnPose(NumericsVector3 position, NumericsQuaternion rotation)
         {
             HyperSpacePosition = position;
             StartRotation = rotation;
-            JumpPosition = useHyperSpaceEntry
-                ? position - NumericsVector3.Transform(NumericsVector3.UnitZ,
-                    rotation) * OFFSET_HYPERSPACE_JUMP
-                : position;
+            JumpPosition = position - NumericsVector3.Transform(NumericsVector3.UnitZ,
+                rotation) * OFFSET_HYPERSPACE_JUMP;
         }
 
         public void ApplyMoveCoefficient(float coefficient) => _speedCoefficient = coefficient;
