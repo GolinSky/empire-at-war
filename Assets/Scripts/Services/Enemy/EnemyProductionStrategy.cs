@@ -175,7 +175,7 @@ namespace EmpireAtWar.Services.Enemy
                 $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
                 $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
-            _purchaseProcessor.Handle(request);
+            _purchaseProcessor.Purchase(request);
         }
 
         private int CountReservedShips()

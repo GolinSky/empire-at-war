@@ -10,7 +10,6 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
@@ -656,13 +655,7 @@ namespace EmpireAtWar.Tests.Editor
             public UnitRequest LastRequest { get; private set; }
             public int RequestCount { get; private set; }
 
-            public IChainHandler<UnitRequest> SetNext(
-                IChainHandler<UnitRequest> chainHandler)
-            {
-                return chainHandler;
-            }
-
-            public void Handle(UnitRequest request)
+            public void Purchase(UnitRequest request)
             {
                 LastRequest = request;
                 RequestCount++;

@@ -11,7 +11,6 @@ using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
@@ -58,7 +57,7 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     timerPool,
                     economyProvider,
-                    null,
+                    new TrackingWallet(),
                     null,
                     unitLimitModel,
                     reinforcementData,
@@ -70,7 +69,7 @@ namespace EmpireAtWar.Tests.Editor
                     new PlayerRegistry());
 
                 controller.Initialize();
-                controller.Handle(
+                controller.Purchase(
                     new ShipUnitRequest(factionData, ShipType.Venator));
 
                 Assert.That(GetActiveTimerCount(timerPool), Is.EqualTo(1));
@@ -113,8 +112,7 @@ namespace EmpireAtWar.Tests.Editor
                 TimerPoolService timerPool =
                     new TimerPoolService();
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
-                TrackingPurchaseChain purchaseChain =
-                    new TrackingPurchaseChain();
+                TrackingWallet wallet = new TrackingWallet();
                 EnemyFactionController controller = new EnemyFactionController(
                     model,
                     null,
@@ -122,7 +120,7 @@ namespace EmpireAtWar.Tests.Editor
                     null,
                     timerPool,
                     new TrackingEconomyProvider(),
-                    purchaseChain,
+                    wallet,
                     null,
                     unitLimitModel,
                     reinforcementData,
@@ -151,9 +149,9 @@ namespace EmpireAtWar.Tests.Editor
                     () => throw new InvalidOperationException("build failure"));
                 GetOnlyActiveTimer(timerPool).Release(true);
 
-                Assert.That(purchaseChain.RevertCount, Is.EqualTo(1));
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
                 Assert.That(unitLimitModel.ShipOrdersCount, Is.Zero);
-                Assert.That(purchaseChain.LastReverted, Is.SameAs(request));
+                Assert.That(wallet.LastRefunded, Is.SameAs(request));
                 Assert.That(unitLimitModel.CurrentUnitCapacity, Is.Zero);
                 Assert.That(GetActiveTimerCount(timerPool), Is.Zero);
                 Assert.That(GetPendingBuildCount(controller), Is.Zero);
@@ -337,25 +335,20 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class TrackingPurchaseChain : IPurchaseChain
+        private sealed class TrackingWallet : IWallet
         {
-            public int RevertCount { get; private set; }
-            public UnitRequest LastReverted { get; private set; }
+            public int RefundCount { get; private set; }
+            public UnitRequest LastRefunded { get; private set; }
 
-            public IChainHandler<UnitRequest> SetNext(
-                IChainHandler<UnitRequest> chainHandler)
+            public bool TrySpend(UnitRequest unitRequest)
             {
-                return chainHandler;
+                return true;
             }
 
-            public void Handle(UnitRequest request)
+            public void Refund(UnitRequest unitRequest)
             {
-            }
-
-            public void Revert(UnitRequest result)
-            {
-                RevertCount++;
-                LastReverted = result;
+                RefundCount++;
+                LastRefunded = unitRequest;
             }
         }
     }

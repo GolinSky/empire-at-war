@@ -1,9 +1,7 @@
-﻿using EmpireAtWar.Patterns.ChainOfResponsibility;
-
 namespace EmpireAtWar.Controllers.Factions
 {
-    public interface IEnemyPurchaseProcessor: IChainHandler<UnitRequest>
+    public interface IEnemyPurchaseProcessor
     {
-
+        void Purchase(UnitRequest unitRequest);
     }
 }

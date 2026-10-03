@@ -1,6 +1,5 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -50,8 +49,6 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemySuperWeaponController>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
             Container.BindScriptableObject<ReinforcementData>(Repository);
-
-            Container.BindInterfacesExt<EnemyPurchaseProcessor>();
 
             // Registers itself as this AI's pending-reinforcement source in the scene-wide player registry.
             Container.BindInterfacesExt<EnemyFactionController>();

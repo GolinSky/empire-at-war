@@ -4,8 +4,8 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -22,19 +22,19 @@ namespace EmpireAtWar.Services.Factions
     }
 
     public class FactionService : Service, IFactionService, IInitializable, ILateDisposable,
-        IBuildShipChain, IIncomeProvider, IObserver<ISelectionSubject>, ITickable
+        IIncomeProvider, IObserver<ISelectionSubject>, ITickable
     {
         private const float DEFAULT_INCOME = 5f;
 
         private readonly ISelectionService _selectionService;
         private readonly PlayerSlot _owner;
-        private readonly LazyInject<IPurchaseProcessor> _purchaseMediator;
+        private readonly IWallet _wallet;
+        private readonly IReinforcementPool _reinforcementPool;
         private readonly IEconomyProvider _economyProvider;
         private readonly IStationRegistry _stationRegistry;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly SuperWeaponModel _superWeapons;
-        private IChainHandler<UnitRequest> _nextChain;
         private ISelectionContext _selectionContext;
         private bool _isInitialized;
         
@@ -45,7 +45,8 @@ namespace EmpireAtWar.Services.Factions
             FactionResearchModel research,
             SuperWeaponModel superWeapons,
             ISelectionService selectionService,
-            LazyInject<IPurchaseProcessor> purchaseMediator,
+            IWallet wallet,
+            IReinforcementPool reinforcementPool,
             IEconomyProvider economyProvider,
             IStationRegistry stationRegistry,
             PlayerSlot owner)
@@ -56,7 +57,8 @@ namespace EmpireAtWar.Services.Factions
             _superWeapons = superWeapons;
             Income = DEFAULT_INCOME;
             _selectionService = selectionService;
-            _purchaseMediator = purchaseMediator;
+            _wallet = wallet;
+            _reinforcementPool = reinforcementPool;
             _economyProvider = economyProvider;
             _stationRegistry = stationRegistry;
         }
@@ -68,7 +70,6 @@ namespace EmpireAtWar.Services.Factions
                 return;
             }
 
-            _purchaseMediator.Value.Add(this);
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
             _model.OnUnitCompleted += BuildUnit;
@@ -114,7 +115,7 @@ namespace EmpireAtWar.Services.Factions
                 {
                     _superWeapons.CancelCharging(revertedSuperWeapon.Key);
                 }
-                _purchaseMediator.Value.RevertFlow(unitRequest);
+                _wallet.Refund(unitRequest);
                 return;
             }
 
@@ -133,10 +134,7 @@ namespace EmpireAtWar.Services.Factions
                     return;
             }
 
-            if (_nextChain != null)
-            {
-                _nextChain.Handle(unitRequest);
-            }
+            _reinforcementPool.Add(unitRequest);
         }
 
         public void TryPurchaseUnit(UnitRequest unitRequest)
@@ -148,7 +146,16 @@ namespace EmpireAtWar.Services.Factions
                 return;
             }
 
-            _purchaseMediator.Value.Handle(unitRequest);
+            if (!_wallet.TrySpend(unitRequest))
+            {
+                return;
+            }
+
+            _model.QueueUnit(unitRequest);
+            if (unitRequest is SuperWeaponUnitRequest purchasedSuperWeapon)
+            {
+                _superWeapons.StartCharging(purchasedSuperWeapon.Key);
+            }
         }
 
         public void CancelBuilding(string id)
@@ -159,7 +166,7 @@ namespace EmpireAtWar.Services.Factions
                 {
                     _superWeapons.CancelCharging(superWeapon.Key);
                 }
-                _purchaseMediator.Value.RevertFlow(unitRequest);
+                _wallet.Refund(unitRequest);
             }
         }
 
@@ -168,21 +175,6 @@ namespace EmpireAtWar.Services.Factions
             if (_isInitialized)
             {
                 _model.Advance(Time.deltaTime);
-            }
-        }
-
-        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
-        {
-            _nextChain = chainHandler;
-            return _nextChain;
-        }
-
-        public void Handle(UnitRequest unitRequest)
-        {
-            _model.QueueUnit(unitRequest);
-            if (unitRequest is SuperWeaponUnitRequest superWeapon)
-            {
-                _superWeapons.StartCharging(superWeapon.Key);
             }
         }
 

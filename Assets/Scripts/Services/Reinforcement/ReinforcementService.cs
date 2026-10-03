@@ -10,7 +10,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
@@ -32,7 +31,7 @@ namespace EmpireAtWar.Services.Reinforcement
     }
 
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
-        ILateDisposable, IReinforcementChain, IObserver<BattleResult>
+        ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
         private readonly ReinforcementModel _model;
         private readonly PlayerSlot _owner;
@@ -54,7 +53,6 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ShipsData _shipsData;
         private readonly IAssetService _assetService;
 
-        private IChainHandler<UnitRequest> _nextChain;
         private UnitSpawnView _spawnReinforcement;
         private ShipType _currentShipType;
         private SquadronType _currentSquadronType;
@@ -214,13 +212,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _spawnReinforcement.SetPlacementValidity(IsPlacementValid(position));
         }
 
-        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
-        {
-            _nextChain = chainHandler;
-            return _nextChain;
-        }
-
-        public void Handle(UnitRequest request)
+        public void Add(UnitRequest request)
         {
             switch (request)
             {
@@ -241,8 +233,6 @@ namespace EmpireAtWar.Services.Reinforcement
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));
             }
-
-            _nextChain?.Handle(request);
         }
 
         public void TrySpawnReinforcement(UnitRequest request)
