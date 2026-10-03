@@ -2,13 +2,9 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Entities.Ship.Data;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
-using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
-using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Squadrons;
@@ -16,7 +12,6 @@ using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using ViewComponents;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace EmpireAtWar.Services.ReinforcementZones
 {
@@ -32,8 +27,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         int GetOwnedCapturableZoneCount(PlayerId owner);
 
-        bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
-
         bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position);
 
         bool TryGetDefaultZoneExitPosition(
@@ -42,19 +35,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             float shipRadius,
             out Vector3 position);
 
-        bool TryGetRandomSpawnPosition(
-            PlayerId owner,
-            ShipType shipType,
-            out Vector3 position);
-
         bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position);
     }
 
-    public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IInitializable, ITickable
+    public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
+        IInitializable, ITickable
     {
-        private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
-
-        private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
 
         private IShipService _shipService;
@@ -63,16 +49,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private ICameraService _cameraService;
         private IPointerInput _pointer;
         private IMapModelObserver _mapModel;
-        private IShipNavigationService _shipNavigationService;
-        private IAssetService _assetService;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
 
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
-        private readonly Dictionary<ShipType, float> _shipNavigationRadii =
-            new Dictionary<ShipType, float>();
         private ReinforcementZoneData _data;
-        private ShipsData _shipsData;
         private ReinforcementZoneView[] _zoneViews;
         private CaptureStrengthBuilder _tally;
 
@@ -86,25 +67,19 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private void Construct(
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
-            IAssetService assetService,
             IMapModelObserver mapModel,
-            IShipNavigationService shipNavigationService,
             IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IPointerInput pointer,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
             ReinforcementZoneData data,
-            ShipsData shipsData,
             ReinforcementZoneView[] zoneViews)
         {
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
-            _assetService = assetService;
-            _shipsData = shipsData;
             _mapModel = mapModel;
-            _shipNavigationService = shipNavigationService;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _pointer = pointer;
@@ -206,111 +181,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
         }
 
-        private bool IsShipSpawnPositionClear(ShipType shipType, Vector3 position)
-        {
-            float navigationRadius = GetNavigationRadius(shipType);
-            return _shipNavigationService.IsPositionClear(
-                position,
-                navigationRadius);
-        }
-
-        public bool TryGetRandomSpawnPosition(
-            PlayerId owner,
-            ShipType shipType,
-            out Vector3 position)
-        {
-            // Reinforcements may arrive in any zone held by the owner's team.
-            List<ReinforcementZonePresenter> alliedZones = new List<ReinforcementZonePresenter>();
-            List<ReinforcementZonePresenter> capturedZones = new List<ReinforcementZonePresenter>();
-            foreach (ReinforcementZonePresenter zone in _zones)
-            {
-                if (!_roster.IsAllied(zone.Owner, owner))
-                {
-                    continue;
-                }
-
-                alliedZones.Add(zone);
-                // AI players reinforce at their team's captured front-line zones first.
-                if (zone.IsCapturable && _roster.Get(owner).IsAi)
-                {
-                    capturedZones.Add(zone);
-                }
-            }
-
-            if (capturedZones.Count > 0 &&
-                TryGetClearSpawnPosition(capturedZones, shipType, out position))
-            {
-                return true;
-            }
-
-            return TryGetClearSpawnPosition(alliedZones, shipType, out position);
-        }
-
-        private bool TryGetClearSpawnPosition(
-            IReadOnlyList<ReinforcementZonePresenter> zones,
-            ShipType shipType,
-            out Vector3 position)
-        {
-            // Prefer the whole hull inside the zone. When the zone is crowded that leaves capital ships
-            // almost no room, so fall back to the player placement rule: only the centre must be inside.
-            return TryGetClearSpawnPosition(zones, shipType, true, out position) ||
-                   TryGetClearSpawnPosition(zones, shipType, false, out position);
-        }
-
-        private bool TryGetClearSpawnPosition(
-            IReadOnlyList<ReinforcementZonePresenter> zones,
-            ShipType shipType,
-            bool keepHullInside,
-            out Vector3 position)
-        {
-            if (zones.Count > 0)
-            {
-                float navigationRadius = GetNavigationRadius(shipType);
-                for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
-                {
-                    ReinforcementZonePresenter selectedZone =
-                        zones[Random.Range(0, zones.Count)];
-                    float hullRadius = selectedZone.Radius - _spawnEdgePadding - navigationRadius;
-                    if (hullRadius < 0f)
-                    {
-                        continue;
-                    }
-
-                    float radius = keepHullInside ? hullRadius : selectedZone.Radius - _spawnEdgePadding;
-                    Vector2 offset = Random.insideUnitCircle * radius;
-                    position = selectedZone.Center + new Vector3(offset.x, 0f, offset.y);
-                    position.y = 0f;
-                    if (IsShipSpawnPositionClear(shipType, position))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            position = default;
-            return false;
-        }
-
-        public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
-        {
-            foreach (ReinforcementZonePresenter zone in _zones)
-            {
-                if (zone.Owner != owner)
-                {
-                    continue;
-                }
-
-                float radius = Mathf.Max(0f, zone.Radius - _spawnEdgePadding);
-                Vector2 offset = Random.insideUnitCircle * radius;
-                position = zone.Center + new Vector3(offset.x, 0f, offset.y);
-                position.y = 0f;
-                return true;
-            }
-
-            position = default;
-            return false;
-        }
-
         public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
         {
             foreach (ReinforcementZoneView view in _zoneViews)
@@ -387,30 +257,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
             position = closestZone.Center;
             position.y = 0f;
             return true;
-        }
-
-        private float GetNavigationRadius(ShipType shipType)
-        {
-            if (_shipNavigationRadii.TryGetValue(
-                    shipType,
-                    out float navigationRadius))
-            {
-                return navigationRadius;
-            }
-
-            string dataPath = _shipsData.GetShipDataPath(shipType);
-            ShipData shipData = _assetService.Load<ShipData>(dataPath);
-            if (shipData == null)
-            {
-                throw new InvalidOperationException(
-                    $"Ship data for {shipType} could not be loaded.");
-            }
-
-            navigationRadius = Mathf.Max(
-                shipData.NavigationRadius,
-                MINIMUM_NAVIGATION_RADIUS);
-            _shipNavigationRadii.Add(shipType, navigationRadius);
-            return navigationRadius;
         }
     }
 }

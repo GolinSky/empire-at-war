@@ -2,26 +2,14 @@ using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
-using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Entities.Ship.Data;
-using EmpireAtWar.Entities.Squadrons;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
-using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.StationFacing;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
-using ViewComponents;
 using Zenject;
-using Object = UnityEngine.Object;
-using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -30,38 +18,24 @@ namespace EmpireAtWar.Services.Reinforcement
         void TrySpawnReinforcement(UnitRequest request);
     }
 
+    /// <summary>Runs the drag-to-place flow: input lock, preview, validation and release.
+    /// What may be placed where is decided by the request's <see cref="IReinforcementPlacement"/>.</summary>
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
-        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly ICaptureSitesSystem _captureSites;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
-        private readonly IStationFacingService _stationFacingService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
-        private readonly IAssetService _assetService;
         private IDisposable _placementLock;
+        private IReinforcementPlacement _placement;
 
         private readonly ReinforcementModel _model;
+        private readonly ReinforcementPlacementFactory _placementFactory;
         private readonly PlayerSlot _owner;
-        private readonly PlayerFactionModel _playerFactionModel;
-        private readonly ReinforcementData _data;
-        private readonly ShipFactory _shipFactory;
-        private readonly SquadronFactory _squadronFactory;
-        private readonly MiningFacilityFactory _miningFacilityFactory;
-        private readonly DefendPlatformFactory _defendPlatformFactory;
-        private readonly ShipsData _shipsData;
-        private UnitSpawnView _spawnReinforcement;
+        private UnitSpawnView _preview;
         private UnitRequest _currentRequest;
-
-        private ShipType _currentShipType;
-        private SquadronType _currentSquadronType;
-        private SpawnType _currentSpawnType;
-        private MiningFacilityType _currentFacilityType;
-        private DefendPlatformType _currentPlatformType;
 
         private bool _hasBattleEnded;
 
@@ -69,42 +43,20 @@ namespace EmpireAtWar.Services.Reinforcement
             IInputLock inputLock,
             IPointerInput pointer,
             ICameraService cameraService,
-            IReinforcementZonesSystem reinforcementZonesSystem,
-            ICaptureSitesSystem captureSites,
-            IFogOfWarSystem fogOfWarSystem,
-            IStationFacingService stationFacingService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
-            IAssetService assetService,
             ReinforcementModel model,
-            PlayerFactionModel playerFactionModel,
-            ReinforcementData data,
-            ShipFactory shipFactory,
-            SquadronFactory squadronFactory,
-            MiningFacilityFactory miningFacilityFactory,
-            DefendPlatformFactory defendPlatformFactory,
-            ShipsData shipsData,
+            ReinforcementPlacementFactory placementFactory,
             PlayerSlot owner)
         {
             _owner = owner;
             _model = model;
-            _playerFactionModel = playerFactionModel;
-            _data = data;
+            _placementFactory = placementFactory;
             _inputLock = inputLock;
             _pointer = pointer;
             _cameraService = cameraService;
-            _shipFactory = shipFactory;
-            _squadronFactory = squadronFactory;
-            _miningFacilityFactory = miningFacilityFactory;
-            _defendPlatformFactory = defendPlatformFactory;
-            _reinforcementZonesSystem = reinforcementZonesSystem;
-            _captureSites = captureSites;
-            _fogOfWarSystem = fogOfWarSystem;
-            _stationFacingService = stationFacingService;
             _stationRegistry = stationRegistry;
             _battleVictoryNotifier = battleVictoryNotifier;
-            _shipsData = shipsData;
-            _assetService = assetService;
         }
 
         public void Initialize()
@@ -127,80 +79,6 @@ namespace EmpireAtWar.Services.Reinforcement
             _inputLock.Acquire();
         }
 
-        private void CancelPlacement()
-        {
-            if (!_model.IsTrySpawning)
-            {
-                return;
-            }
-
-            _model.IsTrySpawning = false;
-            _spawnReinforcement.Destroy();
-            _placementLock.Dispose();
-            _model.InvokeSpawnShipEvent(false);
-        }
-
-        private void Interrupt(Vector2 screenPosition)
-        {
-            if (!_model.IsTrySpawning)
-            {
-                return;
-            }
-
-            _model.IsTrySpawning = false;
-            Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _spawnReinforcement.Position);
-            bool canSpawn = _stationRegistry.IsStationOperational(_owner.Id) &&
-                _spawnReinforcement.CanSpawn && IsPlacementValid(spawnPosition);
-
-            if (canSpawn)
-            {
-                SpawnReinforcement(spawnPosition);
-                _model.ConsumeReinforcement(_currentRequest);
-            }
-
-            _spawnReinforcement.Destroy();
-            _placementLock.Dispose();
-            _model.InvokeSpawnShipEvent(canSpawn);
-        }
-
-        private void SpawnReinforcement(Vector3 spawnPosition)
-        {
-            switch (_currentSpawnType)
-            {
-                case SpawnType.Ship:
-                    ShipEntity ship = _shipFactory.Create(_owner.Id, _currentShipType, spawnPosition);
-                    ship.OnRelease += HandleShipDestroying;
-                    _model.AddUnitCapacity(_currentShipType);
-                    break;
-                case SpawnType.Squadron:
-                    SquadronType squadronType = _currentSquadronType;
-                    Squadron squadron = _squadronFactory.Create(_owner.Id, squadronType,
-                        spawnPosition, _stationFacingService.GetRotation(_owner.Id));
-                    squadron.Released += () => _model.RemoveUnitCapacity(squadronType);
-                    _model.AddUnitCapacity(squadronType);
-                    break;
-                case SpawnType.MiningFacility:
-                    MiningFacilityType facilityType = _currentFacilityType;
-                    var facility = _miningFacilityFactory.Create(_owner.Id, facilityType, spawnPosition);
-                    facility.OnRelease += () =>
-                        _playerFactionModel.ReleaseStructure<MiningFacilityUnitRequest>(facilityType.ToString());
-                    break;
-                case SpawnType.DefendPlatform:
-                    DefendPlatformType platformType = _currentPlatformType;
-                    var platform = _defendPlatformFactory.Create(_owner.Id, platformType, spawnPosition);
-                    platform.OnRelease += () =>
-                        _playerFactionModel.ReleaseStructure<DefendPlatformUnitRequest>(platformType.ToString());
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void HandleShipDestroying(ShipType shipType)
-        {
-            _model.RemoveUnitCapacity(shipType);
-        }
-
         public void Tick()
         {
             if (!_model.IsTrySpawning)
@@ -208,10 +86,10 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            Vector3 position = _cameraService.GetWorldPoint(_pointer.Position, _spawnReinforcement.Position);
+            Vector3 position = _cameraService.GetWorldPoint(_pointer.Position, _preview.Position);
             position.y = 0;
-            _spawnReinforcement.UpdatePosition(position);
-            _spawnReinforcement.SetPlacementValidity(IsPlacementValid(position));
+            _preview.UpdatePosition(position);
+            _preview.SetPlacementValidity(IsPlacementValid(position));
         }
 
         public void Add(UnitRequest request)
@@ -239,91 +117,60 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(UnitRequest request)
         {
-            _currentRequest = request;
-            if (_hasBattleEnded || !_stationRegistry.IsStationOperational(_owner.Id))
+            if (_hasBattleEnded || !_stationRegistry.IsStationOperational(_owner.Id) ||
+                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
             {
                 _model.InvokeSpawnShipEvent(false);
                 return;
             }
 
-            switch (request)
-            {
-                case ShipUnitRequest shipUnitRequest:
-                    TrySpawnShip(shipUnitRequest.Key);
-                    break;
-                case SquadronUnitRequest squadronUnitRequest:
-                    TrySpawnSquadron(squadronUnitRequest.Key);
-                    break;
-                case MiningFacilityUnitRequest miningFacilityUnitRequest:
-                    StartSpawnSequence(SpawnType.MiningFacility);
-                    _currentFacilityType = miningFacilityUnitRequest.Key;
-                    _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(_currentFacilityType));
-                    break;
-                case DefendPlatformUnitRequest defendPlatformUnitRequest:
-                    StartSpawnSequence(SpawnType.DefendPlatform);
-                    _currentPlatformType = defendPlatformUnitRequest.Key;
-                    _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(_currentPlatformType));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(request));
-            }
-        }
-
-        private void TrySpawnShip(ShipType shipType)
-        {
-            if (!_model.CanSpawnUnit(shipType))
-            {
-                return;
-            }
-
-            StartSpawnSequence(SpawnType.Ship);
-            _currentShipType = shipType;
-            _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(shipType));
-            // The preview hovers where the ship will actually fly.
-            _spawnReinforcement.SetHeight(
-                _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType)).Height);
-        }
-
-        private void TrySpawnSquadron(SquadronType squadronType)
-        {
-            if (!_model.CanSpawnUnit(squadronType))
-            {
-                _model.InvokeSpawnShipEvent(false);
-                return;
-            }
-
-            StartSpawnSequence(SpawnType.Squadron);
-            _currentSquadronType = squadronType;
-            _spawnReinforcement = CreateSpawnView(_data.GetSpawnPrefab(squadronType));
-        }
-
-        private UnitSpawnView CreateSpawnView(UnitSpawnView prefab)
-        {
-            UnitSpawnView spawnView = Object.Instantiate(prefab);
-            spawnView.UpdatePosition(spawnView.Position);
-            spawnView.SetRotation(_stationFacingService.GetRotation(_owner.Id));
-            return spawnView;
-        }
-
-        private void StartSpawnSequence(SpawnType spawnType)
-        {
             // A placement that is still running would otherwise keep its input lock forever.
             CancelPlacement();
-            _currentSpawnType = spawnType;
+            _currentRequest = request;
+            _placement = placement;
             _placementLock = _inputLock.Acquire();
             _model.IsTrySpawning = true;
+            _preview = placement.CreatePreview();
+        }
+
+        private void CancelPlacement()
+        {
+            if (!_model.IsTrySpawning)
+            {
+                return;
+            }
+
+            _model.IsTrySpawning = false;
+            _preview.Destroy();
+            _placementLock.Dispose();
+            _model.InvokeSpawnShipEvent(false);
+        }
+
+        private void Interrupt(Vector2 screenPosition)
+        {
+            if (!_model.IsTrySpawning)
+            {
+                return;
+            }
+
+            _model.IsTrySpawning = false;
+            Vector3 spawnPosition = _cameraService.GetWorldPoint(screenPosition, _preview.Position);
+            bool canSpawn = _preview.CanSpawn && IsPlacementValid(spawnPosition);
+
+            if (canSpawn)
+            {
+                _placement.Spawn(spawnPosition);
+                _model.ConsumeReinforcement(_currentRequest);
+            }
+
+            _preview.Destroy();
+            _placementLock.Dispose();
+            _model.InvokeSpawnShipEvent(canSpawn);
         }
 
         private bool IsPlacementValid(Vector3 position)
         {
-            return _stationRegistry.IsStationOperational(_owner.Id) &&
-                // Ship hull overlap is checked by the spawn view's trigger; the spawned ship
-                // resolves its own navigation clearance to the nearest free point.
-                (_currentSpawnType == SpawnType.Ship || _currentSpawnType == SpawnType.Squadron
-                ? _reinforcementZonesSystem.IsPositionInAlliedZone(_owner.Id, position)
-                :!_fogOfWarSystem.IsHidden(position) &&
-                  !_reinforcementZonesSystem.IsPositionInAnyZone(position) &&
-                  !_captureSites.IsPositionInAnySite(position));
+            return _stationRegistry.IsStationOperational(_owner.Id) && _placement.IsPositionValid(position);
         }
     }
 }

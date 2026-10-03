@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using System.Reflection;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.ShipNavigation;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -72,45 +68,8 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(40f, true)]
-        [TestCase(1f, false)]
-        public void EnemySpawn_PrefersCapturedZoneAndFallsBackWhenShipDoesNotFit(
-            float capturedRadius,
-            bool usesCapturedZone)
-        {
-            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
-            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-            try
-            {
-                ReinforcementZoneView home = CreateZone(
-                    root.transform, TestPlayers.Enemy, false, new Vector3(160f, 0f, -170f));
-                ReinforcementZoneView captured = CreateZone(
-                    root.transform, TestPlayers.Enemy, true, Vector3.zero);
-                SetField(captured, "_radius", capturedRadius);
-                ReinforcementZonesSystem system = CreateSystem(root, data, home, captured);
-                SetField(system, "_shipService", new ShipService());
-                Dictionary<ShipType, float> radii = (Dictionary<ShipType, float>)
-                    typeof(ReinforcementZonesSystem).GetField(
-                        "_shipNavigationRadii", PRIVATE_INSTANCE).GetValue(system);
-                radii.Add(ShipType.Arquitens, 5f);
-
-                bool found = system.TryGetRandomSpawnPosition(
-                    TestPlayers.Enemy, ShipType.Arquitens, out Vector3 position);
-
-                Assert.That(found, Is.True);
-                ReinforcementZoneView expectedZone = usesCapturedZone ? captured : home;
-                Assert.That(Vector3.Distance(position, expectedZone.Center),
-                    Is.LessThanOrEqualTo(expectedZone.Radius - 5f));
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-                Object.DestroyImmediate(data);
-            }
-        }
-
         [Test]
-        public void Spawn_AllowsAlliedZonesAndRejectsHostileZones()
+        public void AlliedZone_AcceptsAlliesAndRejectsHostiles()
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
@@ -119,19 +78,9 @@ namespace EmpireAtWar.Tests.Editor
                 ReinforcementZoneView allied = CreateZone(
                     root.transform, TestPlayers.Ally, false, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, allied);
-                Dictionary<ShipType, float> radii = (Dictionary<ShipType, float>)
-                    typeof(ReinforcementZonesSystem).GetField(
-                        "_shipNavigationRadii", PRIVATE_INSTANCE).GetValue(system);
-                radii.Add(ShipType.Arquitens, 5f);
 
                 Assert.That(system.IsPositionInAlliedZone(TestPlayers.Human, allied.Center), Is.True);
                 Assert.That(system.IsPositionInAlliedZone(TestPlayers.Enemy, allied.Center), Is.False);
-                Assert.That(system.TryGetRandomSpawnPosition(
-                    TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
-                Assert.That(Vector3.Distance(position, allied.Center),
-                    Is.LessThanOrEqualTo(allied.Radius));
-                Assert.That(system.TryGetRandomSpawnPosition(
-                    TestPlayers.Enemy, ShipType.Arquitens, out _), Is.False);
             }
             finally
             {
@@ -148,7 +97,6 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_data", data);
             SetField(system, "_mapModel", new FakeMapModel(
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
-            SetField(system, "_shipNavigationService", new FakeShipNavigationService());
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             SetField(system, "_roster", roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
@@ -212,56 +160,6 @@ namespace EmpireAtWar.Tests.Editor
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 Assert.That(field, Is.Not.Null);
                 field.SetValue(_sizeRange, value);
-            }
-        }
-
-        private sealed class FakeShipNavigationService : IShipNavigationService
-        {
-            public string Id => nameof(FakeShipNavigationService);
-
-            public void Register(
-                IShipNavigationAgent agent,
-                Vector3 initialFinalPosition)
-            {
-            }
-
-            public void Unregister(IShipNavigationAgent agent)
-            {
-            }
-
-            public void Stop(IShipNavigationAgent agent)
-            {
-            }
-
-            public void CancelPendingDestination(IShipNavigationAgent agent)
-            {
-            }
-
-            public bool IsPositionClear(Vector3 position, float navigationRadius)
-            {
-                return true;
-            }
-
-            public bool IsPositionClear(
-                IShipNavigationAgent agent,
-                Vector3 position,
-                float navigationRadius)
-            {
-                return true;
-            }
-
-            public ShipNavigationPlan Plan(
-                IShipNavigationAgent agent,
-                Vector3 forward,
-                Vector3 requestedDestination,
-                IReadOnlyList<RadarContact> obstacleContacts,
-                float heightTolerance,
-                float clearance,
-                Vector2Range mapRange,
-                bool preserveCourse = false,
-                bool reserveAsPending = false)
-            {
-                throw new System.NotSupportedException();
             }
         }
     }

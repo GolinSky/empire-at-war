@@ -7,7 +7,9 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Utils;
 using UnityEngine;
@@ -27,6 +29,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
         private IShipNavigationService _shipNavigationService;
+        private IShipSpawnClearance _shipSpawnClearance;
         private IFogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
@@ -41,6 +44,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         [SerializeField] private Ease hyperSpaceEase;
         private Vector3 _startPosition;
         private PlayerId _owner;
+        private ShipType _shipType;
 
         [SerializeField] private bool logNavigationDecisions;
         private bool _sharesLocalVision;
@@ -67,10 +71,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         [Inject]
         private void Construct(IMapModelObserver mapModel,
-            IStationFacingService stationFacingService, IShipNavigationService shipNavigationService, IFogOfWarSystem fogOfWarSystem,
+            IStationFacingService stationFacingService, IShipNavigationService shipNavigationService,
+            IShipSpawnClearance shipSpawnClearance, IFogOfWarSystem fogOfWarSystem,
             IRadarModelObserver radarModel,
             IWeaponFacing weaponFacing, ILocalPlayer localPlayer,
-            ShipMoveModel model, CombatModifiers modifiers, Vector3 startPosition,
+            ShipMoveModel model, CombatModifiers modifiers, ShipType shipType, Vector3 startPosition,
             PlayerId owner)
         {
             _weaponFacing = weaponFacing;
@@ -79,9 +84,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             startPosition.y = Model.Height;
             _startPosition = startPosition;
             _owner = owner;
+            _shipType = shipType;
             _mapModel = mapModel;
             _stationFacingService = stationFacingService;
             _shipNavigationService = shipNavigationService;
+            _shipSpawnClearance = shipSpawnClearance;
             _fogOfWarSystem = fogOfWarSystem;
             _radarModel = radarModel;
             _localPlayer = localPlayer;
@@ -103,6 +110,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.StartRotation.ToUnity());
             _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
             _isNavigationRegistered = true;
+            // Holds the landing spot against other spawns until the hull physically arrives.
+            _shipSpawnClearance.ReserveLanding(this, _owner, _shipType, _startPosition);
             _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
                 Model.HyperSpaceDuration, FinishHyperSpaceJump);
             // Allies share vision, so their ships reveal the local fog too.
@@ -120,6 +129,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (_isReleased) return;
             _isReleased = true;
             _modifiers.Changed -= UpdateRouteSpeed;
+            _shipSpawnClearance.ReleaseLanding(this);
             if (_isNavigationRegistered)
             {
                 _shipNavigationService.Unregister(this);
@@ -209,6 +219,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void FinishHyperSpaceJump()
         {
+            _shipSpawnClearance.ReleaseLanding(this);
             HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
             if (queued.HasValue) Plan(queued.Value.ToUnity());

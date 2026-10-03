@@ -8,7 +8,9 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Services.ShipSpawning;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -605,8 +607,8 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
-                navigationService, null, null, null, null, model, null,
-                Vector3.zero, TestPlayers.Human });
+                navigationService, new IgnoredSpawnClearance(), null, null, null, null, model, null,
+                ShipType.Arquitens, Vector3.zero, TestPlayers.Human });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
             Assert.That(motionType, Is.Not.Null);
@@ -616,6 +618,21 @@ namespace EmpireAtWar.Tests.Movement
                     gameObject.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear }, null);
             SetPrivateField(component, "_motion", motion);
             return component;
+        }
+
+        private sealed class IgnoredSpawnClearance : IShipSpawnClearance
+        {
+            public float GetPlanarRadius(ShipType shipType) => 1f;
+
+            public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => true;
+
+            public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)
+            {
+            }
+
+            public void ReleaseLanding(object ship)
+            {
+            }
         }
 
         private static ShipMoveModel GetModel(ShipMoveComponent component)
