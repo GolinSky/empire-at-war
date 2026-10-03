@@ -2143,7 +2143,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -7049,7 +7049,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53526d91b334c8781d9114e878ca360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: -5
   meshRenderers:
   - {fileID: 8789417755457448467}
   - {fileID: 7501285078308010899}
@@ -7303,6 +7302,7 @@ MonoBehaviour:
   - {fileID: 7210122553107395200}
   - {fileID: 2342916878450375509}
   - {fileID: 1987364840515436444}
+  height: -5
 --- !u!54 &2737099448888597654
 Rigidbody:
   m_ObjectHideFlags: 0
