@@ -10,14 +10,14 @@ namespace EmpireAtWar.Entities.SuperWeapons
     {
         [Tooltip("Damage type, damage per shot, shot count, shot interval and shot visual of one firing.")]
         [SerializeField] private WeaponProfile weapon;
-
-        [SerializeField] private CombatStatModifier stunModifier;
-
         [SerializeField] private float impactSize = 2f;
         [SerializeField, Min(0f)] private float firingDelay;
+
         [Header("Disable")]
         [Tooltip("Seconds the target stays disabled after a hit. Zero disables the effect.")]
         [SerializeField] private float stunDuration;
+        [SerializeField] private CombatStatModifier stunModifier;
+
         [Header("Area")]
         [Tooltip("Damage dealt around the impact to the target's side. Zero disables the effect.")]
         [SerializeField] private float areaDamage;

@@ -9,23 +9,19 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         [Header("Ui")]
         [SerializeField] private Sprite icon;
-        [Header("Ability")]
-        [SerializeReference, SubclassSelector] private ShipAbilitySettings settings;
-
         [SerializeField] private string displayName;
         [SerializeField, TextArea] private string description;
-
-        [Header("Ai")]
-        [SerializeField] private ShipAbilityAiUse aiUse;
-
         [Header("Timing")]
         [SerializeField] private float duration;
         [SerializeField] private float recoveryDelay;
-        [SerializeField] private float range;
-
         [SerializeField] private bool canCancel;
         [Header("Targeting")]
         [SerializeField] private bool requiresEnemyTarget;
+        [SerializeField] private float range;
+        [Header("Ai")]
+        [SerializeField] private ShipAbilityAiUse aiUse;
+        [Header("Ability")]
+        [SerializeReference, SubclassSelector] private ShipAbilitySettings settings;
 
         public Sprite Icon => icon;
         public string DisplayName => displayName;
