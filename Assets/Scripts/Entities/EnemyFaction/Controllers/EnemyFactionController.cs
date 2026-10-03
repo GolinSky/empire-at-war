@@ -11,7 +11,6 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Squadrons;
@@ -26,7 +25,7 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
-   //todo: why we have here spawn logic 
+   //todo: why we have here spawn logic
     public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IInitializable, ILateDisposable, IIncomeProvider,
         IEnemyReinforcementObserver
     {
@@ -44,8 +43,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEnemySquadronCommander _squadronCommander;
         private readonly PlayerSlot _owner;
         private readonly IPlayerRegistry _playerRegistry;
-        private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds =
-            new Dictionary<CustomCoroutine, UnitRequest>();
+        private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds = new();
 
 
         private readonly MiningFacilityFactory _miningFacilityFactory;
@@ -92,7 +90,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _squadronLauncher = squadronLauncher;
             _squadronCommander = squadronCommander;
         }
-        
+
 
         public void Purchase(UnitRequest unitRequest)
         {
@@ -201,7 +199,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         });
                     break;
                 }
-                
+
             }
         }
 
@@ -286,7 +284,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _pendingBuilds.Clear();
         }
-        
+
         private Vector3 GenerateShipCoordinates(ShipType shipType)
         {
             if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(
