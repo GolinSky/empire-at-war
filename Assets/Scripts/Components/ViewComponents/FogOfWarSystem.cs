@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.FogOfWar;
+using EmpireAtWar.Services.Camera;
 using Unity.Collections;
 using UnityEngine;
+using Zenject;
 
 namespace ViewComponents
 {
@@ -45,6 +47,13 @@ namespace ViewComponents
         private List<VisionSource> _activeSources = new List<VisionSource>();
         private float _timer;
         private Material _fogMaterial;
+        private ICameraService _cameraService;
+
+        [Inject]
+        private void Construct(ICameraService cameraService)
+        {
+            _cameraService = cameraService;
+        }
 
         /// <summary>Stretches the fog plane and its mask for a larger battlefield; call before Start.</summary>
         public void ScaleArea(float scale)
@@ -125,7 +134,7 @@ namespace ViewComponents
 
             foreach (var source in _activeSources)
             {
-                Vector2Int pixel = PositionToPixel(source.transform.position, out bool inside);
+                Vector2Int pixel = PositionToPixel(ProjectOntoFog(source.transform.position), out bool inside);
                 if (!inside) continue;
                 _grid.Reveal(pixel.x, pixel.y, RadiusToPixels(source.radius), edgeSoftness, source.intensity);
             }
@@ -177,8 +186,8 @@ namespace ViewComponents
             float localBoundsExtents = meshFilter.sharedMesh.bounds.extents.x;
 
             float normalizedX = (localPos.x + localBoundsExtents) / (localBoundsExtents * 2f);
-            float localDepth = (Mathf.Abs(localPos.z) < 0.001f && Mathf.Abs(localPos.y) > 0.001f) ? localPos.y : localPos.z;
-            float normalizedZ = (localDepth + localBoundsExtents) / (localBoundsExtents * 2f);
+            // The fog is a flat XZ plane: a unit's height never changes the cell it reveals.
+            float normalizedZ = (localPos.z + localBoundsExtents) / (localBoundsExtents * 2f);
 
             if (flipX) normalizedX = 1f - normalizedX;
             if (flipZ) normalizedZ = 1f - normalizedZ;
@@ -195,8 +204,23 @@ namespace ViewComponents
         /// </summary>
         public float GetVisibilityAtPosition(Vector3 worldPos)
         {
-            Vector2Int pixel = PositionToPixel(worldPos, out _);
+            Vector2Int pixel = PositionToPixel(ProjectOntoFog(worldPos), out _);
             return _grid.GetVisibility(pixel.x, pixel.y);
+        }
+
+        /// <summary>
+        /// Units fly at different heights, but the fog is drawn on one plane. The player sees a unit
+        /// where the camera ray through it crosses that plane, so vision and visibility use that point.
+        /// </summary>
+        private Vector3 ProjectOntoFog(Vector3 worldPos)
+        {
+            Vector3 cameraPosition = _cameraService.CameraPosition;
+            float fogHeight = transform.position.y;
+            // A camera level with or below the unit (cinematic shots) has no ray down to the fog plane.
+            if (cameraPosition.y <= worldPos.y || cameraPosition.y <= fogHeight) return worldPos;
+
+            float rayFraction = (cameraPosition.y - fogHeight) / (cameraPosition.y - worldPos.y);
+            return cameraPosition + (worldPos - cameraPosition) * rayFraction;
         }
 
         /// <summary>

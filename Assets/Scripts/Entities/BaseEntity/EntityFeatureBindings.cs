@@ -83,5 +83,13 @@ namespace EmpireAtWar.Entities.BaseEntity
                 container.BindInterfacesAndSelfTo<FogVisibilityComponent>().FromComponentsInHierarchy().AsCached();
             return container;
         }
+
+        /// <param name="sharesLocalVision">True for the local team's structures; they reveal the local fog of war.</param>
+        public static DiContainer BindFogVisionFeature(this DiContainer container, bool sharesLocalVision)
+        {
+            if (sharesLocalVision)
+                container.BindInterfacesTo<FogVisionSource>().AsSingle();
+            return container;
+        }
     }
 }

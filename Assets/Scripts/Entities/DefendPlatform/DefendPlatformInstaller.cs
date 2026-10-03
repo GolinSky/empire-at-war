@@ -36,7 +36,8 @@ namespace EmpireAtWar
                 .BindWeaponFeature()
                 .BindCombatModifiersFeature()
                 .BindStationaryCombatFeature()
-                .BindFogOfWarFeature(_isHiddenByLocalFog);
+                .BindFogOfWarFeature(_isHiddenByLocalFog)
+                .BindFogVisionFeature(!_isHiddenByLocalFog);
         }
     }
 }

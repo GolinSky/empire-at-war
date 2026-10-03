@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
@@ -9,7 +10,7 @@ using Utilities.ScriptUtils.Math;
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IHealthData, IRadarData
+    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData
     {
         [Header("Destruction Settings")]
         [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
@@ -28,5 +29,9 @@ namespace EmpireAtWar.Entities.BaseEntity
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
+
+        [Header("Vision Settings")]
+        [Tooltip("Fog of war radius this structure reveals for its team.")]
+        [field: SerializeField, Min(0f)] public float VisionRange { get; private set; }
     }
 }

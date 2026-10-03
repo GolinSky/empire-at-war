@@ -36,7 +36,8 @@ namespace EmpireAtWar.MiningFacility
                 .BindHealthFeature()
                 .BindRadarFeature()
                 .BindCombatModifiersFeature()
-                .BindFogOfWarFeature(_isHiddenByLocalFog);
+                .BindFogOfWarFeature(_isHiddenByLocalFog)
+                .BindFogVisionFeature(!_isHiddenByLocalFog);
         }
     }
 }
