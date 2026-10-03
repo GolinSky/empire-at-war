@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "blender": {
+      "command": "C:\\Users\\golin\\.local\\bin\\uvx.exe",
+      "args": ["mcp-for-blender==2.1.3"],
+      "env": {
+        "BLENDER_HOST": "127.0.0.1",
+        "BLENDER_PORT": "9876",
+        "DISABLE_TELEMETRY": "true",
+        "BLENDER_MCP_SAFE_MODE": "1",
+        "PYTHONIOENCODING": "utf-8"
+      }
+    },
     "penpot-local": {
       "command": "C:\\Program Files\\nodejs\\node.exe",
       "args": [

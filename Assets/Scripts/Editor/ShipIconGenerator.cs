@@ -34,6 +34,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.StarDestroyer2, PrefabName = "StarDestroyer2ShipView.prefab", IconFileName = "StarDestroyer2Icon.png" },
             new ShipMappingInfo { ShipType = ShipType.HeavyDreadnought, PrefabName = "HeavyDreadnoughtShipView.prefab", IconFileName = "HeavyDreadnoughtIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Thranta, PrefabName = "ThrantaShipView.prefab", IconFileName = "ThrantaIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.Rothana, PrefabName = "RothanaShipView.prefab", IconFileName = "RothanaIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Providence, PrefabName = "ProvidenceShipView.prefab", IconFileName = "ProvidenceIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Recusant, PrefabName = "RecusantShipView.prefab", IconFileName = "RecusantIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Munificent, PrefabName = "MunificentShipView.prefab", IconFileName = "MunificentIcon.png" },
@@ -176,7 +177,7 @@ namespace EmpireAtWar.Editor
 
                         bool isEmptyOutlier = r.bounds.extents.sqrMagnitude < 0.01f;
 
-                        if (isMesh && !isShield && !isNonShipRenderer && !isEmptyOutlier)
+                        if (r.enabled && isMesh && !isShield && !isNonShipRenderer && !isEmptyOutlier)
                         {
                             r.enabled = true;
                             validShipRenderers.Add(r);

@@ -23,12 +23,7 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public UnitSpawnView GetSpawnPrefab(ShipType shipType)
         {
-            if (spawnShipWrapper.Dictionary.TryGetValue(shipType, out UnitSpawnView spawnView))
-            {
-                return spawnView;
-            }
-
-            return spawnShipWrapper.Dictionary.Values.FirstOrDefault();
+            return spawnShipWrapper.Dictionary[shipType];
         }
 
         public UnitSpawnView GetSpawnPrefab(MiningFacilityType miningFacilityType)
