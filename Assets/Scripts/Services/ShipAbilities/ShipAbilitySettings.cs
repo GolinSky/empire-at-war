@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.ShipAbilities
     [Serializable]
     public abstract class ShipAbilitySettings
     {
+        public virtual float GetEffectDuration(float activeDuration) => activeDuration;
+
         public abstract IShipAbility CreateAbility(IInstantiator instantiator);
     }
 }

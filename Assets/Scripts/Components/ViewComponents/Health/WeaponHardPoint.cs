@@ -84,12 +84,17 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
+            if (_modifiers.IsIonDisabled)
+            {
+                generation = _sequence.Generation;
+                return false;
+            }
             if (!_sequence.TryStart(out generation)) return false;
             _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier).StartTimer();
             return true;
         }
 
-        internal bool IsEmitting(int generation) => !IsDestroyed && _sequence.IsEmitting(generation);
+        internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && _sequence.IsEmitting(generation);
 
         internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
 

@@ -11,7 +11,9 @@ namespace EmpireAtWar.Components.Combat
 
         public event Action Changed;
 
-        public bool IsIonDisabled { get; private set; }
+        private bool _superWeaponDisabled;
+        private int _ionPulseDisables;
+        public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
 
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;
@@ -21,7 +23,20 @@ namespace EmpireAtWar.Components.Combat
 
         public void SetIonDisabled(bool disabled)
         {
-            IsIonDisabled = disabled;
+            _superWeaponDisabled = disabled;
+            Changed?.Invoke();
+        }
+
+        public void AddIonPulseDisable()
+        {
+            _ionPulseDisables++;
+            Changed?.Invoke();
+        }
+
+        public void RemoveIonPulseDisable()
+        {
+            if (_ionPulseDisables == 0) throw new InvalidOperationException("No ion pulse disable is active.");
+            _ionPulseDisables--;
             Changed?.Invoke();
         }
 

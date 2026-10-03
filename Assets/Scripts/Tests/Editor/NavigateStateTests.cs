@@ -55,6 +55,8 @@ namespace EmpireAtWar.Tests.Editor
             {
             }
 
+            public void LookInDirection(Vector3 direction) { }
+
             public float GetRange(Vector3 targetPosition)
             {
                 return 0f;

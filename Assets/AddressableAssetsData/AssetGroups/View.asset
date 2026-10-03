@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dfea5679919bb64381bed73074104ef
+    m_Address: MalevolenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
     m_Address: MiningFacilityView
     m_ReadOnly: 0

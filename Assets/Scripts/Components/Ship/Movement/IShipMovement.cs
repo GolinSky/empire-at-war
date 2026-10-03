@@ -12,6 +12,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
 
         void LookAtTarget(Vector3 targetPosition);
+        void LookInDirection(Vector3 direction);
 
         float GetRange(Vector3 targetPosition);
 

@@ -122,7 +122,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void LateDispose() => Release();
 
-        public void Tick() => _motion.Tick(Time.deltaTime);
+        public void Tick()
+        {
+            if (!_modifiers.IsIonDisabled) _motion.Tick(Time.deltaTime);
+        }
 
         public override void Release()
         {
@@ -173,6 +176,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void LookAtTarget(Vector3 targetPosition)
         {
+            if (_modifiers.IsIonDisabled) return;
             if (!IsMoving)
             {
                 float turn = _weaponFacing.GetFiringTurnAngle(targetPosition);
@@ -185,6 +189,13 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public float GetRange(Vector3 targetPosition) =>
             PlanarGeometry.Distance(transform.position, targetPosition);
+
+        public void LookInDirection(Vector3 direction)
+        {
+            if (!IsMoving && !_modifiers.IsIonDisabled)
+                _motion.PlayLookAt(direction, Model.RotationSpeed,
+                    Model.TurnAcceleration, Model.BodyRotationMaxAngle);
+        }
 
         public void Stop()
         {

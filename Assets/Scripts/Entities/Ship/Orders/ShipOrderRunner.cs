@@ -38,6 +38,25 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly bool _isAiControlled;
 
         public UnitOrderType CurrentOrder => _orders.Current;
+        public bool IsAbilityFacing { get; private set; }
+
+        public void BeginAbilityFacing()
+        {
+            IsAbilityFacing = true;
+            _brain.Enable(false);
+            _stateMachine.SetState(_idleState);
+            _movement.Stop();
+        }
+
+        public void FaceAbility(Vector3 direction) => _movement.LookInDirection(direction);
+
+        public void EndAbilityFacing()
+        {
+            if (!IsAbilityFacing) return;
+            IsAbilityFacing = false;
+            _brain.Enable(_isAiControlled);
+            StartOrder();
+        }
 
         public ShipOrderRunner(IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
             IPlayerRoster roster, UnitOrderModel orders, ShipStateMachine stateMachine,
@@ -65,6 +84,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void Tick(float deltaTime)
         {
+            if (IsAbilityFacing) return;
             _brain.Tick(deltaTime);
             if (_brain.IsFleeing)
             {
@@ -81,6 +101,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void Release()
         {
+            IsAbilityFacing = false;
             _orders.Clear();
             _brain.Enable(false);
             // Leaves the shared attack-move engagement so the group stops counting this ship.
@@ -160,6 +181,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IEntity target = null, FormationPoint offset = default,
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
         {
+            IsAbilityFacing = false;
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
             _brain.Enable(_isAiControlled);
             StartOrder();
