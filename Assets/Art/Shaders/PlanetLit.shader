@@ -36,6 +36,12 @@ Shader "EmpireAtWar/Planet Lit"
         [HDR] _EmissionColor("Color", Color) = (0,0,0)
         _EmissionMap("Emission", 2D) = "white" {}
 
+        [Toggle(_PLANET_CITY_DETAIL)] _PlanetCityDetail("City Detail", Float) = 0
+        _CityDetailMap("City Detail (RGB) / Lights (A)", 2D) = "gray" {}
+        _CityDetailTiling("City Detail Tiles Across Diameter", Range(1, 32)) = 8
+        _CityDetailStrength("City Detail Contrast", Range(0, 1)) = 0.8
+        [HDR] _CityEmissionColor("City Detail Light Color", Color) = (0.6,0.2,0.05,1)
+
         _DetailMask("Detail Mask", 2D) = "white" {}
         _DetailAlbedoMapScale("Scale", Range(0.0, 2.0)) = 1.0
         _DetailAlbedoMap("Detail Albedo x2", 2D) = "linearGrey" {}
@@ -103,6 +109,7 @@ Shader "EmpireAtWar/Planet Lit"
             #pragma shader_feature_local_fragment _ALPHATEST_ON
             #pragma shader_feature_local_fragment _ _ALPHAPREMULTIPLY_ON _ALPHAMODULATE_ON
             #pragma shader_feature_local_fragment _EMISSION
+            #pragma shader_feature_local_fragment _PLANET_CITY_DETAIL
             #pragma shader_feature_local_fragment _METALLICSPECGLOSSMAP
             #pragma shader_feature_local_fragment _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
             #pragma shader_feature_local_fragment _OCCLUSIONMAP
@@ -145,8 +152,12 @@ Shader "EmpireAtWar/Planet Lit"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitForwardPass.hlsl"
             #include "PlanetRotation.hlsl"
+            #include "PlanetCityDetail.hlsl"
+            // Decorate URP's surface initialization while retaining its lighting/fog pass.
+            #define InitializeStandardLitSurfaceData(uv, surface) InitializePlanetSurfaceData(uv, input.positionWS, surface)
+            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitForwardPass.hlsl"
+            #undef InitializeStandardLitSurfaceData
             Varyings PlanetVertex(Attributes input)
             {
                 input.positionOS.xyz = RotatePlanetVector(input.positionOS.xyz);
