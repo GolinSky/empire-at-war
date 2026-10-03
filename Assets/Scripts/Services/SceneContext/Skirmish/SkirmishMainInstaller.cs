@@ -40,6 +40,7 @@ using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
@@ -128,6 +129,8 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<PlayerOrderInputHandler>(-100);
         
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
+        Container.BindInterfacesExt<ShipSpawnClearance>();
+        Container.BindInterfacesExt<ShipSpawnPoints>();
         Container.BindModel<MiniMapData>(Repository);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()

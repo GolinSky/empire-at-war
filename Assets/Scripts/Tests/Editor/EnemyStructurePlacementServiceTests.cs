@@ -5,7 +5,6 @@ using System.Reflection;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
@@ -257,12 +256,6 @@ namespace EmpireAtWar.Tests.Editor
                 }
             }
 
-            public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
             public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
             {
                 position = default;
@@ -274,12 +267,6 @@ namespace EmpireAtWar.Tests.Editor
                 Vector3 shipPosition,
                 float shipRadius,
                 out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;
                 return false;

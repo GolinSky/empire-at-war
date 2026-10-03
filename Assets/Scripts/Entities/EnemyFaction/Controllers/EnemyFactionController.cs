@@ -12,7 +12,7 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
-using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
@@ -33,7 +33,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
-        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly IShipSpawnPoints _shipSpawnPoints;
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly IStationRegistry _stationRegistry;
         private readonly ISquadronLauncher _squadronLauncher;
@@ -58,7 +58,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public EnemyFactionController(
             IEconomyProvider economyProvider,
             IWallet wallet,
-            IReinforcementZonesSystem reinforcementZonesSystem,
+            IShipSpawnPoints shipSpawnPoints,
             IEnemyStructurePlacementService structurePlacement,
             IStationRegistry stationRegistry,
             ISquadronLauncher squadronLauncher,
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _timerPoolService = timerPoolService;
             _economyProvider = economyProvider;
             _wallet = wallet;
-            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _shipSpawnPoints = shipSpawnPoints;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
             _structurePlacement = structurePlacement;
@@ -313,7 +313,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private Vector3 GenerateShipCoordinates(ShipType shipType)
         {
-            if (_reinforcementZonesSystem.TryGetRandomSpawnPosition(
+            if (_shipSpawnPoints.TryGetRandomSpawnPosition(
                     Owner,
                     shipType,
                     out Vector3 position))

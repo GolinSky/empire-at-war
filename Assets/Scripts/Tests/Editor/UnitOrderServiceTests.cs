@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
-using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
@@ -312,14 +311,8 @@ namespace EmpireAtWar.Tests.Editor
             public void CopyOwnedCapturableZoneBounds(PlayerId side, List<Bounds> dest)
                 => dest.Clear();
 
-            public bool TryGetDefaultSpawnPosition(PlayerId side, out Vector3 point)
-            { point = default; return false; }
-
             public bool TryGetDefaultZoneExitPosition(PlayerId side, Vector3 ship,
                 float radius, out Vector3 point) { point = default; return false; }
-
-            public bool TryGetRandomSpawnPosition(PlayerId side, ShipType type,
-                out Vector3 point) { point = default; return false; }
 
             public bool TryGetCaptureTarget(PlayerId side, Vector3 origin,
                 out Vector3 point) { point = default; return false; }

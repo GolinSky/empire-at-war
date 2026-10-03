@@ -36,6 +36,9 @@ namespace EmpireAtWar
             
             Container.BindScriptableObject<ReinforcementData>(Repository);
             Container.BindInterfacesAndSelfTo<ReinforcementModel>().AsSingle();
+            Container.Bind<ReinforcementPreviewFactory>().AsSingle();
+            Container.Bind<StructurePlacementArea>().AsSingle();
+            Container.Bind<ReinforcementPlacementFactory>().AsSingle();
             Container.BindInterfacesNonLazyExt<ReinforcementService>();
             Container.ParentContainers.Single()
                 .Bind<IReinforcementService>()

@@ -8,7 +8,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Cheats;
-using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
                 economyModel: _economyModel,
                 reinforcementModel: _reinforcementModel,
                 shipFactory: new ShipFactory(),
-                reinforcementZonesSystem: new FakeReinforcementZonesSystem(),
+                shipSpawnPoints: new NoShipSpawnPoints(),
                 entityLocator: new EmptyEntityLocator(),
                 stationRegistry: new OperationalStationRegistry(),
                 superWeaponModel: _superWeaponModel,
@@ -112,66 +112,15 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(SuperWeaponState.Charging));
         }
 
-        private sealed class FakeReinforcementZonesSystem : IReinforcementZonesSystem
+        private sealed class NoShipSpawnPoints : IShipSpawnPoints
         {
-            public event Action OwnershipChanged
-            {
-                add { }
-                remove { }
-            }
-
-            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
-            {
-                return false;
-            }
-
-            public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position)
-            {
-                return false;
-            }
-
-            public int GetOwnedCapturableZoneCount(PlayerId owner)
-            {
-                return 0;
-            }
-
-            public void CopyOwnedCapturableZoneBounds(PlayerId owner, System.Collections.Generic.List<Bounds> destination)
-            {
-                destination.Clear();
-            }
-
-            public bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position)
+            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;
                 return false;
             }
 
-            public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetDefaultZoneExitPosition(
-                PlayerId owner,
-                Vector3 shipPosition,
-                float shipRadius,
-                out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetRandomSpawnPosition(
-                PlayerId owner,
-                ShipType shipType,
-                out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
+            public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;
                 return false;

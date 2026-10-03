@@ -8,7 +8,7 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Ship;
 using UnityEngine;
@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.Cheats
 
     public sealed class CheatService : ICheatService
     {
-        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly IShipSpawnPoints _shipSpawnPoints;
         private readonly IEntityLocator _entityLocator;
         private readonly IStationRegistry _stationRegistry;
 
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Services.Cheats
         private readonly List<IEntity> _ownEntities = new List<IEntity>();
 
         public CheatService(
-            IReinforcementZonesSystem reinforcementZonesSystem,
+            IShipSpawnPoints shipSpawnPoints,
             IEntityLocator entityLocator,
             IStationRegistry stationRegistry,
             EconomyModel economyModel,
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Cheats
             _economyModel = economyModel;
             _reinforcementModel = reinforcementModel;
             _shipFactory = shipFactory;
-            _reinforcementZonesSystem = reinforcementZonesSystem;
+            _shipSpawnPoints = shipSpawnPoints;
             _entityLocator = entityLocator;
             _stationRegistry = stationRegistry;
             _superWeaponModel = superWeaponModel;
@@ -100,8 +100,9 @@ namespace EmpireAtWar.Services.Cheats
                 return false;
             }
 
-            if (!_reinforcementZonesSystem.TryGetDefaultSpawnPosition(
+            if (!_shipSpawnPoints.TryGetDefaultZoneSpawnPosition(
                     _owner.Id,
+                    request.Key,
                     out Vector3 spawnPosition))
             {
                 return false;
