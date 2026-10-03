@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private Vector3 _origin;
         private Vector3 _direction;
         private float _side;
+        private float _rise;
         private float _range;
         private bool _cancelled;
         private bool _malfunctioned;
@@ -114,6 +115,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _facing.FaceAbility(Quaternion.AngleAxis(-90f * _side, Vector3.up) * _direction);
                 if (Vector3.Angle(ship.right * _side, _direction) > _settings.AlignmentTolerance) return;
                 _origin = _cannon.Position;
+                // Malevolence flies on the Deep tier; the wave climbs from the cannon to reach the target's height.
+                _rise = (_target.GetFacade<IEntityTransformFacade>().Transform.position.y - _origin.y) /
+                    Mathf.Max(toTarget.magnitude, 1f);
                 _model.Fire();
                 _facing.EndAbilityFacing();
                 _malfunctioned = Random.value < _settings.MalfunctionChance;
@@ -125,7 +129,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _view = Object.Instantiate(_settings.ViewPrefab);
             }
             if (_malfunctioned || _view == null) return;
-            _view.Show(_origin + _direction * _model.Distance, _direction, _settings.WaveRadius);
+            Vector3 path = _direction + Vector3.up * _rise;
+            _view.Show(_origin + path * _model.Distance, path.normalized, _settings.WaveRadius);
             foreach (IEntity entity in _entities.Entities)
             {
                 if (_hits.Contains(entity) || entity.HealthModel.IsDestroyed ||
@@ -133,6 +138,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                     entity.HealthModel.ShipClass == ShipClass.Fighter || entity.HealthModel.ShipClass == ShipClass.Bomber ||
                     !entity.TryGetFacade(out ICombatModifiersFacade combat)) continue;
                 Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - _origin;
+                offset.y = 0f;
                 float forward = Vector3.Dot(offset, _direction);
                 float radial = (offset - _direction * forward).magnitude;
                 if (!_model.Intersects(forward, radial, _settings.WaveRadius, _settings.WaveThickness)) continue;
