@@ -73,11 +73,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TestHangarData : IHangarData
         {
-            public TestHangarData(params HangarBay[] bays) => HangarBays = new List<HangarBay>(bays);
-
             public IReadOnlyList<HangarBay> HangarBays { get; }
             public float HangarInitialDelay => INITIAL_DELAY;
             public float HangarLaunchInterval => LAUNCH_INTERVAL;
+
+            public TestHangarData(params HangarBay[] bays) => HangarBays = new List<HangarBay>(bays);
         }
     }
 }

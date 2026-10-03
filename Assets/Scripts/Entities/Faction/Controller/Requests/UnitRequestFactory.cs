@@ -9,11 +9,17 @@ namespace EmpireAtWar.Controllers.Factions
     public interface IUnitRequestFactory
     {
         ShipUnitRequest ConstructUnitRequest(FactionData factionData, ShipType shipType);
+
         SquadronUnitRequest ConstructUnitRequest(FactionData factionData, SquadronType squadronType);
+
         LevelUnitRequest ConstructUnitRequest(FactionData factionData, int level);
+
         MiningFacilityUnitRequest ConstructUnitRequest(FactionData factionData, MiningFacilityType miningFacilityType);
+
         DefendPlatformUnitRequest ConstructUnitRequest(FactionData factionData, DefendPlatformType platformType);
+
         ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType, int tier);
+
         SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType);
     }
 

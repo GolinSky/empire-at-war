@@ -32,14 +32,14 @@ namespace EmpireAtWar.Tests.Editor
             DiContainer container = new DiContainer();
             container.Bind<IUserStateNotifier>().FromInstance(new UserStateNotifierStub());
             _orchestrator = new SkirmishOrchestrator(
-                _model,
-                new LazyInject<IUserStateNotifier>(container,
+                sessionModel: _model,
+                userStateNotifier: new LazyInject<IUserStateNotifier>(container,
                     new InjectContext(container, typeof(IUserStateNotifier))),
-                _gameCommand,
-                new CameraServiceStub(),
-                new MapModelStub(),
-                new NotifierStub<BattleResult>(),
-                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+                gameCommand: _gameCommand,
+                cameraService: new CameraServiceStub(),
+                mapModel: new MapModelStub(),
+                battleVictoryNotifier: new NotifierStub<BattleResult>(),
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             _orchestrator.Initialize();
         }
 
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TimeControls_DoNothingAfterBattleEnds()
         {
             _orchestrator.UpdateState(new BattleResult(
-                default, default, default, default, default, 0, 0, false, false));
+                outcome: default, victoryCondition: default, planet: default, playerFaction: default, enemyFactions: default, playerShipCount: 0, enemyShipCount: 0, isPlayerBaseAlive: false, isEnemyBaseAlive: false));
 
             _orchestrator.TogglePause();
             _orchestrator.ToggleSpeedUp();
@@ -153,6 +153,7 @@ namespace EmpireAtWar.Tests.Editor
         private class NotifierStub<T> : INotifier<T>
         {
             public void AddObserver(IObserver<T> observer) { }
+
             public void RemoveObserver(IObserver<T> observer) { }
         }
 
@@ -163,7 +164,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class GameCommandStub : IGameCommand
         {
             public int ExitCount { get; private set; }
+
             public void ExitGame() => ExitCount++;
+
             public void StartGame(
                 System.Collections.Generic.IReadOnlyList<PlayerSlot> players,
                 PlanetType planetType,
@@ -175,6 +178,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class MapModelStub : IMapModelObserver
         {
             public Vector2Range SizeRange => null;
+
             public Vector3 GetStationPosition(PlayerId owner) => Vector3.zero;
         }
 
@@ -185,12 +189,19 @@ namespace EmpireAtWar.Tests.Editor
             public Transform CameraTransform => null;
             public Vector3 CameraForward => Vector3.forward;
             public float FieldOfView => 60f;
+
             public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position) => position;
+
             public RaycastHit ScreenPointToRay(Vector2 screenPoint) => default;
+
             public Vector3 WorldToViewportPoint(Vector3 currentPosition) => currentPosition;
+
             public Vector2 WorldToScreenPoint(Vector3 position) => Vector2.zero;
+
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax) => Array.Empty<Vector3>();
+
             public void MoveTo(Vector3 worldPoint) { }
+
             public void SetPose(Vector3 position, Quaternion rotation) { }
         }
     }

@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.Tooltip
     {
         [SerializeField] private Image icon;
         [SerializeField] private TextMeshProUGUI label;
+
         public void Render(TooltipIcon content, TooltipIconData icons)
         { icon.sprite = icons.Resolve(content.IconKey); label.text = content.Label; }
     }

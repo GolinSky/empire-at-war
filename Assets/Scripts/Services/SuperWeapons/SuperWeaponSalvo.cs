@@ -16,7 +16,7 @@ namespace EmpireAtWar.Services.SuperWeapons
         public float NextShotTime { get; set; }
         public bool IsComplete => ShotsFired >= Profile.Weapon.ShotsPerSalvo && ImpactTimes.Count == 0;
 
-        public SuperWeaponSalvo(SuperWeaponProfile profile, IEntity target, Transform origin)
+        public SuperWeaponSalvo(IEntity target, SuperWeaponProfile profile, Transform origin)
         {
             Profile = profile;
             Target = target;

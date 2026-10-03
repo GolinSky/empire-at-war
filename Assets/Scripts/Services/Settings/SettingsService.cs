@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.Settings
         private const string LEGACY_INPUT_BINDINGS_KEY = "InputBindingOverrides";
 
         private readonly ISettingsRepository _repository;
+
         private readonly List<ISettingsApplier> _appliers;
 
         public SettingsData Saved { get; private set; }

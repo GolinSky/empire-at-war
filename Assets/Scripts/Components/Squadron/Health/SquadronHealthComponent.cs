@@ -19,13 +19,15 @@ namespace EmpireAtWar.Components.Squadrons.Health
     public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, IHealthComponent,
         IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
     {
-        [SerializeField] private List<FighterView> fighters;
-
-        private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
         private ITimer _regenerateShieldsTimer;
+
+        [SerializeField] private List<FighterView> fighters;
+        private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
         private CombatModifiers _modifiers;
-        private PlayerId _owner;
         private HardPointAdapter[] _adapters = Array.Empty<HardPointAdapter>();
+
+        private PlayerId _owner;
+
         private bool _isReleased;
 
         public event Action OnValueChanged
@@ -74,17 +76,19 @@ namespace EmpireAtWar.Components.Squadrons.Health
             _adapters = new HardPointAdapter[fighters.Count];
             for (int i = 0; i < fighters.Count; i++)
             {
-                members[i] = new HardPointModel(fighters[i].Id, fighters[i].HardPointType);
+                members[i] = new HardPointModel(id: fighters[i].Id, hardPointType: fighters[i].HardPointType);
             }
 
             Model.InitializeMembers(members);
             for (int i = 0; i < fighters.Count; i++)
             {
-                _adapters[i] = new HardPointAdapter(members[i], fighters[i]);
+                _adapters[i] = new HardPointAdapter(model: members[i], view: fighters[i]);
             }
 
             _regenerateShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
         }
+
+        public void LateDispose() => Release();
 
         public void Tick()
         {
@@ -96,8 +100,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
             Model.RegenerateShields(Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier);
             _regenerateShieldsTimer.StartTimer();
         }
-
-        public void LateDispose() => Release();
 
         public override void Release()
         {

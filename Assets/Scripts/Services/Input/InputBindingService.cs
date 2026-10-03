@@ -20,9 +20,11 @@ namespace EmpireAtWar.Services.Input
         private readonly List<InputActionMap> _suspendedMaps = new List<InputActionMap>();
         private List<BindingSlot> _pendingConflicts = new List<BindingSlot>();
         private InputActionRebindingExtensions.RebindingOperation _operation;
-        private BindingSlot _reboundSlot;
+
         private string _previousOverridePath;
         private string _previousEffectivePath;
+
+        private BindingSlot _reboundSlot;
 
         public event Action BindingsChanged;
 
@@ -33,6 +35,14 @@ namespace EmpireAtWar.Services.Input
         {
             _asset = provider.Actions.asset;
             _slots = BindingSlotCatalog.Build(provider.Actions.Camera.Get(), provider.Actions.Battle.Get());
+        }
+
+        public void Dispose()
+        {
+            if (_operation != null)
+            {
+                FinishRebind();
+            }
         }
 
         public void Apply(SettingsData settings)
@@ -50,14 +60,6 @@ namespace EmpireAtWar.Services.Input
             }
 
             BindingsChanged?.Invoke();
-        }
-
-        public void Dispose()
-        {
-            if (_operation != null)
-            {
-                FinishRebind();
-            }
         }
 
         public string GetBindingDisplayString(BindingSlot slot)

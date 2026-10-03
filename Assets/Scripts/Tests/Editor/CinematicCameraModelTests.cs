@@ -62,12 +62,12 @@ namespace EmpireAtWar.Tests.CinematicCamera
         [Test]
         public void Scorer_PrefersRecentlyDamagedUnitInsideEngagement()
         {
-            CinematicInterestScorer scorer = new CinematicInterestScorer(_settings, new Random(1), TestPlayers.CreateDuel());
+            CinematicInterestScorer scorer = new CinematicInterestScorer(settings: _settings, random: new Random(1), relations: TestPlayers.CreateDuel());
             CinematicCandidate[] candidates =
             {
-                new(1, new NumericsVector3(0f, 0f, 0f), ShipClass.Frigate, TestPlayers.Human, 0.5f),
-                new(2, new NumericsVector3(50f, 0f, 0f), ShipClass.Frigate, TestPlayers.Enemy, float.PositiveInfinity),
-                new(3, new NumericsVector3(5000f, 0f, 0f), ShipClass.HeavyCapital, TestPlayers.Human, float.PositiveInfinity),
+                new(id: 1, position: new NumericsVector3(0f, 0f, 0f), shipClass: ShipClass.Frigate, owner: TestPlayers.Human, secondsSinceDamaged: 0.5f),
+                new(id: 2, position: new NumericsVector3(50f, 0f, 0f), shipClass: ShipClass.Frigate, owner: TestPlayers.Enemy, secondsSinceDamaged: float.PositiveInfinity),
+                new(id: 3, position: new NumericsVector3(5000f, 0f, 0f), shipClass: ShipClass.HeavyCapital, owner: TestPlayers.Human, secondsSinceDamaged: float.PositiveInfinity),
             };
 
             bool found = scorer.TrySelect(candidates, -1, out CinematicSelection selection);
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Tests.CinematicCamera
         [Test]
         public void Scorer_ReturnsFalseWithoutCandidates()
         {
-            CinematicInterestScorer scorer = new CinematicInterestScorer(_settings, new Random(1), TestPlayers.CreateDuel());
+            CinematicInterestScorer scorer = new CinematicInterestScorer(settings: _settings, random: new Random(1), relations: TestPlayers.CreateDuel());
 
             Assert.That(scorer.TrySelect(Array.Empty<CinematicCandidate>(), -1, out _), Is.False);
         }

@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly List<TooltipRequirementRowView> _requirements = new List<TooltipRequirementRowView>();
         private TooltipIconData _icons;
         private TooltipSettings _settings;
+
         private TooltipAnchor _anchor;
 
         [Inject]

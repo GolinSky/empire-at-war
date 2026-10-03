@@ -7,9 +7,8 @@ namespace EmpireAtWar.Utils.Random
     public abstract class RandomFromArray<T>
     {
         [SerializeField] protected T[] array;
-
         protected System.Random _random = new System.Random();
-        
+
         public T GetRandom()
         {
             return array[_random.Next(array.Length)];

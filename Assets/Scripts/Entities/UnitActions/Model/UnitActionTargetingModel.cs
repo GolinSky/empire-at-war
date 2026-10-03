@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.UnitActions.Model
         private readonly List<FormationPoint> _waypoints = new List<FormationPoint>();
 
         public event Action Changed;
+
         public UnitActionId? Pending { get; private set; }
         public bool IsAltPlacement { get; private set; }
         public IReadOnlyList<FormationPoint> Waypoints => _waypoints;

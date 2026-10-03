@@ -6,14 +6,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
     public sealed class SettingsPrompt
     {
         public static readonly SettingsPrompt None =
-            new SettingsPrompt(SettingsPromptKind.None, string.Empty, new SettingsPromptAction[0]);
+            new SettingsPrompt(kind: SettingsPromptKind.None, message: string.Empty, actions: new SettingsPromptAction[0]);
 
         public SettingsPromptKind Kind { get; }
         public string Message { get; }
         public IReadOnlyList<SettingsPromptAction> Actions { get; }
         public bool IsVisible => Kind != SettingsPromptKind.None;
 
-        public SettingsPrompt(SettingsPromptKind kind, string message, IReadOnlyList<SettingsPromptAction> actions)
+        public SettingsPrompt(IReadOnlyList<SettingsPromptAction> actions, string message, SettingsPromptKind kind)
         {
             Kind = kind;
             Message = message;

@@ -12,6 +12,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const float MEMBER_HULL = 80f;
         private const float MEMBER_SHIELDS = 20f;
+
         private const int MEMBER_COUNT = 3;
 
         private DamageMatrixData _matrix;
@@ -107,7 +108,7 @@ namespace EmpireAtWar.Tests.Editor
             members = new HardPointModel[MEMBER_COUNT];
             for (int i = 0; i < MEMBER_COUNT; i++)
             {
-                members[i] = new HardPointModel(i, HardPointType.Any);
+                members[i] = new HardPointModel(id: i, hardPointType: HardPointType.Any);
             }
 
             SquadronHealthModel model = new SquadronHealthModel(new TestHealthData(), _matrix, new CombatModifiers());

@@ -5,14 +5,14 @@ namespace EmpireAtWar.Components.Movement.Formation
 {
     public readonly struct FormationPoint
     {
+        public float X { get; }
+        public float Z { get; }
+
         public FormationPoint(float x, float z)
         {
             X = x;
             Z = z;
         }
-
-        public float X { get; }
-        public float Z { get; }
     }
 
     public static class FormationModel

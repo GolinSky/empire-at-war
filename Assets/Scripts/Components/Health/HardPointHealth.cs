@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Ship.Health
     public struct HardPointHealth
     {
         [SerializeField] private HardPointType hardPointType;
+
         [SerializeField] private float health;
         [Tooltip("Share of the damage a hit on this hardpoint also deals to the hull.")]
         [SerializeField] private float hullDamageMultiplier;

@@ -14,17 +14,18 @@ namespace EmpireAtWar.Entities.SpaceStation
 {
     public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
-        [SerializeField] private Renderer[] explosionHullRenderers;
-
         private IFogOfWarSystem _fogOfWarSystem;
         private ILocalPlayer _localPlayer;
-        private PlayerId _owner;
         private IHealthComponent _healthComponent;
-        private Vector3 _startPosition;
-        private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
+
+        [SerializeField] private Renderer[] explosionHullRenderers;
+        private EntityComponentLifecycle _componentLifecycle;
         private GameObjectContext _context;
+
+        private PlayerId _owner;
+        private Vector3 _startPosition;
         private FactionType _factionType;
 
         [Inject] private SpaceStationData Data { get; }
@@ -34,15 +35,15 @@ namespace EmpireAtWar.Entities.SpaceStation
         [Inject]
         private void Construct(
             IFogOfWarSystem fogOfWarSystem,
-            PlayerId owner,
             IHealthComponent healthComponent,
-            Vector3 startPosition,
-            List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
             IUnitExplosionService explosionService,
+            ILocalPlayer localPlayer,
+            List<IMonoComponent> monoComponents,
             GameObjectContext context,
-            FactionType factionType,
-            ILocalPlayer localPlayer)
+            PlayerId owner,
+            Vector3 startPosition,
+            FactionType factionType)
         {
             _fogOfWarSystem = fogOfWarSystem;
             _localPlayer = localPlayer;

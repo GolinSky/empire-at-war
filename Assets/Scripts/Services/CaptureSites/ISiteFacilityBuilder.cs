@@ -8,7 +8,9 @@ namespace EmpireAtWar.Services.CaptureSites
     public interface ISiteFacilityBuilder
     {
         bool CanAfford(float price);
+
         bool TrySpend(float price);
+
         void Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed);
     }
 }

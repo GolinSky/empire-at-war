@@ -13,9 +13,14 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)
         };
-
         private readonly bool[] _isField;
+
         private readonly Vector2 _min;
+
+        public int Columns { get; }
+        public int Rows { get; }
+        public float CellSize { get; }
+        public int Count => _isField.Length;
 
         public FieldGrid(Vector2Range bounds, float cellSize)
         {
@@ -27,11 +32,6 @@ namespace EmpireAtWar.Entities.Map.Generation
             CellSize = size.x / Columns;
             _isField = new bool[Columns * Rows];
         }
-
-        public int Columns { get; }
-        public int Rows { get; }
-        public float CellSize { get; }
-        public int Count => _isField.Length;
 
         public bool IsField(int index)
         {

@@ -27,35 +27,36 @@ namespace EmpireAtWar.Controllers.ShipUi
         ILateDisposable, ISkirmishUiRoute, EmpireAtWar.IObserver<ISelectionSubject>
     {
         private readonly ISelectionService _selectionService;
-        private readonly ShipUiModel _model;
-        private readonly ShipAbilityService _abilityService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly ICameraService _cameraService;
-        private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
-
         private ISelectionContext _playerSelectionContext;
         private IShipUi _shipUi;
         private IShipGroupUi _shipGroupUi;
-        private bool _isRouteActive;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+
+        private readonly ShipUiModel _model;
+        private readonly ShipAbilityService _abilityService;
+        private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
         private readonly EmpireAtWar.Models.Factions.FactionsData _factions;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private TooltipHoverSubscription _shipTooltipHover;
         private TooltipHoverSubscription _groupTooltipHover;
+
+        private bool _isRouteActive;
 
         public ShipUiController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISelectionService selectionService,
-            ShipUiModel model,
             ISkirmishRouteNavigation routeNavigation,
-            ShipAbilityService abilityService,
             ICameraService cameraService,
             ITooltipService tooltips,
+            EmpireAtWar.Services.Input.IInputBindings bindings,
+            ShipUiModel model,
+            ShipAbilityService abilityService,
             TooltipIconData tooltipIcons,
-            EmpireAtWar.Models.Factions.FactionsData factions,
-            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.Factions.FactionsData factions) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _model = model;
@@ -252,8 +253,8 @@ namespace EmpireAtWar.Controllers.ShipUi
                 {
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
-                    entries.Add(new ShipUiEntry(slots, entity.HealthModel,
-                        () => FocusEntity(entity), entity));
+                    entries.Add(new ShipUiEntry(abilitySlots: slots, health: entity.HealthModel,
+                        focus: () => FocusEntity(entity), entity: entity));
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, entries, id => _abilityService.Press(casters, id));
@@ -286,9 +287,9 @@ namespace EmpireAtWar.Controllers.ShipUi
         private TooltipContent BuildTooltip(object key)
         {
             if (key is string action && action == "Focus")
-                return new TooltipContent("Focus selected ship", "Click to move the camera to the selected ship.");
+                return new TooltipContent(title: "Focus selected ship", description: "Click to move the camera to the selected ship.");
             if (key is string selection && selection == "Selection")
-                return new TooltipContent("Clear selection", "Click to deselect the current ship.");
+                return new TooltipContent(title: "Clear selection", description: "Click to deselect the current ship.");
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
             if (key is EmpireAtWar.Models.ShipUi.ShipUiEntry entry)
@@ -311,8 +312,8 @@ namespace EmpireAtWar.Controllers.ShipUi
                     : _factions.GetSquadronFactionData(unitTypeId.SquadronType);
                 return UnitTooltipContent.Build(data, new[]
                 {
-                    new TooltipStat("Selected", count),
-                    new TooltipStat("Damaged", damaged)
+                    new TooltipStat(label: "Selected", current: count),
+                    new TooltipStat(label: "Damaged", current: damaged)
                 }, status: "Click to select this unit type.");
             }
             return EntityTooltipContent.Build(_playerSelectionContext.Entity);

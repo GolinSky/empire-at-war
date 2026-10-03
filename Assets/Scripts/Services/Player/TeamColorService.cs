@@ -7,9 +7,9 @@ namespace EmpireAtWar.Services.Player
     /// <summary>Uploads the team palette that every unit using EmpireAtWar/Ship Lit reads.</summary>
     public sealed class TeamColorService : IInitializable
     {
-        private static readonly int TEAM_COLORS_ID = Shader.PropertyToID("_TeamColors");
-
         private readonly TeamColorPalette _palette;
+
+        private static readonly int TEAM_COLORS_ID = Shader.PropertyToID("_TeamColors");
 
         public TeamColorService(TeamColorPalette palette)
         {

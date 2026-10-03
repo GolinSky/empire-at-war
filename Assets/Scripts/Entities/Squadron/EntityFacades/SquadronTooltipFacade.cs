@@ -9,11 +9,13 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 {
     public sealed class SquadronTooltipFacade : IEntityTooltipFacade
     {
-        private readonly SquadronType _squadronType;
-        private readonly FactionsData _factions;
         private readonly IHealthModelObserver _health;
 
-        public SquadronTooltipFacade(SquadronType squadronType, FactionsData factions, IHealthModelObserver health)
+        private readonly FactionsData _factions;
+
+        private readonly SquadronType _squadronType;
+
+        public SquadronTooltipFacade(IHealthModelObserver health, FactionsData factions, SquadronType squadronType)
         {
             _squadronType = squadronType;
             _factions = factions;
@@ -22,8 +24,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 
         public TooltipContent Build(List<TooltipStat> stats, string status)
         {
-            stats.Add(new TooltipStat("Surviving fighters", _health.HardPointModels.Count(member => !member.IsDestroyed),
-                _health.HardPointModels.Length));
+            stats.Add(new TooltipStat(label: "Surviving fighters", current: _health.HardPointModels.Count(member => !member.IsDestroyed),
+                max: _health.HardPointModels.Length));
             return UnitTooltipContent.Build(_factions.GetSquadronFactionData(_squadronType), stats, status: status);
         }
     }

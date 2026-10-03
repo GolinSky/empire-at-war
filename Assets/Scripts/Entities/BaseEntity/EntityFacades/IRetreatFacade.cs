@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+
         void Retreat(Vector3 destination);
     }
 }

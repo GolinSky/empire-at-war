@@ -8,12 +8,12 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly MiniMapData _miniMapData;
         private readonly Dictionary<T, MiniMapMarker> _markers = new Dictionary<T, MiniMapMarker>();
 
+        public IEnumerable<KeyValuePair<T, MiniMapMarker>> Pairs => _markers;
+
         public MiniMapMarkerCollection(MiniMapData miniMapData)
         {
             _miniMapData = miniMapData;
         }
-
-        public IEnumerable<KeyValuePair<T, MiniMapMarker>> Pairs => _markers;
 
         public void Add(T source, MiniMapMarker marker)
         {

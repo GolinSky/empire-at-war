@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.Tooltip
     {
         [SerializeField] private TextMeshProUGUI label;
         [SerializeField] private TextMeshProUGUI value;
+
         public void Render(TooltipStat stat) { label.text = stat.Label; value.text = stat.Display; }
     }
 }

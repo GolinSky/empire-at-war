@@ -15,8 +15,8 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
             /* Chase */     { 3f, 2f, 3f, 0f, 2f },
             /* Wide */      { 4f, 3f, 3f, 3f, 0f },
         };
-
         private readonly Random _random;
+
         private readonly float _minDuration;
         private readonly float _maxDuration;
 

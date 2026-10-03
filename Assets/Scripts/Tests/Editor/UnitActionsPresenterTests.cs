@@ -52,9 +52,9 @@ namespace EmpireAtWar.Tests.Editor
             _handler = new FakeHandler(_targeting);
             _orders = new FakeOrders();
             _session = new FakeSession();
-            _presenter = new UnitActionsPresenter(new FakeProvider(_view),
-                _selection, _abilities, _targeting, _handler, _orders, _session,
-                new FakeUiService(), _cancelRouter, null, null);
+            _presenter = new UnitActionsPresenter(coreUi: new FakeProvider(_view),
+                selection: _selection, abilities: _abilities, targeting: _targeting, inputHandler: _handler, orders: _orders, session: _session,
+                uiService: new FakeUiService(), cancelRouter: _cancelRouter, tooltips: null, bindings: null);
             _presenter.Initialize();
         }
 
@@ -145,27 +145,35 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject obj = new GameObject("Unit " + id);
             _objects.Add(obj);
-            return new FakeEntity(id, obj.transform, commands);
+            return new FakeEntity(id: id, transform: obj.transform, commands: commands);
         }
 
         private sealed class FakeProvider : IUnitActionsViewProvider
         {
-            public FakeProvider(IUnitActionsView view) { UnitActionsView = view; }
             public IUnitActionsView UnitActionsView { get; }
+
+            public FakeProvider(IUnitActionsView view) { UnitActionsView = view; }
         }
 
         private sealed class FakeView : IUnitActionsView
         {
             public event Action<UnitActionId> ActionPressed;
+
             public Dictionary<UnitActionId, bool> Available { get; } =
                 new Dictionary<UnitActionId, bool>();
             public bool Visible { get; private set; }
             public UnitActionId? Pending { get; private set; }
+
             public void Initialize() { }
+
             public void Dispose() { }
+
             public void Press(UnitActionId id) => ActionPressed?.Invoke(id);
+
             public void SetVisible(bool visible) => Visible = visible;
+
             public void SetAvailable(UnitActionId id, bool available) => Available[id] = available;
+
             public void SetPending(UnitActionId? id) => Pending = id;
         }
 
@@ -174,6 +182,7 @@ namespace EmpireAtWar.Tests.Editor
             private readonly List<IEntity> _entities = new List<IEntity>();
             private readonly List<IObserver<ISelectionSubject>> _observers =
                 new List<IObserver<ISelectionSubject>>();
+
             public string Id => nameof(FakeSelection);
             public ISelectionContext PlayerSelectionContext => this;
             public ISelectionContext OtherSelectionContext => null;
@@ -185,7 +194,9 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasSelectable => _entities.Count > 0;
             public int Count => _entities.Count;
             public SelectionScope Scope => SelectionScope.Local;
+
             public bool Contains(IEntity entity) => _entities.Contains(entity);
+
             public void Select(IEntity entity)
             {
                 _entities.Clear();
@@ -193,15 +204,20 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (IObserver<ISelectionSubject> observer in _observers)
                     observer.UpdateState(this);
             }
+
             public void RemoveSelectable(ISelectionContext context) { }
+
             public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
+
             public void AddObserver(IObserver<ISelectionSubject> observer) => _observers.Add(observer);
+
             public void RemoveObserver(IObserver<ISelectionSubject> observer) => _observers.Remove(observer);
         }
 
         private sealed class FakeCancelInput : ICancelInput
         {
             public event Action CancelPressed;
+
             public void Escape() => CancelPressed?.Invoke();
         }
 
@@ -210,19 +226,26 @@ namespace EmpireAtWar.Tests.Editor
             public Transform DefaultCanvasTransform => throw new NotSupportedException();
             public Transform DynamicCanvasTransform => throw new NotSupportedException();
             public Transform PopupCanvasTransform => throw new NotSupportedException();
+
             public BaseUi CreateUi(UiType uiType) => throw new NotSupportedException();
+
             public BaseUi CreateUi(UiType uiType, Transform parent) => throw new NotSupportedException();
+
             public void SetHudVisible(bool isVisible) => throw new NotSupportedException();
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting
         {
             public event Action TargetingChanged;
+
             public bool IsWaitingForTarget { get; private set; }
             public int CancelCount { get; private set; }
+
             public void StartTargeting()
             { IsWaitingForTarget = true; TargetingChanged?.Invoke(); }
+
             public void SubmitTarget(IEntity target) { }
+
             public void CancelTargeting()
             { CancelCount++; IsWaitingForTarget = false; TargetingChanged?.Invoke(); }
         }
@@ -230,37 +253,55 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeHandler : IPlayerOrderInputHandler
         {
             private readonly UnitActionTargetingModel _targeting;
-            public FakeHandler(UnitActionTargetingModel targeting) { _targeting = targeting; }
+
             public int FinishCount { get; private set; }
+
+            public FakeHandler(UnitActionTargetingModel targeting) { _targeting = targeting; }
+
             public void FinishWaypoints() { FinishCount++; _targeting.Cancel(); }
+
             public bool TryIssueMove(Vector3 worldPoint) => false;
         }
 
         private sealed class FakeOrders : IUnitOrderService
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
+
             public UnitActionId? LastAction { get; private set; }
+
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Move;
+
             public void IssueMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points) => LastAction = UnitActionId.Move;
+
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
+
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
+
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
                 int hardPointId) => LastAction = UnitActionId.Attack;
+
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
+
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
+
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;
+
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Guard;
+
             public void IssueWaypointMove(IReadOnlyList<IEntity> units,
                 IReadOnlyList<Vector3> points) => LastAction = UnitActionId.WaypointMove;
+
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
+
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
         }
 
         private sealed class FakeSession : ISkirmishSessionModelObserver
         {
             public event Action<GameTimeMode> OnGameTimeModeChanged { add { } remove { } }
+
             public GameTimeMode EffectiveTimeMode => default;
             public bool IsBattleEnded => false;
         }
@@ -268,17 +309,20 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeEntity : IEntity
         {
             private readonly HashSet<Type> _allowed;
-            public FakeEntity(long id, Transform transform, Type[] commands)
+
+            public long Id { get; }
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner => TestPlayers.Human;
+            public FakeCommand Command { get; }
+
+            public FakeEntity(Transform transform, Type[] commands, long id)
             {
                 Id = id;
                 HealthModel = new FakeHealth(transform);
                 Command = new FakeCommand();
                 _allowed = commands == null ? null : new HashSet<Type>(commands);
             }
-            public long Id { get; }
-            public IHealthModelObserver HealthModel { get; }
-            public PlayerId Owner => TestPlayers.Human;
-            public FakeCommand Command { get; }
+
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
@@ -298,23 +342,34 @@ namespace EmpireAtWar.Tests.Editor
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
+
             public void MoveTo(Vector2 point) { }
+
             public void MoveTo(Vector3 point) { }
+
             public void Attack(IEntity target, Vector3 offset) { }
+
             public void FocusFire(IEntity target) { }
+
             public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) { }
+
             public void Stop() { }
+
             public void Guard(IEntity target, Vector3 offset) { }
+
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
+
             public void Hunt() { }
+
             public void Retreat(Vector3 point) { }
         }
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealth(Transform transform) { Transform = transform; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -328,6 +383,9 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform) { Transform = transform; }
+
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
         }

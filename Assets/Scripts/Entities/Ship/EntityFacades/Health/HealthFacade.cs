@@ -12,7 +12,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades.Health
         {
             _healthComponent = healthComponent;
         }
-        
+
         public void ApplyDamage(float damage, DamageType damageType, int id)
         {
             _healthComponent.ApplyDamage(damage, damageType, id);

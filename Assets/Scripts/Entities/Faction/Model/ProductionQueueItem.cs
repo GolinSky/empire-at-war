@@ -5,14 +5,14 @@ namespace EmpireAtWar.Models.Factions
 {
     public sealed class ProductionQueueItem
     {
+        public UnitRequest UnitRequest { get; }
+        public float RemainingBuildTime { get; private set; }
+
         public ProductionQueueItem(UnitRequest unitRequest)
         {
             UnitRequest = unitRequest;
             RemainingBuildTime = unitRequest.FactionData.BuildTime;
         }
-
-        public UnitRequest UnitRequest { get; }
-        public float RemainingBuildTime { get; private set; }
 
         public void Advance(float deltaTime)
         {

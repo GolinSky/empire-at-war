@@ -19,29 +19,29 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private const string DISPLAY_REVERTED_MESSAGE = "Display change reverted.";
         private const string CONFLICTS_MESSAGE = "Resolve key binding conflicts before applying.";
 
-        private static readonly SettingsPromptAction[] UNSAVED_ACTIONS =
-            { SettingsPromptAction.Apply, SettingsPromptAction.Discard, SettingsPromptAction.Stay };
-
         private readonly ISettingsService _settingsService;
         private readonly IInputBindings _bindings;
+        private ISettingsUi _ui;
+
+        private static readonly SettingsPromptAction[] UNSAVED_ACTIONS =
+            { SettingsPromptAction.Apply, SettingsPromptAction.Discard, SettingsPromptAction.Stay };
         private readonly SettingsDraftEditor _draftEditor;
         private readonly KeyBindingEditor _keyBindingEditor;
         private readonly SettingsModel _model;
-
-        private ISettingsUi _ui;
-        private bool _isOpen;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
         private readonly DisplayConfirmationCountdown _displayCountdown = new DisplayConfirmationCountdown();
+
+        private bool _isOpen;
 
         public SettingsRouteController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISettingsService settingsService,
             IInputBindings bindings,
+            ITooltipService tooltips,
             SettingsDraftEditor draftEditor,
-            KeyBindingEditor keyBindingEditor,
-            SettingsModel model, ITooltipService tooltips) : base(uiService, cancelRouter)
+            KeyBindingEditor keyBindingEditor, SettingsModel model) : base(uiService, cancelRouter)
         {
             _settingsService = settingsService;
             _bindings = bindings;
@@ -49,6 +49,15 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _keyBindingEditor = keyBindingEditor;
             _model = model;
             _tooltips = new TooltipRequests(tooltips);
+        }
+
+        public void LateDispose()
+        {
+            if (_ui != null)
+            {
+                _ui.Dispose();
+                _tooltipHover.Dispose();
+            }
         }
 
         public void Open()
@@ -86,7 +95,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             if (_settingsService.IsDirty)
             {
                 _model.SetPrompt(new SettingsPrompt(
-                    SettingsPromptKind.UnsavedChanges, "You have unsaved changes.", UNSAVED_ACTIONS));
+                    kind: SettingsPromptKind.UnsavedChanges, message: "You have unsaved changes.", actions: UNSAVED_ACTIONS));
                 return;
             }
 
@@ -154,20 +163,35 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         }
 
         public void SelectQualityPreset(int index) => _draftEditor.SelectQuality(index);
+
         public void SelectWindowMode(int index) => _draftEditor.SelectWindowMode(index);
+
         public void SelectResolution(int index) => _draftEditor.SelectResolution(index);
+
         public void SelectFrameRateLimit(int index) => _draftEditor.SelectFrameRateLimit(index);
+
         public void SetVSync(bool isOn) => _draftEditor.SetVSync(isOn);
+
         public void SetMasterVolume(float volume) => _draftEditor.SetMasterVolume(volume);
+
         public void SetMusicVolume(float volume) => _draftEditor.SetMusicVolume(volume);
+
         public void SetVoiceVolume(float volume) => _draftEditor.SetVoiceVolume(volume);
+
         public void SetSfxVolume(float volume) => _draftEditor.SetSfxVolume(volume);
+
         public void SetMuteWhenUnfocused(bool isOn) => _draftEditor.SetMuteWhenUnfocused(isOn);
+
         public void SetPanSpeed(float multiplier) => _draftEditor.SetPanSpeed(multiplier);
+
         public void SetZoomSpeed(float multiplier) => _draftEditor.SetZoomSpeed(multiplier);
+
         public void SetEdgeScrolling(bool isOn) => _draftEditor.SetEdgeScrolling(isOn);
+
         public void SetInvertZoom(bool isOn) => _draftEditor.SetInvertZoom(isOn);
+
         public void StartRebind(int row) => _keyBindingEditor.StartRebind(row);
+
         public void ResetBinding(int row) => _keyBindingEditor.ResetBinding(row);
 
         public void ChoosePromptAction(SettingsPromptAction action)
@@ -215,29 +239,20 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             }
         }
 
-        public void LateDispose()
-        {
-            if (_ui != null)
-            {
-                _ui.Dispose();
-                _tooltipHover.Dispose();
-            }
-        }
-
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) {
             if (key is ValueTuple<int, bool> binding)
             {
                 _tooltips.Show(source, key, anchor, () => _isOpen, () =>
                 {
                     KeyBindingRowState row = _model.Bindings[binding.Item1];
-                    return new TooltipContent(row.ActionLabel,
-                        binding.Item2 ? "Restore this binding to its default." : "Click, then press a key or button to rebind. Escape cancels.",
+                    return new TooltipContent(title: row.ActionLabel,
+                        description: binding.Item2 ? "Restore this binding to its default." : "Click, then press a key or button to rebind. Escape cancels.",
                         shortcut: row.BindingLabel);
                 });
                 return;
             }
             _tooltips.Show(source, key, anchor, () => _isOpen, () =>
-                new TooltipContent((string)key, (string)key switch
+                new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Apply" => "Apply and save changes. Display changes require confirmation.",
                     "Discard" => "Discard changes and restore the saved settings.",

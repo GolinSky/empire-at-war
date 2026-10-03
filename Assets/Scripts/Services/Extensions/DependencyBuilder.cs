@@ -6,15 +6,14 @@ namespace EmpireAtWar.Extentions
     {
         private string _prefixPath;
         private string _postfixPath;
-        
-        protected DiContainer Container { get; private set; }
 
+        protected DiContainer Container { get; private set; }
 
         protected DependencyBuilder(DiContainer container)
         {
             Container = container;
         }
-        
+
         public TInheritor AppendToPath(string prefix, string postfix)
         {
             _prefixPath = prefix ?? string.Empty;

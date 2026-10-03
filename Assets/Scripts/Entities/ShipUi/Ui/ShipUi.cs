@@ -14,6 +14,11 @@ namespace EmpireAtWar.Views
 {
     public class ShipUi : BaseUi, IShipUi, ITooltipHoverView
     {
+        private IShipUiModelObserver _model;
+        private IShipIconProvider _icons;
+        private IHealthModelObserver _health;
+        private IShipUiPresenter _presenter;
+
         [SerializeField] private Image shipIconImage;
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private Button focusButton;
@@ -21,36 +26,17 @@ namespace EmpireAtWar.Views
         [SerializeField] private Image healthFill;
         [SerializeField] private Image shieldFill;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
-
-        private IShipUiModelObserver _model;
-        private IShipIconProvider _icons;
-        private IHealthModelObserver _health;
-        private IShipUiPresenter _presenter;
-        private bool _isInitialized;
-        private bool _isRouteActive = true;
-        private bool _isEntry;
         private Action _onSelected;
         private Action _onFocused;
 
+        private bool _isInitialized;
+        private bool _isRouteActive = true;
+        private bool _isEntry;
+
+        public TooltipHoverView TooltipHover => tooltipHover;
+
         [Inject]
         public void Construct(IShipIconProvider icons) => _icons = icons;
-
-        public void SetModel(IShipUiModelObserver model) => _model = model;
-        public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
-        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots)
-        {
-            abilityBar.SetTooltipHover(tooltipHover);
-            abilityBar.SetSlots(slots, _presenter.PressAbility);
-        }
-
-        public void SetHealth(IHealthModelObserver health)
-        {
-            if (_health != null) _health.OnValueChanged -= UpdateHealth;
-            _health = health;
-            if (_health != null) _health.OnValueChanged += UpdateHealth;
-            UpdateHealth();
-        }
 
         public void Initialize()
         {
@@ -72,6 +58,24 @@ namespace EmpireAtWar.Views
             _isInitialized = false;
         }
 
+        public void SetModel(IShipUiModelObserver model) => _model = model;
+
+        public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
+
+        public void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots)
+        {
+            abilityBar.SetTooltipHover(tooltipHover);
+            abilityBar.SetSlots(slots, _presenter.PressAbility);
+        }
+
+        public void SetHealth(IHealthModelObserver health)
+        {
+            if (_health != null) _health.OnValueChanged -= UpdateHealth;
+            _health = health;
+            if (_health != null) _health.OnValueChanged += UpdateHealth;
+            UpdateHealth();
+        }
+
         public void ConfigureEntry(Sprite icon, ShipUiEntry entry, Action onSelected)
         {
             _isEntry = true;
@@ -87,6 +91,7 @@ namespace EmpireAtWar.Views
         }
 
         private void HandleSelection() => _onSelected();
+
         private void HandleFocus() => _onFocused();
 
         private void UpdateHealth()

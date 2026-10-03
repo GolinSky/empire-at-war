@@ -13,20 +13,22 @@ namespace EmpireAtWar.Components.Combat
 
         public bool IsIonDisabled { get; private set; }
 
-        public void SetIonDisabled(bool disabled)
-        {
-            IsIonDisabled = disabled;
-            Changed?.Invoke();
-        }
-
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;
         public float SpeedMultiplier { get; private set; } = 1f;
         public float ShieldRegenMultiplier { get; private set; } = 1f;
         public float DamageTakenMultiplier { get; private set; } = 1f;
 
+        public void SetIonDisabled(bool disabled)
+        {
+            IsIonDisabled = disabled;
+            Changed?.Invoke();
+        }
+
         public bool IsDamageDealtModified() => DamageMultiplier != UNMODIFIED_MULTIPLIER;
+
         public bool IsSpeedModified() => SpeedMultiplier != UNMODIFIED_MULTIPLIER;
+
         public bool IsDamageTakenModified() => DamageTakenMultiplier != UNMODIFIED_MULTIPLIER;
 
         public void Add(CombatStatModifier modifier)

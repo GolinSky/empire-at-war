@@ -7,11 +7,12 @@ namespace EmpireAtWar.Services.Audio
     [Serializable]
     public sealed class ShipAbilityAudioProfile
     {
-        [SerializeField] private ShipAbilityId abilityId;
         [SerializeField] private SfxProfile start;
         [SerializeField] private SfxProfile execution;
         [SerializeField] private SfxProfile end;
         [SerializeField] private SfxProfile restore;
+
+        [SerializeField] private ShipAbilityId abilityId;
 
         public ShipAbilityId AbilityId => abilityId;
         public SfxProfile Start => start;

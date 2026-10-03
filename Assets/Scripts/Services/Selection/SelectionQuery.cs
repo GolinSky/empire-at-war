@@ -15,9 +15,13 @@ namespace EmpireAtWar.Services.Battle
     public interface ISelectionQuery
     {
         bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection);
+
         void CollectSameShipType(SelectionEntry selected, ICollection<SelectionEntry> results);
+
         void CollectAllPlayerUnits(ICollection<SelectionEntry> results);
+
         void CollectVisiblePlayerUnits(ICollection<SelectionEntry> results);
+
         void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results);
     }
 
@@ -27,6 +31,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
         private readonly IFogOfWarSystem _fogOfWarSystem;
+
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
@@ -180,14 +185,14 @@ namespace EmpireAtWar.Services.Battle
 
         private readonly struct MarqueeCandidate
         {
+            public SelectionEntry Entry { get; }
+            public MarqueePoint ScreenPoint { get; }
+
             public MarqueeCandidate(SelectionEntry entry, MarqueePoint screenPoint)
             {
                 Entry = entry;
                 ScreenPoint = screenPoint;
             }
-
-            public SelectionEntry Entry { get; }
-            public MarqueePoint ScreenPoint { get; }
         }
     }
 }

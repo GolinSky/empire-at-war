@@ -29,17 +29,22 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly ILocalPlayer _local;
         private readonly IHudVisibilityObserver _hud;
         private readonly IHardPointHoverObserver _hardPointHover;
-        private readonly HardPointOverlayData _hardPointData;
         private readonly ICaptureSitesSystem _sites;
         private readonly ICameraService _camera;
+
+        private readonly HardPointOverlayData _hardPointData;
         private readonly List<IMiniMapObstacleSource> _obstacles;
+
         private TooltipHandle _handle;
+
         private bool _dragging;
+
+        private bool CanHover => _hud.IsHudVisible && !_dragging && !_ui.IsOverUi(_pointer.Position);
 
         public WorldTooltipPresenter(ISelectionQuery query, IPointerInput pointer, IUiHitTest ui,
             IPointerGestures gestures, ITooltipService tooltips, IFogOfWarSystem fog,
             ILocalPlayer local, IHudVisibilityObserver hud, IHardPointHoverObserver hardPointHover,
-            HardPointOverlayData hardPointData, ICaptureSitesSystem sites, ICameraService camera,
+            ICaptureSitesSystem sites, ICameraService camera, HardPointOverlayData hardPointData,
             List<IMiniMapObstacleSource> obstacles)
         {
             _query = query; _pointer = pointer; _ui = ui; _gestures = gestures; _tooltips = tooltips;
@@ -50,11 +55,13 @@ namespace EmpireAtWar.Entities.Tooltip
 
         public void Initialize()
         { _gestures.DragStarted += StartDrag; _gestures.DragEnded += EndDrag; }
+
         public void LateDispose()
         { _gestures.DragStarted -= StartDrag; _gestures.DragEnded -= EndDrag; _tooltips.Hide(_handle); }
+
         private void StartDrag(Vector2 point) { _dragging = true; _tooltips.Hide(_handle); }
+
         private void EndDrag(Vector2 point) => _dragging = false;
-        private bool CanHover => _hud.IsHudVisible && !_dragging && !_ui.IsOverUi(_pointer.Position);
 
         public void Tick()
         {
@@ -82,10 +89,10 @@ namespace EmpireAtWar.Entities.Tooltip
                 {
                     if (!site.IsRevealed || !site.Contains(world)) continue;
                     _handle = _tooltips.Show(new TooltipContentProvider(this, site,
-                        () => CanHover && site.IsRevealed, () => new TooltipContent("Capture site",
-                            "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",
-                            stats: new[] { new TooltipStat("Capture (%)", site.CaptureProgress * 100f),
-                                new TooltipStat("Construction (%)", site.ConstructionProgress * 100f) },
+                        () => CanHover && site.IsRevealed, () => new TooltipContent(title: "Capture site",
+                            description: "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",
+                            stats: new[] { new TooltipStat(label: "Capture (%)", current: site.CaptureProgress * 100f),
+                                new TooltipStat(label: "Construction (%)", current: site.ConstructionProgress * 100f) },
                             status: $"Owner: {site.Owner} · {site.State} · {site.FacilityType}")), anchor);
                     return;
                 }
@@ -96,7 +103,7 @@ namespace EmpireAtWar.Entities.Tooltip
                         if (!obstacle.WorldBounds.Contains(hit.point)) continue;
                         _handle = _tooltips.Show(new TooltipContentProvider(this, obstacle,
                             () => CanHover && !_fog.IsHidden(hit.point),
-                            () => new TooltipContent("Obstacle", "Blocks movement and prevents move orders into its occupied area.")), anchor);
+                            () => new TooltipContent(title: "Obstacle", description: "Blocks movement and prevents move orders into its occupied area.")), anchor);
                         return;
                     }
                 _tooltips.Hide(_handle);
@@ -111,9 +118,9 @@ namespace EmpireAtWar.Entities.Tooltip
             IHardPointsFacade facade = entity.GetFacade<IHardPointsFacade>();
             IHardPointStatus hardPoint = facade.HardPoints[id];
             HardPointOverlayEntry entry = _hardPointData.Get(hardPoint.HardPointType);
-            var stats = new List<TooltipStat> { new TooltipStat("Component health", hardPoint.Health, hardPoint.MaxHealth) };
-            if (facade.MaxShields > 0f) stats.Add(new TooltipStat("Shared ship shields", entity.HealthModel.Shields, facade.MaxShields));
-            return new TooltipContent(entry.DisplayName, entry.Description,
+            var stats = new List<TooltipStat> { new TooltipStat(label: "Component health", current: hardPoint.Health, max: hardPoint.MaxHealth) };
+            if (facade.MaxShields > 0f) stats.Add(new TooltipStat(label: "Shared ship shields", current: entity.HealthModel.Shields, max: facade.MaxShields));
+            return new TooltipContent(title: entry.DisplayName, description: entry.Description,
                 stats: stats, status: hardPoint.IsDestroyed ? "Destroyed" : "Operational");
         }
     }

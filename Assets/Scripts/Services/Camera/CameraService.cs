@@ -12,33 +12,41 @@ namespace EmpireAtWar.Services.Camera
 {
     public interface ICameraService : IService
     {
-        Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
-        RaycastHit ScreenPointToRay(Vector2 screenPoint);
         Vector3 CameraPosition { get; }
         Transform CameraTransform { get; }
         Vector3 CameraForward { get; }
         float FieldOfView { get; }
+
+        Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position);
+
+        RaycastHit ScreenPointToRay(Vector2 screenPoint);
+
         Vector3 WorldToViewportPoint(Vector3 currentPosition);
+
         Vector2 WorldToScreenPoint(Vector3 position);
+
         IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax);
+
         void MoveTo(Vector3 worldPoint);
+
         void SetPose(Vector3 position, Quaternion rotation);
     }
 
     [RequireComponent(typeof(UnityEngine.Camera))]
     public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable
     {
-        [SerializeField] private UnityEngine.Camera _camera;
-
-        private Plane _plane = new();
-        private CameraData _cameraData;
         private IMapModelObserver _mapModel;
         private ICameraInput _cameraInput;
         private ICameraPreferences _preferences;
         private IInputLock _inputLock;
+
+        [SerializeField] private UnityEngine.Camera _camera;
+        private CameraData _cameraData;
+        private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
+
+        private Plane _plane = new();
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
-        private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
 
         public string Id => nameof(CameraService);
 
@@ -49,18 +57,13 @@ namespace EmpireAtWar.Services.Camera
         public Vector3 CameraForward => transform.forward;
         public float FieldOfView => _camera.fieldOfView;
 
-        public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
-        {
-            return _frustumProjection.Project(_camera, mapMin, mapMax);
-        }
-
         [Inject]
         public void Constructor(
-            CameraData cameraData,
             ICameraInput cameraInput,
             IMapModelObserver mapModel,
             ICameraPreferences preferences,
-            IInputLock inputLock)
+            IInputLock inputLock,
+            CameraData cameraData)
         {
             _inputLock = inputLock;
             _preferences = preferences;
@@ -85,6 +88,11 @@ namespace EmpireAtWar.Services.Camera
             _inputLock.LockChanged -= OnLockChanged;
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
+        }
+
+        public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
+        {
+            return _frustumProjection.Project(_camera, mapMin, mapMax);
         }
 
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)

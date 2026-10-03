@@ -7,16 +7,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private LineRenderer pulse;
         [SerializeField] private ParticleSystem impactFlash;
+        private Transform _target;
+
+        private Vector3 _aimOffset;
+        private Vector3 _origin;
+        private Vector3 _aimPoint;
+
         [SerializeField, Min(0.01f)] private float flightDuration = 0.85f;
         [SerializeField, Min(0.01f)] private float pulseLength = 22f;
         [SerializeField, Min(0.01f)] private float flashSize = 32f;
         [SerializeField, Min(0.01f)] private float flashDuration = 0.3f;
-
-        private Transform _target;
-        private Vector3 _aimOffset;
-        private Vector3 _origin;
-        private Vector3 _aimPoint;
         private float _elapsed;
+
         private bool _flying;
         private bool _flashing;
 

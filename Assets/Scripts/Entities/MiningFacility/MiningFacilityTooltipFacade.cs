@@ -15,8 +15,8 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         public TooltipContent Build(List<TooltipStat> stats, string status)
         {
-            stats.Add(new TooltipStat("Base income per payment", _model.BaseIncome));
-            return new TooltipContent("Mining facility", "Provides recurring credits to its owner.", stats: stats, status: status);
+            stats.Add(new TooltipStat(label: "Base income per payment", current: _model.BaseIncome));
+            return new TooltipContent(title: "Mining facility", description: "Provides recurring credits to its owner.", stats: stats, status: status);
         }
     }
 }

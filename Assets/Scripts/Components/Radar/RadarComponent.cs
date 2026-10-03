@@ -20,36 +20,43 @@ namespace EmpireAtWar.Components.Radar
     public interface IRadarComponent : IComponent
     {
         event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
+
         ObservableList<IEntity> Enemies { get; }
     }
     public class RadarComponent : MonoComponent<RadarModel>, IInitializable, IFixedTickable, IRadarComponent
     {
         private const int INITIAL_HIT_LIMIT = 64;
         private const int MAX_HIT_LIMIT = 2048;
+
         // Ranges are planar: the scan box spans every ship height tier.
         private const float VERTICAL_SCAN_HALF_EXTENT = 1000f;
 
         private IEntityLocator _entityLocator;
         private ITimer _timer;
-        private Vector3 _halfExtents;
+        private ILayerService _layerService;
+        private ISelectionModelObserver _selection;
+        private IPlayerRelations _relations;
 
         private Collider[] _overlapHits = new Collider[INITIAL_HIT_LIMIT];
         private readonly HashSet<IEntity> _detectedEnemies = new HashSet<IEntity>();
         private readonly List<RadarContact> _contacts = new List<RadarContact>();
-        private ILayerService _layerService;
         private DebugRangeCircleFactory _rangeCircleFactory;
-        private ISelectionModelObserver _selection;
-        private IPlayerRelations _relations;
         private Transform _viewTransform;
-        private bool _isReleased;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private DebugRangeCircle _radarRangeCircle;
 #endif
+
+        private Vector3 _halfExtents;
+
+        private bool _isReleased;
+
         public event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
+
         public ObservableList<IEntity> Enemies => Model.Enemies;
+
         [Inject]
-        private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService,
-            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection, IPlayerRelations relations,
+        private void Construct(IEntityLocator entityLocator, ILayerService layerService, ISelectionModelObserver selection,
+            IPlayerRelations relations, RadarModel model, DebugRangeCircleFactory rangeCircleFactory,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);

@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Stations
     public sealed class StationRegistry : Service, IStationRegistry, IDisposable
     {
         private readonly IEntityLocator _entityLocator;
+
         private readonly List<IEntity> _stations = new List<IEntity>();
 
         public StationRegistry(IEntityLocator entityLocator)

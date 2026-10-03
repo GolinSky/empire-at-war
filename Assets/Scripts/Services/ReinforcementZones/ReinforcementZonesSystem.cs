@@ -25,67 +25,78 @@ namespace EmpireAtWar.Services.ReinforcementZones
         event Action OwnershipChanged;
 
         bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
+
         void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination);
+
         bool IsPositionInAlliedZone(PlayerId owner, Vector3 position);
+
         int GetOwnedCapturableZoneCount(PlayerId owner);
+
         bool TryGetDefaultSpawnPosition(PlayerId owner, out Vector3 position);
+
         bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position);
+
         bool TryGetDefaultZoneExitPosition(
             PlayerId owner,
             Vector3 shipPosition,
             float shipRadius,
             out Vector3 position);
+
         bool TryGetRandomSpawnPosition(
             PlayerId owner,
             ShipType shipType,
             out Vector3 position);
+
         bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position);
     }
 
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IInitializable, ITickable
     {
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
+
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
 
-        [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
-
-        private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
-        private readonly Dictionary<ShipType, float> _shipNavigationRadii =
-            new Dictionary<ShipType, float>();
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
         private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IPointerInput _pointer;
-        private ReinforcementZoneData _data;
         private IMapModelObserver _mapModel;
         private IShipNavigationService _shipNavigationService;
         private IAssetService _assetService;
-        private ShipsData _shipsData;
-        private ReinforcementZoneView[] _zoneViews;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
+
+        private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
+        private readonly Dictionary<ShipType, float> _shipNavigationRadii =
+            new Dictionary<ShipType, float>();
+        private ReinforcementZoneData _data;
+        private ShipsData _shipsData;
+        private ReinforcementZoneView[] _zoneViews;
         private CaptureStrengthBuilder _tally;
 
+        [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
+
         public event Action OwnershipChanged;
+
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
 
         [Inject]
         private void Construct(
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
-            ReinforcementZoneData data,
             IAssetService assetService,
-            ShipsData shipsData,
             IMapModelObserver mapModel,
             IShipNavigationService shipNavigationService,
             IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IPointerInput pointer,
-            ReinforcementZoneView[] zoneViews,
             IPlayerRoster roster,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer,
+            ReinforcementZoneData data,
+            ShipsData shipsData,
+            ReinforcementZoneView[] zoneViews)
         {
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
@@ -109,12 +120,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
             foreach (ReinforcementZoneView view in _zoneViews)
             {
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
-                    view.StartingOwner,
-                    view.IsCapturable,
-                    view.CaptureDuration,
-                    _data.CaptureSpeedPerNetShip,
-                    _roster);
-                _zones.Add(new ReinforcementZonePresenter(model, view, _localPlayer));
+                    startingOwner: view.StartingOwner,
+                    isCapturable: view.IsCapturable,
+                    captureDuration: view.CaptureDuration,
+                    captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
+                    relations: _roster);
+                _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
             }
         }
 

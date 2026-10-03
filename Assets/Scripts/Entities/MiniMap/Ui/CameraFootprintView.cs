@@ -13,6 +13,7 @@ namespace EmpireAtWar.Views.MiniMap
 
         private CameraMarkData _model;
         private Vector2Range _mapRange;
+
         private bool _initialized;
 
         public void SetData(CameraMarkData model, Vector2Range mapRange)

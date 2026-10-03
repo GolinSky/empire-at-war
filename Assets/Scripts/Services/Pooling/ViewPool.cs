@@ -12,11 +12,12 @@ namespace EmpireAtWar.Services.Pooling
     public sealed class ViewPool<TView> : IDisposable where TView : Component
     {
         private readonly TView _prefab;
-        private readonly string _rootName;
         private readonly ObjectPool<TView> _pool;
         private Transform _root;
 
-        public ViewPool(TView prefab, string rootName, Action<TView> hide, int maxSize)
+        private readonly string _rootName;
+
+        public ViewPool(TView prefab, Action<TView> hide, string rootName, int maxSize)
         {
             _prefab = prefab;
             _rootName = rootName;
@@ -25,6 +26,15 @@ namespace EmpireAtWar.Services.Pooling
                 actionOnDestroy: DestroyView,
                 collectionCheck: false,
                 maxSize: maxSize);
+        }
+
+        public void Dispose()
+        {
+            _pool.Dispose();
+            if (_root != null)
+            {
+                Object.Destroy(_root.gameObject);
+            }
         }
 
         public TView Get()
@@ -41,15 +51,6 @@ namespace EmpireAtWar.Services.Pooling
             }
 
             _pool.Release(view);
-        }
-
-        public void Dispose()
-        {
-            _pool.Dispose();
-            if (_root != null)
-            {
-                Object.Destroy(_root.gameObject);
-            }
         }
 
         private TView Create()

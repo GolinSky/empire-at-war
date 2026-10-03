@@ -36,6 +36,7 @@ namespace EmpireAtWar.Components.Combat
             damageTakenMultiplier.Equals(other.damageTakenMultiplier);
 
         public override bool Equals(object obj) => obj is CombatStatModifier other && Equals(other);
+
         public override int GetHashCode() => HashCode.Combine(damageMultiplier,
             fireDelayMultiplier, speedMultiplier, shieldRegenMultiplier, damageTakenMultiplier);
     }

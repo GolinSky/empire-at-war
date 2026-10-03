@@ -17,9 +17,23 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     public sealed class SquadronIconComponent : MonoComponent<SelectionModel>, ISquadronIconCommand,
         IInitializable, ILateTickable, ILateDisposable
     {
+        private ICameraService _cameraService;
+        private IFogOfWarSystem _fogOfWarSystem;
+        private ILocalPlayer _localPlayer;
+
         [SerializeField] private Canvas iconCanvas;
         [SerializeField] private Image frameImage;
         [SerializeField] private Image silhouetteImage;
+        private CameraData _cameraData;
+
+        [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);
+        [SerializeField] private Color selectedColor = new Color(1f, 0.92f, 0.35f);
+        [SerializeField] private Color allyColor = new Color(0.4f, 0.8f, 1f);
+        [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
+        private PlayerId _owner;
+        private Vector3 _anchor;
+        private Vector3 _iconPosition;
+
         [Tooltip("Visible marker width and height in screen pixels at the midpoint of camera zoom.")]
         [SerializeField, Min(1f)] private float screenSize = 96f;
         [Tooltip("Clickable square width and height in screen pixels at the midpoint of camera zoom.")]
@@ -28,24 +42,13 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private float screenOffset = 60f;
         [Tooltip("How fast the marker catches up with the centroid; higher follows fighters more tightly.")]
         [SerializeField, Min(0.01f)] private float followSharpness = 12f;
-        [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);
-        [SerializeField] private Color selectedColor = new Color(1f, 0.92f, 0.35f);
-        [SerializeField] private Color allyColor = new Color(0.4f, 0.8f, 1f);
-        [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
-
-        private ICameraService _cameraService;
-        private CameraData _cameraData;
-        private IFogOfWarSystem _fogOfWarSystem;
-        private PlayerId _owner;
-        private ILocalPlayer _localPlayer;
-        private Vector3 _anchor;
-        private Vector3 _iconPosition;
-        private bool _isReleased;
         private float _zoomScale;
 
+        private bool _isReleased;
+
         [Inject]
-        private void Construct(SelectionModel model, ICameraService cameraService, CameraData cameraData,
-            IFogOfWarSystem fogOfWarSystem, PlayerId owner, ILocalPlayer localPlayer)
+        private void Construct(ICameraService cameraService, IFogOfWarSystem fogOfWarSystem, ILocalPlayer localPlayer,
+            SelectionModel model, CameraData cameraData, PlayerId owner)
         {
             SetModel(model);
             _cameraService = cameraService;
@@ -63,6 +66,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             UpdateColor(Model.IsSelected);
             LateTick();
         }
+
+        public void LateDispose() => Release();
 
         public void LateTick()
         {
@@ -102,8 +107,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             float halfSize = clickSize * _zoomScale * 0.5f;
             return Mathf.Abs(delta.x) <= halfSize && Mathf.Abs(delta.y) <= halfSize;
         }
-
-        public void LateDispose() => Release();
 
         public override void Release()
         {

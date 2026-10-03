@@ -22,16 +22,18 @@ namespace EmpireAtWar.Ship
 {
     public sealed class ShipInstaller : DynamicEntityInstaller<Ship, ShipData>
     {
+        private ILocalPlayer _localPlayer;
+
+        private string _shipDataPath;
+
         private ShipType _shipType;
         private PlayerId _owner;
-        private ILocalPlayer _localPlayer;
-        private string _shipDataPath;
 
         protected override string DataPath => _shipDataPath;
         protected override string PrefabPath => _shipType + base.PrefabPath;
 
         [Inject]
-        public void Construct(ShipType shipType, PlayerId owner, ShipsData shipsData, ILocalPlayer localPlayer)
+        public void Construct(ILocalPlayer localPlayer, ShipsData shipsData, ShipType shipType, PlayerId owner)
         {
             _localPlayer = localPlayer;
             _shipType = shipType;

@@ -13,12 +13,14 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemySiteConstructionController : ITickable
     {
         private const float DECISION_INTERVAL = 3f;
+
         private const int MINIMUM_FLEET_SIZE = 2;
 
         private readonly ICaptureSitesSystem _captureSites;
-        private readonly PlayerSlot _owner;
         private readonly IShipService _shipService;
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
+
+        private readonly PlayerSlot _owner;
 
         public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService, PlayerSlot owner)
         {

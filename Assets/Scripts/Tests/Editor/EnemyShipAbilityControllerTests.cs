@@ -36,8 +36,8 @@ namespace EmpireAtWar.Tests.Editor
                 FakeCommand caster = new FakeCommand(definition);
                 EntityLocator entities = new EntityLocator();
                 entities.AddEntity(caster.Entity);
-                entities.AddEntity(new FakeEntity(2, TestPlayers.Human,
-                    new FakeHealth(playerView.transform, 1f), null));
+                entities.AddEntity(new FakeEntity(id: 2, owner: TestPlayers.Human,
+                    health: new FakeHealth(playerView.transform, 1f), command: null));
                 RecordingFactory factory = new RecordingFactory();
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
@@ -59,6 +59,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingFactory : IShipAbilityFactory
         {
             public int CreatedCount { get; private set; }
+
             public IShipAbility Create(ShipAbilityDefinition definition)
             {
                 CreatedCount++;
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
                 IEntity target) { }
+
             public void Stop() { }
         }
 
@@ -81,38 +83,38 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeCommand : IShipAbilityFacade
         {
-            public FakeCommand(ShipAbilityDefinition definition)
-            {
-                Health = new FakeHealth(null, 0f);
-                Entity = new FakeEntity(1, TestPlayers.Enemy, Health, this);
-                Slots = new[] { new ShipAbilitySlot(ShipAbilityId.BoostShieldPower,
-                    definition, this) };
-            }
-
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;
             public IEntity Entity { get; }
             public IHealthModelObserver Health { get; }
             public float RadarRange => 20f;
+
+            public FakeCommand(ShipAbilityDefinition definition)
+            {
+                Health = new FakeHealth(null, 0f);
+                Entity = new FakeEntity(id: 1, owner: TestPlayers.Enemy, health: Health, command: this);
+                Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostShieldPower,
+                    definition: definition, owner: this) };
+            }
         }
 
         private sealed class FakeEntity : IEntity
         {
             private readonly IShipAbilityFacade _command;
 
-            public FakeEntity(long id, PlayerId owner, IHealthModelObserver health,
-                IShipAbilityFacade command)
+            public long Id { get; }
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner { get; }
+
+            public FakeEntity(IHealthModelObserver health, IShipAbilityFacade command, PlayerId owner,
+                long id)
             {
                 Id = id;
                 Owner = owner;
                 HealthModel = health;
                 _command = command;
             }
-
-            public long Id { get; }
-            public IHealthModelObserver HealthModel { get; }
-            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -133,14 +135,11 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             private readonly float _shieldPercentage;
-            public FakeHealth(Transform transform, float shieldPercentage)
-            {
-                Transform = transform;
-                _shieldPercentage = shieldPercentage;
-            }
 
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -154,6 +153,13 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform, float shieldPercentage)
+            {
+                Transform = transform;
+                _shieldPercentage = shieldPercentage;
+            }
+
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
                 Array.Empty<IHardPointModel>();
         }

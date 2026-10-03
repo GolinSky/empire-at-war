@@ -8,7 +8,9 @@ namespace EmpireAtWar.Repository
     public class AddressableAssetService : IAssetService
     {
         private const string MAPPING_DATA_KEY = nameof(AssetMappingData);
+
         private AssetMappingData _mappingData;
+
         private bool _mappingLoadAttempted;
 
         public TSource Load<TSource>(string key) where TSource : Object
@@ -23,8 +25,7 @@ namespace EmpireAtWar.Repository
                 throw new MissingComponentException($"Addressable prefab '{key}' has no {typeof(TComponent).Name}.");
             return component;
         }
-        
-        
+
         public GameObject LoadPrefab(string key)
         {
             return Addressables.LoadAssetAsync<GameObject>(ResolveKey(key)).WaitForCompletion();

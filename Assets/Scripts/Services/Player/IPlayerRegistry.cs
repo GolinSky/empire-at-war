@@ -11,10 +11,15 @@ namespace EmpireAtWar.Services.Player
     public interface IPlayerRegistry
     {
         void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder);
+
         void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement);
+
         void UnregisterSiteBuilder(PlayerId owner);
+
         void UnregisterAiReinforcement(PlayerId owner);
+
         ISiteFacilityBuilder GetSiteBuilder(PlayerId owner);
+
         /// <summary>Only AI players queue builds that still arrive after their station died; humans never do.</summary>
         bool HasPendingReinforcement(PlayerId owner);
     }

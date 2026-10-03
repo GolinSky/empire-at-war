@@ -11,16 +11,25 @@ namespace EmpireAtWar.Views
 {
     public interface IShipGroupUi
     {
-        void SetModel(IShipUiModelObserver model);
-        void SetPresenter(IShipUiPresenter presenter);
-        void SetParent(Transform parent);
-        void Show();
-        void Hide();
         void Initialize();
+
         void Dispose();
+
+        void SetModel(IShipUiModelObserver model);
+
+        void SetPresenter(IShipUiPresenter presenter);
+
+        void SetParent(Transform parent);
+
+        void Show();
+
+        void Hide();
+
         void ClearGroups();
+
         void AddGroup(ShipType shipType, IReadOnlyList<ShipUiEntry> ships,
             Action<ShipAbilityId> pressAbility);
+
         void AddGroup(SquadronType squadronType, IReadOnlyList<ShipUiEntry> squadrons,
             Action<ShipAbilityId> pressAbility);
     }

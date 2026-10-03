@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.Settings
 
         [SerializeField] private float panSpeedMultiplier = 1f;
         [SerializeField] private float zoomSpeedMultiplier = 1f;
+
         [SerializeField] private bool edgeScrolling = true;
         [SerializeField] private bool invertZoom;
 

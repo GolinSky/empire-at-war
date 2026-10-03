@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.UnitExplosion
     public sealed class UnitExplosionService : Service, IUnitExplosionService, ITickable, IDisposable
     {
         private const float COVERAGE_PADDING = 1.2f;
+
         private const int MAX_IDLE_EXPLOSIONS = 32;
 
         private readonly UnitExplosionView _prefab;
@@ -20,8 +21,19 @@ namespace EmpireAtWar.Services.UnitExplosion
         public UnitExplosionService(UnitExplosionView prefab)
         {
             _prefab = prefab;
-            _pool = new ViewPool<UnitExplosionView>(prefab, "UnitExplosions", view => view.Hide(),
-                MAX_IDLE_EXPLOSIONS);
+            _pool = new ViewPool<UnitExplosionView>(prefab: prefab, rootName: "UnitExplosions", hide: view => view.Hide(),
+                maxSize: MAX_IDLE_EXPLOSIONS);
+        }
+
+        public void Dispose()
+        {
+            foreach (UnitExplosionView view in _active)
+            {
+                _pool.Release(view);
+            }
+
+            _active.Clear();
+            _pool.Dispose();
         }
 
         public void Spawn(IReadOnlyList<Renderer> hullRenderers)
@@ -49,17 +61,6 @@ namespace EmpireAtWar.Services.UnitExplosion
                     _active.RemoveAt(i);
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            foreach (UnitExplosionView view in _active)
-            {
-                _pool.Release(view);
-            }
-
-            _active.Clear();
-            _pool.Dispose();
         }
     }
 }

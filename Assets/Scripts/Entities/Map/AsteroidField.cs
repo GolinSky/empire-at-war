@@ -7,13 +7,13 @@ namespace EmpireAtWar.Entities.Map
     /// </summary>
     public sealed class AsteroidField
     {
+        public IReadOnlyList<FieldVolume> Volumes { get; }
+        public IReadOnlyList<AsteroidSpot> Rocks { get; }
+
         public AsteroidField(IReadOnlyList<FieldVolume> volumes, IReadOnlyList<AsteroidSpot> rocks)
         {
             Volumes = volumes;
             Rocks = rocks;
         }
-
-        public IReadOnlyList<FieldVolume> Volumes { get; }
-        public IReadOnlyList<AsteroidSpot> Rocks { get; }
     }
 }

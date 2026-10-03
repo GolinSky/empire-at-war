@@ -12,8 +12,10 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private ShipClassValues damage;
         [Tooltip("Chance (0..1) that a shot hits a target of this class.")]
         [SerializeField] private ShipClassValues accuracy;
+
         [Tooltip("Damage multiplier applied to shields.")]
         [SerializeField] private float vsShield = 1f;
+
         [Tooltip("Ignores shields and always damages hardpoints and hull.")]
         [SerializeField] private bool shieldPiercing;
 

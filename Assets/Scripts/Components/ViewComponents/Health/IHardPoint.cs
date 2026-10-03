@@ -11,6 +11,7 @@ namespace EmpireAtWar.ViewComponents.Health
         HardPointType HardPointType { get; }
         Vector3 Position { get; }
         Transform Transform { get; }
+
         void UpdateData(float healthPercentage);
     }
 }

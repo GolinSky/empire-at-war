@@ -9,7 +9,7 @@ namespace EmpireAtWar.Services.Input
         public int BindingIndex { get; }
         public string Label { get; }
 
-        public BindingSlot(InputAction action, int bindingIndex, string label)
+        public BindingSlot(InputAction action, string label, int bindingIndex)
         {
             Action = action;
             BindingIndex = bindingIndex;

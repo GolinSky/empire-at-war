@@ -7,12 +7,13 @@ namespace EmpireAtWar.Models.Health
     [Serializable]
     public class HardPointModel : PureModel
     {
+        private float _originHealth;
+
+        public event Action OnHardPointHealthChanged;
+
         public int Id { get; }
         public int Generation { get; private set; }
         public HardPointType HardPointType { get; }
-
-        private float _originHealth;
-        public event Action OnHardPointHealthChanged;
         public float HealthPercentage { get; private set; } = 1f;
 
         public float Health { get; private set; }
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Models.Health
         public float HullDamageMultiplier { get; private set; }
         public bool IsDestroyed => HealthPercentage <= 0f;
 
-        public HardPointModel(int id, HardPointType hardPointType)
+        public HardPointModel(HardPointType hardPointType, int id)
         {
             Id = id;
             HardPointType = hardPointType;

@@ -7,8 +7,10 @@ namespace EmpireAtWar.Components.Ship.Audio
         private const float RESPONSE = 4f;
         private const float SURGE_INTERVAL = 1.5f;
         private const float ACCELERATION_THRESHOLD = 0.12f;
+
         private float _previousSpeed;
         private float _surgeTimeLeft;
+
         private bool _accelerating;
 
         public float Speed { get; private set; }

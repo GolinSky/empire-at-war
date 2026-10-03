@@ -13,11 +13,11 @@ namespace EmpireAtWar.Entities.Game
     {
         private readonly ISceneService _sceneService;
 
-        public GameController(GameData model, ISceneService sceneService) : base(model)
+        public GameController(ISceneService sceneService, GameData model) : base(model)
         {
             _sceneService = sceneService;
         }
-        
+
         public void StartGame(
             IReadOnlyList<PlayerSlot> players,
             PlanetType planetType,

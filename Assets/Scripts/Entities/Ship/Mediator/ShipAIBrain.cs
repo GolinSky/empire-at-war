@@ -13,17 +13,21 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         private readonly IHealthModelObserver _healthModel;
         private readonly IRadarComponent _radar;
         private readonly IShipMovement _movement;
+
         private readonly ShipAiDecisionModel _decisionModel;
-        private readonly EnemyAiDifficulty _difficulty;
         private readonly UnitOrderModel _orders;
+
+        private readonly EnemyAiDifficulty _difficulty;
+
         private float _decisionTimer;
+
         private bool _isEnabled;
 
         public bool IsFleeing { get; private set; }
 
         public ShipAIBrain(IHealthModelObserver healthModel, IRadarComponent radar,
-            IShipMovement movement, ShipAiDecisionModel decisionModel,
-            UnitOrderModel orders, PlayerId owner, IPlayerRoster roster)
+            IShipMovement movement, IPlayerRoster roster,
+            ShipAiDecisionModel decisionModel, UnitOrderModel orders, PlayerId owner)
         {
             _healthModel = healthModel;
             _radar = radar;
@@ -52,9 +56,9 @@ namespace EmpireAtWar.Entities.Ship.Mediator
                 !_orders.Target.HealthModel.IsDestroyed &&
                 _orders.Target.HealthModel.HasUnits;
             ShipAiDecision decision = _decisionModel.Evaluate(new ShipAiSnapshot(
-                _healthModel.IsDestroyed, _healthModel.HasShields,
-                _healthModel.ShieldPercentage, _radar.Enemies.Count,
-                hasTarget, targetAvailable, _movement.IsMoving),
+                isDestroyed: _healthModel.IsDestroyed, hasShields: _healthModel.HasShields,
+                shieldPercentage: _healthModel.ShieldPercentage, nearbyEnemyCount: _radar.Enemies.Count,
+                hasAssignedTarget: hasTarget, isAssignedTargetAvailable: targetAvailable, isMoving: _movement.IsMoving),
                 _difficulty);
             IsFleeing = decision == ShipAiDecision.Flee;
         }

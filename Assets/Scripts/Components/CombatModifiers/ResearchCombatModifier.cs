@@ -13,15 +13,17 @@ namespace EmpireAtWar.Components.Combat
     {
         private const float NEUTRAL_MULTIPLIER = 1f;
 
-        private readonly CombatModifiers _modifiers;
         private readonly IFactionResearchModelObserver _research;
+
+        private readonly CombatModifiers _modifiers;
+
         private readonly ShipClass _shipClass;
         private CombatStatModifier _applied;
 
         public ResearchCombatModifier(
-            CombatModifiers modifiers,
             IFactionResearchModelObserver research,
-            IHealthData healthData)
+            IHealthData healthData,
+            CombatModifiers modifiers)
         {
             _modifiers = modifiers;
             _research = research;

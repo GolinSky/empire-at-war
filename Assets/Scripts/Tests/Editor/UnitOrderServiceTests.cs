@@ -134,8 +134,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject obj = new GameObject("Unit " + id);
             _objects.Add(obj);
-            FakeEntity entity = new FakeEntity(id, side, new FakeHealth(obj.transform),
-                role, commands);
+            FakeEntity entity = new FakeEntity(id: id, side: side, health: new FakeHealth(obj.transform),
+                role: role, commands: commands);
             return entity;
         }
 
@@ -160,9 +160,18 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
+            private readonly IEntityFacade _role;
+
             private readonly HashSet<Type> _commands;
-            public FakeEntity(long id, PlayerId side, FakeHealth health,
-                IEntityFacade role, Type[] commands)
+
+            public long Id { get; }
+            public PlayerId Owner { get; }
+            public FakeHealth Health { get; }
+            public IHealthModelObserver HealthModel => Health;
+            public FakeCommand Command { get; }
+
+            public FakeEntity(IEntityFacade role, FakeHealth health, Type[] commands,
+                PlayerId side, long id)
             {
                 Id = id;
                 Owner = side;
@@ -171,12 +180,7 @@ namespace EmpireAtWar.Tests.Editor
                 Command = new FakeCommand();
                 _commands = commands == null ? null : new HashSet<Type>(commands);
             }
-            public long Id { get; }
-            public PlayerId Owner { get; }
-            private readonly IEntityFacade _role;
-            public FakeHealth Health { get; }
-            public IHealthModelObserver HealthModel => Health;
-            public FakeCommand Command { get; }
+
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
@@ -207,30 +211,42 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 LastPoint { get; private set; }
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
+
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
+
             public void MoveTo(Vector3 point) => Record(UnitActionId.Move, point);
+
             public void Attack(IEntity target, Vector3 offset) =>
                 Record(UnitActionId.Attack, offset);
+
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
+
             public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) => Record(UnitActionId.AttackMove, point);
+
             public void Stop() => Record(UnitActionId.Stop);
+
             public void Guard(IEntity target, Vector3 offset) =>
                 Record(UnitActionId.Guard, offset);
+
             public void MoveAlong(IReadOnlyList<Vector3> points) =>
                 Record(UnitActionId.WaypointMove, points[0]);
+
             public void Hunt() => Record(UnitActionId.Hunt);
+
             public void Retreat(Vector3 point) =>
                 Record(UnitActionId.Retreat, point);
+
             private void Record(UnitActionId action, Vector3 point = default)
             { CallCount++; LastAction = action; LastPoint = point; }
         }
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealth(Transform transform) { Transform = transform; }
-            public bool IsDestroyedValue { get; set; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
+            public bool IsDestroyedValue { get; set; }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -244,25 +260,35 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform) { Transform = transform; }
+
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
         }
 
-
         private sealed class FakeLocator : IEntityLocator
         {
             public event Action<IEntity> EntityAdded { add { } remove { } }
+
             public event Action<IEntity> EntityRemoved { add { } remove { } }
+
             public string Id => nameof(FakeLocator);
             public List<IEntity> EntitiesList { get; } = new List<IEntity>();
             public IReadOnlyCollection<IEntity> Entities => EntitiesList;
+
             public void AddEntity(IEntity entity) => EntitiesList.Add(entity);
+
             public void RemoveEntity(IEntity entity) => EntitiesList.Remove(entity);
+
             public IEntity GetEntity(long id) => EntitiesList.Find(entity => entity.Id == id);
+
             public bool TryGetEntity(long id, out IEntity entity)
             { entity = GetEntity(id); return entity != null; }
+
             public bool TryGetEntity(RaycastHit hit, out IEntity entity)
             { entity = null; return false; }
+
             public bool TryGetEntity(Collider collider, out IEntity entity)
             { entity = null; return false; }
         }
@@ -270,21 +296,31 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeZones : IReinforcementZonesSystem
         {
             public event Action OwnershipChanged { add { } remove { } }
+
             public Vector3 Center => new Vector3(-100f, 0f, 50f);
             public PlayerId LastSide { get; private set; }
+
             public bool TryGetDefaultZoneCenter(PlayerId side, out Vector3 point)
             { LastSide = side; point = Center; return true; }
+
             public bool IsPositionInAnyZone(Vector3 point, float clearance = 0f) => false;
+
             public bool IsPositionInAlliedZone(PlayerId side, Vector3 point) => false;
+
             public int GetOwnedCapturableZoneCount(PlayerId side) => 0;
+
             public void CopyOwnedCapturableZoneBounds(PlayerId side, List<Bounds> dest)
                 => dest.Clear();
+
             public bool TryGetDefaultSpawnPosition(PlayerId side, out Vector3 point)
             { point = default; return false; }
+
             public bool TryGetDefaultZoneExitPosition(PlayerId side, Vector3 ship,
                 float radius, out Vector3 point) { point = default; return false; }
+
             public bool TryGetRandomSpawnPosition(PlayerId side, ShipType type,
                 out Vector3 point) { point = default; return false; }
+
             public bool TryGetCaptureTarget(PlayerId side, Vector3 origin,
                 out Vector3 point) { point = default; return false; }
         }

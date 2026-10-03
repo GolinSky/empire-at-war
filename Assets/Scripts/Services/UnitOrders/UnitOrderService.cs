@@ -17,7 +17,10 @@ namespace EmpireAtWar.Services.UnitOrders
     {
         private readonly IEntityLocator _entityLocator;
         private readonly IReinforcementZonesSystem _zones;
+
         private readonly UnitOrderSettings _settings;
+
+        public event Action<UnitOrder> OrderIssued;
 
         public UnitOrderService(IEntityLocator entityLocator,
             IReinforcementZonesSystem zones, UnitOrderSettings settings)
@@ -26,8 +29,6 @@ namespace EmpireAtWar.Services.UnitOrders
             _zones = zones;
             _settings = settings;
         }
-
-        public event Action<UnitOrder> OrderIssued;
 
         public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point)
         {

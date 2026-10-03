@@ -10,17 +10,11 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// </summary>
     public sealed class CaptureSiteModel : PureModel
     {
+        private readonly IPlayerRelations _relations;
+
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
-        private readonly IPlayerRelations _relations;
         private float _buildDuration;
-
-        public CaptureSiteModel(float captureDuration, float captureSpeedPerNetShip, IPlayerRelations relations)
-        {
-            _captureDuration = captureDuration;
-            _captureSpeedPerNetShip = captureSpeedPerNetShip;
-            _relations = relations;
-        }
 
         public PlayerId Owner { get; private set; } = PlayerId.None;
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
@@ -31,6 +25,13 @@ namespace EmpireAtWar.Entities.CaptureSites
         public bool IsContested { get; private set; }
         public bool IsCapturable => State != CaptureSiteState.Operational;
         public bool CanStartConstruction => State == CaptureSiteState.Owned;
+
+        public CaptureSiteModel(IPlayerRelations relations, float captureDuration, float captureSpeedPerNetShip)
+        {
+            _captureDuration = captureDuration;
+            _captureSpeedPerNetShip = captureSpeedPerNetShip;
+            _relations = relations;
+        }
 
         /// <returns>True when the site changed owner.</returns>
         public bool TickCapture(float deltaTime, CaptureStrength tally)

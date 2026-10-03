@@ -13,27 +13,35 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyStructurePlacementService : IEnemyStructurePlacementService
     {
         private const float MINIMUM_ANCHOR_DISTANCE = 64f;
+
         private const int RING_COUNT = 3;
+
         private const float RING_SPACING = 12f;
+
         private const int POSITIONS_PER_RING = 32;
         private const int MAX_RECENT_DESTROYED_POSITIONS = 10;
+
         private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
+
+        private readonly IReinforcementZonesSystem _zones;
+        private readonly ICaptureSitesSystem _captureSites;
 
         private readonly PlayerSlot _owner;
         private readonly LazyInject<IMapModelObserver> _mapModel;
-        private readonly IReinforcementZonesSystem _zones;
-        private readonly ICaptureSitesSystem _captureSites;
-        private readonly int _obstacleMask;
-        private readonly Bounds _stationBounds;
-        private readonly float _structureClearance;
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
+        private readonly Bounds _stationBounds;
+
+        private readonly float _structureClearance;
+
+        private readonly int _obstacleMask;
+
         public EnemyStructurePlacementService(
-            LazyInject<IMapModelObserver> mapModel,
             IReinforcementZonesSystem zones,
             ICaptureSitesSystem captureSites,
             ILayerService layerService,
+            LazyInject<IMapModelObserver> mapModel,
             PlayerSlot owner,
             BoxCollider stationPrefab,
             BoxCollider[] structurePrefabs)

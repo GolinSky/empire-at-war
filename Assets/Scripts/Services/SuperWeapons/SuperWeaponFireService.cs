@@ -20,24 +20,42 @@ namespace EmpireAtWar.Services.SuperWeapons
     /// </summary>
     public sealed class SuperWeaponFireService : ISuperWeaponFireService, ITickable, ILateDisposable
     {
-        private readonly SuperWeaponData _data;
         private readonly IPlayerRelations _relations;
-        private readonly ImpactEffectPresenter _impactPresenter;
         private readonly IEntityLocator _entities;
         private readonly ISuperWeaponOrigin _origin;
+
+        private readonly SuperWeaponData _data;
+        private readonly ImpactEffectPresenter _impactPresenter;
         private readonly List<SuperWeaponSalvo> _salvos = new List<SuperWeaponSalvo>();
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
-        public SuperWeaponFireService(SuperWeaponData data, ImpactEffectPresenter impactPresenter,
-            IEntityLocator entities, ISuperWeaponOrigin origin,
-            IPlayerRelations relations)
+        public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
+            IPlayerRelations relations, SuperWeaponData data,
+            ImpactEffectPresenter impactPresenter)
         {
             _relations = relations;
             _data = data;
             _impactPresenter = impactPresenter;
             _entities = entities;
             _origin = origin;
+        }
+
+        public void LateDispose()
+        {
+            foreach (SuperWeaponSalvo salvo in _salvos)
+            {
+                // Scene unload can destroy the origin before the service is disposed.
+                if (salvo.Origin != null) Object.Destroy(salvo.Origin.gameObject);
+            }
+
+            _salvos.Clear();
+            foreach (SuperWeaponStun stun in _stuns)
+            {
+                stun.Modifiers.Remove(stun.Modifier);
+                stun.Modifiers.SetIonDisabled(false);
+            }
+            _stuns.Clear();
         }
 
         public bool CanTarget(PlayerId owner, IEntity target)
@@ -56,7 +74,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             GameObject origin = new GameObject($"{type}Origin");
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
-            _salvos.Add(new SuperWeaponSalvo(_data.GetProfile(type), target, origin.transform));
+            _salvos.Add(new SuperWeaponSalvo(profile: _data.GetProfile(type), target: target, origin: origin.transform));
         }
 
         public void Tick()
@@ -80,23 +98,6 @@ namespace EmpireAtWar.Services.SuperWeapons
                 stun.Modifiers.SetIonDisabled(false);
                 _stuns.RemoveAt(i);
             }
-        }
-
-        public void LateDispose()
-        {
-            foreach (SuperWeaponSalvo salvo in _salvos)
-            {
-                // Scene unload can destroy the origin before the service is disposed.
-                if (salvo.Origin != null) Object.Destroy(salvo.Origin.gameObject);
-            }
-
-            _salvos.Clear();
-            foreach (SuperWeaponStun stun in _stuns)
-            {
-                stun.Modifiers.Remove(stun.Modifier);
-                stun.Modifiers.SetIonDisabled(false);
-            }
-            _stuns.Clear();
         }
 
         private void AdvanceSalvo(SuperWeaponSalvo salvo, float deltaTime)

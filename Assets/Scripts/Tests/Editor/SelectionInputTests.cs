@@ -47,12 +47,12 @@ namespace EmpireAtWar.Tests.Selection
             selectionQuery.Add(
                 playerPosition,
                 new SelectionEntry(
-                    new FakeEntity(1, TestPlayers.Human, playerCommand),
+                    new FakeEntity(id: 1, owner: TestPlayers.Human, selectionCommand: playerCommand),
                     playerCommand));
             selectionQuery.Add(
                 opponentPosition,
                 new SelectionEntry(
-                    new FakeEntity(2, TestPlayers.Enemy, opponentCommand),
+                    new FakeEntity(id: 2, owner: TestPlayers.Enemy, selectionCommand: opponentCommand),
                     opponentCommand));
 
             selectionService.Initialize();
@@ -137,14 +137,23 @@ namespace EmpireAtWar.Tests.Selection
         private sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
         {
             public event Action<Vector2> WorldPressed;
+
             public event Action<Vector2> WorldClicked { add { } remove { } }
+
             public event Action<Vector2> WorldCommanded { add { } remove { } }
+
             public event Action<Vector2> DragStarted { add { } remove { } }
+
             public event Action<Vector2> DragChanged { add { } remove { } }
+
             public event Action<Vector2> DragEnded { add { } remove { } }
+
             public event Action<Vector2> PrimaryPressed { add { } remove { } }
+
             public event Action<Vector2> PrimaryReleased { add { } remove { } }
+
             public event Action SelectVisibleRequested { add { } remove { } }
+
             public event Action SelectAllRequested { add { } remove { } }
 
             public Vector2 Position => Vector2.zero;
@@ -203,13 +212,13 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeSelectionCommand : IEntitySelectionFacade
         {
+            public SelectionType SelectionType { get; set; }
+            public bool IsSelected { get; private set; }
+
             public FakeSelectionCommand(SelectionType selectionType)
             {
                 SelectionType = selectionType;
             }
-
-            public SelectionType SelectionType { get; set; }
-            public bool IsSelected { get; private set; }
 
             public void Select(bool isSelected)
             {
@@ -221,19 +230,19 @@ namespace EmpireAtWar.Tests.Selection
         {
             private readonly IEntitySelectionFacade _selectionCommand;
 
+            public long Id { get; }
+            public IHealthModelObserver HealthModel => null;
+            public PlayerId Owner { get; }
+
             public FakeEntity(
-                long id,
+                IEntitySelectionFacade selectionCommand,
                 PlayerId owner,
-                IEntitySelectionFacade selectionCommand)
+                long id)
             {
                 Id = id;
                 Owner = owner;
                 _selectionCommand = selectionCommand;
             }
-
-            public long Id { get; }
-            public IHealthModelObserver HealthModel => null;
-            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

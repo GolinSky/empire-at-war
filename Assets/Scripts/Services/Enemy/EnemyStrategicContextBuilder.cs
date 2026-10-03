@@ -18,13 +18,21 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyStrategicContext
     {
+        public EnemyStrategicSnapshot Snapshot { get; }
+        public IReadOnlyList<IShipEntity> Ships { get; }
+        public Vector3 CaptureTarget { get; }
+        public GameEntity EnemyFleetTarget { get; }
+        public GameEntity EnemyBaseTarget { get; }
+        public GameEntity OwnBase { get; }
+        public IReadOnlyDictionary<IShipEntity, GameEntity> Receivers { get; }
+
         public EnemyStrategicContext(
-            EnemyStrategicSnapshot snapshot,
             IReadOnlyList<IShipEntity> ships,
-            Vector3 captureTarget,
             GameEntity enemyFleetTarget,
             GameEntity enemyBaseTarget,
             GameEntity ownBase,
+            EnemyStrategicSnapshot snapshot,
+            Vector3 captureTarget,
             IReadOnlyDictionary<IShipEntity, GameEntity> receivers = null)
         {
             Snapshot = snapshot;
@@ -35,14 +43,6 @@ namespace EmpireAtWar.Services.Enemy
             OwnBase = ownBase;
             Receivers = receivers;
         }
-
-        public EnemyStrategicSnapshot Snapshot { get; }
-        public IReadOnlyList<IShipEntity> Ships { get; }
-        public Vector3 CaptureTarget { get; }
-        public GameEntity EnemyFleetTarget { get; }
-        public GameEntity EnemyBaseTarget { get; }
-        public GameEntity OwnBase { get; }
-        public IReadOnlyDictionary<IShipEntity, GameEntity> Receivers { get; }
     }
 
     public sealed class EnemyStrategicContextBuilder
@@ -54,8 +54,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
-        private readonly PlayerSlot _owner;
         private readonly IPlayerRoster _roster;
+
+        private readonly PlayerSlot _owner;
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -63,8 +64,8 @@ namespace EmpireAtWar.Services.Enemy
             ICaptureSitesSystem captureSites,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
-            PlayerSlot owner,
-            IPlayerRoster roster)
+            IPlayerRoster roster,
+            PlayerSlot owner)
         {
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
@@ -108,28 +109,28 @@ namespace EmpireAtWar.Services.Enemy
                 BASE_THREAT_RADIUS);
 
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
-                _gameModel.VictoryCondition,
-                _owner.Difficulty,
-                ownShips.Count,
-                focusTeamShips.Count,
-                hasCaptureTarget,
-                enemyBaseTarget != null,
-                ownBase != null,
-                ownedCapturableZoneCount,
-                enemyShipsNearOwnBase,
-                hasThreatenedSite);
+                victoryCondition: _gameModel.VictoryCondition,
+                difficulty: _owner.Difficulty,
+                ownShipCount: ownShips.Count,
+                enemyShipCount: focusTeamShips.Count,
+                hasCaptureTarget: hasCaptureTarget,
+                hasEnemyBaseTarget: enemyBaseTarget != null,
+                hasOwnBase: ownBase != null,
+                ownedCapturableZoneCount: ownedCapturableZoneCount,
+                enemyShipsNearOwnBase: enemyShipsNearOwnBase,
+                hasThreatenedSite: hasThreatenedSite);
             Dictionary<IShipEntity, GameEntity> receivers =
                 new Dictionary<IShipEntity, GameEntity>();
             foreach (IShipEntity ship in ownShips)
                 receivers.Add(ship, _entityLocator.GetEntity(ship.EntityId));
             return new EnemyStrategicContext(
-                snapshot,
-                ownShips,
-                captureTarget,
-                enemyFleetTarget,
-                enemyBaseTarget,
-                ownBase,
-                receivers);
+                snapshot: snapshot,
+                ships: ownShips,
+                captureTarget: captureTarget,
+                enemyFleetTarget: enemyFleetTarget,
+                enemyBaseTarget: enemyBaseTarget,
+                ownBase: ownBase,
+                receivers: receivers);
         }
 
         /// <summary>

@@ -20,35 +20,20 @@ namespace EmpireAtWar.Components.Weapon
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
         IWeaponFireEvents, IWeaponFacing
     {
-        private struct TargetCandidate
-        {
-            public AttackData Group;
-            public IHardPointModel Unit;
-        }
-
-        internal struct TargetSelectionCandidate
-        {
-            public AttackData Group;
-            public IHardPointModel Unit;
-            public int Generation;
-            public Vector3 Position;
-        }
-
-        [SerializeField] private List<WeaponHardPoint> hardPoints;
-        [SerializeField] private bool useWeaponDamageRange;
-
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
-        
+
+        private IRadarModelObserver _radarModel;
+        private ISelectionModelObserver _selection;
+        private ITimer _attackTimer = TimerFactory.ConstructTimer();
+
+        [SerializeField] private List<WeaponHardPoint> hardPoints;
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private WeaponsData _weaponsData;
         private DamageMatrixData _damageMatrix;
-        private IRadarModelObserver _radarModel;
         private DebugRangeCircleFactory _rangeCircleFactory;
-        private ISelectionModelObserver _selection;
         [Inject] private ImpactEffectPresenter _impactPresenter;
-        private ITimer _attackTimer = TimerFactory.ConstructTimer();
         private List<AttackData> _attackDataList = new List<AttackData>();
         private readonly List<TargetCandidate> _orderedCandidates = new List<TargetCandidate>();
         private readonly HashSet<AttackData> _subscribedGroups = new HashSet<AttackData>();
@@ -58,21 +43,25 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<Vector2> _turnArcs = new List<Vector2>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
-        private int _currentWeaponIndex = 0;
-        private int _targetVersion;
-        private bool _isReleased;
-        private bool _isInitialized;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private DebugRangeCircle _attackRangeCircle;
 #endif
-        public float AttackDistance => Model.OptimalAttackRange;
+
+        private int _currentWeaponIndex = 0;
+        private int _targetVersion;
+
+        [SerializeField] private bool useWeaponDamageRange;
+        private bool _isReleased;
+        private bool _isInitialized;
+
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
+        public float AttackDistance => Model.OptimalAttackRange;
 
         [Inject]
-        private void Construct(CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            WeaponsData weaponsData, DamageMatrixData damageMatrix, IRadarModelObserver radarModel,
-            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection)
+        private void Construct(IRadarModelObserver radarModel, ISelectionModelObserver selection,
+            CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
+            DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory)
         {
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
@@ -82,7 +71,7 @@ namespace EmpireAtWar.Components.Weapon
             _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
         }
-        
+
         public void Initialize()
         {
             _isInitialized = true;
@@ -216,6 +205,7 @@ namespace EmpireAtWar.Components.Weapon
             UnsubscribeIfUnused(previousMain);
             RebuildCandidates();
         }
+
         public void Tick()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -444,7 +434,7 @@ namespace EmpireAtWar.Components.Weapon
             AttackSequenceDiagnostics.RecordTargetSnapshot();
             return position;
         }
-        
+
         public bool RollHit(AttackData attackData, WeaponProfile profile) =>
             Model.RollHit(profile.DamageType, attackData.TargetClass, UnityEngine.Random.value);
 
@@ -469,6 +459,24 @@ namespace EmpireAtWar.Components.Weapon
 
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>
             attackData.CanTarget(hardPointModel) && attackData.Contains(hardPointModel);
+
+        private struct TargetCandidate
+        {
+            public IHardPointModel Unit;
+
+            public AttackData Group;
+        }
+
+        internal struct TargetSelectionCandidate
+        {
+            public IHardPointModel Unit;
+
+            public AttackData Group;
+
+            public Vector3 Position;
+
+            public int Generation;
+        }
 
     }
 }

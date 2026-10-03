@@ -10,22 +10,23 @@ namespace EmpireAtWar.Models.Reinforcement
     public interface IReinforcementModelObserver : IModelObserver
     {
         event Action<int> OnCapacityChanged;
+
         event Action<bool> OnSpawnUnit;
+
         event Action<UnitRequest> OnReinforcementAdded;
+
         bool IsTrySpawning { get; }
         int MaxUnitCapacity { get; }
         int CurrentUnitCapacity { get; }
         int CapacityLeft { get; }
+
         bool CanSpawnUnit(ShipType shipType);
+
         bool CanSpawnUnit(SquadronType squadronType);
     }
 
     public class ReinforcementModel : PureModel, IReinforcementModelObserver
     {
-        public event Action<int> OnCapacityChanged;
-        public event Action<bool> OnSpawnUnit;
-        public event Action<UnitRequest> OnReinforcementAdded;
-
         private readonly ReinforcementData _data;
         private readonly Dictionary<ShipType, FactionData> _shipFactionData = new();
         private readonly Dictionary<SquadronType, FactionData> _squadronFactionData = new();
@@ -33,10 +34,11 @@ namespace EmpireAtWar.Models.Reinforcement
 
         private int _currentUnitCapacity;
 
-        public ReinforcementModel(ReinforcementData data)
-        {
-            _data = data;
-        }
+        public event Action<int> OnCapacityChanged;
+
+        public event Action<bool> OnSpawnUnit;
+
+        public event Action<UnitRequest> OnReinforcementAdded;
 
         public int CurrentUnitCapacity
         {
@@ -51,6 +53,11 @@ namespace EmpireAtWar.Models.Reinforcement
         public int MaxUnitCapacity => _data.MaxUnitCapacity;
         public int CapacityLeft => MaxUnitCapacity - CurrentUnitCapacity;
         public bool IsTrySpawning { get; set; }
+
+        public ReinforcementModel(ReinforcementData data)
+        {
+            _data = data;
+        }
 
         public void InvokeSpawnShipEvent(bool success)
         {

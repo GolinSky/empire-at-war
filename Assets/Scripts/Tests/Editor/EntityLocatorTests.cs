@@ -41,14 +41,14 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
+            public long Id { get; }
+            public IHealthModelObserver HealthModel => null;
+            public PlayerId Owner => TestPlayers.Human;
+
             public FakeEntity(long id)
             {
                 Id = id;
             }
-
-            public long Id { get; }
-            public IHealthModelObserver HealthModel => null;
-            public PlayerId Owner => TestPlayers.Human;
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

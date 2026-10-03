@@ -51,22 +51,22 @@ namespace EmpireAtWar.Tests.Editor
                 TrackingEconomyProvider economyProvider =
                     new TrackingEconomyProvider();
                 EnemyFactionController controller = new EnemyFactionController(
-                    model,
-                    null,
-                    null,
-                    null,
-                    timerPool,
-                    economyProvider,
-                    new TrackingWallet(),
-                    null,
-                    unitLimitModel,
-                    reinforcementData,
-                    new UnavailableStructurePlacement(),
-                    new OperationalStationRegistry(),
-                    null,
-                    null,
-                    TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    new PlayerRegistry());
+                    model: model,
+                    shipFactory: null,
+                    miningFacilityFactory: null,
+                    defendPlatformFactory: null,
+                    timerPoolService: timerPool,
+                    economyProvider: economyProvider,
+                    wallet: new TrackingWallet(),
+                    reinforcementZonesSystem: null,
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    structurePlacement: new UnavailableStructurePlacement(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    squadronLauncher: null,
+                    squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
 
                 controller.Initialize();
                 controller.Purchase(
@@ -114,22 +114,22 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 TrackingWallet wallet = new TrackingWallet();
                 EnemyFactionController controller = new EnemyFactionController(
-                    model,
-                    null,
-                    null,
-                    null,
-                    timerPool,
-                    new TrackingEconomyProvider(),
-                    wallet,
-                    null,
-                    unitLimitModel,
-                    reinforcementData,
-                    new UnavailableStructurePlacement(),
-                    new OperationalStationRegistry(),
-                    null,
-                    null,
-                    TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    new PlayerRegistry());
+                    model: model,
+                    shipFactory: null,
+                    miningFacilityFactory: null,
+                    defendPlatformFactory: null,
+                    timerPoolService: timerPool,
+                    economyProvider: new TrackingEconomyProvider(),
+                    wallet: wallet,
+                    reinforcementZonesSystem: null,
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    structurePlacement: new UnavailableStructurePlacement(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    squadronLauncher: null,
+                    squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 UnitLimitKey unitId = UnitLimitKey.From(request);
@@ -179,22 +179,22 @@ namespace EmpireAtWar.Tests.Editor
             TrackingStructurePlacement structurePlacement =
                 new TrackingStructurePlacement();
             EnemyFactionController controller = new EnemyFactionController(
-                model,
-                null,
-                null,
-                null,
-                new TimerPoolService(),
-                new TrackingEconomyProvider(),
-                null,
-                null,
-                new EnemyUnitLimitModel(),
-                null,
-                structurePlacement,
-                new OperationalStationRegistry(),
-                null,
-                null,
-                TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                new PlayerRegistry());
+                model: model,
+                shipFactory: null,
+                miningFacilityFactory: null,
+                defendPlatformFactory: null,
+                timerPoolService: new TimerPoolService(),
+                economyProvider: new TrackingEconomyProvider(),
+                wallet: null,
+                reinforcementZonesSystem: null,
+                unitLimitModel: new EnemyUnitLimitModel(),
+                reinforcementData: null,
+                structurePlacement: structurePlacement,
+                stationRegistry: new OperationalStationRegistry(),
+                squadronLauncher: null,
+                squadronCommander: null,
+                owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                playerRegistry: new PlayerRegistry());
 
             controller.Initialize();
             controller.Initialize();
@@ -202,51 +202,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(structurePlacement.ResetCount, Is.EqualTo(1));
 
             controller.LateDispose();
-        }
-
-        private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService
-        {
-            public bool TryGetPosition(out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public void RecordDestroyedPosition(Vector3 position)
-            {
-            }
-
-            public void Reset()
-            {
-            }
-        }
-
-        private sealed class TrackingStructurePlacement : IEnemyStructurePlacementService
-        {
-            public int ResetCount { get; private set; }
-
-            public bool TryGetPosition(out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public void RecordDestroyedPosition(Vector3 position)
-            {
-            }
-
-            public void Reset()
-            {
-                ResetCount++;
-            }
-        }
-
-        private sealed class OperationalStationRegistry : IStationRegistry
-        {
-            public string Id => nameof(OperationalStationRegistry);
-            public bool IsStationOperational(PlayerId owner) => true;
-            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
-                throw new NotImplementedException();
         }
 
         private static void SetBackingField<T>(
@@ -315,6 +270,53 @@ namespace EmpireAtWar.Tests.Editor
             ICollection pendingBuilds = field.GetValue(controller) as ICollection;
             Assert.That(pendingBuilds, Is.Not.Null);
             return pendingBuilds.Count;
+        }
+
+        private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService
+        {
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public void RecordDestroyedPosition(Vector3 position)
+            {
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
+        private sealed class TrackingStructurePlacement : IEnemyStructurePlacementService
+        {
+            public int ResetCount { get; private set; }
+
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public void RecordDestroyedPosition(Vector3 position)
+            {
+            }
+
+            public void Reset()
+            {
+                ResetCount++;
+            }
+        }
+
+        private sealed class OperationalStationRegistry : IStationRegistry
+        {
+            public string Id => nameof(OperationalStationRegistry);
+
+            public bool IsStationOperational(PlayerId owner) => true;
+
+            public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
+                throw new NotImplementedException();
         }
 
         private sealed class TrackingEconomyProvider : IEconomyProvider

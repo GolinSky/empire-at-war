@@ -13,9 +13,11 @@ namespace EmpireAtWar.Entities.Map.Generation
     {
         private const int MAX_PAIR_ATTEMPTS = 400;
         private const int CANDIDATES_PER_PICK = 12;
+
         private const float MIRROR_TOLERANCE = 1f;
 
         private readonly MapGenerationSettings _settings;
+
         private readonly MapFeatureRadii _radii;
 
         public PointOfInterestPlacer(MapGenerationSettings settings, MapFeatureRadii radii)
@@ -43,7 +45,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             if (size.CapturableZoneCount % 2 == 1)
             {
                 MapNode centralZone = new MapNode(
-                    MapNodeKind.CapturableZone, center, _radii.Zone, PlayerId.None);
+                    kind: MapNodeKind.CapturableZone, center: center, radius: _radii.Zone, owner: PlayerId.None);
                 if (!IsClear(center, GetOuterRadius(centralZone, size), size, stations, nodes))
                 {
                     return false;
@@ -96,7 +98,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                     station.Position.x + side * offset,
                     0f,
                     station.Position.z);
-                nodes.Add(new MapNode(MapNodeKind.DefaultZone, position, _radii.Zone, station.Owner));
+                nodes.Add(new MapNode(kind: MapNodeKind.DefaultZone, center: position, radius: _radii.Zone, owner: station.Owner));
             }
 
             PairWithMirroredStations(stations, center, 0, nodes);
@@ -133,7 +135,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                     return false;
                 }
 
-                nodes.Add(new MapNode(MapNodeKind.MiningSite, position, _radii.MiningSite, PlayerId.None));
+                nodes.Add(new MapNode(kind: MapNodeKind.MiningSite, center: position, radius: _radii.MiningSite, owner: PlayerId.None));
             }
 
             PairWithMirroredStations(stations, center, firstIndex, nodes);
@@ -194,8 +196,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
 
                 int index = nodes.Count;
-                nodes.Add(new MapNode(kind, position, radius, PlayerId.None) { Mirror = index + 1 });
-                nodes.Add(new MapNode(kind, MapGeometry.Reflect(position, center), radius, PlayerId.None) { Mirror = index });
+                nodes.Add(new MapNode(kind: kind, center: position, radius: radius, owner: PlayerId.None) { Mirror = index + 1 });
+                nodes.Add(new MapNode(kind: kind, center: MapGeometry.Reflect(position, center), radius: radius, owner: PlayerId.None) { Mirror = index });
             }
 
             return true;

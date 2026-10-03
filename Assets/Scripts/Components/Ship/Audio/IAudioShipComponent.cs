@@ -10,10 +10,15 @@ namespace EmpireAtWar.Components.Ship.Audio
     public interface IAudioShipComponent : IComponent
     {
         void InitializeAudio(IEntity ship, IReadOnlyList<ShipAbilitySlot> abilities);
+
         void UpdateAudio();
+
         void HandleAbilityChanged();
+
         void PlayWeaponShot(WeaponProfile profile, Transform muzzle);
+
         void PlayHyperSpace();
+
         void HandleEnemyDetected();
     }
 }

@@ -5,6 +5,7 @@ namespace EmpireAtWar.Services.Input
     public sealed class MouseDragState
     {
         private const float DRAG_THRESHOLD = 5f;
+
         private Vector2 _previousPosition;
 
         public bool IsPressed { get; private set; }

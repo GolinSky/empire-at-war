@@ -8,6 +8,7 @@ namespace EmpireAtWar.Components.Ui
     {
         [SerializeField] private Color borderColor = new Color32(40, 70, 87, 255);
         [SerializeField] private Color accentColor = new Color32(54, 200, 243, 255);
+
         [SerializeField] private float bevel = 10f;
         [SerializeField] private float accentWidth = 80f;
 

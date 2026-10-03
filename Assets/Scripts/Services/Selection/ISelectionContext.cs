@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Battle
         bool HasSelectable { get; }
         int Count { get; }
         SelectionScope Scope { get; }
+
         bool Contains(IEntity entity);
     }
 }

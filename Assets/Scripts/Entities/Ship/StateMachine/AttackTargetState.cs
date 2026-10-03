@@ -19,10 +19,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IShipMovement _shipMoveComponent;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
-        private Transform _mainTargetTransform;
         private IHardPointModel _focusedHardPoint;
+
+        private Transform _mainTargetTransform;
+
         private Vector3 _formationOffset;
         private Vector3 _pursuitDestination;
+
         private bool _hasPursuitDestination;
         private bool _wasMoving;
         private bool _isClosingRange;
@@ -34,6 +37,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _shipMoveComponent.NavigationRadius,
             _weaponComponent.AttackDistance * 0.1f);
 
+        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits;
+
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
             IWeaponComponent weaponComponent,
@@ -43,8 +48,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent = weaponComponent;
             _shipMoveComponent = shipMoveComponent;
         }
-
-        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits;
 
         public void SetData(IEntity mainTarget, Vector3 formationOffset, int hardPointId)
         {

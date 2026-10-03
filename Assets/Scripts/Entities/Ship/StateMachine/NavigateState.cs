@@ -8,15 +8,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     public sealed class NavigateState : IBaseState
     {
         private readonly IShipMovement _shipMoveComponent;
+
         private Vector3 _destination;
+
         private bool _hasPendingDestination;
+
+        public bool IsComplete => !_shipMoveComponent.IsMoving;
 
         public NavigateState(IShipMovement shipMoveComponent)
         {
             _shipMoveComponent = shipMoveComponent;
         }
-
-        public bool IsComplete => !_shipMoveComponent.IsMoving;
 
         public void SetWorldDestination(Vector3 destination)
         {

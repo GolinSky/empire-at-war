@@ -114,7 +114,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeCommand caster = CreateCaster(targeted: true);
             _targetView = new GameObject("Target");
             FakeHealth targetHealth = new FakeHealth(_targetView.transform);
-            FakeEntity target = new FakeEntity(null, TestPlayers.Enemy, targetHealth);
+            FakeEntity target = new FakeEntity(command: null, owner: TestPlayers.Enemy, health: targetHealth);
 
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(service.IsWaitingForTarget, Is.True);
@@ -192,21 +192,15 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingAbility : IShipAbility
         {
             public int StopCount { get; private set; }
+
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
                 IEntity target) { }
+
             public void Stop() => StopCount++;
         }
 
         private sealed class FakeCommand : IShipAbilityFacade
         {
-            public FakeCommand(ShipAbilityDefinition definition)
-            {
-                FakeHealth = new FakeHealth(null);
-                Entity = new FakeEntity(this, TestPlayers.Human, FakeHealth);
-                Slots = new[] { new ShipAbilitySlot(ShipAbilityId.BoostEnginePower,
-                    definition, this) };
-            }
-
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;
@@ -214,23 +208,31 @@ namespace EmpireAtWar.Tests.Editor
             public FakeHealth FakeHealth { get; }
             public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 20f;
+
+            public FakeCommand(ShipAbilityDefinition definition)
+            {
+                FakeHealth = new FakeHealth(null);
+                Entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
+                Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostEnginePower,
+                    definition: definition, owner: this) };
+            }
         }
 
         private sealed class FakeEntity : IEntity
         {
             private readonly IShipAbilityFacade _command;
 
-            public FakeEntity(IShipAbilityFacade command, PlayerId owner,
-                IHealthModelObserver health)
+            public long Id => 1;
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner { get; }
+
+            public FakeEntity(IShipAbilityFacade command, IHealthModelObserver health,
+                PlayerId owner)
             {
                 _command = command;
                 Owner = owner;
                 HealthModel = health;
             }
-
-            public long Id => 1;
-            public IHealthModelObserver HealthModel { get; }
-            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -250,9 +252,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealth(Transform transform) { Transform = transform; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -267,6 +270,9 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform) { Transform = transform; }
+
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
                 Array.Empty<IHardPointModel>();
         }

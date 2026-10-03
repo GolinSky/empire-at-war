@@ -13,7 +13,6 @@ namespace EmpireAtWar.Views.MiniMap
 
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private MPImage ringImage;
-
         private Sequence _sequence;
 
         private void Awake()

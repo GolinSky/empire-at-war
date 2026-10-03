@@ -12,32 +12,42 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
         IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade
     {
-        private readonly ShipOrderRunner _orders;
         private readonly IShipMovement _movement;
 
-        public ShipOrderFacade(ShipOrderRunner orders, IShipMovement movement)
-        {
-            _orders = orders;
-            _movement = movement;
-        }
+        private readonly ShipOrderRunner _orders;
 
         public Vector3 WorldPosition => _movement.CurrentPosition;
         public float NavigationRadius => _movement.NavigationRadius;
         public EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderType CurrentOrder => _orders.CurrentOrder;
 
+        public ShipOrderFacade(IShipMovement movement, ShipOrderRunner orders)
+        {
+            _orders = orders;
+            _movement = movement;
+        }
+
         public void MoveTo(Vector2 screenPosition) => _orders.MoveTo(screenPosition);
+
         public void MoveTo(Vector3 worldPosition) => _orders.MoveTo(worldPosition);
+
         public void Attack(IEntity target, Vector3 formationOffset) =>
             _orders.Attack(target, formationOffset);
+
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>
             _orders.AttackHardPoint(target, hardPointId, formationOffset);
+
         public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
             _orders.AttackMoveTo(worldPosition, engagement);
+
         public void Stop() => _orders.Stop();
+
         public void Guard(IEntity friendly, Vector3 offset) => _orders.Guard(friendly, offset);
+
         public void MoveAlong(IReadOnlyList<Vector3> waypoints) =>
             _orders.MoveAlong(waypoints);
+
         public void Hunt() => _orders.Hunt();
+
         public void Retreat(Vector3 destination) => _orders.Retreat(destination);
     }
 }

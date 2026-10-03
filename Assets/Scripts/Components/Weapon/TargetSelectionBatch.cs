@@ -12,27 +12,11 @@ namespace EmpireAtWar.Components.Weapon
     {
         internal const int JOB_SELECTION_THRESHOLD = 8;
         internal const int TARGET_JOB_BATCH_SIZE = 1;
+
         private readonly Func<IWeaponPresenter, int, bool> _isRegistered;
-        private struct TargetSelectionRequest
-        {
-            public IWeaponPresenter Owner;
-            public WeaponComponent Weapon;
-            public int OwnerGeneration;
-            public WeaponHardPoint HardPoint;
-            public int TargetVersion;
-            public Vector3 Origin;
-            public Quaternion ParentRotation;
-            public int CandidateStart;
-            public int CandidateCount;
-        }
-
-        private struct TargetSelectionCandidateRecord
-        {
-            public WeaponComponent.TargetSelectionCandidate Candidate;
-        }
-
         private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
         private readonly List<TargetSelectionCandidateRecord> _targetSelectionCandidates = new List<TargetSelectionCandidateRecord>();
+
         private NativeArray<WeaponTargetSelectionJob.Input> _targetSelectionInputs;
         private NativeArray<Unity.Mathematics.float3> _targetSelectionPositions;
         private NativeArray<WeaponTargetSelectionJob.Result> _targetSelectionResults;
@@ -48,6 +32,15 @@ namespace EmpireAtWar.Components.Weapon
             _isRegistered = isRegistered;
         }
 
+        public void Dispose()
+        {
+            _targetSelectionRequests.Clear();
+            _targetSelectionCandidates.Clear();
+            if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
+            if (_targetSelectionPositions.IsCreated) _targetSelectionPositions.Dispose();
+            if (_targetSelectionResults.IsCreated) _targetSelectionResults.Dispose();
+        }
+
         public void Queue(WeaponComponent weapon, WeaponHardPoint hardPoint, int ownerGeneration)
         {
             _targetSelectionRequests.Add(new TargetSelectionRequest
@@ -57,15 +50,6 @@ namespace EmpireAtWar.Components.Weapon
                 OwnerGeneration = ownerGeneration,
                 HardPoint = hardPoint
             });
-        }
-
-        public void Dispose()
-        {
-            _targetSelectionRequests.Clear();
-            _targetSelectionCandidates.Clear();
-            if (_targetSelectionInputs.IsCreated) _targetSelectionInputs.Dispose();
-            if (_targetSelectionPositions.IsCreated) _targetSelectionPositions.Dispose();
-            if (_targetSelectionResults.IsCreated) _targetSelectionResults.Dispose();
         }
 
         public void Process()
@@ -243,6 +227,27 @@ namespace EmpireAtWar.Components.Weapon
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionInputs, requestCount);
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionResults, requestCount);
             EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionPositions, candidateCount);
+        }
+
+        private struct TargetSelectionRequest
+        {
+            public IWeaponPresenter Owner;
+
+            public WeaponComponent Weapon;
+            public WeaponHardPoint HardPoint;
+
+            public Vector3 Origin;
+            public Quaternion ParentRotation;
+
+            public int OwnerGeneration;
+            public int TargetVersion;
+            public int CandidateStart;
+            public int CandidateCount;
+        }
+
+        private struct TargetSelectionCandidateRecord
+        {
+            public WeaponComponent.TargetSelectionCandidate Candidate;
         }
 
 

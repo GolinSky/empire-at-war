@@ -10,15 +10,19 @@ namespace EmpireAtWar.Components.Ship.Audio
     {
         private const float MIN_ALARM_DELAY = 30f;
         private const float MAX_ALARM_DELAY = 60f;
+
         private IShipSfxService _audio;
+
         private ShipVoiceSet _voices;
+
         private float _alarmReadyAt;
+
         private bool _isSelected;
 
         public string Id => nameof(AudioDialogShipComponent);
 
         [Inject]
-        private void Construct(ShipSfxData data, IShipSfxService audio, IPlayerRoster roster, PlayerId owner)
+        private void Construct(IShipSfxService audio, IPlayerRoster roster, ShipSfxData data, PlayerId owner)
         {
             _voices = data.GetVoiceSet(roster.Get(owner).Faction);
             _audio = audio;

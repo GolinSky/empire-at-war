@@ -8,28 +8,20 @@ namespace ViewComponents
     public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
     {
         private const int MAX_TEXTURE_RESOLUTION = 512;
+
         private const float BYTE_MAX = 255f;
 
-        
         [SerializeField] private MeshFilter meshFilter;
         [SerializeField] private Renderer fogRenderer;
-        [Header("Fog Map Settings")]
-        [Tooltip("Resolution of the dynamic mask texture")]
-        public int textureResolution = 256;
-
-        [Tooltip("Automatically match Map Size and Center to the Renderer's bounds on start.")]
-        public bool autoDetectBounds = true;
+        private Texture2D _fogTexture;
+        private FogVisibilityGridModel _grid;
+        private List<VisionSource> _activeSources = new List<VisionSource>();
+        private Material _fogMaterial;
 
         [Tooltip("Total size of the map in world units (if auto-detect is off)")]
         public Vector2 mapWorldSize = new Vector2(200f, 200f);
         [Tooltip("Center of the map in world units (if auto-detect is off)")]
         public Vector3 mapCenter = Vector3.zero;
-
-        [Header("UV Orientation")]
-        [Tooltip("Flip X axis mapping. Unity's default Plane mesh needs this ON.")]
-        public bool flipX = true;
-        [Tooltip("Flip Z axis mapping. Unity's default Plane mesh needs this ON.")]
-        public bool flipZ = true;
 
         [Header("Update Settings")]
         public float updateInterval = 0.1f;
@@ -37,23 +29,21 @@ namespace ViewComponents
         [Range(0f, 1f)]
         [Tooltip("Width of the feathered border relative to vision radius. The configured radius remains 50% visible.")]
         public float edgeSoftness = 0.25f;
+        private float _timer;
+
+        [Header("Fog Map Settings")]
+        [Tooltip("Resolution of the dynamic mask texture")]
+        public int textureResolution = 256;
+
+        [Tooltip("Automatically match Map Size and Center to the Renderer's bounds on start.")]
+        public bool autoDetectBounds = true;
+        [Header("UV Orientation")]
+        [Tooltip("Flip X axis mapping. Unity's default Plane mesh needs this ON.")]
+        public bool flipX = true;
+        [Tooltip("Flip Z axis mapping. Unity's default Plane mesh needs this ON.")]
+        public bool flipZ = true;
         [Tooltip("If true, already visited areas will remain dimly visible. If false, fog completely returns when sources leave.")]
         public bool keepHistory;
-
-        // Represents a single area of vision
-        public class VisionSource
-        {
-            public Transform transform;
-            public float radius;
-            public float intensity;
-        }
-
-        private Texture2D _fogTexture;
-        private FogVisibilityGridModel _grid;
-
-        private List<VisionSource> _activeSources = new List<VisionSource>();
-        private float _timer;
-        private Material _fogMaterial;
 
         /// <summary>Stretches the fog plane and its mask for a larger battlefield; call before Start.</summary>
         public void ScaleArea(float scale)
@@ -214,6 +204,15 @@ namespace ViewComponents
         public bool IsHidden(Vector3 worldPos, float threshold = 0.1f)
         {
             return GetVisibilityAtPosition(worldPos) < threshold;
+        }
+
+        // Represents a single area of vision
+        public class VisionSource
+        {
+            public Transform transform;
+
+            public float radius;
+            public float intensity;
         }
     }
 }

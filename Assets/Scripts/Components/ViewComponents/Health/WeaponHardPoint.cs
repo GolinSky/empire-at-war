@@ -14,28 +14,32 @@ namespace EmpireAtWar.ViewComponents.Health
 {
     public class WeaponHardPoint : HardPoint
     {
-        public event System.Action<WeaponProfile, Transform> ShotEmitted;
+        private readonly ITimer _reloadTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private FloatRange yAxisRange;
-        [SerializeField] private int prewarmEffects;
-        [field:SerializeField] public WeaponType WeaponType { get; private set; }
-
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
         private ShotEffectPool _effectPool;
         private WeaponProfile _profile;
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private ImpactEffectPresenter _impactPresenter;
+
         private float _maxAttackDistance;
         private float _missSpread;
-        private readonly ITimer _reloadTimer = TimerFactory.ConstructTimer();
 
+        [SerializeField] private int prewarmEffects;
+
+        public event System.Action<WeaponProfile, Transform> ShotEmitted;
+
+        [field:SerializeField] public WeaponType WeaponType { get; private set; }
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete;
         public float MaxAttackDistance => _maxAttackDistance;
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
+        internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
+        internal float DelayBetweenShots => _profile.ShotInterval;
 
         public void SetData(FloatRange floatRange)
         {
@@ -85,9 +89,8 @@ namespace EmpireAtWar.ViewComponents.Health
             return true;
         }
 
-        internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
-        internal float DelayBetweenShots => _profile.ShotInterval;
         internal bool IsEmitting(int generation) => !IsDestroyed && _sequence.IsEmitting(generation);
+
         internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
 
         internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
@@ -121,8 +124,8 @@ namespace EmpireAtWar.ViewComponents.Health
                 return _effectPool;
             }
 
-            _effectPool = new ShotEffectPool(_profile, transform, _profile.ShotsPerSalvo,
-                OnTurretEffectCompleted, _impactPresenter);
+            _effectPool = new ShotEffectPool(profile: _profile, owner: transform, maxIdle: _profile.ShotsPerSalvo,
+                effectCompleted: OnTurretEffectCompleted, impactPresenter: _impactPresenter);
             _effectPool.Prewarm(prewarmEffects);
             return _effectPool;
         }

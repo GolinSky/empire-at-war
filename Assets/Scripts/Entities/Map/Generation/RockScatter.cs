@@ -12,7 +12,6 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float UPRIGHT_TILT = 15f;
 
         private static readonly AsteroidSize[] SIZES = (AsteroidSize[])Enum.GetValues(typeof(AsteroidSize));
-
         private readonly MapGenerationSettings _settings;
 
         public RockScatter(MapGenerationSettings settings)
@@ -44,7 +43,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                     : new Vector3((Next(random) * 2f - 1f) * UPRIGHT_TILT, Next(random) * 360f,
                         (Next(random) * 2f - 1f) * UPRIGHT_TILT);
                 float scale = Mathf.Lerp(layer.Scale.Min, layer.Scale.Max, Next(random));
-                rocks.Add(new AsteroidSpot(position, rotation, scale, size));
+                rocks.Add(new AsteroidSpot(position: position, rotation: rotation, scale: scale, size: size));
             }
 
             return rocks;

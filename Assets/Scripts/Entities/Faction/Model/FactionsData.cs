@@ -18,13 +18,15 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private DictionaryWrapper<DefendPlatformType, FactionData> defendPlatformWrapper;
         [SerializeField] private DictionaryWrapper<FactionType, FactionResearchWrapper> researchWrapper;
         [SerializeField] private DictionaryWrapper<SuperWeaponType, FactionData> superWeaponWrapper;
-
         [SerializeField] private FactionData[] levelFactionsData;
-                
+
         [field: SerializeField] public int MaxLevel { get; private set; }
-        
 
         public Dictionary<MiningFacilityType, FactionData> MiningFactionsData => miningFactionsData.Dictionary;
+
+        public Dictionary<DefendPlatformType, FactionData> DefendPlatformDictionary => defendPlatformWrapper.Dictionary;
+
+        public Dictionary<SuperWeaponType, FactionData> SuperWeaponFactionData => superWeaponWrapper.Dictionary;
 
         public Dictionary<ShipType, FactionData> GetShipFactionData(FactionType factionType)
         {
@@ -55,10 +57,6 @@ namespace EmpireAtWar.Models.Factions
 
             throw new KeyNotFoundException($"No faction data for squadron {squadronType}.");
         }
-
-        public Dictionary<DefendPlatformType, FactionData> DefendPlatformDictionary => defendPlatformWrapper.Dictionary;
-
-        public Dictionary<SuperWeaponType, FactionData> SuperWeaponFactionData => superWeaponWrapper.Dictionary;
 
         public Dictionary<ResearchType, ResearchLineData> GetResearchLines(FactionType factionType)
         {

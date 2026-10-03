@@ -16,19 +16,19 @@ namespace EmpireAtWar.Components.TeamColor
 
         [SerializeField] private MeshRenderer[] meshRenderers;
 
-        public static uint GetUserValue(PlayerId owner, IPlayerRoster roster)
-        {
-            return FIRST_TEAM_USER_VALUE + (uint)roster.Get(owner).ColorIndex;
-        }
-
         [Inject]
-        private void Construct(PlayerId owner, IPlayerRoster roster)
+        private void Construct(IPlayerRoster roster, PlayerId owner)
         {
             uint userValue = GetUserValue(owner, roster);
             foreach (MeshRenderer meshRenderer in meshRenderers)
             {
                 meshRenderer.SetShaderUserValue(userValue);
             }
+        }
+
+        public static uint GetUserValue(PlayerId owner, IPlayerRoster roster)
+        {
+            return FIRST_TEAM_USER_VALUE + (uint)roster.Get(owner).ColorIndex;
         }
     }
 }

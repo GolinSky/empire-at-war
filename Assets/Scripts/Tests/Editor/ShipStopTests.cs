@@ -34,9 +34,9 @@ namespace EmpireAtWar.Tests.Editor
             ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
             PlayerRoster roster = TestPlayers.CreateDuel();
-            ShipAIBrain brain = new ShipAIBrain(null, null, movement, null, model, TestPlayers.Human, roster);
-            ShipOrderRunner runner = new ShipOrderRunner(model, stateMachine, brain, movement, weapon,
-                null, idle, null, null, null, null, null, null, TestPlayers.Human, roster);
+            ShipAIBrain brain = new ShipAIBrain(healthModel: null, radar: null, movement: movement, decisionModel: null, orders: model, owner: TestPlayers.Human, roster: roster);
+            ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, brain: brain, movement: movement, weapon: weapon,
+                cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null, fleeState: null, owner: TestPlayers.Human, roster: roster);
 
             runner.Stop();
 
@@ -50,8 +50,11 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class PassiveState : IBaseState
         {
             public bool IsComplete => false;
+
             public void Enter() { }
+
             public void Tick(float deltaTime) { }
+
             public void Exit() { }
         }
 
@@ -60,9 +63,13 @@ namespace EmpireAtWar.Tests.Editor
             public string Id => nameof(FakeWeapon);
             public int ResetCount { get; private set; }
             public float AttackDistance => 100f;
+
             public void AddTarget(AttackData data, AttackType type) { }
+
             public bool HasEnoughRange(float distance) => true;
+
             public void ResetTarget() => ResetCount++;
+
             public void Release() { }
         }
 
@@ -72,9 +79,13 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsMoving => false;
             public float NavigationRadius => 1f;
             public int StopCount { get; private set; }
+
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }
+
             public void LookAtTarget(Vector3 position) { }
+
             public float GetRange(Vector3 position) => 0f;
+
             public void Stop() => StopCount++;
         }
     }

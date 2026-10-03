@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Weapon
     public sealed class WeaponFacingSolver
     {
         private const int SAMPLE_COUNT = 180;
+
         private const float SAMPLE_STEP = 360f / SAMPLE_COUNT;
 
         private readonly int[] _scores = new int[SAMPLE_COUNT];

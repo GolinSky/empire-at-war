@@ -11,12 +11,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         private readonly FactionsData _factionsData;
 
-        public EnemyFactionModel(FactionsData factionsData, FactionType factionType)
-        {
-            _factionsData = factionsData;
-            FactionType = factionType;
-        }
-
         public FactionType FactionType { get; }
 
         public Dictionary<ShipType, FactionData> ShipFactionData => _factionsData.GetShipFactionData(FactionType);
@@ -26,6 +20,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => _factionsData.DefendPlatformDictionary;
 
         public int CurrentLevel { get; set; } = 1;
+
+        public EnemyFactionModel(FactionsData factionsData, FactionType factionType)
+        {
+            _factionsData = factionsData;
+            FactionType = factionType;
+        }
 
         public FactionData GetCurrentLevelFactionData()
         {

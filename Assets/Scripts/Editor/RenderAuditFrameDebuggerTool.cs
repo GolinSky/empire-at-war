@@ -16,6 +16,7 @@ namespace EmpireAtWar.Editor
         // Each event is replayed and repainted (~50 ms), so a heavy frame can take
         // minutes; the cap keeps one frame near a minute. Truncation is recorded.
         internal const int DEFAULT_MAX_EVENTS = 1000;
+
         private static CaptureOperation _activeCapture;
         private static Type _utilityType;
         private static PropertyInfo _enabled;
@@ -28,6 +29,8 @@ namespace EmpireAtWar.Editor
         private static MethodInfo _getFrameEventInfoName;
         private static Type _eventDataType;
         private static string[] _batchBreakCauses;
+
+        internal static bool IsCapturing => _activeCapture != null;
 
         static RenderAuditFrameDebuggerTool()
         {
@@ -60,8 +63,6 @@ namespace EmpireAtWar.Editor
             return started;
         }
 
-        internal static bool IsCapturing => _activeCapture != null;
-
         internal static Dictionary<string, object> BeginCapture(string directory, string phase, int frames, int timeoutSeconds, int maxEvents, Action<Dictionary<string, object>> completed)
         {
             if (_activeCapture != null)
@@ -87,7 +88,7 @@ namespace EmpireAtWar.Editor
                     return RenderAuditCaptureStatus.CreateResult("unsupported", "Frame Debugger is not locally supported by the current graphics device.");
                 }
 
-                _activeCapture = new CaptureOperation(directory, phase, frames, timeoutSeconds, maxEvents, completed);
+                _activeCapture = new CaptureOperation(directory: directory, phase: phase, framesRequested: frames, timeoutSeconds: timeoutSeconds, maxEvents: maxEvents, completed: completed);
                 _activeCapture.Start();
                 var result = RenderAuditCaptureStatus.CreateResult("running", "Frame Debugger capture started.");
                 result["phase"] = phase;
@@ -254,29 +255,33 @@ namespace EmpireAtWar.Editor
 
         private sealed class CaptureOperation
         {
-            private readonly string _directory;
-            private readonly string _phase;
-            private readonly int _framesRequested;
-            private readonly int _maxEvents;
-            private readonly DateTime _deadline;
             private readonly Action<Dictionary<string, object>> _completed;
             private readonly List<object> _frameIdentities = new();
             private readonly List<object> _capturedEvents = new();
             private List<object> _descriptors;
-            private bool _wasPaused;
-            private bool _finished;
+            private PropertyInfo _limit;
+            private EditorWindow _gameView;
+            private EditorWindow _frameDebuggerWindow;
+            private Action _setSceneRepaintDirty;
+
+            private readonly string _directory;
+            private readonly string _phase;
+
+            private readonly DateTime _deadline;
+
+            private readonly int _framesRequested;
+            private readonly int _maxEvents;
             private int _expectedUnityFrame;
             private int _stepDelay;
             private int _captureUnityFrame;
             private int _eventIndex;
             private int _repaintsRemaining;
-            private PropertyInfo _limit;
-            private EditorWindow _gameView;
-            private EditorWindow _frameDebuggerWindow;
-            private Action _setSceneRepaintDirty;
             private int _progressId;
 
-            internal CaptureOperation(string directory, string phase, int framesRequested, int timeoutSeconds, int maxEvents, Action<Dictionary<string, object>> completed)
+            private bool _wasPaused;
+            private bool _finished;
+
+            internal CaptureOperation(Action<Dictionary<string, object>> completed, string directory, string phase, int framesRequested, int timeoutSeconds, int maxEvents)
             {
                 _directory = directory;
                 _phase = phase;

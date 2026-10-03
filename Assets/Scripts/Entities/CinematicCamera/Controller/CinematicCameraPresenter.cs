@@ -20,8 +20,6 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
     {
         private const long NO_TARGET = -1;
 
-        private readonly CinematicCameraModel _model;
-        private readonly CinematicCameraData _settings;
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointer;
@@ -29,6 +27,10 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ISkirmishSessionModelObserver _sessionModel;
         private readonly ILocalPlayer _localPlayer;
+        private System.IDisposable _inputLockHandle;
+
+        private readonly CinematicCameraModel _model;
+        private readonly CinematicCameraData _settings;
         private readonly CinematicActivityTracker _activityTracker = new();
         private readonly CinematicInterestScorer _scorer;
         private readonly CinematicShotSequencer _sequencer;
@@ -37,23 +39,24 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private Vector3 _savedPosition;
         private Quaternion _savedRotation;
         private CinematicShot _shot;
-        private float _shotDuration;
-        private float _shotElapsed;
-        private float _sampleTimer;
-        private long _targetId = NO_TARGET;
-        private float _framingDistance;
         private Vector3 _anchorPosition;
         private Quaternion _anchorRotation;
         private Vector3 _focusOffset;
+
+        private float _shotDuration;
+        private float _shotElapsed;
+        private float _sampleTimer;
+        private float _framingDistance;
+
+        private long _targetId = NO_TARGET;
+
+        private int _enterFrame;
+
         private bool _isTargetLost;
         private bool _isCutPending;
         private bool _isExitRequested;
-        private int _enterFrame;
-        private System.IDisposable _inputLockHandle;
 
         public CinematicCameraPresenter(
-            CinematicCameraModel model,
-            CinematicCameraData cinematicCameraData,
             ICameraService cameraService,
             IInputLock inputLock,
             IPointerInput pointer,
@@ -63,7 +66,9 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             IFogOfWarSystem fogOfWarSystem,
             ISkirmishSessionModelObserver sessionModel,
             IPlayerRoster roster,
-            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
+            ILocalPlayer localPlayer,
+            CinematicCameraModel model,
+            CinematicCameraData cinematicCameraData) : base(uiService, cancelRouter)
         {
             _model = model;
             _settings = cinematicCameraData;
@@ -76,8 +81,16 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _localPlayer = localPlayer;
 
             Random random = new Random();
-            _scorer = new CinematicInterestScorer(_settings, random, roster);
+            _scorer = new CinematicInterestScorer(settings: _settings, random: random, relations: roster);
             _sequencer = new CinematicShotSequencer(random, _settings.MinShotDuration, _settings.MaxShotDuration);
+        }
+
+        public void LateDispose()
+        {
+            if (_model.IsActive)
+            {
+                Unsubscribe();
+            }
         }
 
         public void Enter()
@@ -157,14 +170,6 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 Quaternion.Slerp(cameraTransform.rotation, desired.rotation, blend));
         }
 
-        public void LateDispose()
-        {
-            if (_model.IsActive)
-            {
-                Unsubscribe();
-            }
-        }
-
         private void StartShot(CinematicShot shot)
         {
             _shot = shot;
@@ -225,11 +230,11 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 }
 
                 _candidates.Add(new CinematicCandidate(
-                    entity.Id,
-                    position.ToNumerics(),
-                    entity.HealthModel.ShipClass,
-                    entity.Owner,
-                    _activityTracker.GetSecondsSinceDamaged(entity.Id, time)));
+                    id: entity.Id,
+                    position: position.ToNumerics(),
+                    shipClass: entity.HealthModel.ShipClass,
+                    owner: entity.Owner,
+                    secondsSinceDamaged: _activityTracker.GetSecondsSinceDamaged(entity.Id, time)));
             }
         }
 

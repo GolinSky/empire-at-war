@@ -20,22 +20,24 @@ namespace EmpireAtWar.Components.Hangar
     public sealed class HangarComponent : MonoComponent<HangarModel>, IHangarCommand, IInitializable, ITickable,
         ILateDisposable
     {
-        [SerializeField] private Transform launchPoint;
-        [SerializeField] private HardPoint hangarHardPoint;
-
-        private readonly List<(ISquadron Squadron, Action Handler)> _launched =
-            new List<(ISquadron Squadron, Action Handler)>();
         private IHangarData _data;
-        private SquadronFactory _squadronFactory;
-        private PlayerId _owner;
-        private LazyInject<IEntity> _carrier;
         private IHealthModelObserver _health;
         private IHardPointModel _hangarUnit;
+
+        [SerializeField] private Transform launchPoint;
+        [SerializeField] private HardPoint hangarHardPoint;
+        private readonly List<(ISquadron Squadron, Action Handler)> _launched =
+            new List<(ISquadron Squadron, Action Handler)>();
+        private SquadronFactory _squadronFactory;
+        private LazyInject<IEntity> _carrier;
+
+        private PlayerId _owner;
+
         private bool _isReleased;
 
         [Inject]
-        private void Construct(HangarModel model, IHangarData data, SquadronFactory squadronFactory,
-            PlayerId owner, LazyInject<IEntity> carrier, IHealthModelObserver health)
+        private void Construct(IHangarData data, IHealthModelObserver health, HangarModel model,
+            SquadronFactory squadronFactory, LazyInject<IEntity> carrier, PlayerId owner)
         {
             SetModel(model);
             _data = data;
@@ -63,6 +65,8 @@ namespace EmpireAtWar.Components.Hangar
             _hangarUnit.OnDestroyed += Model.Shutdown;
         }
 
+        public void LateDispose() => Release();
+
         public void Tick()
         {
             if (_isReleased)
@@ -75,8 +79,6 @@ namespace EmpireAtWar.Components.Hangar
                 LaunchFromBay(bay);
             }
         }
-
-        public void LateDispose() => Release();
 
         public override void Release()
         {

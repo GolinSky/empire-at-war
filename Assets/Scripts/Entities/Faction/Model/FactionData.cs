@@ -7,10 +7,12 @@ namespace EmpireAtWar.Models.Factions
     [Serializable]
     public class FactionData
     {
+        [SerializeField] private UnitMatchupData matchups;
+
         [SerializeField, TextArea] private string description;
         [SerializeField] private string role;
         [SerializeField] private string iconKey;
-        [SerializeField] private UnitMatchupData matchups;
+
         public string Description => description;
         public string Role => role;
         public string IconKey => iconKey;

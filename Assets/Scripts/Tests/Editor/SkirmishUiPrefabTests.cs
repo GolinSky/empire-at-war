@@ -122,18 +122,27 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public void Close() { }
+
             public void StartGame() { }
+
             public void SelectSlotOccupant(int slotIndex, int occupantIndex) =>
                 _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
+
             public void SelectSlotFaction(int slotIndex, int factionIndex) =>
                 _model.SelectSlotFaction(slotIndex, (FactionType)factionIndex);
+
             public void SelectSlotTeam(int slotIndex, int teamIndex) =>
                 _model.SelectSlotTeam(slotIndex, teamIndex);
+
             public void SelectSlotColor(int slotIndex, int colorIndex) =>
                 _model.SelectSlotColor(slotIndex, colorIndex);
+
             public void SelectPlanet(int index) { }
+
             public void SelectMapSize(int index) { }
+
             public void SelectVictoryCondition(int index) { }
+
             public void SelectStartingMoney(float amount) =>
                 _model.SelectStartingMoney(amount);
         }

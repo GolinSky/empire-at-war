@@ -30,31 +30,24 @@ namespace EmpireAtWar.Entities.Squadrons
         private const float MIN_TARGET_RADIUS = 2f;
         private const float APPROACH_RADIUS_SHARE = 0.5f;
 
-        private enum Mode
-        {
-            Travel,
-            Loiter,
-            Engage,
-        }
-
         private readonly ISquadronFlightComponent _flight;
-        private readonly FighterManeuver[] _maneuvers;
-        private Mode _mode = Mode.Loiter;
-        private float _time;
+        private IEntity _target;
 
+        private readonly FighterManeuver[] _maneuvers;
+        private Transform _escortAnchor;
+        private IHardPointModel[] _aimUnits = Array.Empty<IHardPointModel>();
+
+        private Mode _mode = Mode.Loiter;
         private Vector3 _destination;
         private Vector3 _leaderPosition;
         private Vector3 _leaderHeading = Vector3.forward;
-
-        private Transform _escortAnchor;
         private Vector3 _loiterCenter;
+
+        private float _time;
         private float _loiterRadius;
         private float _orbitAngle;
         private float _orbitDirection = 1f;
-
-        private IEntity _target;
         private float _targetRadius;
-        private IHardPointModel[] _aimUnits = Array.Empty<IHardPointModel>();
         private float _aimRefreshTimer;
 
         public bool HasArrived => _mode == Mode.Loiter;
@@ -266,6 +259,13 @@ namespace EmpireAtWar.Entities.Squadrons
                 Mathf.Sin(_time * 0.9f + phase) * amplitude,
                 Mathf.Sin(_time * 1.3f + phase * 2f) * amplitude * 0.6f,
                 Mathf.Sin(_time * 0.7f + phase * 0.5f) * amplitude * 0.5f);
+        }
+
+        private enum Mode
+        {
+            Travel,
+            Loiter,
+            Engage,
         }
     }
 }

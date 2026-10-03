@@ -22,26 +22,28 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private readonly IUnitActionsViewProvider _coreUi;
         private readonly ISelectionService _selection;
         private readonly IShipAbilityTargeting _abilities;
-        private readonly UnitActionTargetingModel _targeting;
         private readonly IPlayerOrderInputHandler _inputHandler;
         private readonly IUnitOrderService _orders;
         private readonly ISkirmishSessionModelObserver _session;
+        private IUnitActionsView _view;
+        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+
+        private readonly UnitActionTargetingModel _targeting;
         private readonly Dictionary<UnitActionId, bool> _availability =
             new Dictionary<UnitActionId, bool>();
-        private IUnitActionsView _view;
-        private bool _battleEnded;
         private readonly TooltipRequests _tooltips;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private TooltipHoverSubscription _tooltipHover;
+
+        private bool _battleEnded;
 
         public UnitActionsPresenter(IUnitActionsViewProvider coreUi,
             ISelectionService selection,
-            IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
-            IPlayerOrderInputHandler inputHandler, IUnitOrderService orders,
-            ISkirmishSessionModelObserver session,
-            IUiService uiService, IUiCancelRouter cancelRouter,
-            ITooltipService tooltips,
-            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
+            IShipAbilityTargeting abilities, IPlayerOrderInputHandler inputHandler,
+            IUnitOrderService orders, ISkirmishSessionModelObserver session,
+            IUiService uiService,
+            IUiCancelRouter cancelRouter, ITooltipService tooltips,
+            EmpireAtWar.Services.Input.IInputBindings bindings,
+            UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
         {
             _coreUi = coreUi;
             _selection = selection;
@@ -105,7 +107,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             };
             string shortcut = action == UnitActionId.WaypointMove
                 ? TooltipBindings.Get(_bindings, "Battle", "QueueWaypoint") : "";
-            return new TooltipContent(action.ToString(), description,
+            return new TooltipContent(title: action.ToString(), description: description,
                 shortcut: shortcut,
                 requirements: _availability[action] ? null : new[]
                 {

@@ -14,7 +14,6 @@ namespace EmpireAtWar.Services.Player
     {
         private readonly SpaceStationFactory _spaceStationFactory;
         private readonly LazyInject<IMapModelObserver> _mapModel;
-
         private readonly PlayerSlot _owner;
 
         public PlayerService(

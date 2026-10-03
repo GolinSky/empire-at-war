@@ -8,6 +8,7 @@ namespace EmpireAtWar.Editor.Rendering
     public static class AutodeskMaterialConverter
     {
         public const string SOURCE_SHADER_NAME = "Universal Render Pipeline/Autodesk Interactive/AutodeskInteractive";
+
         private const int OCCLUSION_CHANNEL = 0;
 
         public static void Convert(Material material, Shader shipLit)

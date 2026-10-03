@@ -242,6 +242,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private readonly struct SerializedReference
         {
+            public Type ComponentType { get; }
+            public string FieldName { get; }
+
             public SerializedReference(
                 Type componentType,
                 string fieldName)
@@ -249,9 +252,6 @@ namespace EmpireAtWar.Tests.Editor
                 ComponentType = componentType;
                 FieldName = fieldName;
             }
-
-            public Type ComponentType { get; }
-            public string FieldName { get; }
         }
     }
 }

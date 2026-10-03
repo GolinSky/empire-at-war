@@ -17,10 +17,12 @@ namespace EmpireAtWar.Models.Health
     public class HealthModel : PureModel
     {
         private readonly IHealthData _data;
+
         private readonly DamageMatrixData _damageMatrix;
         private readonly CombatModifiers _modifiers;
 
         public event Action OnValueChanged;
+
         public event Action OnDestroy;
 
         public ShipClass ShipClass => _data.ShipClass;

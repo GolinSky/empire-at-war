@@ -15,15 +15,9 @@ namespace EmpireAtWar.Editor
         private const string ICON_OUTPUT_FOLDER = "Assets/Art/Textures/Ui/Icons/ShipIcon";
         private const string SHIP_UI_MODEL_PATH = "Assets/Settings/Data/Models/ShipUi/ShipUiData.asset";
         private const string FACTIONS_MODEL_PATH = "Assets/Settings/Data/Models/Factions/FactionsData.asset";
+
         private const int ICON_RESOLUTION = 512;
         private const int ICON_RENDER_LAYER = 31; // Dedicated layer to isolate ship from scene environment
-
-        private class ShipMappingInfo
-        {
-            public ShipType ShipType;
-            public string PrefabName;
-            public string IconFileName;
-        }
 
         private static readonly List<ShipMappingInfo> MAPPINGS = new List<ShipMappingInfo>
         {
@@ -481,6 +475,14 @@ namespace EmpireAtWar.Editor
 
             serializedModel.ApplyModifiedProperties();
             EditorUtility.SetDirty(modelAsset);
+        }
+
+        private class ShipMappingInfo
+        {
+            public string PrefabName;
+            public string IconFileName;
+
+            public ShipType ShipType;
         }
     }
 }

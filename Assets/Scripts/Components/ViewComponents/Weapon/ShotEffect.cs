@@ -13,21 +13,26 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// </summary>
     public abstract class ShotEffect : MonoBehaviour
     {
-        [SerializeField] private MuzzleFlashView muzzleFlash;
-
         private readonly ITimer _busyTimer = TimerFactory.ConstructTimer();
-        private bool _leaseActive;
-        private int _leaseId;
-        private bool _retireAfterCompletion;
-        private ImpactEffectPresenter _impactPresenter;
         private IHealthModelObserver _impactTarget;
+
+        [SerializeField] private MuzzleFlashView muzzleFlash;
+        private ImpactEffectPresenter _impactPresenter;
+
         private DamageType _impactDamageType;
         private ImpactSurface _impactSurface;
+
         private float _impactSize;
+
+        private int _leaseId;
+
+        private bool _leaseActive;
+        private bool _retireAfterCompletion;
         private bool _impactPending;
         private bool _impactCaptured;
 
         public event Action<ShotEffect, int> EffectCompleted;
+
         public event Action<ShotEffect, int> EffectDestroyed;
 
         public int LeaseId => _leaseId;

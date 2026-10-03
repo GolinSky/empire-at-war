@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private const float WAVE_DURATION = 0.68f;
         private const float ECHO_DELAY = 0.12f;
 
+        private IUnitOrderFeedbackPresenter _presenter;
+
         [SerializeField] private RectTransform screenRect;
         [SerializeField] private RectTransform attackAnchor;
         [SerializeField] private RectTransform movementAnchor;
@@ -22,19 +24,26 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private Image attackPulse;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
-
-        private IUnitOrderFeedbackPresenter _presenter;
         private Sequence _attackSequence;
         private Sequence _movementSequence;
-        private bool _isDisposed;
 
-        public void SetPresenter(IUnitOrderFeedbackPresenter presenter) => _presenter = presenter;
+        private bool _isDisposed;
 
         public void Initialize()
         {
             attackAnchor.gameObject.SetActive(false);
             movementAnchor.gameObject.SetActive(false);
         }
+
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+            StopAttack();
+            StopMovement();
+        }
+
+        public void SetPresenter(IUnitOrderFeedbackPresenter presenter) => _presenter = presenter;
 
         public void PlayAttack(Vector2 screenPosition)
         {
@@ -106,14 +115,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 _attackSequence = null;
             }
             attackAnchor.gameObject.SetActive(false);
-        }
-
-        public void Dispose()
-        {
-            if (_isDisposed) return;
-            _isDisposed = true;
-            StopAttack();
-            StopMovement();
         }
 
         private void OnDestroy() => Dispose();

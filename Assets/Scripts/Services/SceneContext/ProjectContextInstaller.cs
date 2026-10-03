@@ -20,7 +20,7 @@ namespace EmpireAtWar.SceneContext
     {
         [SerializeField] private CoroutineService coroutineService;
         [SerializeField] private AudioMixer audioMixer;
-        
+
         public override void InstallBindings()
         {
             Container

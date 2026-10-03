@@ -66,7 +66,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class HealthModelStub : IHealthModelObserver
         {
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public ShipClass ShipClass => ShipClass.Structure;
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
@@ -79,6 +81,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasLiveHardPoints => true;
             public bool HasShields => false;
             public PlayerId Owner => TestPlayers.Human;
+
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
         }
     }

@@ -22,12 +22,19 @@ namespace EmpireAtWar.Entities.Ship.Data
     public class ShipData : Mvc.Data, IShipData,
         IShipMoveData, IHealthData, IRadarData, IHangarData
     {
+        [SerializeField] private ShipHeightTiersData heightTiers;
+        [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
+        [Header("Abilities")]
+        [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();
+        [Header("Hangar")]
+        [Tooltip("Squadron bays; a ship with bays needs a HangarComponent on its view prefab.")]
+        [SerializeField] private List<HangarBay> hangarBays = new List<HangarBay>();
+
         [Header("Ship Settings")]
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
 
         [Header("Movement Settings")]
         [field: SerializeField] public float Speed { get; private set; }
-        [SerializeField] private ShipHeightTiersData heightTiers;
         [field: SerializeField] public ShipHeightTier HeightTier { get; private set; }
         [Tooltip("Baked by Tools/Ships/Bake Hull Heights. Lowest visible hull point relative to the ship height.")]
         [field: SerializeField] public float HullBottom { get; private set; }
@@ -53,20 +60,12 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
         [field: SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
-        [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
         public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
 
         [Header("Radar Settings")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
-
-        [Header("Abilities")]
-        [SerializeField] private List<ShipAbilityId> abilities = new List<ShipAbilityId>();
         public IReadOnlyList<ShipAbilityId> Abilities => abilities;
-
-        [Header("Hangar")]
-        [Tooltip("Squadron bays; a ship with bays needs a HangarComponent on its view prefab.")]
-        [SerializeField] private List<HangarBay> hangarBays = new List<HangarBay>();
         [field: SerializeField] public float HangarInitialDelay { get; private set; } = 4f;
         [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
         public IReadOnlyList<HangarBay> HangarBays => hangarBays;

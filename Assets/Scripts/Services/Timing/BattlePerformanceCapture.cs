@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Timing
     {
         private const int CAPTURE_SECONDS = 10;
         private const int MAX_CAPTURE_FRAMES = 3000;
+
         private const long UNAVAILABLE = long.MinValue;
 
         private const int FRAME_DURATION = 0;
@@ -61,7 +62,6 @@ namespace EmpireAtWar.Services.Timing
             "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns",
             "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns"
         };
-
         private static readonly string[] _markerNames =
         {
             BattleProfilerMarkers.SHIP_TICK,
@@ -93,7 +93,6 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.NAVIGATION_FLOOD,
             BattleProfilerMarkers.NAVIGATION_NEAREST_REACHABLE
         };
-
         private static readonly string[] _workloadNames =
         {
             "completed_unity_frame", "target_requests", "target_candidates", "target_serial_calls", "target_job_calls", "target_fallbacks",
@@ -101,72 +100,26 @@ namespace EmpireAtWar.Services.Timing
             "due_records", "due_flagged", "due_committed", "due_serial_calls", "due_job_calls",
             "due_input_capacity", "due_result_capacity", "due_buffer_growths", "pending_sequences", "pending_impacts"
         };
-
-        internal struct CombatWorkload
-        {
-            public int CompletedUnityFrame;
-            public int TargetRequests;
-            public int TargetCandidates;
-            public int TargetSerialCalls;
-            public int TargetJobCalls;
-            public int TargetFallbacks;
-            public int TargetInputCapacity;
-            public int TargetPositionCapacity;
-            public int TargetResultCapacity;
-            public int TargetBufferGrowths;
-            public int DueRecords;
-            public int DueFlagged;
-            public int DueCommitted;
-            public int DueSerialCalls;
-            public int DueJobCalls;
-            public int DueInputCapacity;
-            public int DueResultCapacity;
-            public int DueBufferGrowths;
-            public int PendingSequences;
-            public int PendingImpacts;
-
-            public void WriteTo(long[] samples, int offset)
-            {
-                samples[offset++] = CompletedUnityFrame;
-                samples[offset++] = TargetRequests;
-                samples[offset++] = TargetCandidates;
-                samples[offset++] = TargetSerialCalls;
-                samples[offset++] = TargetJobCalls;
-                samples[offset++] = TargetFallbacks;
-                samples[offset++] = TargetInputCapacity;
-                samples[offset++] = TargetPositionCapacity;
-                samples[offset++] = TargetResultCapacity;
-                samples[offset++] = TargetBufferGrowths;
-                samples[offset++] = DueRecords;
-                samples[offset++] = DueFlagged;
-                samples[offset++] = DueCommitted;
-                samples[offset++] = DueSerialCalls;
-                samples[offset++] = DueJobCalls;
-                samples[offset++] = DueInputCapacity;
-                samples[offset++] = DueResultCapacity;
-                samples[offset++] = DueBufferGrowths;
-                samples[offset++] = PendingSequences;
-                samples[offset] = PendingImpacts;
-            }
-        }
-
         private static BattlePerformanceCapture _instance;
-
         private readonly ProfilerRecorder[] _recorders = new ProfilerRecorder[METRIC_COUNT];
         private readonly bool[] _recorderAvailable = new bool[METRIC_COUNT];
         private long[] _samples;
         private long[] _markerSampleCounts;
         private long[] _workloadSamples;
-        private CombatWorkload _pendingWorkload;
         private float[] _timestamps;
-        private int _frameCount;
+        private BattlePerformanceCaptureMetadata _metadata;
+
+        private CombatWorkload _pendingWorkload;
+        private DateTime _captureStartUtc;
+
         private float _captureEndTime;
         private float _captureStartTime;
-        private DateTime _captureStartUtc;
+
+        private int _frameCount;
+
         private bool _capturing;
         private bool _quitting;
         private bool _skipFirstFrame;
-        private BattlePerformanceCaptureMetadata _metadata;
 
         public static bool IsCapturing => _instance != null && _instance._capturing;
 
@@ -451,23 +404,23 @@ namespace EmpireAtWar.Services.Timing
             string quality = qualityLevel >= 0 && qualityLevel < qualityNames.Length ? qualityNames[qualityLevel] : "unknown";
             string gitStatus = Application.isEditor ? ReadGit("status --porcelain --untracked-files=normal") : "unavailable";
             return new BattlePerformanceCaptureMetadata(
-                Application.unityVersion,
-                Application.isEditor ? "Editor" : "Development Player",
-                quality,
-                $"{Screen.width}x{Screen.height}",
-                Time.timeScale,
-                QualitySettings.vSyncCount,
-                Application.targetFrameRate,
-                SystemInfo.graphicsDeviceName,
-                SystemInfo.processorType,
-                Application.isEditor ? ReadGit("rev-parse --verify HEAD") : "unavailable_in_player",
-                gitStatus == "unavailable" ? "unavailable" : gitStatus.Length == 0 ? "clean" : "dirty",
-                Application.buildGUID,
-                "unspecified",
-                CombatAttackCoordinator.JOB_SELECTION_THRESHOLD,
-                CombatAttackCoordinator.TARGET_JOB_BATCH_SIZE,
-                CombatAttackCoordinator.JOB_PROGRESSION_THRESHOLD,
-                CombatAttackCoordinator.DUE_JOB_BATCH_SIZE);
+                unityVersion: Application.unityVersion,
+                runtime: Application.isEditor ? "Editor" : "Development Player",
+                quality: quality,
+                resolution: $"{Screen.width}x{Screen.height}",
+                timeScale: Time.timeScale,
+                vSyncCount: QualitySettings.vSyncCount,
+                targetFrameRate: Application.targetFrameRate,
+                graphicsDevice: SystemInfo.graphicsDeviceName,
+                processor: SystemInfo.processorType,
+                sourceRevision: Application.isEditor ? ReadGit("rev-parse --verify HEAD") : "unavailable_in_player",
+                sourceState: gitStatus == "unavailable" ? "unavailable" : gitStatus.Length == 0 ? "clean" : "dirty",
+                buildGuid: Application.buildGUID,
+                scenario: "unspecified",
+                targetThreshold: CombatAttackCoordinator.JOB_SELECTION_THRESHOLD,
+                targetBatchSize: CombatAttackCoordinator.TARGET_JOB_BATCH_SIZE,
+                dueThreshold: CombatAttackCoordinator.JOB_PROGRESSION_THRESHOLD,
+                dueBatchSize: CombatAttackCoordinator.DUE_JOB_BATCH_SIZE);
         }
 
         private static string ReadGit(string arguments)
@@ -509,6 +462,54 @@ namespace EmpireAtWar.Services.Timing
 
                 _recorders[i] = default;
                 _recorderAvailable[i] = false;
+            }
+        }
+
+        internal struct CombatWorkload
+        {
+            public int CompletedUnityFrame;
+            public int TargetRequests;
+            public int TargetCandidates;
+            public int TargetSerialCalls;
+            public int TargetJobCalls;
+            public int TargetFallbacks;
+            public int TargetInputCapacity;
+            public int TargetPositionCapacity;
+            public int TargetResultCapacity;
+            public int TargetBufferGrowths;
+            public int DueRecords;
+            public int DueFlagged;
+            public int DueCommitted;
+            public int DueSerialCalls;
+            public int DueJobCalls;
+            public int DueInputCapacity;
+            public int DueResultCapacity;
+            public int DueBufferGrowths;
+            public int PendingSequences;
+            public int PendingImpacts;
+
+            public void WriteTo(long[] samples, int offset)
+            {
+                samples[offset++] = CompletedUnityFrame;
+                samples[offset++] = TargetRequests;
+                samples[offset++] = TargetCandidates;
+                samples[offset++] = TargetSerialCalls;
+                samples[offset++] = TargetJobCalls;
+                samples[offset++] = TargetFallbacks;
+                samples[offset++] = TargetInputCapacity;
+                samples[offset++] = TargetPositionCapacity;
+                samples[offset++] = TargetResultCapacity;
+                samples[offset++] = TargetBufferGrowths;
+                samples[offset++] = DueRecords;
+                samples[offset++] = DueFlagged;
+                samples[offset++] = DueCommitted;
+                samples[offset++] = DueSerialCalls;
+                samples[offset++] = DueJobCalls;
+                samples[offset++] = DueInputCapacity;
+                samples[offset++] = DueResultCapacity;
+                samples[offset++] = DueBufferGrowths;
+                samples[offset++] = PendingSequences;
+                samples[offset] = PendingImpacts;
             }
         }
     }

@@ -12,8 +12,9 @@ namespace EmpireAtWar
     {
         private const string VIEW_POSTFIX = "View";
 
-        private Vector3 _startPosition;
         private GameObjectContext _context;
+
+        private Vector3 _startPosition;
 
         protected IAssetService Repository { get; private set; }
 
@@ -21,7 +22,7 @@ namespace EmpireAtWar
         protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
 
         [Inject]
-        public void Constructor(IAssetService assetService, Vector3 startPosition, GameObjectContext context)
+        public void Constructor(IAssetService assetService, GameObjectContext context, Vector3 startPosition)
         {
             Repository = assetService;
             _startPosition = startPosition;

@@ -11,13 +11,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             ShipAiDecisionModel model = new ShipAiDecisionModel();
             ShipAiSnapshot snapshot = new ShipAiSnapshot(
-                false,
-                true,
-                0.2f,
-                1,
-                true,
-                true,
-                false);
+                isDestroyed: false,
+                hasShields: true,
+                shieldPercentage: 0.2f,
+                nearbyEnemyCount: 1,
+                hasAssignedTarget: true,
+                isAssignedTargetAvailable: true,
+                isMoving: false);
 
             Assert.That(model.Evaluate(snapshot, EnemyAiDifficulty.Easy), Is.EqualTo(ShipAiDecision.Flee));
             Assert.That(model.Evaluate(snapshot, EnemyAiDifficulty.Hard), Is.EqualTo(ShipAiDecision.Attack));
@@ -28,13 +28,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             ShipAiDecisionModel model = new ShipAiDecisionModel();
             ShipAiSnapshot snapshot = new ShipAiSnapshot(
-                false,
-                false,
-                0f,
-                0,
-                false,
-                false,
-                true);
+                isDestroyed: false,
+                hasShields: false,
+                shieldPercentage: 0f,
+                nearbyEnemyCount: 0,
+                hasAssignedTarget: false,
+                isAssignedTargetAvailable: false,
+                isMoving: true);
 
             Assert.That(
                 model.Evaluate(snapshot, EnemyAiDifficulty.Medium),

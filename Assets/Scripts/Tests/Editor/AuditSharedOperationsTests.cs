@@ -121,40 +121,41 @@ namespace EmpireAtWar.Tests.Editor
             GameObject gameObject = new GameObject("Squadron");
             gameObject.transform.position = new Vector3(x, 0f, 0f);
             objects.Add(gameObject);
-            return new FakeEntity(id, owner, isSquadron ? new UnitTypeFacade(UnitTypeId.Squadron(default)) : null,
-                new FakeHealth(gameObject.transform, isDestroyed));
+            return new FakeEntity(id: id, owner: owner, role: isSquadron ? new UnitTypeFacade(UnitTypeId.Squadron(default)) : null,
+                health: new FakeHealth(gameObject.transform, isDestroyed));
         }
 
         private sealed class FakeShip : IShipEntity
         {
-            public FakeShip(PlayerId owner, float x)
-            {
-                Owner = owner;
-                WorldPosition = new Vector3(x, 0f, 0f);
-            }
-
             public PlayerId Owner { get; }
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 1f;
             public float NavigationSpeed => 1f;
             public long EntityId => 0;
             public UnitOrderType CurrentOrder => UnitOrderType.None;
+
+            public FakeShip(PlayerId owner, float x)
+            {
+                Owner = owner;
+                WorldPosition = new Vector3(x, 0f, 0f);
+            }
         }
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerId owner, IEntityFacade role, FakeHealth health)
+            private readonly IEntityFacade _role;
+
+            public long Id { get; }
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner { get; }
+
+            public FakeEntity(IEntityFacade role, FakeHealth health, PlayerId owner, long id)
             {
                 Id = id;
                 Owner = owner;
                 _role = role;
                 HealthModel = health;
             }
-
-            public long Id { get; }
-            private readonly IEntityFacade _role;
-            public IHealthModelObserver HealthModel { get; }
-            public PlayerId Owner { get; }
 
             public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade
             {
@@ -183,14 +184,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealth(Transform transform, bool isDestroyed)
-            {
-                Transform = transform;
-                IsDestroyed = isDestroyed;
-            }
-
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public Transform Transform { get; }
             public bool IsDestroyed { get; }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
@@ -204,6 +201,13 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasUnits => true;
             public PlayerId Owner => PlayerId.None;
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform, bool isDestroyed)
+            {
+                Transform = transform;
+                IsDestroyed = isDestroyed;
+            }
+
             public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
         }
     }

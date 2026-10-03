@@ -17,28 +17,31 @@ namespace EmpireAtWar.Components.Ship.Health
 {
     public interface IHealthComponent : IComponent
     {
-        void ApplyDamage(float damage, DamageType damageType, int shipUnitId);
-        bool Equal(IHealthModelObserver modelObserver);
         bool Destroyed { get; }
         IHealthModelObserver HealthModelObserver { get; }
+
+        void ApplyDamage(float damage, DamageType damageType, int shipUnitId);
+
+        bool Equal(IHealthModelObserver modelObserver);
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource
     {
-        [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
+        private ITimer _refreshShieldsTimer;
+        private IIonStunView _ionStunView;
+
         [SerializeField] private Shield shieldView;
         [SerializeField] private IonStunView ionStunPrefab;
-        [SerializeField] private Bounds ionFieldBounds;
-
-        private ITimer _refreshShieldsTimer;
         private ShieldComponent _shield;
-        private bool _isReleased;
         private CombatModifiers _modifiers;
-        private PlayerId _owner;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
-        private IIonStunView _ionStunView;
+
+        [SerializeField] private Bounds ionFieldBounds;
+        private PlayerId _owner;
+
+        private bool _isReleased;
 
         public event Action<IonStunView> IonStunViewSpawned;
 
@@ -53,6 +56,8 @@ namespace EmpireAtWar.Components.Ship.Health
             add => Model.OnDestroy += value;
             remove => Model.OnDestroy -= value;
         }
+
+        [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
 
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
@@ -79,8 +84,8 @@ namespace EmpireAtWar.Components.Ship.Health
         private void Construct(
             HealthModel model,
             CombatModifiers modifiers,
-            PlayerId owner,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
+            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
+            PlayerId owner)
         {
             SetModel(model);
             _modifiers = modifiers;
@@ -102,6 +107,11 @@ namespace EmpireAtWar.Components.Ship.Health
             }
         }
 
+        public void LateDispose()
+        {
+            Release();
+        }
+
         private void HandleIonStateChanged()
         {
             if (_ionStunView == null)
@@ -114,11 +124,6 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             _ionStunView.SetActive(_modifiers.IsIonDisabled);
-        }
-
-        public void LateDispose()
-        {
-            Release();
         }
 
         public override void Release()
@@ -203,10 +208,10 @@ namespace EmpireAtWar.Components.Ship.Health
                 IHardPoint hardPoint = ShipUnits[index];
                 // Damage is routed by list index, so the model id must be the index, not the serialized view id.
                 HardPointModel hardPointModel = new HardPointModel(
-                    index,
-                    hardPoint.HardPointType);
+                    id: index,
+                    hardPointType: hardPoint.HardPointType);
                 hardPointModels[index] = hardPointModel;
-                _hardPointAdapters[index] = new HardPointAdapter(hardPointModel, hardPoint);
+                _hardPointAdapters[index] = new HardPointAdapter(model: hardPointModel, view: hardPoint);
             }
 
             Model.InitializeHardPoints(hardPointModels);

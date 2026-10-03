@@ -55,9 +55,9 @@ namespace EmpireAtWar.Tests.Selection
         {
             FakeSelectionCommand firstCommand = new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand secondCommand = new FakeSelectionCommand(SelectionType.Ship);
-            FakeEntity first = new FakeEntity(1, firstCommand);
-            FakeEntity second = new FakeEntity(2, secondCommand);
-            SelectionContext context = new SelectionContext(SelectionScope.Local, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            FakeEntity first = new FakeEntity(id: 1, selectionCommand: firstCommand);
+            FakeEntity second = new FakeEntity(id: 2, selectionCommand: secondCommand);
+            SelectionContext context = new SelectionContext(scope: SelectionScope.Local, localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
             context.Replace(new[]
             {
@@ -79,12 +79,12 @@ namespace EmpireAtWar.Tests.Selection
         {
             FakeSelectionCommand shipCommand = new FakeSelectionCommand(SelectionType.Ship);
             FakeSelectionCommand baseCommand = new FakeSelectionCommand(SelectionType.Base);
-            SelectionContext context = new SelectionContext(SelectionScope.Local, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            SelectionContext context = new SelectionContext(scope: SelectionScope.Local, localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
             context.Replace(new[]
             {
-                new SelectionEntry(new FakeEntity(1, shipCommand), shipCommand),
-                new SelectionEntry(new FakeEntity(2, baseCommand), baseCommand)
+                new SelectionEntry(new FakeEntity(id: 1, selectionCommand: shipCommand), shipCommand),
+                new SelectionEntry(new FakeEntity(id: 2, selectionCommand: baseCommand), baseCommand)
             });
 
             Assert.That(context.SelectionType, Is.EqualTo(SelectionType.None));
@@ -92,14 +92,14 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeSelectionCommand : IEntitySelectionFacade
         {
+            public SelectionType SelectionType { get; set; }
+            public bool IsSelected { get; private set; }
+            public int ChangeCount { get; private set; }
+
             public FakeSelectionCommand(SelectionType selectionType)
             {
                 SelectionType = selectionType;
             }
-
-            public SelectionType SelectionType { get; set; }
-            public bool IsSelected { get; private set; }
-            public int ChangeCount { get; private set; }
 
             public void Select(bool isSelected)
             {
@@ -112,15 +112,15 @@ namespace EmpireAtWar.Tests.Selection
         {
             private readonly IEntitySelectionFacade _selectionCommand;
 
-            public FakeEntity(long id, IEntitySelectionFacade selectionCommand)
+            public long Id { get; }
+            public IHealthModelObserver HealthModel => null;
+            public PlayerId Owner => TestPlayers.Human;
+
+            public FakeEntity(IEntitySelectionFacade selectionCommand, long id)
             {
                 Id = id;
                 _selectionCommand = selectionCommand;
             }
-
-            public long Id { get; }
-            public IHealthModelObserver HealthModel => null;
-            public PlayerId Owner => TestPlayers.Human;
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }

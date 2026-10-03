@@ -23,6 +23,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string INSTALLER_PATH = "Assets/Prefabs/View/AsteroidDefendPlatformInstaller.prefab";
         private const string SOURCE_DATA_PATH = "Assets/Settings/Data/Models/DefendPlatform/DefendPlatformData.asset";
         private const string DATA_PATH = "Assets/Settings/Data/Models/DefendPlatform/AsteroidDefendPlatformData.asset";
+
         private const float CANNON_SCALE = 3f;
         private const float HEIGHT_SAMPLE_RADIUS = 0.8f;
         private const float SURFACE_HEIGHT_PERCENTILE = 0.85f;
@@ -30,8 +31,6 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const float MOUNT_SINK = 0.1f;
         private const float HULL = 3500f;
         private const float SHIELDS = 1800f;
-        // Muzzle of the unscaled cannon model, whose barrels point along -X.
-        private static readonly Vector3 MUZZLE_OFFSET = new Vector3(-0.2f, 0.09f, 0f);
 
         // Site-local XZ mount points on bare rock clear of the machinery: one on each small rock, four around the
         // large one's rim.
@@ -44,6 +43,9 @@ namespace EmpireAtWar.Editor.CaptureSites
             new Vector2(8.6f, 2.2f),
             new Vector2(6.6f, -0.6f),
         };
+
+        // Muzzle of the unscaled cannon model, whose barrels point along -X.
+        private static readonly Vector3 MUZZLE_OFFSET = new Vector3(-0.2f, 0.09f, 0f);
 
         [MenuItem("Tools/Empire At War/Capture Sites/Build Battle Asteroid Assets")]
         public static void Build()

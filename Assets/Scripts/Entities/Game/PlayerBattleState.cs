@@ -5,6 +5,12 @@ namespace EmpireAtWar.Entities.Game
     /// <summary>What the victory rules need to know about one player this frame.</summary>
     public readonly struct PlayerBattleState
     {
+        public PlayerId Player { get; }
+        public TeamId Team { get; }
+        public int ShipCount { get; }
+        public bool IsBaseAlive { get; }
+        public bool HasPendingReinforcement { get; }
+
         public PlayerBattleState(
             PlayerId player,
             TeamId team,
@@ -18,11 +24,5 @@ namespace EmpireAtWar.Entities.Game
             IsBaseAlive = isBaseAlive;
             HasPendingReinforcement = hasPendingReinforcement;
         }
-
-        public PlayerId Player { get; }
-        public TeamId Team { get; }
-        public int ShipCount { get; }
-        public bool IsBaseAlive { get; }
-        public bool HasPendingReinforcement { get; }
     }
 }

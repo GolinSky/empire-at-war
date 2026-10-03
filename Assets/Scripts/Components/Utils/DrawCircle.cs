@@ -5,10 +5,12 @@ namespace EmpireAtWar
     public class DrawCircle : MonoBehaviour
     {
         [SerializeField] private LineRenderer lineRenderer;
-        [SerializeField] private int segments = 100; // Number of segments for smoothness
-        [SerializeField] private float radius = 5f;
 
+        [SerializeField] private float radius = 5f;
         private float _y;
+
+        [SerializeField] private int segments = 100; // Number of segments for smoothness
+
         private void Start()
         {
             CreatePoints();

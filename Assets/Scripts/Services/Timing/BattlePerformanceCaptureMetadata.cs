@@ -2,20 +2,38 @@ namespace EmpireAtWar.Services.Timing
 {
     internal sealed class BattlePerformanceCaptureMetadata
     {
+        public string UnityVersion { get; }
+        public string Runtime { get; }
+        public string Quality { get; }
+        public string Resolution { get; }
+        public float TimeScale { get; }
+        public int VSyncCount { get; }
+        public int TargetFrameRate { get; }
+        public string GraphicsDevice { get; }
+        public string Processor { get; }
+        public string SourceRevision { get; }
+        public string SourceState { get; }
+        public string BuildGuid { get; }
+        public string Scenario { get; }
+        public int TargetThreshold { get; }
+        public int TargetBatchSize { get; }
+        public int DueThreshold { get; }
+        public int DueBatchSize { get; }
+
         public BattlePerformanceCaptureMetadata(
             string unityVersion,
             string runtime,
             string quality,
             string resolution,
-            float timeScale,
-            int vSyncCount,
-            int targetFrameRate,
             string graphicsDevice,
             string processor,
             string sourceRevision,
             string sourceState,
             string buildGuid,
             string scenario,
+            float timeScale,
+            int vSyncCount,
+            int targetFrameRate,
             int targetThreshold,
             int targetBatchSize,
             int dueThreshold,
@@ -39,23 +57,5 @@ namespace EmpireAtWar.Services.Timing
             DueThreshold = dueThreshold;
             DueBatchSize = dueBatchSize;
         }
-
-        public string UnityVersion { get; }
-        public string Runtime { get; }
-        public string Quality { get; }
-        public string Resolution { get; }
-        public float TimeScale { get; }
-        public int VSyncCount { get; }
-        public int TargetFrameRate { get; }
-        public string GraphicsDevice { get; }
-        public string Processor { get; }
-        public string SourceRevision { get; }
-        public string SourceState { get; }
-        public string BuildGuid { get; }
-        public string Scenario { get; }
-        public int TargetThreshold { get; }
-        public int TargetBatchSize { get; }
-        public int DueThreshold { get; }
-        public int DueBatchSize { get; }
     }
 }

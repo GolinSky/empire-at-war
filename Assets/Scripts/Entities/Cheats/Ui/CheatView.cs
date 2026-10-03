@@ -9,53 +9,72 @@ namespace EmpireAtWar.Views.Cheats
     public interface ICheatView
     {
         event Action<string> AddMoneyRequested;
+
         event Action<ShipType> AddReinforcementRequested;
+
         event Action<ShipType> SpawnForceRequested;
+
         event Action<SuperWeaponType> GrantSuperWeaponRequested;
+
         event Action GrantAllSuperWeaponsRequested;
+
         event Action<bool> RangeDebugToggled;
+
         event Action DestroyOwnShipsRequested;
 
         void SetShips(IReadOnlyList<ShipType> ships);
+
         void SetStatus(string status);
     }
 
     public sealed class CheatView : MonoBehaviour, ICheatView
     {
         private const int WINDOW_ID = 90421;
+
         private const float WINDOW_WIDTH = 360f;
         private const float WINDOW_HEIGHT = 430f;
         private const float WINDOW_MARGIN = 16f;
         private const float WINDOW_ANIMATION_DURATION = 0.18f;
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
+
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
         private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons", "Debug" };
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
+        private ShipType[] _ships = Array.Empty<ShipType>();
+        private string[] _shipNames = Array.Empty<string>();
 
-        public event Action<string> AddMoneyRequested;
-        public event Action<ShipType> AddReinforcementRequested;
-        public event Action<ShipType> SpawnForceRequested;
-        public event Action<SuperWeaponType> GrantSuperWeaponRequested;
-        public event Action GrantAllSuperWeaponsRequested;
-        public event Action<bool> RangeDebugToggled;
-        public event Action DestroyOwnShipsRequested;
+        private string _moneyAmount = DEFAULT_MONEY_AMOUNT;
+        private string _status = string.Empty;
 
         private Rect _windowRect = new Rect(
             WINDOW_MARGIN,
             WINDOW_MARGIN,
             WINDOW_WIDTH,
             WINDOW_HEIGHT);
-        private ShipType[] _ships = Array.Empty<ShipType>();
-        private string[] _shipNames = Array.Empty<string>();
-        private string _moneyAmount = DEFAULT_MONEY_AMOUNT;
-        private string _status = string.Empty;
+
+        private float _windowVisibility;
+
         private int _selectedTab;
         private int _selectedShip;
+
         private bool _isExpanded;
         private bool _showRanges;
-        private float _windowVisibility;
+
+        public event Action<string> AddMoneyRequested;
+
+        public event Action<ShipType> AddReinforcementRequested;
+
+        public event Action<ShipType> SpawnForceRequested;
+
+        public event Action<SuperWeaponType> GrantSuperWeaponRequested;
+
+        public event Action GrantAllSuperWeaponsRequested;
+
+        public event Action<bool> RangeDebugToggled;
+
+        public event Action DestroyOwnShipsRequested;
 
         public void SetShips(IReadOnlyList<ShipType> ships)
         {

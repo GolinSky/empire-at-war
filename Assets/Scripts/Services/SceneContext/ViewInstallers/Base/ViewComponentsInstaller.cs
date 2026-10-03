@@ -12,7 +12,7 @@ namespace EmpireAtWar
        {
            _view = view;
        }
-       
+
         public override void InstallBindings()
         {
             foreach (ViewComponent component in _view.ViewComponents)

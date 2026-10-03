@@ -10,14 +10,14 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SettingsDraftEditorTests
     {
-        private static readonly Vector2Int DESKTOP = new Vector2Int(2560, 1440);
-        private static readonly Vector2Int FULL_HD = new Vector2Int(1920, 1080);
-
         private SettingsService _settings;
         private FakeDisplayOptions _display;
         private RecordingAudioPreview _audioPreview;
         private SettingsModel _model;
         private SettingsDraftEditor _editor;
+
+        private static readonly Vector2Int DESKTOP = new Vector2Int(2560, 1440);
+        private static readonly Vector2Int FULL_HD = new Vector2Int(1920, 1080);
 
         [SetUp]
         public void SetUp()

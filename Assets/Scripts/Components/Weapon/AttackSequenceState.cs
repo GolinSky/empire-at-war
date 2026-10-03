@@ -2,14 +2,6 @@ namespace EmpireAtWar.Components.Weapon
 {
     public sealed class AttackSequenceState
     {
-        public enum Status
-        {
-            Ready,
-            Emitting,
-            WaitingForEffects,
-            Released
-        }
-
         private int _activeEffects;
         private int _generation;
 
@@ -103,6 +95,14 @@ namespace EmpireAtWar.Components.Weapon
             _generation++;
             _activeEffects = 0;
             CurrentStatus = Status.Released;
+        }
+
+        public enum Status
+        {
+            Ready,
+            Emitting,
+            WaitingForEffects,
+            Released
         }
     }
 }

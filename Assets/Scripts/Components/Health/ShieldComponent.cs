@@ -9,6 +9,7 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         private readonly IHealthModelObserver _health;
         private readonly IShieldView _view;
+
         private bool _active;
 
         public ShieldComponent(IHealthModelObserver health, IShieldView view)
@@ -23,6 +24,13 @@ namespace EmpireAtWar.Components.Ship.Health
             UpdateState();
         }
 
+        public void Dispose()
+        {
+            _health.OnValueChanged -= UpdateState;
+            _active = false;
+            _view.SetActive(false);
+        }
+
         public Vector3 GetImpactPosition(Vector3 origin, Vector3 target)
         {
             return _active ? _view.GetSurfacePosition(origin, target) : target;
@@ -31,13 +39,6 @@ namespace EmpireAtWar.Components.Ship.Health
         public void ShowImpact(Vector3 position)
         {
             if (_active) _view.ShowImpact(position);
-        }
-
-        public void Dispose()
-        {
-            _health.OnValueChanged -= UpdateState;
-            _active = false;
-            _view.SetActive(false);
         }
 
         private void UpdateState()

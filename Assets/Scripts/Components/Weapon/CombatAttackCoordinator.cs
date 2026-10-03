@@ -18,66 +18,43 @@ namespace EmpireAtWar.Components.Weapon
         internal const int TARGET_JOB_BATCH_SIZE = TargetSelectionBatch.TARGET_JOB_BATCH_SIZE;
         internal const int DUE_JOB_BATCH_SIZE = 32;
 
-        private struct DueEvent
-        {
-            public bool IsImpact;
-            public float Time;
-            public long Sequence;
-        }
-
-        private struct SequenceRecord
-        {
-            public IWeaponPresenter Owner;
-            public int OwnerGeneration;
-            public WeaponHardPoint HardPoint;
-            public int HardPointGeneration;
-            public AttackData TargetGroup;
-            public IHardPointModel Target;
-            public int TargetGeneration;
-            public int ShotsRemaining;
-            public float NextTime;
-            public int EarliestFrame;
-            public long EventSequence;
-        }
-
-        private struct ImpactRecord
-        {
-            public IWeaponPresenter Owner;
-            public int OwnerGeneration;
-            public AttackData TargetGroup;
-            public IHardPointModel Target;
-            public int TargetId;
-            public int TargetGeneration;
-            public float Damage;
-            public DamageType DamageType;
-            public float DueTime;
-            public int EarliestFrame;
-            public long EventSequence;
-        }
-
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
         private readonly List<ImpactRecord> _impacts = new List<ImpactRecord>();
         private readonly List<DueEvent> _dueEvents = new List<DueEvent>();
         private static readonly Comparison<DueEvent> _compareDueEvents = CompareDueEvents;
+        private readonly TargetSelectionBatch _targetSelection;
+
         private NativeArray<AttackDueJob.Input> _dueInputs;
         private NativeArray<byte> _dueResults;
-        private int _nextOwnerGeneration;
+
         private long _nextEventSequence;
+
+        private int _nextOwnerGeneration;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private int _lastDueFlaggedCount;
         private int _dueCommittedCount;
 #endif
 
-        private readonly TargetSelectionBatch _targetSelection;
+        public int PendingSequences => _sequences.Count;
+        public int PendingImpacts => _impacts.Count;
 
         public CombatAttackCoordinator()
         {
             _targetSelection = new TargetSelectionBatch(IsRegistered);
         }
 
-        public int PendingSequences => _sequences.Count;
-        public int PendingImpacts => _impacts.Count;
+        public void Dispose()
+        {
+            for (int i = 0; i < _impacts.Count; i++) AttackSequenceDiagnostics.RecordCancelledImpact();
+            _impacts.Clear();
+            _sequences.Clear();
+            _owners.Clear();
+            _targetSelection.Dispose();
+            _dueEvents.Clear();
+            if (_dueInputs.IsCreated) _dueInputs.Dispose();
+            if (_dueResults.IsCreated) _dueResults.Dispose();
+        }
 
         public void Register(IWeaponPresenter owner)
         {
@@ -194,8 +171,6 @@ namespace EmpireAtWar.Components.Weapon
             long fallbackCount = AttackSequenceDiagnostics.TargetSelectionFallbacks;
             _lastDueFlaggedCount = 0;
             _dueCommittedCount = 0;
-#endif
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.TargetBatch.Auto())
 #endif
             _targetSelection.Process();
@@ -257,18 +232,6 @@ namespace EmpireAtWar.Components.Weapon
                 });
             }
 #endif
-        }
-
-        public void Dispose()
-        {
-            for (int i = 0; i < _impacts.Count; i++) AttackSequenceDiagnostics.RecordCancelledImpact();
-            _impacts.Clear();
-            _sequences.Clear();
-            _owners.Clear();
-            _targetSelection.Dispose();
-            _dueEvents.Clear();
-            if (_dueInputs.IsCreated) _dueInputs.Dispose();
-            if (_dueResults.IsCreated) _dueResults.Dispose();
         }
 
         private bool IsRegistered(IWeaponPresenter owner, int generation) =>
@@ -508,6 +471,54 @@ namespace EmpireAtWar.Components.Weapon
             int last = _impacts.Count - 1;
             _impacts[index] = _impacts[last];
             _impacts.RemoveAt(last);
+        }
+
+        private struct DueEvent
+        {
+            public float Time;
+
+            public long Sequence;
+
+            public bool IsImpact;
+        }
+
+        private struct SequenceRecord
+        {
+            public IWeaponPresenter Owner;
+            public IHardPointModel Target;
+
+            public WeaponHardPoint HardPoint;
+            public AttackData TargetGroup;
+
+            public float NextTime;
+
+            public long EventSequence;
+
+            public int OwnerGeneration;
+            public int HardPointGeneration;
+            public int TargetGeneration;
+            public int ShotsRemaining;
+            public int EarliestFrame;
+        }
+
+        private struct ImpactRecord
+        {
+            public IWeaponPresenter Owner;
+            public IHardPointModel Target;
+
+            public AttackData TargetGroup;
+
+            public DamageType DamageType;
+
+            public float Damage;
+            public float DueTime;
+
+            public long EventSequence;
+
+            public int OwnerGeneration;
+            public int TargetId;
+            public int TargetGeneration;
+            public int EarliestFrame;
         }
     }
 }

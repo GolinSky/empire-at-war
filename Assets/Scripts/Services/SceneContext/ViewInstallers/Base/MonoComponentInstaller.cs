@@ -12,6 +12,7 @@ namespace EmpireAtWar
         {
             _transform = transform;
         }
+
         public override void InstallBindings()
         {
             Container

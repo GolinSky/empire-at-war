@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.Tooltip
     {
         public static TooltipContent Build(FactionData data, IEnumerable<TooltipStat> stats,
             IEnumerable<TooltipRequirement> requirements = null, string status = "") =>
-            new TooltipContent(data.Name, data.Description, data.IconKey, data.Role,
+            new TooltipContent(title: data.Name, description: data.Description, iconKey: data.IconKey, subtitle: data.Role,
                 stats: stats,
                 strongAgainst: data.Matchups != null ? data.Matchups.StrongAgainst : null,
                 weakAgainst: data.Matchups != null ? data.Matchups.WeakAgainst : null,

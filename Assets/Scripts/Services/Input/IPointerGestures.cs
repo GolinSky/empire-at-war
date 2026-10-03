@@ -9,10 +9,15 @@ namespace EmpireAtWar.Services.Input
     public interface IPointerGestures
     {
         event Action<Vector2> WorldPressed;
+
         event Action<Vector2> WorldClicked;
+
         event Action<Vector2> WorldCommanded;
+
         event Action<Vector2> DragStarted;
+
         event Action<Vector2> DragChanged;
+
         event Action<Vector2> DragEnded;
     }
 }

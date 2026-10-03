@@ -16,6 +16,7 @@ namespace EmpireAtWar.Views.MiniMap
     public interface IMiniMapPositionConvector
     {
         Vector2 GetPosition(Vector3 worldPos);
+
         Vector2 GetSize(float worldDiameter);
     }
     public class MiniMapUi : BaseUi<IMiniMapModelObserver>, IMiniMapView, IPointerDownHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IMiniMapPositionConvector, IInitializable, ILateDisposable, ITooltipHoverView
@@ -26,27 +27,28 @@ namespace EmpireAtWar.Views.MiniMap
         private const float FADE_DURATION = 0.3f;
         private const float ORIGIN_MAP_ALPHA = 0.8f;
 
-        [Inject] private IPlayerColors PlayerColors { get; }
-
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Transform iconParent;
         [SerializeField] private Image mapImage;
         [SerializeField] private CameraFootprintView cameraFootprintView;
         [SerializeField] private MiniMapObstacleView obstacleView;
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
-
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
         private Vector2Range _mapRange;
-        private float _markerAlpha = HIGHLIGHT_MARK_ALPHA;
         private Tween _markerFade;
-        private Rect MiniMapRect => miniMapRectTransform.rect;
+
+        private float _markerAlpha = HIGHLIGHT_MARK_ALPHA;
 
         public event Action<Vector3> OnCameraMoveRequested;
+
         public event Action<Vector3> OnMoveOrderRequested;
+
+        [Inject] private IPlayerColors PlayerColors { get; }
+        public TooltipHoverView TooltipHover => tooltipHover;
+        private Rect MiniMapRect => miniMapRectTransform.rect;
 
         public void Initialize()
         {
@@ -220,7 +222,6 @@ namespace EmpireAtWar.Views.MiniMap
             mapImage.DOFade(ORIGIN_MAP_ALPHA, FADE_DURATION).SetLink(gameObject);
             DoFade(ORIGIN_MAP_ALPHA, FADE_DURATION);
         }
-
 
         private void DoFade(float alpha, float duration)
         {

@@ -21,13 +21,13 @@ namespace EmpireAtWar.Entities.Tooltip
                 if (slot.State == ShipAbilityState.Active) active++;
                 remaining = Math.Max(remaining, slot.TimeLeft);
             }
-            return new TooltipContent(definition.DisplayName, definition.Description, icons.Register(definition.Icon),
+            return new TooltipContent(title: definition.DisplayName, description: definition.Description, iconKey: icons.Register(definition.Icon),
                 stats: new[]
                 {
-                    new TooltipStat("Range", definition.Range),
-                    new TooltipStat("Duration (s)", definition.Duration),
-                    new TooltipStat("Cooldown (s)", definition.RecoveryDelay),
-                    new TooltipStat("Remaining (s)", remaining)
+                    new TooltipStat(label: "Range", current: definition.Range),
+                    new TooltipStat(label: "Duration (s)", current: definition.Duration),
+                    new TooltipStat(label: "Cooldown (s)", current: definition.RecoveryDelay),
+                    new TooltipStat(label: "Remaining (s)", current: remaining)
                 }, status: $"{ready} of {slots.Count} ready · {active} active. " +
                     (definition.RequiresEnemyTarget ? "Choose an enemy target. " : "Applies to eligible selected units. ") +
                     (definition.CanCancel ? $"{(active > 0 ? "On" : "Off")}: click while active to switch off. " : "") +

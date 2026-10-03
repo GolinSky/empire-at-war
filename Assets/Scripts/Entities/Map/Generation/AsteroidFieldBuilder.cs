@@ -26,7 +26,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             Random random)
         {
             FieldGrid grid = new FieldGrid(size.Bounds, size.FieldCellSize);
-            FieldDensity density = new FieldDensity(_settings, size, stations, nodes, lanes, random);
+            FieldDensity density = new FieldDensity(settings: _settings, size: size, stations: stations, nodes: nodes, lanes: lanes, random: random);
             for (int index = 0; index < grid.Count; index++)
             {
                 grid.SetField(index, density.IsField(grid.GetCenter(index)));

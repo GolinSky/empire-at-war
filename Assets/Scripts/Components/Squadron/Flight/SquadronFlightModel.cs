@@ -9,6 +9,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     public sealed class SquadronFlightModel : PureModel
     {
         private readonly IFighterFlightData _data;
+
         private readonly CombatModifiers _modifiers;
         private FighterKinematics[] _fighters = Array.Empty<FighterKinematics>();
         private bool[] _alive = Array.Empty<bool>();
@@ -41,7 +42,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         }
 
         public FighterKinematics Get(int index) => _fighters[index];
+
         public bool IsAlive(int index) => _alive[index];
+
         public void Kill(int index) => _alive[index] = false;
 
         public void SetSteering(int index, Vector3 target, float speed)

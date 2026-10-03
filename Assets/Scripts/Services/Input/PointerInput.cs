@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.Input
         private readonly GameInputActions.PointerActions _pointer;
 
         public event Action<Vector2> PrimaryPressed;
+
         public event Action<Vector2> PrimaryReleased;
 
         public Vector2 Position => _pointer.Position.ReadValue<Vector2>();

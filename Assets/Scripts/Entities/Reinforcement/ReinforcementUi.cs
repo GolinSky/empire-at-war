@@ -19,49 +19,42 @@ namespace EmpireAtWar.Views.Reinforcement
 
     public interface IReinforcementUi
     {
-        void SetModel(IReinforcementModelObserver model);
-        void SetPresenter(IReinforcementPresenter presenter);
-        void SetData(ReinforcementData data);
-        void SetParent(Transform parent);
-        void Show();
-        void Hide();
         void Initialize();
+
         void Dispose();
+
+        void SetModel(IReinforcementModelObserver model);
+
+        void SetPresenter(IReinforcementPresenter presenter);
+
+        void SetData(ReinforcementData data);
+
+        void SetParent(Transform parent);
+
+        void Show();
+
+        void Hide();
     }
 
     public class ReinforcementUi : BaseUi, IReinforcementUi, IReinforcementVisitor, ITooltipHoverView
     {
+        private IReinforcementModelObserver _model;
+        private IReinforcementPresenter _presenter;
+        private ISpawnShipUi _currentSpawnUnitUi;
+
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private ScrollRect unitScroll;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button closeButton;
         [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private UnityEngine.UI.Image capacityFill;
-
         private readonly Dictionary<UnitLimitKey, ISpawnShipUi> _spawnUnitUiDictionary = new();
-
-        private IReinforcementModelObserver _model;
-        private IReinforcementPresenter _presenter;
         private ReinforcementData _data;
-        private ISpawnShipUi _currentSpawnUnitUi;
+
         private bool _isInitialized;
 
-        public void SetModel(IReinforcementModelObserver model)
-        {
-            _model = model;
-        }
-
-        public void SetPresenter(IReinforcementPresenter presenter)
-        {
-            _presenter = presenter;
-        }
-
-        public void SetData(ReinforcementData data)
-        {
-            _data = data;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -93,6 +86,21 @@ namespace EmpireAtWar.Views.Reinforcement
             _model.OnReinforcementAdded -= AddUi;
             _model.OnCapacityChanged -= UpdateCapacityData;
             _isInitialized = false;
+        }
+
+        public void SetModel(IReinforcementModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetPresenter(IReinforcementPresenter presenter)
+        {
+            _presenter = presenter;
+        }
+
+        public void SetData(ReinforcementData data)
+        {
+            _data = data;
         }
 
         private void OnDestroy()

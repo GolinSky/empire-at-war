@@ -9,26 +9,42 @@ namespace EmpireAtWar.Entities.CaptureSites
 {
     public sealed class CaptureSitePresenter : ICaptureSite, IDisposable
     {
+        private readonly ICaptureSiteView _view;
+        private readonly ILocalPlayer _localPlayer;
+
         private static readonly SiteFacilityType[] FacilityTypes =
             (SiteFacilityType[])Enum.GetValues(typeof(SiteFacilityType));
-
         private readonly CaptureSiteModel _model;
-        private readonly ICaptureSiteView _view;
         private readonly CaptureSiteData _data;
-        private readonly ILocalPlayer _localPlayer;
-        private bool _isSelected;
         private readonly TooltipRequests _tooltips;
         private readonly TooltipHoverSubscription _tooltipHover;
         private readonly Predicate<float> _canAfford;
 
+        private bool _isSelected;
+
         public event Action<CaptureSitePresenter, SiteFacilityType> BuildRequested;
 
+        public PlayerId Owner => _model.Owner;
+        public CaptureSiteState State => _model.State;
+        public float CaptureProgress => _model.CaptureProgress;
+        public float ConstructionProgress => _model.ConstructionProgress;
+        public bool IsCapturable => _model.IsCapturable;
+        public bool CanStartConstruction => _model.CanStartConstruction;
+        public bool CanPlayerBuild => _localPlayer.IsFriendly(_model.Owner) && _model.CanStartConstruction;
+        public SiteFacilityType FacilityType => _model.FacilityType;
+        public Vector3 Center => _view.Center;
+        public Vector3 FacilityPosition => _view.FacilityPosition;
+        public float Radius => _view.Radius;
+        public bool IsRevealed { get; private set; }
+        public bool IsOperational => _model.State == CaptureSiteState.Operational;
+        public bool HasFacility => _model.State is CaptureSiteState.Constructing or CaptureSiteState.Operational;
+
         public CaptureSitePresenter(
-            CaptureSiteModel model,
             ICaptureSiteView view,
-            CaptureSiteData data,
             ILocalPlayer localPlayer,
             ITooltipService tooltips,
+            CaptureSiteModel model,
+            CaptureSiteData data,
             Predicate<float> canAfford)
         {
             _localPlayer = localPlayer;
@@ -50,21 +66,6 @@ namespace EmpireAtWar.Entities.CaptureSites
             Render();
             SetVisibility(false, false, _ => false);
         }
-
-        public PlayerId Owner => _model.Owner;
-        public CaptureSiteState State => _model.State;
-        public float CaptureProgress => _model.CaptureProgress;
-        public float ConstructionProgress => _model.ConstructionProgress;
-        public bool IsCapturable => _model.IsCapturable;
-        public bool CanStartConstruction => _model.CanStartConstruction;
-        public bool CanPlayerBuild => _localPlayer.IsFriendly(_model.Owner) && _model.CanStartConstruction;
-        public SiteFacilityType FacilityType => _model.FacilityType;
-        public Vector3 Center => _view.Center;
-        public Vector3 FacilityPosition => _view.FacilityPosition;
-        public float Radius => _view.Radius;
-        public bool IsRevealed { get; private set; }
-        public bool IsOperational => _model.State == CaptureSiteState.Operational;
-        public bool HasFacility => _model.State is CaptureSiteState.Constructing or CaptureSiteState.Operational;
 
         public void Dispose()
         {
@@ -153,21 +154,21 @@ namespace EmpireAtWar.Entities.CaptureSites
                 if (key is SiteFacilityType type)
                 {
                     SiteFacilityCost cost = _data.GetCost(type);
-                    return new TooltipContent(cost.Name,
-                        $"Construct {cost.Name} at this friendly capture site.", stats: new[]
+                    return new TooltipContent(title: cost.Name,
+                        description: $"Construct {cost.Name} at this friendly capture site.", stats: new[]
                         {
-                            new TooltipStat("Cost (credits)", cost.Price),
-                            new TooltipStat("Build time (s)", cost.BuildTime)
+                            new TooltipStat(label: "Cost (credits)", current: cost.Price),
+                            new TooltipStat(label: "Build time (s)", current: cost.BuildTime)
                         }, requirements: new[]
                         {
                             new TooltipRequirement("Friendly empty site", CanPlayerBuild),
                             new TooltipRequirement($"{cost.Price:0} credits", _canAfford(cost.Price))
                         });
                 }
-                return new TooltipContent("Capture site",
-                    "Move units into the ring to capture it. Select a friendly empty site to choose a facility.",
-                    stats: new[] { new TooltipStat("Capture (%)", CaptureProgress * 100f),
-                        new TooltipStat("Construction (%)", ConstructionProgress * 100f) },
+                return new TooltipContent(title: "Capture site",
+                    description: "Move units into the ring to capture it. Select a friendly empty site to choose a facility.",
+                    stats: new[] { new TooltipStat(label: "Capture (%)", current: CaptureProgress * 100f),
+                        new TooltipStat(label: "Construction (%)", current: ConstructionProgress * 100f) },
                     status: $"Owner: {Owner} · {State} · {FacilityType}");
             });
         }

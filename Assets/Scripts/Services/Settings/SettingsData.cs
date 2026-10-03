@@ -11,12 +11,13 @@ namespace EmpireAtWar.Services.Settings
     {
         public const int CURRENT_SCHEMA_VERSION = 1;
 
-        [SerializeField] private int schemaVersion = CURRENT_SCHEMA_VERSION;
         [SerializeField] private DisplaySettingsData display = new DisplaySettingsData();
         [SerializeField] private GraphicsSettingsData graphics = new GraphicsSettingsData();
         [SerializeField] private AudioSettingsData audio = new AudioSettingsData();
         [SerializeField] private CameraSettingsData camera = new CameraSettingsData();
         [SerializeField] private InputSettingsData input = new InputSettingsData();
+
+        [SerializeField] private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
         public int SchemaVersion => schemaVersion;
         public DisplaySettingsData Display => display;

@@ -8,13 +8,16 @@ namespace EmpireAtWar.Ui.Base
     public class UiInstaller: Installer
     {
         private const string DEFAULT_NAME = "Ui";
+
         private IAssetService _assetService;
-        private UiType _uiType;
+
         private Transform _parent;
         private GameObjectContext _context;
-        
+
+        private UiType _uiType;
+
         [Inject]
-        public void Constructor(IAssetService assetService, UiType uiType, Transform parent, GameObjectContext context)
+        public void Constructor(IAssetService assetService, Transform parent, GameObjectContext context, UiType uiType)
         {
             _parent = parent;
             _uiType = uiType;

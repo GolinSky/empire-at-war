@@ -8,14 +8,17 @@ namespace EmpireAtWar.Models.Economy
     public interface IEconomyModelObserver : IModelObserver
     {
         event Action<float> OnMoneyChanged;
+
         float Money { get; }
     }
 
     public class EconomyModel : PureModel, IEconomyModelObserver
     {
+        private float _money;
+
         public event Action<float> OnMoneyChanged;
 
-        private float _money;
+        public float Money => _money;
 
         public EconomyModel(EconomyData data)
             : this(data, data.StartMoneyAmount)
@@ -23,7 +26,7 @@ namespace EmpireAtWar.Models.Economy
         }
 
         [Inject]
-        public EconomyModel(EconomyData data, IGameModelObserver gameModel)
+        public EconomyModel(IGameModelObserver gameModel, EconomyData data)
             : this(data, gameModel.StartingMoney)
         {
         }
@@ -38,8 +41,6 @@ namespace EmpireAtWar.Models.Economy
 
             _money = startingMoney;
         }
-
-        public float Money => _money;
 
         public void AddMoney(float amount)
         {

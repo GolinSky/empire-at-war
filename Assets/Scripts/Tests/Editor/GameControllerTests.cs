@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
         public void StartGame_WithoutOpposingTeam_RejectsMatchBeforeLoadingScene()
         {
             TrackingSceneService sceneService = new TrackingSceneService();
-            GameController controller = new GameController(_model, sceneService);
+            GameController controller = new GameController(model: _model, sceneService: sceneService);
             PlayerSlot[] sameTeam =
             {
                 CreateSlot(0, 0, PlayerController.Human),
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
         public void StartGame_TwoVersusTwoMirrorMatch_StoresPlayersAndLoadsBattle()
         {
             TrackingSceneService sceneService = new TrackingSceneService();
-            GameController controller = new GameController(_model, sceneService);
+            GameController controller = new GameController(model: _model, sceneService: sceneService);
             PlayerSlot[] players =
             {
                 CreateSlot(0, 0, PlayerController.Human),

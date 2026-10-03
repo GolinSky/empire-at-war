@@ -55,6 +55,16 @@ namespace EmpireAtWar.Tests.Editor
                 { typeof(EconomyData), ScriptableObject.CreateInstance<EconomyData>() }
             };
 
+            public void Dispose()
+            {
+                foreach (ScriptableObject data in _data.Values)
+                {
+                    Object.DestroyImmediate(data);
+                }
+
+                Object.DestroyImmediate(_unitPrefab);
+            }
+
             public TSource Load<TSource>(string key) where TSource : Object
             {
                 return typeof(TSource) == typeof(GameObject)
@@ -70,16 +80,6 @@ namespace EmpireAtWar.Tests.Editor
             public GameObject LoadPrefab(string key)
             {
                 throw new NotSupportedException();
-            }
-
-            public void Dispose()
-            {
-                foreach (ScriptableObject data in _data.Values)
-                {
-                    Object.DestroyImmediate(data);
-                }
-
-                Object.DestroyImmediate(_unitPrefab);
             }
         }
     }

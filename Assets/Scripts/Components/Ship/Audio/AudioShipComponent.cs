@@ -15,24 +15,28 @@ namespace EmpireAtWar.Components.Ship.Audio
     public sealed class AudioShipComponent : MonoBehaviour, IAudioShipComponent, IMonoComponent
     {
         private IShipSfxService _audio;
-        private ShipSfxData _data;
         private IShipEngineAudioObserver _movement;
         private ILocalPlayer _localPlayer;
-        private Transform _viewTransform;
         private IEntity _ship;
         private IReadOnlyList<ShipAbilitySlot> _abilities;
+
+        private ShipSfxData _data;
+        private Transform _viewTransform;
         private ShipAbilityState[] _states;
         private ShipAbilityAudioProfile[] _sounds;
         private readonly ShipEngineAudioState _engine = new ShipEngineAudioState();
+
         private Vector3 _previousPosition;
+
         private float _alarmReadyAt;
+
         private bool _initialized;
 
         public string Id => nameof(AudioShipComponent);
 
         [Inject]
-        private void Construct(IShipSfxService audio, ShipSfxData data, IShipEngineAudioObserver movement,
-            ILocalPlayer localPlayer, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
+        private void Construct(IShipSfxService audio, IShipEngineAudioObserver movement, ILocalPlayer localPlayer,
+            ShipSfxData data, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             _audio = audio;
             _data = data;

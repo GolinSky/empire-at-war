@@ -4,14 +4,14 @@ namespace EmpireAtWar.Models.Players
     {
         private readonly IPlayerRelations _relations;
 
+        public PlayerId Id => Slot.Id;
+        public PlayerSlot Slot { get; }
+
         public LocalPlayer(IPlayerRoster roster)
         {
             _relations = roster;
             Slot = MatchRules.FindHuman(roster.Players);
         }
-
-        public PlayerId Id => Slot.Id;
-        public PlayerSlot Slot { get; }
 
         public bool IsLocal(PlayerId owner) => owner == Id;
 

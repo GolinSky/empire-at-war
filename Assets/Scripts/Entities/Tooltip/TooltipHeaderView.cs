@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.Tooltip
         [SerializeField] private TextMeshProUGUI title;
         [SerializeField] private TextMeshProUGUI subtitle;
         [SerializeField] private TextMeshProUGUI shortcut;
+
         public void Render(TooltipContent content, TooltipIconData icons)
         {
             icon.gameObject.SetActive(!string.IsNullOrEmpty(content.IconKey));

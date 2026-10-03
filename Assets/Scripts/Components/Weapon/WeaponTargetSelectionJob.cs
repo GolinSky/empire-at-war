@@ -11,27 +11,6 @@ namespace EmpireAtWar.Components.Weapon
     [BurstCompile]
     internal struct WeaponTargetSelectionJob : IJobParallelFor
     {
-        internal struct Input
-        {
-            public float3 Origin;
-            public quaternion ParentRotation;
-            public float MaxDistance;
-            public float MinYaw;
-            public float MaxYaw;
-            public int CandidateStart;
-            public int CandidateCount;
-        }
-
-        internal struct Result
-        {
-            public int CandidateIndex;
-            public int Visited;
-            public int RequiresSerialFallback;
-            public int HasInRangeAim;
-            public float4 SelectedAim;
-            public float4 LastInRangeAim;
-        }
-
         [ReadOnly] public NativeArray<Input> Inputs;
         [ReadOnly] public NativeArray<float3> CandidatePositions;
         [WriteOnly] public NativeArray<Result> Results;
@@ -93,6 +72,30 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             Results[index] = result;
+        }
+
+        internal struct Input
+        {
+            public float3 Origin;
+            public quaternion ParentRotation;
+
+            public float MaxDistance;
+            public float MinYaw;
+            public float MaxYaw;
+
+            public int CandidateStart;
+            public int CandidateCount;
+        }
+
+        internal struct Result
+        {
+            public float4 SelectedAim;
+            public float4 LastInRangeAim;
+
+            public int CandidateIndex;
+            public int Visited;
+            public int RequiresSerialFallback;
+            public int HasInRangeAim;
         }
     }
 }

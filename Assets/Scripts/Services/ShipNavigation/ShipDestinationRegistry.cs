@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private readonly Dictionary<int, Entry> _entries =
             new Dictionary<int, Entry>();
+
         private int _nextRegistrationId;
 
         public int Register(
@@ -27,10 +28,10 @@ namespace EmpireAtWar.Services.ShipNavigation
             ValidateRadius(navigationRadius);
             int registrationId = _nextRegistrationId++;
             _entries.Add(registrationId, new Entry(
-                currentPosition,
-                navigationRadius,
-                hullSpan,
-                initialFinalPosition));
+                currentPosition: currentPosition,
+                navigationRadius: navigationRadius,
+                hullSpan: hullSpan,
+                activeFinalPosition: initialFinalPosition));
             return registrationId;
         }
 
@@ -188,23 +189,23 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private sealed class Entry
         {
+            public Func<FormationPoint> CurrentPosition { get; }
+            public float NavigationRadius { get; }
+            public ShipHullSpan HullSpan { get; }
+            public FormationPoint? ActiveFinalPosition { get; set; }
+            public FormationPoint? PendingFinalPosition { get; set; }
+
             public Entry(
                 Func<FormationPoint> currentPosition,
-                float navigationRadius,
                 ShipHullSpan hullSpan,
-                FormationPoint activeFinalPosition)
+                FormationPoint activeFinalPosition,
+                float navigationRadius)
             {
                 CurrentPosition = currentPosition;
                 NavigationRadius = navigationRadius;
                 HullSpan = hullSpan;
                 ActiveFinalPosition = activeFinalPosition;
             }
-
-            public Func<FormationPoint> CurrentPosition { get; }
-            public float NavigationRadius { get; }
-            public ShipHullSpan HullSpan { get; }
-            public FormationPoint? ActiveFinalPosition { get; set; }
-            public FormationPoint? PendingFinalPosition { get; set; }
         }
     }
 }

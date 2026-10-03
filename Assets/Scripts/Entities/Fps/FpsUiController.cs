@@ -6,8 +6,9 @@ namespace EmpireAtWar.Entities.Fps
 {
     public sealed class FpsUiController : UiController, IFpsPresenter, IInitializable, ITickable, ILateDisposable
     {
-        private readonly FpsModel _model;
         private IFpsUi _ui;
+
+        private readonly FpsModel _model;
 
         public FpsUiController(IUiService uiService, IUiCancelRouter cancelRouter, FpsModel model)
             : base(uiService, cancelRouter)
@@ -22,6 +23,11 @@ namespace EmpireAtWar.Entities.Fps
             _ui.Initialize();
         }
 
+        public void LateDispose()
+        {
+            _ui.Dispose();
+        }
+
         public void Tick()
         {
             SampleFrame(Time.unscaledDeltaTime);
@@ -30,11 +36,6 @@ namespace EmpireAtWar.Entities.Fps
         public void SampleFrame(float unscaledDeltaTime)
         {
             _model.SampleFrame(unscaledDeltaTime);
-        }
-
-        public void LateDispose()
-        {
-            _ui.Dispose();
         }
     }
 }

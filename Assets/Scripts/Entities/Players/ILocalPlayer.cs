@@ -8,10 +8,14 @@ namespace EmpireAtWar.Models.Players
     {
         PlayerId Id { get; }
         PlayerSlot Slot { get; }
+
         bool IsLocal(PlayerId owner);
+
         /// <summary>The local player or one of its allies.</summary>
         bool IsFriendly(PlayerId owner);
+
         bool IsHostile(PlayerId owner);
+
         OwnerRelation GetRelation(PlayerId owner);
     }
 }

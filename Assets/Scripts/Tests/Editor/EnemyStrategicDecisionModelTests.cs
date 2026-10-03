@@ -11,15 +11,15 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.Hard,
-                5,
-                3,
-                true,
-                true,
-                false,
-                2,
-                0);
+                victoryCondition: BattleVictoryCondition.DestroyEnemyFleet,
+                difficulty: EnemyAiDifficulty.Hard,
+                ownShipCount: 5,
+                enemyShipCount: 3,
+                hasCaptureTarget: true,
+                hasEnemyBaseTarget: true,
+                hasOwnBase: false,
+                ownedCapturableZoneCount: 2,
+                enemyShipsNearOwnBase: 0);
 
             EnemyStrategicDecision decision = model.Evaluate(snapshot);
 
@@ -31,16 +31,16 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.Hard,
-                5,
-                3,
-                true,
-                true,
-                false,
-                2,
-                0,
-                true);
+                victoryCondition: BattleVictoryCondition.DestroyEnemyFleet,
+                difficulty: EnemyAiDifficulty.Hard,
+                ownShipCount: 5,
+                enemyShipCount: 3,
+                hasCaptureTarget: true,
+                hasEnemyBaseTarget: true,
+                hasOwnBase: false,
+                ownedCapturableZoneCount: 2,
+                enemyShipsNearOwnBase: 0,
+                hasThreatenedSite: true);
 
             EnemyStrategicDecision decision = model.Evaluate(snapshot);
 
@@ -52,15 +52,15 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyOpponentBase,
-                EnemyAiDifficulty.UltraHard,
-                3,
-                3,
-                true,
-                true,
-                false,
-                2,
-                0);
+                victoryCondition: BattleVictoryCondition.DestroyOpponentBase,
+                difficulty: EnemyAiDifficulty.UltraHard,
+                ownShipCount: 3,
+                enemyShipCount: 3,
+                hasCaptureTarget: true,
+                hasEnemyBaseTarget: true,
+                hasOwnBase: false,
+                ownedCapturableZoneCount: 2,
+                enemyShipsNearOwnBase: 0);
 
             EnemyStrategicDecision decision = model.Evaluate(snapshot);
 
@@ -72,15 +72,15 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyOpponentBase,
-                EnemyAiDifficulty.Easy,
-                3,
-                3,
-                true,
-                true,
-                true,
-                0,
-                0);
+                victoryCondition: BattleVictoryCondition.DestroyOpponentBase,
+                difficulty: EnemyAiDifficulty.Easy,
+                ownShipCount: 3,
+                enemyShipCount: 3,
+                hasCaptureTarget: true,
+                hasEnemyBaseTarget: true,
+                hasOwnBase: true,
+                ownedCapturableZoneCount: 0,
+                enemyShipsNearOwnBase: 0);
 
             EnemyStrategicDecision decision = model.Evaluate(snapshot);
 
@@ -93,25 +93,25 @@ namespace EmpireAtWar.Tests.Editor
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
 
             EnemyStrategicDecision easy = model.Evaluate(new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.Easy,
-                10,
-                1,
-                false,
-                false,
-                false,
-                0,
-                0));
+                victoryCondition: BattleVictoryCondition.DestroyEnemyFleet,
+                difficulty: EnemyAiDifficulty.Easy,
+                ownShipCount: 10,
+                enemyShipCount: 1,
+                hasCaptureTarget: false,
+                hasEnemyBaseTarget: false,
+                hasOwnBase: false,
+                ownedCapturableZoneCount: 0,
+                enemyShipsNearOwnBase: 0));
             EnemyStrategicDecision ultra = model.Evaluate(new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.UltraHard,
-                10,
-                1,
-                false,
-                false,
-                false,
-                0,
-                0));
+                victoryCondition: BattleVictoryCondition.DestroyEnemyFleet,
+                difficulty: EnemyAiDifficulty.UltraHard,
+                ownShipCount: 10,
+                enemyShipCount: 1,
+                hasCaptureTarget: false,
+                hasEnemyBaseTarget: false,
+                hasOwnBase: false,
+                ownedCapturableZoneCount: 0,
+                enemyShipsNearOwnBase: 0));
 
             Assert.That(easy.CommittedShipCount, Is.EqualTo(5));
             Assert.That(ultra.CommittedShipCount, Is.EqualTo(10));
@@ -127,8 +127,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
                 new EnemyStrategicSnapshot(
-                    BattleVictoryCondition.DestroyEnemyFleet,
-                    difficulty,
+                    victoryCondition: BattleVictoryCondition.DestroyEnemyFleet,
+                    difficulty: difficulty,
                     ownShipCount: 10,
                     enemyShipCount: 1,
                     hasCaptureTarget: false,
@@ -265,10 +265,10 @@ namespace EmpireAtWar.Tests.Editor
             int enemyShipsNearOwnBase)
         {
             return new EnemyStrategicSnapshot(
-                victoryCondition,
-                difficulty,
-                ownShipCount,
-                enemyShipCount,
+                victoryCondition: victoryCondition,
+                difficulty: difficulty,
+                ownShipCount: ownShipCount,
+                enemyShipCount: enemyShipCount,
                 hasCaptureTarget: true,
                 hasEnemyBaseTarget: true,
                 hasOwnBase: true,

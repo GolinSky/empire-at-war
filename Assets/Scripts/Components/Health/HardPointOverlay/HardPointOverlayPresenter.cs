@@ -24,8 +24,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private const float HIT_HALF_SIZE = 20f;
 
         private readonly IHardPointOverlayView _view;
-        private readonly HardPointOverlayModel _model;
-        private readonly HardPointOverlayData _data;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
@@ -34,17 +32,20 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
 
+        private readonly HardPointOverlayModel _model;
+        private readonly HardPointOverlayData _data;
+
         public HardPointOverlayPresenter(
             IHardPointOverlayView view,
-            HardPointOverlayModel model,
-            HardPointOverlayData data,
             ISelectionQuery selectionQuery,
             IPointerInput pointer,
             ICameraService cameraService,
             IUnitOrderService orderService,
             ICinematicCameraModelObserver cinematicCamera,
             IFogOfWarSystem fogOfWarSystem,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer,
+            HardPointOverlayModel model,
+            HardPointOverlayData data)
         {
             _view = view;
             _model = model;
@@ -149,12 +150,12 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             bool isHovered = _model.InspectedShip != null && _model.InspectedShip.Id == ship.Id &&
                              _model.HoveredHardPointId == hardPoint.Id;
             _view.ShowMarker(slot, new HardPointMarkerData(
-                screenPosition,
-                _data.Get(hardPoint.HardPointType).Icon,
-                hardPoint.HealthPercentage,
-                isHovered,
-                _model.IsTargeted(ship, hardPoint.Id),
-                hardPoint.IsDestroyed));
+                screenPosition: screenPosition,
+                icon: _data.Get(hardPoint.HardPointType).Icon,
+                healthPercentage: hardPoint.HealthPercentage,
+                isHovered: isHovered,
+                isTargeted: _model.IsTargeted(ship, hardPoint.Id),
+                isDestroyed: hardPoint.IsDestroyed));
             return true;
         }
 

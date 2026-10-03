@@ -8,7 +8,6 @@ namespace EmpireAtWar.Components.AttackComponent
     public class WeaponsData : Data
     {
         [SerializeField] private List<WeaponProfile> weapons = new List<WeaponProfile>();
-
         private Dictionary<WeaponType, WeaponProfile> _profiles;
 
         public WeaponProfile GetProfile(WeaponType weaponType)

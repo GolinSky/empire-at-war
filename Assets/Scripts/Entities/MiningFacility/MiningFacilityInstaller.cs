@@ -11,11 +11,12 @@ namespace EmpireAtWar.MiningFacility
     public class MiningFacilityInstaller : DynamicEntityInstaller<MiningFacilityEntity, MiningFacilityData>
     {
         private PlayerId _owner;
-        private bool _isHiddenByLocalFog;
         private MiningFacilityType _miningFacilityType;
 
+        private bool _isHiddenByLocalFog;
+
         [Inject]
-        public void Construct(PlayerId owner, MiningFacilityType miningFacilityType, ILocalPlayer localPlayer)
+        public void Construct(ILocalPlayer localPlayer, PlayerId owner, MiningFacilityType miningFacilityType)
         {
             _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
             _owner = owner;

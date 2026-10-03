@@ -9,15 +9,15 @@ namespace EmpireAtWar.Components.Radar
     {
         private readonly IRadarData _data;
 
+        public float Range => _data.Range;
+        public float Delay => _data.Delay;
+        public PlayerId Owner { get; }
+        public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
+
         public RadarModel(IRadarData data, PlayerId owner)
         {
             _data = data;
             Owner = owner;
         }
-
-        public float Range => _data.Range;
-        public float Delay => _data.Delay;
-        public PlayerId Owner { get; }
-        public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
     }
 }

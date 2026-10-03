@@ -19,33 +19,39 @@ namespace EmpireAtWar.Services.Cheats
     public interface ICheatService
     {
         void AddMoney(float amount);
+
         void AddShipReinforcement(ShipUnitRequest request);
+
         bool ForceSpawnShipAtDefaultZone(ShipUnitRequest request);
+
         bool GrantSuperWeapon(SuperWeaponType type);
+
         void SetRangeDebug(bool isEnabled);
+
         int DestroyOwnShips();
     }
 
     public sealed class CheatService : ICheatService
     {
+        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly IEntityLocator _entityLocator;
+        private readonly IStationRegistry _stationRegistry;
+
         private readonly EconomyModel _economyModel;
         private readonly PlayerSlot _owner;
         private readonly ReinforcementModel _reinforcementModel;
         private readonly ShipFactory _shipFactory;
-        private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly IEntityLocator _entityLocator;
-        private readonly IStationRegistry _stationRegistry;
         private readonly SuperWeaponModel _superWeaponModel;
         private readonly RangeDebugModel _rangeDebugModel;
         private readonly List<IEntity> _ownEntities = new List<IEntity>();
 
         public CheatService(
-            EconomyModel economyModel,
-            ReinforcementModel reinforcementModel,
-            ShipFactory shipFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
             IStationRegistry stationRegistry,
+            EconomyModel economyModel,
+            ReinforcementModel reinforcementModel,
+            ShipFactory shipFactory,
             SuperWeaponModel superWeaponModel,
             RangeDebugModel rangeDebugModel,
             PlayerSlot owner)

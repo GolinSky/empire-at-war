@@ -20,10 +20,13 @@ namespace EmpireAtWar.Controllers.Factions
         }
 
         public static UnitLimitKey From(UnitRequest request) => new UnitLimitKey(request.GetType(), request.Id);
+
         public static UnitLimitKey For<TRequest>(string id) => new UnitLimitKey(typeof(TRequest), id);
 
         public bool Equals(UnitLimitKey other) => RequestType == other.RequestType && Id == other.Id;
+
         public override bool Equals(object obj) => obj is UnitLimitKey other && Equals(other);
+
         public override int GetHashCode() => HashCode.Combine(RequestType, Id);
     }
 }

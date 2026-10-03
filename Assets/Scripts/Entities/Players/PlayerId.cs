@@ -11,16 +11,6 @@ namespace EmpireAtWar.Models.Players
         // Stored as index + 1 so that default(PlayerId) is None instead of the first player.
         private readonly int _encodedIndex;
 
-        public PlayerId(int index)
-        {
-            if (index < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), index, "Player index must not be negative.");
-            }
-
-            _encodedIndex = index + 1;
-        }
-
         public static PlayerId None => default;
 
         public bool IsNone => _encodedIndex == 0;
@@ -37,6 +27,16 @@ namespace EmpireAtWar.Models.Players
 
                 return _encodedIndex - 1;
             }
+        }
+
+        public PlayerId(int index)
+        {
+            if (index < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), index, "Player index must not be negative.");
+            }
+
+            _encodedIndex = index + 1;
         }
 
         public bool Equals(PlayerId other) => _encodedIndex == other._encodedIndex;

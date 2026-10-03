@@ -33,17 +33,17 @@ namespace EmpireAtWar.Presenters.MiniMap
             }
         }
 
+        public void LateDispose()
+        {
+            _markers.Clear();
+        }
+
         public void LateTick()
         {
             foreach (KeyValuePair<ReinforcementZonePresenter, MiniMapMarker> pair in _markers.Pairs)
             {
                 RefreshMarker(pair.Key, pair.Value);
             }
-        }
-
-        public void LateDispose()
-        {
-            _markers.Clear();
         }
 
         private static void RefreshMarker(

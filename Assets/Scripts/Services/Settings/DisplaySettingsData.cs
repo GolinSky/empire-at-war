@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.Settings
     public sealed class DisplaySettingsData
     {
         [SerializeField] private string windowMode = nameof(DisplayWindowMode.Borderless);
+
         [SerializeField] private int width;
         [SerializeField] private int height;
 

@@ -7,10 +7,12 @@ namespace EmpireAtWar.Entities.Fps
         private const float SAMPLE_INTERVAL_SECONDS = 0.5f;
 
         private float _elapsedSeconds;
+
         private int _frameCount;
 
-        public int FramesPerSecond { get; private set; }
         public event Action<int> OnFramesPerSecondChanged;
+
+        public int FramesPerSecond { get; private set; }
 
         public void SampleFrame(float unscaledDeltaTime)
         {

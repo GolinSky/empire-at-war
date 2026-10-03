@@ -8,25 +8,17 @@ namespace EmpireAtWar.Entities.MainMenu.Main
 {
     public class MainMenuUi : BaseUi, IMainMenuUi, ITooltipHoverView
     {
+        private IMainMenuModel _model;
+        private IMainRouteNavigation _navigation;
+
         [SerializeField] private Button startDemoButton;
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button quitApplicationButton;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
-        private IMainMenuModel _model;
-        private IMainRouteNavigation _navigation;
         private bool _isInitialized;
 
-        public void SetModel(IMainMenuModel model)
-        {
-            _model = model;
-        }
-
-        public void SetNavigation(IMainRouteNavigation navigation)
-        {
-            _navigation = navigation;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -52,6 +44,16 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             optionsButton.onClick.RemoveListener(_navigation.OpenSettings);
             quitApplicationButton.onClick.RemoveListener(_navigation.ExitApplication);
             _isInitialized = false;
+        }
+
+        public void SetModel(IMainMenuModel model)
+        {
+            _model = model;
+        }
+
+        public void SetNavigation(IMainRouteNavigation navigation)
+        {
+            _navigation = navigation;
         }
 
         private void OnDestroy()

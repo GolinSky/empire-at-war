@@ -44,33 +44,35 @@ namespace EmpireAtWar.Ship
     /// </summary>
     public class Ship : MonoBehaviour, IController, IShipEntity, IInitializable, ILateDisposable, ITickable
     {
-        [SerializeField] private Renderer[] explosionHullRenderers;
-
-        private HardPointModel _enginesUnitModel;
         private IHealthComponent _healthComponent;
         private IShipMoveComponent _shipMoveComponent;
         private IRadarComponent _radarComponent;
         private IWeaponComponent _weaponComponent;
         private ISelectionModelObserver _selectionModel;
-        private ShipOrderRunner _orders;
-        private LazyInject<IEntity> _entity;
         private IAudioShipComponent _audioShipComponent;
         private IAudioDialogShipComponent _audioDialogShipComponent;
         private IWeaponFireEvents _weaponFireEvents;
         private IReadOnlyList<ShipAbilitySlot> _audioAbilities;
-        private EntityComponentLifecycle _componentLifecycle;
-        private PlayerId _owner;
-        private bool _isReleased;
         private ILayerService _layerService;
         private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
+
+        [SerializeField] private Renderer[] explosionHullRenderers;
+        private HardPointModel _enginesUnitModel;
+        private ShipOrderRunner _orders;
+        private LazyInject<IEntity> _entity;
+        private EntityComponentLifecycle _componentLifecycle;
         private GameObjectContext _context;
+
+        private PlayerId _owner;
+
+        private bool _isReleased;
+
+        public event Action<ShipType> OnRelease;
 
         [Inject] private IShipService ShipService { get; }
         [Inject] private IShipData Data { get; }
         [Inject] private ShipType ShipType { get; }
-
-        public event Action<ShipType> OnRelease;
 
         public string Id => GetType().Name;
         public PlayerId Owner => _owner;
@@ -87,17 +89,17 @@ namespace EmpireAtWar.Ship
             IRadarComponent radarComponent,
             IWeaponComponent weaponComponent,
             ISelectionModelObserver selectionModel,
-            ShipOrderRunner orders,
-            LazyInject<IEntity> entity,
-            PlayerId owner,
             IAudioShipComponent audioShipComponent,
             IWeaponFireEvents weaponFireEvents,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
-            List<IMonoComponent> monoComponents,
             ILayerService layerService,
             IUnitWreckService wreckService,
             IUnitExplosionService explosionService,
-            GameObjectContext context)
+            ShipOrderRunner orders,
+            LazyInject<IEntity> entity,
+            List<IMonoComponent> monoComponents,
+            GameObjectContext context,
+            PlayerId owner)
         {
             _healthComponent = healthComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -152,6 +154,11 @@ namespace EmpireAtWar.Ship
             SynchronizeComponents();
         }
 
+        public void LateDispose()
+        {
+            Release(false);
+        }
+
         public void Tick()
         {
             if (_isReleased)
@@ -168,11 +175,6 @@ namespace EmpireAtWar.Ship
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
-        }
-
-        public void LateDispose()
-        {
-            Release(false);
         }
 
         private void HandleDestroyed() => Release(true);

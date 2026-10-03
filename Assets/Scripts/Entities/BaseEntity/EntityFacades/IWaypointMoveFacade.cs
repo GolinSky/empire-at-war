@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+
         void MoveAlong(IReadOnlyList<Vector3> waypoints);
     }
 }

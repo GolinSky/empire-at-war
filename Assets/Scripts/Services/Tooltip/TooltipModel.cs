@@ -5,9 +5,13 @@ namespace EmpireAtWar.Services.Tooltip
     public sealed class TooltipModel : ITooltipModelObserver
     {
         public event Action Shown;
+
         public event Action ContentChanged;
+
         public event Action AnchorChanged;
+
         public event Action Hidden;
+
         public bool IsVisible { get; private set; }
         public TooltipContent Content { get; private set; }
         public TooltipAnchor Anchor { get; private set; }

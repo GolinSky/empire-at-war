@@ -10,11 +10,11 @@ namespace EmpireAtWar.Components.Obstacles
     /// </summary>
     public sealed class StationObstacle : IMapObstacleContactSource
     {
+        public RadarContact Contact { get; }
+
         public StationObstacle(Vector3 position, float radius)
         {
             Contact = new RadarContact(position, radius, false);
         }
-
-        public RadarContact Contact { get; }
     }
 }

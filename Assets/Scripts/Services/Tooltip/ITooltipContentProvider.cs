@@ -5,6 +5,7 @@ namespace EmpireAtWar.Services.Tooltip
         object Key { get; }
         object Source { get; }
         bool IsValid { get; }
+
         TooltipContent Build();
     }
 }

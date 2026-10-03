@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class ConcentrateFireSettings : ShipAbilitySettings
     {
         [SerializeField] private CombatStatModifier allyStatModifier;
+
         [SerializeField] private float commandRadius;
 
         public CombatStatModifier AllyStatModifier => allyStatModifier;

@@ -16,8 +16,11 @@ namespace EmpireAtWar.Services.Factions
     public interface IFactionService
     {
         void ChangeSelection();
+
         void CloseSelection();
+
         void TryPurchaseUnit(UnitRequest unitRequest);
+
         void CancelBuilding(string id);
     }
 
@@ -27,28 +30,30 @@ namespace EmpireAtWar.Services.Factions
         private const float DEFAULT_INCOME = 5f;
 
         private readonly ISelectionService _selectionService;
-        private readonly PlayerSlot _owner;
         private readonly IWallet _wallet;
         private readonly IReinforcementPool _reinforcementPool;
         private readonly IEconomyProvider _economyProvider;
         private readonly IStationRegistry _stationRegistry;
+        private ISelectionContext _selectionContext;
+
+        private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly SuperWeaponModel _superWeapons;
-        private ISelectionContext _selectionContext;
+
         private bool _isInitialized;
-        
+
         public float Income { get; private set; }
 
         public FactionService(
-            PlayerFactionModel model,
-            FactionResearchModel research,
-            SuperWeaponModel superWeapons,
             ISelectionService selectionService,
             IWallet wallet,
             IReinforcementPool reinforcementPool,
             IEconomyProvider economyProvider,
             IStationRegistry stationRegistry,
+            PlayerFactionModel model,
+            FactionResearchModel research,
+            SuperWeaponModel superWeapons,
             PlayerSlot owner)
         {
             _owner = owner;

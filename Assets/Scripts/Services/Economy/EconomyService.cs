@@ -14,8 +14,9 @@ namespace EmpireAtWar.Services.Economy
     {
         private const float DEFAULT_INCOME = 1f;
 
-        private readonly EconomyModel _model;
         private readonly ITimer _incomeTimer;
+
+        private readonly EconomyModel _model;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
         private float _commonIncome;
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Services.Economy
         {
             AddProvider(this);
         }
-        
+
         public void Tick()
         {
             if (_incomeTimer.IsComplete)

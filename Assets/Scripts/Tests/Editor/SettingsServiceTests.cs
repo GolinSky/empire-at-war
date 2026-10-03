@@ -163,10 +163,13 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeRepository : ISettingsRepository
         {
-            public SettingsLoadStatus Status = SettingsLoadStatus.Loaded;
             public SettingsData Stored = new SettingsData();
-            public bool FailSaves;
+
+            public SettingsLoadStatus Status = SettingsLoadStatus.Loaded;
+
             public int SaveCount;
+
+            public bool FailSaves;
 
             public SettingsLoadStatus Load(out SettingsData data)
             {

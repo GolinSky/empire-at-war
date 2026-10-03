@@ -10,9 +10,10 @@ namespace EmpireAtWar.Tests.Editor
     {
         private GameObject _target;
         private TooltipTrigger _trigger;
+        private object _lastKey;
+
         private int _starts;
         private int _ends;
-        private object _lastKey;
 
         [SetUp]
         public void SetUp()

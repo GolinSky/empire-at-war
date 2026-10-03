@@ -19,6 +19,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private const float DEG_TO_RAD = MathF.PI / 180f;
 
         private readonly Random _random;
+
         private Vector3 _approachOffset;
         private Vector3 _extendDirection;
 

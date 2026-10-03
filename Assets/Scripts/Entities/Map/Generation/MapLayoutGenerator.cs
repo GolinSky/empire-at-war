@@ -47,13 +47,13 @@ namespace EmpireAtWar.Entities.Map.Generation
 
                 List<MapLane> lanes = _laneNetworkBuilder.Build(nodes, stations, random);
                 return new MapLayout(
-                    size.Bounds,
-                    CreateStationPositions(stations),
-                    _pointOfInterestPlacer.PlacePlanet(size, random),
-                    CreateZones(nodes),
-                    CreateSites(nodes),
-                    lanes,
-                    _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random));
+                    sizeRange: size.Bounds,
+                    stationPositions: CreateStationPositions(stations),
+                    planetPosition: _pointOfInterestPlacer.PlacePlanet(size, random),
+                    zones: CreateZones(nodes),
+                    sites: CreateSites(nodes),
+                    lanes: lanes,
+                    fields: _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random));
             }
 
             throw new InvalidOperationException(

@@ -18,15 +18,17 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     public sealed class SquadronFlightComponent : MonoComponent<SquadronFlightModel>, ISquadronFlightComponent,
         IInitializable, ILateDisposable
     {
-        [SerializeField] private List<FighterView> fighters;
-
-        private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
-        private Vector3 _startPosition;
-        private Quaternion _startRotation;
-        private PlayerId _owner;
         private IFogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private ILocalPlayer _localPlayer;
+
+        [SerializeField] private List<FighterView> fighters;
+        private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
+
+        private Vector3 _startPosition;
+        private Quaternion _startRotation;
+        private PlayerId _owner;
+
         private bool _sharesLocalVision;
         private bool _isReleased;
 
@@ -36,8 +38,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public Vector3 Heading => Model.GetHeading().ToUnity();
 
         [Inject]
-        private void Construct(SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation,
-            PlayerId owner, IFogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer)
+        private void Construct(IFogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer,
+            SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner)
         {
             SetModel(model);
             _startPosition = startPosition;
@@ -95,7 +97,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         }
 
         public bool IsAlive(int index) => Model.IsAlive(index);
+
         public Vector3 GetPosition(int index) => Model.Get(index).Position.ToUnity();
+
         public Vector3 GetForward(int index) => Model.Get(index).Forward.ToUnity();
 
         public void Steer(int index, Vector3 target, float speed) =>

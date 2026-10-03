@@ -34,12 +34,12 @@ namespace EmpireAtWar.Services.Input
                 else if (binding.isPartOfComposite)
                 {
                     string label = $"{Humanize(action.name)} {Humanize(binding.name)} ({compositeName})";
-                    slots.Add(new BindingSlot(action, i, label));
+                    slots.Add(new BindingSlot(action: action, bindingIndex: i, label: label));
                 }
                 // Value and pass-through actions without a composite read pointer axes, which are not rebindable.
                 else if (action.type == InputActionType.Button)
                 {
-                    slots.Add(new BindingSlot(action, i, Humanize(action.name)));
+                    slots.Add(new BindingSlot(action: action, bindingIndex: i, label: Humanize(action.name)));
                 }
             }
         }

@@ -8,16 +8,16 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades.Selection
     public class SelectionFacade: IEntitySelectionFacade, ISelectionPositionProvider
     {
         private readonly ISelectionComponent _selectionComponent;
+
         public SelectionType SelectionType { get; set; }
         public Vector3 WorldPosition => _selectionComponent.WorldPosition;
 
-
-        public SelectionFacade(SelectionType selectionType, ISelectionComponent selectionComponent)
+        public SelectionFacade(ISelectionComponent selectionComponent, SelectionType selectionType)
         {
             _selectionComponent = selectionComponent;
             SelectionType = selectionType;
         }
-        
+
         public void Select(bool isSelected)
         {
             _selectionComponent.SetActive(isSelected);

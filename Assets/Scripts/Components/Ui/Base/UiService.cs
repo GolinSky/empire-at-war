@@ -11,7 +11,9 @@ namespace EmpireAtWar.Ui.Base
         Transform PopupCanvasTransform { get; }
 
         BaseUi CreateUi(UiType uiType);
+
         BaseUi CreateUi(UiType uiType, Transform parent);
+
         void SetHudVisible(bool isVisible);
     }
     
@@ -20,8 +22,8 @@ namespace EmpireAtWar.Ui.Base
         [SerializeField] private Canvas defaultCanvas;
         [SerializeField] private Canvas dynamicCanvas;
         [SerializeField] private Canvas popupCanvas;
-
         private UiFactory _uiFacade;
+
         public bool IsHudVisible { get; private set; } = true;
 
         public Transform DefaultCanvasTransform => defaultCanvas.transform;
@@ -33,7 +35,7 @@ namespace EmpireAtWar.Ui.Base
         {
             _uiFacade = uiFacade;
         }
-        
+
         public BaseUi CreateUi(UiType uiType)
         {
             return CreateUi(uiType, DynamicCanvasTransform);

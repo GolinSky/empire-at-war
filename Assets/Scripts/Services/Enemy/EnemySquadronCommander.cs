@@ -19,11 +19,12 @@ namespace EmpireAtWar.Services.Enemy
         private const float DECISION_INTERVAL = 3f;
 
         private readonly ICaptureSitesSystem _captureSites;
-        private readonly PlayerSlot _owner;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
+        private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
+
+        private readonly PlayerSlot _owner;
         private readonly Dictionary<ISquadron, Action> _squadrons = new Dictionary<ISquadron, Action>();
         private readonly List<ISquadron> _orderBuffer = new List<ISquadron>();
-        private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
 
         public EnemySquadronCommander(
             ICaptureSitesSystem captureSites,
@@ -33,6 +34,16 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
             _captureSites = captureSites;
             _reinforcementZonesSystem = reinforcementZonesSystem;
+        }
+
+        public void LateDispose()
+        {
+            foreach (KeyValuePair<ISquadron, Action> pair in _squadrons)
+            {
+                pair.Key.Released -= pair.Value;
+            }
+
+            _squadrons.Clear();
         }
 
         public void Command(ISquadron squadron)
@@ -57,16 +68,6 @@ namespace EmpireAtWar.Services.Enemy
             {
                 IssueOrder(squadron);
             }
-        }
-
-        public void LateDispose()
-        {
-            foreach (KeyValuePair<ISquadron, Action> pair in _squadrons)
-            {
-                pair.Key.Released -= pair.Value;
-            }
-
-            _squadrons.Clear();
         }
 
         private void IssueOrder(ISquadron squadron)

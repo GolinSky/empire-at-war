@@ -4,12 +4,6 @@ namespace EmpireAtWar.Models.MiniMap
 {
     public sealed class MiniMapMarker
     {
-        public MiniMapMarker(MarkType markType, PlayerId owner)
-        {
-            MarkType = markType;
-            Owner = owner;
-        }
-
         public float X { get; private set; }
         public float Z { get; private set; }
         public MarkType MarkType { get; }
@@ -17,6 +11,12 @@ namespace EmpireAtWar.Models.MiniMap
         public PlayerId Owner { get; private set; }
         public bool Visible { get; private set; }
         public float WorldDiameter { get; private set; }
+
+        public MiniMapMarker(MarkType markType, PlayerId owner)
+        {
+            MarkType = markType;
+            Owner = owner;
+        }
 
         public void SetPosition(float x, float z)
         {

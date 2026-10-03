@@ -8,16 +8,21 @@ namespace EmpireAtWar.Entities.BaseEntity
     public interface IEntityLocator : IService
     {
         event Action<IEntity> EntityAdded;
+
         event Action<IEntity> EntityRemoved;
 
         IReadOnlyCollection<IEntity> Entities { get; }
 
         void AddEntity(IEntity entity);
+
         void RemoveEntity(IEntity entity);
+
         IEntity GetEntity(long entityId);
+
         bool TryGetEntity(long entityId, out IEntity entity);
-        
+
         bool TryGetEntity(RaycastHit raycastHit, out IEntity entity);
+
         bool TryGetEntity(Collider collider, out IEntity entity);
     }
 
@@ -26,10 +31,11 @@ namespace EmpireAtWar.Entities.BaseEntity
         private readonly Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
 
         public event Action<IEntity> EntityAdded;
+
         public event Action<IEntity> EntityRemoved;
 
         public IReadOnlyCollection<IEntity> Entities => _entities.Values;
-        
+
         public void AddEntity(IEntity entity)
         {
             _entities.Add(entity.Id, entity);

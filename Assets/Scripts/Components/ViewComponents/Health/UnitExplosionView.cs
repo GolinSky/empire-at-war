@@ -7,8 +7,8 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private ParticleSystem particles;
         [SerializeField] private ParticleSystem envelope;
         [SerializeField] private Light flashLight;
-        [SerializeField] private float flashDuration;
 
+        [SerializeField] private float flashDuration;
         private float _flashRange;
         private float _flashIntensity;
         private float _elapsed;

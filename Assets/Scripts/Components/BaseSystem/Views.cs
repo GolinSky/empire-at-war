@@ -20,6 +20,11 @@ namespace EmpireAtWar.Mvc
         public virtual IModelObserver ModelObserver { get; protected set; }
         public virtual BaseView View { get; protected set; }
 
+        public virtual void Dispose()
+        {
+            OnRelease();
+        }
+
         public void SetView(BaseView view)
         {
             View = view;
@@ -33,11 +38,6 @@ namespace EmpireAtWar.Mvc
         public virtual void Init()
         {
             OnInit();
-        }
-
-        public virtual void Dispose()
-        {
-            OnRelease();
         }
 
         protected virtual void OnInit()

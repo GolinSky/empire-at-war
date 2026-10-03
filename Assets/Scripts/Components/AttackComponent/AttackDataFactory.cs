@@ -8,6 +8,7 @@ namespace EmpireAtWar.Components.AttackComponent
     public interface IAttackDataFactory
     {
         AttackData ConstructData(IEntity entity, HardPointType hardPointType = HardPointType.Any);
+
         AttackData ConstructHardPointData(IEntity entity, int hardPointId);
     }
     public class AttackDataFactory: IAttackDataFactory

@@ -7,7 +7,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
     public sealed class UnitOrderModel
     {
         public const int NO_HARD_POINT = -1;
+
         private const float POSITION_EPSILON_SQUARED = 0.01f;
+
         private readonly List<FormationPoint> _waypoints = new List<FormationPoint>();
 
         public UnitOrderType Current { get; private set; }

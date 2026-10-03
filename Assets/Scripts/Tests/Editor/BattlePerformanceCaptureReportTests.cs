@@ -45,8 +45,8 @@ namespace EmpireAtWar.Tests.Timing
                     new[] { "Battle.Attack.TargetBatch", "Battle.Attack.DueBatch" },
                     new[] { "completed_unity_frame", "target_requests", "due_records" },
                     1,
-                    new BattlePerformanceCaptureMetadata("6000.4", "Editor", "High", "100x100", 1f,
-                        0, 60, "GPU", "CPU", "abc123", "dirty", "build", "test", 8, 1, 64, 32),
+                    new BattlePerformanceCaptureMetadata(unityVersion: "6000.4", runtime: "Editor", quality: "High", resolution: "100x100", timeScale: 1f,
+                        vSyncCount: 0, targetFrameRate: 60, graphicsDevice: "GPU", processor: "CPU", sourceRevision: "abc123", sourceState: "dirty", buildGuid: "build", scenario: "test", targetThreshold: 8, targetBatchSize: 1, dueThreshold: 64, dueBatchSize: 32),
                     long.MinValue);
 
                 string csv = File.ReadAllText(Path.Combine(directory, "battle_20260917_120000_000.csv"));

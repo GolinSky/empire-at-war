@@ -16,12 +16,13 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal sealed class ShipPathGrid : IDisposable
     {
         private const float MINIMUM_CELL_SIZE = 4f;
+
         private const int MAXIMUM_CELLS_PER_AXIS = 160;
         private const int BLOCK_JOB_BATCH_SIZE = 256;
+
         private const float HALF_DIAGONAL_FACTOR = 0.7072f;
 
         private readonly NavigationGridCells _cells;
-        private readonly float _inflation;
         private readonly float2 _origin;
         private NativeArray<float3> _obstacles;
         private NativeArray<byte> _blocked;
@@ -30,13 +31,16 @@ namespace EmpireAtWar.Services.ShipNavigation
         private NativeList<float2> _rawPath;
         private NativeList<float2> _path;
         private NativeArray<int> _status;
+
+        private readonly float _inflation;
+
         private bool _isFlooded;
 
         public ShipPathGrid(
             IReadOnlyList<RadarContact> obstacles,
-            float clearance,
             Vector2Range mapRange,
-            Vector3 origin)
+            Vector3 origin,
+            float clearance)
         {
             Vector2 size = mapRange.Max - mapRange.Min;
             float cellSize = Mathf.Max(
@@ -59,6 +63,25 @@ namespace EmpireAtWar.Services.ShipNavigation
                     obstacle.Position.x,
                     obstacle.Position.z,
                     obstacle.Radius);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_isFlooded)
+            {
+                _blocked.Dispose();
+                _costSoFar.Dispose();
+                _cameFrom.Dispose();
+                _rawPath.Dispose();
+                _path.Dispose();
+                _status.Dispose();
+                _isFlooded = false;
+            }
+
+            if (_obstacles.IsCreated)
+            {
+                _obstacles.Dispose();
             }
         }
 
@@ -152,25 +175,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             float2 node = _cells.GetNodePosition(best);
             nearest = new Vector3(node.x, height, node.y);
             return true;
-        }
-
-        public void Dispose()
-        {
-            if (_isFlooded)
-            {
-                _blocked.Dispose();
-                _costSoFar.Dispose();
-                _cameFrom.Dispose();
-                _rawPath.Dispose();
-                _path.Dispose();
-                _status.Dispose();
-                _isFlooded = false;
-            }
-
-            if (_obstacles.IsCreated)
-            {
-                _obstacles.Dispose();
-            }
         }
 
         private void EnsureFlood()

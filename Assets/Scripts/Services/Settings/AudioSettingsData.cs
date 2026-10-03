@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Settings
         [SerializeField] private float musicVolume = 1f;
         [SerializeField] private float voiceVolume = 1f;
         [SerializeField] private float sfxVolume = 1f;
+
         [SerializeField] private bool muteWhenUnfocused = true;
 
         public float MasterVolume
