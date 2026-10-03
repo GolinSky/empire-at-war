@@ -74,14 +74,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyProductionDecisionModel : PureModel
     {
         private const int MINIMUM_FLEET_SIZE = 3;
+        private const int FLAGSHIP_MAX_COUNT = 3;
+        private const float FLAGSHIP_PRIORITY = 0f;
 
         public float CalculateShipPriority(
             EnemyStrategicState state,
             int shipCount,
             int reservedCount,
             int buildTime,
-            int unitCapacity)
+            int unitCapacity,
+            int maxCount)
         {
+            // Scarce flagship types (e.g. Rothana, Malevolence) never win the balance below,
+            // so an established fleet without one builds it first.
+            if (shipCount >= MINIMUM_FLEET_SIZE && reservedCount == 0 &&
+                maxCount <= FLAGSHIP_MAX_COUNT)
+            {
+                return FLAGSHIP_PRIORITY;
+            }
+
             bool needsQuickShips = shipCount < MINIMUM_FLEET_SIZE ||
                 state == EnemyStrategicState.CaptureZone ||
                 state == EnemyStrategicState.RebuildFleet;

@@ -272,7 +272,8 @@ namespace EmpireAtWar.Services.Enemy
                     shipCount,
                     reservedCount,
                     option.Value.BuildTime,
-                    option.Value.UnitCapacity);
+                    option.Value.UnitCapacity,
+                    option.Value.MaxCount);
                 if (!found || priority < bestPriority ||
                     priority == bestPriority && option.Value.Price < selected.Value.Price)
                 {

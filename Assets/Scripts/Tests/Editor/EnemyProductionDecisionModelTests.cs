@@ -43,20 +43,38 @@ namespace EmpireAtWar.Tests.Editor
         {
             EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
             float firstLight = model.CalculateShipPriority(
-                EnemyStrategicState.CaptureZone, 3, 0, 5, 2);
+                EnemyStrategicState.CaptureZone, 3, 0, 5, 2, 20);
             float firstMedium = model.CalculateShipPriority(
-                EnemyStrategicState.CaptureZone, 3, 0, 10, 4);
+                EnemyStrategicState.CaptureZone, 3, 0, 10, 4, 20);
             float firstHeavy = model.CalculateShipPriority(
-                EnemyStrategicState.CaptureZone, 3, 0, 25, 6);
+                EnemyStrategicState.CaptureZone, 3, 0, 25, 6, 20);
             float sixthLight = model.CalculateShipPriority(
-                EnemyStrategicState.CaptureZone, 7, 5, 5, 2);
+                EnemyStrategicState.CaptureZone, 7, 5, 5, 2, 20);
             float thirdMedium = model.CalculateShipPriority(
-                EnemyStrategicState.CaptureZone, 7, 2, 10, 4);
+                EnemyStrategicState.CaptureZone, 7, 2, 10, 4, 20);
 
             Assert.That(firstLight, Is.LessThan(firstMedium));
             Assert.That(firstMedium, Is.LessThan(firstHeavy));
             Assert.That(firstHeavy, Is.LessThan(sixthLight));
             Assert.That(firstHeavy, Is.LessThan(thirdMedium));
+        }
+
+        [Test]
+        public void EstablishedFleet_BuildsMissingFlagshipFirst()
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            float firstLight = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 5, 1, 20);
+            float flagship = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 3, 0, 90, 5, 1);
+            float flagshipBeforeFleet = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 2, 0, 90, 5, 1);
+            float secondFlagship = model.CalculateShipPriority(
+                EnemyStrategicState.CaptureZone, 4, 1, 35, 8, 3);
+
+            Assert.That(flagship, Is.LessThan(firstLight));
+            Assert.That(flagshipBeforeFleet, Is.GreaterThan(firstLight));
+            Assert.That(secondFlagship, Is.GreaterThan(firstLight));
         }
 
         [TestCase(EnemyAiDifficulty.Easy, 1)]

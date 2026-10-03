@@ -235,7 +235,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (!zone.IsCapturable || zone.Owner == owner)
+                // Allies never take a zone from each other, so an allied zone is never a capture target.
+                if (!zone.IsCapturable || _roster.IsAllied(zone.Owner, owner))
                 {
                     continue;
                 }
