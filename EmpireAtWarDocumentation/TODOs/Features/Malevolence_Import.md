@@ -16,6 +16,7 @@ updated: 2026-10-03
 - [x] Mass Driver profile uses the existing shield-piercing path → hull/hardpoint damage.
 - [x] Ion Pulse model/view/presenter: charge → align surviving side cannon → travelling area wave → timed disable; malfunction disables caster instead.
 - [x] Unity compilation and saved-reference inspection clean; all 126 bone positions/parents verified. No automated tests or Play Mode run.
+- [x] Resize to RaW length ratio and lower flight altitude below Lucrehulk; saved prefab/data readback and side-view comparison verified. No automated tests or Play Mode run for this adjustment.
 - [ ] Configure exact Vulture/bomber launches when their squadron assets and bomber identity are available.
 - [ ] Runtime acceptance: placement, navigation/banking, fire arcs, hull/shields, Ion Pulse, UI disable, death/wreck and teardown.
 
@@ -29,8 +30,10 @@ updated: 2026-10-03
 - New hardpoint types: `SupplyDock = 5`, `IonPulseCannon = 6`. Supply dock is a destroyable structural target; resupply behavior is absent.
 
 ## Decision
-- Provisional scale: **89.234 × 54.488 × 320** units; gameplay root scale **1**; navigation radius **180**; bank **±10°**; vertical range **±34.578**.
-- Provisional movement/economy: speed **4**, yaw/acceleration **3**; price **20,000**, level **5**, build time **90 s**; existing height tier **2 / −118**.
+- Scale (2026-10-03): **133.404 × 81.461 × 478.402** units (width × thickness × length); uniform factor **1.495005** over the initial import. Providence length **130.125** → Malevolence **3.67647×** using user-supplied RaW **4,000 / 1,088 m** ratio.
+- Flight altitude: **Y = −370**, `ShipHeightTier.Deep = 7`; Lucrehulk remains **Y = −258**. Existing tier IDs/values preserved. Bank **±10°**, hull vertical range **±51.694**, minimum banked hull clearance below Lucrehulk **15.025 units**.
+- Gameplay root scale **1**; navigation radius **270**. Visual/gameplay/placement/wreck bounds agree; collider **137.406 × 83.905 × 492.754**; all **73** hardpoint positions scaled uniformly, maximum position error **0**.
+- Provisional movement/economy: speed **4**, yaw/acceleration **3**; price **20,000**, level **5**, build time **90 s**.
 - Provisional hardpoint HP: weapon **600**, engine **1,200**, shield **1,800**, hangar **900**, supply **1,000**, ion **2,200**.
 - Provisional Mass Driver: **35** configured damage, **3 shots**, interval **0.5 s**, reload **5 s**, range **140**, speed **90**; existing turbolaser class multipliers/accuracy, full shield bypass. Shared projectile/audio assets.
 - Provisional Ion Pulse: charge **4 s**, alignment timeout **45 s**, tolerance **5°**, range **240**, speed **35**, radius **60**, thickness **8**, disable **12 s**, malfunction **10%**, recovery **60 s**. Lifecycle ceiling **80 s**; tooltip displays the **12 s** effect.
@@ -42,9 +45,9 @@ updated: 2026-10-03
 - Blender source **126** bones includes identity `Root`; importer deleted it → restored after checking the binary header.
 - Port turbolasers: interpolate `TurboMR01..10` to **17** anchors; starboard: `TurboMR11..20` to **17**. Original bones remain in the visual asset.
 - Port lasers: `LaserR01/04/05/08/09/12`; starboard: `LaserR02/03/06/07/10/11`; interpolate each sequence to **10** anchors.
-- Mass Drivers: **4** points per side along the corresponding turbolaser attachment sequence, **2 units lower**. These supplemental anchors are project choices.
+- Mass Drivers: **4** points per side along the corresponding turbolaser attachment sequence, **2.990 units lower**. These supplemental anchors are project choices.
 - Engines: `Engines_00..02`; shield: `Shield_00`; ion port: `Especial02`, starboard: `Especial01`.
-- Hangars: two anchors at each `Spawn_00/01`, **±6 units longitudinally**. Supply dock: spawn midpoint offset **(0, −5, −15)**; provisional position.
+- Hangars: two anchors at each `Spawn_00/01`, **±8.970 units longitudinally**. Supply dock: spawn midpoint offset **(0, −7.475, −22.425)**; provisional position.
 
 ## Edge Cases
 - Upstream importer scans objects across every scene → unrelated collision objects caused an import error. Saved session backup, then used an empty Blender file; upstream add-on unchanged.
@@ -62,5 +65,5 @@ updated: 2026-10-03
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/SeparatistShips/Malevolence/`.
 - Prefabs: `Assets/Prefabs/Models/Ships/Malevolence{,ShipView}.prefab`; `Assets/Prefabs/Models/Wrecks/MalevolenceWreckView.prefab`; `Assets/Prefabs/Ui/Reinforcement/MalevolenceReinforcementView.prefab`.
 - Data: `Assets/Settings/Data/Ship/MalevolenceShipData.asset`; `Assets/Settings/Data/Ship/Wreck/MalevolenceWreckData.asset`; `Assets/Settings/Data/Tooltip/Matchups/MalevolenceMatchups.asset`.
-- Ability: `Assets/Scripts/Services/ShipAbilities/Abilities/IonPulse/`; view: `Assets/Prefabs/Vfx/IonPulseWave.prefab`; verification: `Temp/MalevolenceImport/{report,verification,audit}.json`.
+- Ability: `Assets/Scripts/Services/ShipAbilities/Abilities/IonPulse/`; view: `Assets/Prefabs/Vfx/IonPulseWave.prefab`; verification: `Temp/MalevolenceImport/{report,verification,audit}.json`; resize evidence: `resize-result.json`, `size-verification.json`, `SizeComparison.png` in the same folder.
 - Pack credits: model/rig **Nomada_Firefox**, textures **Nawrocki**; pack README requests contacting its author before public-mod use.

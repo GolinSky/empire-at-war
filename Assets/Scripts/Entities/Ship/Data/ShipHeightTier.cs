@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.Ship.Data
         Mid,
         HighMid,
         High,
-        Highest
+        Highest,
+        Deep = 7
     }
 }

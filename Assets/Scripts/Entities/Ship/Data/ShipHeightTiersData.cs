@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.Ship.Data
         [SerializeField] private float highMid = -12f;
         [SerializeField] private float high = 15f;
         [SerializeField] private float highest = 30f;
+        [SerializeField] private float deep = -370f;
 
         public float GetHeight(ShipHeightTier tier)
         {
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Entities.Ship.Data
                 case ShipHeightTier.HighMid: return highMid;
                 case ShipHeightTier.High: return high;
                 case ShipHeightTier.Highest: return highest;
+                case ShipHeightTier.Deep: return deep;
                 default: throw new ArgumentOutOfRangeException(nameof(tier), tier, null);
             }
         }
