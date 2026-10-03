@@ -61,6 +61,7 @@ namespace EmpireAtWar.Components.Weapon
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
         private bool _isReleased;
+        private bool _isInitialized;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private DebugRangeCircle _attackRangeCircle;
 #endif
@@ -84,6 +85,7 @@ namespace EmpireAtWar.Components.Weapon
         
         public void Initialize()
         {
+            _isInitialized = true;
             _attackCoordinator.Register(this);
             if (useWeaponDamageRange)
             {
@@ -107,6 +109,8 @@ namespace EmpireAtWar.Components.Weapon
 
         private void OnDestroy()
         {
+            // Editor previews (e.g. icon rendering) instantiate the prefab without injection or Initialize.
+            if (!_isInitialized) return;
             Release();
         }
 
