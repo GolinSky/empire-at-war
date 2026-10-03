@@ -62,12 +62,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             IShipNavigationAgent agent,
             Vector3 position,
             float navigationRadius);
-        bool TryResolveInitialFinalPosition(
-            IShipNavigationAgent agent,
-            Vector3 requestedPosition,
-            Vector2Range mapRange,
-            float heightTolerance,
-            out Vector3 resolvedPosition);
 
         ShipNavigationPlan Plan(
             IShipNavigationAgent agent,
@@ -389,62 +383,6 @@ namespace EmpireAtWar.Services.ShipNavigation
                 GetRegistrationId(agent),
                 ToPoint(position),
                 navigationRadius);
-        }
-
-        public bool TryResolveInitialFinalPosition(
-            IShipNavigationAgent agent,
-            Vector3 requestedPosition,
-            Vector2Range mapRange,
-            float heightTolerance,
-            out Vector3 resolvedPosition)
-        {
-            if (agent == null)
-            {
-                throw new ArgumentNullException(nameof(agent));
-            }
-
-            if (mapRange == null)
-            {
-                throw new ArgumentNullException(nameof(mapRange));
-            }
-
-            BuildNavigationContacts(Array.Empty<RadarContact>());
-            float clearance = agent.NavigationRadius;
-            for (int candidateIndex = 0;
-                 candidateIndex <=
-                 DESTINATION_CANDIDATE_RING_COUNT * DESTINATION_CANDIDATES_PER_RING;
-                 candidateIndex++)
-            {
-                Vector3 candidate = GetDestinationCandidate(
-                    requestedPosition,
-                    clearance * 2f,
-                    candidateIndex);
-                candidate = ShipAvoidancePlanner.ClampToMap(
-                    candidate,
-                    mapRange,
-                    clearance);
-                ShipAvoidancePlanner.TryResolveDestination(
-                    candidate,
-                    requestedPosition,
-                    _mapObstacleContacts,
-                    agent.NavigationHeight,
-                    heightTolerance,
-                    clearance,
-                    mapRange,
-                    out Vector3 destination);
-                if (ShipAvoidancePlanner.IsPointClear(destination, _mapObstacleContacts,
-                        agent.NavigationHeight, heightTolerance, clearance) &&
-                    _destinationRegistry.HasClearance(
-                        ToPoint(destination),
-                        clearance))
-                {
-                    resolvedPosition = destination;
-                    return true;
-                }
-            }
-
-            resolvedPosition = default;
-            return false;
         }
 
         private void BuildNavigationContacts(

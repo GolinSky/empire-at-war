@@ -249,17 +249,6 @@ namespace EmpireAtWar.Tests.Editor
                 return true;
             }
 
-            public bool TryResolveInitialFinalPosition(
-                IShipNavigationAgent agent,
-                Vector3 requestedPosition,
-                Vector2Range mapRange,
-                float heightTolerance,
-                out Vector3 resolvedPosition)
-            {
-                resolvedPosition = requestedPosition;
-                return true;
-            }
-
             public ShipNavigationPlan Plan(
                 IShipNavigationAgent agent,
                 Vector3 forward,

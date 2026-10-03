@@ -23,13 +23,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 throw new ArgumentNullException(nameof(currentPosition));
             }
 
+            // Spawn points are validated by the spawner's hull check; navigation radii may overlap.
             ValidateRadius(navigationRadius);
-            if (!IsPositionClear(initialFinalPosition, navigationRadius, hullSpan, null))
-            {
-                throw new InvalidOperationException(
-                    "The ship's initial final position is already occupied.");
-            }
-
             int registrationId = _nextRegistrationId++;
             _entries.Add(registrationId, new Entry(
                 currentPosition,

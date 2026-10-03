@@ -260,36 +260,6 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void TryResolveInitialFinalPosition_ShiftsOccupiedSpawnPosition()
-        {
-            ShipNavigationService service = CreateService();
-            FakeAgent occupyingShip = new FakeAgent(
-                Vector3.zero,
-                0f,
-                4f,
-                10f,
-                90f);
-            FakeAgent incomingShip = new FakeAgent(
-                Vector3.right * 80f,
-                0f,
-                4f,
-                10f,
-                90f);
-            service.Register(occupyingShip, Vector3.zero);
-
-            bool resolved = service.TryResolveInitialFinalPosition(
-                incomingShip,
-                Vector3.zero,
-                _mapRange,
-                0.5f,
-                out Vector3 position);
-
-            Assert.That(resolved, Is.True);
-            Assert.That(position, Is.Not.EqualTo(Vector3.zero));
-            Assert.DoesNotThrow(() => service.Register(incomingShip, position));
-        }
-
-        [Test]
         public void Plan_CrossingShipContacts_KeepDirectDestinations()
         {
             FakeAgent horizontalShip = new FakeAgent(
@@ -780,17 +750,6 @@ namespace EmpireAtWar.Tests.Movement
                 Vector3 position,
                 float navigationRadius)
             {
-                return true;
-            }
-
-            public bool TryResolveInitialFinalPosition(
-                IShipNavigationAgent agent,
-                Vector3 requestedPosition,
-                Vector2Range mapRange,
-                float heightTolerance,
-                out Vector3 resolvedPosition)
-            {
-                resolvedPosition = requestedPosition;
                 return true;
             }
 
