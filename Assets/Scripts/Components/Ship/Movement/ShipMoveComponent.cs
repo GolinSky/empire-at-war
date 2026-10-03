@@ -104,8 +104,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _modifiers.Changed += UpdateRouteSpeed;
             // The spawner already validated this point; the ship lands exactly where it was placed.
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(),
-                _stationFacingService.GetRotation(_owner).ToNumerics(),
-                _localPlayer.IsLocal(_owner));
+                _stationFacingService.GetRotation(_owner).ToNumerics());
             transform.SetPositionAndRotation(Model.JumpPosition.ToUnity(),
                 Model.StartRotation.ToUnity());
             _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());

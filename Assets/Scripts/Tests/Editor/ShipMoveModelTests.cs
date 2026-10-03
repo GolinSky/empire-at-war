@@ -18,7 +18,7 @@ namespace EmpireAtWar.Tests.Editor
                 NumericsVector3.UnitY,
                 (float)(Math.PI / 2d));
 
-            model.ConfigureSpawnPose(destination, rotation, true);
+            model.ConfigureSpawnPose(destination, rotation);
 
             NumericsVector3 jumpDirection = NumericsVector3.Normalize(destination - model.JumpPosition);
             NumericsVector3 forward = NumericsVector3.Normalize(
