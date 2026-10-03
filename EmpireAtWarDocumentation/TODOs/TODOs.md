@@ -4,6 +4,11 @@
 
 ### Features
 
+- [ ] **Finish Malevolence integration acceptance**
+  - **Plan**: [[TODOs/Features/Malevolence_Import|Malevolence Import]]
+  - **Status**: 2026-10-03 ALO → Blender → FBX → registered Separatist ship; 73 hardpoints, exact hull/shield/population/limit values, Mass Driver bypass and Ion Pulse implemented. Saved references, team-color renders and compilation verified; no automated tests or Play Mode run.
+  - **Remaining**: exact Vulture/bomber squadron assets and launches; in-game combat, placement, ability and destruction acceptance; provisional balance review.
+
 - [ ] **Review ship abilities implementation**
   - **Plan**: [[TODOs/Features/Ship_Abilities_Plan|Ship Abilities Plan]]
   - **Status**: 2026-10-02 balance/descriptions updated: Boost Weapon Power = damage ×2 / reload ×0.3 / speed ×1; Assault = damage ×2 / reload ×0.5 / speed ×2; both active 7 s, then recovery 50 s. Unity live readback and saved asset verified; no new console errors; no automated tests or Play Mode run.
@@ -104,6 +109,11 @@
   - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic acceptance; open `MainMenuScene` has unsaved changes. No automated tests run.
 
 ### Tooling
+
+- [ ] **Add Jenkins GitHub draft releases**
+  - **Plan**: [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
+  - **Status**: 2026-10-03 scripts and draft-only job installed; GitHub CLI/Copy Artifact checksums verified; PowerShell parsing, Jenkins Pipeline validation, configuration readback, and installed hashes passed. No builds, uploads, or automated tests ran.
+  - **Remaining**: user adds `github-releases` credential and selects source build/tag; first live upload and recovery acceptance.
 
 - [ ] **Set up Jenkins local Windows builds**
   - **Plan**: private local documentation outside this vault; excluded from Git.

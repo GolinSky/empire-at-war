@@ -209,7 +209,7 @@ These rules apply only when the user explicitly requests automated test executio
 
 1. Run `unity command list_open_scenes --json` or `unity command assert_test_ready --json` before any Unity test command.
 2. Inspect every open scene. Continue only when all scenes have `isDirty=false`.
-3. If a dirty scene has a non-empty asset path and the task explicitly permits saving it, save it with `save_scene`, then inspect again.
+3. If a dirty scene has a non-empty asset path, save it with `save_scene` without asking (a test-run request permits this), then inspect again.
 4. If a dirty scene has an empty path or is untitled, stop with `BLOCKED_DIRTY_UNTITLED_SCENE`.
 5. Never call `run_tests`, `open_scene`, `save_all`, enter Play Mode, or close/reload scenes while scene state is unknown or dirty.
 6. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
