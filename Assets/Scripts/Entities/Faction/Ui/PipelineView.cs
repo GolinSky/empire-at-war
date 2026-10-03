@@ -16,10 +16,11 @@ namespace EmpireAtWar.Views.Factions
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Button skipButton;
         [SerializeField] private TooltipTrigger tooltipTrigger;
-        public TooltipTrigger TooltipTrigger => tooltipTrigger;
-        
         private Action<string> _cancelBuilding;
+
         private string _id;
+
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
         public bool IsBusy { get; private set; }
 
         private void Awake()

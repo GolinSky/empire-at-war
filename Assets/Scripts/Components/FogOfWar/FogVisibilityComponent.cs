@@ -14,12 +14,13 @@ namespace EmpireAtWar.Components.FogOfWar
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable
     {
+        private IFogOfWarSystem _fogOfWarSystem;
+
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private HardPoint[] hardPoints;
-
         private readonly List<Renderer> _renderers = new List<Renderer>();
-        private IFogOfWarSystem _fogOfWarSystem;
         private List<IIonStunViewSource> _ionStunSources;
+
         private bool _isHidden;
         private bool _isReleased;
 
@@ -47,23 +48,6 @@ namespace EmpireAtWar.Components.FogOfWar
             ApplyVisibility();
         }
 
-        public void LateTick()
-        {
-            if (_isReleased)
-            {
-                return;
-            }
-
-            bool isHidden = _fogOfWarSystem.IsHidden(transform.position);
-            if (isHidden == _isHidden)
-            {
-                return;
-            }
-
-            _isHidden = isHidden;
-            ApplyVisibility();
-        }
-
         public void LateDispose()
         {
             if (_isReleased)
@@ -81,6 +65,23 @@ namespace EmpireAtWar.Components.FogOfWar
             {
                 ionStunSource.IonStunViewSpawned -= TrackIonStun;
             }
+        }
+
+        public void LateTick()
+        {
+            if (_isReleased)
+            {
+                return;
+            }
+
+            bool isHidden = _fogOfWarSystem.IsHidden(transform.position);
+            if (isHidden == _isHidden)
+            {
+                return;
+            }
+
+            _isHidden = isHidden;
+            ApplyVisibility();
         }
 
         private void TrackExplosion(ExplosionVfx explosion)

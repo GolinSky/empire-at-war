@@ -28,6 +28,7 @@ namespace EmpireAtWar.Editor.Squadrons
         private const string EXPLOSION_PATH = "Assets/Prefabs/Vfx/FighterExplosionVfx.prefab";
         private const string TRAIL_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Engines.mat";
         private const string SELECTION_SOURCE_PATH = "Assets/Prefabs/Models/Ships/ArquitensShipView.prefab";
+
         private const float SELECTION_RING_SIZE = 8f;
         private const float SELECTION_RING_HEIGHT = -1f;
         private const float GUN_HALF_ARC = 12f;
@@ -42,16 +43,16 @@ namespace EmpireAtWar.Editor.Squadrons
         [MenuItem("Tools/Squadrons/Build Squadron Views")]
         public static void BuildAll()
         {
-            Build(new SquadronViewSpec(SquadronType.Delta7,
-                "Assets/Art/Models/RepublicShips/Delta7/Delta7.obj", 5, 0.306f,
-                Vector3.zero, new Vector3(0f, -0.551f, 0f), 1.98f, 1.5f,
-                new[] { new Vector3(-0.72f, 0f, -1.62f), new Vector3(0.72f, 0f, -1.62f) },
-                new Color(0.55f, 0.75f, 1f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Silhouette.png"));
-            Build(new SquadronViewSpec(SquadronType.Belbullab22,
-                "Assets/Art/Models/SeparatistShips/Belbullab22/Belbullab22.obj", 4, 0.244f,
-                new Vector3(0f, 180f, 0f), new Vector3(0f, -0.095f, -0.196f), 1.96f, 1.5f,
-                new[] { new Vector3(-0.812f, 0f, -1.68f), new Vector3(0.812f, 0f, -1.68f) },
-                new Color(1f, 0.62f, 0.3f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
+            Build(new SquadronViewSpec(type: SquadronType.Delta7,
+                modelPath: "Assets/Art/Models/RepublicShips/Delta7/Delta7.obj", memberCount: 5, modelScale: 0.306f,
+                modelEuler: Vector3.zero, modelOffset: new Vector3(0f, -0.551f, 0f), gunForward: 1.98f, colliderRadius: 1.5f,
+                trailOffsets: new[] { new Vector3(-0.72f, 0f, -1.62f), new Vector3(0.72f, 0f, -1.62f) },
+                trailColor: new Color(0.55f, 0.75f, 1f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Silhouette.png"));
+            Build(new SquadronViewSpec(type: SquadronType.Belbullab22,
+                modelPath: "Assets/Art/Models/SeparatistShips/Belbullab22/Belbullab22.obj", memberCount: 4, modelScale: 0.244f,
+                modelEuler: new Vector3(0f, 180f, 0f), modelOffset: new Vector3(0f, -0.095f, -0.196f), gunForward: 1.96f, colliderRadius: 1.5f,
+                trailOffsets: new[] { new Vector3(-0.812f, 0f, -1.68f), new Vector3(0.812f, 0f, -1.68f) },
+                trailColor: new Color(1f, 0.62f, 0.3f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
             BuildAWing();
             AssetDatabase.SaveAssets();
         }
@@ -59,11 +60,11 @@ namespace EmpireAtWar.Editor.Squadrons
         [MenuItem("Tools/Squadrons/Build A-Wing Squadron View")]
         public static void BuildAWing()
         {
-            Build(new SquadronViewSpec(SquadronType.AWing,
-                "Assets/Art/Models/RepublicShips/AWing/AWing.dae", 6, 0.00015f,
-                new Vector3(0f, 270f, 0f), new Vector3(0.036f, 0.041f, -0.309f), 1.6f, 1.5f,
-                new[] { new Vector3(-0.65f, 0f, -1.5f), new Vector3(0.65f, 0f, -1.5f) },
-                new Color(0.55f, 0.75f, 1f), "Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingSilhouette.png"));
+            Build(new SquadronViewSpec(type: SquadronType.AWing,
+                modelPath: "Assets/Art/Models/RepublicShips/AWing/AWing.dae", memberCount: 6, modelScale: 0.00015f,
+                modelEuler: new Vector3(0f, 270f, 0f), modelOffset: new Vector3(0.036f, 0.041f, -0.309f), gunForward: 1.6f, colliderRadius: 1.5f,
+                trailOffsets: new[] { new Vector3(-0.65f, 0f, -1.5f), new Vector3(0.65f, 0f, -1.5f) },
+                trailColor: new Color(0.55f, 0.75f, 1f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingSilhouette.png"));
             AssetDatabase.SaveAssets();
         }
 

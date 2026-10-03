@@ -6,6 +6,16 @@ namespace EmpireAtWar.Models.Players
     /// <summary>One participant of a skirmish as chosen in the setup screen; immutable for the whole match.</summary>
     public sealed class PlayerSlot
     {
+        public PlayerId Id { get; }
+        public TeamId Team { get; }
+        public FactionType Faction { get; }
+        public PlayerController Controller { get; }
+        /// <summary>Only meaningful for AI players.</summary>
+        public EnemyAiDifficulty Difficulty { get; }
+        /// <summary>Index into the match team-color palette.</summary>
+        public int ColorIndex { get; }
+        public bool IsAi => Controller == PlayerController.Ai;
+
         public PlayerSlot(
             PlayerId id,
             TeamId team,
@@ -21,15 +31,5 @@ namespace EmpireAtWar.Models.Players
             Difficulty = difficulty;
             ColorIndex = colorIndex;
         }
-
-        public PlayerId Id { get; }
-        public TeamId Team { get; }
-        public FactionType Faction { get; }
-        public PlayerController Controller { get; }
-        /// <summary>Only meaningful for AI players.</summary>
-        public EnemyAiDifficulty Difficulty { get; }
-        /// <summary>Index into the match team-color palette.</summary>
-        public int ColorIndex { get; }
-        public bool IsAi => Controller == PlayerController.Ai;
     }
 }

@@ -4,6 +4,7 @@ namespace EmpireAtWar.Services.SuperWeapons
     public interface ISuperWeaponOriginRegistry
     {
         void Register(ISuperWeaponOrigin origin);
+
         void Unregister(ISuperWeaponOrigin origin);
     }
 }

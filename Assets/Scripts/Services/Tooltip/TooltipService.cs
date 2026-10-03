@@ -4,16 +4,22 @@ namespace EmpireAtWar.Services.Tooltip
 {
     public sealed class TooltipService : ITooltipService, ITickable, ILateDisposable
     {
-        private readonly TooltipModel _model;
-        private readonly TooltipTiming _timing;
         private readonly ITooltipClock _clock;
         private ITooltipContentProvider _provider;
+
+        private readonly TooltipModel _model;
+        private readonly TooltipTiming _timing;
+
         private TooltipHandle _handle;
-        private long _nextId;
+
         private float _elapsed;
 
-        public TooltipService(TooltipModel model, TooltipTiming timing, ITooltipClock clock)
+        private long _nextId;
+
+        public TooltipService(ITooltipClock clock, TooltipModel model, TooltipTiming timing)
         { _model = model; _timing = timing; _clock = clock; }
+
+        public void LateDispose() => HideAll();
 
         public TooltipHandle Show(ITooltipContentProvider provider, TooltipAnchor anchor)
         {
@@ -61,7 +67,5 @@ namespace EmpireAtWar.Services.Tooltip
                 _model.Refresh(_provider.Build());
             }
         }
-
-        public void LateDispose() => HideAll();
     }
 }

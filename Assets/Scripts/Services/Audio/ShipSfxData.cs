@@ -19,10 +19,7 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private SfxProfile hyperspace;
         [SerializeField] private DictionaryWrapper<FactionType, ShipVoiceSet> voices;
         [SerializeField] private FloatRange alarmDelay;
-        [SerializeField] private int poolVoices = 20;
-        [SerializeField] private int perShipVoices = 2;
-        [SerializeField] private int engineVoices = 4;
-        [SerializeField] private int startsPerWindow = 3;
+
         [SerializeField] private float startWindow = 0.06f;
         [SerializeField] private float voiceCooldown = 2f;
         [SerializeField, Range(0f, 1f)] private float voiceVolume = 0.5f;
@@ -30,6 +27,11 @@ namespace EmpireAtWar.Services.Audio
         [SerializeField] private float offscreenMargin = 0.15f;
         [SerializeField] private float minZoomGain = 0.6f;
         [SerializeField] private float voiceDuckGain = 0.4f;
+
+        [SerializeField] private int poolVoices = 20;
+        [SerializeField] private int perShipVoices = 2;
+        [SerializeField] private int engineVoices = 4;
+        [SerializeField] private int startsPerWindow = 3;
 
         public SfxProfile Engine => engine;
         public SfxProfile Acceleration => acceleration;
@@ -47,6 +49,7 @@ namespace EmpireAtWar.Services.Audio
         public float OffscreenMargin => offscreenMargin;
         public float MinZoomGain => minZoomGain;
         public float VoiceDuckGain => voiceDuckGain;
+
         public ShipVoiceSet GetVoiceSet(FactionType faction) => voices.Dictionary[faction];
 
         public SfxProfile GetWeapon(WeaponType type)

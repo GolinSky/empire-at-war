@@ -18,6 +18,7 @@ namespace EmpireAtWar.Editor
         private const string HULL_BOTTOM_PROPERTY = "<HullBottom>k__BackingField";
         private const string HULL_TOP_PROPERTY = "<HullTop>k__BackingField";
         private const string BODY_TRANSFORM_PROPERTY = "bodyTransform";
+
         private const float BANK_SAMPLE_STEP = 1f;
 
         [MenuItem("Tools/Ships/Bake Hull Heights")]

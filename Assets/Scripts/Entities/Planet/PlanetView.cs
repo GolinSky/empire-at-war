@@ -5,11 +5,11 @@ namespace EmpireAtWar.Entities.Planet
 {
     public class PlanetView : View<IPlanetModelObserver>
     {
-        private static readonly int _rotationId = Shader.PropertyToID("_PlanetRotation");
-        private static readonly int _rotationStartTimeId = Shader.PropertyToID("_PlanetRotationStartTime");
-
         [SerializeField] private MeshRenderer[] planetRenderers;
         [SerializeField] private MeshRenderer[] cloudRenderers;
+
+        private static readonly int _rotationId = Shader.PropertyToID("_PlanetRotation");
+        private static readonly int _rotationStartTimeId = Shader.PropertyToID("_PlanetRotationStartTime");
 
         protected override void OnInitialize()
         {

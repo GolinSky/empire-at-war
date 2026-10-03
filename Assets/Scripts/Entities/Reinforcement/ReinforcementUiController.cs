@@ -17,23 +17,24 @@ namespace EmpireAtWar.Presenters.Reinforcement
         IInitializable, ILateDisposable, ISkirmishUiRoute
     {
         private readonly IReinforcementService _reinforcementService;
+        private readonly ISkirmishRouteNavigation _routeNavigation;
+        private IReinforcementUi _ui;
+
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
-        private readonly ISkirmishRouteNavigation _routeNavigation;
-
-        private IReinforcementUi _ui;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
+
         private bool _isTooltipActive;
 
         public ReinforcementUiController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IReinforcementService reinforcementService,
-            ReinforcementModel model,
-            ReinforcementData data,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltips) : base(uiService, cancelRouter)
+            ITooltipService tooltips,
+            ReinforcementModel model,
+            ReinforcementData data) : base(uiService, cancelRouter)
         {
             _reinforcementService = reinforcementService;
             _model = model;
@@ -126,16 +127,16 @@ namespace EmpireAtWar.Presenters.Reinforcement
                 _tooltips.Show(source, request.Id, anchor, () => _isTooltipActive && _model.GetReserveCount(request) > 0,
                     () => UnitTooltipContent.Build(request.FactionData, new[]
                     {
-                        new TooltipStat("Available reserves", _model.GetReserveCount(request)),
-                        new TooltipStat("Population", request.FactionData.UnitCapacity),
-                        new TooltipStat("Used population", _model.CurrentUnitCapacity, _model.MaxUnitCapacity)
+                        new TooltipStat(label: "Available reserves", current: _model.GetReserveCount(request)),
+                        new TooltipStat(label: "Population", current: request.FactionData.UnitCapacity),
+                        new TooltipStat(label: "Used population", current: _model.CurrentUnitCapacity, max: _model.MaxUnitCapacity)
                     }, status: request.FactionData.UnitCapacity > _model.CapacityLeft
                         ? "Population limit reached" : request is ShipUnitRequest || request is EmpireAtWar.Controllers.Factions.SquadronUnitRequest
                             ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately."
                             : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy."));
             else
                 _tooltips.Show(source, key, anchor, () => _isTooltipActive,
-                    () => new TooltipContent("Reinforcements", "Close the reinforcement panel."));
+                    () => new TooltipContent(title: "Reinforcements", description: "Close the reinforcement panel."));
         }
     }
 }

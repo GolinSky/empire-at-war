@@ -16,13 +16,14 @@ namespace EmpireAtWar.Presenters.Economy
     {
         private readonly IEconomyModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-
         private IEconomyUi _ui;
+
         private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Services.Economy.EconomyService _economy;
         private readonly EmpireAtWar.Models.Economy.EconomyData _data;
         private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
         private TooltipHoverSubscription _tooltipHover;
+
         private bool _isTooltipActive;
 
         public EconomyUiController(
@@ -99,14 +100,14 @@ namespace EmpireAtWar.Presenters.Economy
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _isTooltipActive, () =>
-                new TooltipContent("Economy",
-                    $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and mining facilities increase income.",
+                new TooltipContent(title: "Economy",
+                    description: $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and mining facilities increase income.",
                     stats: new[]
                     {
-                        new TooltipStat("Credits", _model.Money),
-                        new TooltipStat("Income per payment", _economy.TotalIncome),
-                        new TooltipStat("Population", _reinforcements.CurrentUnitCapacity,
-                            _reinforcements.MaxUnitCapacity)
+                        new TooltipStat(label: "Credits", current: _model.Money),
+                        new TooltipStat(label: "Income per payment", current: _economy.TotalIncome),
+                        new TooltipStat(label: "Population", current: _reinforcements.CurrentUnitCapacity,
+                            max: _reinforcements.MaxUnitCapacity)
                     }));
     }
 }

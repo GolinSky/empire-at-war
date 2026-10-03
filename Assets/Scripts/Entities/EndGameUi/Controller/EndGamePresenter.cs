@@ -11,17 +11,19 @@ namespace EmpireAtWar.Controllers.Game
     {
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IEndGameView _view;
+
         private readonly Action _returnToMenu;
-        private bool _isLeaving;
-        private bool _isShown;
         private BattleResult _result;
         private readonly TooltipRequests _tooltips;
         private readonly TooltipHoverSubscription _tooltipHover;
 
+        private bool _isLeaving;
+        private bool _isShown;
+
         public EndGamePresenter(
             INotifier<BattleResult> battleVictoryNotifier,
             IEndGameView view,
-            Action returnToMenu, ITooltipService tooltips)
+            ITooltipService tooltips, Action returnToMenu)
         {
             _battleVictoryNotifier = battleVictoryNotifier;
             _view = view;
@@ -62,7 +64,7 @@ namespace EmpireAtWar.Controllers.Game
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _isShown && !_isLeaving, () =>
-                new TooltipContent((string)key, (string)key == "Objective"
+                new TooltipContent(title: (string)key, description: (string)key == "Objective"
                     ? _result.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet
                         ? "Destroy the opposing fleet to win the battle." : "Destroy the opposing station to win the battle."
                     : "Return to the main menu to set up another battle."));

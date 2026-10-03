@@ -17,16 +17,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly ShotEffect _prefab;
         private readonly Transform _owner;
         private readonly WeaponProfile _profile;
-        private readonly int _maxIdle;
         private readonly ImpactEffectPresenter _impactPresenter;
         private readonly Stack<ShotEffect> _available = new Stack<ShotEffect>();
         private readonly HashSet<ShotEffect> _availableMembers = new HashSet<ShotEffect>();
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
         private Action<int> _effectCompleted;
+
+        private readonly int _maxIdle;
+
         private bool _released;
 
-        public ShotEffectPool(WeaponProfile profile, Transform owner, int maxIdle, Action<int> effectCompleted,
-            ImpactEffectPresenter impactPresenter)
+        public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted, ImpactEffectPresenter impactPresenter,
+            int maxIdle)
         {
             _prefab = profile.ShotPrefab;
             _owner = owner;

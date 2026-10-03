@@ -19,12 +19,13 @@ namespace EmpireAtWar.Entities.Ship.Orders
     /// </summary>
     public sealed class ShipOrderRunner
     {
-        private readonly UnitOrderModel _orders;
-        private readonly ShipStateMachine _stateMachine;
-        private readonly ShipAIBrain _brain;
         private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly ICameraService _cameraService;
+
+        private readonly UnitOrderModel _orders;
+        private readonly ShipStateMachine _stateMachine;
+        private readonly ShipAIBrain _brain;
         private readonly IdleState _idleState;
         private readonly NavigateState _navigateState;
         private readonly AttackTargetState _attackTargetState;
@@ -32,16 +33,17 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly GuardState _guardState;
         private readonly HuntState _huntState;
         private readonly FleeState _fleeState;
-        private readonly bool _isAiControlled;
         private AttackMoveEngagement _attackMoveEngagement;
+
+        private readonly bool _isAiControlled;
 
         public UnitOrderType CurrentOrder => _orders.Current;
 
-        public ShipOrderRunner(UnitOrderModel orders, ShipStateMachine stateMachine, ShipAIBrain brain,
-            IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
-            IdleState idleState, NavigateState navigateState, AttackTargetState attackTargetState,
-            AttackMoveState attackMoveState, GuardState guardState, HuntState huntState,
-            FleeState fleeState, PlayerId owner, IPlayerRoster roster)
+        public ShipOrderRunner(IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
+            IPlayerRoster roster, UnitOrderModel orders, ShipStateMachine stateMachine,
+            ShipAIBrain brain, IdleState idleState, NavigateState navigateState,
+            AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
+            HuntState huntState, FleeState fleeState, PlayerId owner)
         {
             _orders = orders;
             _stateMachine = stateMachine;

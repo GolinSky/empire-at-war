@@ -26,6 +26,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         [SerializeField] private MapLayoutView mapLayoutView;
         [SerializeField] private ReinforcementZonesSystem reinforcementZonesSystem;
         [SerializeField] private CaptureSitesSystem captureSitesSystem;
+
         [Inject] private IGameModelObserver GameModel { get; }
 
         public override void InstallBindings()

@@ -26,6 +26,7 @@ namespace EmpireAtWar.Editor.Rendering
         private const string COMPLEX_LIT_SHADER_NAME = "Universal Render Pipeline/Complex Lit";
         private const string MESH_RENDERERS_PROPERTY = "meshRenderers";
         private const string SHIP_LIT_COPY_SUFFIX = "_ShipLit";
+
         private const float OPAQUE_SURFACE = 0f;
 
         private static readonly string[] UNIT_PREFAB_FOLDERS =

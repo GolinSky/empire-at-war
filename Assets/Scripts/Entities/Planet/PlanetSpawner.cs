@@ -8,16 +8,17 @@ namespace EmpireAtWar.Entities.Planet
     /// <summary>Spawns the planet chosen in the skirmish setup at its generated map position.</summary>
     public sealed class PlanetSpawner : IInitializable
     {
+        private readonly IGameModelObserver _gameModel;
+
         private readonly DiContainer _container;
         private readonly MapGenerationSettings _settings;
         private readonly MapLayout _layout;
-        private readonly IGameModelObserver _gameModel;
 
         public PlanetSpawner(
+            IGameModelObserver gameModel,
             DiContainer container,
             MapGenerationSettings settings,
-            MapLayout layout,
-            IGameModelObserver gameModel)
+            MapLayout layout)
         {
             _container = container;
             _settings = settings;

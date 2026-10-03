@@ -8,8 +8,11 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
     public interface IHealthOverlayView
     {
         bool IsAvailable { get; }
+
         void SetValues(float armorPercentage, float shieldPercentage);
+
         void Show(Vector2 screenPosition);
+
         void Hide();
     }
 
@@ -21,17 +24,17 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private const float BAR_HEIGHT = 8f;
         private const float SCREEN_OFFSET = 44f;
 
-        private static readonly Color PANEL_COLOR = new(0.025f, 0.035f, 0.055f, 0.92f);
-        private static readonly Color PANEL_OUTLINE_COLOR = new(0.35f, 0.48f, 0.62f, 0.75f);
-        private static readonly Color BAR_BACKGROUND_COLOR = new(0.08f, 0.1f, 0.14f, 0.96f);
-        private static readonly Color ARMOR_COLOR = new(0.25f, 0.9f, 0.42f, 1f);
-        private static readonly Color SHIELD_COLOR = new(0.2f, 0.72f, 1f, 1f);
-
         private Canvas _canvas;
         private RectTransform _canvasRect;
         private RectTransform _panel;
         private MPImage _armorFill;
         private MPImage _shieldFill;
+
+        private static readonly Color PANEL_COLOR = new(0.025f, 0.035f, 0.055f, 0.92f);
+        private static readonly Color PANEL_OUTLINE_COLOR = new(0.35f, 0.48f, 0.62f, 0.75f);
+        private static readonly Color BAR_BACKGROUND_COLOR = new(0.08f, 0.1f, 0.14f, 0.96f);
+        private static readonly Color ARMOR_COLOR = new(0.25f, 0.9f, 0.42f, 1f);
+        private static readonly Color SHIELD_COLOR = new(0.2f, 0.72f, 1f, 1f);
 
         public bool IsAvailable => _panel != null;
 

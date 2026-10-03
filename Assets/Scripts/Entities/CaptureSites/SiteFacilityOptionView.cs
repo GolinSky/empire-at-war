@@ -9,14 +9,16 @@ namespace EmpireAtWar.Entities.CaptureSites
     /// <summary>One facility card in a capture site's build choice.</summary>
     public sealed class SiteFacilityOptionView : MonoBehaviour
     {
-        [SerializeField] private SiteFacilityType facilityType;
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text costText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
-        public TooltipTrigger TooltipTrigger => tooltipTrigger;
+
+        [SerializeField] private SiteFacilityType facilityType;
 
         public event Action<SiteFacilityType> Pressed;
+
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
         public SiteFacilityType FacilityType => facilityType;
         public string DisplayName => nameText.text;

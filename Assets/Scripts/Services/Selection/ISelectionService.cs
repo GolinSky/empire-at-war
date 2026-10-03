@@ -7,7 +7,9 @@ namespace EmpireAtWar.Services.Battle
     {
         ISelectionContext PlayerSelectionContext { get; }
         ISelectionContext OtherSelectionContext { get; }
+
         void RemoveSelectable(ISelectionContext selectionContext);
+
         void SelectCurrentUnitsByType(UnitTypeId unitTypeId);
     }
 }

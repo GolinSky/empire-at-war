@@ -16,11 +16,14 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         [SerializeField] private GameObject readyIndicator;
         [SerializeField] private GameObject targetingIndicator;
         private readonly HashSet<SuperWeaponType> _readyWeapons = new();
-        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action<SuperWeaponType> Pressed;
+
         public event Action ToggleRequested;
+
         public event Action CloseRequested;
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -64,10 +67,15 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         }
 
         private void HandlePressed(SuperWeaponType type) => Pressed?.Invoke(type);
+
         private void HandleToggle() => ToggleRequested();
+
         private void HandleClose() => CloseRequested();
+
         public void SetOpen(bool open) => popup.SetActive(open);
+
         public void SetBattleAvailable(bool available) => orbitalButton.interactable = available;
+
         public void SetRemaining(SuperWeaponType type, float seconds)
         {
             foreach (SuperWeaponButton button in buttons)

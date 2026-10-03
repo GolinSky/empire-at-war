@@ -353,8 +353,10 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string FACTIONS_MODEL_PATH =
             "Assets/Settings/Data/Models/Factions/FactionsData.asset";
+
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
+
         private const int MAX_UNIT_CAPACITY = 60;
 
         [TestCase(
@@ -424,17 +426,17 @@ namespace EmpireAtWar.Tests.Editor
                 RecordingPurchaseProcessor purchaseProcessor =
                     new RecordingPurchaseProcessor();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
-                    factionModel,
-                    purchaseProcessor,
-                    new UnitRequestFactory(),
-                    new EconomyModelStub(10000f),
-                    new StateProviderStub(),
-                    new EnemyProductionDecisionModel(),
-                    unitLimitModel,
-                    reinforcementData,
-                    new StructurePlacementServiceStub(),
-                    new OperationalStationRegistry(),
-                    owner);
+                    factionModel: factionModel,
+                    purchaseProcessor: purchaseProcessor,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(10000f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    structurePlacementService: new StructurePlacementServiceStub(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    owner: owner);
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -495,17 +497,17 @@ namespace EmpireAtWar.Tests.Editor
                 RecordingPurchaseProcessor purchaseProcessor =
                     new RecordingPurchaseProcessor();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
-                    factionModel,
-                    purchaseProcessor,
-                    new UnitRequestFactory(),
-                    new EconomyModelStub(money),
-                    new StateProviderStub(),
-                    new EnemyProductionDecisionModel(),
-                    unitLimitModel,
-                    reinforcementData,
-                    new StructurePlacementServiceStub(),
-                    new OperationalStationRegistry(),
-                    owner);
+                    factionModel: factionModel,
+                    purchaseProcessor: purchaseProcessor,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(money),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    structurePlacementService: new StructurePlacementServiceStub(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    owner: owner);
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -603,11 +605,6 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class EconomyModelStub : IEconomyModelObserver
         {
-            public EconomyModelStub(float money)
-            {
-                Money = money;
-            }
-
             public event Action<float> OnMoneyChanged
             {
                 add { }
@@ -615,6 +612,11 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             public float Money { get; }
+
+            public EconomyModelStub(float money)
+            {
+                Money = money;
+            }
         }
 
         private sealed class StateProviderStub : IEnemyAiStateProvider
@@ -645,7 +647,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class OperationalStationRegistry : IStationRegistry
         {
             public string Id => nameof(OperationalStationRegistry);
+
             public bool IsStationOperational(PlayerId owner) => true;
+
             public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
                 throw new NotImplementedException();
         }

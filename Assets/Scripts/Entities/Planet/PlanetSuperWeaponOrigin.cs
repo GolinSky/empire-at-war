@@ -7,10 +7,11 @@ namespace EmpireAtWar.Entities.Planet
     /// <summary>Adapts the battle planet into the superweapon origin: shots leave the surface point facing the target.</summary>
     public class PlanetSuperWeaponOrigin : MonoBehaviour, ISuperWeaponOrigin
     {
-        [SerializeField] private Transform planetTransform;
-        [SerializeField, Tooltip("Surface radius at a planet scale of 1.")] private float surfaceRadius;
-
         private ISuperWeaponOriginRegistry _registry;
+
+        [SerializeField] private Transform planetTransform;
+
+        [SerializeField, Tooltip("Surface radius at a planet scale of 1.")] private float surfaceRadius;
 
         [Inject]
         private void Construct(ISuperWeaponOriginRegistry registry)

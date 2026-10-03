@@ -15,11 +15,13 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyShipAbilityController : ITickable
     {
         private readonly IEntityLocator _entities;
-        private readonly PlayerSlot _owner;
         private readonly IEnemyAiStateProvider _state;
         private readonly IPlayerRelations _relations;
+
+        private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _abilities;
         private readonly List<IEntity> _targets = new List<IEntity>();
+
         private float _timeLeft;
 
         public EnemyShipAbilityController(IEntityLocator entities,

@@ -20,15 +20,19 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyTaskForceExecutor
     {
         private const float CAPTURE_TARGET_EPSILON_SQUARED = 1f;
+
         private readonly IUnitOrderService _orders;
+        private GameEntity _battleTarget;
+
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _positions = new List<FormationPoint>();
         private readonly List<float> _radii = new List<float>();
         private readonly List<FormationPoint> _destinations = new List<FormationPoint>();
         private readonly Dictionary<IShipEntity, FormationPoint> _battleOffsets =
             new Dictionary<IShipEntity, FormationPoint>();
-        private GameEntity _battleTarget;
+
         private Vector3 _captureTarget;
+
         private bool _hasCaptureTarget;
 
         public EnemyTaskForceExecutor(IUnitOrderService orders) => _orders = orders;

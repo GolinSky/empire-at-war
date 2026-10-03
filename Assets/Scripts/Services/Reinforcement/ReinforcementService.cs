@@ -33,55 +33,57 @@ namespace EmpireAtWar.Services.Reinforcement
     public class ReinforcementService : Service, IReinforcementService, ITickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
-        private readonly ReinforcementModel _model;
-        private readonly PlayerSlot _owner;
-        private readonly PlayerFactionModel _playerFactionModel;
-        private readonly ReinforcementData _data;
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
-        private readonly ShipFactory _shipFactory;
-        private readonly SquadronFactory _squadronFactory;
-        private readonly MiningFacilityFactory _miningFacilityFactory;
-        private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IStationFacingService _stationFacingService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
-        private readonly ShipsData _shipsData;
         private readonly IAssetService _assetService;
+        private IDisposable _placementLock;
 
+        private readonly ReinforcementModel _model;
+        private readonly PlayerSlot _owner;
+        private readonly PlayerFactionModel _playerFactionModel;
+        private readonly ReinforcementData _data;
+        private readonly ShipFactory _shipFactory;
+        private readonly SquadronFactory _squadronFactory;
+        private readonly MiningFacilityFactory _miningFacilityFactory;
+        private readonly DefendPlatformFactory _defendPlatformFactory;
+        private readonly ShipsData _shipsData;
         private UnitSpawnView _spawnReinforcement;
+        private UnitRequest _currentRequest;
+
         private ShipType _currentShipType;
         private SquadronType _currentSquadronType;
         private SpawnType _currentSpawnType;
         private MiningFacilityType _currentFacilityType;
         private DefendPlatformType _currentPlatformType;
-        private UnitRequest _currentRequest;
+
         private bool _hasBattleEnded;
-        private IDisposable _placementLock;
 
         public ReinforcementService(
-            ReinforcementModel model,
-            PlayerFactionModel playerFactionModel,
-            ReinforcementData data,
             IInputLock inputLock,
             IPointerInput pointer,
             ICameraService cameraService,
-            ShipFactory shipFactory,
-            SquadronFactory squadronFactory,
-            MiningFacilityFactory miningFacilityFactory,
-            DefendPlatformFactory defendPlatformFactory,
             IReinforcementZonesSystem reinforcementZonesSystem,
             ICaptureSitesSystem captureSites,
             IFogOfWarSystem fogOfWarSystem,
             IStationFacingService stationFacingService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
-            ShipsData shipsData,
             IAssetService assetService,
+            ReinforcementModel model,
+            PlayerFactionModel playerFactionModel,
+            ReinforcementData data,
+            ShipFactory shipFactory,
+            SquadronFactory squadronFactory,
+            MiningFacilityFactory miningFacilityFactory,
+            DefendPlatformFactory defendPlatformFactory,
+            ShipsData shipsData,
             PlayerSlot owner)
         {
             _owner = owner;

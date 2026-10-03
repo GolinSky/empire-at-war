@@ -9,6 +9,13 @@ namespace EmpireAtWar.Services.UnitOrders
 {
     public readonly struct UnitOrder
     {
+        public UnitActionId Action { get; }
+        public PlayerId Issuer { get; }
+        public Vector3 Point { get; }
+        public IEntity Target { get; }
+        public IReadOnlyList<Vector3> Waypoints { get; }
+        public int TargetHardPointId { get; }
+
         public UnitOrder(UnitActionId action, PlayerId issuer, Vector3 point,
             IEntity target = null, IReadOnlyList<Vector3> waypoints = null,
             int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
@@ -20,12 +27,5 @@ namespace EmpireAtWar.Services.UnitOrders
             Waypoints = waypoints;
             TargetHardPointId = targetHardPointId;
         }
-
-        public UnitActionId Action { get; }
-        public PlayerId Issuer { get; }
-        public Vector3 Point { get; }
-        public IEntity Target { get; }
-        public IReadOnlyList<Vector3> Waypoints { get; }
-        public int TargetHardPointId { get; }
     }
 }

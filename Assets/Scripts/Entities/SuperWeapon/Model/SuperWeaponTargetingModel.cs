@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.SuperWeapons
     public sealed class SuperWeaponTargetingModel
     {
         public event Action Changed;
+
         public event Action<SuperWeaponType, IEntity> TargetSubmitted;
 
         public SuperWeaponType? Pending { get; private set; }

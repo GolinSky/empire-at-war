@@ -18,6 +18,9 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class ShipAbilitySymmetryTests
     {
+        private static readonly CombatStatModifier _testModifier =
+            new CombatStatModifier(1.5f, 0.5f, 1.25f, 2f, 0.75f);
+
         [TestCase(ShipAbilityId.Invulnerability)]
         [TestCase(ShipAbilityId.BoostShieldPower)]
         [TestCase(ShipAbilityId.BoostEnginePower)]
@@ -25,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipAbilityId.Assault)]
         public void StatAbility_StartThenStop_RestoresCasterModifiers(ShipAbilityId id)
         {
-            TestCommand caster = new TestCommand(1, TestPlayers.Human);
+            TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
             IShipAbility ability = id switch
             {
                 ShipAbilityId.Invulnerability => new InvulnerabilityAbility(
@@ -51,14 +54,14 @@ namespace EmpireAtWar.Tests.Editor
         public void ConcentrateFire_StartThenStop_RestoresAllAffectedAllies()
         {
             EntityLocator entities = new EntityLocator();
-            TestCommand caster = new TestCommand(1, TestPlayers.Human);
-            TestCommand ally = new TestCommand(2, TestPlayers.Human);
+            TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
+            TestCommand ally = new TestCommand(id: 2, owner: TestPlayers.Human);
             entities.AddEntity(caster.Entity);
             entities.AddEntity(ally.Entity);
             ConcentrateFireSettings settings = CreateSettings<ConcentrateFireSettings>(
                 "allyStatModifier", _testModifier);
             SetField(settings, "commandRadius", 100f);
-            IShipAbility ability = new ConcentrateFireAbility(settings, entities);
+            IShipAbility ability = new ConcentrateFireAbility(settings: settings, entities: entities);
 
             ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
@@ -67,9 +70,6 @@ namespace EmpireAtWar.Tests.Editor
             AssertNeutral(caster.Modifiers);
             AssertNeutral(ally.Modifiers);
         }
-
-        private static readonly CombatStatModifier _testModifier =
-            new CombatStatModifier(1.5f, 0.5f, 1.25f, 2f, 0.75f);
 
         private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
             where TSettings : ShipAbilitySettings, new()
@@ -96,13 +96,6 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TestCommand : IShipAbilityFacade, IAttackFacade
         {
-            public TestCommand(long id, PlayerId owner)
-            {
-                FakeHealth health = new FakeHealth();
-                Health = health;
-                Entity = new TestEntity(id, owner, health, this);
-            }
-
             public IReadOnlyList<ShipAbilitySlot> Slots { get; } = Array.Empty<ShipAbilitySlot>();
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;
@@ -110,6 +103,14 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver Health { get; }
             public float RadarRange => 100f;
             public float NavigationRadius => 1f;
+
+            public TestCommand(PlayerId owner, long id)
+            {
+                FakeHealth health = new FakeHealth();
+                Health = health;
+                Entity = new TestEntity(id: id, owner: owner, health: health, command: this);
+            }
+
             public void Attack(IEntity target, Vector3 formationOffset) { }
         }
 
@@ -117,18 +118,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly TestCommand _command;
 
-            public TestEntity(long id, PlayerId owner, IHealthModelObserver health,
-                TestCommand command)
+            public long Id { get; }
+            public IHealthModelObserver HealthModel { get; }
+            public PlayerId Owner { get; }
+
+            public TestEntity(IHealthModelObserver health, TestCommand command, PlayerId owner,
+                long id)
             {
                 Id = id;
                 Owner = owner;
                 HealthModel = health;
                 _command = command;
             }
-
-            public long Id { get; }
-            public IHealthModelObserver HealthModel { get; }
-            public PlayerId Owner { get; }
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -149,7 +150,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -163,6 +166,7 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform => null;
             public bool HasShields => true;
+
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
                 Array.Empty<IHardPointModel>();
         }

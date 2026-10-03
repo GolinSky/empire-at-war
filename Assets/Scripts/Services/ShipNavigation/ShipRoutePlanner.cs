@@ -7,10 +7,16 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     internal readonly struct ShipRoutePlan
     {
+        public Vector3 Destination { get; }
+        public Vector3? Detour { get; }
+        public ShipBezierRoute Route { get; }
+        public float TurnDuration { get; }
+        public bool IsStationary { get; }
+
         public ShipRoutePlan(
+            ShipBezierRoute route,
             Vector3 destination,
             Vector3? detour,
-            ShipBezierRoute route,
             float turnDuration,
             bool isStationary = false)
         {
@@ -20,12 +26,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             TurnDuration = turnDuration;
             IsStationary = isStationary;
         }
-
-        public Vector3 Destination { get; }
-        public Vector3? Detour { get; }
-        public ShipBezierRoute Route { get; }
-        public float TurnDuration { get; }
-        public bool IsStationary { get; }
     }
 
     internal static class ShipRoutePlanner
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         waypoints, forward, minimumTurnRadius);
                     if (IsRouteClear(courseRoute, contacts, agent, heightTolerance, clearance))
                     {
-                        return new ShipRoutePlan(destination, detour, courseRoute, 0f);
+                        return new ShipRoutePlan(destination: destination, detour: detour, route: courseRoute, turnDuration: 0f);
                     }
                 }
 
@@ -85,8 +85,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (IsRouteClear(turnedRoute, contacts, agent, heightTolerance, clearance))
                 {
                     return new ShipRoutePlan(
-                        destination, detour, turnedRoute,
-                        CalculateTurnDuration(agent, forward, turnedRoute));
+                        destination: destination, detour: detour, route: turnedRoute,
+                        turnDuration: CalculateTurnDuration(agent, forward, turnedRoute));
                 }
             }
 
@@ -97,8 +97,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 IsRouteClear(polylineRoute, contacts, agent, heightTolerance, clearance))
             {
                 return new ShipRoutePlan(
-                    destination, detour, polylineRoute,
-                    CalculateTurnDuration(agent, forward, polylineRoute));
+                    destination: destination, detour: detour, route: polylineRoute,
+                    turnDuration: CalculateTurnDuration(agent, forward, polylineRoute));
             }
 
             return BuildStationaryPlan(origin, forward);
@@ -143,11 +143,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         private static ShipRoutePlan BuildStationaryPlan(Vector3 origin, Vector3 forward)
         {
             return new ShipRoutePlan(
-                origin,
-                null,
-                ShipBezierPath.BuildDirectRoute(origin, forward, origin),
-                0f,
-                true);
+                destination: origin,
+                detour: null,
+                route: ShipBezierPath.BuildDirectRoute(origin, forward, origin),
+                turnDuration: 0f,
+                isStationary: true);
         }
 
         private static float CalculateTurnDuration(

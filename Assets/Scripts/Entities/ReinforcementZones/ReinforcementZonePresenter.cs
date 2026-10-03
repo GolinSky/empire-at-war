@@ -6,14 +6,21 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
 {
     public sealed class ReinforcementZonePresenter
     {
-        private readonly ReinforcementZoneModel _model;
         private readonly IReinforcementZoneView _view;
         private readonly ILocalPlayer _localPlayer;
 
+        private readonly ReinforcementZoneModel _model;
+
+        public PlayerId Owner => _model.Owner;
+        public bool IsCapturable => _view.IsCapturable;
+        public bool IsRevealed { get; private set; }
+        public UnityEngine.Vector3 Center => _view.Center;
+        public float Radius => _view.Radius;
+
         public ReinforcementZonePresenter(
-            ReinforcementZoneModel model,
             IReinforcementZoneView view,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer,
+            ReinforcementZoneModel model)
         {
             _localPlayer = localPlayer;
             _model = model;
@@ -21,12 +28,6 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
             Render();
             SetVisibility(false, false);
         }
-
-        public PlayerId Owner => _model.Owner;
-        public bool IsCapturable => _view.IsCapturable;
-        public bool IsRevealed { get; private set; }
-        public UnityEngine.Vector3 Center => _view.Center;
-        public float Radius => _view.Radius;
 
         public bool Tick(float deltaTime, CaptureStrength tally)
         {

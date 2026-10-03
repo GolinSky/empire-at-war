@@ -24,30 +24,31 @@ namespace EmpireAtWar.Controllers.MiniMap
         ISkirmishUiRoute
     {
         private readonly ICameraService _cameraService;
-        private readonly MiniMapData _model;
         private readonly IInputLock _inputLock;
-        private readonly TimerPoolService _timerPoolService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
         private IMiniMapView _miniMapView;
+
+        private readonly MiniMapData _model;
+        private readonly TimerPoolService _timerPoolService;
         private CustomCoroutine _unblockCoroutine;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
-        
+
         public MiniMapController(
-            MiniMapData model,
             IMapModelObserver mapModel,
             ICameraService cameraService,
             IInputLock inputLock,
-            TimerPoolService timerPoolService,
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
-            List<IMiniMapObstacleSource> obstacleSources,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
-            ITooltipService tooltips) : base(uiService, cancelRouter)
+            ITooltipService tooltips,
+            MiniMapData model,
+            TimerPoolService timerPoolService,
+            List<IMiniMapObstacleSource> obstacleSources) : base(uiService, cancelRouter)
         {
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltips);
@@ -75,7 +76,6 @@ namespace EmpireAtWar.Controllers.MiniMap
             }
         }
 
-    
         public void Initialize()
         {
             _inputLock.LockChanged += UpdateBlockState;
@@ -83,17 +83,6 @@ namespace EmpireAtWar.Controllers.MiniMap
             _routeNavigation.RegisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
                 this);
-        }
-        
-        public void LateTick()
-        {
-            _model.CameraMark.Clear();
-            var footprint = _cameraService.GetGroundFootprint(_model.MapRange.Min, _model.MapRange.Max);
-            for (int i = 0; i < footprint.Count; i++)
-            {
-                Vector3 point = footprint[i];
-                _model.CameraMark.AddVertex(point.x, point.z);
-            }
         }
 
         public void LateDispose()
@@ -108,6 +97,17 @@ namespace EmpireAtWar.Controllers.MiniMap
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.MiniMap,
                 this);
+        }
+
+        public void LateTick()
+        {
+            _model.CameraMark.Clear();
+            var footprint = _cameraService.GetGroundFootprint(_model.MapRange.Min, _model.MapRange.Max);
+            for (int i = 0; i < footprint.Count; i++)
+            {
+                Vector3 point = footprint[i];
+                _model.CameraMark.AddVertex(point.x, point.z);
+            }
         }
 
         public void Activate(bool isActive, Transform parentTransform)
@@ -144,8 +144,8 @@ namespace EmpireAtWar.Controllers.MiniMap
             if (key is MiniMapMarker marker)
             {
                 _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked && marker.Visible,
-                    () => new TooltipContent(marker.MarkType.ToString(),
-                        marker.MarkType == MarkType.ReinforcementZone
+                    () => new TooltipContent(title: marker.MarkType.ToString(),
+                        description: marker.MarkType == MarkType.ReinforcementZone
                             ? "Deploy reinforcements inside a friendly zone."
                             : marker.MarkType == MarkType.CaptureSite
                                 ? "Move units into the ring to capture this construction site."
@@ -154,10 +154,10 @@ namespace EmpireAtWar.Controllers.MiniMap
                 return;
             }
             _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked,
-                () => new TooltipContent(key.ToString() == "Station" ? "Station" : "Minimap",
-                    "Click or drag to move the camera. Right-click to issue a move order. Obstacles block move targets."));
+                () => new TooltipContent(title: key.ToString() == "Station" ? "Station" : "Minimap",
+                    description: "Click or drag to move the camera. Right-click to issue a move order. Obstacles block move targets."));
         }
-        
+
         private void MoveTo(Vector3 worldPoint)
         {
             _cameraService.MoveTo(worldPoint);
@@ -172,7 +172,7 @@ namespace EmpireAtWar.Controllers.MiniMap
                 _miniMapView.PlayMoveTarget(worldPoint);
             }
         }
-        
+
         private void UpdateBlockState(bool isBlocked)
         {
             if (_unblockCoroutine != null)

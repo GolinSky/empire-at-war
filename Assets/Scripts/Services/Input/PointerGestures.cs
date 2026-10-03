@@ -6,19 +6,26 @@ namespace EmpireAtWar.Services.Input
 {
     public sealed class PointerGestures : IPointerGestures, ITickable
     {
-        private readonly GameInputActions.BattleActions _battle;
         private readonly IPointerInput _pointer;
         private readonly IUiHitTest _uiHitTest;
+
         private readonly MouseDragState _drag = new MouseDragState();
 
+        private readonly GameInputActions.BattleActions _battle;
+
         public event Action<Vector2> WorldPressed;
+
         public event Action<Vector2> WorldClicked;
+
         public event Action<Vector2> WorldCommanded;
+
         public event Action<Vector2> DragStarted;
+
         public event Action<Vector2> DragChanged;
+
         public event Action<Vector2> DragEnded;
 
-        public PointerGestures(InputActionsProvider provider, IPointerInput pointer, IUiHitTest uiHitTest)
+        public PointerGestures(IPointerInput pointer, IUiHitTest uiHitTest, InputActionsProvider provider)
         {
             _battle = provider.Actions.Battle;
             _pointer = pointer;

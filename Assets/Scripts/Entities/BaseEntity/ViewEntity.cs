@@ -18,7 +18,7 @@ namespace EmpireAtWar.Entities.BaseEntity
     {
         [Inject]
         public long Id { get; }
-        
+
         [Inject]
         public PlayerId Owner { get;  }
     }

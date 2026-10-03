@@ -7,6 +7,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     public sealed class ImpactEffectView : MonoBehaviour, IImpactEffectView
     {
         private const int SPARK_COUNT = 8;
+
         [SerializeField] private ParticleSystem shieldFlash;
         [SerializeField] private ParticleSystem shieldRing;
         [SerializeField] private ParticleSystem armorFlash;

@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IRadarComponent _radarComponent;
         private IEntity _engagementTarget;
 
+        public bool IsComplete => false;
+
         public IdleState(
             IShipMovement shipMoveComponent,
             IWeaponComponent weaponComponent,
@@ -23,8 +25,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent = weaponComponent;
             _radarComponent = radarComponent;
         }
-
-        public bool IsComplete => false;
 
         public void Enter()
         {

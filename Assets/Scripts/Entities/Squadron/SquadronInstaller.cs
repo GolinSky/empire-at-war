@@ -20,14 +20,15 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         private SquadronType _squadronType;
         private PlayerId _owner;
-        private bool _isHiddenByLocalFog;
         private Quaternion _startRotation;
+
+        private bool _isHiddenByLocalFog;
 
         protected override string DataPath => _squadronType + base.DataPath;
         protected override string PrefabPath => _squadronType + base.PrefabPath;
 
         [Inject]
-        public void Construct(PlayerId owner, SquadronType squadronType, Quaternion startRotation, ILocalPlayer localPlayer)
+        public void Construct(ILocalPlayer localPlayer, PlayerId owner, SquadronType squadronType, Quaternion startRotation)
         {
             _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
             _owner = owner;

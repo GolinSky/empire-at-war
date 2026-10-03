@@ -10,7 +10,7 @@ namespace EmpireAtWar.Controllers.Loading
     {
         private readonly ISceneService _sceneService;
 
-        public LoadingController(LoadingData model, ISceneService sceneService) : base(model)
+        public LoadingController(ISceneService sceneService, LoadingData model) : base(model)
         {
             _sceneService = sceneService;
         }

@@ -6,6 +6,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 {
     public readonly struct CubicBezierSegment
     {
+        public Vector3 P0 { get; }
+        public Vector3 P1 { get; }
+        public Vector3 P2 { get; }
+        public Vector3 P3 { get; }
+
         public CubicBezierSegment(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
         {
             P0 = p0;
@@ -13,11 +18,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             P2 = p2;
             P3 = p3;
         }
-
-        public Vector3 P0 { get; }
-        public Vector3 P1 { get; }
-        public Vector3 P2 { get; }
-        public Vector3 P3 { get; }
 
         public Vector3 Evaluate(float parameter)
         {
@@ -50,6 +50,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private readonly SegmentArcLength[] _segments;
 
+        public float Length { get; }
+        public Vector3[] Samples { get; }
+
+        public Vector3 InitialTangent => _segments[0].Segment.EvaluateTangent(0f);
+
         public ShipBezierRoute(IReadOnlyList<CubicBezierSegment> segments)
         {
 
@@ -73,11 +78,6 @@ namespace EmpireAtWar.Components.Ship.Movement
             Length = totalLength;
             Samples = BuildSamples();
         }
-
-        public float Length { get; }
-        public Vector3[] Samples { get; }
-
-        public Vector3 InitialTangent => _segments[0].Segment.EvaluateTangent(0f);
 
         public Vector3 EvaluateNormalizedDistance(
             float normalizedDistance,
@@ -130,6 +130,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             private readonly float[] _cumulativeLengths;
 
+            public CubicBezierSegment Segment { get; }
+            public float Length { get; }
+
             public SegmentArcLength(CubicBezierSegment segment, int sampleCount)
             {
                 Segment = segment;
@@ -145,9 +148,6 @@ namespace EmpireAtWar.Components.Ship.Movement
 
                 Length = _cumulativeLengths[sampleCount];
             }
-
-            public CubicBezierSegment Segment { get; }
-            public float Length { get; }
 
             public float GetParameter(float distance)
             {

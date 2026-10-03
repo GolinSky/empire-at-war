@@ -19,38 +19,29 @@ namespace EmpireAtWar.Services.Audio
         private const float LOOP_LEASE = 0.12f;
         private const float MAX_WEAPON_LOOP_INTERVAL = 0.2f;
         private const float MAX_MIX_VOLUME = 1f;
-        private struct VoiceSlot
-        {
-            public IEntity Owner;
-            public SfxProfile Sound;
-            public Transform Emitter;
-            public Vector3 Position;
-            public float EndsAt;
-            public float Gain;
-            public float VolumeScale;
-            public float Pan;
-            public bool Loop;
-            public bool FollowsEmitter;
-        }
+
+        private readonly IAudioService _audio;
+        private readonly ICameraService _camera;
+        private readonly IFogOfWarSystem _fog;
+        private readonly ILocalPlayer _localPlayer;
 
         private readonly ShipSfxSources _sources;
         private readonly ShipSfxData _data;
-        private readonly IAudioService _audio;
-        private readonly ICameraService _camera;
         private readonly CameraData _cameraData;
-        private readonly IFogOfWarSystem _fog;
-        private readonly ILocalPlayer _localPlayer;
         private readonly AudioMixer _mixer;
         private readonly VoiceSlot[] _slots;
         private readonly Dictionary<SfxProfile, float> _cooldowns = new Dictionary<SfxProfile, float>();
         private readonly Queue<float> _starts = new Queue<float>();
+
         private float _time;
         private float _voiceReadyAt;
+
         private int _timeFrame = -1;
+
         private bool _disposed;
 
-        public ShipSfxService(ShipSfxSources sources, ShipSfxData data, IAudioService audio,
-            ICameraService camera, CameraData cameraData, IFogOfWarSystem fog, ILocalPlayer localPlayer)
+        public ShipSfxService(IAudioService audio, ICameraService camera, IFogOfWarSystem fog,
+            ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData)
         {
             _sources = sources;
             _data = data;
@@ -62,6 +53,16 @@ namespace EmpireAtWar.Services.Audio
             _mixer = sources.Voice.outputAudioMixerGroup.audioMixer;
             _slots = new VoiceSlot[data.PoolVoices];
             sources.Voice.ignoreListenerPause = true;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            for (int i = 0; i < _slots.Length; i++) Stop(i);
+            _audio.Stop(_sources.Voice);
+            _mixer.SetFloat("SfxDuckVolume", 0f);
+            _audio.SetGamePaused(false);
         }
 
         public bool TryPlayOneShot(IEntity ship, SfxProfile sfx, Vector3 position) =>
@@ -244,14 +245,22 @@ namespace EmpireAtWar.Services.Audio
             _slots[index] = default;
         }
 
-        public void Dispose()
+        private struct VoiceSlot
         {
-            if (_disposed) return;
-            _disposed = true;
-            for (int i = 0; i < _slots.Length; i++) Stop(i);
-            _audio.Stop(_sources.Voice);
-            _mixer.SetFloat("SfxDuckVolume", 0f);
-            _audio.SetGamePaused(false);
+            public IEntity Owner;
+
+            public SfxProfile Sound;
+            public Transform Emitter;
+
+            public Vector3 Position;
+
+            public float EndsAt;
+            public float Gain;
+            public float VolumeScale;
+            public float Pan;
+
+            public bool Loop;
+            public bool FollowsEmitter;
         }
     }
 }

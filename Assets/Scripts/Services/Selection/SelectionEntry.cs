@@ -5,13 +5,13 @@ namespace EmpireAtWar.Services.Battle
 {
     public readonly struct SelectionEntry
     {
+        public IEntity Entity { get; }
+        public IEntitySelectionFacade Command { get; }
+
         public SelectionEntry(IEntity entity, IEntitySelectionFacade command)
         {
             Entity = entity;
             Command = command;
         }
-
-        public IEntity Entity { get; }
-        public IEntitySelectionFacade Command { get; }
     }
 }

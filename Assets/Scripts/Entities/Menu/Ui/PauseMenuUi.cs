@@ -7,20 +7,17 @@ namespace EmpireAtWar.Views.Menu
 {
     public class PauseMenuUi : BaseUi, IPauseMenuUiView, ITooltipHoverView
     {
+        private IPauseMenuRouteNavigation _navigation;
+
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button optionsButton;
         [SerializeField] private Button exitButton;
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
-        private IPauseMenuRouteNavigation _navigation;
         private bool _isInitialized;
 
-        public void SetNavigation(IPauseMenuRouteNavigation navigation)
-        {
-            _navigation = navigation;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -52,6 +49,11 @@ namespace EmpireAtWar.Views.Menu
             optionsButton.onClick.RemoveListener(_navigation.OpenSettings);
             exitButton.onClick.RemoveListener(_navigation.ExitSkirmish);
             _isInitialized = false;
+        }
+
+        public void SetNavigation(IPauseMenuRouteNavigation navigation)
+        {
+            _navigation = navigation;
         }
 
         private void OnDestroy()

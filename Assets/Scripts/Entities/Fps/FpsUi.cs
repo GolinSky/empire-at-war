@@ -7,14 +7,9 @@ namespace EmpireAtWar.Entities.Fps
     public sealed class FpsUi : BaseUi, IFpsUi
     {
         [SerializeField] private TextMeshProUGUI fpsText;
-
         private FpsModel _model;
-        private bool _isInitialized;
 
-        public void SetModel(FpsModel model)
-        {
-            _model = model;
-        }
+        private bool _isInitialized;
 
         public void Initialize()
         {
@@ -37,6 +32,11 @@ namespace EmpireAtWar.Entities.Fps
 
             _model.OnFramesPerSecondChanged -= UpdateFpsText;
             _isInitialized = false;
+        }
+
+        public void SetModel(FpsModel model)
+        {
+            _model = model;
         }
 
         private void OnDestroy()

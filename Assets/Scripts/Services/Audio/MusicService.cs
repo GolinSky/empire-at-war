@@ -13,18 +13,23 @@ namespace EmpireAtWar.Services.Audio
     public sealed class MusicService : Service, IMusicService, IInitializable, ITickable, ILateDisposable
     {
         private const float MUSIC_FADE_DURATION = 1f;
+
         private const string SOURCE_PATH = "MusicSource";
+
         private readonly ISceneService _scenes;
         private readonly IGameModelObserver _game;
         private readonly IAudioService _audio;
+
         private readonly MusicAudioData _data;
         private readonly AudioSource _source;
         private readonly System.Random _random = new System.Random();
-        private readonly float _volume;
         private List<AudioClip> _clips;
+
+        private readonly float _volume;
+        private float _fadeDuration;
+
         private bool _playing;
         private bool _fadingOut;
-        private float _fadeDuration;
 
         public MusicService(ISceneService scenes, IAssetService assets, IGameModelObserver game, IAudioService audio)
         {

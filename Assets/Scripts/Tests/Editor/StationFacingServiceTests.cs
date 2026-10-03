@@ -36,14 +36,14 @@ namespace EmpireAtWar.Tests.Editor
             private readonly Vector3 _humanPosition;
             private readonly Vector3 _enemyPosition;
 
+            public int PositionRequestCount { get; private set; }
+            public Vector2Range SizeRange { get; } = new Vector2Range();
+
             public CountingMapModel(Vector3 humanPosition, Vector3 enemyPosition)
             {
                 _humanPosition = humanPosition;
                 _enemyPosition = enemyPosition;
             }
-
-            public int PositionRequestCount { get; private set; }
-            public Vector2Range SizeRange { get; } = new Vector2Range();
 
             public Vector3 GetStationPosition(PlayerId owner)
             {

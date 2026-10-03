@@ -6,7 +6,7 @@ namespace EmpireAtWar.Controllers.Factions
     {
         public FactionData FactionData { get; }
         public abstract string Id { get;  }
-    
+
         protected UnitRequest(FactionData factionData)
         {
             FactionData = factionData;

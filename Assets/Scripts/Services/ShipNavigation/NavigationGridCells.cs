@@ -6,6 +6,12 @@ namespace EmpireAtWar.Services.ShipNavigation
     /// <summary>Cell layout of the navigation grid, shared by the Burst jobs and the managed planner.</summary>
     internal readonly struct NavigationGridCells
     {
+        public float2 Origin { get; }
+        public float CellSize { get; }
+        public int Width { get; }
+        public int Height { get; }
+        public int Count => Width * Height;
+
         public NavigationGridCells(float2 origin, float cellSize, int width, int height)
         {
             Origin = origin;
@@ -13,12 +19,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             Width = width;
             Height = height;
         }
-
-        public float2 Origin { get; }
-        public float CellSize { get; }
-        public int Width { get; }
-        public int Height { get; }
-        public int Count => Width * Height;
 
         public float2 GetNodePosition(int cell)
         {

@@ -20,11 +20,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         public NavigationGridCells Cells;
         public float2 Start;
         public float2 Goal;
-        public float LineOfSightInflation;
-
         public NativeList<float2> RawPath;
         public NativeList<float2> Waypoints;
         public NativeArray<int> Status;
+
+        public float LineOfSightInflation;
 
         public void Execute()
         {

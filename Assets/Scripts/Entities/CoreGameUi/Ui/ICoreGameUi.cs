@@ -11,14 +11,23 @@ namespace EmpireAtWar.Views.Game
     {
         IUnitActionsView UnitActionsView { get; }
         ISuperWeaponsView SuperWeaponsView { get; }
-        void SetModel(ISkirmishSessionModelObserver model);
-        void SetPresenter(ICoreGamePresenter presenter);
+
         void Initialize();
+
         void Dispose();
+
+        void SetModel(ISkirmishSessionModelObserver model);
+
+        void SetPresenter(ICoreGamePresenter presenter);
+
         void SetContentVisible(bool isVisible);
+
         void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection);
+
         void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded);
+
         Transform GetRouteParent(SkirmishUiRoutePosition position);
+
         IEndGameView PrepareEndGameView(Transform parent);
     }
 }

@@ -54,6 +54,7 @@ public class SkirmishMainInstaller : MonoInstaller
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [SerializeField] private UnitOrderSettings unitOrderSettings;
     [SerializeField] private TeamColorPalette teamColorPalette;
+
     [Inject] private IGameModelObserver GameModelObserver { get; }
     [Inject] private IAssetService Repository { get; }
 

@@ -19,18 +19,19 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
-        private readonly FactionsData _factionsData;
         private readonly IUnitRequestFactory _unitRequestFactory;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-
         private IFactionUi _ui;
-        private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Models.Economy.IEconomyModelObserver _economy;
-        private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
-        private TooltipHoverSubscription _tooltipHover;
-        private bool _isTooltipActive;
         private readonly EmpireAtWar.Views.Game.ICoreGameHudStatus _hud;
         private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
+
+        private readonly FactionsData _factionsData;
+        private readonly TooltipRequests _tooltips;
+        private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
+        private TooltipHoverSubscription _tooltipHover;
+
+        private bool _isTooltipActive;
 
         public FactionUiController(
             IUiService uiService,
@@ -38,14 +39,14 @@ namespace EmpireAtWar.Presenters.Factions
             IFactionService factionService,
             IPlayerFactionModelObserver model,
             IFactionResearchModelObserver research,
-            FactionsData factionsData,
             IUnitRequestFactory unitRequestFactory,
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltips,
             EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
-            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
             EmpireAtWar.Views.Game.ICoreGameHudStatus hud,
-            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session,
+            FactionsData factionsData,
+            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
             _factionService = factionService;
             _model = model;
@@ -151,29 +152,29 @@ namespace EmpireAtWar.Presenters.Factions
                 ? "Population limit reached: deployment unavailable" : "Click to add to production";
             var stats = new System.Collections.Generic.List<TooltipStat>
             {
-                new TooltipStat("Cost (credits)", data.Price),
-                new TooltipStat("Build time (s)", data.BuildTime),
-                new TooltipStat("Population on deployment", data.UnitCapacity)
+                new TooltipStat(label: "Cost (credits)", current: data.Price),
+                new TooltipStat(label: "Build time (s)", current: data.BuildTime),
+                new TooltipStat(label: "Population on deployment", current: data.UnitCapacity)
             };
             if (request is LevelUnitRequest)
             {
-                stats.Add(new TooltipStat("Current station level", _model.CurrentLevel));
-                stats.Add(new TooltipStat("Next station level", _model.CurrentLevel + 1));
+                stats.Add(new TooltipStat(label: "Current station level", current: _model.CurrentLevel));
+                stats.Add(new TooltipStat(label: "Next station level", current: _model.CurrentLevel + 1));
                 status = "Upgrade the station to unlock higher-level roster cards.";
             }
             if (request is ResearchUnitRequest research && _research.TryGetNextTier(research.Key, out ResearchTierData tier))
             {
                 foreach (ResearchEffect effect in tier.Effects)
                     stats.Add(new TooltipStat(
-                        effect.Stat + " · " + (effect.Stat == ResearchStat.Income ? "Faction income" : string.Join(", ", effect.ShipClasses)),
-                        effect.Multiplier, format: "0.##'×'"));
+                        label: effect.Stat + " · " + (effect.Stat == ResearchStat.Income ? "Faction income" : string.Join(", ", effect.ShipClasses)),
+                        current: effect.Multiplier, format: "0.##'×'"));
                 status = "Research effects replace the previous tier of this line.";
             }
             foreach (ProductionQueueSnapshot queue in _model.GetProductionQueueSnapshots())
                 if (queue.UnitRequest.Id == request.Id)
                 {
-                    stats.Add(new TooltipStat("Queued", queue.Count, data.MaxCount));
-                    stats.Add(new TooltipStat("Next completion (s)", queue.RemainingBuildTime));
+                    stats.Add(new TooltipStat(label: "Queued", current: queue.Count, max: data.MaxCount));
+                    stats.Add(new TooltipStat(label: "Next completion (s)", current: queue.RemainingBuildTime));
                     if (request is ResearchUnitRequest) status = "Already researching";
                 }
             if (data.UnitCapacity > _reinforcements.CapacityLeft)

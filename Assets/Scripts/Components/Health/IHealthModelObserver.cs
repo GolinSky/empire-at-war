@@ -8,6 +8,7 @@ namespace EmpireAtWar.Models.Health
     public interface IHealthModelObserver : IModelObserver
     {
         event Action OnDestroy;
+
         event Action OnValueChanged;
 
         ShipClass ShipClass { get; }
@@ -21,7 +22,8 @@ namespace EmpireAtWar.Models.Health
         bool HasUnits { get; }
         bool HasLiveHardPoints { get; }
         bool HasShields { get; }
-        IHardPointModel[] GetShipUnits(HardPointType hardPointType);
         PlayerId Owner { get; }
+
+        IHardPointModel[] GetShipUnits(HardPointType hardPointType);
     }
 }

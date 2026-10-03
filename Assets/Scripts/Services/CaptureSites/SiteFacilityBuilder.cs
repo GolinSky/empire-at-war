@@ -15,15 +15,17 @@ namespace EmpireAtWar.Services.CaptureSites
     /// <summary>Lives in one player's container and registers itself so scene-wide capture sites can reach it.</summary>
     public sealed class SiteFacilityBuilder : ISiteFacilityBuilder, IInitializable, ILateDisposable
     {
-        private readonly PlayerId _owner;
         private readonly IPlayerRegistry _playerRegistry;
+
         private readonly EconomyModel _economyModel;
         private readonly AsteroidMiningFacilityFactory _miningFacilityFactory;
         private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
 
+        private readonly PlayerId _owner;
+
         public SiteFacilityBuilder(
-            PlayerSlot owner,
             IPlayerRegistry playerRegistry,
+            PlayerSlot owner,
             EconomyModel economyModel,
             AsteroidMiningFacilityFactory miningFacilityFactory,
             AsteroidDefendPlatformFactory battleAsteroidFactory)

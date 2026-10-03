@@ -43,7 +43,7 @@ namespace EmpireAtWar.Extentions
                 });
             return Container;
         }
-        
+
         public static ModelDependencyBuilder ConstructBuilder(DiContainer container)
         {
             return new ModelDependencyBuilder(container);

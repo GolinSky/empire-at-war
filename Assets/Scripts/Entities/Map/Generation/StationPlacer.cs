@@ -12,6 +12,9 @@ namespace EmpireAtWar.Entities.Map.Generation
     /// </summary>
     public sealed class StationPlacer
     {
+        private const int DUEL_PLAYER_COUNT = 2;
+        private const int OPPOSITE_CORNER_STEP = 2;
+
         // Corner signs in walking order around the map; neighbours in this list share an edge.
         private static readonly Vector2[] CORNER_SIGNS =
         {
@@ -20,10 +23,6 @@ namespace EmpireAtWar.Entities.Map.Generation
             new Vector2(1f, 1f),
             new Vector2(-1f, 1f)
         };
-
-        private const int DUEL_PLAYER_COUNT = 2;
-        private const int OPPOSITE_CORNER_STEP = 2;
-
         private readonly MapGenerationSettings _settings;
 
         public StationPlacer(MapGenerationSettings settings)

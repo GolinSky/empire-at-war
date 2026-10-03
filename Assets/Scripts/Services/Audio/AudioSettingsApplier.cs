@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Audio
         private const string MUSIC_VOLUME_PARAMETER = "MusicVolume";
         private const string VOICE_VOLUME_PARAMETER = "VoiceVolume";
         private const string SFX_VOLUME_PARAMETER = "SfxVolume";
+
         private const float SILENT_DECIBELS = -80f;
         private const float MIN_AUDIBLE_VOLUME = 0.0001f;
 

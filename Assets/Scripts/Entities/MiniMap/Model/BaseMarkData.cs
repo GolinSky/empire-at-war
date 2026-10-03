@@ -6,11 +6,11 @@ namespace EmpireAtWar.Models.MiniMap
     /// <summary>A space station on the minimap, drawn in its owner's team color.</summary>
     public sealed class BaseMarkData : MarkData
     {
-        public BaseMarkData(Vector3 position, Sprite icon, PlayerId owner) : base(position, icon)
+        public PlayerId Owner { get; }
+
+        public BaseMarkData(Sprite icon, Vector3 position, PlayerId owner) : base(position: position, icon: icon)
         {
             Owner = owner;
         }
-
-        public PlayerId Owner { get; }
     }
 }

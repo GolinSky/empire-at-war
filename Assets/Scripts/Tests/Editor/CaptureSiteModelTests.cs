@@ -6,13 +6,14 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class CaptureSiteModelTests
     {
-        private static readonly PlayerRoster ROSTER = TestPlayers.CreateDuel();
         private const float CAPTURE_DURATION = 10f;
+
+        private static readonly PlayerRoster ROSTER = TestPlayers.CreateDuel();
 
         [Test]
         public void TickCapture_UncontestedShips_CaptureNeutralSite()
         {
-            CaptureSiteModel model = new CaptureSiteModel(CAPTURE_DURATION, 1f, ROSTER);
+            CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
 
             Assert.That(model.TickCapture(5f, TestPlayers.DuelTally(ROSTER, 1, 0)), Is.False);
             Assert.That(model.TickCapture(5f, TestPlayers.DuelTally(ROSTER, 1, 0)), Is.True);
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void TickCapture_EqualOpposingShips_IsContestedWithoutProgress()
         {
-            CaptureSiteModel model = new CaptureSiteModel(CAPTURE_DURATION, 1f, ROSTER);
+            CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
 
             model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, 2, 2));
 
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static CaptureSiteModel CreateOwnedSite(PlayerId owner)
         {
-            CaptureSiteModel model = new CaptureSiteModel(CAPTURE_DURATION, 1f, ROSTER);
+            CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);
             int playerShips = owner == TestPlayers.Human ? 1 : 0;
             model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, playerShips, 1 - playerShips));
             return model;

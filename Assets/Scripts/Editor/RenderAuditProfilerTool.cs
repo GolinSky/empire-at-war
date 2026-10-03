@@ -27,6 +27,8 @@ namespace EmpireAtWar.Editor
             .GetType("UnityEditor.Profiling.ProfilerUserSettings", true)
             .GetProperty("frameCount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
+        internal static bool IsCapturing => _activeCapture != null;
+
         static RenderAuditProfilerTool()
         {
             RestoreStateIfNeeded();
@@ -58,8 +60,6 @@ namespace EmpireAtWar.Editor
             return started;
         }
 
-        internal static bool IsCapturing => _activeCapture != null;
-
         internal static Dictionary<string, object> BeginCapture(string directory, int frames, int timeoutSeconds, Action<Dictionary<string, object>> completed)
         {
             if (_activeCapture != null)
@@ -87,7 +87,7 @@ namespace EmpireAtWar.Editor
                 return RenderAuditCaptureStatus.CreateResult("unsupported", "Profiler binary logging is already enabled, so this tool cannot safely own and restore its output target.");
             }
 
-            var operation = new CaptureOperation(directory, frames, timeoutSeconds, completed);
+            var operation = new CaptureOperation(directory: directory, framesRequested: frames, timeoutSeconds: timeoutSeconds, completed: completed);
             _activeCapture = operation;
             operation.Start();
             var result = RenderAuditCaptureStatus.CreateResult("running", "Profiler capture started.");
@@ -202,16 +202,20 @@ private static Dictionary<string, object> CaptureRenderingStats()
 
         private sealed class CaptureOperation
         {
-            private readonly string _directory;
-            private readonly int _framesRequested;
-            private readonly double _deadline;
             private readonly Action<Dictionary<string, object>> _completed;
             private readonly List<object> _frameIdentities = new();
             private readonly HashSet<int> _recordedProfilerFrames = new();
-            private bool _flushPending;
+
+            private readonly string _directory;
+
+            private readonly double _deadline;
+
+            private readonly int _framesRequested;
             private int _firstProfilerFrameIndex;
 
-            internal CaptureOperation(string directory, int framesRequested, int timeoutSeconds, Action<Dictionary<string, object>> completed)
+            private bool _flushPending;
+
+            internal CaptureOperation(Action<Dictionary<string, object>> completed, string directory, int framesRequested, int timeoutSeconds)
             {
                 _directory = directory;
                 _framesRequested = framesRequested;

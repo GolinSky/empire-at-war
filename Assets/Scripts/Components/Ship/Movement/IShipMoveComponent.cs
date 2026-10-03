@@ -10,12 +10,19 @@ namespace EmpireAtWar.Components.Ship.Movement
     public interface IShipMoveComponent : IComponent, IShipMovement
     {
         event Action<Vector3> DestinationChanged;
+
         event Action<Vector3> LookingAt;
+
         event Action Stopped;
+
         event Action HyperSpaceCompleted;
+
         float NavigationSpeed { get; }
+
         void ApplyMoveCoefficient(float coefficient);
+
         void HandleSelection(bool isSelected);
+
         void HandleRadarContacts(IReadOnlyList<RadarContact> contacts);
     }
 }

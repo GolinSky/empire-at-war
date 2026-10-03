@@ -10,27 +10,29 @@ namespace EmpireAtWar.Views.Economy
 {
     public interface IEconomyUi
     {
-        void SetModel(IEconomyModelObserver model);
-        void SetParent(Transform parent);
-        void Show();
-        void Hide();
         void Initialize();
+
         void Dispose();
+
+        void SetModel(IEconomyModelObserver model);
+
+        void SetParent(Transform parent);
+
+        void Show();
+
+        void Hide();
     }
 
     public class EconomyUi : BaseUi, IEconomyUi, ITooltipHoverView
     {
+        private IEconomyModelObserver _model;
+
         [SerializeField] private TextMeshProUGUI moneyText;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
-        private IEconomyModelObserver _model;
         private bool _isInitialized;
 
-        public void SetModel(IEconomyModelObserver model)
-        {
-            _model = model;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -58,6 +60,11 @@ namespace EmpireAtWar.Views.Economy
 
             _model.OnMoneyChanged -= UpdateMoneyText;
             _isInitialized = false;
+        }
+
+        public void SetModel(IEconomyModelObserver model)
+        {
+            _model = model;
         }
 
         private void OnDestroy()

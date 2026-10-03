@@ -14,33 +14,34 @@ namespace EmpireAtWar.Entities.DefendPlatform
 {
     public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
-        [SerializeField] private Renderer[] explosionHullRenderers;
-
         private IHealthComponent _healthComponent;
-        private Vector3 _startPosition;
-        private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
-        private GameObjectContext _context;
-        private PlayerId _owner;
         private ILayerService _layerService;
 
-        [Inject] private DefendPlatformData Data { get; }
+        [SerializeField] private Renderer[] explosionHullRenderers;
+        private EntityComponentLifecycle _componentLifecycle;
+        private GameObjectContext _context;
+
+        private Vector3 _startPosition;
+        private PlayerId _owner;
 
         public event Action OnRelease;
+
+        [Inject] private DefendPlatformData Data { get; }
 
         public string Id => GetType().Name;
 
         [Inject]
         private void Construct(
             IHealthComponent healthComponent,
-            Vector3 startPosition,
-            List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
             IUnitExplosionService explosionService,
+            ILayerService layerService,
+            List<IMonoComponent> monoComponents,
             GameObjectContext context,
-            PlayerId owner,
-            ILayerService layerService)
+            Vector3 startPosition,
+            PlayerId owner)
         {
             _healthComponent = healthComponent;
             _startPosition = startPosition;
@@ -56,6 +57,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
+        }
+
+        public void LateDispose()
+        {
+            Release(false);
         }
 
         private void Release(bool playDeathEffects)
@@ -79,11 +85,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);
             }
-        }
-
-        public void LateDispose()
-        {
-            Release(false);
         }
 
         private void HandleDestroyed() => Release(true);

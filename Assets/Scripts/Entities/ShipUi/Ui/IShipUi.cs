@@ -9,14 +9,22 @@ namespace EmpireAtWar.Views
 {
     public interface IShipUi
     {
-        void SetModel(IShipUiModelObserver model);
-        void SetPresenter(IShipUiPresenter presenter);
-        void SetParent(Transform parent);
-        void Show();
-        void Hide();
         void Initialize();
+
         void Dispose();
+
+        void SetModel(IShipUiModelObserver model);
+
+        void SetPresenter(IShipUiPresenter presenter);
+
+        void SetParent(Transform parent);
+
+        void Show();
+
+        void Hide();
+
         void SetAbilitySlots(IReadOnlyList<ShipAbilitySlot> slots);
+
         void SetHealth(IHealthModelObserver health);
     }
 }

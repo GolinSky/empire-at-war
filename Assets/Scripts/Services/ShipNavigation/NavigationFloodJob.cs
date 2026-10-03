@@ -14,16 +14,9 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         private const float DIAGONAL_COST = 1.41421356f;
 
-        internal struct OpenNode
-        {
-            public int Cell;
-            public float Cost;
-        }
-
         [ReadOnly] public NativeArray<byte> Blocked;
         public NavigationGridCells Cells;
         public float2 Start;
-
         public NativeArray<float> CostSoFar;
         public NativeArray<int> CameFrom;
         public NativeArray<byte> Closed;
@@ -150,6 +143,13 @@ namespace EmpireAtWar.Services.ShipNavigation
             OpenNode temporary = Open[first];
             Open[first] = Open[second];
             Open[second] = temporary;
+        }
+
+        internal struct OpenNode
+        {
+            public float Cost;
+
+            public int Cell;
         }
     }
 }

@@ -29,18 +29,19 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly ICameraService _camera;
         private readonly ILayerService _layers;
         private readonly IShipAbilityTargeting _abilities;
-        private readonly UnitActionTargetingModel _targeting;
         private readonly IUnitOrderService _orders;
-        private readonly SuperWeaponTargetingModel _superWeapons;
         private readonly IHardPointHoverObserver _hardPointHover;
+
+        private readonly UnitActionTargetingModel _targeting;
+        private readonly SuperWeaponTargetingModel _superWeapons;
 
         public PlayerOrderInputHandler(IPointerGestures gestures, IUnitOrderInput orderInput,
             ISelectionService selection,
             ISelectionQuery query, ICameraService camera, ILayerService layers,
-            IShipAbilityTargeting abilities, UnitActionTargetingModel targeting,
-            IUnitOrderService orders, SuperWeaponTargetingModel superWeapons,
-            IHardPointHoverObserver hardPointHover,
-            ILocalPlayer localPlayer)
+            IShipAbilityTargeting abilities, IUnitOrderService orders,
+            IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
+            UnitActionTargetingModel targeting,
+            SuperWeaponTargetingModel superWeapons)
         {
             _localPlayer = localPlayer;
             _gestures = gestures;

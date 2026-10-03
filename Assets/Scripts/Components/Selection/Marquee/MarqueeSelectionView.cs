@@ -5,6 +5,7 @@ namespace EmpireAtWar.Components.Selection.Marquee
     public interface IMarqueeSelectionView
     {
         void Show(MarqueeRectangle rectangle);
+
         void Hide();
     }
 
@@ -14,8 +15,8 @@ namespace EmpireAtWar.Components.Selection.Marquee
 
         [SerializeField] private Color fillColor = new Color(0.12f, 0.72f, 1f, 0.18f);
         [SerializeField] private Color borderColor = new Color(0.12f, 0.72f, 1f, 0.9f);
-
         private MarqueeRectangle _rectangle;
+
         private bool _isVisible;
 
         public void Show(MarqueeRectangle rectangle)

@@ -79,11 +79,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id) => Id = id;
             public long Id { get; }
             public FakeHealth Health { get; } = new FakeHealth();
             public IHealthModelObserver HealthModel => Health;
             public PlayerId Owner => TestPlayers.Enemy;
+
+            public FakeEntity(long id) => Id = id;
 
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
@@ -98,9 +99,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver
         {
-            public bool IsDestroyedValue { get; set; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
+            public bool IsDestroyedValue { get; set; }
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -113,6 +116,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasUnits => true;
             public PlayerId Owner => TestPlayers.Enemy;
             public bool HasShields => true;
+
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
         }

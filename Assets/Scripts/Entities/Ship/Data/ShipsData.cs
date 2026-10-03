@@ -10,7 +10,7 @@ namespace EmpireAtWar.Entities.Ship.Data
     public class ShipsData : Mvc.Data
     {
         [SerializeField] private DictionaryWrapper<ShipType, AssetReferenceT<ShipData>> shipsData;
-        
+
         public string GetShipDataPath(ShipType shipType)
         {
             return shipsData.Dictionary[shipType].AssetGUID;

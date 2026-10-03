@@ -21,6 +21,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const int OBSTACLE_LAYER = 9;
         private const int DEAD_LAYER = 10;
+
         private GameObject _root;
         private MapStub _map;
         private ZonesStub _zones;
@@ -44,10 +45,10 @@ namespace EmpireAtWar.Tests.Editor
             DiContainer container = new DiContainer();
             container.Bind<IMapModelObserver>().FromInstance(_map);
             return new EnemyStructurePlacementService(
-                new LazyInject<IMapModelObserver>(container,
+                mapModel: new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                _zones, new NoCaptureSites(), new LayersStub(), TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                _stationPrefab, new[] { _structurePrefab });
+                zones: _zones, captureSites: new NoCaptureSites(), layerService: new LayersStub(), owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                stationPrefab: _stationPrefab, structurePrefabs: new[] { _structurePrefab });
         }
 
         private BoxCollider CreatePrefab(Vector3 size)
@@ -199,6 +200,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class MapStub : IMapModelObserver
         {
             public Vector3 Station = new Vector3(160f, 0f, -170f);
+
             public Vector2Range SizeRange { get; } = new Vector2Range();
 
             public MapStub()
@@ -221,22 +223,29 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class LayersStub : ILayerService
         {
             public LayerMask GetMask(params LayerKey[] keys) => 1 << OBSTACLE_LAYER;
+
             public int GetLayer(LayerKey key) => throw new NotSupportedException();
+
             public bool IsInLayer(GameObject gameObject, LayerKey key) => throw new NotSupportedException();
+
             public void Apply(GameObject gameObject, LayerKey key, bool includeChildren) =>
                 throw new NotSupportedException();
         }
 
         private sealed class ZonesStub : IReinforcementZonesSystem
         {
+            public event Action OwnershipChanged { add { } remove { } }
+
             public List<Vector3> Centers { get; } = new List<Vector3>();
             public float Radius { get; set; }
-            public event Action OwnershipChanged { add { } remove { } }
+
             public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
             {
                 return Centers.Exists(center => Vector3.Distance(center, position) <= Radius + clearance);
             }
+
             public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position) => false;
+
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
 
             public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
@@ -287,6 +296,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public IReadOnlyList<ICaptureSite> Sites =>
                 Array.Empty<ICaptureSite>();
+
             public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
 
             public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)

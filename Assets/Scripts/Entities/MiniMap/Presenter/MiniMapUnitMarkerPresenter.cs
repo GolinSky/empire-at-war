@@ -12,23 +12,25 @@ namespace EmpireAtWar.Presenters.MiniMap
 {
     public sealed class MiniMapUnitMarkerPresenter : IInitializable, ILateTickable, ILateDisposable
     {
-        private readonly MiniMapData _miniMapData;
-        private readonly Transform _viewTransform;
-        private readonly PlayerId _owner;
-        private readonly SelectionType _selectionType;
         private readonly IHealthModelObserver _healthModel;
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
+
+        private readonly MiniMapData _miniMapData;
+        private readonly Transform _viewTransform;
         private MiniMapMarker _marker;
 
+        private readonly PlayerId _owner;
+        private readonly SelectionType _selectionType;
+
         public MiniMapUnitMarkerPresenter(
+            IHealthModelObserver healthModel,
+            IFogOfWarSystem fogOfWarSystem,
+            ILocalPlayer localPlayer,
             MiniMapData miniMapData,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
-            SelectionType selectionType,
-            IHealthModelObserver healthModel,
-            IFogOfWarSystem fogOfWarSystem,
-            ILocalPlayer localPlayer)
+            SelectionType selectionType)
         {
             _localPlayer = localPlayer;
             _miniMapData = miniMapData;
@@ -54,6 +56,12 @@ namespace EmpireAtWar.Presenters.MiniMap
             _miniMapData.AddMarker(_marker);
         }
 
+        public void LateDispose()
+        {
+            _healthModel.OnDestroy -= RemoveMarker;
+            RemoveMarker();
+        }
+
         public void LateTick()
         {
             if (_marker == null)
@@ -68,12 +76,6 @@ namespace EmpireAtWar.Presenters.MiniMap
             }
 
             RefreshMarker();
-        }
-
-        public void LateDispose()
-        {
-            _healthModel.OnDestroy -= RemoveMarker;
-            RemoveMarker();
         }
 
         private MarkType GetMarkType()

@@ -17,23 +17,22 @@ namespace EmpireAtWar.Views.Game
 {
     public class CoreGameUi : BaseUi, ICoreGameUi, ITooltipHoverView
     {
+        private ISkirmishSessionModelObserver _model;
+        private ICoreGamePresenter _presenter;
+
         [SerializeField] private Button timeButton;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button speedUpButton;
         [SerializeField] private Button reinforcementButton;
         [SerializeField] private Button videoModeButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
         [SerializeField] private MPImage panelImage;
-        
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
         [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
         [SerializeField] private Transform miniMapRouteParent;
         [SerializeField] private Transform contentRouteParent;
         [SerializeField] private GridLayoutGroup contentGrid;
-        [SerializeField] private Vector2 factionCellSize = new Vector2(150f, 150f);
-        [SerializeField] private Vector2 shipCellSize = new Vector2(80f, 198f);
         [SerializeField] private ContentSizeFitter contentSizeFitter;
         [SerializeField] private ScrollRect contentScroll;
         [SerializeField] private Transform buildPipelineRouteParent;
@@ -48,15 +47,46 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
 
-        private ISkirmishSessionModelObserver _model;
-        private ICoreGamePresenter _presenter;
+        [SerializeField] private Vector2 factionCellSize = new Vector2(150f, 150f);
+        [SerializeField] private Vector2 shipCellSize = new Vector2(80f, 198f);
+
         private bool _isInitialized;
         private bool _hasContentLayout;
         private bool _isFactionLayout;
         private bool _isShipGroupLayout;
 
+        public TooltipHoverView TooltipHover => tooltipHover;
+
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
+
+        public void Initialize()
+        {
+            timeButton.onClick.AddListener(_presenter.Play);
+            speedUpButton.onClick.AddListener(_presenter.SpeedUp);
+            reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
+            videoModeButton.onClick.AddListener(_presenter.StartCinematic);
+            clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
+            _model.OnGameTimeModeChanged += UpdateSprites;
+            UpdateSprites(_model.EffectiveTimeMode);
+            _isInitialized = true;
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            timeButton.onClick.RemoveListener(_presenter.Play);
+            speedUpButton.onClick.RemoveListener(_presenter.SpeedUp);
+            reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
+            videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
+            clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
+            _model.OnGameTimeModeChanged -= UpdateSprites;
+            _isInitialized = false;
+        }
 
         public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)
         {
@@ -87,35 +117,6 @@ namespace EmpireAtWar.Views.Game
             return endGameUi;
         }
 
-
-        public void Initialize()
-        {
-            timeButton.onClick.AddListener(_presenter.Play);
-            speedUpButton.onClick.AddListener(_presenter.SpeedUp);
-            reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
-            videoModeButton.onClick.AddListener(_presenter.StartCinematic);
-            clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
-            _model.OnGameTimeModeChanged += UpdateSprites;
-            UpdateSprites(_model.EffectiveTimeMode);
-            _isInitialized = true;
-        }
-
-        public void Dispose()
-        {
-            if (!_isInitialized)
-            {
-                return;
-            }
-
-            timeButton.onClick.RemoveListener(_presenter.Play);
-            speedUpButton.onClick.RemoveListener(_presenter.SpeedUp);
-            reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
-            videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
-            clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
-            _model.OnGameTimeModeChanged -= UpdateSprites;
-            _isInitialized = false;
-        }
-
         private void OnDestroy()
         {
             Dispose();
@@ -125,7 +126,7 @@ namespace EmpireAtWar.Views.Game
         {
             panelImage.gameObject.SetActive(isVisible);
         }
-        
+
         private void UpdateSprites(GameTimeMode gameTimeMode)
         {
             timeImage.sprite = timeSprites.Dictionary[gameTimeMode];

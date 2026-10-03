@@ -21,12 +21,14 @@ namespace EmpireAtWar.Services.Battle
         private readonly IEntityLocator _entityLocator;
         private readonly ISelectionQuery _selectionQuery;
         private readonly IMarqueeSelectionPresenter _marqueeSelectionPresenter;
+        private readonly ILocalPlayer _localPlayer;
+
         private readonly List<IObserver<ISelectionSubject>> _observers =
             new List<IObserver<ISelectionSubject>>();
         private readonly List<SelectionEntry> _selectionBuffer = new List<SelectionEntry>();
         private readonly SelectionContext _playerSelectionContext;
         private readonly SelectionContext _otherSelectionContext;
-        private readonly ILocalPlayer _localPlayer;
+
         private long? _lastTappedEntityId;
 
         public ISelectionContext PlayerSelectionContext => _playerSelectionContext;
@@ -43,8 +45,8 @@ namespace EmpireAtWar.Services.Battle
             ILocalPlayer localPlayer)
         {
             _localPlayer = localPlayer;
-            _playerSelectionContext = new SelectionContext(SelectionScope.Local, localPlayer);
-            _otherSelectionContext = new SelectionContext(SelectionScope.Other, localPlayer);
+            _playerSelectionContext = new SelectionContext(scope: SelectionScope.Local, localPlayer: localPlayer);
+            _otherSelectionContext = new SelectionContext(scope: SelectionScope.Other, localPlayer: localPlayer);
             _gestures = gestures;
             _pointer = pointer;
             _selectionInput = selectionInput;

@@ -12,9 +12,10 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string FILE_NAME = "settings.json";
 
+        private JsonSettingsRepository _repository;
+
         private string _directory;
         private string _path;
-        private JsonSettingsRepository _repository;
 
         [SetUp]
         public void SetUp()

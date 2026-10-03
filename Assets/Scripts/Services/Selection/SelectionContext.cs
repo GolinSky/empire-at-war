@@ -9,18 +9,12 @@ namespace EmpireAtWar.Services.Battle
 {
     public sealed class SelectionContext : ISelectionContext
     {
+        private readonly ILocalPlayer _localPlayer;
+
         private readonly List<SelectionEntry> _entries = new List<SelectionEntry>();
         private readonly List<IEntity> _entities = new List<IEntity>();
         private readonly List<SelectionEntry> _replacementEntries = new List<SelectionEntry>();
         private readonly ReadOnlyCollection<IEntity> _readOnlyEntities;
-        private readonly ILocalPlayer _localPlayer;
-
-        public SelectionContext(SelectionScope scope, ILocalPlayer localPlayer)
-        {
-            Scope = scope;
-            _localPlayer = localPlayer;
-            _readOnlyEntities = _entities.AsReadOnly();
-        }
 
         public IEntity Entity => _entries.Count > 0 ? _entries[0].Entity : null;
         public IReadOnlyList<IEntity> Entities => _readOnlyEntities;
@@ -30,6 +24,13 @@ namespace EmpireAtWar.Services.Battle
         public bool HasSelectable => _entries.Count > 0;
         public int Count => _entries.Count;
         public SelectionScope Scope { get; }
+
+        public SelectionContext(ILocalPlayer localPlayer, SelectionScope scope)
+        {
+            Scope = scope;
+            _localPlayer = localPlayer;
+            _readOnlyEntities = _entities.AsReadOnly();
+        }
 
         public bool Accepts(IEntity entity)
         {

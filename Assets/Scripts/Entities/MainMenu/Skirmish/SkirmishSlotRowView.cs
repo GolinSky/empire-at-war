@@ -25,11 +25,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private CanvasGroup slotLabelGroup;
 
         private int _rowIndex;
+
         private bool _isHumanRow;
 
         public event Action<int, int> OccupantChanged;
+
         public event Action<int, int> FactionChanged;
+
         public event Action<int, int> TeamChanged;
+
         public event Action<int, int> ColorChanged;
 
         public void Initialize(
@@ -56,6 +60,14 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             colorDropdown.onValueChanged.AddListener(HandleColorChanged);
         }
 
+        public void Dispose()
+        {
+            occupantDropdown.onValueChanged.RemoveListener(HandleOccupantChanged);
+            factionDropdown.onValueChanged.RemoveListener(HandleFactionChanged);
+            teamDropdown.onValueChanged.RemoveListener(HandleTeamChanged);
+            colorDropdown.onValueChanged.RemoveListener(HandleColorChanged);
+        }
+
         public void Render(SkirmishSlotSetup slot, Color playerColor)
         {
             // AI occupant options follow the SkirmishSlotOccupant order, so the enum value is the option index.
@@ -75,14 +87,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             colorEdge.enabled = slot.IsOpen;
             configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;
             slotLabelGroup.alpha = slot.IsOpen ? 1f : 0.5f;
-        }
-
-        public void Dispose()
-        {
-            occupantDropdown.onValueChanged.RemoveListener(HandleOccupantChanged);
-            factionDropdown.onValueChanged.RemoveListener(HandleFactionChanged);
-            teamDropdown.onValueChanged.RemoveListener(HandleTeamChanged);
-            colorDropdown.onValueChanged.RemoveListener(HandleColorChanged);
         }
 
         private static void SetOptions(TMP_Dropdown dropdown, IReadOnlyList<string> options)

@@ -40,8 +40,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _view = new GameObject("Test entity");
-            _receiver = new FakeEntity(1, TestPlayers.Human, _view.transform);
-            _enemy = new FakeEntity(2, TestPlayers.Enemy, _view.transform);
+            _receiver = new FakeEntity(id: 1, side: TestPlayers.Human, transform: _view.transform);
+            _enemy = new FakeEntity(id: 2, side: TestPlayers.Enemy, transform: _view.transform);
             _input = new FakeInput();
             _selection = new FakeSelection(_receiver);
             _query = new FakeQuery(_enemy);
@@ -49,10 +49,10 @@ namespace EmpireAtWar.Tests.Editor
             _targeting = new UnitActionTargetingModel();
             _orders = new FakeOrders();
             _camera = new FakeCamera();
-            _handler = new PlayerOrderInputHandler(_input, _input, _selection, _query,
-                _camera, null, _abilities, _targeting, _orders, new SuperWeaponTargetingModel(),
-                new HardPointOverlayModel(),
-                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selection: _selection, query: _query,
+                camera: _camera, layers: null, abilities: _abilities, targeting: _targeting, orders: _orders, superWeapons: new SuperWeaponTargetingModel(),
+                hardPointHover: new HardPointOverlayModel(),
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             _handler.Initialize();
         }
 
@@ -107,57 +107,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.Attack));
         }
 
-        private sealed class FakeInput : IPointerGestures, IUnitOrderInput
-        {
-            public event Action<Vector2> WorldPressed { add { } remove { } }
-            public event Action<Vector2> WorldClicked { add { } remove { } }
-            public event Action<Vector2> WorldCommanded;
-            public event Action<Vector2> DragStarted { add { } remove { } }
-            public event Action<Vector2> DragChanged { add { } remove { } }
-            public event Action<Vector2> DragEnded { add { } remove { } }
-            public event Action QueueWaypointReleased;
-            public bool IsQueueWaypointHeld { get; set; }
-            public void RightClick(Vector2 point) => WorldCommanded?.Invoke(point);
-            public void ReleaseAlt()
-            { IsQueueWaypointHeld = false; QueueWaypointReleased?.Invoke(); }
-        }
-
-        private sealed class FakeSelection : ISelectionService, ISelectionContext
-        {
-            public FakeSelection(IEntity entity) { Entity = entity; }
-            public string Id => nameof(FakeSelection);
-            public IEntity Entity { get; }
-            public IReadOnlyList<IEntity> Entities => new[] { Entity };
-            public IEntitySelectionFacade SelectionFacade => null;
-            public SelectionType SelectionType => SelectionType.Ship;
-            public bool HasSelectable => true;
-            public int Count => 1;
-            public SelectionScope Scope => SelectionScope.Local;
-            public bool Contains(IEntity entity) => entity.Id == Entity.Id;
-            public ISelectionContext PlayerSelectionContext => this;
-            public ISelectionContext OtherSelectionContext => null;
-            public void RemoveSelectable(ISelectionContext context) { }
-            public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
-            public void AddObserver(IObserver<ISelectionSubject> observer) { }
-            public void RemoveObserver(IObserver<ISelectionSubject> observer) { }
-        }
-
-        private sealed class FakeQuery : ISelectionQuery
-        {
-            private readonly IEntity _enemy;
-            public FakeQuery(IEntity enemy) { _enemy = enemy; }
-            public bool ReturnEnemy { get; set; } = true;
-            public bool TryFindAt(Vector2 point, out SelectionEntry result)
-            {
-                result = ReturnEnemy ? new SelectionEntry(_enemy, null) : default;
-                return ReturnEnemy;
-            }
-            public void CollectSameShipType(SelectionEntry entry, ICollection<SelectionEntry> result) { }
-            public void CollectAllPlayerUnits(ICollection<SelectionEntry> result) { }
-            public void CollectVisiblePlayerUnits(ICollection<SelectionEntry> result) { }
-            public void CollectInside(MarqueeRectangle rect, ICollection<SelectionEntry> result) { }
-        }
-
         [Test]
         public void DefaultMove_ProjectsClickOntoReceiverHeight()
         {
@@ -168,6 +117,79 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_camera.LastOrigin.y, Is.EqualTo(15f));
         }
 
+        private sealed class FakeInput : IPointerGestures, IUnitOrderInput
+        {
+            public event Action<Vector2> WorldPressed { add { } remove { } }
+
+            public event Action<Vector2> WorldClicked { add { } remove { } }
+
+            public event Action<Vector2> WorldCommanded;
+
+            public event Action<Vector2> DragStarted { add { } remove { } }
+
+            public event Action<Vector2> DragChanged { add { } remove { } }
+
+            public event Action<Vector2> DragEnded { add { } remove { } }
+
+            public event Action QueueWaypointReleased;
+
+            public bool IsQueueWaypointHeld { get; set; }
+
+            public void RightClick(Vector2 point) => WorldCommanded?.Invoke(point);
+
+            public void ReleaseAlt()
+            { IsQueueWaypointHeld = false; QueueWaypointReleased?.Invoke(); }
+        }
+
+        private sealed class FakeSelection : ISelectionService, ISelectionContext
+        {
+            public string Id => nameof(FakeSelection);
+            public IEntity Entity { get; }
+            public IReadOnlyList<IEntity> Entities => new[] { Entity };
+            public IEntitySelectionFacade SelectionFacade => null;
+            public SelectionType SelectionType => SelectionType.Ship;
+            public bool HasSelectable => true;
+            public int Count => 1;
+            public SelectionScope Scope => SelectionScope.Local;
+            public ISelectionContext PlayerSelectionContext => this;
+            public ISelectionContext OtherSelectionContext => null;
+
+            public FakeSelection(IEntity entity) { Entity = entity; }
+
+            public bool Contains(IEntity entity) => entity.Id == Entity.Id;
+
+            public void RemoveSelectable(ISelectionContext context) { }
+
+            public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
+
+            public void AddObserver(IObserver<ISelectionSubject> observer) { }
+
+            public void RemoveObserver(IObserver<ISelectionSubject> observer) { }
+        }
+
+        private sealed class FakeQuery : ISelectionQuery
+        {
+            private readonly IEntity _enemy;
+
+            public bool ReturnEnemy { get; set; } = true;
+
+            public FakeQuery(IEntity enemy) { _enemy = enemy; }
+
+            public bool TryFindAt(Vector2 point, out SelectionEntry result)
+            {
+                result = ReturnEnemy ? new SelectionEntry(_enemy, null) : default;
+                return ReturnEnemy;
+            }
+
+            public void CollectSameShipType(SelectionEntry entry, ICollection<SelectionEntry> result) { }
+
+            public void CollectAllPlayerUnits(ICollection<SelectionEntry> result) { }
+
+            public void CollectVisiblePlayerUnits(ICollection<SelectionEntry> result) { }
+
+            public void CollectInside(MarqueeRectangle rect, ICollection<SelectionEntry> result) { }
+        }
+
         private sealed class FakeCamera : ICameraService
         {
             public Vector3 LastOrigin { get; private set; }
@@ -176,59 +198,84 @@ namespace EmpireAtWar.Tests.Editor
             public Transform CameraTransform => null;
             public Vector3 CameraForward => Vector3.forward;
             public float FieldOfView => 60f;
+
             public Vector3 GetWorldPoint(Vector2 point, Vector3 origin)
             {
                 LastOrigin = origin;
                 return new Vector3(point.x, 0f, point.y);
             }
+
             public RaycastHit ScreenPointToRay(Vector2 point) => default;
+
             public Vector3 WorldToViewportPoint(Vector3 point) => point;
+
             public Vector2 WorldToScreenPoint(Vector3 point) => point;
+
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 min, Vector2 max) =>
                 Array.Empty<Vector3>();
+
             public void MoveTo(Vector3 point) { }
+
             public void SetPose(Vector3 position, Quaternion rotation) { }
         }
 
         private sealed class FakeAbilities : IShipAbilityTargeting
         {
             public event Action TargetingChanged { add { } remove { } }
+
             public bool IsWaitingForTarget { get; set; }
             public IEntity Submitted { get; private set; }
+
             public void SubmitTarget(IEntity target) { Submitted = target; IsWaitingForTarget = false; }
+
             public void CancelTargeting() { IsWaitingForTarget = false; }
         }
 
         private sealed class FakeOrders : IUnitOrderService
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
+
             public UnitActionId? LastAction { get; set; }
             public int WaypointCount { get; private set; }
+
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Move;
+
             public void IssueMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points) => LastAction = UnitActionId.Move;
+
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
+
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
+
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
                 int hardPointId) => LastAction = UnitActionId.Attack;
+
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
+
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
+
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;
+
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Guard;
+
             public void IssueWaypointMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points)
             { LastAction = UnitActionId.WaypointMove; WaypointCount = points.Count; }
+
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
+
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
         }
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerId side, Transform transform)
-            { Id = id; Owner = side; HealthModel = new FakeHealth(transform); }
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
+
+            public FakeEntity(Transform transform, PlayerId side, long id)
+            { Id = id; Owner = side; HealthModel = new FakeHealth(transform); }
+
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
@@ -250,14 +297,16 @@ namespace EmpireAtWar.Tests.Editor
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 1f;
+
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
         }
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealth(Transform transform) { Transform = transform; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -271,6 +320,9 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealth(Transform transform) { Transform = transform; }
+
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
         }

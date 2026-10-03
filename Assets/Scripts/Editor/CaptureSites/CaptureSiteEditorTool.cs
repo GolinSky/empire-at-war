@@ -15,8 +15,10 @@ namespace EmpireAtWar.Editor.CaptureSites
     {
         private const float SITE_RADIUS = 40f;
         private const float SITE_SCALE = 5f;
+
         private const int UI_LAYER = 5;
         private const int OBSTACLE_LAYER = 9;
+
         private const string MINI_MAP_DATA_PATH = "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset";
         private const string PREFAB_FOLDER = "Assets/Prefabs/View/CaptureSites";
         private const string SITE_PREFAB_PATH = PREFAB_FOLDER + "/CaptureSite.prefab";
@@ -25,6 +27,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string DATA_PATH = DATA_FOLDER + "/CaptureSiteData.asset";
         private const string RING_MATERIAL_PATH = "Assets/Art/Materials/ReinforcementZones/ReinforcementZone.mat";
         private const string HOLOGRAM_MATERIAL_PATH = "Assets/Art/Materials/Vfx/Hologram.mat";
+
         private static readonly Color PANEL_COLOR = new Color32(0x08, 0x0C, 0x14, 0xF5);
         private static readonly Color PANEL_OUTLINE_COLOR = new Color32(0x1F, 0x87, 0xE6, 0xD9);
         private static readonly Color CARD_COLOR = new Color32(0x0F, 0x17, 0x2A, 0xFF);

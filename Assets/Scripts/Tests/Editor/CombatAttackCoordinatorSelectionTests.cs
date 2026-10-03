@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Weapon
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(weapon, new object[] { coordinator, new CombatModifiers(), null, null, null, null, null });
+                        .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Tests.Weapon
                 typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(weapon, new object[] { coordinator, new CombatModifiers(), null, null, null, null, null });
+                    .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();
@@ -89,6 +89,7 @@ namespace EmpireAtWar.Tests.Weapon
                 coordinator.Dispose();
             }
         }
+
         private static object GetTargetSelectionBatch(CombatAttackCoordinator coordinator)
         {
             return typeof(CombatAttackCoordinator)

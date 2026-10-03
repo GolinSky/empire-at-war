@@ -13,9 +13,11 @@ namespace EmpireAtWar.Entities.Ship.Abilities
 {
     public sealed class ShipAbilityFacade : IShipAbilityFacade
     {
-        private readonly List<ShipAbilitySlot> _slots = new List<ShipAbilitySlot>();
         private readonly IEntityLocator _entities;
+
+        private readonly List<ShipAbilitySlot> _slots = new List<ShipAbilitySlot>();
         private readonly Transform _viewTransform;
+
         private readonly long _entityId;
 
         public IReadOnlyList<ShipAbilitySlot> Slots => _slots;
@@ -25,10 +27,10 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public IHealthModelObserver Health { get; }
         public float RadarRange { get; }
 
-        public ShipAbilityFacade(ShipData data, ShipAbilityCatalog catalog,
-            CombatModifiers modifiers, IHealthModelObserver health,
-            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
-            IEntityLocator entities, IRadarModelObserver radar, long entityId)
+        public ShipAbilityFacade(IHealthModelObserver health, IEntityLocator entities,
+            IRadarModelObserver radar, ShipData data,
+            ShipAbilityCatalog catalog,
+            CombatModifiers modifiers, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform, long entityId)
         {
             Modifiers = modifiers;
             Health = health;
@@ -37,7 +39,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             _entities = entities;
             _entityId = entityId;
             foreach (ShipAbilityId id in data.Abilities)
-                _slots.Add(new ShipAbilitySlot(id, catalog.Get(id), this));
+                _slots.Add(new ShipAbilitySlot(id: id, definition: catalog.Get(id), owner: this));
         }
     }
 }

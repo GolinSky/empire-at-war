@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.Tooltip
     {
         [SerializeField] private UnitMatchupEntry[] strongAgainst = Array.Empty<UnitMatchupEntry>();
         [SerializeField] private UnitMatchupEntry[] weakAgainst = Array.Empty<UnitMatchupEntry>();
+
         public IEnumerable<TooltipIcon> StrongAgainst => strongAgainst.Select(entry => entry.Content);
         public IEnumerable<TooltipIcon> WeakAgainst => weakAgainst.Select(entry => entry.Content);
     }

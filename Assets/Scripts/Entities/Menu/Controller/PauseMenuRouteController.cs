@@ -21,11 +21,13 @@ namespace EmpireAtWar.Controllers.Menu
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly IUiCancelRouter _cancelRouter;
         private readonly ISettingsRoute _settingsRoute;
-        private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private IPauseMenuUiView _ui;
-        private bool _hasBattleEnded;
+
+        private List<IObserver<UserNotifierState>> _observers = new List<IObserver<UserNotifierState>>();
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
+
+        private bool _hasBattleEnded;
 
         public PauseMenuRouteController(
             IUiService uiService,
@@ -122,7 +124,7 @@ namespace EmpireAtWar.Controllers.Menu
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => !_hasBattleEnded, () =>
-                new TooltipContent((string)key, (string)key switch
+                new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Resume" => "Close the pause menu and resume the battle.",
                     "Options" => "Edit display, camera and key-binding settings.",

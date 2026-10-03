@@ -12,49 +12,37 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private const string UNSAVED_CHANGES_MESSAGE = "Unsaved changes";
         private const string SETTINGS_SCOPE_MESSAGE = "Changes apply across all categories.";
 
+        private ISettingsModelObserver _model;
+        private ISettingsRouteNavigation _navigation;
+
         [SerializeField] private Button closeButton;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private Button applyButton;
         [SerializeField] private Button discardButton;
         [SerializeField] private Button resetDefaultsButton;
         [SerializeField] private TMP_Text statusText;
-
         [SerializeField] private SettingsDropdownRow windowModeRow;
         [SerializeField] private SettingsDropdownRow resolutionRow;
         [SerializeField] private SettingsDropdownRow qualityRow;
         [SerializeField] private SettingsDropdownRow frameRateLimitRow;
         [SerializeField] private SettingsToggleRow vSyncRow;
-
         [SerializeField] private SettingsSliderRow masterVolumeRow;
         [SerializeField] private SettingsSliderRow musicVolumeRow;
         [SerializeField] private SettingsSliderRow voiceVolumeRow;
         [SerializeField] private SettingsSliderRow sfxVolumeRow;
         [SerializeField] private SettingsToggleRow muteWhenUnfocusedRow;
-
         [SerializeField] private SettingsSliderRow panSpeedRow;
         [SerializeField] private SettingsSliderRow zoomSpeedRow;
         [SerializeField] private SettingsToggleRow edgeScrollingRow;
         [SerializeField] private SettingsToggleRow invertZoomRow;
-
         [Tooltip("Inactive row cloned once per rebindable binding into its parent.")]
         [SerializeField] private KeyBindingRow keyBindingRowTemplate;
         [SerializeField] private SettingsPromptView promptView;
-
         private readonly List<KeyBindingRow> _keyBindingRows = new List<KeyBindingRow>();
-        private ISettingsModelObserver _model;
-        private ISettingsRouteNavigation _navigation;
+
         private bool _isInitialized;
 
-        public void SetModel(ISettingsModelObserver model)
-        {
-            _model = model;
-        }
-
-        public void SetNavigation(ISettingsRouteNavigation navigation)
-        {
-            _navigation = navigation;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -74,6 +62,35 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _model.Changed += Render;
             _isInitialized = true;
             Render();
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            closeButton.onClick.RemoveListener(_navigation.Close);
+            applyButton.onClick.RemoveListener(_navigation.ApplySettings);
+            discardButton.onClick.RemoveListener(_navigation.DiscardChanges);
+            resetDefaultsButton.onClick.RemoveListener(_navigation.ResetToDefaults);
+
+            DisposeRows();
+            promptView.ActionChosen -= _navigation.ChoosePromptAction;
+            promptView.Dispose();
+            _model.Changed -= Render;
+            _isInitialized = false;
+        }
+
+        public void SetModel(ISettingsModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetNavigation(ISettingsRouteNavigation navigation)
+        {
+            _navigation = navigation;
         }
 
         public void Render()
@@ -104,25 +121,6 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 : _model.IsDirty ? UNSAVED_CHANGES_MESSAGE : SETTINGS_SCOPE_MESSAGE;
             statusText.color = _model.IsDirty ? new Color32(231, 189, 105, 255) : new Color32(123, 156, 175, 255);
             promptView.Render(_model.Prompt);
-        }
-
-        public void Dispose()
-        {
-            if (!_isInitialized)
-            {
-                return;
-            }
-
-            closeButton.onClick.RemoveListener(_navigation.Close);
-            applyButton.onClick.RemoveListener(_navigation.ApplySettings);
-            discardButton.onClick.RemoveListener(_navigation.DiscardChanges);
-            resetDefaultsButton.onClick.RemoveListener(_navigation.ResetToDefaults);
-
-            DisposeRows();
-            promptView.ActionChosen -= _navigation.ChoosePromptAction;
-            promptView.Dispose();
-            _model.Changed -= Render;
-            _isInitialized = false;
         }
 
         private void InitializeRows()

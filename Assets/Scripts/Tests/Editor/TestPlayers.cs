@@ -14,7 +14,6 @@ namespace EmpireAtWar.Tests.Editor
         public static readonly PlayerId Enemy = new PlayerId(1);
         public static readonly PlayerId Ally = new PlayerId(2);
         public static readonly PlayerId SecondEnemy = new PlayerId(3);
-
         private static readonly TeamId HUMAN_TEAM = new TeamId(0);
         private static readonly TeamId ENEMY_TEAM = new TeamId(1);
 

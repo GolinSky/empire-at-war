@@ -16,6 +16,8 @@ namespace EmpireAtWar.Editor
     {
         private static CaptureOperation _activeCapture;
 
+        internal static bool IsCapturing => _activeCapture != null;
+
         static RenderAuditRenderGraphTool()
         {
             AssemblyReloadEvents.beforeAssemblyReload += () => Cancel("assembly_reload");
@@ -39,8 +41,6 @@ namespace EmpireAtWar.Editor
             RenderAuditCaptureStatus.WriteJson(directory, "capture-status.json", started);
             return started;
         }
-
-        internal static bool IsCapturing => _activeCapture != null;
 
         internal static Dictionary<string, object> BeginCapture(string directory, int frames, int timeoutSeconds, Action<Dictionary<string, object>> completed)
         {
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Editor
 
             try
             {
-                var operation = new CaptureOperation(directory, frames, timeoutSeconds, completed);
+                var operation = new CaptureOperation(directory: directory, framesRequested: frames, timeoutSeconds: timeoutSeconds, completed: completed);
                 _activeCapture = operation;
                 operation.Start();
             }
@@ -89,9 +89,6 @@ namespace EmpireAtWar.Editor
 
         private sealed class CaptureOperation
         {
-            private readonly string _directory;
-            private readonly int _framesRequested;
-            private readonly double _deadline;
             private readonly Action<Dictionary<string, object>> _completed;
             private readonly Type _sessionType;
             private readonly MethodInfo _getRegisteredGraphs;
@@ -102,9 +99,15 @@ namespace EmpireAtWar.Editor
             private readonly PropertyInfo _currentSession;
             private readonly List<object> _frameIdentities = new();
             private object _ownedSession;
+
+            private readonly string _directory;
+
+            private readonly double _deadline;
+
+            private readonly int _framesRequested;
             private int _validExecutionCount;
 
-            internal CaptureOperation(string directory, int framesRequested, int timeoutSeconds, Action<Dictionary<string, object>> completed)
+            internal CaptureOperation(Action<Dictionary<string, object>> completed, string directory, int framesRequested, int timeoutSeconds)
             {
                 _directory = directory;
                 _framesRequested = framesRequested;

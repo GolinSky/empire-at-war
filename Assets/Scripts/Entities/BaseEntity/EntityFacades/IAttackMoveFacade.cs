@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+
         void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement);
     }
 }

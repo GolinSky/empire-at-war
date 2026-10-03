@@ -15,8 +15,9 @@ namespace EmpireAtWar.Services.SceneService
     public class SceneData : Data, ISceneModelObserver
     {
         private const SceneType LOADING_SCENE_TYPE = SceneType.Loading;
-        
+
         [SerializeField] private DictionaryWrapper<SceneType, SceneReference> scenesWrapper;
+
         private Dictionary<SceneType, SceneReference> SceneDictionary => scenesWrapper.Dictionary;
 
         public SceneReference GetScene(SceneType sceneType)

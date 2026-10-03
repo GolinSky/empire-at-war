@@ -15,26 +15,36 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
     public class SkirmishRouteController : UiController, ISkirmishRoute, ISkirmishRouteNavigation, ILateDisposable
     {
-        private readonly TeamColorPalette _teamColorPalette;
         private readonly IGameCommand _gameCommand;
-        private readonly SkirmishModel _model;
-
         private ISkirmishUi _ui;
+
+        private readonly TeamColorPalette _teamColorPalette;
+        private readonly SkirmishModel _model;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
+
         private bool _isOpen;
 
         public SkirmishRouteController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IGameCommand gameCommand,
-            SkirmishModel model,
-            TeamColorPalette teamColorPalette, ITooltipService tooltips) : base(uiService, cancelRouter)
+            ITooltipService tooltips,
+            SkirmishModel model, TeamColorPalette teamColorPalette) : base(uiService, cancelRouter)
         {
             _teamColorPalette = teamColorPalette;
             _gameCommand = gameCommand;
             _model = model;
             _tooltips = new TooltipRequests(tooltips);
+        }
+
+        public void LateDispose()
+        {
+            if (_ui != null)
+            {
+                _ui.Dispose();
+                _tooltipHover.Dispose();
+            }
         }
 
         public void Open()
@@ -128,18 +138,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             _model.SelectStartingMoney(amount);
         }
 
-        public void LateDispose()
-        {
-            if (_ui != null)
-            {
-                _ui.Dispose();
-                _tooltipHover.Dispose();
-            }
-        }
-
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent((string)key,
-                (string)key switch
+            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(title: (string)key,
+                description: (string)key switch
                 {
                     "Start battle" => _model.CanStart ? "Start the battle with the current setup." : "Choose at least two opposing teams to start a battle.",
                     "Close" => "Return to the main menu.",

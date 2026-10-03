@@ -6,11 +6,13 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     [Serializable]
     public struct HardPointOverlayEntry
     {
-        [SerializeField] private HardPointType hardPointType;
+        [SerializeField] private Sprite icon;
+
         [SerializeField] private string displayName;
         [Tooltip("What stops working when this hardpoint is destroyed.")]
         [SerializeField] private string description;
-        [SerializeField] private Sprite icon;
+
+        [SerializeField] private HardPointType hardPointType;
 
         public HardPointType HardPointType => hardPointType;
         public string DisplayName => displayName;

@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
     {
         private readonly Dictionary<int, List<IEntity>> _contacts = new Dictionary<int, List<IEntity>>();
         private readonly Dictionary<int, IEntity> _claims = new Dictionary<int, IEntity>();
+
         private int _nextMemberId;
 
         public int Join()

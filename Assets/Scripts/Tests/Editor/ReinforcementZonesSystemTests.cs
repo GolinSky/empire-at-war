@@ -184,9 +184,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeMapModel : IMapModelObserver
         {
+            private readonly Vector2Range _sizeRange;
+
             private readonly Vector3 _republicPosition;
             private readonly Vector3 _separatistPosition;
-            private readonly Vector2Range _sizeRange;
+
+            public Vector2Range SizeRange => _sizeRange;
 
             public FakeMapModel(Vector3 republicPosition, Vector3 separatistPosition)
             {
@@ -196,8 +199,6 @@ namespace EmpireAtWar.Tests.Editor
                 SetRangeValue("<Min>k__BackingField", new Vector2(-250f, -250f));
                 SetRangeValue("<Max>k__BackingField", new Vector2(250f, 250f));
             }
-
-            public Vector2Range SizeRange => _sizeRange;
 
             public Vector3 GetStationPosition(PlayerId owner)
             {

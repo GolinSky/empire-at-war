@@ -17,24 +17,27 @@ namespace EmpireAtWar.Controllers.Game
         private const float DEFAULT_TIME_SCALE = 1f;
         private const float PAUSE_TIME_SCALE = 0f;
 
-        private readonly SkirmishSessionModel _sessionModel;
-        private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
         private readonly IGameCommand _gameCommand;
         private readonly ICameraService _cameraService;
         private readonly IMapModelObserver _mapModel;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ILocalPlayer _localPlayer;
+
+        private readonly SkirmishSessionModel _sessionModel;
+        private readonly LazyInject<IUserStateNotifier> _userStateNotifier;
+
         private GameTimeMode _requestedTimeMode;
+
         private bool _isMenuOpen;
 
         public SkirmishOrchestrator(
-            SkirmishSessionModel sessionModel,
-            LazyInject<IUserStateNotifier> userStateNotifier,
             IGameCommand gameCommand,
             ICameraService cameraService,
             IMapModelObserver mapModel,
             INotifier<BattleResult> battleVictoryNotifier,
-            ILocalPlayer localPlayer)
+            ILocalPlayer localPlayer,
+            SkirmishSessionModel sessionModel,
+            LazyInject<IUserStateNotifier> userStateNotifier)
         {
             _sessionModel = sessionModel;
             _userStateNotifier = userStateNotifier;

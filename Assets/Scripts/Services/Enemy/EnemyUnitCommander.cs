@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Enemy
     public interface IEnemyAiDebugInfo : IService
     {
         event Action<EnemyStrategicDecision> DecisionChanged;
+
         EnemyStrategicDecision LastDecision { get; }
         EnemyStrategicSnapshot LastSnapshot { get; }
     }
@@ -38,29 +39,40 @@ namespace EmpireAtWar.Services.Enemy
         IEnemyAiStateProvider
     {
         private readonly IShipService _shipService;
-        private readonly PlayerSlot _owner;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
+        private readonly IUnitOrderService _orders;
+
+        private readonly PlayerSlot _owner;
         private readonly EnemyStrategicDecisionModel _decisionModel;
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly EnemyTaskForceExecutor _taskForceExecutor;
-        private readonly IUnitOrderService _orders;
         private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
             new Dictionary<IShipEntity, Vector3>();
 
         private float _decisionTimer;
+
         private bool _hasDecision;
+
+        public event Action<EnemyStrategicDecision> DecisionChanged;
+
+        public string Id => nameof(EnemyUnitCommander);
+        public EnemyStrategicDecision LastDecision { get; private set; }
+        public EnemyStrategicSnapshot LastSnapshot { get; private set; }
+        public EnemyStrategicState CurrentState =>
+            _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
+        public int ActiveShipCount => LastSnapshot.OwnShipCount;
 
         public EnemyUnitCommander(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
+            IUnitOrderService orders,
             EnemyStrategicDecisionModel decisionModel,
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
-            IUnitOrderService orders,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -74,15 +86,6 @@ namespace EmpireAtWar.Services.Enemy
             _orders = orders;
         }
 
-        public event Action<EnemyStrategicDecision> DecisionChanged;
-
-        public string Id => nameof(EnemyUnitCommander);
-        public EnemyStrategicDecision LastDecision { get; private set; }
-        public EnemyStrategicSnapshot LastSnapshot { get; private set; }
-        public EnemyStrategicState CurrentState =>
-            _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
-        public int ActiveShipCount => LastSnapshot.OwnShipCount;
-
         public void Initialize()
         {
             _shipService.ShipAdded += HandleShipChanged;
@@ -93,15 +96,6 @@ namespace EmpireAtWar.Services.Enemy
             EvaluateAndExecute();
         }
 
-        public void Tick()
-        {
-            _decisionTimer -= Time.deltaTime;
-            if (_decisionTimer <= 0f)
-            {
-                EvaluateAndExecute();
-            }
-        }
-
         public void LateDispose()
         {
             _shipService.ShipAdded -= HandleShipChanged;
@@ -110,6 +104,15 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem.OwnershipChanged -= HandleWorldChanged;
             _entityLocator.EntityAdded -= HandleEntityChanged;
             _entityLocator.EntityRemoved -= HandleEntityChanged;
+        }
+
+        public void Tick()
+        {
+            _decisionTimer -= Time.deltaTime;
+            if (_decisionTimer <= 0f)
+            {
+                EvaluateAndExecute();
+            }
         }
 
         private void HandleShipChanged(IShipEntity ship)

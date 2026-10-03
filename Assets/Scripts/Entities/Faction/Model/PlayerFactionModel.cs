@@ -9,13 +9,17 @@ namespace EmpireAtWar.Models.Factions
     public interface IPlayerFactionModelObserver : IModelObserver
     {
         event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
+
         event Action<int> OnLevelUpgraded;
+
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
         FactionType FactionType { get; }
-        FactionData GetCurrentLevelFactionData();
         int CurrentLevel { get; }
+
+        FactionData GetCurrentLevelFactionData();
+
         IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots();
     }
 
@@ -23,26 +27,22 @@ namespace EmpireAtWar.Models.Factions
     {
         private const int MAX_ACTIVE_PIPELINES = 7;
 
-        public event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
-        public event Action<UnitRequest> OnUnitCompleted;
-        public event Action<int> OnLevelUpgraded;
-        public event Action<SelectionType> OnSelectionTypeChanged;
-
         private readonly FactionsData _factionsData;
         private readonly Dictionary<string, Queue<ProductionQueueItem>> _productionQueues = new();
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
+
         private int _currentLevel = 1;
 
-        public PlayerFactionModel(
-            FactionsData factionsData,
-            FactionType factionType)
-        {
-            _factionsData = factionsData;
-            FactionType = factionType;
-        }
-        
+        public event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
+
+        public event Action<UnitRequest> OnUnitCompleted;
+
+        public event Action<int> OnLevelUpgraded;
+
+        public event Action<SelectionType> OnSelectionTypeChanged;
+
         public SelectionType SelectionType
         {
             get => _selectionType;
@@ -54,7 +54,7 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public FactionType FactionType { get; }
-        
+
         public int CurrentLevel
         {
             get => _currentLevel;
@@ -63,6 +63,14 @@ namespace EmpireAtWar.Models.Factions
                 _currentLevel = value;
                 OnLevelUpgraded?.Invoke(_currentLevel);
             }
+        }
+
+        public PlayerFactionModel(
+            FactionsData factionsData,
+            FactionType factionType)
+        {
+            _factionsData = factionsData;
+            FactionType = factionType;
         }
 
         public FactionData GetCurrentLevelFactionData()
@@ -207,9 +215,9 @@ namespace EmpireAtWar.Models.Factions
             {
                 ProductionQueueItem activeItem = queue.Peek();
                 snapshots.Add(new ProductionQueueSnapshot(
-                    activeItem.UnitRequest,
-                    queue.Count,
-                    activeItem.RemainingBuildTime));
+                    unitRequest: activeItem.UnitRequest,
+                    count: queue.Count,
+                    remainingBuildTime: activeItem.RemainingBuildTime));
             }
 
             return snapshots;

@@ -17,7 +17,6 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         private readonly ISelectionQuery _selectionQuery;
         private readonly IPointerInput _pointer;
         private readonly ICameraService _cameraService;
-
         private IEntity _target;
         private ISelectionPositionProvider _targetPositionProvider;
 

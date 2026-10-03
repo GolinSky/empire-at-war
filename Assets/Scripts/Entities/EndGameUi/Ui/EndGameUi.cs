@@ -21,9 +21,10 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private TMP_Text enemyBaseText;
         [SerializeField] private UnityEngine.UI.Button returnToMenuButton;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action ReturnToMenuRequested = delegate { };
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         private void Awake()
         {

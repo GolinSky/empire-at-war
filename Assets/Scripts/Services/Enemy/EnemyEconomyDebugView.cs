@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float PANEL_MARGIN = 10f;
 
         private IEconomyModelObserver _economyModel;
+
         private EconomyService _economyService;
         private EnemyFactionModel _factionModel;
 

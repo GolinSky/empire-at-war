@@ -7,10 +7,15 @@ namespace EmpireAtWar.ViewComponents.Health
     public sealed class Shield : MonoBehaviour, IShieldView
     {
         private const int MAX_IMPACTS = 8;
+
         [SerializeField] private MeshRenderer shieldRenderer;
+        private readonly Vector4[] _impacts = new Vector4[MAX_IMPACTS];
+        private MaterialPropertyBlock _properties;
+
+        [SerializeField, ColorUsage(true, true)] private Color color = new Color(0.15f, 0.65f, 1f, 0.65f);
+
         [Tooltip("Radius of the visible patch along the surface, in world units.")]
         [SerializeField, Min(0.01f)] private float visibilityRadius = 4f;
-        [SerializeField, ColorUsage(true, true)] private Color color = new Color(0.15f, 0.65f, 1f, 0.65f);
         [SerializeField, Min(0f)] private float brightness = 2f;
         [SerializeField, Min(0.01f)] private float fadeDuration = 1.2f;
         [Tooltip("Surface travel speed in world units per second.")]
@@ -18,9 +23,8 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField, Min(0.01f)] private float waveWidth = 0.8f;
         [SerializeField, Min(0f)] private float displacementStrength = 0.15f;
 
-        private readonly Vector4[] _impacts = new Vector4[MAX_IMPACTS];
-        private MaterialPropertyBlock _properties;
         private int _impactCount;
+
         private bool _active;
 
         public void SetActive(bool active)

@@ -9,9 +9,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class ProtonBeamSettings : ShipAbilitySettings
     {
-        [SerializeField] private float damage;
-        [SerializeField] private DamageType damageType = DamageType.Beam;
         [SerializeField] private BeamShot viewPrefab;
+
+        [SerializeField] private DamageType damageType = DamageType.Beam;
+
+        [SerializeField] private float damage;
 
         public float Damage => damage;
         public DamageType DamageType => damageType;

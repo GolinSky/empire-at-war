@@ -64,7 +64,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .ByNewContextPrefab<AsteroidDefendPlatformInstaller>(GetPath<AsteroidDefendPlatformInstaller>())
                 .NonLazy();
         }
-        
+
         private GameObject GetPath<T>()
         {
             return Repository.Load<GameObject>(typeof(T).Name);

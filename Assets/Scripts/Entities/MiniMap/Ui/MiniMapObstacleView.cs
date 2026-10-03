@@ -9,9 +9,9 @@ namespace EmpireAtWar.Views.MiniMap
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class MiniMapObstacleView : MaskableGraphic
     {
-        [SerializeField] private Sprite asteroidIcon;
-
         private IReadOnlyList<MiniMapObstacle> _obstacles;
+
+        [SerializeField] private Sprite asteroidIcon;
         private Vector2Range _mapRange;
 
         public override Texture mainTexture => asteroidIcon.texture;

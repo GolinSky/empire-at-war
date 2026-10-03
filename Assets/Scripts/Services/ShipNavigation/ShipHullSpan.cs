@@ -7,14 +7,14 @@ namespace EmpireAtWar.Services.ShipNavigation
         public static readonly ShipHullSpan Unbounded =
             new ShipHullSpan(float.NegativeInfinity, float.PositiveInfinity);
 
+        public float Bottom { get; }
+        public float Top { get; }
+
         public ShipHullSpan(float bottom, float top)
         {
             Bottom = bottom;
             Top = top;
         }
-
-        public float Bottom { get; }
-        public float Top { get; }
 
         public bool Overlaps(ShipHullSpan other) => Bottom < other.Top && other.Bottom < Top;
     }

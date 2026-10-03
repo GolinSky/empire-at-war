@@ -17,23 +17,24 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacility : MonoBehaviour, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
-        [SerializeField] private Renderer[] explosionHullRenderers;
-
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
-        private Vector3 _startPosition;
-        private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
         private IUnitWreckService _wreckService;
-        private GameObjectContext _context;
-        private PlayerId _owner;
         private ILayerService _layerService;
         private IFactionResearchModelObserver _research;
 
-        [Inject] private MiningFacilityData Data { get; }
-        [Inject] private MiningFacilityModel RootModel { get; }
+        [SerializeField] private Renderer[] explosionHullRenderers;
+        private EntityComponentLifecycle _componentLifecycle;
+        private GameObjectContext _context;
+
+        private Vector3 _startPosition;
+        private PlayerId _owner;
 
         public event Action OnRelease;
+
+        [Inject] private MiningFacilityData Data { get; }
+        [Inject] private MiningFacilityModel RootModel { get; }
 
         public string Id => GetType().Name;
         public float Income => RootModel.BaseIncome * _research.IncomeMultiplier;
@@ -42,14 +43,14 @@ namespace EmpireAtWar.Entities.MiningFacility
         private void Construct(
             IEconomyProvider economyProvider,
             IHealthComponent healthComponent,
-            Vector3 startPosition,
-            List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
             IUnitExplosionService explosionService,
-            GameObjectContext context,
-            PlayerId owner,
             ILayerService layerService,
-            IFactionResearchModelObserver research)
+            IFactionResearchModelObserver research,
+            List<IMonoComponent> monoComponents,
+            GameObjectContext context,
+            Vector3 startPosition,
+            PlayerId owner)
         {
             _economyProvider = economyProvider;
             _healthComponent = healthComponent;

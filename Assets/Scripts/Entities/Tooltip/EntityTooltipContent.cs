@@ -14,24 +14,24 @@ namespace EmpireAtWar.Entities.Tooltip
             var stats = new List<TooltipStat>();
             if (health is IHealthTooltipObserver capacity)
             {
-                stats.Add(new TooltipStat("Hull", health.Hull, capacity.MaxHull));
-                if (capacity.MaxShields > 0f) stats.Add(new TooltipStat("Shields", health.Shields, capacity.MaxShields));
+                stats.Add(new TooltipStat(label: "Hull", current: health.Hull, max: capacity.MaxHull));
+                if (capacity.MaxShields > 0f) stats.Add(new TooltipStat(label: "Shields", current: health.Shields, max: capacity.MaxShields));
                 if (capacity.ShieldRegeneration > 0f)
                 {
-                    stats.Add(new TooltipStat("Shield regeneration per tick", capacity.ShieldRegeneration));
-                    stats.Add(new TooltipStat("Regeneration interval (s)", capacity.ShieldRegenerationInterval));
+                    stats.Add(new TooltipStat(label: "Shield regeneration per tick", current: capacity.ShieldRegeneration));
+                    stats.Add(new TooltipStat(label: "Regeneration interval (s)", current: capacity.ShieldRegenerationInterval));
                 }
             }
-            else stats.Add(new TooltipStat("Hull", health.Hull));
+            else stats.Add(new TooltipStat(label: "Hull", current: health.Hull));
             string order = entity.TryGetFacade(out IUnitOrderObserverFacade orders)
                 ? $" · Order: {orders.CurrentOrder}" : "";
             string status = $"Owner: {entity.Owner} · {health.ShipClass}{order}";
             if (entity.TryGetFacade(out ICombatModifiersFacade combat))
             {
                 var modifiers = combat.Modifiers;
-                if (modifiers.IsDamageDealtModified()) stats.Add(new TooltipStat("Damage modifier", modifiers.DamageMultiplier, format: "0.##'×'"));
-                if (modifiers.IsSpeedModified()) stats.Add(new TooltipStat("Speed modifier", modifiers.SpeedMultiplier, format: "0.##'×'"));
-                if (modifiers.IsDamageTakenModified()) stats.Add(new TooltipStat("Damage taken", modifiers.DamageTakenMultiplier, format: "0.##'×'"));
+                if (modifiers.IsDamageDealtModified()) stats.Add(new TooltipStat(label: "Damage modifier", current: modifiers.DamageMultiplier, format: "0.##'×'"));
+                if (modifiers.IsSpeedModified()) stats.Add(new TooltipStat(label: "Speed modifier", current: modifiers.SpeedMultiplier, format: "0.##'×'"));
+                if (modifiers.IsDamageTakenModified()) stats.Add(new TooltipStat(label: "Damage taken", current: modifiers.DamageTakenMultiplier, format: "0.##'×'"));
             }
 
             return entity.GetFacade<IEntityTooltipFacade>().Build(stats, status);

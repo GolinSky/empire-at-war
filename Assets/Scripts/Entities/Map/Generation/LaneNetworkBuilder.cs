@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.Map.Generation
     public sealed class LaneNetworkBuilder
     {
         private const int MAX_EXTRA_LANE_DEGREE = 3;
+
         // Crossing-prone edges stay possible for connectivity but lose to Gabriel edges.
         private const float NON_GABRIEL_WEIGHT = 3f;
 

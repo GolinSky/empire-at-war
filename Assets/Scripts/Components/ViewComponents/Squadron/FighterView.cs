@@ -10,7 +10,6 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     /// </summary>
     public sealed class FighterView : MonoBehaviour, IHardPoint
     {
-        [SerializeField] private int id;
         [SerializeField] private Transform body;
         [SerializeField] private Collider hitCollider;
         [SerializeField] private WeaponHardPoint gun;
@@ -18,7 +17,10 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         [SerializeField] private TrailRenderer[] engineTrails;
 
         private Quaternion _bodyRestRotation;
+
         private float _healthPercentage = 1f;
+
+        [SerializeField] private int id;
 
         public int Id => id;
         public HardPointType HardPointType => HardPointType.Any;

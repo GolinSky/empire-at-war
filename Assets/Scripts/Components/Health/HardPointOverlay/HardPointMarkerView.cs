@@ -19,6 +19,12 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private const float HEALTHY_THRESHOLD = 0.6f;
         private const float CRITICAL_THRESHOLD = 0.3f;
 
+        private RectTransform _root;
+        private MPImage _halo;
+        private MPImage _background;
+        private Image _icon;
+        private MPImage _healthFill;
+
         private static readonly Color BACKGROUND_COLOR = new(0.03f, 0.05f, 0.08f, 0.8f);
         private static readonly Color DESTROYED_BACKGROUND_COLOR = new(0.03f, 0.03f, 0.04f, 0.6f);
         private static readonly Color FRAME_COLOR = new(0.58f, 0.64f, 0.72f, 0.8f);
@@ -31,12 +37,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private static readonly Color HEALTHY_COLOR = new(0.25f, 0.9f, 0.42f, 1f);
         private static readonly Color DAMAGED_COLOR = new(0.96f, 0.7f, 0.2f, 1f);
         private static readonly Color CRITICAL_COLOR = new(0.94f, 0.27f, 0.27f, 1f);
-
-        private RectTransform _root;
-        private MPImage _halo;
-        private MPImage _background;
-        private Image _icon;
-        private MPImage _healthFill;
 
         public static HardPointMarkerView Create(RectTransform parent)
         {

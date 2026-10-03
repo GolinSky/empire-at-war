@@ -21,32 +21,34 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
     /// </summary>
     public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute, ITickable
     {
-        private readonly SuperWeaponModel _model;
         private readonly ILocalPlayer _localPlayer;
-        private readonly SuperWeaponTargetingModel _targeting;
         private readonly ISuperWeaponFireService _fireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private readonly UnitActionTargetingModel _unitTargeting;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
-        private readonly TooltipRequests _tooltips;
-        private readonly SuperWeaponData _data;
         private readonly EmpireAtWar.Models.Factions.IPlayerFactionModelObserver _faction;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
-        private TooltipHoverSubscription _tooltipHover;
         private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
+
+        private readonly SuperWeaponModel _model;
+        private readonly SuperWeaponTargetingModel _targeting;
+        private readonly UnitActionTargetingModel _unitTargeting;
+        private readonly TooltipRequests _tooltips;
+        private readonly SuperWeaponData _data;
+        private TooltipHoverSubscription _tooltipHover;
+
         private bool _isOpen;
 
-        public SuperWeaponPresenter(SuperWeaponModel model, SuperWeaponTargetingModel targeting,
-            ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
-            ISkirmishRouteNavigation routeNavigation,
-            UnitActionTargetingModel unitTargeting, IShipAbilityTargeting abilities,
-            ILocalPlayer localPlayer, IUiService uiService, IUiCancelRouter cancelRouter,
-            ITooltipService tooltips, SuperWeaponData data,
-            EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction,
-            EmpireAtWar.Services.Input.IInputBindings bindings,
-            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session)
+        public SuperWeaponPresenter(ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
+            ISkirmishRouteNavigation routeNavigation, IShipAbilityTargeting abilities,
+            ILocalPlayer localPlayer,
+            IUiService uiService, IUiCancelRouter cancelRouter,
+            ITooltipService tooltips, EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction, EmpireAtWar.Services.Input.IInputBindings bindings,
+            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session, SuperWeaponModel model,
+            SuperWeaponTargetingModel targeting,
+            UnitActionTargetingModel unitTargeting,
+            SuperWeaponData data)
             : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
@@ -133,17 +135,17 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 foreach (var queue in _faction.GetProductionQueueSnapshots())
                     if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request && request.Key == type)
                         remaining = queue.RemainingBuildTime;
-                return new TooltipContent(type.ToString(),
-                    $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
+                return new TooltipContent(title: type.ToString(),
+                    description: $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     stats: new[]
                     {
-                        new TooltipStat("Damage per shot", profile.Weapon.Damage),
-                        new TooltipStat("Shots", profile.Weapon.ShotsPerSalvo),
-                        new TooltipStat("Range", profile.Weapon.Range),
-                        new TooltipStat("Firing delay (s)", profile.FiringDelay),
-                        new TooltipStat("Area damage", profile.AreaDamage),
-                        new TooltipStat("Area radius", profile.AreaRadius),
-                        new TooltipStat("Stun duration (s)", profile.StunDuration)
+                        new TooltipStat(label: "Damage per shot", current: profile.Weapon.Damage),
+                        new TooltipStat(label: "Shots", current: profile.Weapon.ShotsPerSalvo),
+                        new TooltipStat(label: "Range", current: profile.Weapon.Range),
+                        new TooltipStat(label: "Firing delay (s)", current: profile.FiringDelay),
+                        new TooltipStat(label: "Area damage", current: profile.AreaDamage),
+                        new TooltipStat(label: "Area radius", current: profile.AreaRadius),
+                        new TooltipStat(label: "Stun duration (s)", current: profile.StunDuration)
                     }, status: state == SuperWeaponState.Charging ? $"Construction: {remaining:0.#} s remaining"
                         : state == SuperWeaponState.Ready ? "Ready: click to select a target"
                         : "Unavailable: build a new charge at the station");

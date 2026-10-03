@@ -11,9 +11,13 @@ namespace EmpireAtWar
     public interface ISpawnShipUi
     {
         UnitRequest Request { get; }
+
         void DecreaseUnitCount();
+
         void AddUnit();
+
         void Activate(bool isActive);
+
         void Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request, ScrollRect scrollRect);
     }
     
@@ -21,23 +25,26 @@ namespace EmpireAtWar
         IBeginDragHandler, IDragHandler, IEndDragHandler, ISpawnShipUi
     {
         private const int DEFAULT_COUNT_VALUE = 1;
-        
+
+        private IReinforcementVisitor _reinforcementVisitor;
+
         [SerializeField] private Image iconImage;
         [SerializeField] private Image backgroundImage;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
-        public TooltipTrigger TooltipTrigger => tooltipTrigger;
-       
-        private IReinforcementVisitor _reinforcementVisitor;
         private ScrollRect _scrollRect;
-        private bool _isScrolling;
-        
+
         private Color _originColor;
         private Color _blockedColor = Color.gray;
+
         private int _count;
+
+        private bool _isScrolling;
         private bool _isBlocked;
-        
+
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
+
         public UnitRequest Request { get; private set; }
 
         private void Awake()
@@ -58,7 +65,6 @@ namespace EmpireAtWar
             UpdateUnitCountText();
         }
 
-
         void ISpawnShipUi.DecreaseUnitCount()
         {
             _count--;
@@ -74,7 +80,7 @@ namespace EmpireAtWar
             _count++;
             UpdateUnitCountText();
         }
-        
+
         void ISpawnShipUi.Activate(bool isActive)
         {
             backgroundImage.color = isActive ? _originColor : _blockedColor;
@@ -104,12 +110,12 @@ namespace EmpireAtWar
             if (_isScrolling) _scrollRect.OnEndDrag(eventData);
             _isScrolling = false;
         }
-        
+
         private void UpdateUnitCountText()
         {
             unitCountText.text = _count.ToString();
         }
-        
+
         private void Destroy()
         {
             _reinforcementVisitor.OnRelease(this);

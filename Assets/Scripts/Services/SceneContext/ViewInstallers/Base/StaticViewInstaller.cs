@@ -11,12 +11,13 @@ namespace EmpireAtWar
         where TModel : Data
     {
         [SerializeField] private View view;
+
         [SerializeField] private bool bindViewComponents;
         [SerializeField] private bool bindMonoComponent;
-        
+
         [Inject]
         protected IAssetService Repository { get; }
-        
+
         public override void InstallBindings()
         {
             if (bindMonoComponent)

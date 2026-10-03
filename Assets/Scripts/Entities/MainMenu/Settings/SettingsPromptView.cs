@@ -11,7 +11,6 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private TMP_Text messageText;
         [SerializeField] private Button[] actionButtons;
         [SerializeField] private TMP_Text[] actionLabels;
-
         private SettingsPrompt _prompt = SettingsPrompt.None;
 
         public event Action<SettingsPromptAction> ActionChosen;

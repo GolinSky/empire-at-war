@@ -17,15 +17,20 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
-        private readonly UnitOrderSettings _settings;
         private IEntity _friendly;
-        private Transform _friendlyTransform;
         private IEntity _engagementTarget;
+
+        private readonly UnitOrderSettings _settings;
+        private Transform _friendlyTransform;
+
         private Vector3 _offset;
-        private bool _isReturning;
         private Vector3 _pursuitDestination;
         private Vector3 _followDestination;
+
+        private bool _isReturning;
         private bool _isFollowing;
+
+        public bool IsComplete => _friendly.HealthModel.IsDestroyed;
 
         public GuardState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory,
@@ -37,8 +42,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _attackDataFactory = attackDataFactory;
             _settings = settings;
         }
-
-        public bool IsComplete => _friendly.HealthModel.IsDestroyed;
 
         public void SetData(IEntity friendly, Vector3 offset)
         {

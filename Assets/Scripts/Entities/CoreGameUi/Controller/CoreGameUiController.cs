@@ -28,17 +28,19 @@ namespace EmpireAtWar.Presenters.Game
         private readonly ISkirmishFlow _skirmishFlow;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ICinematicCameraController _cinematicCamera;
-        private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
-        private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
-
         private ICoreGameUi _ui;
-        private EndGamePresenter _endGamePresenter;
         private ISelectionContext _lastSelectionContext;
-        private readonly TooltipRequests _tooltips;
         private readonly ITooltipService _tooltipService;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+
+        private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
+        private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
+        private EndGamePresenter _endGamePresenter;
+        private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
+
         private string _factionName = "";
+
         private int _stationLevel;
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
@@ -74,9 +76,9 @@ namespace EmpireAtWar.Presenters.Game
             _tooltipHover = new TooltipHoverSubscription(
                 ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _endGamePresenter = new EndGamePresenter(
-                _battleVictoryNotifier,
-                _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
-                _skirmishFlow.ExitSkirmish, _tooltipService);
+                battleVictoryNotifier: _battleVictoryNotifier,
+                view: _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
+                returnToMenu: _skirmishFlow.ExitSkirmish, tooltips: _tooltipService);
             _selectionService.AddObserver(this);
 
             foreach (KeyValuePair<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>
@@ -296,7 +298,7 @@ namespace EmpireAtWar.Presenters.Game
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => !_sessionModel.IsBattleEnded, () =>
-                new TooltipContent((string)key, (string)key switch
+                new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Pause" => "Pause or resume the battle.",
                     "Speed" => "Switch the battle speed.",

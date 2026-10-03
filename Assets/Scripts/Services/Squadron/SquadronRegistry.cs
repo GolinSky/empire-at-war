@@ -13,6 +13,7 @@ namespace EmpireAtWar.Services.Squadrons
     public sealed class SquadronRegistry : Service, ISquadronRegistry, IDisposable
     {
         private readonly IEntityLocator _entityLocator;
+
         private readonly List<IEntity> _squadrons = new List<IEntity>();
 
         public SquadronRegistry(IEntityLocator entityLocator)

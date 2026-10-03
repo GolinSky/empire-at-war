@@ -8,8 +8,11 @@ namespace EmpireAtWar.Services.Layer
     public interface ILayerService
     {
         int GetLayer(LayerKey key);
+
         LayerMask GetMask(params LayerKey[] keys);
+
         bool IsInLayer(GameObject gameObject, LayerKey key);
+
         void Apply(GameObject gameObject, LayerKey key, bool includeChildren);
     }
 

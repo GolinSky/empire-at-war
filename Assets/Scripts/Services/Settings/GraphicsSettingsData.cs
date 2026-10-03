@@ -10,8 +10,10 @@ namespace EmpireAtWar.Services.Settings
 
         /// <summary>Quality level name; empty keeps the project's default level.</summary>
         [SerializeField] private string qualityPreset = string.Empty;
-        [SerializeField] private bool vSync;
+
         [SerializeField] private int frameRateLimit = UNLIMITED_FRAME_RATE;
+
+        [SerializeField] private bool vSync;
 
         public string QualityPreset
         {

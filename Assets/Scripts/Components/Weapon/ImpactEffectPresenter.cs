@@ -8,6 +8,7 @@ namespace EmpireAtWar.Components.Weapon
     public sealed class ImpactEffectPresenter
     {
         private readonly IImpactEffectView _view;
+
         private readonly DamageMatrixData _damageMatrix;
 
         public ImpactEffectPresenter(IImpactEffectView view, DamageMatrixData damageMatrix)

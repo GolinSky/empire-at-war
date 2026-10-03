@@ -9,12 +9,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float PEAK_DURATION_FRACTION = 0.4f;
 
         [SerializeField] private LineRenderer flash;
-        [SerializeField, Range(0.05f, 0.15f)] private float duration = 0.1f;
-
         private Transform _muzzle;
+
         private Vector3 _origin;
         private Vector3 _direction;
         private Color _color;
+
+        [SerializeField, Range(0.05f, 0.15f)] private float duration = 0.1f;
         private float _width;
         private float _length;
         private float _startedAt;

@@ -10,8 +10,10 @@ namespace EmpireAtWar.Components.Hangar
     public sealed class HangarModel : PureModel
     {
         private readonly IHangarData _data;
+
         private readonly int[] _reserve;
         private readonly int[] _active;
+
         private float _cooldown;
 
         public bool IsOperational { get; private set; } = true;
@@ -31,6 +33,7 @@ namespace EmpireAtWar.Components.Hangar
         }
 
         public int GetReserve(int bay) => _reserve[bay];
+
         public int GetActive(int bay) => _active[bay];
 
         public bool TryLaunch(float deltaTime, out int bay)

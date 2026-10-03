@@ -7,10 +7,11 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
 {
     public sealed class ShipTooltipFacade : IEntityTooltipFacade
     {
-        private readonly ShipType _shipType;
         private readonly FactionsData _factions;
 
-        public ShipTooltipFacade(ShipType shipType, FactionsData factions)
+        private readonly ShipType _shipType;
+
+        public ShipTooltipFacade(FactionsData factions, ShipType shipType)
         {
             _shipType = shipType;
             _factions = factions;

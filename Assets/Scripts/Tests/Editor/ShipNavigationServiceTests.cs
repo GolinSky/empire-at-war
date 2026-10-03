@@ -604,9 +604,9 @@ namespace EmpireAtWar.Tests.Movement
             MethodInfo construct = typeof(ShipMoveComponent).GetMethod("Construct",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
-            construct.Invoke(component, new object[] { model, Vector3.zero,
-                TestPlayers.Human, new FakeMapModel(_mapRange), null,
-                navigationService, null, null, null, null });
+            construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
+                navigationService, null, null, null, null, model, null,
+                Vector3.zero, TestPlayers.Human });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
             Assert.That(motionType, Is.Not.Null);
@@ -640,6 +640,13 @@ namespace EmpireAtWar.Tests.Movement
 
         private sealed class FakeAgent : IShipNavigationAgent
         {
+            public Vector3 NavigationPosition { get; }
+            public float NavigationHeight { get; }
+            public ShipHullSpan NavigationHullSpan => ShipHullSpan.Unbounded;
+            public float NavigationRadius { get; }
+            public float NavigationSpeed { get; }
+            public float NavigationRotationSpeed { get; }
+
             public FakeAgent(
                 Vector3 position,
                 float height,
@@ -653,13 +660,6 @@ namespace EmpireAtWar.Tests.Movement
                 NavigationSpeed = speed;
                 NavigationRotationSpeed = rotationSpeed;
             }
-
-            public Vector3 NavigationPosition { get; }
-            public float NavigationHeight { get; }
-            public ShipHullSpan NavigationHullSpan => ShipHullSpan.Unbounded;
-            public float NavigationRadius { get; }
-            public float NavigationSpeed { get; }
-            public float NavigationRotationSpeed { get; }
         }
 
         private sealed class FakeMapObstacleContactProvider :
@@ -667,13 +667,13 @@ namespace EmpireAtWar.Tests.Movement
         {
             private readonly IReadOnlyList<RadarContact> _contacts;
 
+            public string Id => nameof(FakeMapObstacleContactProvider);
+
             public FakeMapObstacleContactProvider(
                 IReadOnlyList<RadarContact> contacts)
             {
                 _contacts = contacts;
             }
-
-            public string Id => nameof(FakeMapObstacleContactProvider);
 
             public void CopyContacts(List<RadarContact> destination)
             {
@@ -687,19 +687,18 @@ namespace EmpireAtWar.Tests.Movement
 
         private sealed class FakeMapModel : IMapModelObserver
         {
+            public Vector2Range SizeRange { get; }
+
             public FakeMapModel(Vector2Range sizeRange)
             {
                 SizeRange = sizeRange;
             }
-
-            public Vector2Range SizeRange { get; }
 
             public Vector3 GetStationPosition(PlayerId owner)
             {
                 return Vector3.zero;
             }
         }
-
 
         private sealed class FakeShipMoveData : IShipMoveData
         {
@@ -767,14 +766,14 @@ namespace EmpireAtWar.Tests.Movement
                 PlanCallCount++;
                 LastDestination = requestedDestination;
                 return new ShipNavigationPlan(
-                    requestedDestination,
-                    null,
-                    ShipBezierPath.BuildDirectRoute(
+                    destination: requestedDestination,
+                    detour: null,
+                    route: ShipBezierPath.BuildDirectRoute(
                         agent.NavigationPosition,
                         forward,
                         requestedDestination),
-                    0f,
-                    0f,
+                    turnDuration: 0f,
+                    movementDuration: 0f,
                     isDeferred: true);
             }
         }

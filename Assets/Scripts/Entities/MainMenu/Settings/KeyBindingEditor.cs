@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         private readonly IInputBindings _bindings;
         private readonly ISettingsService _settings;
+
         private readonly SettingsModel _model;
 
         public KeyBindingEditor(IInputBindings bindings, ISettingsService settings, SettingsModel model)
@@ -38,9 +39,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         {
             BindingSlot slot = _bindings.RebindableSlots[row];
             _model.SetPrompt(new SettingsPrompt(
-                SettingsPromptKind.ListeningForKey,
-                $"Press a key or mouse button for {slot.Label}.\nEsc cancels.",
-                new SettingsPromptAction[0]));
+                kind: SettingsPromptKind.ListeningForKey,
+                message: $"Press a key or mouse button for {slot.Label}.\nEsc cancels.",
+                actions: new SettingsPromptAction[0]));
             _bindings.StartRebind(slot, result => HandleRebindCompleted(slot, result));
         }
 
@@ -104,9 +105,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             actions.Add(SettingsPromptAction.Cancel);
             string key = _bindings.GetBindingDisplayString(slot);
             return new SettingsPrompt(
-                SettingsPromptKind.BindingConflict,
-                $"{key} is already used by: {string.Join(", ", labels)}.\nReplace unbinds it there.",
-                actions);
+                kind: SettingsPromptKind.BindingConflict,
+                message: $"{key} is already used by: {string.Join(", ", labels)}.\nReplace unbinds it there.",
+                actions: actions);
         }
 
         private void SyncDraft()

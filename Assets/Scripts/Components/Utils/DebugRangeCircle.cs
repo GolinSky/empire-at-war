@@ -9,16 +9,19 @@ namespace EmpireAtWar.Utils
     public sealed class DebugRangeCircle
     {
         private const int SEGMENTS = 96;
+
         private const float LINE_WIDTH = 1.5f;
+
+        private readonly IRangeDebugObserver _rangeDebug;
+        private readonly ISelectionModelObserver _selection;
 
         private readonly GameObject _gameObject;
         private readonly LineRenderer _line;
-        private readonly IRangeDebugObserver _rangeDebug;
-        private readonly ISelectionModelObserver _selection;
+
         private float _radius = -1f;
 
-        public DebugRangeCircle(string name, Color color, Material lineMaterial, IRangeDebugObserver rangeDebug,
-            ISelectionModelObserver selection)
+        public DebugRangeCircle(IRangeDebugObserver rangeDebug, ISelectionModelObserver selection, Material lineMaterial, string name,
+            Color color)
         {
             _rangeDebug = rangeDebug;
             _selection = selection;

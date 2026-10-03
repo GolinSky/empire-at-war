@@ -16,9 +16,6 @@ namespace EmpireAtWar.Editor.CaptureSites
     {
         public const string MODEL_PATH =
             "Assets/Art/Models/SpaceStations/AsteroidMiningFacility/AsteroidMiningFacility.dae";
-        // Recentres the model's XZ footprint on the site pivot; shared by the site's rocks and scaffold.
-        public static readonly Vector3 MODEL_OFFSET = new Vector3(-7f, 0f, -3.5f);
-
         private const string SOURCE_VIEW_PATH = "Assets/Prefabs/Models/MiningFacilities/MiningFacilityView.prefab";
         private const string VIEW_PATH = "Assets/Prefabs/Models/MiningFacilities/AsteroidMiningFacilityView.prefab";
         private const string INSTALLER_PATH = "Assets/Prefabs/View/AsteroidMiningFacilityInstaller.prefab";
@@ -26,6 +23,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string DATA_PATH = "Assets/Settings/Data/Models/MiningFacilities/AsteroidMiningFacilityData.asset";
         private const string SHIELD_MESH_PATH = "Assets/Art/Models/ShieldSurface.asset";
         private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/Vfx/ShipShield.mat";
+
         private const float SHIELD_VISIBILITY_RADIUS = 6f;
         private const float SHIELD_WAVE_SPEED = 10f;
         private const float SHIELD_WAVE_WIDTH = 1.2f;
@@ -34,6 +32,9 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const float INCOME = 20f;
         private const float HULL = 2500f;
         private const float SHIELDS = 1200f;
+
+        // Recentres the model's XZ footprint on the site pivot; shared by the site's rocks and scaffold.
+        public static readonly Vector3 MODEL_OFFSET = new Vector3(-7f, 0f, -3.5f);
 
         [MenuItem("Tools/Empire At War/Capture Sites/Build Asteroid Mine Assets")]
         public static void Build()

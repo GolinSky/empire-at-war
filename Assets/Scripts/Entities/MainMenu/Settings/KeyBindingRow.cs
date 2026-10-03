@@ -14,18 +14,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private Button resetButton;
         [SerializeField] private TooltipTrigger bindingTooltip;
         [SerializeField] private TooltipTrigger resetTooltip;
-
-        public void RegisterTooltips(TooltipHoverView hover)
-        {
-            bindingTooltip.SetKey((_row, false));
-            resetTooltip.SetKey((_row, true));
-            hover.Register(bindingTooltip);
-            hover.Register(resetTooltip);
-        }
-
-        private int _row;
         private Action<int> _rebind;
         private Action<int> _reset;
+
+        private int _row;
 
         public void Initialize(int row, Action<int> rebind, Action<int> reset)
         {
@@ -40,6 +32,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         {
             bindingButton.onClick.RemoveListener(RequestRebind);
             resetButton.onClick.RemoveListener(RequestReset);
+        }
+
+        public void RegisterTooltips(TooltipHoverView hover)
+        {
+            bindingTooltip.SetKey((_row, false));
+            resetTooltip.SetKey((_row, true));
+            hover.Register(bindingTooltip);
+            hover.Register(resetTooltip);
         }
 
         public void Render(KeyBindingRowState state)

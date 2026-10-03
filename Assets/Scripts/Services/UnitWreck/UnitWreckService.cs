@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.UnitWreck
     public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IDisposable
     {
         private readonly IPlayerRoster _roster;
+
         private readonly Dictionary<UnitWreckData, ViewPool<UnitWreckView>> _pools =
             new Dictionary<UnitWreckData, ViewPool<UnitWreckView>>();
         private readonly List<ActiveWreck> _activeWrecks = new List<ActiveWreck>();
@@ -27,6 +28,21 @@ namespace EmpireAtWar.Services.UnitWreck
         public UnitWreckService(IPlayerRoster roster)
         {
             _roster = roster;
+        }
+
+        public void Dispose()
+        {
+            for (int i = _activeWrecks.Count - 1; i >= 0; i--)
+            {
+                Release(i);
+            }
+
+            foreach (ViewPool<UnitWreckView> pool in _pools.Values)
+            {
+                pool.Dispose();
+            }
+
+            _pools.Clear();
         }
 
         public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay)
@@ -56,21 +72,6 @@ namespace EmpireAtWar.Services.UnitWreck
             }
         }
 
-        public void Dispose()
-        {
-            for (int i = _activeWrecks.Count - 1; i >= 0; i--)
-            {
-                Release(i);
-            }
-
-            foreach (ViewPool<UnitWreckView> pool in _pools.Values)
-            {
-                pool.Dispose();
-            }
-
-            _pools.Clear();
-        }
-
         private ViewPool<UnitWreckView> GetPool(UnitWreckData data)
         {
             if (_pools.TryGetValue(data, out ViewPool<UnitWreckView> pool))
@@ -78,8 +79,8 @@ namespace EmpireAtWar.Services.UnitWreck
                 return pool;
             }
 
-            pool = new ViewPool<UnitWreckView>(data.Prefab, $"UnitWrecks_{data.name}", view => view.Hide(),
-                data.MaxActive);
+            pool = new ViewPool<UnitWreckView>(prefab: data.Prefab, rootName: $"UnitWrecks_{data.name}", hide: view => view.Hide(),
+                maxSize: data.MaxActive);
             _pools.Add(data, pool);
             return pool;
         }
@@ -117,16 +118,16 @@ namespace EmpireAtWar.Services.UnitWreck
 
         private readonly struct ActiveWreck
         {
+            public UnitWreckData Data { get; }
+            public UnitWreckView View { get; }
+            public float EndTime { get; }
+
             public ActiveWreck(UnitWreckData data, UnitWreckView view, float endTime)
             {
                 Data = data;
                 View = view;
                 EndTime = endTime;
             }
-
-            public UnitWreckData Data { get; }
-            public UnitWreckView View { get; }
-            public float EndTime { get; }
         }
     }
 }

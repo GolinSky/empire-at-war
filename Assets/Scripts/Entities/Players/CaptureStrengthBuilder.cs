@@ -6,6 +6,7 @@ namespace EmpireAtWar.Models.Players
     public sealed class CaptureStrengthBuilder
     {
         private readonly IPlayerRoster _roster;
+
         private readonly float[] _playerStrengths = new float[MatchRules.MAX_PLAYERS];
         private readonly Dictionary<TeamId, float> _teamStrengths = new Dictionary<TeamId, float>();
 

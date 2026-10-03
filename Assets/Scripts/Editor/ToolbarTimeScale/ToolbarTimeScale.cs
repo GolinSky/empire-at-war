@@ -9,7 +9,9 @@ namespace UnityToolbarExtender
     public static class ToolbarTimeScale
     {
         private const string ELEMENT_PATH = "Empire At War/Time Scale";
+
         private static readonly float[] _timescales = { 0f, 0.05f, 0.1f, 0.25f, 0.5f, 1f };
+
         private static float _lastTimeScale;
 
         static ToolbarTimeScale()

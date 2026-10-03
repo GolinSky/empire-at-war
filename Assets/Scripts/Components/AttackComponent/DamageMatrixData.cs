@@ -10,10 +10,10 @@ namespace EmpireAtWar.Components.AttackComponent
     public class DamageMatrixData : Data
     {
         [SerializeField] private List<DamageTypeProfile> damageTypes = new List<DamageTypeProfile>();
+        private Dictionary<DamageType, DamageTypeProfile> _profiles;
+
         [Tooltip("Radius around the target that missed shots fly to.")]
         [SerializeField] private float missSpread = 6f;
-
-        private Dictionary<DamageType, DamageTypeProfile> _profiles;
 
         public float MissSpread => missSpread;
 

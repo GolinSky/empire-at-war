@@ -14,9 +14,9 @@ namespace EmpireAtWar.Entities.MainMenu.Main
     {
         private readonly ISkirmishRoute _skirmishRoute;
         private readonly ISettingsRoute _settingsRoute;
-        private readonly MainMenuModel _model;
-
         private IMainMenuUi _ui;
+
+        private readonly MainMenuModel _model;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
@@ -25,12 +25,18 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             IUiCancelRouter cancelRouter,
             ISkirmishRoute skirmishRoute,
             ISettingsRoute settingsRoute,
-            MainMenuModel model, ITooltipService tooltips) : base(uiService, cancelRouter)
+            ITooltipService tooltips, MainMenuModel model) : base(uiService, cancelRouter)
         {
             _skirmishRoute = skirmishRoute;
             _settingsRoute = settingsRoute;
             _model = model;
             _tooltips = new TooltipRequests(tooltips);
+        }
+
+        public void LateDispose()
+        {
+            if (_ui != null) _tooltipHover.Dispose();
+            _ui?.Dispose();
         }
 
         public void Open()
@@ -46,12 +52,6 @@ namespace EmpireAtWar.Entities.MainMenu.Main
                 HandleTooltipHover, _tooltips);
         }
 
-        public void LateDispose()
-        {
-            if (_ui != null) _tooltipHover.Dispose();
-            _ui?.Dispose();
-        }
-
         public void OpenSkirmish()
         {
             _tooltips.HideAll();
@@ -65,8 +65,8 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => _ui != null, () => new TooltipContent((string)key,
-                (string)key switch
+            _tooltips.Show(source, key, anchor, () => _ui != null, () => new TooltipContent(title: (string)key,
+                description: (string)key switch
                 {
                     "Skirmish" => "Set up a battle with factions, teams and AI opponents.",
                     "Settings" => "Edit display, camera and key-binding settings.",

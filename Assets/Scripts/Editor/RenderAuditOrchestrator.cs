@@ -96,12 +96,16 @@ namespace EmpireAtWar.Editor
 
         private sealed class CaptureOperation
         {
+            private readonly List<object> _phases = new();
+
             private readonly string _directory;
+
+            private readonly double _deadline;
+
             private readonly int _frames;
             private readonly int _frameDebuggerFrames;
-            private readonly double _deadline;
-            private readonly List<object> _phases = new();
             private int _phaseIndex;
+
             private bool _finished;
 
             internal CaptureOperation(string directory, int frames, int frameDebuggerFrames, int timeoutSeconds)

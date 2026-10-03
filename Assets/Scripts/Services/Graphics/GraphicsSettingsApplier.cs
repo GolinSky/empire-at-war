@@ -10,9 +10,10 @@ namespace EmpireAtWar.Services.Graphics
     {
         private const int NO_FRAME_RATE_CAP = -1;
 
-        private readonly int _defaultQualityLevel = QualitySettings.GetQualityLevel();
         // QualitySettings.names allocates a new array per read; the levels never change at runtime.
         private readonly string[] _qualityPresets = QualitySettings.names;
+
+        private readonly int _defaultQualityLevel = QualitySettings.GetQualityLevel();
 
         public IReadOnlyList<string> QualityPresets => _qualityPresets;
 

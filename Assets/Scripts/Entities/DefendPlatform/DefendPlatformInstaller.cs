@@ -10,11 +10,12 @@ namespace EmpireAtWar
     public class DefendPlatformInstaller : DynamicEntityInstaller<DefendPlatform, DefendPlatformData>
     {
         private PlayerId _owner;
-        private bool _isHiddenByLocalFog;
         private DefendPlatformType _defendPlatformType;
 
+        private bool _isHiddenByLocalFog;
+
         [Inject]
-        public void Construct(DefendPlatformType defendPlatformType, PlayerId owner, ILocalPlayer localPlayer)
+        public void Construct(ILocalPlayer localPlayer, DefendPlatformType defendPlatformType, PlayerId owner)
         {
             _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
             _defendPlatformType = defendPlatformType;

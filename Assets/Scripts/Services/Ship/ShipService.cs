@@ -9,11 +9,13 @@ namespace EmpireAtWar.Ship
     public interface IShipService : IService
     {
         event Action<IShipEntity> ShipAdded;
+
         event Action<IShipEntity> ShipRemoved;
 
         IReadOnlyList<IShipEntity> Ships { get; }
 
         void Add(IShipEntity entity);
+
         void Remove(IShipEntity entity);
 
         /// <summary>Adds every ship inside the area to the capture tally; a ship weighs 1.</summary>
@@ -27,6 +29,7 @@ namespace EmpireAtWar.Ship
         private readonly List<IShipEntity> _shipEntities = new List<IShipEntity>();
 
         public event Action<IShipEntity> ShipAdded;
+
         public event Action<IShipEntity> ShipRemoved;
 
         public IReadOnlyList<IShipEntity> Ships => _shipEntities;

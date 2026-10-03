@@ -11,12 +11,14 @@ namespace EmpireAtWar.Services.Camera
         private const float EDGE_SCROLL_THICKNESS = 16f;
         private const float MAX_PAN_DELTA = 10f;
 
-        private readonly GameInputActions.CameraActions _camera;
-        private readonly GameInputActions.BattleActions _battle;
         private readonly IPointerInput _pointer;
         private readonly ICameraPreferences _preferences;
 
+        private readonly GameInputActions.CameraActions _camera;
+        private readonly GameInputActions.BattleActions _battle;
+
         public event Action<Vector2> Panned;
+
         public event Action<float> Zoomed;
 
         public Vector2 Move
@@ -36,7 +38,7 @@ namespace EmpireAtWar.Services.Camera
             }
         }
 
-        public CameraInput(InputActionsProvider provider, IPointerInput pointer, ICameraPreferences preferences)
+        public CameraInput(IPointerInput pointer, ICameraPreferences preferences, InputActionsProvider provider)
         {
             _preferences = preferences;
             _camera = provider.Actions.Camera;

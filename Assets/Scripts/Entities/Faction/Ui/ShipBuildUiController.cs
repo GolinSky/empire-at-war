@@ -20,8 +20,10 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private IShipBuildUi _ui;
+
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
+
         private bool _isTooltipActive;
 
         public ShipBuildUiController(
@@ -107,10 +109,10 @@ namespace EmpireAtWar.Presenters.Factions
                 var data = snapshot.UnitRequest.FactionData;
                 return UnitTooltipContent.Build(data, new[]
                 {
-                    new TooltipStat("Remaining time (s)", snapshot.RemainingBuildTime),
-                    new TooltipStat("Progress (s)", data.BuildTime - snapshot.RemainingBuildTime, data.BuildTime),
-                    new TooltipStat("Items in this queue", snapshot.Count),
-                    new TooltipStat("Cancel refund (credits)", data.Price)
+                    new TooltipStat(label: "Remaining time (s)", current: snapshot.RemainingBuildTime),
+                    new TooltipStat(label: "Progress (s)", current: data.BuildTime - snapshot.RemainingBuildTime, max: data.BuildTime),
+                    new TooltipStat(label: "Items in this queue", current: snapshot.Count),
+                    new TooltipStat(label: "Cancel refund (credits)", current: data.Price)
                 }, status: "Click to cancel the current item and refund its cost.");
             });
 

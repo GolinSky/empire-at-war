@@ -14,30 +14,32 @@ namespace EmpireAtWar.Views.Factions
 
     public interface IShipBuildUi
     {
-        void SetPresenter(IShipBuildPresenter presenter);
         void Initialize();
+
         void Dispose();
+
+        void SetPresenter(IShipBuildPresenter presenter);
+
         void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots);
+
         void SetParent(Transform parent);
+
         void Show();
+
         void Hide();
     }
 
     public class ShipBuildUi : BaseUi, IShipBuildUi, ITooltipHoverView
     {
+        private IShipBuildPresenter _presenter;
+
         [SerializeField] private BuildPipelineView pipelineView;
         [SerializeField] private GameObject queuePanel;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
-        private IShipBuildPresenter _presenter;
         private bool _isInitialized;
 
-        public void SetPresenter(IShipBuildPresenter presenter)
-        {
-            _presenter = presenter ??
-                throw new ArgumentNullException(nameof(presenter));
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -65,6 +67,12 @@ namespace EmpireAtWar.Views.Factions
             }
 
             _isInitialized = false;
+        }
+
+        public void SetPresenter(IShipBuildPresenter presenter)
+        {
+            _presenter = presenter ??
+                throw new ArgumentNullException(nameof(presenter));
         }
 
         public void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)

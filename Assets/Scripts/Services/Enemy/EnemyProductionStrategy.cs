@@ -17,34 +17,37 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyProductionStrategy
     {
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
+
         private const int SHIPS_PER_SQUADRON = 2;
 
-        private readonly EnemyFactionModel _factionModel;
-        private readonly PlayerSlot _owner;
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
         private readonly IEnemyAiStateProvider _stateProvider;
-        private readonly EnemyProductionDecisionModel _decisionModel;
-        private readonly EnemyUnitLimitModel _unitLimitModel;
-        private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacementService;
         private readonly IStationRegistry _stationRegistry;
 
+        private readonly EnemyFactionModel _factionModel;
+        private readonly PlayerSlot _owner;
+        private readonly EnemyProductionDecisionModel _decisionModel;
+        private readonly EnemyUnitLimitModel _unitLimitModel;
+        private readonly ReinforcementData _reinforcementData;
+
         private float _decisionTimer;
+
         private int _observedReleaseVersion;
 
         public EnemyProductionStrategy(
-            EnemyFactionModel factionModel,
             IEnemyPurchaseProcessor purchaseProcessor,
             IUnitRequestFactory requestFactory,
             IEconomyModelObserver economyModel,
             IEnemyAiStateProvider stateProvider,
+            IEnemyStructurePlacementService structurePlacementService,
+            IStationRegistry stationRegistry,
+            EnemyFactionModel factionModel,
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            IEnemyStructurePlacementService structurePlacementService,
-            IStationRegistry stationRegistry,
             PlayerSlot owner)
         {
             _owner = owner;

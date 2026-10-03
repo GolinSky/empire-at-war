@@ -31,48 +31,47 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 5f;
 
-        private readonly ShipFactory _shipFactory;
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly EnemyUnitLimitModel _unitLimitModel;
-        private readonly ReinforcementData _reinforcementData;
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly IStationRegistry _stationRegistry;
         private readonly ISquadronLauncher _squadronLauncher;
         private readonly IEnemySquadronCommander _squadronCommander;
-        private readonly PlayerSlot _owner;
         private readonly IPlayerRegistry _playerRegistry;
+
+        private readonly ShipFactory _shipFactory;
+        private readonly EnemyUnitLimitModel _unitLimitModel;
+        private readonly ReinforcementData _reinforcementData;
+        private readonly PlayerSlot _owner;
         private readonly Dictionary<CustomCoroutine, UnitRequest> _pendingBuilds = new();
-
-
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly TimerPoolService _timerPoolService;
+
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
         public float Income => DEFAULT_INCOME * Model.CurrentLevel;
         public bool HasPendingReinforcement => _pendingBuilds.Count > 0;
 
-
         public EnemyFactionController(
+            IEconomyProvider economyProvider,
+            IWallet wallet,
+            IReinforcementZonesSystem reinforcementZonesSystem,
+            IEnemyStructurePlacementService structurePlacement,
+            IStationRegistry stationRegistry,
+            ISquadronLauncher squadronLauncher,
+            IEnemySquadronCommander squadronCommander,
+            IPlayerRegistry playerRegistry,
             EnemyFactionModel model,
             ShipFactory shipFactory,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
             TimerPoolService timerPoolService,
-            IEconomyProvider economyProvider,
-            IWallet wallet,
-            IReinforcementZonesSystem reinforcementZonesSystem,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            IEnemyStructurePlacementService structurePlacement,
-            IStationRegistry stationRegistry,
-            ISquadronLauncher squadronLauncher,
-            IEnemySquadronCommander squadronCommander,
-            PlayerSlot owner,
-            IPlayerRegistry playerRegistry) : base(model)
+            PlayerSlot owner) : base(model)
         {
             _owner = owner;
             _playerRegistry = playerRegistry;
@@ -91,6 +90,33 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _squadronCommander = squadronCommander;
         }
 
+        public void Initialize()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _unitLimitModel.Reset();
+            _structurePlacement.Reset();
+            _economyProvider.AddProvider(this);
+            _playerRegistry.RegisterAiReinforcement(Owner, this);
+            _isInitialized = true;
+        }
+
+        public void LateDispose()
+        {
+            CancelPendingBuilds();
+
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            _economyProvider.RemoveProvider(this);
+            _playerRegistry.UnregisterAiReinforcement(Owner);
+            _isInitialized = false;
+        }
 
         public void Purchase(UnitRequest unitRequest)
         {
@@ -308,34 +334,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             throw new InvalidOperationException(
                 "No clear enemy structure position is available near the station or captured zones.");
-        }
-
-        public void Initialize()
-        {
-            if (_isInitialized)
-            {
-                return;
-            }
-
-            _unitLimitModel.Reset();
-            _structurePlacement.Reset();
-            _economyProvider.AddProvider(this);
-            _playerRegistry.RegisterAiReinforcement(Owner, this);
-            _isInitialized = true;
-        }
-
-        public void LateDispose()
-        {
-            CancelPendingBuilds();
-
-            if (!_isInitialized)
-            {
-                return;
-            }
-
-            _economyProvider.RemoveProvider(this);
-            _playerRegistry.UnregisterAiReinforcement(Owner);
-            _isInitialized = false;
         }
     }
 }

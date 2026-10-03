@@ -14,37 +14,40 @@ namespace EmpireAtWar.Entities.CaptureSites
     public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView, ITooltipHoverView
     {
         private const float MINIMUM_FRAMEWORK_HEIGHT = 0.05f;
-        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
-        private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
 
-        [SerializeField, Min(1f)] private float radius = 40f;
-        [SerializeField, Min(1f)] private float captureDuration = 12f;
-        [SerializeField, FormerlySerializedAs("miningFacilityHeightOffset"),
-         Tooltip("World-space height of a built facility relative to the site center; keeps it on the site rocks.")]
-        private float facilityHeightOffset;
         [SerializeField] private MeshRenderer ringRenderer;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private DictionaryWrapper<SiteFacilityType, Transform> constructionFrameworks;
         [SerializeField] private Canvas statusCanvas;
-        [SerializeField, Range(0.05f, 0.6f), Tooltip("Panel height as a fraction of the screen height.")]
-        private float screenHeightFraction = 0.24f;
         [SerializeField] private Image progressFill;
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
         [SerializeField] private GameObject buildOptions;
         [SerializeField] private SiteFacilityOptionView[] facilityOptions = Array.Empty<SiteFacilityOptionView>();
+        private MaterialPropertyBlock _propertyBlock;
+        private Camera _camera;
+        private RectTransform _canvasTransform;
+
         [SerializeField] private Color neutralColor = new Color(0.58f, 0.64f, 0.72f, 0.08f);
         [SerializeField] private Color playerColor = new Color(0.22f, 0.74f, 0.97f, 0.1f);
         [SerializeField] private Color allyColor = new Color(0.36f, 0.9f, 0.62f, 0.1f);
         [SerializeField] private Color opponentColor = new Color(0.94f, 0.27f, 0.27f, 0.1f);
         [SerializeField] private Color contestedColor = new Color(1f, 0.75f, 0.1f, 0.14f);
 
-        private MaterialPropertyBlock _propertyBlock;
-        private Camera _camera;
-        private RectTransform _canvasTransform;
+        [SerializeField, Min(1f)] private float radius = 40f;
+        [SerializeField, Min(1f)] private float captureDuration = 12f;
+        [SerializeField, FormerlySerializedAs("miningFacilityHeightOffset"),
+         Tooltip("World-space height of a built facility relative to the site center; keeps it on the site rocks.")]
+        private float facilityHeightOffset;
+        [SerializeField, Range(0.05f, 0.6f), Tooltip("Panel height as a fraction of the screen height.")]
+        private float screenHeightFraction = 0.24f;
+
+        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
+        private static readonly int COLOR_ID = Shader.PropertyToID("_Color");
 
         public event Action<SiteFacilityType> BuildPressed;
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public Vector3 Center => transform.position;
         public float Radius => radius * Mathf.Max(Mathf.Abs(transform.lossyScale.x), Mathf.Abs(transform.lossyScale.z));

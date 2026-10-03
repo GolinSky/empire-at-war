@@ -15,14 +15,13 @@ namespace EmpireAtWar.Services.Enemy
 
     public class EnemyService : Service, IInitializable, IEnemyService, ITickable
     {
-        
-        private Vector3 _stationPosition;
         private SpaceStationEntity _spaceStation;
         private readonly SpaceStationFactory _spaceStationFactory;
         private readonly LazyInject<IMapModelObserver> _mapModel;
         private readonly EnemyProductionStrategy _productionStrategy;
-
         private readonly PlayerSlot _owner;
+
+        private Vector3 _stationPosition;
 
         public EnemyService(
             LazyInject<IMapModelObserver> mapModel,
@@ -35,14 +34,14 @@ namespace EmpireAtWar.Services.Enemy
             _spaceStationFactory = spaceStationFactory;
             _productionStrategy = productionStrategy;
         }
-        
+
         public void Initialize()
         {
             _stationPosition = _mapModel.Value.GetStationPosition(_owner.Id);
             _spaceStation = _spaceStationFactory.Create(_owner.Id, _owner.Faction, _stationPosition);
             _productionStrategy.Start();
         }
-        
+
         public void Tick()
         {
             _productionStrategy.Tick(Time.deltaTime);

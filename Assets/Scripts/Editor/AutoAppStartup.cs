@@ -156,9 +156,12 @@ namespace EmpireAtWar.Editor.Tools
     public class AutoAppStartupWindow : EditorWindow
     {
         private const string WINDOW_TITLE = "Auto App Startup";
+
         private List<string> _appPaths = new List<string>();
-        private bool _isEnabled;
+
         private Vector2 _scrollPosition;
+
+        private bool _isEnabled;
 
         public static void ShowWindow()
         {

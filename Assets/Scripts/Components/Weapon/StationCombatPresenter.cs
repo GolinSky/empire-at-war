@@ -14,6 +14,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly IRadarModelObserver _radarModel;
         private readonly IHealthModelObserver _healthModel;
         private readonly IAttackDataFactory _attackDataFactory;
+
         private bool _isReleased;
 
         public StationCombatPresenter(

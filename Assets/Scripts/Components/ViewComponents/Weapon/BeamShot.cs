@@ -9,16 +9,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private LineRenderer beam;
         [SerializeField] private ParticleSystem hitEffect;
-        [SerializeField] private float growthDuration = 0.3f;
-        [SerializeField] private float holdDuration = 0.5f;
-
         private Transform _muzzle;
         private Transform _target;
+
         private Vector3 _aimOffset;
         private Vector3 _lastOrigin;
         private Vector3 _lastAimPoint;
+
+        [SerializeField] private float growthDuration = 0.3f;
+        [SerializeField] private float holdDuration = 0.5f;
         private float _startTime;
         private float _currentHoldDuration;
+
         private bool _isHitPlaying;
 
         /// <summary>Plays the beam outside the shot pool, e.g. from an ability.</summary>

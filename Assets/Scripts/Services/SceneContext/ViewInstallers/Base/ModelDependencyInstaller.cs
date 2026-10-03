@@ -12,6 +12,7 @@ namespace EmpireAtWar
         {
             _view = view;
         }
+
         public override void InstallBindings()
         {
             ModelDependency[] viewModels = _view.ModelDependencies;

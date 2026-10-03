@@ -16,12 +16,14 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private readonly IEntityLocator _entityLocator;
         private readonly IFogOfWarSystem _fogOfWarSystem;
-        private readonly PlayerId _side;
         private readonly IPlayerRelations _relations;
+
+        private readonly PlayerId _side;
+
         private readonly bool _respectsFog;
 
         public SquadronTargetSelector(IEntityLocator entityLocator, IFogOfWarSystem fogOfWarSystem,
-            PlayerId side, IPlayerRelations relations, ILocalPlayer localPlayer)
+            IPlayerRelations relations, ILocalPlayer localPlayer, PlayerId side)
         {
             _relations = relations;
             // Only the human's squadrons are limited to what the fog of war reveals.

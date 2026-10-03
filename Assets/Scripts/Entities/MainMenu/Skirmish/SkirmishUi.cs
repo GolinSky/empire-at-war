@@ -14,12 +14,14 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
     public class SkirmishUi : BaseUi, ISkirmishUi, ITooltipHoverView
     {
+        private ISkirmishModelObserver _model;
+        private ISkirmishRouteNavigation _navigation;
+
         // Labels for the AI rows, in SkirmishSlotOccupant order (Closed .. AiUltraHard).
         private static readonly string[] AI_OCCUPANT_OPTIONS =
         {
             "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard"
         };
-
         [SerializeField] private Button closeButton;
         [SerializeField] private Button startGameButton;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
@@ -37,27 +39,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Graphic readinessIndicator;
         [SerializeField] private CanvasGroup startGameContent;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
-
-        private ISkirmishModelObserver _model;
-        private ISkirmishRouteNavigation _navigation;
         private TeamColorPalette _palette;
+
         private bool _isInitialized;
 
-        public void SetModel(ISkirmishModelObserver model)
-        {
-            _model = model;
-        }
-
-        public void SetNavigation(ISkirmishRouteNavigation navigation)
-        {
-            _navigation = navigation;
-        }
-
-        public void SetData(TeamColorPalette palette)
-        {
-            _palette = palette;
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -101,6 +87,47 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             victoryConditionDropdown.onValueChanged.AddListener(_navigation.SelectVictoryCondition);
             startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
             _isInitialized = true;
+        }
+
+        public void Dispose()
+        {
+            if (!_isInitialized)
+            {
+                return;
+            }
+
+            _model.Changed -= Render;
+            foreach (SkirmishSlotRowView row in slotRows)
+            {
+                row.OccupantChanged -= _navigation.SelectSlotOccupant;
+                row.FactionChanged -= _navigation.SelectSlotFaction;
+                row.TeamChanged -= _navigation.SelectSlotTeam;
+                row.ColorChanged -= _navigation.SelectSlotColor;
+                row.Dispose();
+            }
+
+            closeButton.onClick.RemoveListener(_navigation.Close);
+            startGameButton.onClick.RemoveListener(_navigation.StartGame);
+            planetsDropdown.onValueChanged.RemoveListener(_navigation.SelectPlanet);
+            mapSizeDropdown.onValueChanged.RemoveListener(_navigation.SelectMapSize);
+            victoryConditionDropdown.onValueChanged.RemoveListener(_navigation.SelectVictoryCondition);
+            startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
+            _isInitialized = false;
+        }
+
+        public void SetModel(ISkirmishModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetNavigation(ISkirmishRouteNavigation navigation)
+        {
+            _navigation = navigation;
+        }
+
+        public void SetData(TeamColorPalette palette)
+        {
+            _palette = palette;
         }
 
         private static string[] CreateTeamOptions(int teamCount)
@@ -177,32 +204,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 : "Enable at least two opposing teams to start.";
             readinessIndicator.color = _model.CanStart ? new Color32(105, 199, 157, 255) : new Color32(245, 184, 76, 255);
             startGameContent.alpha = _model.CanStart ? 1f : 0.38f;
-        }
-
-        public void Dispose()
-        {
-            if (!_isInitialized)
-            {
-                return;
-            }
-
-            _model.Changed -= Render;
-            foreach (SkirmishSlotRowView row in slotRows)
-            {
-                row.OccupantChanged -= _navigation.SelectSlotOccupant;
-                row.FactionChanged -= _navigation.SelectSlotFaction;
-                row.TeamChanged -= _navigation.SelectSlotTeam;
-                row.ColorChanged -= _navigation.SelectSlotColor;
-                row.Dispose();
-            }
-
-            closeButton.onClick.RemoveListener(_navigation.Close);
-            startGameButton.onClick.RemoveListener(_navigation.StartGame);
-            planetsDropdown.onValueChanged.RemoveListener(_navigation.SelectPlanet);
-            mapSizeDropdown.onValueChanged.RemoveListener(_navigation.SelectMapSize);
-            victoryConditionDropdown.onValueChanged.RemoveListener(_navigation.SelectVictoryCondition);
-            startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
-            _isInitialized = false;
         }
 
         private void OnDestroy()

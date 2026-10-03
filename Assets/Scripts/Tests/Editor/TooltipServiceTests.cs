@@ -9,15 +9,17 @@ namespace EmpireAtWar.Tests.Editor
         private TooltipService _service;
         private ManualClock _clock;
         private readonly object _source = new object();
-        private bool _valid;
+
         private float _health;
+
+        private bool _valid;
 
         [SetUp]
         public void SetUp()
         {
             _model = new TooltipModel();
             _clock = new ManualClock();
-            _service = new TooltipService(_model, new TooltipTiming(0.35f, 0.1f), _clock);
+            _service = new TooltipService(model: _model, timing: new TooltipTiming(0.35f, 0.1f), clock: _clock);
             _valid = true;
             _health = 100f;
         }
@@ -63,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             TooltipHandle old = _service.Show(Provider("ship"), default);
             TooltipHandle current = _service.Show(new TooltipContentProvider(new object(), "ship",
-                () => true, () => new TooltipContent("new source")), default);
+                () => true, () => new TooltipContent(title: "new source")), default);
             Assert.That(current.Id, Is.Not.EqualTo(old.Id));
             _service.Hide(old);
             Advance(0.36f);
@@ -125,7 +127,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private TooltipContentProvider Provider(string key) => new TooltipContentProvider(_source, key,
-            () => _valid, () => new TooltipContent(key, stats: new[] { new TooltipStat("Hull", _health, 100f) }));
+            () => _valid, () => new TooltipContent(title: key, stats: new[] { new TooltipStat(label: "Hull", current: _health, max: 100f) }));
 
         private void Advance(float seconds)
         {

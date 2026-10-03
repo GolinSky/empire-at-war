@@ -11,6 +11,7 @@ namespace EmpireAtWar.Ui.Base
     public sealed class UiCancelRouter : IUiCancelRouter, IInitializable, IDisposable
     {
         private readonly ICancelInput _cancelInput;
+
         private readonly List<IUiCancelHandler> _focused = new List<IUiCancelHandler>();
 
         public event Action CancelUnhandled;

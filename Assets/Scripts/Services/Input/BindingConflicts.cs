@@ -63,7 +63,7 @@ namespace EmpireAtWar.Services.Input
             List<string> parts = new List<string>();
             for (int i = head + 1; i < bindings.Count && bindings[i].isPartOfComposite; i++)
             {
-                parts.Add(EffectivePath(new BindingSlot(slot.Action, i, string.Empty)));
+                parts.Add(EffectivePath(new BindingSlot(action: slot.Action, bindingIndex: i, label: string.Empty)));
             }
 
             parts.Sort(StringComparer.Ordinal);

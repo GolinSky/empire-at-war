@@ -12,9 +12,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         [ReadOnly] public NativeArray<float3> Obstacles;
         [WriteOnly] public NativeArray<byte> Blocked;
         public float2 GridOrigin;
+
         public float CellSize;
-        public int Width;
         public float Inflation;
+
+        public int Width;
 
         public void Execute(int index)
         {

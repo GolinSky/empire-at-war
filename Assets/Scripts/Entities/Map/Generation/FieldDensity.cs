@@ -17,22 +17,24 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float SYMMETRY_CONTRAST = 1.41f;
         private const float RIDGE_STRETCH = 1.5f;
 
-        private readonly MapGenerationSettings _settings;
-        private readonly MapSizeSettings _size;
         private readonly IReadOnlyList<MapStation> _stations;
         private readonly IReadOnlyList<MapNode> _nodes;
         private readonly IReadOnlyList<MapLane> _lanes;
+
+        private readonly MapGenerationSettings _settings;
+        private readonly MapSizeSettings _size;
+
         private readonly Vector3 _center;
         private readonly Vector2 _shapeOffset;
         private readonly Vector2 _chokeOffset;
         private readonly Vector2 _ridgeOffset;
 
         public FieldDensity(
-            MapGenerationSettings settings,
-            MapSizeSettings size,
             IReadOnlyList<MapStation> stations,
             IReadOnlyList<MapNode> nodes,
             IReadOnlyList<MapLane> lanes,
+            MapGenerationSettings settings,
+            MapSizeSettings size,
             Random random)
         {
             _settings = settings;

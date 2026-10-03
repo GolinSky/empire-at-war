@@ -23,8 +23,10 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private Transform siteRoot;
         [SerializeField] private Transform fieldRoot;
         [SerializeField] private LineRenderer borderLine;
-        [SerializeField] private float borderHeight;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
+        private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
+
+        [SerializeField] private float borderHeight;
         [SerializeField, Min(1f), Tooltip("Map side the fog plane was authored for.")]
         private float fogReferenceSide = 600f;
 
@@ -34,8 +36,6 @@ namespace EmpireAtWar.Entities.Map
         public ReinforcementZoneView[] ZoneViews { get; private set; }
         public CaptureSiteView[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
-
-        private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
 
         public void Build(MapLayout layout)
         {

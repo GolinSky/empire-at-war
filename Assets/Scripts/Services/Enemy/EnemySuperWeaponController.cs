@@ -22,23 +22,25 @@ namespace EmpireAtWar.Services.Enemy
         // Keep enough money aside that the superweapons never starve fleet production.
         private const float MONEY_RESERVE_MULTIPLIER = 2f;
 
+        private readonly ISuperWeaponFireService _fireService;
+        private readonly IEntityLocator _entities;
+        private readonly IStationRegistry _stationRegistry;
+
         private readonly SuperWeaponModel _model;
         private readonly PlayerSlot _owner;
         private readonly EnemyFactionModel _factionModel;
         private readonly EconomyModel _economyModel;
         private readonly FactionsData _factionsData;
-        private readonly ISuperWeaponFireService _fireService;
-        private readonly IEntityLocator _entities;
-        private readonly IStationRegistry _stationRegistry;
         private readonly Dictionary<SuperWeaponType, float> _chargeTimeLeft =
             new Dictionary<SuperWeaponType, float>();
         private readonly List<SuperWeaponType> _charging = new List<SuperWeaponType>();
+
         private float _decisionTimer;
 
-        public EnemySuperWeaponController(SuperWeaponModel model, EnemyFactionModel factionModel,
-            EconomyModel economyModel, FactionsData factionsData, ISuperWeaponFireService fireService,
-            IEntityLocator entities,
-            IStationRegistry stationRegistry,
+        public EnemySuperWeaponController(ISuperWeaponFireService fireService, IEntityLocator entities,
+            IStationRegistry stationRegistry, SuperWeaponModel model, EnemyFactionModel factionModel,
+            EconomyModel economyModel,
+            FactionsData factionsData,
             PlayerSlot owner)
         {
             _owner = owner;

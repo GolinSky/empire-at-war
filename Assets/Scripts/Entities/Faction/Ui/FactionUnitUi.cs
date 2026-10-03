@@ -9,16 +9,22 @@ namespace EmpireAtWar.Views.Factions
 {
     public class FactionUnitUi : MonoBehaviour
     {
+        private IFactionView _factionView;
+
         [SerializeField] private TooltipTrigger tooltipTrigger;
-        public TooltipTrigger TooltipTrigger => tooltipTrigger;
-        public void SetAvailable(bool available) => purchaseButton.interactable = available;
         [SerializeField] private TextMeshProUGUI unitPriceText;
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
         [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private GameObject queuedHighlight;
+        private UnitRequest _unitRequest;
+
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
         public string RequestId => _unitRequest.Id;
+        public FactionData FactionData { get; private set; }
+
+        public void SetAvailable(bool available) => purchaseButton.interactable = available;
 
         public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded)
         {
@@ -28,10 +34,6 @@ namespace EmpireAtWar.Views.Factions
             stateText.text = unlocked && queued ? "QUEUED" : "";
             queuedHighlight.SetActive(queued);
         }
-        private IFactionView _factionView;
-        private UnitRequest _unitRequest;
-        public FactionData FactionData { get; private set; }
-
 
         public void SetData(FactionData factionData, IFactionView factionView, UnitRequest unitRequest)
         {

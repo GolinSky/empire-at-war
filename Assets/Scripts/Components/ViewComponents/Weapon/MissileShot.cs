@@ -8,16 +8,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private ParticleSystem head;
         [SerializeField] private ParticleSystem trail;
-        [Tooltip("Peak height of the flight arc, relative to the flight distance.")]
-        [SerializeField] private float arcHeight = 0.1f;
-
         private Transform _target;
+
         private Vector3 _aimOffset;
         private Vector3 _start;
         private Vector3 _lastAimPoint;
         private Vector3 _arcNormal;
+
+        [Tooltip("Peak height of the flight arc, relative to the flight distance.")]
+        [SerializeField] private float arcHeight = 0.1f;
         private float _startTime;
         private float _travelTime;
+
         private bool _isFlying;
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)

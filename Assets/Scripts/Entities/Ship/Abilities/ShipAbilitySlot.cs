@@ -20,8 +20,8 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             _ => 0f
         };
 
-        public ShipAbilitySlot(ShipAbilityId id, ShipAbilityDefinition definition,
-            IShipAbilityFacade owner)
+        public ShipAbilitySlot(IShipAbilityFacade owner, ShipAbilityDefinition definition,
+            ShipAbilityId id)
         {
             Id = id;
             Definition = definition;

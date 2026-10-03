@@ -7,10 +7,11 @@ namespace EmpireAtWar.Utils
     // Creates debug range rings sharing one serialized line material.
     public sealed class DebugRangeCircleFactory
     {
-        private readonly Material _lineMaterial;
         private readonly IRangeDebugObserver _rangeDebug;
 
-        public DebugRangeCircleFactory(Material lineMaterial, IRangeDebugObserver rangeDebug)
+        private readonly Material _lineMaterial;
+
+        public DebugRangeCircleFactory(IRangeDebugObserver rangeDebug, Material lineMaterial)
         {
             _lineMaterial = lineMaterial;
             _rangeDebug = rangeDebug;
@@ -18,7 +19,7 @@ namespace EmpireAtWar.Utils
 
         public DebugRangeCircle Create(string name, Color color, ISelectionModelObserver selection)
         {
-            return new DebugRangeCircle(name, color, _lineMaterial, _rangeDebug, selection);
+            return new DebugRangeCircle(name: name, color: color, lineMaterial: _lineMaterial, rangeDebug: _rangeDebug, selection: selection);
         }
     }
 }

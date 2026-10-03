@@ -16,14 +16,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float LIFETIME_MARGIN = 1f;
 
         [SerializeField] private ParticleSystem vfx;
-        [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
-        [SerializeField] private float sizeScale = 3f;
-
         private Transform _target;
+
         private Vector3 _aimOffset;
         private Vector3 _start;
         private Vector3 _lastAimPoint;
+
+        [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
+        [SerializeField] private float sizeScale = 3f;
         private float _arrivalTime;
+
         private bool _isFlying;
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)

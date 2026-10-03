@@ -29,6 +29,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         [SerializeField] private Material rangeDebugLineMaterial;
         [SerializeField] private ShipSfxData shipSfxData;
         [SerializeField] private ShipSfxSources shipSfxSourcesPrefab;
+
         [Inject] private IAssetService Repository { get; }
 
         public override void InstallBindings()

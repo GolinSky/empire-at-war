@@ -17,22 +17,25 @@ namespace EmpireAtWar.Components.Ship.Selection
     public interface ISelectionComponent : IComponent
     {
         Vector3 WorldPosition { get; }
+
         void SetActive(bool isActive);
     }
 
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
         IInitializable, ILateDisposable
     {
-        [SerializeField] private SelectionType selectionType;
         [SerializeField] private Canvas selectedCanvas;
         [SerializeField] private Image selectedImage;
+        private SharedSelectionData _sharedSelectionData;
+
+        [SerializeField] private SelectionType selectionType;
 
         private bool _canBeSelected = true;
-        private SharedSelectionData _sharedSelectionData;
 
         [Inject] private PlayerId Owner { get; }
         [Inject] private ILocalPlayer LocalPlayer { get; }
         public Vector3 WorldPosition => selectedCanvas.transform.position;
+
         [Inject]
         private void Construct(SelectionModel model, SharedSelectionData sharedSelectionData)
         {

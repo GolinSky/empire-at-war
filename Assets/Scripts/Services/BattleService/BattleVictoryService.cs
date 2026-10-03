@@ -18,24 +18,27 @@ namespace EmpireAtWar.Services.Battle
         private readonly IGameModelObserver _gameModel;
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
-        private readonly BattleVictoryModel _victoryModel;
         private readonly IPlayerRoster _roster;
         private readonly ILocalPlayer _localPlayer;
         private readonly IPlayerRegistry _playerRegistry;
+
+        private readonly BattleVictoryModel _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
         private readonly int[] _shipCounts = new int[MatchRules.MAX_PLAYERS];
         private readonly bool[] _aliveBases = new bool[MatchRules.MAX_PLAYERS];
         private readonly List<PlayerBattleState> _states = new List<PlayerBattleState>();
         private BattleResult _finalResult;
 
+        public string Id => nameof(BattleVictoryService);
+
         public BattleVictoryService(
             IGameModelObserver gameModel,
             IShipService shipService,
             IEntityLocator entityLocator,
-            BattleVictoryModel victoryModel,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
-            IPlayerRegistry playerRegistry)
+            IPlayerRegistry playerRegistry,
+            BattleVictoryModel victoryModel)
         {
             _gameModel = gameModel;
             _shipService = shipService;
@@ -45,8 +48,6 @@ namespace EmpireAtWar.Services.Battle
             _localPlayer = localPlayer;
             _playerRegistry = playerRegistry;
         }
-
-        public string Id => nameof(BattleVictoryService);
 
         public void AddObserver(IObserver<BattleResult> observer)
         {
@@ -152,15 +153,15 @@ namespace EmpireAtWar.Services.Battle
             }
 
             return new BattleResult(
-                outcome,
-                _gameModel.VictoryCondition,
-                _gameModel.PlanetType,
-                _localPlayer.Slot.Faction,
-                enemyFactions,
-                playerShipCount,
-                enemyShipCount,
-                isPlayerBaseAlive,
-                isEnemyBaseAlive);
+                outcome: outcome,
+                victoryCondition: _gameModel.VictoryCondition,
+                planet: _gameModel.PlanetType,
+                playerFaction: _localPlayer.Slot.Faction,
+                enemyFactions: enemyFactions,
+                playerShipCount: playerShipCount,
+                enemyShipCount: enemyShipCount,
+                isPlayerBaseAlive: isPlayerBaseAlive,
+                isEnemyBaseAlive: isEnemyBaseAlive);
         }
     }
 }

@@ -23,14 +23,14 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CaptureZone_CommitsFastestShipAndStopsOnlyBusyRemainder()
         {
-            FakeShip slow = new FakeShip(1, Vector3.zero) { NavigationSpeed = 1f,
+            FakeShip slow = new FakeShip(id: 1, position: Vector3.zero) { NavigationSpeed = 1f,
                 CurrentOrder = UnitOrderType.Attack };
-            FakeShip fast = new FakeShip(2, Vector3.right) { NavigationSpeed = 4f };
+            FakeShip fast = new FakeShip(id: 2, position: Vector3.right) { NavigationSpeed = 4f };
             FakeOrderService orders = new FakeOrderService();
             EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast });
 
             new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
-                EnemyStrategicState.CaptureZone, 1, "test"), context);
+                state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
 
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
             Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(fast.EntityId));
@@ -41,25 +41,25 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HuntFleet_PreservesSurvivorOffsetsAcrossDecisions()
         {
-            FakeShip first = new FakeShip(1, Vector3.zero);
-            FakeShip second = new FakeShip(2, Vector3.zero);
-            FakeShip third = new FakeShip(3, Vector3.zero);
+            FakeShip first = new FakeShip(id: 1, position: Vector3.zero);
+            FakeShip second = new FakeShip(id: 2, position: Vector3.zero);
+            FakeShip third = new FakeShip(id: 3, position: Vector3.zero);
             GameObject view = new GameObject("Target");
-            FakeEntity target = new FakeEntity(4, TestPlayers.Human,
-                new FakeHealthModel(view.transform));
+            FakeEntity target = new FakeEntity(id: 4, side: TestPlayers.Human,
+                health: new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
             EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
             try
             {
                 executor.Execute(new EnemyStrategicDecision(
-                    EnemyStrategicState.HuntFleet, 3, "test"),
+                    state: EnemyStrategicState.HuntFleet, committedShipCount: 3, reason: "test"),
                     Context(new IShipEntity[] { first, second, third }, target));
                 Vector3 secondOffset = orders.Calls[0].Offsets[1];
                 Vector3 thirdOffset = orders.Calls[0].Offsets[2];
                 orders.Calls.Clear();
 
                 executor.Execute(new EnemyStrategicDecision(
-                    EnemyStrategicState.HuntFleet, 2, "test"),
+                    state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test"),
                     Context(new IShipEntity[] { second, third }, target));
 
                 Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Attack));
@@ -72,16 +72,16 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void DefendBase_GuardsCommittedShipsAndLeavesIdleShipUntouched()
         {
-            FakeShip defender = new FakeShip(1, Vector3.zero);
-            FakeShip idle = new FakeShip(2, Vector3.right);
+            FakeShip defender = new FakeShip(id: 1, position: Vector3.zero);
+            FakeShip idle = new FakeShip(id: 2, position: Vector3.right);
             GameObject view = new GameObject("Station");
-            FakeEntity station = new FakeEntity(3, TestPlayers.Enemy,
-                new FakeHealthModel(view.transform));
+            FakeEntity station = new FakeEntity(id: 3, side: TestPlayers.Enemy,
+                health: new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
             try
             {
                 new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
-                    EnemyStrategicState.DefendBase, 1, "test"),
+                    state: EnemyStrategicState.DefendBase, committedShipCount: 1, reason: "test"),
                     Context(new IShipEntity[] { defender, idle }, ownBase: station));
                 Assert.That(orders.Calls.Count, Is.EqualTo(1));
                 Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Guard));
@@ -95,9 +95,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeOrderService orders = new FakeOrderService();
             new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
-                EnemyStrategicState.RetreatValue, 1, "test"),
-                Context(new IShipEntity[] { new FakeShip(1, Vector3.zero),
-                    new FakeShip(2, Vector3.right) }));
+                state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test"),
+                Context(new IShipEntity[] { new FakeShip(id: 1, position: Vector3.zero),
+                    new FakeShip(id: 2, position: Vector3.right) }));
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Retreat));
             Assert.That(orders.Calls[0].Receivers.Count, Is.EqualTo(2));
@@ -106,13 +106,13 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void RetreatValue_DoesNotReissueRetreatToRetreatingShips()
         {
-            FakeShip retreating = new FakeShip(1, Vector3.zero)
+            FakeShip retreating = new FakeShip(id: 1, position: Vector3.zero)
                 { CurrentOrder = UnitOrderType.Retreat };
-            FakeShip fresh = new FakeShip(2, Vector3.right);
+            FakeShip fresh = new FakeShip(id: 2, position: Vector3.right);
             FakeOrderService orders = new FakeOrderService();
 
             new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
-                EnemyStrategicState.RetreatValue, 2, "test"),
+                state: EnemyStrategicState.RetreatValue, committedShipCount: 2, reason: "test"),
                 Context(new IShipEntity[] { retreating, fresh }));
 
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
@@ -123,11 +123,11 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CaptureZone_SameTargetSkipsShipsAlreadyAttackMoving()
         {
-            FakeShip ship = new FakeShip(1, Vector3.zero);
+            FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
             EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
-                EnemyStrategicState.CaptureZone, 1, "test");
+                state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
             ship.CurrentOrder = UnitOrderType.AttackMove;
             orders.Calls.Clear();
@@ -142,66 +142,87 @@ namespace EmpireAtWar.Tests.Editor
         {
             Dictionary<IShipEntity, IEntity> receivers = new Dictionary<IShipEntity, IEntity>();
             foreach (IShipEntity ship in ships)
-                receivers.Add(ship, new FakeEntity(ship.EntityId, TestPlayers.Enemy, null));
-            return new EnemyStrategicContext(default, ships,
-                new Vector3(55f, 0f, -55f), fleetTarget, null, ownBase, receivers);
+                receivers.Add(ship, new FakeEntity(id: ship.EntityId, side: TestPlayers.Enemy, health: null));
+            return new EnemyStrategicContext(snapshot: default, ships: ships,
+                captureTarget: new Vector3(55f, 0f, -55f), enemyFleetTarget: fleetTarget, enemyBaseTarget: null, ownBase: ownBase, receivers: receivers);
         }
 
         private sealed class FakeShip : IShipEntity
         {
-            public FakeShip(long id, Vector3 position) { EntityId = id; WorldPosition = position; }
             public PlayerId Owner => TestPlayers.Enemy;
             public Vector3 WorldPosition { get; }
             public float NavigationRadius => 5f;
             public float NavigationSpeed { get; set; } = 1f;
             public long EntityId { get; }
             public UnitOrderType CurrentOrder { get; set; }
+
+            public FakeShip(Vector3 position, long id) { EntityId = id; WorldPosition = position; }
         }
 
         private sealed class FakeOrderService : IUnitOrderService
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
+
             public List<OrderCall> Calls { get; } = new List<OrderCall>();
+
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
                 Record(UnitActionId.Move, receivers, point);
+
             public void IssueMove(IReadOnlyList<IEntity> receivers,
                 IReadOnlyList<Vector3> destinations) =>
                 Record(UnitActionId.Move, receivers,
                     destinations.Count > 0 ? destinations[0] : default);
+
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) =>
                 Record(UnitActionId.Attack, receivers, target: target);
+
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
                 IReadOnlyList<Vector3> offsets) =>
                 Record(UnitActionId.Attack, receivers, target: target, offsets: offsets);
+
             public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target,
                 int hardPointId) =>
                 Record(UnitActionId.Attack, receivers, target: target);
+
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
                 Record(UnitActionId.AttackMove, receivers, point);
+
             public void IssueStop(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Stop, receivers);
+
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) =>
                 Record(UnitActionId.Guard, receivers, target: friendly);
+
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly,
                 IReadOnlyList<Vector3> offsets) =>
                 Record(UnitActionId.Guard, receivers, target: friendly, offsets: offsets);
+
             public void IssueWaypointMove(IReadOnlyList<IEntity> receivers,
                 IReadOnlyList<Vector3> waypoints) =>
                 Record(UnitActionId.WaypointMove, receivers);
+
             public void IssueHunt(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Hunt, receivers);
+
             public void IssueRetreat(IReadOnlyList<IEntity> receivers) =>
                 Record(UnitActionId.Retreat, receivers);
+
             private void Record(UnitActionId action, IReadOnlyList<IEntity> receivers,
                 Vector3 point = default, IEntity target = null,
                 IReadOnlyList<Vector3> offsets = null) =>
-                Calls.Add(new OrderCall(action, receivers, point, target, offsets));
+                Calls.Add(new OrderCall(action: action, receivers: receivers, point: point, target: target, offsets: offsets));
         }
 
         private sealed class OrderCall
         {
-            public OrderCall(UnitActionId action, IReadOnlyList<IEntity> receivers,
-                Vector3 point, IEntity target, IReadOnlyList<Vector3> offsets)
+            public UnitActionId Action { get; }
+            public IReadOnlyList<IEntity> Receivers { get; }
+            public Vector3 Point { get; }
+            public IEntity Target { get; }
+            public IReadOnlyList<Vector3> Offsets { get; }
+
+            public OrderCall(IReadOnlyList<IEntity> receivers, IEntity target,
+                IReadOnlyList<Vector3> offsets, UnitActionId action, Vector3 point)
             {
                 Action = action;
                 Receivers = receivers;
@@ -209,20 +230,17 @@ namespace EmpireAtWar.Tests.Editor
                 Target = target;
                 Offsets = offsets;
             }
-            public UnitActionId Action { get; }
-            public IReadOnlyList<IEntity> Receivers { get; }
-            public Vector3 Point { get; }
-            public IEntity Target { get; }
-            public IReadOnlyList<Vector3> Offsets { get; }
         }
 
         private sealed class FakeEntity : IEntity
         {
-            public FakeEntity(long id, PlayerId side, IHealthModelObserver health)
-            { Id = id; Owner = side; HealthModel = health; }
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
+
+            public FakeEntity(IHealthModelObserver health, PlayerId side, long id)
+            { Id = id; Owner = side; HealthModel = health; }
+
             public TCommand GetFacade<TCommand>() where TCommand : IEntityFacade
             { TryGetFacade(out TCommand facade); return facade; }
 
@@ -237,9 +255,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealthModel : IHealthModelObserver, IEntityTransformFacade
         {
-            public FakeHealthModel(Transform transform) { Transform = transform; }
             public event Action OnDestroy { add { } remove { } }
+
             public event Action OnValueChanged { add { } remove { } }
+
             public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
@@ -253,6 +272,9 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; }
             public bool HasShields => true;
+
+            public FakeHealthModel(Transform transform) { Transform = transform; }
+
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
         }

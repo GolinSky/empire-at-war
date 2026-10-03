@@ -13,15 +13,16 @@ namespace EmpireAtWar.Components.Selection.Marquee
     public sealed class MarqueeSelectionPresenter : IMarqueeSelectionPresenter, IInitializable, ILateDisposable
     {
         private readonly IPointerGestures _gestures;
-        private readonly MarqueeSelectionModel _model;
         private readonly IMarqueeSelectionView _view;
+
+        private readonly MarqueeSelectionModel _model;
 
         public event Action<MarqueeRectangle> Completed;
 
         public MarqueeSelectionPresenter(
             IPointerGestures gestures,
-            MarqueeSelectionModel model,
-            IMarqueeSelectionView view)
+            IMarqueeSelectionView view,
+            MarqueeSelectionModel model)
         {
             _gestures = gestures;
             _model = model;

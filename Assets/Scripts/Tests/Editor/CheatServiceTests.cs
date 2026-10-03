@@ -34,15 +34,15 @@ namespace EmpireAtWar.Tests.Editor
             _reinforcementModel = new ReinforcementModel(_reinforcementData);
             _superWeaponModel = new SuperWeaponModel();
             _service = new CheatService(
-                _economyModel,
-                _reinforcementModel,
-                new ShipFactory(),
-                new FakeReinforcementZonesSystem(),
-                new EmptyEntityLocator(),
-                new OperationalStationRegistry(),
-                _superWeaponModel,
-                new RangeDebugModel(),
-                TestPlayers.CreateDuel().Get(TestPlayers.Human));
+                economyModel: _economyModel,
+                reinforcementModel: _reinforcementModel,
+                shipFactory: new ShipFactory(),
+                reinforcementZonesSystem: new FakeReinforcementZonesSystem(),
+                entityLocator: new EmptyEntityLocator(),
+                stationRegistry: new OperationalStationRegistry(),
+                superWeaponModel: _superWeaponModel,
+                rangeDebugModel: new RangeDebugModel(),
+                owner: TestPlayers.CreateDuel().Get(TestPlayers.Human));
         }
 
         [TearDown]
@@ -181,27 +181,37 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class OperationalStationRegistry : IStationRegistry
         {
             public string Id => nameof(OperationalStationRegistry);
+
             public bool IsStationOperational(PlayerId owner) => true;
+
             public bool TryGetLivingStation(PlayerId owner, out IEntity station) =>
                 throw new NotImplementedException();
         }
 
         private sealed class EmptyEntityLocator : IEntityLocator
         {
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
+
             public string Id => nameof(EmptyEntityLocator);
             public IReadOnlyCollection<IEntity> Entities => Array.Empty<IEntity>();
-            public event Action<IEntity> EntityAdded { add { } remove { } }
-            public event Action<IEntity> EntityRemoved { add { } remove { } }
+
             public void AddEntity(IEntity entity) { }
+
             public void RemoveEntity(IEntity entity) { }
+
             public IEntity GetEntity(long entityId) => throw new NotImplementedException();
+
             public bool TryGetEntity(long entityId, out IEntity entity) =>
                 throw new NotImplementedException();
+
             public bool TryGetEntity(RaycastHit raycastHit, out IEntity entity)
             {
                 entity = null;
                 return false;
             }
+
             public bool TryGetEntity(Collider collider, out IEntity entity)
             {
                 entity = null;

@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.Input
     public interface IPointerInput
     {
         event Action<Vector2> PrimaryPressed;
+
         event Action<Vector2> PrimaryReleased;
 
         Vector2 Position { get; }

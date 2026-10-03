@@ -6,8 +6,8 @@ namespace EmpireAtWar.Models.MiniMap
     {
         public virtual Vector3 Position { get; }
         public Sprite Icon { get; }
-        
-        public MarkData(Vector3 position, Sprite icon)
+
+        public MarkData(Sprite icon, Vector3 position)
         {
             Position = position;
             Icon = icon;

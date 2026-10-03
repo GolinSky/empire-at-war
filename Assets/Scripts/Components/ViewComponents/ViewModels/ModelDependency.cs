@@ -12,7 +12,7 @@ namespace EmpireAtWar.ViewComponents
         {
             View = view;
         }
-        
+
         public virtual void Release()
         {
         }
@@ -24,7 +24,6 @@ namespace EmpireAtWar.ViewComponents
     public abstract class ModelDependency<TModel> : ModelDependency where TModel : class, IModelObserver
     {
         protected TModel Model { get; private set; }
-
 
         public sealed override void Initialize(View view)
         {
@@ -40,7 +39,7 @@ namespace EmpireAtWar.ViewComponents
         }
 
         protected virtual void OnInit() {}
-        
+
         protected virtual void OnDispose() {}
     }
 }

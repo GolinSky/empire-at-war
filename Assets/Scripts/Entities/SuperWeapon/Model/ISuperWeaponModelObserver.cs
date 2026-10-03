@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.SuperWeapons
         event Action<SuperWeaponType, SuperWeaponState> OnStateChanged;
 
         SuperWeaponState GetState(SuperWeaponType type);
+
         bool CanPurchase(SuperWeaponType type);
     }
 }

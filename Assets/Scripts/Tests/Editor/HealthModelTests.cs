@@ -139,20 +139,15 @@ namespace EmpireAtWar.Tests.Editor
             out HardPointModel shieldGenerator)
         {
             HealthModel model = new HealthModel(new HealthDataStub(shields), _matrix, new CombatModifiers());
-            weapon = new HardPointModel(0, HardPointType.Weapon);
-            engine = new HardPointModel(1, HardPointType.Engines);
-            shieldGenerator = new HardPointModel(2, HardPointType.ShieldGenerator);
+            weapon = new HardPointModel(id: 0, hardPointType: HardPointType.Weapon);
+            engine = new HardPointModel(id: 1, hardPointType: HardPointType.Engines);
+            shieldGenerator = new HardPointModel(id: 2, hardPointType: HardPointType.ShieldGenerator);
             model.InitializeHardPoints(new[] { weapon, engine, shieldGenerator });
             return model;
         }
 
         private sealed class HealthDataStub : IHealthData
         {
-            public HealthDataStub(float shields)
-            {
-                Shields = shields;
-            }
-
             public ShipClass ShipClass => ShipClass.Capital;
             public float Hull => HULL;
             public float Shields { get; }
@@ -165,6 +160,11 @@ namespace EmpireAtWar.Tests.Editor
                 CreateHealth(HardPointType.Engines, 200f, 1f),
                 CreateHealth(HardPointType.ShieldGenerator, 150f, 1f),
             };
+
+            public HealthDataStub(float shields)
+            {
+                Shields = shields;
+            }
 
             private static HardPointHealth CreateHealth(HardPointType type, float health, float hullMultiplier) =>
                 JsonUtility.FromJson<HardPointHealth>(FormattableString.Invariant(

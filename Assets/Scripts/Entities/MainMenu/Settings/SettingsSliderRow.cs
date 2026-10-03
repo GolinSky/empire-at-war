@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         [SerializeField] private Slider slider;
         [SerializeField] private TMP_Text valueText;
+
         [Tooltip("Shows 0–1 values as a percentage instead of a multiplier.")]
         [SerializeField] private bool showAsPercent;
 

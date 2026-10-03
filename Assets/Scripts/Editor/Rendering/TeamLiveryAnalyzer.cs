@@ -13,8 +13,10 @@ namespace EmpireAtWar.Editor.Rendering
     public static class TeamLiveryAnalyzer
     {
         private const string MENU_PATH = "Tools/Rendering/Detect Team Livery Colors";
+
         private const int SAMPLE_SIZE = 256;
         private const int HUE_BINS = 36;
+
         // Matches the shader defaults; the shader reads the same saturation threshold.
         private const float MIN_SATURATION = 0.4f;
         private const float HUE_RANGE = 0.07f;

@@ -9,6 +9,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private FakeCancelInput _input;
         private UiCancelRouter _router;
+
         private int _unhandledCount;
 
         [SetUp]
@@ -87,6 +88,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeCancelInput : ICancelInput
         {
             public event Action CancelPressed;
+
             public void Escape() => CancelPressed?.Invoke();
         }
 
@@ -94,12 +96,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly bool _consumes;
 
+            public int CancelCount { get; private set; }
+
             public FakeHandler(bool consumes)
             {
                 _consumes = consumes;
             }
-
-            public int CancelCount { get; private set; }
 
             public bool TryCancel()
             {

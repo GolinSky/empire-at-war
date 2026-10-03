@@ -23,10 +23,19 @@ namespace EmpireAtWar.Services.ShipNavigation
 
     public readonly struct ShipNavigationPlan
     {
+        public Vector3 Destination { get; }
+        public Vector3? Detour { get; }
+        public ShipBezierRoute Route { get; }
+        public Vector3[] Trajectory => Route.Samples;
+        public float TurnDuration { get; }
+        public float MovementDuration { get; }
+        public bool IsStationary { get; }
+        public bool IsDeferred { get; }
+
         public ShipNavigationPlan(
+            ShipBezierRoute route,
             Vector3 destination,
             Vector3? detour,
-            ShipBezierRoute route,
             float turnDuration,
             float movementDuration,
             bool isStationary = false,
@@ -40,24 +49,20 @@ namespace EmpireAtWar.Services.ShipNavigation
             IsStationary = isStationary;
             IsDeferred = isDeferred;
         }
-
-        public Vector3 Destination { get; }
-        public Vector3? Detour { get; }
-        public ShipBezierRoute Route { get; }
-        public Vector3[] Trajectory => Route.Samples;
-        public float TurnDuration { get; }
-        public float MovementDuration { get; }
-        public bool IsStationary { get; }
-        public bool IsDeferred { get; }
     }
 
     public interface IShipNavigationService : IService
     {
         void Register(IShipNavigationAgent agent, Vector3 initialFinalPosition);
+
         void Unregister(IShipNavigationAgent agent);
+
         void Stop(IShipNavigationAgent agent);
+
         void CancelPendingDestination(IShipNavigationAgent agent);
+
         bool IsPositionClear(Vector3 position, float navigationRadius);
+
         bool IsPositionClear(
             IShipNavigationAgent agent,
             Vector3 position,
@@ -80,9 +85,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         private const int DESTINATION_CANDIDATE_RING_COUNT = 16;
         private const int DESTINATION_CANDIDATES_PER_RING = 8;
 
+        private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
+
         private readonly List<RadarContact> _mapObstacleContacts =
             new List<RadarContact>();
-        private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
         private readonly Dictionary<IShipNavigationAgent, int> _registrationIds =
             new Dictionary<IShipNavigationAgent, int>();
         private readonly ShipDestinationRegistry _destinationRegistry =
@@ -140,7 +146,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             AddIdleAgentContacts(agent);
 
             using (ShipPathGrid pathGrid = new ShipPathGrid(
-                       _mapObstacleContacts, clearance, mapRange, origin))
+                       obstacles: _mapObstacleContacts, clearance: clearance, mapRange: mapRange, origin: origin))
             {
                 // An unreachable order is not a failure: the ship heads for the
                 // reachable spot closest to what was asked for.
@@ -173,13 +179,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                         routePlan.Route.Length /
                         Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
                     return new ShipNavigationPlan(
-                        routePlan.Destination,
-                        routePlan.Detour,
-                        routePlan.Route,
-                        routePlan.TurnDuration,
-                        movementDuration,
-                        false,
-                        isDeferred);
+                        destination: routePlan.Destination,
+                        detour: routePlan.Detour,
+                        route: routePlan.Route,
+                        turnDuration: routePlan.TurnDuration,
+                        movementDuration: movementDuration,
+                        isStationary: false,
+                        isDeferred: isDeferred);
                 }
             }
 
@@ -193,13 +199,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                 forward,
                 origin);
             return new ShipNavigationPlan(
-                origin,
-                null,
-                stationaryRoute,
-                0f,
-                0f,
-                true,
-                preserveCourse || reserveAsPending);
+                destination: origin,
+                detour: null,
+                route: stationaryRoute,
+                turnDuration: 0f,
+                movementDuration: 0f,
+                isStationary: true,
+                isDeferred: preserveCourse || reserveAsPending);
         }
 
         // Destination candidates ring out from the center; reachability of each is

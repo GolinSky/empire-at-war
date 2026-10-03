@@ -15,9 +15,12 @@ namespace EmpireAtWar.Views
     public sealed class ShipSelectionGroupUi : MonoBehaviour
     {
         private const int MAX_INDIVIDUAL_SHIPS = 4;
+
         private const float HEADER_HEIGHT = 32f;
         private const float COLUMN_SPACING = 8f;
         private const float ROW_SPACING = 2f;
+
+        private IReadOnlyList<ShipUiEntry> _ships;
 
         [SerializeField] private Button button;
         [SerializeField] private RectTransform groupRect;
@@ -33,7 +36,7 @@ namespace EmpireAtWar.Views
         [SerializeField] private TooltipTrigger tooltipTrigger;
         private TooltipHoverView _tooltipHover;
         private Action _onClicked;
-        private IReadOnlyList<ShipUiEntry> _ships;
+
         private int _shipCount;
 
         public void SetTooltipHover(TooltipHoverView hover)

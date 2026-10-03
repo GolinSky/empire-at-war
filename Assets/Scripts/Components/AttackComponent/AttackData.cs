@@ -9,15 +9,17 @@ namespace EmpireAtWar.Components.AttackComponent
 {
     public class AttackData
     {
-        public event Action UnitsChanged;
         private readonly IHealthModelObserver _shipUnitsProvider;
-        private IHealthFacade HealthFacade { get; }
+
+        public event Action UnitsChanged;
 
         public event Action Destroyed
         {
             add => _shipUnitsProvider.OnDestroy += value;
             remove => _shipUnitsProvider.OnDestroy -= value;
         }
+
+        private IHealthFacade HealthFacade { get; }
 
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
         public ShipClass TargetClass => _shipUnitsProvider.ShipClass;

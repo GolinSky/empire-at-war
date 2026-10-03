@@ -5,18 +5,25 @@ namespace EmpireAtWar.Components.Selection.Marquee
 {
     public readonly struct MarqueePoint
     {
+        public float X { get; }
+        public float Y { get; }
+
         public MarqueePoint(float x, float y)
         {
             X = x;
             Y = y;
         }
-
-        public float X { get; }
-        public float Y { get; }
     }
 
     public readonly struct MarqueeRectangle
     {
+        public float MinX { get; }
+        public float MinY { get; }
+        public float MaxX { get; }
+        public float MaxY { get; }
+        public float Width => MaxX - MinX;
+        public float Height => MaxY - MinY;
+
         public MarqueeRectangle(MarqueePoint first, MarqueePoint second)
         {
             MinX = Math.Min(first.X, second.X);
@@ -24,13 +31,6 @@ namespace EmpireAtWar.Components.Selection.Marquee
             MaxX = Math.Max(first.X, second.X);
             MaxY = Math.Max(first.Y, second.Y);
         }
-
-        public float MinX { get; }
-        public float MinY { get; }
-        public float MaxX { get; }
-        public float MaxY { get; }
-        public float Width => MaxX - MinX;
-        public float Height => MaxY - MinY;
 
         public bool Contains(MarqueePoint point)
         {

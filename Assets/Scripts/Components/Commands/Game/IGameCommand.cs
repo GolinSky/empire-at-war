@@ -14,6 +14,7 @@ namespace EmpireAtWar.Commands.Game
             MapSize mapSize,
             BattleVictoryCondition victoryCondition,
             float startingMoney);
+
         void ExitGame();
     }
 }

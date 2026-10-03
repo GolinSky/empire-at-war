@@ -19,8 +19,6 @@ namespace EmpireAtWar.Tests.Weapon
     {
         private const int BENCHMARK_SAMPLES = 40;
 
-        private enum DueBenchmarkVariant { ExistingSerial, CollectedSerial, Job }
-
         [TestCase(63)]
         [TestCase(64)]
         [TestCase(65)]
@@ -181,12 +179,15 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
+        private enum DueBenchmarkVariant { ExistingSerial, CollectedSerial, Job }
+
         private sealed class RecordingOwner : IWeaponPresenter
         {
             private readonly Action _onCommit;
 
-            public RecordingOwner(Action onCommit) => _onCommit = onCommit;
             public int Commits { get; private set; }
+
+            public RecordingOwner(Action onCommit) => _onCommit = onCommit;
 
             public bool RollHit(AttackData attackData, WeaponProfile profile) => throw new InvalidOperationException();
 
@@ -204,9 +205,10 @@ namespace EmpireAtWar.Tests.Weapon
 
         private sealed class FakeTarget : IHardPointModel
         {
-            public FakeTarget(Transform transform) => Transform = transform;
             public event Action OnHardPointHealthChanged { add { } remove { } }
+
             public event Action OnDestroyed { add { } remove { } }
+
             public HardPointType HardPointType => HardPointType.Any;
             public float HealthPercentage => 1f;
             public int Id => 1;
@@ -214,6 +216,8 @@ namespace EmpireAtWar.Tests.Weapon
             public bool IsDestroyed => false;
             public Vector3 Position => Transform.position;
             public Transform Transform { get; }
+
+            public FakeTarget(Transform transform) => Transform = transform;
         }
     }
 }

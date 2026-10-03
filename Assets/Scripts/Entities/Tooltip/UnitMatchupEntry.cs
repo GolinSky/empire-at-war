@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.Tooltip
     {
         [SerializeField] private string iconKey;
         [SerializeField] private string label;
+
         public TooltipIcon Content => new TooltipIcon(iconKey, label);
     }
 }

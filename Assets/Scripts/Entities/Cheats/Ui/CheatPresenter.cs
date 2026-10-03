@@ -13,14 +13,15 @@ namespace EmpireAtWar.Presenters.Cheats
     public sealed class CheatPresenter : IInitializable, ILateDisposable
     {
         private readonly ICheatView _view;
-        private readonly FactionsData _factionsModel;
         private readonly ICheatService _cheatService;
+
+        private readonly FactionsData _factionsModel;
         private readonly Dictionary<ShipType, FactionData> _shipData = new();
 
         public CheatPresenter(
             ICheatView view,
-            FactionsData factionsModel,
-            ICheatService cheatService)
+            ICheatService cheatService,
+            FactionsData factionsModel)
         {
             _view = view;
             _factionsModel = factionsModel;

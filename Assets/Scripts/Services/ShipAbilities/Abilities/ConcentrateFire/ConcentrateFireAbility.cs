@@ -10,11 +10,12 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
     public sealed class ConcentrateFireAbility : IShipAbility
     {
-        private readonly ConcentrateFireSettings _settings;
         private readonly IEntityLocator _entities;
+
+        private readonly ConcentrateFireSettings _settings;
         private readonly List<CombatModifiers> _affected = new List<CombatModifiers>();
 
-        public ConcentrateFireAbility(ConcentrateFireSettings settings, IEntityLocator entities)
+        public ConcentrateFireAbility(IEntityLocator entities, ConcentrateFireSettings settings)
         {
             _settings = settings;
             _entities = entities;

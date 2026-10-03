@@ -5,18 +5,20 @@ namespace EmpireAtWar.Views.Reinforcement
 {
     public class UnitSpawnView : MonoBehaviour
     {
-        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
-
-        [SerializeField] private float height;
         [SerializeField] private MeshRenderer[] meshRenderers;
-
         private List<Collider> _triggeredCollider = new List<Collider>();
         // A property block tints every renderer without creating Material instances.
         private MaterialPropertyBlock _propertyBlock;
         // Material slots per renderer that use the hologram material and get tinted.
         private List<int>[] _hologramSlots;
+
         private Color _canBeSpawnedColor;
         private Color _blockedColor = Color.red;
+
+        [SerializeField] private float height;
+
+        private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
+
         private bool _isPlacementValid;
 
         public bool CanSpawn => _triggeredCollider.Count == 0 && _isPlacementValid;

@@ -11,8 +11,11 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         private const float POSITION_TOLERANCE = 0.05f;
+
         private readonly IShipMoveData _shipMoveData;
+
         private readonly CombatModifiers _modifiers;
+
         private float _speedCoefficient = 1f;
 
         public float Speed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
@@ -52,8 +55,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         }
 
         public void ApplyMoveCoefficient(float coefficient) => _speedCoefficient = coefficient;
+
         public bool IsSameRequest(NumericsVector3 destination) =>
             LastRequest.HasValue && PositionsEqual(LastRequest.Value, destination);
+
         public bool HasDestination(NumericsVector3 destination) =>
             (Phase != MovementPhase.Arriving || PendingDestination.HasValue) &&
             PositionsEqual(Destination, destination);

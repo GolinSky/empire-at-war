@@ -5,9 +5,11 @@ namespace EmpireAtWar
     [RequireComponent(typeof(RectTransform))]
     public class SafeAreaHelper : MonoBehaviour
     {
-        public bool forceUpdate;
         private RectTransform _rectTransform;
+
         private Rect _lastSafeArea;
+
+        public bool forceUpdate;
 
         private void Awake()
         {
@@ -33,6 +35,7 @@ namespace EmpireAtWar
         {
             Invoke(nameof(Refresh), 0.1f);
         }
+
         private void Refresh()
         {
             var anchorMin = _lastSafeArea.position;

@@ -6,11 +6,14 @@ namespace EmpireAtWar.Services.Tooltip
     {
         private readonly Func<bool> _isValid;
         private readonly Func<TooltipContent> _build;
-        public TooltipContentProvider(object source, object key, Func<bool> isValid, Func<TooltipContent> build)
-        { Source = source; Key = key; _isValid = isValid; _build = build; }
+
         public object Source { get; }
         public object Key { get; }
         public bool IsValid => _isValid();
+
+        public TooltipContentProvider(object source, object key, Func<bool> isValid, Func<TooltipContent> build)
+        { Source = source; Key = key; _isValid = isValid; _build = build; }
+
         public TooltipContent Build() => _build();
     }
 }

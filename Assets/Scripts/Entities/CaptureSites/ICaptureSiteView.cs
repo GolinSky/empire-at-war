@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         Vector3 FacilityPosition { get; }
 
         void ConfigureOption(SiteFacilityType facilityType, string displayName, string costLabel);
+
         void Render(
             OwnerRelation owner,
             CaptureSiteState state,
@@ -22,8 +23,11 @@ namespace EmpireAtWar.Entities.CaptureSites
             float captureProgress,
             float constructionProgress,
             bool isContested);
+
         void SetVisibility(bool isVisible, bool showStatus);
+
         void SetBuildOptionsVisible(bool isVisible);
+
         void SetOptionInteractable(SiteFacilityType facilityType, bool isInteractable);
     }
 }

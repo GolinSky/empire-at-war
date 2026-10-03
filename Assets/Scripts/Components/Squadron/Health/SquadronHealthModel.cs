@@ -15,11 +15,13 @@ namespace EmpireAtWar.Components.Squadrons.Health
     public sealed class SquadronHealthModel : PureModel
     {
         private readonly ISquadronHealthData _data;
+
         private readonly DamageMatrixData _damageMatrix;
         private readonly CombatModifiers _modifiers;
         private float[] _shields = Array.Empty<float>();
 
         public event Action OnValueChanged;
+
         public event Action OnDestroy;
 
         public HardPointModel[] Members { get; private set; } = Array.Empty<HardPointModel>();

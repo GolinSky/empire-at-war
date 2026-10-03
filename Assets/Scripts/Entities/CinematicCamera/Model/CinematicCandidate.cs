@@ -13,11 +13,11 @@ namespace EmpireAtWar.Entities.CinematicCamera.Model
         public float SecondsSinceDamaged { get; }
 
         public CinematicCandidate(
-            long id,
             Vector3 position,
             ShipClass shipClass,
             PlayerId owner,
-            float secondsSinceDamaged)
+            float secondsSinceDamaged,
+            long id)
         {
             Id = id;
             Position = position;

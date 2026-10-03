@@ -11,21 +11,21 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float BANK_SMOOTH_TIME = 0.6f;
         private const float ROUTE_HEADING_TOLERANCE = 1f;
         private const float MINIMUM_TANGENT_STEP = 0.05f;
+
         private const int ROUTE_STEP_SEARCH_ITERATIONS = 8;
 
         private readonly Transform _rootTransform;
         private readonly Transform _bodyTransform;
         private readonly LineRenderer _lineRenderer;
-        private readonly Ease _hyperSpaceEase;
-        private readonly Quaternion _bodyRestRotation;
-
         private Sequence _translationSequence;
-        private bool _isSelected;
-        private Vector3 _lookDirection;
-        private bool _hasLookDirection;
-        private Vector3? _currentPathTangent;
         private ShipBezierRoute _route;
         private Action _pathCompleted;
+
+        private readonly Ease _hyperSpaceEase;
+        private readonly Quaternion _bodyRestRotation;
+        private Vector3 _lookDirection;
+        private Vector3? _currentPathTangent;
+
         private float _routeProgress;
         private float _routeSpeed;
         private float _rotationSpeed;
@@ -33,11 +33,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         private float _maximumBankAngle;
         private float _angularVelocity;
         private float _bankVelocity;
+
+        private bool _isSelected;
+        private bool _hasLookDirection;
         private bool _isTurningToRoute;
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
-
-        public void SetRouteSpeed(float speed) => _routeSpeed = speed;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,
@@ -52,6 +53,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             _bodyRestRotation = _bodyTransform.localRotation;
             ClearRoute();
         }
+
+        public void SetRouteSpeed(float speed) => _routeSpeed = speed;
 
         public void SetSelected(bool isSelected, bool isMoving)
         {

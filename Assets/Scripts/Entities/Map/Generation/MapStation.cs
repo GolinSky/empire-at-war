@@ -6,6 +6,11 @@ namespace EmpireAtWar.Entities.Map.Generation
 {
     public readonly struct MapStation
     {
+        public FactionType Faction { get; }
+        public PlayerId Owner { get; }
+        public Vector3 Position { get; }
+        public float Radius { get; }
+
         public MapStation(FactionType faction, PlayerId owner, Vector3 position, float radius)
         {
             Faction = faction;
@@ -13,10 +18,5 @@ namespace EmpireAtWar.Entities.Map.Generation
             Position = position;
             Radius = radius;
         }
-
-        public FactionType Faction { get; }
-        public PlayerId Owner { get; }
-        public Vector3 Position { get; }
-        public float Radius { get; }
     }
 }

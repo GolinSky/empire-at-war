@@ -12,28 +12,25 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
     {
         private const string UNLIMITED_FRAME_RATE_LABEL = "Unlimited";
 
+        private readonly ISettingsService _settings;
+        private readonly IGraphicsOptions _graphicsOptions;
+        private readonly IDisplayOptions _displayOptions;
+        private readonly IAudioSettingsPreview _audioPreview;
+        private IReadOnlyList<Vector2Int> _resolutions = new Vector2Int[0];
+
         private static readonly DisplayWindowMode[] WINDOW_MODES =
         {
             DisplayWindowMode.Windowed,
             DisplayWindowMode.Borderless,
             DisplayWindowMode.ExclusiveFullscreen,
         };
-
         private static readonly string[] WINDOW_MODE_LABELS = { "Windowed", "Borderless", "Fullscreen" };
-
         private static readonly int[] FRAME_RATE_LIMITS =
         {
             GraphicsSettingsData.UNLIMITED_FRAME_RATE, 30, 60, 90, 120, 144, 165, 240,
         };
-
-        private readonly ISettingsService _settings;
-        private readonly IGraphicsOptions _graphicsOptions;
-        private readonly IDisplayOptions _displayOptions;
-        private readonly IAudioSettingsPreview _audioPreview;
         private readonly SettingsModel _model;
         private static readonly string[] FRAME_RATE_LIMIT_LABELS = FormatFrameRateLimits();
-
-        private IReadOnlyList<Vector2Int> _resolutions = new Vector2Int[0];
         private string[] _resolutionLabels = new string[0];
 
         private SettingsData Draft => _settings.Draft;

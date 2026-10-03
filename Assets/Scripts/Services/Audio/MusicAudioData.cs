@@ -12,7 +12,7 @@ namespace EmpireAtWar.Models.Audio
     {
         [SerializeField] private List<AudioClip> menuMusicData;
         [SerializeField] private MusicData battleMusicData;
-        
+
         public List<AudioClip> GetMusicList(SceneType sceneType, FactionType factionType)
         {
             if (sceneType == SceneType.MainMenu)

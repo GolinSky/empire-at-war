@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.BaseEntity
     public sealed class EntityComponentLifecycle
     {
         private readonly IReadOnlyList<IMonoComponent> _components;
+
         private bool _isReleased;
 
         public EntityComponentLifecycle(IReadOnlyList<IMonoComponent> components)

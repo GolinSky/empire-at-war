@@ -15,15 +15,16 @@ namespace EmpireAtWar.Views.MiniMap
         private const float ZONE_SIZE_SCALE = 0.65f;
         private const float ZONE_ALPHA = 0.35f;
 
+        private IMiniMapPositionConvector _miniMapPositionConvector;
+        private IPlayerColors _playerColors;
+
         [SerializeField] private Image iconImage;
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private TooltipTrigger tooltipTrigger;
-        public TooltipTrigger TooltipTrigger => tooltipTrigger;
-        
-        private IMiniMapPositionConvector _miniMapPositionConvector;
-        private IPlayerColors _playerColors;
         private MiniMapMarker _marker;
-        
+
+        public TooltipTrigger TooltipTrigger => tooltipTrigger;
+
         public Image IconImage => iconImage;
 
         public void SetData(Transform parent, Vector2 position, Sprite sprite)
@@ -34,7 +35,7 @@ namespace EmpireAtWar.Views.MiniMap
             iconImage.sprite = sprite;
             tooltipTrigger.SetKey("Station");
         }
-        
+
         public void SetData(
             IMiniMapPositionConvector miniMapPositionConvector,
             IPlayerColors playerColors,

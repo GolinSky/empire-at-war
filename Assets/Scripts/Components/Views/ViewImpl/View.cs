@@ -9,10 +9,9 @@ namespace EmpireAtWar.Views.ViewImpl
     public abstract class View : BaseView, IInitializable, ILateDisposable
     {
         [field: SerializeField] public ModelDependency[] ModelDependencies { get; private set; }
-        
 
         public virtual IModelObserver ModelObserver { get; }
-        
+
         public void Initialize()
         {
             OnInitialize();
@@ -56,13 +55,13 @@ namespace EmpireAtWar.Views.ViewImpl
         }
 
         protected abstract void OnInitialize();
+
         protected abstract void OnDispose();
     }
 
     public abstract class View<TModel> : View
         where TModel : IModelObserver
     {
-
         [Inject]
         public TModel Model { get; }
 

@@ -14,8 +14,8 @@ namespace EmpireAtWar.Models.ShipUi
         public EmpireAtWar.Entities.BaseEntity.IEntity Entity { get; }
 
         public ShipUiEntry(IReadOnlyList<ShipAbilitySlot> abilitySlots,
-            IHealthModelObserver health, Action focus,
-            EmpireAtWar.Entities.BaseEntity.IEntity entity)
+            IHealthModelObserver health, EmpireAtWar.Entities.BaseEntity.IEntity entity,
+            Action focus)
         {
             AbilitySlots = abilitySlots;
             Health = health;

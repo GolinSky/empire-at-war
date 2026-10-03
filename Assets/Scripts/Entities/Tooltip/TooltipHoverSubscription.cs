@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly TooltipHoverView _view;
         private readonly Action<object, TooltipAnchor, object> _started;
         private readonly TooltipRequests _requests;
+
         public TooltipHoverSubscription(TooltipHoverView view,
             Action<object, TooltipAnchor, object> started, TooltipRequests requests)
         {
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Entities.Tooltip
             _view.HoverStarted += _started;
             _view.HoverEnded += _requests.Hide;
         }
+
         public void Dispose()
         {
             _view.HoverStarted -= _started;

@@ -27,6 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             "Assets/Prefabs/Ui/Reinforcement/ReinforcementUi.prefab";
         private const string SHIP_BUILD_PREFAB_PATH =
             "Assets/Prefabs/Ui/Factions/ShipBuildUi.prefab";
+
         private const int EXPECTED_SCREEN_PREFAB_COUNT = 14;
 
         [Test]
@@ -309,9 +310,13 @@ namespace EmpireAtWar.Tests.Editor
             public int CinematicCount { get; private set; }
 
             public void Play() => PlayCount++;
+
             public void SpeedUp() => SpeedUpCount++;
+
             public void ToggleReinforcement() => ReinforcementCount++;
+
             public void StartCinematic() => CinematicCount++;
+
             public void ClearFleetSelection() { }
         }
     }

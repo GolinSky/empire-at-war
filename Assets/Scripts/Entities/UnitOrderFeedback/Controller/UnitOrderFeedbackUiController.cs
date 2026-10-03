@@ -19,17 +19,20 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly IUnitOrderService _orders;
-        private readonly UnitActionTargetingModel _targeting;
         private IUnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
+
+        private readonly UnitActionTargetingModel _targeting;
+
         private Vector3? _movementPoint;
+
         private int _placedWaypointCount;
 
         public UnitOrderFeedbackUiController(IUiService uiService,
             IUiCancelRouter cancelRouter,
             ICameraService cameraService, IEntityLocator entityLocator,
-            IUnitOrderService orders, UnitActionTargetingModel targeting,
-            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
+            IUnitOrderService orders, ILocalPlayer localPlayer,
+            UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _cameraService = cameraService;
@@ -47,6 +50,16 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             _orders.OrderIssued += HandleOrder;
             _targeting.Changed += HandleTargetingChanged;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
+        }
+
+        public void LateDispose()
+        {
+            _orders.OrderIssued -= HandleOrder;
+            _targeting.Changed -= HandleTargetingChanged;
+            _entityLocator.EntityRemoved -= HandleEntityRemoved;
+            _ui.Dispose();
+            _attackTarget = null;
+            _movementPoint = null;
         }
 
         public void LateTick()
@@ -67,16 +80,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         public void AttackFeedbackCompleted() => _attackTarget = null;
 
         public void MovementFeedbackCompleted() => _movementPoint = null;
-
-        public void LateDispose()
-        {
-            _orders.OrderIssued -= HandleOrder;
-            _targeting.Changed -= HandleTargetingChanged;
-            _entityLocator.EntityRemoved -= HandleEntityRemoved;
-            _ui.Dispose();
-            _attackTarget = null;
-            _movementPoint = null;
-        }
 
         private void HandleOrder(UnitOrder order)
         {

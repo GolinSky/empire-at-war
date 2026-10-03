@@ -13,6 +13,12 @@ namespace EmpireAtWar.ViewComponents.Wreck
         // Past the end of any mesh: puts unused cut slots out of reach.
         private const float NO_CUT = 1000000f;
 
+        [SerializeField] private MeshRenderer[] meshRenderers;
+        [SerializeField] private MeshFilter[] meshFilters;
+        private readonly Dictionary<Material, Material> _instances = new Dictionary<Material, Material>();
+
+        private Bounds _shipBounds;
+
         private static readonly int AXIS_ID = Shader.PropertyToID("_WreckAxis");
         private static readonly int CENTER_ID = Shader.PropertyToID("_WreckCenter");
         private static readonly int CUTS_ID = Shader.PropertyToID("_WreckCuts");
@@ -30,12 +36,6 @@ namespace EmpireAtWar.ViewComponents.Wreck
         private static readonly int DISSOLVE_EDGE_COLOR_ID = Shader.PropertyToID("_WreckDissolveEdgeColor");
         private static readonly int DISSOLVE_EDGE_WIDTH_ID = Shader.PropertyToID("_WreckDissolveEdgeWidth");
         private static readonly int DISSOLVE_NOISE_SCALE_ID = Shader.PropertyToID("_WreckDissolveNoiseScale");
-
-        [SerializeField] private MeshRenderer[] meshRenderers;
-        [SerializeField] private MeshFilter[] meshFilters;
-
-        private readonly Dictionary<Material, Material> _instances = new Dictionary<Material, Material>();
-        private Bounds _shipBounds;
 
         private void Awake()
         {

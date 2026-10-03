@@ -36,23 +36,26 @@ namespace EmpireAtWar.Entities.Squadrons
         private IHealthComponent _health;
         private IRadarComponent _radar;
         private IWeaponComponent _weapon;
-        private UnitOrderModel _orders;
-        private SquadronPilot _pilot;
-        private SquadronTargetSelector _targetSelector;
         private IAttackDataFactory _attackDataFactory;
         private ICameraService _cameraService;
         private ILayerService _layerService;
+        private IEntity _engaged;
+
+        private UnitOrderModel _orders;
+        private SquadronPilot _pilot;
+        private SquadronTargetSelector _targetSelector;
         private UnitOrderSettings _orderSettings;
         private GameObjectContext _context;
         private LazyInject<IEntity> _entity;
         private EntityComponentLifecycle _componentLifecycle;
-        private IEntity _engaged;
+
         private float _huntRetargetTimer;
+
         private bool _isReleased;
 
-        [Inject] private SquadronData Data { get; }
-
         public event Action Released;
+
+        [Inject] private SquadronData Data { get; }
 
         public string Id => GetType().Name;
         public Vector3 WorldPosition => _flight.Centroid;
@@ -61,9 +64,9 @@ namespace EmpireAtWar.Entities.Squadrons
 
         [Inject]
         private void Construct(ISquadronFlightComponent flight, IHealthComponent health, IRadarComponent radar,
-            IWeaponComponent weapon, UnitOrderModel orders, SquadronPilot pilot,
-            SquadronTargetSelector targetSelector, IAttackDataFactory attackDataFactory,
-            ICameraService cameraService, ILayerService layerService, UnitOrderSettings orderSettings,
+            IWeaponComponent weapon, IAttackDataFactory attackDataFactory, ICameraService cameraService,
+            ILayerService layerService, UnitOrderModel orders,
+            SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents)
         {
             _flight = flight;
@@ -91,6 +94,8 @@ namespace EmpireAtWar.Entities.Squadrons
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
         }
 
+        public void LateDispose() => Release(false);
+
         public void Tick()
         {
             if (_isReleased)
@@ -102,8 +107,6 @@ namespace EmpireAtWar.Entities.Squadrons
             _pilot.Tick(Time.deltaTime);
             _flight.Step(Time.deltaTime);
         }
-
-        public void LateDispose() => Release(false);
 
         private void HandleDestroyed() => Release(true);
 

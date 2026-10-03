@@ -4,7 +4,8 @@ namespace EmpireAtWar.Entities.Fps
 {
     public interface IFpsUi : IDisposable
     {
-        void SetModel(FpsModel model);
         void Initialize();
+
+        void SetModel(FpsModel model);
     }
 }

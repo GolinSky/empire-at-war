@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.Tooltip
     public sealed class TooltipRequirementRowView : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;
+
         public void Render(TooltipRequirement requirement)
         {
             text.text = (requirement.IsMet ? "[Met] " : "[Required] ") + requirement.Text;

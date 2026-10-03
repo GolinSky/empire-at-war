@@ -57,7 +57,7 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
             return container;
         }
-        
+
         public static DiContainer BindInterfacesExt<TEntity>(this DiContainer container, object id)
         {
             container
@@ -68,7 +68,6 @@ namespace EmpireAtWar.Extentions
             return container;
         }
 
-        
         public static DiContainer BindInterfacesNonLazyExt<TEntity>(this DiContainer container)
         {
             container
@@ -77,7 +76,7 @@ namespace EmpireAtWar.Extentions
                 .NonLazy();
             return container;
         }
-        
+
         public static DiContainer BindModel<TModel>(
             this DiContainer container,
             IAssetService assetService,
@@ -91,7 +90,7 @@ namespace EmpireAtWar.Extentions
                 .BindFromNewScriptable<TModel>(assetService);
             return container;
         }
-        
+
         public static DiContainer BindScriptableObject<T>(
             this DiContainer container,
             IAssetService assetService,
@@ -105,7 +104,6 @@ namespace EmpireAtWar.Extentions
             return container;
         }
 
-      
         public static ConcreteIdArgConditionCopyNonLazyBinder BindEntityExt<TEntity>(this DiContainer container, TEntity entity)
         {
             var binder =  container
@@ -113,7 +111,7 @@ namespace EmpireAtWar.Extentions
                 .AsSingle();
             return binder;
         }
-        
+
         private static string ConstructName<T>()
         {
             return typeof(T).Name;

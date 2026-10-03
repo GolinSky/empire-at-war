@@ -18,18 +18,24 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
         private readonly IFogOfWarSystem _fog;
-        private readonly UnitOrderSettings _settings;
-        private readonly PlayerId _side;
         private readonly IPlayerRelations _relations;
-        private readonly bool _respectsFog;
         private IEntity _target;
-        private float _retargetTimer;
+
+        private readonly UnitOrderSettings _settings;
+
+        private readonly PlayerId _side;
         private Vector3 _pursuitDestination;
+
+        private float _retargetTimer;
+
+        private readonly bool _respectsFog;
+
+        public bool IsComplete => _target == null;
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            IFogOfWarSystem fog, UnitOrderSettings settings, PlayerId side,
-            IPlayerRelations relations, ILocalPlayer localPlayer)
+            IFogOfWarSystem fog, IPlayerRelations relations, ILocalPlayer localPlayer,
+            UnitOrderSettings settings, PlayerId side)
         {
             _relations = relations;
             // Only the human's ships are limited to what the fog of war reveals.
@@ -42,8 +48,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _settings = settings;
             _side = side;
         }
-
-        public bool IsComplete => _target == null;
 
         public void Enter()
         {

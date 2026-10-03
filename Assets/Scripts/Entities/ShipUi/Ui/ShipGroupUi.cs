@@ -17,26 +17,26 @@ namespace EmpireAtWar.Views
         private const float CARD_WIDTH = 80f;
         private const float GROUP_SPACING = 10f;
 
-        [SerializeField] private ShipSelectionGroupUi groupPrefab;
-        [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
-
-        private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
         private IShipUiModelObserver _model;
         private IShipIconProvider _icons;
         private IShipUiPresenter _presenter;
+
+        [SerializeField] private ShipSelectionGroupUi groupPrefab;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        private readonly List<ShipSelectionGroupUi> _groups = new List<ShipSelectionGroupUi>();
         private RectTransform _content;
         private RectTransform _viewport;
+
         private Vector2 _lastSize;
+
         private bool _layoutDirty;
         private bool _isInitialized;
         private bool _isRouteActive = true;
 
+        public TooltipHoverView TooltipHover => tooltipHover;
+
         [Inject]
         public void Construct(IShipIconProvider icons) => _icons = icons;
-
-        public void SetModel(IShipUiModelObserver model) => _model = model;
-        public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
 
         public void Initialize()
         {
@@ -53,6 +53,10 @@ namespace EmpireAtWar.Views
             ClearGroups();
             _isInitialized = false;
         }
+
+        public void SetModel(IShipUiModelObserver model) => _model = model;
+
+        public void SetPresenter(IShipUiPresenter presenter) => _presenter = presenter;
 
         private void OnDestroy() => Dispose();
 

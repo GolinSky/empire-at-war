@@ -9,27 +9,31 @@ namespace EmpireAtWar.ViewComponents.Health
 {
     public interface IHardPointProvider
     {
-        void SetId(int id);
         HardPointType HardPointType { get; }
         int Id { get; }
-        
+
         GameObject GameObject { get; }
+
+        void SetId(int id);
     }
     public class HardPoint : MonoBehaviour, IHardPoint, INotifier<float>, IHardPointProvider
     {
         private const string EXPLOSION_VFX_PATH = "ExplosionVfx";
+
         private const float MAX_HEALTH = 1f;
-        [field: SerializeField] public HardPointType HardPointType { get; private set; }
-        [field: SerializeField] public int Id { get; private set; }
-        [SerializeField] private bool spawnDestroyedExplosion = true;
-        public GameObject GameObject => gameObject;
 
         private readonly List<IObserver<float>> _observers = new List<IObserver<float>>();
         private ExplosionVfx _explosionVfx;
 
         private float _healthPercentage = MAX_HEALTH;
 
+        [SerializeField] private bool spawnDestroyedExplosion = true;
+
         public event System.Action<ExplosionVfx> ExplosionSpawned;
+
+        [field: SerializeField] public HardPointType HardPointType { get; private set; }
+        [field: SerializeField] public int Id { get; private set; }
+        public GameObject GameObject => gameObject;
 
         public Vector3 Position => Transform.position;
         public Transform Transform => transform;
@@ -63,8 +67,9 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             Id = id;
         }
-        
+
         protected virtual void OnInit(){}
+
         protected virtual void OnRelease(){}
 
         protected virtual void OnStateUpdated(float healthPercentage)

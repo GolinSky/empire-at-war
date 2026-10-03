@@ -14,6 +14,24 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
     public readonly struct EnemyProductionSnapshot
     {
+        public EnemyStrategicState StrategicState { get; }
+        public EnemyAiDifficulty Difficulty { get; }
+        public int MiningFacilityCount { get; }
+        public int ShipCount { get; }
+        public int ShipsOrdered { get; }
+        public int DefensePlatformCount { get; }
+        public int CurrentFactionLevel { get; }
+        public int MiningFacilityTarget { get; }
+        public int DefensePlatformTarget { get; }
+        public bool HasMiningOption { get; }
+        public bool HasShipOption { get; }
+        public bool CanBuildShip { get; }
+        public bool CanBuildMining { get; }
+        public bool HasDefenseOption { get; }
+        public bool CanBuildDefense { get; }
+        public bool HasLevelUpOption { get; }
+        public bool CanLevelUp { get; }
+
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
@@ -51,24 +69,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasLevelUpOption = hasLevelUpOption;
             CanLevelUp = canLevelUp;
         }
-
-        public EnemyStrategicState StrategicState { get; }
-        public EnemyAiDifficulty Difficulty { get; }
-        public int MiningFacilityCount { get; }
-        public int ShipCount { get; }
-        public int ShipsOrdered { get; }
-        public int DefensePlatformCount { get; }
-        public int CurrentFactionLevel { get; }
-        public int MiningFacilityTarget { get; }
-        public int DefensePlatformTarget { get; }
-        public bool HasMiningOption { get; }
-        public bool HasShipOption { get; }
-        public bool CanBuildShip { get; }
-        public bool CanBuildMining { get; }
-        public bool HasDefenseOption { get; }
-        public bool CanBuildDefense { get; }
-        public bool HasLevelUpOption { get; }
-        public bool CanLevelUp { get; }
     }
 
     public sealed class EnemyProductionDecisionModel : PureModel

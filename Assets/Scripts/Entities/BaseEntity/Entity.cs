@@ -8,28 +8,32 @@ namespace EmpireAtWar.Entities.BaseEntity
     public interface IEntity
     {
         long Id { get; }
-        bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade;
-        TFacade GetFacade<TFacade>() where TFacade : IEntityFacade;
         IHealthModelObserver HealthModel { get; }
-        
+
         PlayerId Owner { get; }
+
+        bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade;
+
+        TFacade GetFacade<TFacade>() where TFacade : IEntityFacade;
     }
     
     public class Entity: IEntity, IInitializable, ILateDisposable
     {
-        private readonly IEntityFacade[] _facades;
         private readonly IEntityLocator _entityLocator;
+
+        private readonly IEntityFacade[] _facades;
+
         public long Id { get;  }
 
         public IHealthModelObserver HealthModel { get; }
         public PlayerId Owner { get; }
 
         public Entity(
-            long id,
-            IEntityFacade[] facades,
             IHealthModelObserver healthModel,
             IEntityLocator entityLocator,
-            PlayerId owner)
+            IEntityFacade[] facades,
+            PlayerId owner,
+            long id)
         {
             _facades = facades;
             _entityLocator = entityLocator;
@@ -37,7 +41,17 @@ namespace EmpireAtWar.Entities.BaseEntity
             Id = id;
             HealthModel = healthModel;
         }
-        
+
+        public void Initialize()
+        {
+            _entityLocator.AddEntity(this);
+        }
+
+        public void LateDispose()
+        {
+            _entityLocator.RemoveEntity(this);
+        }
+
         public bool TryGetFacade<TFacade>(out TFacade destinationFacade) where TFacade : IEntityFacade
         {
             destinationFacade = default;
@@ -61,16 +75,6 @@ namespace EmpireAtWar.Entities.BaseEntity
             }
 
             throw new InvalidOperationException($"Entity {Id} has no {typeof(TFacade).Name}.");
-        }
-
-        public void Initialize()
-        {
-            _entityLocator.AddEntity(this);
-        }
-
-        public void LateDispose()
-        {
-            _entityLocator.RemoveEntity(this);
         }
     }
 }

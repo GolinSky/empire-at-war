@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.Input
     public sealed class InputLockService : IInputLock, IInitializable, IDisposable
     {
         private readonly GameInputActions _actions;
+
         private int _lockCount;
 
         public event Action<bool> LockChanged;
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Services.Input
         private sealed class LockHandle : IDisposable
         {
             private readonly InputLockService _owner;
+
             private bool _isReleased;
 
             public LockHandle(InputLockService owner)

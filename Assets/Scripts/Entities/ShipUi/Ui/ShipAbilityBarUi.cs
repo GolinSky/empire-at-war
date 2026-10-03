@@ -10,14 +10,15 @@ namespace EmpireAtWar.Views
 {
     public sealed class ShipAbilityBarUi : MonoBehaviour
     {
+        private IShipUiModelObserver _model;
+
         [SerializeField] private ShipAbilityButtonUi buttonPrefab;
         [SerializeField] private Transform buttonParent;
-
         private readonly List<ShipAbilityButtonUi> _buttons = new List<ShipAbilityButtonUi>();
         private readonly Dictionary<ShipAbilityId, List<ShipAbilitySlot>> _groups =
             new Dictionary<ShipAbilityId, List<ShipAbilitySlot>>();
-        private IShipUiModelObserver _model;
         private TooltipHoverView _tooltipHover;
+
         public void SetTooltipHover(TooltipHoverView hover) => _tooltipHover = hover;
 
         public void SetModel(IShipUiModelObserver model) => _model = model;

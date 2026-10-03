@@ -9,9 +9,10 @@ namespace EmpireAtWar.Entities.UnitActions.Ui
     {
         [SerializeField] private List<UnitActionButton> buttons;
         [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
 
         public event Action<UnitActionId> ActionPressed;
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {

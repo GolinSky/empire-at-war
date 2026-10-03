@@ -22,13 +22,18 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
+        private IEntity _engagementTarget;
+
         private readonly Func<IEntity, float> _rangeTo;
         private AttackMoveEngagement _nextEngagement;
         private AttackMoveEngagement _engagement;
-        private int _member;
-        private IEntity _engagementTarget;
+
         private Vector3 _destination;
         private Vector3 _pursuitDestination;
+
+        private int _member;
+
+        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving;
 
         public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory)
@@ -39,8 +44,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _attackDataFactory = attackDataFactory;
             _rangeTo = enemy => _movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
         }
-
-        public bool IsComplete => _engagementTarget == null && !_movement.IsMoving;
 
         public void SetData(Vector3 destination, AttackMoveEngagement engagement)
         {

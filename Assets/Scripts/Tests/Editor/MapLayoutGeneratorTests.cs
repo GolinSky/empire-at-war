@@ -19,7 +19,9 @@ namespace EmpireAtWar.Tests.Editor
         private const string ZONE_PREFAB_PATH = "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab";
         private const string MINING_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab";
         private const string BATTLE_PREFAB_PATH = "Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab";
+
         private const int SEED_COUNT = 20;
+
         private const float TOLERANCE = 0.01f;
 
         private MapGenerationSettings _settings;

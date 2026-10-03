@@ -12,14 +12,13 @@ namespace EmpireAtWar.Views.Factions
     public class BuildPipelineView
     {
         [SerializeField] private CanvasGroup canvasGroup;
-
         [SerializeField] private List<PipelineView> pipelineViews;
         [SerializeField] private PipelineView pipelinePrefab;
         [SerializeField] private Transform pipelineParent;
         private Action<string> _cancelBuilding;
         private TooltipHoverView _tooltipHover;
-
         private Dictionary<UnitLimitKey, PipelineView> _workingPipelines = new Dictionary<UnitLimitKey, PipelineView>();
+
         public void RegisterTooltips(TooltipHoverView hover)
         {
             _tooltipHover = hover;
@@ -35,7 +34,7 @@ namespace EmpireAtWar.Views.Factions
                 pipelineView.Activate(false);
             }
         }
-        
+
         public void Render(IReadOnlyList<ProductionQueueSnapshot> snapshots)
         {
             if (snapshots == null)

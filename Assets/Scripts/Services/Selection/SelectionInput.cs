@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly GameInputActions.BattleActions _battle;
 
         public event Action SelectVisibleRequested;
+
         public event Action SelectAllRequested;
 
         public SelectionInput(InputActionsProvider provider)

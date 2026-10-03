@@ -10,7 +10,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     {
         private readonly IShipMovement _shipMoveComponent;
         private readonly IMapModelObserver _mapModel;
+
         private readonly PlayerId _owner;
+
+        public bool IsComplete => false;
 
         public FleeState(
             IShipMovement shipMoveComponent,
@@ -21,8 +24,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _mapModel = mapModel;
             _owner = owner;
         }
-
-        public bool IsComplete => false;
 
         public void Enter()
         {

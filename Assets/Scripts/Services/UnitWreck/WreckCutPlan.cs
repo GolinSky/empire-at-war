@@ -16,13 +16,13 @@ namespace EmpireAtWar.Services.UnitWreck
 
         private readonly float[] _cuts;
 
+        public IReadOnlyList<float> Cuts => _cuts;
+        public int PartCount => _cuts.Length + 1;
+
         private WreckCutPlan(float[] cuts)
         {
             _cuts = cuts;
         }
-
-        public IReadOnlyList<float> Cuts => _cuts;
-        public int PartCount => _cuts.Length + 1;
 
         public static WreckCutPlan Create(int minParts, int maxParts, float minRatio, float maxRatio, Random random)
         {

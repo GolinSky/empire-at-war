@@ -7,6 +7,8 @@ namespace EmpireAtWar.Models.Players
     {
         private readonly Dictionary<PlayerId, PlayerSlot> _slots = new Dictionary<PlayerId, PlayerSlot>();
 
+        public IReadOnlyList<PlayerSlot> Players { get; }
+
         public PlayerRoster(IReadOnlyList<PlayerSlot> players)
         {
             Players = players;
@@ -15,8 +17,6 @@ namespace EmpireAtWar.Models.Players
                 _slots.Add(slot.Id, slot);
             }
         }
-
-        public IReadOnlyList<PlayerSlot> Players { get; }
 
         public PlayerSlot Get(PlayerId id)
         {

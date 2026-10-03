@@ -14,10 +14,12 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         private readonly IShipAbilityFactory _factory;
         private readonly IPlayerRelations _relations;
+
         private readonly List<ShipAbilitySlot> _running = new List<ShipAbilitySlot>();
         private readonly List<IEntity> _pendingCasters = new List<IEntity>();
 
         public event Action TargetingChanged;
+
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
 
@@ -25,6 +27,16 @@ namespace EmpireAtWar.Services.ShipAbilities
         {
             _factory = factory;
             _relations = relations;
+        }
+
+        public void LateDispose()
+        {
+            CancelTargeting();
+            for (int i = _running.Count - 1; i >= 0; i--)
+            {
+                if (_running[i].State == ShipAbilityState.Active) Stop(_running[i]);
+            }
+            _running.Clear();
         }
 
         public void Press(IReadOnlyList<IEntity> casters, ShipAbilityId id)
@@ -150,16 +162,6 @@ namespace EmpireAtWar.Services.ShipAbilities
                 slot.Ready();
                 _running.RemoveAt(i);
             }
-        }
-
-        public void LateDispose()
-        {
-            CancelTargeting();
-            for (int i = _running.Count - 1; i >= 0; i--)
-            {
-                if (_running[i].State == ShipAbilityState.Active) Stop(_running[i]);
-            }
-            _running.Clear();
         }
 
         private void Stop(ShipAbilitySlot slot)

@@ -18,76 +18,50 @@ namespace EmpireAtWar.Views.Factions
 
     public interface IFactionUi
     {
-        void SetModel(IPlayerFactionModelObserver model);
-        void SetResearch(IFactionResearchModelObserver research);
-        void SetPresenter(IFactionPresenter presenter);
-        void SetData(FactionsData factionsData);
-        void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
-        void SetParent(Transform parent);
-        void Show();
-        void Hide();
         void Initialize();
+
         void Dispose();
+
+        void SetModel(IPlayerFactionModelObserver model);
+
+        void SetResearch(IFactionResearchModelObserver research);
+
+        void SetPresenter(IFactionPresenter presenter);
+
+        void SetData(FactionsData factionsData);
+
+        void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory);
+
+        void SetParent(Transform parent);
+
+        void Show();
+
+        void Hide();
+
         void RefreshAvailability(float credits, bool battleEnded);
     }
 
     public class FactionUi : BaseUi, IFactionUi, IFactionView, ITooltipHoverView
     {
-        [SerializeField] private FactionUnitUi factionUnitPrefab;
-        [SerializeField] private TooltipHoverView tooltipHover;
-        public TooltipHoverView TooltipHover => tooltipHover;
-
-        private readonly List<FactionUnitUi> _factionUnitsUi =
-            new List<FactionUnitUi>();
-
-        private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
-            new Dictionary<ResearchType, FactionUnitUi>();
-
-        private FactionUnitUi _levelFactionUnitUi;
         private IPlayerFactionModelObserver _model;
         private IFactionResearchModelObserver _research;
         private IFactionPresenter _presenter;
-        private FactionsData _factionsData;
         private IUnitRequestFactory _unitRequestFactory;
+
+        [SerializeField] private FactionUnitUi factionUnitPrefab;
+        [SerializeField] private TooltipHoverView tooltipHover;
+        private readonly List<FactionUnitUi> _factionUnitsUi =
+            new List<FactionUnitUi>();
+        private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
+            new Dictionary<ResearchType, FactionUnitUi>();
+        private FactionUnitUi _levelFactionUnitUi;
+        private FactionsData _factionsData;
         private Transform _unitParent;
+
         private bool _isInitialized;
         private bool _isRouteActive = true;
 
-        public void SetModel(IPlayerFactionModelObserver model)
-        {
-            _model = model;
-        }
-
-        public void SetResearch(IFactionResearchModelObserver research)
-        {
-            _research = research;
-        }
-
-        public void SetPresenter(IFactionPresenter presenter)
-        {
-            _presenter = presenter;
-        }
-
-        public void SetData(FactionsData factionsData)
-        {
-            _factionsData = factionsData;
-        }
-
-        public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
-        {
-            _unitRequestFactory = unitRequestFactory;
-        }
-
-        public override void SetParent(Transform parent)
-        {
-            base.SetParent(parent);
-            _unitParent = parent;
-
-            for (int i = 0; i < _factionUnitsUi.Count; i++)
-            {
-                _factionUnitsUi[i].transform.SetParent(parent, false);
-            }
-        }
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void Initialize()
         {
@@ -169,6 +143,42 @@ namespace EmpireAtWar.Views.Factions
             _model.OnLevelUpgraded -= UpdateUnits;
             _research.OnResearchCompleted -= UpdateResearchUnit;
             _isInitialized = false;
+        }
+
+        public void SetModel(IPlayerFactionModelObserver model)
+        {
+            _model = model;
+        }
+
+        public void SetResearch(IFactionResearchModelObserver research)
+        {
+            _research = research;
+        }
+
+        public void SetPresenter(IFactionPresenter presenter)
+        {
+            _presenter = presenter;
+        }
+
+        public void SetData(FactionsData factionsData)
+        {
+            _factionsData = factionsData;
+        }
+
+        public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
+        {
+            _unitRequestFactory = unitRequestFactory;
+        }
+
+        public override void SetParent(Transform parent)
+        {
+            base.SetParent(parent);
+            _unitParent = parent;
+
+            for (int i = 0; i < _factionUnitsUi.Count; i++)
+            {
+                _factionUnitsUi[i].transform.SetParent(parent, false);
+            }
         }
 
         public void BuyUnit(UnitRequest unitRequest)

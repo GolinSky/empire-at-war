@@ -25,11 +25,8 @@ namespace EmpireAtWar.Services.CaptureSites
         // Explored fog retains 0.35 visibility; site status requires current vision.
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
 
-        private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
-        private CaptureSiteView[] _siteViews;
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
-        private CaptureSiteData _data;
         private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
         private IPointerInput _pointer;
@@ -38,16 +35,21 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerRegistry _playerRegistry;
         private IPlayerRoster _roster;
         private ILocalPlayer _localPlayer;
+        private ITooltipService _tooltips;
+
+        private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
+        private CaptureSiteView[] _siteViews;
+        private CaptureSiteData _data;
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
         private Predicate<float> _canPlayerAfford;
-        private ITooltipService _tooltips;
+
+        public IReadOnlyList<ICaptureSite> Sites => _sites;
 
         [Inject]
         private void Construct(
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
-            CaptureSiteData data,
             IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
             IPointerInput pointer,
@@ -56,8 +58,9 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRegistry playerRegistry,
             IPlayerRoster roster,
             ILocalPlayer localPlayer,
-            CaptureSiteView[] siteViews,
-            ITooltipService tooltips)
+            ITooltipService tooltips,
+            CaptureSiteData data,
+            CaptureSiteView[] siteViews)
         {
             _siteViews = siteViews;
             _tooltips = tooltips;
@@ -75,16 +78,14 @@ namespace EmpireAtWar.Services.CaptureSites
             _captureStrengthBuilder = new CaptureStrengthBuilder(roster);
         }
 
-        public IReadOnlyList<ICaptureSite> Sites => _sites;
-
         public void Initialize()
         {
             foreach (CaptureSiteView view in _siteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(
-                    view.CaptureDuration, _data.CaptureSpeedPerNetShip, _roster);
-                CaptureSitePresenter site = new CaptureSitePresenter(model, view, _data, _localPlayer,
-                    _tooltips, price => GetBuilder(_localPlayer.Id).CanAfford(price));
+                    captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _roster);
+                CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
+                    tooltips: _tooltips, canAfford: price => GetBuilder(_localPlayer.Id).CanAfford(price));
                 site.BuildRequested += HandleBuildRequested;
                 _sites.Add(site);
             }

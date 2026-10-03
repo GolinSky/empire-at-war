@@ -24,14 +24,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
 
-        [SerializeField] private Ease hyperSpaceEase;
-        [SerializeField] private LineRenderer lineRenderer;
-        [SerializeField] private Transform bodyTransform;
-        [SerializeField] private bool logNavigationDecisions;
-
-        private CombatModifiers _modifiers;
-        private Vector3 _startPosition;
-        private PlayerId _owner;
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
         private IShipNavigationService _shipNavigationService;
@@ -39,15 +31,28 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
         private ILocalPlayer _localPlayer;
-        private bool _sharesLocalVision;
+
+        [SerializeField] private LineRenderer lineRenderer;
+        [SerializeField] private Transform bodyTransform;
+        private CombatModifiers _modifiers;
         private ShipMovementTweenPlayer _motion;
         private readonly List<RadarContact> _navigationContacts = new List<RadarContact>();
+
+        [SerializeField] private Ease hyperSpaceEase;
+        private Vector3 _startPosition;
+        private PlayerId _owner;
+
+        [SerializeField] private bool logNavigationDecisions;
+        private bool _sharesLocalVision;
         private bool _isNavigationRegistered;
         private bool _isReleased;
 
         public event Action<Vector3> DestinationChanged;
+
         public event Action<Vector3> LookingAt;
+
         public event Action Stopped;
+
         public event Action HyperSpaceCompleted;
 
         public Vector3 NavigationPosition => transform.position;
@@ -61,12 +66,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         public bool IsMoving => Model.IsMoving;
 
         [Inject]
-        private void Construct(ShipMoveModel model,
-            Vector3 startPosition, PlayerId owner, IMapModelObserver mapModel,
-            IStationFacingService stationFacingService,
-            IShipNavigationService shipNavigationService, IFogOfWarSystem fogOfWarSystem,
-            IRadarModelObserver radarModel, CombatModifiers modifiers, IWeaponFacing weaponFacing,
-            ILocalPlayer localPlayer)
+        private void Construct(IMapModelObserver mapModel,
+            IStationFacingService stationFacingService, IShipNavigationService shipNavigationService, IFogOfWarSystem fogOfWarSystem,
+            IRadarModelObserver radarModel,
+            IWeaponFacing weaponFacing, ILocalPlayer localPlayer,
+            ShipMoveModel model, CombatModifiers modifiers, Vector3 startPosition,
+            PlayerId owner)
         {
             _weaponFacing = weaponFacing;
             SetModel(model);
@@ -106,8 +111,9 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
         }
 
-        public void Tick() => _motion.Tick(Time.deltaTime);
         public void LateDispose() => Release();
+
+        public void Tick() => _motion.Tick(Time.deltaTime);
 
         public override void Release()
         {

@@ -8,11 +8,23 @@ namespace EmpireAtWar.ViewComponents.Health
     public sealed class IonStunView : MonoBehaviour, IIonStunView
     {
         private const int ARC_POINTS = 20;
+
         private const float ARC_REFRESH_INTERVAL = 0.065f;
+
+        private readonly ITimer _arcRefreshTimer = TimerFactory.ConstructTimer(ARC_REFRESH_INTERVAL);
+
         [SerializeField] private MeshRenderer shimmer;
         [SerializeField] private LineRenderer[] arcs;
-        [SerializeField, Min(0.01f)] private float fadeDuration = 0.7f;
+        private readonly Vector3[] _points = new Vector3[ARC_POINTS];
+        private MaterialPropertyBlock _properties;
+
         [SerializeField, ColorUsage(true, true)] private Color arcColor = new Color(0.25f, 0.8f, 1f, 1f);
+        private Vector3 _extents;
+
+        [SerializeField, Min(0.01f)] private float fadeDuration = 0.7f;
+        private float _intensity;
+
+        private bool _active;
 
         public IEnumerable<Renderer> Renderers
         {
@@ -22,13 +34,6 @@ namespace EmpireAtWar.ViewComponents.Health
                 foreach (LineRenderer arc in arcs) yield return arc;
             }
         }
-
-        private readonly Vector3[] _points = new Vector3[ARC_POINTS];
-        private MaterialPropertyBlock _properties;
-        private Vector3 _extents;
-        private float _intensity;
-        private readonly ITimer _arcRefreshTimer = TimerFactory.ConstructTimer(ARC_REFRESH_INTERVAL);
-        private bool _active;
 
         public void Configure(Bounds bounds)
         {

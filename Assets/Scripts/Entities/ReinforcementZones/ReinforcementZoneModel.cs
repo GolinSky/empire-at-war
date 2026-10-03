@@ -5,17 +5,24 @@ namespace EmpireAtWar.Models.ReinforcementZones
 {
     public sealed class ReinforcementZoneModel : PureModel
     {
-        private readonly bool _isCapturable;
-        private readonly float _captureDuration;
-        private readonly float _captureSpeedPerNetShip;
         private readonly IPlayerRelations _relations;
 
+        private readonly float _captureDuration;
+        private readonly float _captureSpeedPerNetShip;
+
+        private readonly bool _isCapturable;
+
+        public PlayerId Owner { get; private set; }
+        public PlayerId CapturingPlayer { get; private set; } = PlayerId.None;
+        public float CaptureProgress { get; private set; }
+        public bool IsContested { get; private set; }
+
         public ReinforcementZoneModel(
+            IPlayerRelations relations,
             PlayerId startingOwner,
-            bool isCapturable,
             float captureDuration,
             float captureSpeedPerNetShip,
-            IPlayerRelations relations)
+            bool isCapturable)
         {
             Owner = startingOwner;
             _isCapturable = isCapturable;
@@ -23,11 +30,6 @@ namespace EmpireAtWar.Models.ReinforcementZones
             _captureSpeedPerNetShip = captureSpeedPerNetShip > 0f ? captureSpeedPerNetShip : 1f;
             _relations = relations;
         }
-
-        public PlayerId Owner { get; private set; }
-        public PlayerId CapturingPlayer { get; private set; } = PlayerId.None;
-        public float CaptureProgress { get; private set; }
-        public bool IsContested { get; private set; }
 
         /// <returns>True when the zone changed owner.</returns>
         public bool Tick(float deltaTime, CaptureStrength tally)

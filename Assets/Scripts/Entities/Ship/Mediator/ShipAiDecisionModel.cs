@@ -14,11 +14,19 @@ namespace EmpireAtWar.Entities.Ship.Mediator
 
     public readonly struct ShipAiSnapshot
     {
+        public bool IsDestroyed { get; }
+        public bool HasShields { get; }
+        public float ShieldPercentage { get; }
+        public int NearbyEnemyCount { get; }
+        public bool HasAssignedTarget { get; }
+        public bool IsAssignedTargetAvailable { get; }
+        public bool IsMoving { get; }
+
         public ShipAiSnapshot(
-            bool isDestroyed,
-            bool hasShields,
             float shieldPercentage,
             int nearbyEnemyCount,
+            bool isDestroyed,
+            bool hasShields,
             bool hasAssignedTarget,
             bool isAssignedTargetAvailable,
             bool isMoving)
@@ -31,14 +39,6 @@ namespace EmpireAtWar.Entities.Ship.Mediator
             IsAssignedTargetAvailable = isAssignedTargetAvailable;
             IsMoving = isMoving;
         }
-
-        public bool IsDestroyed { get; }
-        public bool HasShields { get; }
-        public float ShieldPercentage { get; }
-        public int NearbyEnemyCount { get; }
-        public bool HasAssignedTarget { get; }
-        public bool IsAssignedTargetAvailable { get; }
-        public bool IsMoving { get; }
     }
 
     public sealed class ShipAiDecisionModel : PureModel

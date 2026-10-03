@@ -10,14 +10,22 @@ namespace EmpireAtWar.Entities.Map
     {
         private readonly IReadOnlyDictionary<PlayerId, Vector3> _stationPositions;
 
+        public Vector2Range SizeRange { get; }
+        /// <summary>Ground-plane point the planet sits under; each planet keeps its authored depth.</summary>
+        public Vector3 PlanetPosition { get; }
+        public IReadOnlyList<ZoneSpot> Zones { get; }
+        public IReadOnlyList<SiteSpot> Sites { get; }
+        public IReadOnlyList<MapLane> Lanes { get; }
+        public IReadOnlyList<AsteroidField> Fields { get; }
+
         public MapLayout(
-            Vector2Range sizeRange,
             IReadOnlyDictionary<PlayerId, Vector3> stationPositions,
-            Vector3 planetPosition,
             IReadOnlyList<ZoneSpot> zones,
             IReadOnlyList<SiteSpot> sites,
             IReadOnlyList<MapLane> lanes,
-            IReadOnlyList<AsteroidField> fields)
+            IReadOnlyList<AsteroidField> fields,
+            Vector2Range sizeRange,
+            Vector3 planetPosition)
         {
             SizeRange = sizeRange;
             _stationPositions = stationPositions;
@@ -27,14 +35,6 @@ namespace EmpireAtWar.Entities.Map
             Lanes = lanes;
             Fields = fields;
         }
-
-        public Vector2Range SizeRange { get; }
-        /// <summary>Ground-plane point the planet sits under; each planet keeps its authored depth.</summary>
-        public Vector3 PlanetPosition { get; }
-        public IReadOnlyList<ZoneSpot> Zones { get; }
-        public IReadOnlyList<SiteSpot> Sites { get; }
-        public IReadOnlyList<MapLane> Lanes { get; }
-        public IReadOnlyList<AsteroidField> Fields { get; }
 
         public Vector3 GetStationPosition(PlayerId owner)
         {
