@@ -6,7 +6,7 @@
 
 - [ ] **Finish Malevolence integration acceptance**
   - **Plan**: [[TODOs/Features/Malevolence_Import|Malevolence Import]]
-  - **Status**: 2026-10-03 ALO → Blender → FBX → registered Separatist ship; 73 hardpoints, exact hull/shield/population/limit values, Mass Driver bypass and Ion Pulse implemented. Saved references, team-color renders and compilation verified; no automated tests or Play Mode run.
+  - **Status**: 2026-10-03 ALO → Blender → FBX → registered Separatist ship; 73 hardpoints, exact hull/shield/population/limit values, Mass Driver bypass and Ion Pulse implemented. Length resized to **3.676× Providence (478.402 units)**; flight **Y = −370**, below Lucrehulk **−258**. Saved references, matching visual/wreck/placement bounds, team-color renders and compilation verified; no automated tests or Play Mode run.
   - **Remaining**: exact Vulture/bomber squadron assets and launches; in-game combat, placement, ability and destruction acceptance; provisional balance review.
 
 - [ ] **Review ship abilities implementation**

@@ -56,7 +56,7 @@ MonoBehaviour:
   - {fileID: 4708048416675392054}
   - {fileID: 1284003956000050213}
   - {fileID: 4348025807313851518}
-  height: -118
+  height: -370
 --- !u!54 &4336953621801800969
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -103,8 +103,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 91.909935, y: 56.123554, z: 329.59998}
-  m_Center: {x: 0, y: -0.0000019073486, z: 0}
+  m_Size: {x: 137.4058, y: 83.90499, z: 492.75363}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &9017228909181455354
 PrefabInstance:
   m_ObjectHideFlags: 0
