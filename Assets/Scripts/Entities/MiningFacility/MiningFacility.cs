@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
@@ -22,7 +21,6 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
-        private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
@@ -44,7 +42,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         private void Construct(
             IEconomyProvider economyProvider,
             IHealthComponent healthComponent,
-            IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
@@ -56,7 +53,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         {
             _economyProvider = economyProvider;
             _healthComponent = healthComponent;
-            _radarComponent = radarComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
@@ -71,7 +67,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
-            _radarComponent.SetPosition(transform.position);
             _economyProvider.AddProvider(this);
             _research.OnResearchCompleted += HandleResearchCompleted;
         }

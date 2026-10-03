@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
@@ -21,7 +20,6 @@ namespace EmpireAtWar.Entities.SpaceStation
         private ILocalPlayer _localPlayer;
         private PlayerId _owner;
         private IHealthComponent _healthComponent;
-        private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
@@ -38,7 +36,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             IFogOfWarSystem fogOfWarSystem,
             PlayerId owner,
             IHealthComponent healthComponent,
-            IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
@@ -51,7 +48,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             _localPlayer = localPlayer;
             _owner = owner;
             _healthComponent = healthComponent;
-            _radarComponent = radarComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
@@ -65,7 +61,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
-            _radarComponent.SetPosition(transform.position);
 
             // Allied stations share vision with the local player.
             if (_localPlayer.IsFriendly(_owner))
