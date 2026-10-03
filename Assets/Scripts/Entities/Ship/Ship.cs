@@ -252,7 +252,6 @@ namespace EmpireAtWar.Ship
 
         private void SynchronizeComponents()
         {
-            _radarComponent.SetPosition(_shipMoveComponent.CurrentPosition);
             _audioShipComponent.UpdateAudio();
         }
 

@@ -13,6 +13,7 @@ using Zenject;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Extentions;
 
 namespace EmpireAtWar.Components.Radar
 {
@@ -20,7 +21,6 @@ namespace EmpireAtWar.Components.Radar
     {
         event Action<IReadOnlyList<RadarContact>> ContactsUpdated;
         ObservableList<IEntity> Enemies { get; }
-        void SetPosition(Vector3 position);
     }
     public class RadarComponent : MonoComponent<RadarModel>, IInitializable, IFixedTickable, IRadarComponent
     {
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Components.Radar
         private DebugRangeCircleFactory _rangeCircleFactory;
         private ISelectionModelObserver _selection;
         private IPlayerRelations _relations;
-        private Vector3 _position;
+        private Transform _viewTransform;
         private bool _isReleased;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private DebugRangeCircle _radarRangeCircle;
@@ -49,7 +49,8 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies => Model.Enemies;
         [Inject]
         private void Construct(RadarModel model, IEntityLocator entityLocator, ILayerService layerService,
-            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection, IPlayerRelations relations)
+            DebugRangeCircleFactory rangeCircleFactory, ISelectionModelObserver selection, IPlayerRelations relations,
+            [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
             SetModel(model);
             _entityLocator = entityLocator;
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Components.Radar
             _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
             _relations = relations;
+            _viewTransform = viewTransform;
         }
 
         public void Initialize()
@@ -71,11 +73,6 @@ namespace EmpireAtWar.Components.Radar
 #endif
         }
 
-        public void SetPosition(Vector3 position)
-        {
-            _position = position;
-        }
-
         public void FixedTick()
         {
             if (_isReleased)
@@ -84,7 +81,7 @@ namespace EmpireAtWar.Components.Radar
             }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _radarRangeCircle.Draw(_position, Model.Range);
+            _radarRangeCircle.Draw(_viewTransform.position, Model.Range);
 #endif
             if (_timer.IsComplete)
             {
@@ -108,7 +105,7 @@ namespace EmpireAtWar.Components.Radar
                     {
                         if (_relations.IsHostile(Model.Owner, entity.Owner) && entity.HealthModel.HasUnits &&
                             PlanarGeometry.DistanceSquared(
-                                entity.GetFacade<IEntityTransformFacade>().Transform.position, _position) <=
+                                entity.GetFacade<IEntityTransformFacade>().Transform.position, _viewTransform.position) <=
                             Model.Range * Model.Range)
                         {
                             _detectedEnemies.Add(entity);
@@ -160,7 +157,7 @@ namespace EmpireAtWar.Components.Radar
             while (true)
             {
                 int hitAmount = Physics.OverlapBoxNonAlloc(
-                    _position,
+                    _viewTransform.position,
                     _halfExtents,
                     _overlapHits,
                     Quaternion.identity,
@@ -193,7 +190,7 @@ namespace EmpireAtWar.Components.Radar
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireCube(_position, _halfExtents * 2f);
+                Gizmos.DrawWireCube(_viewTransform.position, _halfExtents * 2f);
             }
 #endif
         }

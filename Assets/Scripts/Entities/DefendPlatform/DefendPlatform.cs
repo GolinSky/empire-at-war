@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
@@ -18,7 +17,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         [SerializeField] private Renderer[] explosionHullRenderers;
 
         private IHealthComponent _healthComponent;
-        private IRadarComponent _radarComponent;
         private Vector3 _startPosition;
         private EntityComponentLifecycle _componentLifecycle;
         private IUnitExplosionService _explosionService;
@@ -36,7 +34,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         [Inject]
         private void Construct(
             IHealthComponent healthComponent,
-            IRadarComponent radarComponent,
             Vector3 startPosition,
             List<IMonoComponent> monoComponents,
             IUnitWreckService wreckService,
@@ -46,7 +43,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
             ILayerService layerService)
         {
             _healthComponent = healthComponent;
-            _radarComponent = radarComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _wreckService = wreckService;
@@ -60,8 +56,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
-            // Stationary: the radar position never changes after placement.
-            _radarComponent.SetPosition(_startPosition);
         }
 
         private void Release(bool playDeathEffects)

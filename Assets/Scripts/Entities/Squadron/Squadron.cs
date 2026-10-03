@@ -89,7 +89,6 @@ namespace EmpireAtWar.Entities.Squadrons
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
-            _radar.SetPosition(_flight.Centroid);
         }
 
         public void Tick()
@@ -102,7 +101,6 @@ namespace EmpireAtWar.Entities.Squadrons
             UpdateOrder();
             _pilot.Tick(Time.deltaTime);
             _flight.Step(Time.deltaTime);
-            _radar.SetPosition(_flight.Centroid);
         }
 
         public void LateDispose() => Release(false);
