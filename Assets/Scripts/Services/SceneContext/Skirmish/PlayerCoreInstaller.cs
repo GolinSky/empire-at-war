@@ -1,7 +1,6 @@
 using System.Linq;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Extentions;
@@ -76,8 +75,6 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<CheatPresenter>();
             
             Container.BindInterfacesExt<PlayerService>();
-
-            Container.BindInterfacesExt<PurchaseProcessor>();
         }
         
      

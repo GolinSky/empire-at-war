@@ -12,7 +12,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Squadrons;
@@ -28,14 +27,14 @@ using ShipEntity = EmpireAtWar.Ship.Ship;
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
    //todo: why we have here spawn logic 
-    public class EnemyFactionController : Controller<EnemyFactionModel>, IBuildShipChain, IInitializable, ILateDisposable, IIncomeProvider,
+    public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IInitializable, ILateDisposable, IIncomeProvider,
         IEnemyReinforcementObserver
     {
         private const float DEFAULT_INCOME = 5f;
 
         private readonly ShipFactory _shipFactory;
         private readonly IEconomyProvider _economyProvider;
-        private readonly IPurchaseChain _purchaseChain;
+        private readonly IWallet _wallet;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             new Dictionary<CustomCoroutine, UnitRequest>();
 
 
-        private IChainHandler<UnitRequest> _nextChain;
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly TimerPoolService _timerPoolService;
@@ -67,7 +65,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             DefendPlatformFactory defendPlatformFactory,
             TimerPoolService timerPoolService,
             IEconomyProvider economyProvider,
-            IPurchaseChain purchaseChain,
+            IWallet wallet,
             IReinforcementZonesSystem reinforcementZonesSystem,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
@@ -85,7 +83,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _defendPlatformFactory = defendPlatformFactory;
             _timerPoolService = timerPoolService;
             _economyProvider = economyProvider;
-            _purchaseChain = purchaseChain;
+            _wallet = wallet;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
@@ -96,17 +94,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         }
         
 
-        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
-        {
-            _nextChain = chainHandler;
-            return _nextChain;
-        }
-
-        public void Handle(UnitRequest unitRequest)
+        public void Purchase(UnitRequest unitRequest)
         {
             if (!_stationRegistry.IsStationOperational(Owner))
             {
-                _purchaseChain.Revert(unitRequest);
                 return;
             }
 
@@ -114,15 +105,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
+                    if (!_wallet.TrySpend(levelUnitRequest))
+                    {
+                        return;
+                    }
+
                     Model.CurrentLevel++;
                     _economyProvider.RecalculateIncome(this);
                   //  Debug.Log($"Upgrade level {Model.CurrentLevel}");
                     break;
                 case ShipUnitRequest shipUnitRequest:
                 {
-                    if (!TryReserveUnit(shipUnitRequest))
+                    if (!TryReserveAndSpend(shipUnitRequest))
                     {
-                        _purchaseChain.Revert(shipUnitRequest);
                         return;
                     }
 
@@ -139,9 +134,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 }
                 case SquadronUnitRequest squadronUnitRequest:
                 {
-                    if (!TryReserveUnit(squadronUnitRequest))
+                    if (!TryReserveAndSpend(squadronUnitRequest))
                     {
-                        _purchaseChain.Revert(squadronUnitRequest);
                         return;
                     }
 
@@ -163,9 +157,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 }
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
                 {
-                    if (!TryReserveUnit(miningFacilityUnitRequest))
+                    if (!TryReserveAndSpend(miningFacilityUnitRequest))
                     {
-                        _purchaseChain.Revert(miningFacilityUnitRequest);
                         return;
                     }
 
@@ -187,9 +180,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 }
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
                 {
-                    if (!TryReserveUnit(defendPlatformUnitRequest))
+                    if (!TryReserveAndSpend(defendPlatformUnitRequest))
                     {
-                        _purchaseChain.Revert(defendPlatformUnitRequest);
                         return;
                     }
 
@@ -211,17 +203,27 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 }
                 
             }
-            _nextChain?.Handle(unitRequest);
         }
 
-        private bool TryReserveUnit(UnitRequest unitRequest)
+        private bool TryReserveAndSpend(UnitRequest unitRequest)
         {
             FactionData factionData = unitRequest.FactionData;
-            return _unitLimitModel.TryReserve(
-                UnitLimitKey.From(unitRequest),
-                factionData.MaxCount,
-                factionData.UnitCapacity,
-                _reinforcementData.MaxUnitCapacity);
+            if (!_unitLimitModel.TryReserve(
+                    UnitLimitKey.From(unitRequest),
+                    factionData.MaxCount,
+                    factionData.UnitCapacity,
+                    _reinforcementData.MaxUnitCapacity))
+            {
+                return false;
+            }
+
+            if (_wallet.TrySpend(unitRequest))
+            {
+                return true;
+            }
+
+            ReleaseUnit(unitRequest);
+            return false;
         }
 
         private void ReleaseUnit(UnitRequest unitRequest)
@@ -254,7 +256,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     _unitLimitModel.CancelShipOrder();
                 }
                 ReleaseUnit(unitRequest);
-                _purchaseChain.Revert(unitRequest);
+                _wallet.Refund(unitRequest);
                 Debug.LogError(
                     $"[EnemyAI:Production] Build failed for " +
                     $"{unitRequest.GetType().Name} ({unitRequest.Id}). " +

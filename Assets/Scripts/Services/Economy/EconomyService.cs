@@ -3,7 +3,6 @@ using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Patterns.ChainOfResponsibility;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -11,7 +10,7 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Economy
 {
-    public class EconomyService : Service, IPurchaseChain, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
+    public class EconomyService : Service, IWallet, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
     {
         private const float DEFAULT_INCOME = 1f;
 
@@ -19,7 +18,6 @@ namespace EmpireAtWar.Services.Economy
         private readonly ITimer _incomeTimer;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
-        private IChainHandler<UnitRequest> _nextChain;
         private float _commonIncome;
 
         public float Income => DEFAULT_INCOME;
@@ -45,21 +43,12 @@ namespace EmpireAtWar.Services.Economy
             }
         }
 
-        public IChainHandler<UnitRequest> SetNext(IChainHandler<UnitRequest> chainHandler)
+        public bool TrySpend(UnitRequest unitRequest)
         {
-            _nextChain = chainHandler;
-            return _nextChain;
+            return _model.TrySpend(unitRequest.FactionData.Price);
         }
 
-        public void Handle(UnitRequest unitRequest)
-        {
-            if (_model.TrySpend(unitRequest.FactionData.Price))
-            {
-                _nextChain?.Handle(unitRequest);
-            }
-        }
-
-        public void Revert(UnitRequest unitRequest)
+        public void Refund(UnitRequest unitRequest)
         {
             _model.AddMoney(unitRequest.FactionData.Price);
         }
