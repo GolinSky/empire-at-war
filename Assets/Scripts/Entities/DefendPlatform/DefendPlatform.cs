@@ -13,7 +13,7 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable, ITickable
+    public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
         [SerializeField] private Renderer[] explosionHullRenderers;
 
@@ -60,20 +60,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
-            SynchronizeComponents();
+            // Stationary: the radar position never changes after placement.
+            _radarComponent.SetPosition(_startPosition);
         }
-
-        public void Tick()
-        {
-            SynchronizeComponents();
-        }
-
-        public void LateDispose()
-        {
-            Release(false);
-        }
-
-        private void HandleDestroyed() => Release(true);
 
         private void Release(bool playDeathEffects)
         {
@@ -98,9 +87,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
             }
         }
 
-        private void SynchronizeComponents()
+        public void LateDispose()
         {
-            _radarComponent.SetPosition(transform.position);
+            Release(false);
         }
+
+        private void HandleDestroyed() => Release(true);
     }
 }
