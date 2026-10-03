@@ -27,7 +27,7 @@ Material:
   m_ValidKeywords:
   - _EMISSION
   - _ENVIRONMENTREFLECTIONS_OFF
-  - _PARALLAXMAP
+  - _PLANET_CITY_DETAIL
   - _RECEIVE_SHADOWS_OFF
   - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   - _SPECULARHIGHLIGHTS_OFF
@@ -45,11 +45,15 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: bac6c9c041bb49847bd05a6c3efa54a8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 620374a5d0f1e0241b66debb3d38bbec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CityDetailMap:
+        m_Texture: {fileID: 2800000, guid: b55fdf3dd2aac0b4d84033347c330111, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ClearCoatMap:
@@ -73,11 +77,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 4cd9dff3f86cc1048ba75c8b3fa839f2, type: 3}
+        m_Texture: {fileID: 2800000, guid: a15f55b3287ac1b4cb2cebeb36dbdb81, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bac6c9c041bb49847bd05a6c3efa54a8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 620374a5d0f1e0241b66debb3d38bbec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Mask0:
@@ -121,7 +125,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
-        m_Texture: {fileID: 2800000, guid: 2b39e9f0f4f905040a9d32eec5ae6fae, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -170,6 +174,8 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
     - _BumpScale: 1
+    - _CityDetailStrength: 0.85
+    - _CityDetailTiling: 8
     - _ClearCoat: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -197,6 +203,7 @@ Material:
     - _Opacity: 1
     - _OpacityThreshold: 0
     - _Parallax: 0.005
+    - _PlanetCityDetail: 1
     - _PlanetRotationStartTime: 0
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -225,8 +232,9 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CityEmissionColor: {r: 0.12, g: 0.04, b: 0.009, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 4, g: 4, b: 4, a: 1}
     - _PlanetRotation: {r: 0, g: 0, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _UvOffset: {r: 0, g: 0, b: 0, a: 0}
