@@ -37,6 +37,6 @@ MonoBehaviour:
       hullDamageMultiplier: 1
     <Range>k__BackingField: 218.75
     <Delay>k__BackingField: 0.25
-    <Distance>k__BackingField: 200
+    <VisionRange>k__BackingField: 500
   <Wreck>k__BackingField: {fileID: 11400000, guid: 953585d562dca5641b102597d8184078,
     type: 2}
