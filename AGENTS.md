@@ -198,6 +198,7 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 ## Serialized Field Naming
 
 - Unity `[SerializeField]` fields use unprefixed `camelCase` so serialized property names remain stable.
+- Preserve `[Header]` Inspector groups and their member order, including serialized auto-properties. Header grouping takes precedence over type-based field ordering.
 
 ## C# File Organization
 

@@ -7,26 +7,25 @@ namespace EmpireAtWar.Components.AttackComponent
     [Serializable]
     public sealed class WeaponProfile
     {
-        [Header("Visual")]
-        [SerializeField] private ShotEffect shotPrefab;
-
         [SerializeField] private WeaponType weaponType;
         [SerializeField] private DamageType damageType;
-        [SerializeField] private Color color = Color.white;
-        [SerializeField] private Vector3 size = Vector3.one;
 
         [Header("Damage")]
         [Tooltip("Damage of a single shot before the damage matrix is applied.")]
         [SerializeField] private float damage;
+        [SerializeField] private int shotsPerSalvo = 1;
         [Tooltip("Seconds between shots inside one salvo.")]
         [SerializeField] private float shotInterval;
         [Tooltip("Seconds from the start of a salvo until the hardpoint can fire again.")]
         [SerializeField] private float reload;
         [SerializeField] private float range;
+
+        [Header("Visual")]
+        [SerializeField] private ShotEffect shotPrefab;
         [Tooltip("Units per second. Ignored by beams.")]
         [SerializeField] private float projectileSpeed;
-
-        [SerializeField] private int shotsPerSalvo = 1;
+        [SerializeField] private Color color = Color.white;
+        [SerializeField] private Vector3 size = Vector3.one;
 
         public WeaponType WeaponType => weaponType;
         public DamageType DamageType => damageType;

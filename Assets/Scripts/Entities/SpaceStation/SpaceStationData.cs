@@ -11,13 +11,13 @@ namespace EmpireAtWar.Entities.SpaceStation
     [CreateAssetMenu(fileName = nameof(SpaceStationData), menuName = "Data/SpaceStationData")]
     public class SpaceStationData:Data
     {
+        [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
         [Tooltip("Optional wreck of each faction's station. A faction without one is only removed.")]
         [SerializeField] private DictionaryWrapper<FactionType, UnitWreckData> wrecks;
+
         [Header("Hangar")]
         [Tooltip("Squadron bay of each faction's station; lost squadrons are replaced from its reserve.")]
         [SerializeField] private DictionaryWrapper<FactionType, HangarBay> hangarBays;
-
-        [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
         [field: SerializeField] public float HangarInitialDelay { get; private set; } = 1f;
         [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
 
