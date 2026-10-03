@@ -36,8 +36,9 @@ namespace EmpireAtWar.Components.Weapon
             {
                 result.Visited++;
                 float3 direction = CandidatePositions[i] - input.Origin;
-                float distance = math.length(direction);
-                if (!math.all(math.isfinite(direction)) || distance <= 0.00001f ||
+                // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
+                float distance = math.length(new float2(direction.x, direction.z));
+                if (!math.all(math.isfinite(direction)) || math.length(direction) <= 0.00001f ||
                     math.lengthsq(new float2(direction.x, direction.z)) <= math.lengthsq(direction) * 0.0000000001f ||
                     math.abs(distance - input.MaxDistance) <= 0.0001f * math.max(1f, math.abs(input.MaxDistance)))
                 {

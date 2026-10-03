@@ -17,114 +17,114 @@ MonoBehaviour:
     - key: 8
       value:
         icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
-        settings:
-          rid: 6801466862182334539
         displayName: Ion Pulse
         description: Charge for 4 s, align a surviving broadside cannon, then fire
           a slow ion wave. Enemy ships hit are disabled for 12 s. 10% chance to disable
           Malevolence instead. No hull damage. Move/Stop cancels charging; 60 s recovery.
-        aiUse: 2
         duration: 80
         recoveryDelay: 60
-        range: 240
         canCancel: 0
         requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 6801466862182334539
     - key: 1
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
-        settings:
-          rid: 7607833764655792203
         displayName: Proton Beam
         description: Focus a proton beam on an enemy target; deals 600 configured
           beam damage.
-        aiUse: 2
         duration: 8
         recoveryDelay: 50
-        range: 500
         canCancel: 0
         requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 7607833764655792203
     - key: 2
       value:
         icon: {fileID: 21300000, guid: 5491174c7918a494cb8e2898869953fd, type: 3}
-        settings:
-          rid: 7607833764655792204
         displayName: Invulnerability
         description: Become immune to incoming damage for the active duration.
-        aiUse: 0
         duration: 8
         recoveryDelay: 60
-        range: 0
         canCancel: 0
         requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 7607833764655792204
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
-        settings:
-          rid: 7607833764655792205
         displayName: Boost Shield Power
         description: Double shield regeneration; reduce damage and movement speed
           by 25%.
-        aiUse: 0
         duration: 15
         recoveryDelay: 40
-        range: 0
         canCancel: 1
         requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 7607833764655792205
     - key: 4
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        settings:
-          rid: 7607833764655792206
         displayName: Boost Engine Power
         description: Increase movement speed by 50%; reduce damage by 20%.
-        aiUse: 1
         duration: 12
         recoveryDelay: 35
-        range: 0
         canCancel: 1
         requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        settings:
+          rid: 7607833764655792206
     - key: 5
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        settings:
-          rid: 7607833764655792207
         displayName: Boost Weapon Power
         description: 'Fire all batteries: double weapon damage and reduce weapon
           reload time by 70%. Movement speed is unchanged.'
-        aiUse: 2
         duration: 7
         recoveryDelay: 50
-        range: 0
         canCancel: 1
         requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 7607833764655792207
     - key: 6
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
-        settings:
-          rid: 7607833764655792208
         displayName: Assault
         description: Charge an enemy target with double weapon damage, double fire
           rate, and double movement speed.
-        aiUse: 2
         duration: 7
         recoveryDelay: 50
-        range: 500
         canCancel: 0
         requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 7607833764655792208
     - key: 7
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
-        settings:
-          rid: 7607833764655792209
         displayName: Concentrate Fire
         description: Nearby allies within 400 units gain 25% damage and 20% shorter
           fire delays.
-        aiUse: 2
         duration: 12
         recoveryDelay: 60
-        range: 500
         canCancel: 0
         requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 7607833764655792209
   references:
     version: 2
     RefIds:
