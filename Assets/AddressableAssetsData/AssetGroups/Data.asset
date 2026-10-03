@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c58688ab024a13b4b8952191db292c09
+    m_Address: RothanaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c9d78c908e581c248ac64c752a1a64c0
     m_Address: ProvidenceShipData
     m_ReadOnly: 0

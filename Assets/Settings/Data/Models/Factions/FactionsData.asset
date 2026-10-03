@@ -107,6 +107,22 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 1
             <Icon>k__BackingField: {fileID: 21300000, guid: 28476024afa7c5f47bd010e6e4460dc4,
               type: 3}
+        - key: 7
+          value:
+            description: Eight DBY-827 heavy twin turbolasers lead a durable Republic
+              battle line. Ion cannons weaken shields; laser batteries, point defense
+              and Delta-7/A-Wing squadrons protect the fleet.
+            role: "Capital \xB7 Heavy gunship / carrier"
+            iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
+            matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}
+            <Name>k__BackingField: Rothana Star Destroyer
+            <MaxCount>k__BackingField: 3
+            <AvailableLevel>k__BackingField: 5
+            <Price>k__BackingField: 7500
+            <BuildTime>k__BackingField: 35
+            <UnitCapacity>k__BackingField: 8
+            <Icon>k__BackingField: {fileID: 21300000, guid: 677a9fb4a7566e14d932893ee85f3357,
+              type: 3}
     - key: 1
       value:
         keyValue:

@@ -553,3 +553,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: RothanaShipView
+      value:
+        m_AssetGUID: a5fb369e6e2e1954fa87deac0371f5ab
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

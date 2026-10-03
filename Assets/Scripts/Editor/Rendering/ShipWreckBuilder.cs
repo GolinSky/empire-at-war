@@ -92,7 +92,7 @@ namespace EmpireAtWar.Editor.Rendering
             List<MeshRenderer> renderers = new List<MeshRenderer>();
             foreach (MeshRenderer meshRenderer in view.GetComponentsInChildren<MeshRenderer>(true))
             {
-                if (UsesOnlyShipLit(meshRenderer)) renderers.Add(meshRenderer);
+                if (meshRenderer.enabled && UsesOnlyShipLit(meshRenderer)) renderers.Add(meshRenderer);
             }
 
             return renderers;

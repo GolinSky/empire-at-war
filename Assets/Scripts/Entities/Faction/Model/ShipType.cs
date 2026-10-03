@@ -11,6 +11,7 @@ namespace EmpireAtWar.Models.Factions
         StarDestroyer2 = 4,
         HeavyDreadnought = 5,
         Thranta = 6,
+        Rothana = 7,
 
         //separatist
         Providence = 100,

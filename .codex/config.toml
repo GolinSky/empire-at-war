@@ -2,6 +2,19 @@
 command = "unity"
 args = [ "mcp" ]
 
+[mcp_servers.blender]
+command = "C:\\Users\\golin\\.local\\bin\\uvx.exe"
+args = ["mcp-for-blender==2.1.3"]
+startup_timeout_sec = 60
+tool_timeout_sec = 180
+
+[mcp_servers.blender.env]
+BLENDER_HOST = "127.0.0.1"
+BLENDER_PORT = "9876"
+DISABLE_TELEMETRY = "true"
+BLENDER_MCP_SAFE_MODE = "1"
+PYTHONIOENCODING = "utf-8"
+
 [mcp_servers.serena]
 # One independently managed backend for this exact checkout; see Tools/Serena/README.md.
 url = "http://127.0.0.1:9122/mcp"
