@@ -15,6 +15,7 @@ namespace EmpireAtWar.Models.Factions
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
+        bool IsResoluteReserved { get; }
         FactionType FactionType { get; }
         int CurrentLevel { get; }
 
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Models.Factions
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
+        private bool _resoluteReserved;
+        public bool IsResoluteReserved => _resoluteReserved;
 
         private int _currentLevel = 1;
 
@@ -85,6 +88,9 @@ namespace EmpireAtWar.Models.Factions
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
+            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute &&
+                _resoluteReserved) return false;
+
             if (IsStructureRequest(unitRequest) &&
                 GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
                 unitRequest.FactionData.MaxCount)
@@ -121,6 +127,8 @@ namespace EmpireAtWar.Models.Factions
             }
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
+            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
+                _resoluteReserved = true;
             if (IsStructureRequest(unitRequest))
             {
                 var key = (unitRequest.GetType(), unitRequest.Id);
@@ -138,6 +146,8 @@ namespace EmpireAtWar.Models.Factions
             }
 
             unitRequest = queue.Dequeue().UnitRequest;
+            if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
+                _resoluteReserved = false;
             if (IsStructureRequest(unitRequest))
             {
                 ReleaseStructure(unitRequest);
@@ -154,6 +164,13 @@ namespace EmpireAtWar.Models.Factions
         public void ReleaseStructure(UnitRequest unitRequest)
         {
             ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
+        }
+
+        public void SetResoluteReserved(bool reserved)
+        {
+            if (_resoluteReserved == reserved) return;
+            _resoluteReserved = reserved;
+            NotifyProductionChanged();
         }
 
         public void ReleaseStructure<TRequest>(string id) where TRequest : UnitRequest

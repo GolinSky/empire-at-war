@@ -80,6 +80,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             Model.InitializeMembers(members);
+            _modifiers.Changed += Model.RefreshStatModifiers;
             for (int i = 0; i < fighters.Count; i++)
             {
                 _adapters[i] = new HardPointAdapter(model: members[i], view: fighters[i]);
@@ -109,6 +110,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             _isReleased = true;
+            _modifiers.Changed -= Model.RefreshStatModifiers;
             foreach (HardPointAdapter adapter in _adapters)
             {
                 adapter.Dispose();

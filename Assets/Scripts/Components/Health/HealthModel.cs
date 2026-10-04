@@ -20,6 +20,8 @@ namespace EmpireAtWar.Models.Health
 
         private readonly DamageMatrixData _damageMatrix;
         private readonly CombatModifiers _modifiers;
+        private float _hullMultiplier;
+        private float _shieldsMultiplier;
 
         public event Action OnValueChanged;
 
@@ -27,11 +29,11 @@ namespace EmpireAtWar.Models.Health
 
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
-        public float MaxHull => _data.Hull;
-        public float HullPercentage => _data.Hull <= 0f ? 0f : Hull / _data.Hull;
+        public float MaxHull => _data.Hull * _hullMultiplier;
+        public float HullPercentage => MaxHull <= 0f ? 0f : Hull / MaxHull;
         public float Shields { get; private set; }
-        public float ShieldPercentage => _data.Shields <= 0f ? 0f : Shields / _data.Shields;
-        public float MaxShields => _data.Shields;
+        public float ShieldPercentage => MaxShields <= 0f ? 0f : Shields / MaxShields;
+        public float MaxShields => _data.Shields * _shieldsMultiplier;
         public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
         public HardPointModel[] HardPointModels { get; private set; } = Array.Empty<HardPointModel>();
@@ -46,8 +48,21 @@ namespace EmpireAtWar.Models.Health
             _data = data;
             _damageMatrix = damageMatrix;
             _modifiers = modifiers;
-            Hull = data.Hull;
-            Shields = data.Shields;
+            _hullMultiplier = modifiers.HullMultiplier;
+            _shieldsMultiplier = modifiers.ShieldsMultiplier;
+            Hull = MaxHull;
+            Shields = MaxShields;
+        }
+
+        public void RefreshStatModifiers()
+        {
+            if (_hullMultiplier == _modifiers.HullMultiplier &&
+                _shieldsMultiplier == _modifiers.ShieldsMultiplier) return;
+            Hull *= _modifiers.HullMultiplier / _hullMultiplier;
+            Shields *= _modifiers.ShieldsMultiplier / _shieldsMultiplier;
+            _hullMultiplier = _modifiers.HullMultiplier;
+            _shieldsMultiplier = _modifiers.ShieldsMultiplier;
+            OnValueChanged?.Invoke();
         }
 
         public void InitializeHardPoints(IReadOnlyList<HardPointModel> hardPointModels)
@@ -98,7 +113,7 @@ namespace EmpireAtWar.Models.Health
 
         public void RegenerateShields(float value)
         {
-            Shields = Math.Min(_data.Shields, Shields + value);
+            Shields = Math.Min(MaxShields, Shields + value);
             OnValueChanged?.Invoke();
         }
 

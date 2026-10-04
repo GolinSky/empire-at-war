@@ -4,6 +4,10 @@
 
 ### Features
 
+- [ ] **Import Resolute hero Venator**
+  - **Plan**: [[TODOs/Features/Resolute_Import|Resolute Import]]
+  - **Status**: dedicated model, registrations, abilities, one-ship rule and Yularen aura implemented; asset/compile/render checks passed. Clean-skirmish acceptance pending; current Venator hangar inherited.
+
 - [ ] **Import CIS Patrol Frigate**
   - **Plan**: [[TODOs/Features/Patrol_Frigate_Import|Patrol Frigate Import]]
   - **Reference**: [[GameDesign/Patrol Frigate Import]]

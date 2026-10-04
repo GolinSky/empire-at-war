@@ -291,6 +291,11 @@ namespace EmpireAtWar.Components.Ship.Movement
                 });
         }
 
-        private void UpdateRouteSpeed() => _motion.SetRouteSpeed(Model.Speed);
+        private void UpdateRouteSpeed()
+        {
+            _motion.SetRouteSpeed(Model.Speed);
+            if (_sharesLocalVision)
+                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
+        }
     }
 }

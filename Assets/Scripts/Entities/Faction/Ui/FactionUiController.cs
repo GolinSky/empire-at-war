@@ -92,6 +92,10 @@ namespace EmpireAtWar.Presenters.Factions
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
 
+        public bool IsUnitLimitReached(UnitRequest request) =>
+            request is ShipUnitRequest ship && ship.Key == ShipType.Resolute &&
+            _model.IsResoluteReserved;
+
         public void UpdateState(BattleState state)
         {
             _isBattleEnded = state == BattleState.Ended;
@@ -159,6 +163,11 @@ namespace EmpireAtWar.Presenters.Factions
                     $"Missing {data.Price - _economy.Money:0} credits", false));
             string status = data.UnitCapacity > _reinforcements.CapacityLeft
                 ? "Population limit reached: deployment unavailable" : "Click to add to production";
+            if (IsUnitLimitReached(request))
+            {
+                requirements.Add(new TooltipRequirement("Only one Resolute at a time", false));
+                status = "Resolute is already queued, in reserve or deployed.";
+            }
             var stats = new System.Collections.Generic.List<TooltipStat>
             {
                 new TooltipStat(label: "Cost (credits)", current: data.Price),

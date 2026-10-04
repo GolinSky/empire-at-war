@@ -43,5 +43,12 @@ namespace EmpireAtWar.Models.Health
             HealthPercentage = _originHealth <= 0f ? 0f : Health / _originHealth;
             OnHardPointHealthChanged?.Invoke();
         }
+
+        public void ScaleHealth(float multiplier)
+        {
+            _originHealth *= multiplier;
+            Health *= multiplier;
+            OnHardPointHealthChanged?.Invoke();
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Editor
         private static readonly List<ShipMappingInfo> MAPPINGS = new List<ShipMappingInfo>
         {
             new ShipMappingInfo { ShipType = ShipType.Venator, PrefabName = "VenatorShipView.prefab", IconFileName = "VenatorIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.Resolute, PrefabName = "ResoluteShipView.prefab", IconFileName = "ResoluteIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Acclamator, PrefabName = "AcclamatorShipView.prefab", IconFileName = "AcclamatorIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Arquitens, PrefabName = "ArquitensShipView.prefab", IconFileName = "ArquitensIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.StarDestroyer1, PrefabName = "StarDestroyer1ShipView.prefab", IconFileName = "StarDestroyer1Icon.png" },

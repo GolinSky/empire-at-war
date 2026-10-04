@@ -99,6 +99,7 @@ namespace EmpireAtWar.Components.Ship.Health
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
             _modifiers.Changed += HandleIonStateChanged;
+            _modifiers.Changed += Model.RefreshStatModifiers;
 
             if (shieldView != null)
             {
@@ -135,6 +136,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
             _isReleased = true;
             _modifiers.Changed -= HandleIonStateChanged;
+            _modifiers.Changed -= Model.RefreshStatModifiers;
             if (_ionStunView != null) _ionStunView.Release();
 
             if (_shield != null)

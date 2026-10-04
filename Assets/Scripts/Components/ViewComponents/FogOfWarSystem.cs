@@ -173,8 +173,13 @@ namespace ViewComponents
         {
             if (targetTransform == null) return;
 
-            // Check if already registered
-            if (_activeSources.Exists(s => s.transform == targetTransform)) return;
+            VisionSource existing = _activeSources.Find(s => s.transform == targetTransform);
+            if (existing != null)
+            {
+                existing.radius = radius;
+                existing.intensity = intensity;
+                return;
+            }
 
             _activeSources.Add(new VisionSource { transform = targetTransform, radius = radius, intensity = intensity });
         }

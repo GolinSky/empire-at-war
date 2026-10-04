@@ -196,7 +196,8 @@ namespace EmpireAtWar.Views.Factions
                 foreach (var queue in queues)
                     if (queue.UnitRequest.Id == unit.RequestId) queued = true;
                 unit.RenderAvailability(_presenter.IsUnitAvailable(unit.FactionData),
-                    credits >= unit.FactionData.Price, queued, battleEnded);
+                    credits >= unit.FactionData.Price, queued, battleEnded,
+                    _presenter.IsUnitLimitReached(unit.Request));
             }
         }
 

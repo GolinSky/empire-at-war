@@ -7,5 +7,6 @@ namespace EmpireAtWar.Presenters.Factions
         void TryPurchaseUnit(UnitRequest unitRequest);
 
         bool IsUnitAvailable(EmpireAtWar.Models.Factions.FactionData data);
+        bool IsUnitLimitReached(UnitRequest request);
     }
 }

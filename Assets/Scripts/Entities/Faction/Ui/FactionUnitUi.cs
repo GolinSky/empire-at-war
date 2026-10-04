@@ -22,16 +22,18 @@ namespace EmpireAtWar.Views.Factions
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
         public string RequestId => _unitRequest.Id;
+        public UnitRequest Request => _unitRequest;
         public FactionData FactionData { get; private set; }
 
         public void SetAvailable(bool available) => purchaseButton.interactable = available;
 
-        public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded)
+        public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded,
+            bool atLimit = false)
         {
-            purchaseButton.interactable = unlocked && affordable && !battleEnded;
+            purchaseButton.interactable = unlocked && affordable && !battleEnded && !atLimit;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
             unitPriceText.color = affordable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);
-            stateText.text = unlocked && queued ? "QUEUED" : "";
+            stateText.text = unlocked && queued ? "QUEUED" : atLimit ? "LIMIT REACHED" : "";
             queuedHighlight.SetActive(queued);
         }
 
