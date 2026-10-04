@@ -13,6 +13,7 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         [SerializeField] private Transform body;
         [SerializeField] private Collider hitCollider;
         [SerializeField] private WeaponHardPoint gun;
+        [SerializeField] private WeaponHardPoint[] additionalGuns = System.Array.Empty<WeaponHardPoint>();
         [SerializeField] private ParticleSystem deathExplosion;
         [SerializeField] private TrailRenderer[] engineTrails;
 
@@ -61,6 +62,10 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         private void Explode()
         {
             gun.UpdateData(0f);
+            foreach (WeaponHardPoint additionalGun in additionalGuns)
+            {
+                additionalGun.UpdateData(0f);
+            }
             body.gameObject.SetActive(false);
             hitCollider.enabled = false;
             foreach (TrailRenderer trail in engineTrails)

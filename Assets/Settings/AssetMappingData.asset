@@ -574,3 +574,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: DroidBomberSquadronView
+      value:
+        m_AssetGUID: 4f4e660fc02c98e47a1538f74fc39ef0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DroidBomberSquadronData
+      value:
+        m_AssetGUID: d9c6ceb036f3c4e41801f2d75dcc4a44
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -5,13 +5,14 @@ using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
 using ViewComponents;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.Squadrons.Health;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
-    /// <summary>Picks the closest enemy, with fighters and bombers weighted as if they were twice as close.</summary>
+    /// <summary>Prefers strikecraft for fighters and larger targets for bombers.</summary>
     public sealed class SquadronTargetSelector
     {
-        private const float STRIKECRAFT_DISTANCE_WEIGHT = 0.25f;
+        private const float PREFERRED_TARGET_DISTANCE_WEIGHT = 0.25f;
         private const float VISIBLE_THRESHOLD = 0.5f;
 
         private readonly IEntityLocator _entityLocator;
@@ -19,11 +20,12 @@ namespace EmpireAtWar.Entities.Squadrons
         private readonly IPlayerRelations _relations;
 
         private readonly PlayerId _side;
+        private readonly ShipClass _shipClass;
 
         private readonly bool _respectsFog;
 
         public SquadronTargetSelector(IEntityLocator entityLocator, IFogOfWarSystem fogOfWarSystem,
-            IPlayerRelations relations, ILocalPlayer localPlayer, PlayerId side)
+            IPlayerRelations relations, ILocalPlayer localPlayer, PlayerId side, ISquadronHealthData data)
         {
             _relations = relations;
             // Only the human's squadrons are limited to what the fog of war reveals.
@@ -31,6 +33,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _entityLocator = entityLocator;
             _fogOfWarSystem = fogOfWarSystem;
             _side = side;
+            _shipClass = data.ShipClass;
         }
 
         public IEntity SelectNear(IList<IEntity> candidates, Vector3 center, float radius)
@@ -76,11 +79,12 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity);
 
-        private static float Score(IEntity entity, float sqrDistance)
+        private float Score(IEntity entity, float sqrDistance)
         {
             ShipClass shipClass = entity.HealthModel.ShipClass;
             bool isStrikecraft = shipClass == ShipClass.Fighter || shipClass == ShipClass.Bomber;
-            return isStrikecraft ? sqrDistance * STRIKECRAFT_DISTANCE_WEIGHT : sqrDistance;
+            bool isPreferred = _shipClass == ShipClass.Bomber ? !isStrikecraft : isStrikecraft;
+            return isPreferred ? sqrDistance * PREFERRED_TARGET_DISTANCE_WEIGHT : sqrDistance;
         }
     }
 }

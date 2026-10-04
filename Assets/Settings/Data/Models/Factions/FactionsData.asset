@@ -270,6 +270,22 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 1
             <Icon>k__BackingField: {fileID: 21300000, guid: 6475693b4e9a23943aa6f6d43d698437,
               type: 3}
+        - key: 101
+          value:
+            matchups: {fileID: 11400000, guid: cfd79fcde45f938438f66f8a3a6f392e, type: 2}
+            description: Four autonomous Trade Federation droid bombers with 2 laser
+              cannons and 1 proton torpedo launcher each. Effective against capital
+              ships, frigates and stations; slow and vulnerable to fighters. No hyperdrive.
+            role: "Bomber squadron \xB7 Anti-capital"
+            iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+            <Name>k__BackingField: Advanced Droid Bomber Squadron
+            <MaxCount>k__BackingField: 10
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 450
+            <BuildTime>k__BackingField: 8
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: 0148d1e047b1c024494b31fb02e655ed,
+              type: 3}
   miningFactionsData:
     keyValue:
     - key: 0
