@@ -46,6 +46,6 @@ tags:
 ## Edge Cases
 
 - `W_LASER_SMALL.dds` is absent; its six authored flash helpers remain disabled. Runtime weapons use existing project effects.
-- Squadrons use the existing member explosion/hidden-body lifecycle, not capital-ship wreck assets. No new carrier garrisons configured.
+- Squadrons use the existing member explosion/hidden-body lifecycle, not capital-ship wreck assets. Captor complement updated by the subsequent [[GameDesign/Vulture Droid Import]]: `11` Vulture + `8` Droid Bomber launches, `1` active per type; first delay `4 s`, shared interval `8 s`.
 - Saved references, member/weapon counts, hull collision, geometry/preview bounds, source hashes, registrations, compilation and isolated renders verified. No missing scripts or broken references; no new Console errors after field-type corrections.
 - No automated tests or Play Mode run. Combat, shields, flight, fog, placement interaction and destruction remain unverified in battle; project tuning is provisional.

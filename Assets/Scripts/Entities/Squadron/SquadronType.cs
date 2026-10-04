@@ -9,5 +9,6 @@ namespace EmpireAtWar.Entities.Squadrons
         //separatist
         Belbullab22 = 100,
         DroidBomber = 101,
+        Vulture = 102,
     }
 }

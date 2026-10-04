@@ -14,6 +14,18 @@
 - `Recusant Patrol-Converted/` beside the source holds packed Blender source, FBX, PNGs, reports, palette renders and credits. Missing `W_LASER_SMALL.dds` affects disabled helpers only; damaged model/death ALA and EaW proxy/shader animations are not converted.
 - Saved asset/reference/geometry/visual inspection and compilation/import completed without new errors; no missing scripts/references or donor model dependencies. No Play Mode or automated tests run; runtime acceptance and provisional balance remain in the active plan.
 
+## Vulture Droid — 2026-10-04
+
+- Import reference: Obsidian `GameDesign/Vulture Droid Import.md`; `SquadronType.Vulture = 102`. Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Vulture/CIS_VULTURE.ALO`; original ALO/DDS hashes unchanged.
+- Exporter: `Tools/Blender/export_vulture.py`, run once through Blender MCP on a fresh matching import. Create `Temp/VultureImport/Output/Textures` first. Expects 13 imported bones; restores the identity Root verified in the 14-bone binary source.
+- Seven meshes: one visible hull and six hidden collision/shadow/muzzle-flash helpers. Source 2,471 triangles → FBX/Unity 2,407; 64 zero-area flash faces removed, all 2,303 hull triangles retained. All nondegenerate triangle positions/UVs, bone names/parents and bounds preserved. Maximum bone displacement: Blender `0.000007154` source units, Unity `0.00000016792` units.
+- Art uses `SeparatistShips/Vulture` in the type-first art folders. Visual/gameplay: `Assets/Prefabs/Models/Squadrons/Vulture.prefab`, `VultureSquadronView.prefab`; seven-member placement: `Assets/Prefabs/Ui/Reinforcement/VultureReinforcementView.prefab`. Visible member size `2.41040 × 1.02828 × 4`, bow `+Z`, up `+Y`; root scale 1.
+- User-supplied values: tech 1, seven fighters, cost 350, build 8 s, population 1; per fighter hull 35, no shields. Four `FighterLaser` guns per member use `MuzzleA_00..03` and the existing 5-damage profile; `MuzzleB_00/01` remain without launchers. Buzz Droids excluded; no S-Foils logic/animation added to this static import.
+- Provisional tuning: cruise/combat 34.5/39 units/s, acceleration 27 units/s², turn 100°/s, bank 50°, spacing 3, height 11, limit 10. Formation radius measured `13.56549`; navigation radius 14, selection diameter 28. Member collision radius 2.4.
+- Registered CIS roster, data/view lookup, existing Addressables View/Data groups, HUD/tooltip icons, matchups and reinforcement preview. Team livery hue 0.67, range 0.08, minimum saturation 0.25, strength 1; all eight palettes rendered.
+- Sibling `Vulture-Converted/` holds packed Blender source, FBX, PNGs, reports, previews and pack README. Credits: Star Wars Battlefront II/Pandemic/LucasArts model and textures; Nomada_Firefox rigging. Missing `W_LASER_SMALL.dds` affects disabled flash helpers only.
+- Saved geometry/reference and visual checks passed; no missing scripts, broken references or new Unity import/serialization errors. No automated tests or Play Mode run; movement/combat and project tuning still need in-game acceptance. Captor now uses the user-selected 11 Vulture + 8 Droid Bomber total squadron launches, one active per type, with the existing 4/8 s delays.
+
 ## Advanced Droid Bomber — 2026-10-04
 
 - Import reference: Obsidian `GameDesign/Droid Bomber Import.md`; early-game Trade Federation / Advanced Droid Bomber, `SquadronType.DroidBomber = 101`.
@@ -25,7 +37,7 @@
 - Provisional project tuning: cruise/combat 24/27 units/s, acceleration 18 units/s², turn 65°/s, bank 35°, formation spacing 4, navigation radius 10, height 11, limit 10; refresh 3 points every 1 s. Separate RaW Fighter shield resistance is not represented by the current common shield damage multiplier.
 - Registered CIS roster, data/view lookup, existing Addressables groups, HUD/tooltip icons, matchup keys and four-member reinforcement preview. Team livery uses blue hue 0.67, range 0.08, minimum saturation 0.25, strength 1; all eight owned palettes rendered.
 - `DroidBomber-Converted/` beside the source folder contains packed Blender source, FBX, PNGs, reports, previews and source credits. Missing `W_LASER_SMALL.dds` affects only disabled source helpers; runtime weapons use project effects.
-- Saved asset/reference inspection, geometry checks, icon/palette/squadron renders and compilation completed. No missing scripts or references; no new Console errors after correcting serialized field types. No automated tests or Play Mode run; carrier garrisons were not changed.
+- Saved asset/reference inspection, geometry checks, icon/palette/squadron renders and compilation completed. No missing scripts or references; no new Console errors after correcting serialized field types. No automated tests or Play Mode run. Captor was subsequently updated during the Vulture import to 11 Vulture + 8 Droid Bomber launches, one active per type.
 
 ## Installed setup
 
@@ -143,7 +155,7 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Hardpoints total **15**, matching the supplied itemized composition; its stated total of 14 is inconsistent. `TurboMR01/02` → 2 turbolasers; `LaserR01..06` → 6 lasers; `LaserR07/08` → 2 ions; `Shield_00`, `Engines_00..02`, `Spawn_00` → shield, 3 engines, hangar. Extra ALO turret attachments remain in the visual asset.
 - All hardpoints follow `BodyPivot`; health/fog lists contain 15 unique IDs, weapons list contains 10. Launch `(0.015, −7.465, 78)` clears the collision box's forward edge by 8 units.
 - Power to Weapons uses existing `BoostWeaponPower` tuning; original shield/engine tradeoffs and Victory/Frigate armor/shield types are not recreated by the current project data model.
-- Hangar uses the user-approved temporary Belbullab-22 complement: 19 total launches (standing in for 11 Vulture + 8 Droid Bomber), maximum 2 active; first launch after 4 s, interval 8 s. Original fighter/bomber roles remain pending their squadron assets.
+- Hangar uses the user-selected Vulture/Droid Bomber complement: 11 Vulture + 8 Droid Bomber total squadron launches; two bays, one active per type (2 overall); first launch after 4 s, shared interval 8 s. Both squadron data/view mappings resolve. Reserves include the first launched active squadron.
 - Hull and wreck livery: hue `0.67`, range `0.08`, minimum saturation `0.25`, strength `1`. All eight palettes rendered; blue/green inspected. Icon is a transparent `512 × 512` render of the model.
 - Saved assets have no missing scripts or broken references. Imports/compilation and post-save Console checks passed; no automated tests or Play Mode were run. Pending acceptance is tracked in Obsidian `TODOs/Features/Captor_Import.md`.
 - Credits: model `Evillejedi`; textures `Evillejedi`, modified by `Nawrocki`; rig `Nomada_Firefox`. Pack README asks contacting its author before public-mod use.

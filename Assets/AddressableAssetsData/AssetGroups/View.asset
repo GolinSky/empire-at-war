@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
+    m_Address: VultureSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2a19f6a12786e2645b1df9a43989cc40
     m_Address: CaptorShipView
     m_ReadOnly: 0
