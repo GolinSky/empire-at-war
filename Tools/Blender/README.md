@@ -1,5 +1,18 @@
 # Blender / Rothana conversion
 
+## Advanced Droid Bomber — 2026-10-04
+
+- Import reference: Obsidian `GameDesign/Droid Bomber Import.md`; early-game Trade Federation / Advanced Droid Bomber, `SquadronType.DroidBomber = 101`.
+- Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/DroidBomber/Cis_DroidBomber.ALO`. Original ALO/DDS files are unchanged. Pack credits: Berruga (model), Berruga and Chris Boudreaux (textures), Nomada_Firefox (rigging).
+- Exporter: `Tools/Blender/export_droid_bomber.py`, run once through Blender MCP on a fresh matching import. Expects 45 imported bones; restores the identity `Root` verified in the 46-bone binary source. Create `Temp/DroidBomberImport/Output/Textures` first.
+- Conversion: 35 meshes, 46 bones and 28 visible meshes; preserve seven hidden collision/muzzle-flash helpers. Blender round trip preserves every nondegenerate triangle's positions and UVs; 306 zero-area source faces are dropped in Blender and another 39 in Unity, leaving 2,278 triangles. Bone displacement: Blender `0.000002563` source units; Unity `0.00000004391` project units.
+- Unity visual/gameplay: `Assets/Prefabs/Models/Squadrons/DroidBomber.prefab`, `DroidBomberSquadronView.prefab`; per-bomber visible size `3.32159 × 0.93928 × 4.00000`, bow `+Z`, up `+Y`. FBX/materials/textures use `SeparatistShips/DroidBomber` in their type-first art folders.
+- Source-backed roster/member values: tech 1, four bombers, cost 450, build 8 s, population 1, hull/shields 25/10; two lasers and one proton-torpedo launcher per bomber. Port/starboard lasers use `MuzzleA_01`/`MuzzleA_00`; launcher uses the midpoint of `MuzzleB_00..03`. All authored attachments remain.
+- Provisional project tuning: cruise/combat 24/27 units/s, acceleration 18 units/s², turn 65°/s, bank 35°, formation spacing 4, navigation radius 10, height 11, limit 10; refresh 3 points every 1 s. Separate RaW Fighter shield resistance is not represented by the current common shield damage multiplier.
+- Registered CIS roster, data/view lookup, existing Addressables groups, HUD/tooltip icons, matchup keys and four-member reinforcement preview. Team livery uses blue hue 0.67, range 0.08, minimum saturation 0.25, strength 1; all eight owned palettes rendered.
+- `DroidBomber-Converted/` beside the source folder contains packed Blender source, FBX, PNGs, reports, previews and source credits. Missing `W_LASER_SMALL.dds` affects only disabled source helpers; runtime weapons use project effects.
+- Saved asset/reference inspection, geometry checks, icon/palette/squadron renders and compilation completed. No missing scripts or references; no new Console errors after correcting serialized field types. No automated tests or Play Mode run; carrier garrisons were not changed.
+
 ## Installed setup
 
 - Existing Blender: `C:\Program Files\Blender Foundation\Blender 4.2\blender.exe` — 4.2.16 LTS.
