@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6360436344373088194}
   - component: {fileID: 607674859104945662}
   - component: {fileID: 7863598663125051051}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: StarVfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4910,7 +4910,7 @@ GameObject:
   - component: {fileID: 4721260931225444621}
   - component: {fileID: 6381185191858029115}
   - component: {fileID: 1517333754037353383}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MainVfxcBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9744,7 +9744,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7287119041305564453}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SkirmishVfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9781,7 +9781,7 @@ GameObject:
   - component: {fileID: 7234777071818714720}
   - component: {fileID: 3564474869701192209}
   - component: {fileID: 8023223585457148658}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MainVfxc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14668,6 +14668,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SkirmishVolumetricNebulaClouds
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515829916698878198, guid: 52552f48b59fa4d3a9585485185945b3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
