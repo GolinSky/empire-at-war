@@ -125,11 +125,7 @@ namespace EmpireAtWar.Components.Radar
                     }
                     else if (_layerService.IsInLayer(hit.gameObject, LayerKey.Obstacle))
                     {
-                        Bounds bounds = hit.bounds;
-                        _contacts.Add(new RadarContact(
-                            bounds.center,
-                            Mathf.Max(bounds.extents.x, bounds.extents.z),
-                            false));
+                        _contacts.Add(RadarContact.FromBounds(hit.bounds, false));
                     }
                 }
 

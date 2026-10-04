@@ -14,7 +14,9 @@ namespace EmpireAtWar.Components.Obstacles
 
         public StationObstacle(Vector3 position, float radius)
         {
-            Contact = new RadarContact(position, radius, false);
+            // The footprint radius doubles as the vertical reach: ships far below pass under.
+            Contact = new RadarContact(position, radius, false,
+                position.y - radius, position.y + radius);
         }
     }
 }

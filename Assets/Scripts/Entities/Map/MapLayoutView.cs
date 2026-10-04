@@ -13,12 +13,15 @@ namespace EmpireAtWar.Entities.Map
     public sealed class MapLayoutView : MonoBehaviour
     {
         private const float FRAME_SLICE_SECONDS = 0.008f;
+        private const float FIELD_VOLUME_MESH_HEIGHT = 2f;
 
         [SerializeField] private ReinforcementZoneView zonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
         [SerializeField] private CaptureSiteView battleSitePrefab;
-        [SerializeField, Tooltip("Invisible impassable circle with a unit-diameter collider.")]
+        [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
+        [SerializeField, Min(1f), Tooltip("Height of a field volume. Ships whose hull lies wholly below or above it pass the field.")]
+        private float fieldVolumeHeight = 80f;
         [SerializeField] private GameObject largeRockPrefab;
         [SerializeField] private GameObject mediumRockPrefab;
         [SerializeField] private GameObject[] debrisRockPrefabs;
@@ -77,7 +80,8 @@ namespace EmpireAtWar.Entities.Map
                 foreach (FieldVolume volume in field.Volumes)
                 {
                     MapObstacle obstacle = Instantiate(fieldVolumePrefab, volume.Center, Quaternion.identity, root);
-                    obstacle.transform.localScale = Vector3.one * volume.Radius * 2f;
+                    obstacle.transform.localScale = new Vector3(volume.Radius * 2f,
+                        fieldVolumeHeight / FIELD_VOLUME_MESH_HEIGHT, volume.Radius * 2f);
                     _obstacles.Add(obstacle);
                 }
 
