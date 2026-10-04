@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Weapon
                     int order = i;
                     RecordingOwner owner = new RecordingOwner(() => committed.Add(order));
                     coordinator.Register(owner);
-                    coordinator.ScheduleImpact(owner, null, target, 0f, default, 0f);
+                    coordinator.ScheduleImpact(owner, null, target, 0f, default, 0f, null);
                 }
 
                 MakeImpactsDue(coordinator);
@@ -64,9 +64,9 @@ namespace EmpireAtWar.Tests.Weapon
                 RecordingOwner firstOwner = new RecordingOwner(() => coordinator.Unregister(cancelledOwner));
                 coordinator.Register(firstOwner);
                 coordinator.Register(cancelledOwner);
-                coordinator.ScheduleImpact(firstOwner, null, target, 0f, default, 0f);
+                coordinator.ScheduleImpact(firstOwner, null, target, 0f, default, 0f, null);
                 for (int i = 0; i < 64; i++)
-                    coordinator.ScheduleImpact(cancelledOwner, null, target, 0f, default, 0f);
+                    coordinator.ScheduleImpact(cancelledOwner, null, target, 0f, default, 0f, null);
 
                 MakeImpactsDue(coordinator);
                 coordinator.LateTick();
@@ -123,7 +123,7 @@ namespace EmpireAtWar.Tests.Weapon
                 for (int iteration = -5; iteration < BENCHMARK_SAMPLES; iteration++)
                 {
                     for (int i = 0; i < count; i++)
-                        coordinator.ScheduleImpact(owner, null, target, 0f, default, 0f);
+                        coordinator.ScheduleImpact(owner, null, target, 0f, default, 0f, null);
                     SetImpactDueCounts(coordinator, dueCount);
                     int commitsBefore = owner.Commits;
                     long start = Stopwatch.GetTimestamp();
@@ -192,7 +192,7 @@ namespace EmpireAtWar.Tests.Weapon
             public bool RollHit(AttackData attackData, WeaponProfile profile) => throw new InvalidOperationException();
 
             public void ApplyDamage(AttackData attackData, IHardPointModel unitView,
-                WeaponProfile profile, float attackDelay) => throw new InvalidOperationException();
+                WeaponProfile profile, float attackDelay, IncomingMissile missile) => throw new InvalidOperationException();
 
             public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel,
                 float damage, DamageType damageType, int targetId)

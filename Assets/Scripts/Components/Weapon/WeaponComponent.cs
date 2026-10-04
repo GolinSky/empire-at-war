@@ -32,6 +32,7 @@ namespace EmpireAtWar.Components.Weapon
         private CombatModifiers _modifiers;
         private WeaponsData _weaponsData;
         private DamageMatrixData _damageMatrix;
+        private IncomingMissileRegistry _missiles;
         private DebugRangeCircleFactory _rangeCircleFactory;
         [Inject] private ImpactEffectPresenter _impactPresenter;
         private List<AttackData> _attackDataList = new List<AttackData>();
@@ -61,8 +62,9 @@ namespace EmpireAtWar.Components.Weapon
         [Inject]
         private void Construct(IRadarModelObserver radarModel, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
-            DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory)
+            DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles)
         {
+            _missiles = missiles;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _weaponsData = weaponsData;
@@ -88,7 +90,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
                 hardPoint.SetData(_weaponsData.GetProfile(hardPoint.WeaponType), Model.OptimalAttackRange, _damageMatrix.MissSpread,
-                    this, _attackCoordinator, _modifiers, _impactPresenter);
+                    this, _attackCoordinator, _modifiers, _impactPresenter, _missiles);
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -254,6 +256,8 @@ namespace EmpireAtWar.Components.Weapon
                     continue;
                 }
 
+                if (!weapon.CanEngage(candidate.Group.TargetClass)) continue;
+
                 _targetSelectionCandidates.Add(new TargetSelectionCandidate
                 {
                     Group = candidate.Group,
@@ -294,6 +298,8 @@ namespace EmpireAtWar.Components.Weapon
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
                     continue;
                 }
+
+                if (!weapon.CanEngage(candidate.Group.TargetClass)) continue;
 
                 AttackSequenceDiagnostics.RecordCandidateVisit();
                 Vector3 position = GetTargetPosition(candidate.Unit);
@@ -438,11 +444,12 @@ namespace EmpireAtWar.Components.Weapon
         public bool RollHit(AttackData attackData, WeaponProfile profile) =>
             Model.RollHit(profile.DamageType, attackData.TargetClass, UnityEngine.Random.value);
 
-        public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay)
+        public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
+            IncomingMissile missile)
         {
             if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
             _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel,
-                profile.Damage * _modifiers.DamageMultiplier, profile.DamageType, attackDelay);
+                profile.Damage * _modifiers.DamageMultiplier, profile.DamageType, attackDelay, missile);
         }
 
         public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,

@@ -137,7 +137,7 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public void ScheduleImpact(IWeaponPresenter owner, AttackData targetGroup,
-            IHardPointModel target, float damage, DamageType damageType, float delay)
+            IHardPointModel target, float damage, DamageType damageType, float delay, IncomingMissile missile)
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before scheduling damage.");
@@ -152,6 +152,7 @@ namespace EmpireAtWar.Components.Weapon
                 TargetGeneration = target.Generation,
                 Damage = damage,
                 DamageType = damageType,
+                Missile = missile,
                 DueTime = Time.time + delay,
                 EarliestFrame = Time.frameCount + 1,
                 EventSequence = ++_nextEventSequence
@@ -393,6 +394,7 @@ namespace EmpireAtWar.Components.Weapon
                 ImpactRecord impact = _impacts[index];
                 RemoveImpactAt(index);
                 if (IsRegistered(impact.Owner, impact.OwnerGeneration) &&
+                    (impact.Missile == null || !impact.Missile.IsIntercepted) &&
                     impact.Target.Generation == impact.TargetGeneration &&
                     impact.Owner.CommitImpact(impact.TargetGroup, impact.Target, impact.Damage, impact.DamageType,
                         impact.TargetId))
@@ -507,6 +509,7 @@ namespace EmpireAtWar.Components.Weapon
             public IHardPointModel Target;
 
             public AttackData TargetGroup;
+            public IncomingMissile Missile;
 
             public DamageType DamageType;
 

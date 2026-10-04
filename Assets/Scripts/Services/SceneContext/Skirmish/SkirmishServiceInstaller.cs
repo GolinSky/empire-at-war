@@ -48,6 +48,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.Bind<ImpactEffectPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<CombatAttackCoordinator>().AsSingle().NonLazy();
             Container.BindLateTickableExecutionOrder<CombatAttackCoordinator>(-1000);
+            Container.BindInterfacesAndSelfTo<IncomingMissileRegistry>().AsSingle();
             Container.BindInterfacesAndSelfTo<RangeDebugModel>().AsSingle();
             Container.Bind<DebugRangeCircleFactory>().AsSingle().WithArguments(rangeDebugLineMaterial);
             

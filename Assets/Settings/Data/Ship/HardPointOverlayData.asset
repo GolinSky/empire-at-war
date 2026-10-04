@@ -46,3 +46,11 @@ MonoBehaviour:
     displayName: Hull Section
     description: Structural section of the hull.
     hardPointType: 3
+  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
+    displayName: Point Defense
+    description: Destroying it removes the ship's anti-fighter screen.
+    hardPointType: 8
+  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
+    displayName: Missile Defense
+    description: Destroying it stops missiles and torpedoes from being shot down.
+    hardPointType: 9
