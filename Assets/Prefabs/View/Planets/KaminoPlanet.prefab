@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 2887715468590698752}
   - component: {fileID: 4400559613563044372}
   - component: {fileID: 8265996431953911666}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Planet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 1378152964342638486}
   - component: {fileID: 311260463985521169}
   - component: {fileID: 4485030979843334255}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
