@@ -42,6 +42,8 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: 026b6c5cca68d9b49918db3c7c0c0a5f, type: 3}
     - key: 105
       value: {fileID: 21300000, guid: 5f8bc4a82cc113244b19a13b489bb0f0, type: 3}
+    - key: 106
+      value: {fileID: 21300000, guid: c204e9888dc32854493ab00345e38bf4, type: 3}
   squadronIconWrapper:
     keyValue:
     - key: 0

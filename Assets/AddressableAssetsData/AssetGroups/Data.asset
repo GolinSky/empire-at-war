@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e16cf98e4cf4f143a9a1d72d8fdf287
+    m_Address: PatrolFrigateShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5b5a5e33bc0650428444f9d2024ee89
     m_Address: VenatorShipData
     m_ReadOnly: 0

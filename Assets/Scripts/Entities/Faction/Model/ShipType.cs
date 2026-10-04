@@ -20,6 +20,7 @@ namespace EmpireAtWar.Models.Factions
         Lucrehulk = 103,
         Malevolence = 104,
         Captor = 105,
+        PatrolFrigate = 106,
 
     }
 }
