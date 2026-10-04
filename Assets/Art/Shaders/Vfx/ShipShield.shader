@@ -24,8 +24,9 @@ Shader "EmpireAtWar/Ship Shield"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             #define MAX_IMPACTS 8
-            // Ring width as a fraction of the impact radius.
-            #define WAVE_WIDTH_RATIO 0.25
+            // Ring width, and how far the ring travels before the impact fades, as fractions of the impact radius.
+            #define WAVE_WIDTH_RATIO 0.3
+            #define WAVE_REACH 1.5
             CBUFFER_START(UnityPerMaterial)
                 half4 _ShieldColor;
                 float _Brightness, _FadeDuration;
@@ -66,10 +67,11 @@ Shader "EmpireAtWar/Ship Shield"
                 float radius = max(0.001, _ImpactRadii[index]);
                 float distance = SurfaceDistance(_Impacts[index].xyz, surface);
                 patch = 1.0 - smoothstep(0.0, radius, distance);
-                // The ring reaches the patch edge as the impact fades out, and never travels beyond it.
-                float phase = (distance - age * radius / duration) / (radius * WAVE_WIDTH_RATIO);
+                // The ring keeps full strength across the patch and dies out by WAVE_REACH radii.
+                float phase = (distance - age * radius * WAVE_REACH / duration) / (radius * WAVE_WIDTH_RATIO);
                 float envelope = 1.0 - smoothstep(0.0, 1.0, abs(phase));
-                wave = sin(phase * TWO_PI) * envelope * patch;
+                float reach = 1.0 - smoothstep(radius, radius * WAVE_REACH, distance);
+                wave = sin(phase * TWO_PI) * envelope * reach;
             }
 
             Varyings Vert(Attributes input)
