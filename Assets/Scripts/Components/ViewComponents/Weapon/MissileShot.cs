@@ -77,6 +77,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
         }
 
+        protected override void OnIntercepted()
+        {
+            _isFlying = false;
+            _target = null;
+            head.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            trail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
+
         protected override bool IsVisualComplete() => !_isFlying && !trail.IsAlive(true);
     }
 }

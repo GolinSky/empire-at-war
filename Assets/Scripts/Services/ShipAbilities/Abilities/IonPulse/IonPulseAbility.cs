@@ -50,7 +50,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             if (target.HealthModel.ShipClass.IsStrikecraft())
                 return false;
             foreach (IHardPointModel cannon in caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
-                if (!cannon.IsDestroyed) return true;
+                if (IsLiveCannon(cannon)) return true;
             return false;
         }
 
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             float bestAngle = float.MaxValue;
             foreach (IHardPointModel cannon in caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
             {
-                if (cannon.IsDestroyed) continue;
+                if (!IsLiveCannon(cannon)) continue;
                 float side = Mathf.Sign(ship.InverseTransformPoint(cannon.Position).x);
                 float angle = Vector3.Angle(ship.right * side, targetPosition - ship.position);
                 if (angle >= bestAngle) continue;
@@ -174,5 +174,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             modifiers.AddIonPulseDisable();
             _stuns.Add((modifiers, _settings.DisableDuration));
         }
+
+        // GetShipUnits falls back to every live hardpoint once no cannon is left, so the type is checked again.
+        private static bool IsLiveCannon(IHardPointModel unit) =>
+            !unit.IsDestroyed && unit.HardPointType == HardPointType.IonPulseCannon;
     }
 }

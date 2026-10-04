@@ -20,6 +20,12 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private float reload;
         [SerializeField] private float range;
 
+        [Header("Targeting")]
+        [Tooltip("Point defense: fires only at fighters, bombers and interceptors.")]
+        [SerializeField] private bool strikecraftOnly;
+        [Tooltip("Missile defense can shoot this projectile down before it lands.")]
+        [SerializeField] private bool interceptable;
+
         [Header("Visual")]
         [SerializeField] private ShotEffect shotPrefab;
         [Tooltip("Units per second. Ignored by beams.")]
@@ -34,6 +40,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public float ShotInterval => shotInterval;
         public float Reload => reload;
         public float Range => range;
+        public bool StrikecraftOnly => strikecraftOnly;
+        public bool Interceptable => interceptable;
         public ShotEffect ShotPrefab => shotPrefab;
         public float ProjectileSpeed => projectileSpeed;
         public Color Color => color;

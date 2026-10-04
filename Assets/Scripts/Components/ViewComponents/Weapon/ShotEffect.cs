@@ -15,6 +15,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         private readonly ITimer _busyTimer = TimerFactory.ConstructTimer();
         private IHealthModelObserver _impactTarget;
+        private IncomingMissile _missile;
 
         [SerializeField] private MuzzleFlashView muzzleFlash;
         private ImpactEffectPresenter _impactPresenter;
@@ -73,6 +74,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _impactPresenter.GetImpactPosition(_impactTarget, _impactDamageType, origin, target);
         }
 
+        /// <summary>Stops the visual early if missile defense shoots this shot down.</summary>
+        public void TrackInterception(IncomingMissile missile)
+        {
+            _missile = missile;
+            missile.Intercepted += HandleIntercepted;
+        }
+
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
@@ -88,6 +96,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected virtual void OnLeaseCompleted() { }
 
+        protected virtual void OnIntercepted() { }
+
         protected virtual bool IsVisualComplete() => true;
 
         protected virtual void Update()
@@ -101,6 +111,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _leaseActive = false;
             OnLeaseCompleted();
             _impactTarget = null;
+            ReleaseMissile();
             EffectCompleted?.Invoke(this, _leaseId);
 
             if (_retireAfterCompletion)
@@ -133,8 +144,22 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 .StartTimer();
         }
 
+        private void HandleIntercepted()
+        {
+            _impactPending = false;
+            OnIntercepted();
+        }
+
+        private void ReleaseMissile()
+        {
+            if (_missile == null) return;
+            _missile.Intercepted -= HandleIntercepted;
+            _missile = null;
+        }
+
         private void OnDestroy()
         {
+            ReleaseMissile();
             EffectDestroyed?.Invoke(this, _leaseId);
         }
     }

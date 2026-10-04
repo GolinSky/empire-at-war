@@ -1,7 +1,7 @@
 # Empire At War (Unity 6 Project)
 
 - RTS space battles: faction control, reinforcements, ship behavior, economy.
-- Architecture: strict MVP boundaries.
+- Architecture: MVP where it fits; not mandatory.
 - Development tools: Model Context Protocol (MCP), Graphify.
 
 ## Technology Stack

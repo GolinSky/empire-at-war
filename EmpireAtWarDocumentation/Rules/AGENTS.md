@@ -4,16 +4,14 @@
 
 ## Architecture: Model-View-Presenter
 
-- Gameplay follows Model-View-Presenter (MVP).
-- Keep game logic independent of Unity APIs.
+- MVP is optional: use it where it fits (stateful interactive UI).
+- Do not force it on entity components, hardpoints, services, or small features.
 
 - **Model:** Pure C# classes with no `UnityEngine` references.
   - Own data, state, and business rules.
 - **View:** `MonoBehaviour` implementations responsible only for rendering state and capturing input.
   - Views contain no business logic.
 - **Presenter:** Coordinates Model and View, subscribes to Model events, updates the View, handles user actions, and owns their lifecycle coordination.
-
-- Before a new feature: provide an MVP class diagram or responsibility list.
 
 ## SOLID and GRASP Standards
 

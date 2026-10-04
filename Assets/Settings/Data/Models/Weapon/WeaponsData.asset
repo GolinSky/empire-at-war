@@ -20,6 +20,8 @@ MonoBehaviour:
     shotInterval: 0.1
     reload: 1.5
     range: 100
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -32,6 +34,8 @@ MonoBehaviour:
     shotInterval: 0.1
     reload: 2
     range: 100
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -44,6 +48,8 @@ MonoBehaviour:
     shotInterval: 0.08
     reload: 2
     range: 75
+    strikecraftOnly: 1
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 90
@@ -56,6 +62,8 @@ MonoBehaviour:
     shotInterval: 0.5
     reload: 5
     range: 140
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 90
@@ -68,6 +76,8 @@ MonoBehaviour:
     shotInterval: 0.2
     reload: 4
     range: 87.5
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -80,6 +90,8 @@ MonoBehaviour:
     shotInterval: 0.2
     reload: 5
     range: 87.5
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -92,6 +104,8 @@ MonoBehaviour:
     shotInterval: 0.2
     reload: 7
     range: 87.5
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -104,6 +118,8 @@ MonoBehaviour:
     shotInterval: 0.3
     reload: 8
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 133
@@ -116,6 +132,8 @@ MonoBehaviour:
     shotInterval: 0.3
     reload: 10
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -128,6 +146,8 @@ MonoBehaviour:
     shotInterval: 0.3
     reload: 10
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -140,6 +160,8 @@ MonoBehaviour:
     shotInterval: 0.3
     reload: 10
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     projectileSpeed: 133
@@ -152,6 +174,8 @@ MonoBehaviour:
     shotInterval: 0.2
     reload: 6
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 55
@@ -164,6 +188,8 @@ MonoBehaviour:
     shotInterval: 0.2
     reload: 10
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 55
@@ -176,6 +202,8 @@ MonoBehaviour:
     shotInterval: 0
     reload: 15
     range: 75
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
       type: 3}
     projectileSpeed: 0
@@ -188,6 +216,8 @@ MonoBehaviour:
     shotInterval: 0.25
     reload: 10
     range: 75
+    strikecraftOnly: 0
+    interceptable: 1
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}
     projectileSpeed: 35
@@ -200,6 +230,8 @@ MonoBehaviour:
     shotInterval: 0.4
     reload: 12
     range: 75
+    strikecraftOnly: 0
+    interceptable: 1
     shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
       type: 3}
     projectileSpeed: 25
@@ -212,6 +244,8 @@ MonoBehaviour:
     shotInterval: 0.08
     reload: 0.9
     range: 35
+    strikecraftOnly: 0
+    interceptable: 0
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 140

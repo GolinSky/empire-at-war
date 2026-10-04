@@ -40,7 +40,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         /// <returns>Seconds until the shot reaches the target.</returns>
         public float Play(AttackData attackData, IHardPointModel target, Vector3 aimOffset,
-            int sequenceGeneration, bool isHit)
+            int sequenceGeneration, bool isHit, out ShotEffect effect)
         {
             if (_released)
             {
@@ -48,7 +48,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             }
 
             Transform targetTransform = target.Transform;
-            ShotEffect effect = Acquire();
+            effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType,
                 GetImpactSize(attackData.TargetClass), isHit);
             float duration = effect.Fire(_owner, targetTransform, aimOffset, _profile);

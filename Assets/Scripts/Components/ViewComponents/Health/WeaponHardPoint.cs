@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private ImpactEffectPresenter _impactPresenter;
+        private IncomingMissileRegistry _missiles;
 
         private float _maxAttackDistance;
         private float _missSpread;
@@ -41,6 +43,8 @@ namespace EmpireAtWar.ViewComponents.Health
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal float DelayBetweenShots => _profile.ShotInterval;
 
+        internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
+
         public void SetData(FloatRange floatRange)
         {
             yAxisRange.SetValue(floatRange);
@@ -48,7 +52,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            ImpactEffectPresenter impactPresenter)
+            ImpactEffectPresenter impactPresenter, IncomingMissileRegistry missiles)
         {
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
@@ -57,6 +61,7 @@ namespace EmpireAtWar.ViewComponents.Health
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _impactPresenter = impactPresenter;
+            _missiles = missiles;
         }
 
         public virtual void Attack(AttackData attackData, IHardPointModel hardPointModel)
@@ -102,7 +107,8 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             bool isHit = WeaponPresenter.RollHit(attackData, _profile);
             Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
-            float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit);
+            float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit,
+                out ShotEffect effect);
 
             if (!_sequence.RegisterEffect(sequenceGeneration))
             {
@@ -113,7 +119,14 @@ namespace EmpireAtWar.ViewComponents.Health
             if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform);
             if (isHit)
             {
-                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration);
+                IncomingMissile missile = null;
+                if (_profile.Interceptable)
+                {
+                    missile = _missiles.Launch(attackData.TargetHealth, hardPointModel, transform.position, duration);
+                    effect.TrackInterception(missile);
+                }
+
+                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, missile);
             }
         }
 

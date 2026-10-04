@@ -10,5 +10,7 @@
         SupplyDock = 5,
         IonPulseCannon = 6,
         TractorBeam = 7,
+        PointDefense = 8,
+        MissileDefense = 9,
     }
 }
