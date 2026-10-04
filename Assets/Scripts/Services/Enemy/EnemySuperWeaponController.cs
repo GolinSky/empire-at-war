@@ -56,6 +56,7 @@ namespace EmpireAtWar.Services.Enemy
         public void Tick()
         {
             AdvanceCharging(Time.deltaTime);
+            _model.Tick(Time.deltaTime);
 
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer > 0f) return;

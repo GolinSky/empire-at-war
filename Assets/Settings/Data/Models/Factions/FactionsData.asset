@@ -886,8 +886,8 @@ MonoBehaviour:
         <Name>k__BackingField: Ion Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 2800
-        <BuildTime>k__BackingField: 40
+        <Price>k__BackingField: 5600
+        <BuildTime>k__BackingField: 80
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b,
           type: 3}
@@ -901,8 +901,8 @@ MonoBehaviour:
         <Name>k__BackingField: Hypervelocity Gun
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 2800
-        <BuildTime>k__BackingField: 45
+        <Price>k__BackingField: 5600
+        <BuildTime>k__BackingField: 90
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: c09ba886d721a5b48ae81ff6b7ddf9bb,
           type: 3}
@@ -916,8 +916,8 @@ MonoBehaviour:
         <Name>k__BackingField: Plasma Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 2800
-        <BuildTime>k__BackingField: 40
+        <Price>k__BackingField: 5600
+        <BuildTime>k__BackingField: 80
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 3f8628327c2f7ab4d905d41954f545b1,
           type: 3}
