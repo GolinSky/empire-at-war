@@ -9,6 +9,7 @@ namespace EmpireAtWar.Components.AttackComponent
     {
         [SerializeField] private float fighter;
         [SerializeField] private float bomber;
+        [SerializeField] private float interceptor;
         [SerializeField] private float corvette;
         [SerializeField] private float frigate;
         [SerializeField] private float capital;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Components.AttackComponent
         {
             ShipClass.Fighter => fighter,
             ShipClass.Bomber => bomber,
+            ShipClass.Interceptor => interceptor,
             ShipClass.Corvette => corvette,
             ShipClass.Frigate => frigate,
             ShipClass.Capital => capital,
@@ -27,11 +29,12 @@ namespace EmpireAtWar.Components.AttackComponent
             _ => throw new ArgumentOutOfRangeException(nameof(shipClass), shipClass, null)
         };
 
-        public ShipClassValues(float fighter, float bomber, float corvette, float frigate, float capital,
+        public ShipClassValues(float fighter, float bomber, float interceptor, float corvette, float frigate, float capital,
             float heavyCapital, float structure)
         {
             this.fighter = fighter;
             this.bomber = bomber;
+            this.interceptor = interceptor;
             this.corvette = corvette;
             this.frigate = frigate;
             this.capital = capital;

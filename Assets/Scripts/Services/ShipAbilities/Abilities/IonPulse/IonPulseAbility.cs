@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool CanStart(IShipAbilityFacade caster, IEntity target)
         {
-            if (target.HealthModel.ShipClass == ShipClass.Fighter || target.HealthModel.ShipClass == ShipClass.Bomber)
+            if (target.HealthModel.ShipClass.IsStrikecraft())
                 return false;
             foreach (IHardPointModel cannon in caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
                 if (!cannon.IsDestroyed) return true;
@@ -135,7 +135,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             {
                 if (_hits.Contains(entity) || entity.HealthModel.IsDestroyed ||
                     !_relations.IsHostile(_owner, entity.Owner) ||
-                    entity.HealthModel.ShipClass == ShipClass.Fighter || entity.HealthModel.ShipClass == ShipClass.Bomber ||
+                    entity.HealthModel.ShipClass.IsStrikecraft() ||
                     !entity.TryGetFacade(out ICombatModifiersFacade combat)) continue;
                 Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - _origin;
                 offset.y = 0f;

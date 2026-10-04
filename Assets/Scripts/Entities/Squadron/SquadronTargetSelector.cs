@@ -9,7 +9,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
-    /// <summary>Prefers strikecraft for fighters and larger targets for bombers.</summary>
+    /// <summary>Prefers strikecraft for fighters and interceptors, and larger targets for bombers.</summary>
     public sealed class SquadronTargetSelector
     {
         private const float PREFERRED_TARGET_DISTANCE_WEIGHT = 0.25f;
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private float Score(IEntity entity, float sqrDistance)
         {
             ShipClass shipClass = entity.HealthModel.ShipClass;
-            bool isStrikecraft = shipClass == ShipClass.Fighter || shipClass == ShipClass.Bomber;
+            bool isStrikecraft = shipClass.IsStrikecraft();
             bool isPreferred = _shipClass == ShipClass.Bomber ? !isStrikecraft : isStrikecraft;
             return isPreferred ? sqrDistance * PREFERRED_TARGET_DISTANCE_WEIGHT : sqrDistance;
         }

@@ -43,8 +43,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             DamageType damageType, float size, bool isHit)
         {
             _impactPresenter = presenter;
-            //todo: add ShipClass.Interceptor. Add bool api for return if it is a fighter
-            IsStrikecraftTarget = target.ShipClass == ShipClass.Fighter || target.ShipClass == ShipClass.Bomber;
+            IsStrikecraftTarget = target.ShipClass.IsStrikecraft();
             _impactTarget = isHit ? target : null;
             _impactDamageType = damageType;
             _impactSize = size;

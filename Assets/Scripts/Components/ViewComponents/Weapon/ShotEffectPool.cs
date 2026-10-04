@@ -61,7 +61,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private float GetImpactSize(ShipClass targetClass)
         {
             float size = Mathf.Max(_profile.Size.x, MIN_IMPACT_SIZE);
-            return targetClass == ShipClass.Fighter || targetClass == ShipClass.Bomber
+            return targetClass.IsStrikecraft()
                 ? size * STRIKECRAFT_IMPACT_SCALE
                 : size;
         }
