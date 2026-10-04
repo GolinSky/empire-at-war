@@ -61,6 +61,8 @@ MonoBehaviour:
     - key: 8
       value: {fileID: 7540580129695160866, guid: 0ab8b97fa5f89054ca01e0c0ffbf4697,
         type: 3}
+    - key: 9
+      value: {fileID: 11383225332529578, guid: b6e005da455919a4e960d1a5db42c3df, type: 3}
   spawnSquadronWrapper:
     keyValue:
     - key: 0

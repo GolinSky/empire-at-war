@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: MandatorShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <Speed>k__BackingField: 3
+  heightTiers: {fileID: 11400000, guid: c0ccfe8fa64b01f478f5f2928bd7958e, type: 2}
+  <HeightTier>k__BackingField: 7
+  <HullBottom>k__BackingField: -63.313545
+  <HullTop>k__BackingField: 63.440533
+  <RotationSpeed>k__BackingField: 1.5
+  <TurnAcceleration>k__BackingField: 1.5
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 3
+  <NavigationRadius>k__BackingField: 550
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: e1f935379fc436e43954b1f656be1443,
+    type: 2}
+  <ShipClass>k__BackingField: 5
+  <Hull>k__BackingField: 9000
+  <Shields>k__BackingField: 8000
+  <ShieldRegenerateValue>k__BackingField: 100
+  <ShieldRegenerateDelay>k__BackingField: 3
+  <ShieldDangerStateRange>k__BackingField:
+    <Min>k__BackingField: 0.2
+    <Max>k__BackingField: 0.4
+  hardPointHealth:
+  - hardPointType: 0
+    health: 400
+    hullDamageMultiplier: 1
+  - hardPointType: 1
+    health: 500
+    hullDamageMultiplier: 1
+  - hardPointType: 2
+    health: 1000
+    hullDamageMultiplier: 1
+  - hardPointType: 4
+    health: 400
+    hullDamageMultiplier: 1
+  - hardPointType: 7
+    health: 400
+    hullDamageMultiplier: 1
+  <Range>k__BackingField: 500
+  <Delay>k__BackingField: 0.25
+  abilities: 05000000
+  hangarBays:
+  - squadronType: 0
+    reserve: 24
+    maxActive: 4
+  - squadronType: 1
+    reserve: 18
+    maxActive: 2
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 6

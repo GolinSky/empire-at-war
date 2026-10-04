@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621f037e9a796d149b93e6450fa8e471, type: 3}
+  m_Name: MandatorMatchups
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
+  strongAgainst:
+  - iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+    label: Lucrehulk
+  - iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    label: Providence
+  - iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    label: Fighter swarms
+  weakAgainst:
+  - iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
+    label: Malevolence
+  - iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+    label: Bomber swarms

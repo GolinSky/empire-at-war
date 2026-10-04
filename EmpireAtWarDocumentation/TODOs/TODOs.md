@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Import Pride of the Core / Mandator II**
+  - **Plan**: [[TODOs/Features/Mandator_Import|Mandator Import]]
+  - **Reference**: [[GameDesign/Mandator Import]]
+  - **Status**: 2026-10-04 living ALO + dedicated damaged wreck imported and registered as Republic ship `9`; 56 weapons / 64 targets, hull/shields/regen 9,000/8,000/100, Power to Weapons, approved Delta-7/A-Wing complement. Length 956.803 = 2× Malevolence; flight Y −520. Art/placement/icon/team colors, saved references, geometry/hierarchy and import/compile checks complete; source files unchanged. No automated tests or Play Mode run.
+  - **Remaining**: Tractor Beam ability, independent system damage review, clean-skirmish acceptance and provisional balance review.
+
 - [ ] **Import Resolute hero Venator**
   - **Plan**: [[TODOs/Features/Resolute_Import|Resolute Import]]
   - **Status**: dedicated model, registrations, abilities, one-ship rule and Yularen aura implemented; asset/compile/render checks passed. Clean-skirmish acceptance pending; current Venator hangar inherited.

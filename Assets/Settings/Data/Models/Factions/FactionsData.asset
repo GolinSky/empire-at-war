@@ -140,6 +140,24 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 8ee3ff50731492c43b11469ff405c5d6,
               type: 3}
+        - key: 9
+          value:
+            matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
+            description: Republic dreadnought with 20 turbolaser mounts, eight ion
+              cannons, 16 point-defense batteries, eight missile and four torpedo
+              launchers. Power to Weapons boosts battery output. Deploys Delta-7
+              and A-Wing squadrons; vulnerable to concentrated bomber attacks and
+              Malevolence.
+            role: "Mandator II \xB7 Dreadnought"
+            iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
+            <Name>k__BackingField: Pride of the Core
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 70000
+            <BuildTime>k__BackingField: 90
+            <UnitCapacity>k__BackingField: 5
+            <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
+              type: 3}
     - key: 1
       value:
         keyValue:

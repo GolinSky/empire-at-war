@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 872a347b6a0da1744b5a15e66649705e
+    m_Address: MandatorShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94fb1f4b8f76e8a45baec9d3df1e378a
     m_Address: AcclamatorShipData
     m_ReadOnly: 0
