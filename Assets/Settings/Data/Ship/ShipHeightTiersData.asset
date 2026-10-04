@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b61767437df49dd4cbb9105b02373012, type: 3}
   m_Name: ShipHeightTiersData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipHeightTiersData
-  lowest: -258
-  low: -171
+  offset: 50
+  lowest: -291
+  low: -204
   lowMid: -118
   mid: -72
   highMid: -12
   high: 15
   highest: 30
-  deep: -370
+  deep: -391
