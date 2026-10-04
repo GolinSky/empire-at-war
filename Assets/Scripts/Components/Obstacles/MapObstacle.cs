@@ -15,17 +15,7 @@ namespace EmpireAtWar.Components.Obstacles
 
         public Bounds WorldBounds => obstacleCollider.bounds;
 
-        public RadarContact Contact
-        {
-            get
-            {
-                Bounds bounds = obstacleCollider.bounds;
-                return new RadarContact(
-                    bounds.center,
-                    Mathf.Max(bounds.extents.x, bounds.extents.z),
-                    false);
-            }
-        }
+        public RadarContact Contact => RadarContact.FromBounds(obstacleCollider.bounds, false);
 
     }
 }

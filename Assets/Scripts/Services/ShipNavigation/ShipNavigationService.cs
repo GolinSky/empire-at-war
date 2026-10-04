@@ -142,7 +142,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
-            BuildNavigationContacts(obstacleContacts);
+            BuildNavigationContacts(obstacleContacts, agent.NavigationHullSpan);
             AddIdleAgentContacts(agent);
 
             using (ShipPathGrid pathGrid = new ShipPathGrid(
@@ -372,7 +372,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public bool IsPositionClear(Vector3 position, float navigationRadius)
         {
-            BuildNavigationContacts(Array.Empty<RadarContact>());
+            BuildNavigationContacts(Array.Empty<RadarContact>(), ShipHullSpan.Unbounded);
             return ShipAvoidancePlanner.IsPointClear(position, _mapObstacleContacts,
                        position.y, 0f, navigationRadius) &&
                    _destinationRegistry.HasClearance(
@@ -391,19 +391,28 @@ namespace EmpireAtWar.Services.ShipNavigation
                 navigationRadius);
         }
 
+        // Obstacles whose vertical extent misses the hull are dropped: a ship flying
+        // wholly below (or above) an asteroid field or station passes it.
         private void BuildNavigationContacts(
-            IReadOnlyList<RadarContact> radarContacts)
+            IReadOnlyList<RadarContact> radarContacts,
+            ShipHullSpan hullSpan)
         {
             _mapObstacleContactProvider.CopyContacts(_mapObstacleContacts);
-            _mapObstacleContacts.RemoveAll(contact => contact.IsShip);
+            _mapObstacleContacts.RemoveAll(contact =>
+                contact.IsShip || !IsAtHullHeight(contact, hullSpan));
             for (int i = 0; i < radarContacts.Count; i++)
             {
                 RadarContact contact = radarContacts[i];
-                if (!contact.IsShip)
+                if (!contact.IsShip && IsAtHullHeight(contact, hullSpan))
                 {
                     AddContactIfUnique(contact);
                 }
             }
+        }
+
+        private static bool IsAtHullHeight(RadarContact contact, ShipHullSpan hullSpan)
+        {
+            return hullSpan.Overlaps(new ShipHullSpan(contact.Bottom, contact.Top));
         }
 
         // Idle ships are treated as static obstacles for route planning; moving
