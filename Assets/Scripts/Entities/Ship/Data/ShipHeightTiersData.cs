@@ -6,16 +6,23 @@ namespace EmpireAtWar.Entities.Ship.Data
     [CreateAssetMenu(fileName = "ShipHeightTiersData", menuName = "Data/ShipHeightTiersData")]
     public class ShipHeightTiersData : Mvc.Data
     {
-        [SerializeField] private float lowest = -258f;
-        [SerializeField] private float low = -171f;
+        [Tooltip("Added to every tier height.")]
+        [SerializeField] private float offset = 50f;
+        [SerializeField] private float lowest = -291f;
+        [SerializeField] private float low = -204f;
         [SerializeField] private float lowMid = -118f;
         [SerializeField] private float mid = -72f;
         [SerializeField] private float highMid = -12f;
         [SerializeField] private float high = 15f;
         [SerializeField] private float highest = 30f;
-        [SerializeField] private float deep = -370f;
+        [SerializeField] private float deep = -391f;
 
         public float GetHeight(ShipHeightTier tier)
+        {
+            return offset + GetTierHeight(tier);
+        }
+
+        private float GetTierHeight(ShipHeightTier tier)
         {
             switch (tier)
             {
