@@ -97,7 +97,12 @@ namespace EmpireAtWar.Components.Weapon
 
             int targetGeneration = target.Generation;
             hardPoint.EmitScheduledShot(targetGroup, target, hardPointGeneration);
-            if (!hardPoint.IsEmitting(hardPointGeneration)) return;
+            if (!hardPoint.IsEmitting(hardPointGeneration))
+            {
+                // An ion disable interrupts the salvo; the sequence must end or the hardpoint stays busy forever.
+                hardPoint.StopEmitting(hardPointGeneration);
+                return;
+            }
 
             // Coroutine waits resumed on a later frame; never emit a catch-up burst after a long frame.
             _sequences.Add(new SequenceRecord
@@ -407,7 +412,11 @@ namespace EmpireAtWar.Components.Weapon
             SequenceRecord sequence = _sequences[index];
             RemoveSequenceAt(index);
             if (!IsRegistered(sequence.Owner, sequence.OwnerGeneration) ||
-                !sequence.HardPoint.IsEmitting(sequence.HardPointGeneration)) return;
+                !sequence.HardPoint.IsEmitting(sequence.HardPointGeneration))
+            {
+                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                return;
+            }
 
             if (sequence.ShotsRemaining == 0 ||
                 sequence.Target.Generation != sequence.TargetGeneration ||
@@ -419,7 +428,11 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             sequence.HardPoint.EmitScheduledShot(sequence.TargetGroup, sequence.Target, sequence.HardPointGeneration);
-            if (!sequence.HardPoint.IsEmitting(sequence.HardPointGeneration)) return;
+            if (!sequence.HardPoint.IsEmitting(sequence.HardPointGeneration))
+            {
+                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                return;
+            }
             sequence.ShotsRemaining--;
             sequence.NextTime = now + sequence.HardPoint.DelayBetweenShots;
             sequence.EarliestFrame = frame + 1;
