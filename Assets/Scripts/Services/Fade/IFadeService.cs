@@ -1,0 +1,17 @@
+using System.Threading;
+using UnityEngine;
+
+namespace EmpireAtWar.Services.Fade
+{
+    public interface IFadeService
+    {
+        /// <summary>Covers the screen at once, without a fade.</summary>
+        void Cover();
+
+        /// <summary>Fades from clear to covered.</summary>
+        Awaitable FadeInAsync(float duration, CancellationToken cancellationToken);
+
+        /// <summary>Fades from covered to clear.</summary>
+        Awaitable FadeOutAsync(float duration, CancellationToken cancellationToken);
+    }
+}

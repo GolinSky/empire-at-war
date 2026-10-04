@@ -105,7 +105,12 @@ Ended       BattleResult received · timeScale 0 · HUD disabled
 2. [x] Sequence: `Loading`, input lock, Esc ignored, `BattleMapLoader` + `BattleMap` notifier, map reactors, `IStationSpawner` via registry, victory/AI/camera gated on state.
 3. [x] Async map: background generation, frame-sliced `MapLayoutView.BuildAsync`, `MapInstaller` bindings only, `MapModel` holder.
 4. [x] Camera/fog fixes: no edge scroll until pointer reports a real position or app unfocused; clamp `unscaledDeltaTime` in `CameraService.Tick`; `IFogOfWarSystem.RevealImmediately()`.
-5. [ ] Fader in reserved slots (separate follow-up).
+5. [x] Fader in reserved slots: `BattleStartupSequence` calls `IFadeService.Cover()` before the first frame, `await FadeOutAsync(0.5 s)` after fog reveal.
+   - `FadeService` (`Services/Fade`) creates `FadeUi` lazily via `IUiService.CreateUi(UiType.Fade, PopupCanvasTransform)`; API `Cover` / `FadeInAsync` / `FadeOutAsync` (ported from SoulsLike callbacks → `Awaitable`).
+   - `FadeUi` (`Entities/Fade`): child `Image` `#030508`, DOTween unscaled, cancellable; `SetAsLastSibling` on show.
+   - Prefab `Assets/Prefabs/Ui/Fade/FadeUi.prefab`, Addressable `FadeUi` in `Ui` group; resolve + references verified in Editor.
+   - EditMode test `FadeUiPrefab_HasAssignedReferencesAndCoverBlocksInput`; `EXPECTED_SCREEN_PREFAB_COUNT` 14 → 18 (was already stale at 17).
+   - Not done: fade on exit to menu.
 6. [ ] Acceptance in Play Mode: no fog fade-in, no camera drift, no first-frame hitch, Zenject graph resolves (orchestrator ↔ `CameraService` cycle relies on method injection), Esc ignored while loading, pause/speed/menu/end/exit.
 
 ## Progress (2026-10-04)
