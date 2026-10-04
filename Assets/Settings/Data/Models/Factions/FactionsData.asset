@@ -123,6 +123,23 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 8
             <Icon>k__BackingField: {fileID: 21300000, guid: 677a9fb4a7566e14d932893ee85f3357,
               type: 3}
+        - key: 8
+          value:
+            matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
+            description: Unique Venator with 7,000 hull and 5,000 shields. SPHA-T
+              Beam and Concentrate Fire. Allied ships and squadrons within 400 receive
+              +50% vision, +20% hull, +10% shields, damage and speed, and 35% less
+              incoming damage. One at a time; replaceable after destruction.
+            role: "Hero \xB7 Fleet command carrier"
+            iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
+            <Name>k__BackingField: "Resolute \u2014 Admiral Yularen"
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 6000
+            <BuildTime>k__BackingField: 10
+            <UnitCapacity>k__BackingField: 3
+            <Icon>k__BackingField: {fileID: 21300000, guid: 8ee3ff50731492c43b11469ff405c5d6,
+              type: 3}
     - key: 1
       value:
         keyValue:

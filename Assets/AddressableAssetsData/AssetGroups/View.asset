@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9d6eb346b0497649911724f20048daf
+    m_Address: ResoluteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
     m_Address: SeparatistSpaceStationView
     m_ReadOnly: 0

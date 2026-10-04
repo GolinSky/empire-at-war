@@ -8,6 +8,8 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Units;
 using UnityEngine;
 using Zenject;
 
@@ -34,6 +36,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly IReinforcementPool _reinforcementPool;
         private readonly IEconomyProvider _economyProvider;
         private readonly IStationRegistry _stationRegistry;
+        private readonly IEntityLocator _entities;
         private ISelectionContext _selectionContext;
 
         private readonly PlayerSlot _owner;
@@ -54,7 +57,8 @@ namespace EmpireAtWar.Services.Factions
             PlayerFactionModel model,
             FactionResearchModel research,
             SuperWeaponModel superWeapons,
-            PlayerSlot owner)
+            PlayerSlot owner,
+            IEntityLocator entities)
         {
             _owner = owner;
             _model = model;
@@ -66,6 +70,7 @@ namespace EmpireAtWar.Services.Factions
             _reinforcementPool = reinforcementPool;
             _economyProvider = economyProvider;
             _stationRegistry = stationRegistry;
+            _entities = entities;
         }
 
         public void Initialize()
@@ -78,6 +83,9 @@ namespace EmpireAtWar.Services.Factions
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
             _model.OnUnitCompleted += BuildUnit;
+            _entities.EntityAdded += HandleEntityAdded;
+            _entities.EntityRemoved += HandleEntityRemoved;
+            foreach (IEntity entity in _entities.Entities) HandleEntityAdded(entity);
             _isInitialized = true;
         }
 
@@ -91,6 +99,8 @@ namespace EmpireAtWar.Services.Factions
             _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
             _model.OnUnitCompleted -= BuildUnit;
+            _entities.EntityAdded -= HandleEntityAdded;
+            _entities.EntityRemoved -= HandleEntityRemoved;
             _isInitialized = false;
         }
 
@@ -111,6 +121,8 @@ namespace EmpireAtWar.Services.Factions
         {
             if (!_stationRegistry.IsStationOperational(_owner.Id))
             {
+                if (unitRequest is ShipUnitRequest ship && ship.Key == ShipType.Resolute)
+                    _model.SetResoluteReserved(false);
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest)
                 {
@@ -161,6 +173,21 @@ namespace EmpireAtWar.Services.Factions
             {
                 _superWeapons.StartCharging(purchasedSuperWeapon.Key);
             }
+        }
+
+        private bool IsOwnedResolute(IEntity entity) => entity.Owner == _owner.Id &&
+            entity.TryGetFacade(out IUnitTypeFacade type) &&
+            type.UnitTypeId == UnitTypeId.Ship(ShipType.Resolute);
+
+        private void HandleEntityAdded(IEntity entity)
+        {
+            if (IsOwnedResolute(entity)) _model.SetResoluteReserved(true);
+        }
+
+        private void HandleEntityRemoved(IEntity entity)
+        {
+            if (IsOwnedResolute(entity) && entity.HealthModel.IsDestroyed)
+                _model.SetResoluteReserved(false);
         }
 
         public void CancelBuilding(string id)

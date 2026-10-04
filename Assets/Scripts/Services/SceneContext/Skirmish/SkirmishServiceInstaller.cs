@@ -84,6 +84,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .BindInterfacesExt<SelectionInput>()
                 .BindInterfacesExt<UnitOrderInput>()
                 .BindInterfacesExt<ShipService>()
+                .BindInterfacesExt<EmpireAtWar.Services.FleetCommand.FleetCommandService>()
                 .BindInterfacesExt<MapObstacleContactProvider>()
                 .BindInterfacesExt<ShipNavigationService>()
                 .BindInterfacesExt<UnitWreckService>()

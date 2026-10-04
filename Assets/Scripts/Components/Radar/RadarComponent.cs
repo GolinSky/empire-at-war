@@ -161,6 +161,7 @@ namespace EmpireAtWar.Components.Radar
 
         private int GetOverlapHits()
         {
+            _halfExtents = new Vector3(Model.Range, VERTICAL_SCAN_HALF_EXTENT, Model.Range);
             while (true)
             {
                 int hitAmount = Physics.OverlapBoxNonAlloc(

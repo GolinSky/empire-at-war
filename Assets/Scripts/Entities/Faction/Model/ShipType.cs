@@ -12,6 +12,7 @@ namespace EmpireAtWar.Models.Factions
         HeavyDreadnought = 5,
         Thranta = 6,
         Rothana = 7,
+        Resolute = 8,
 
         //separatist
         Providence = 100,

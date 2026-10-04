@@ -48,6 +48,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 .BindWeaponFeature()
                 .BindFogOfWarFeature(_isHiddenByLocalFog);
             Container.Bind<CombatModifiers>().AsSingle();
+            Container.BindInterfacesExt<EmpireAtWar.Entities.Ship.EntityFacades.Combat.CombatModifiersFacade>();
 
             Container.BindInitializableExecutionOrder<SquadronHealthComponent>(-100);
             Container.BindInitializableExecutionOrder<SquadronFlightComponent>(-90);

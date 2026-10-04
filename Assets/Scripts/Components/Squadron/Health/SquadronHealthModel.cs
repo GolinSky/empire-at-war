@@ -18,6 +18,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         private readonly DamageMatrixData _damageMatrix;
         private readonly CombatModifiers _modifiers;
+        private float _hullMultiplier;
+        private float _shieldsMultiplier;
         private float[] _shields = Array.Empty<float>();
 
         public event Action OnValueChanged;
@@ -37,8 +39,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public bool HasUnits => !IsDestroyed && Members.Length > 0;
         public bool HasLiveHardPoints => AliveCount > 0;
         public int AliveCount { get; private set; }
-        public float MaxHull => _data.MemberHull * Members.Length;
-        public float MaxShields => _data.MemberShields * Members.Length;
+        public float MaxHull => _data.MemberHull * Members.Length * _hullMultiplier;
+        public float MaxShields => _data.MemberShields * Members.Length * _shieldsMultiplier;
 
         public SquadronHealthModel(ISquadronHealthData data, DamageMatrixData damageMatrix,
             CombatModifiers modifiers)
@@ -46,6 +48,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             _data = data;
             _damageMatrix = damageMatrix;
             _modifiers = modifiers;
+            _hullMultiplier = modifiers.HullMultiplier;
+            _shieldsMultiplier = modifiers.ShieldsMultiplier;
         }
 
         public void InitializeMembers(IReadOnlyList<HardPointModel> members)
@@ -55,14 +59,31 @@ namespace EmpireAtWar.Components.Squadrons.Health
             for (int i = 0; i < members.Count; i++)
             {
                 Members[i] = members[i];
-                Members[i].SetHealth(_data.MemberHull, 1f);
-                _shields[i] = _data.MemberShields;
+                Members[i].SetHealth(_data.MemberHull * _hullMultiplier, 1f);
+                _shields[i] = _data.MemberShields * _shieldsMultiplier;
             }
 
             Recalculate();
         }
 
         public float GetMemberShields(int memberId) => _shields[memberId];
+
+        public void RefreshStatModifiers()
+        {
+            if (_hullMultiplier == _modifiers.HullMultiplier &&
+                _shieldsMultiplier == _modifiers.ShieldsMultiplier) return;
+            float hullRatio = _modifiers.HullMultiplier / _hullMultiplier;
+            float shieldRatio = _modifiers.ShieldsMultiplier / _shieldsMultiplier;
+            _hullMultiplier = _modifiers.HullMultiplier;
+            _shieldsMultiplier = _modifiers.ShieldsMultiplier;
+            for (int i = 0; i < Members.Length; i++)
+            {
+                Members[i].ScaleHealth(hullRatio);
+                _shields[i] *= shieldRatio;
+            }
+            Recalculate();
+            OnValueChanged?.Invoke();
+        }
 
         public void ApplyDamage(float damage, DamageType damageType, int memberId)
         {
@@ -102,7 +123,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             {
                 if (!Members[i].IsDestroyed)
                 {
-                    _shields[i] = Math.Min(_data.MemberShields, _shields[i] + value);
+                    _shields[i] = Math.Min(_data.MemberShields * _shieldsMultiplier, _shields[i] + value);
                 }
             }
 

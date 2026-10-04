@@ -21,6 +21,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private IFogOfWarSystem _fogOfWarSystem;
         private IRadarModelObserver _radarModel;
         private ILocalPlayer _localPlayer;
+        private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private List<FighterView> fighters;
         private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
@@ -39,7 +40,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         [Inject]
         private void Construct(IFogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer,
-            SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner)
+            SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner,
+            EmpireAtWar.Components.Combat.CombatModifiers modifiers)
         {
             SetModel(model);
             _startPosition = startPosition;
@@ -48,6 +50,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             _fogOfWarSystem = fogOfWarSystem;
             _radarModel = radarModel;
             _localPlayer = localPlayer;
+            _modifiers = modifiers;
         }
 
         public void Initialize()
@@ -74,6 +77,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
             // Allies share vision, so their squadrons reveal the local fog too.
             _sharesLocalVision = _localPlayer.IsFriendly(_owner);
+            _modifiers.Changed += RefreshVision;
             if (_sharesLocalVision)
             {
                 _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
@@ -90,6 +94,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
 
             _isReleased = true;
+            _modifiers.Changed -= RefreshVision;
             if (_sharesLocalVision)
             {
                 _fogOfWarSystem.UnregisterVisionSource(transform);
@@ -97,6 +102,12 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         }
 
         public bool IsAlive(int index) => Model.IsAlive(index);
+
+        private void RefreshVision()
+        {
+            if (_sharesLocalVision)
+                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
+        }
 
         public Vector3 GetPosition(int index) => Model.Get(index).Position.ToUnity();
 
