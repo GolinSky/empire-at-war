@@ -12,30 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
   m_Name: MalevolenceShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
-  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
-  hardPointHealth:
-  - hardPointType: 0
-    health: 600
-    hullDamageMultiplier: 1
-  - hardPointType: 1
-    health: 1200
-    hullDamageMultiplier: 1
-  - hardPointType: 2
-    health: 1800
-    hullDamageMultiplier: 1
-  - hardPointType: 4
-    health: 900
-    hullDamageMultiplier: 1
-  - hardPointType: 5
-    health: 1000
-    hullDamageMultiplier: 1
-  - hardPointType: 6
-    health: 2200
-    hullDamageMultiplier: 1
-  abilities: 08000000
-  hangarBays: []
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 4
+  <Speed>k__BackingField: 8
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7
   <HullBottom>k__BackingField: -51.694447
   <HullTop>k__BackingField: 51.694447
@@ -55,7 +34,28 @@ MonoBehaviour:
   <ShieldDangerStateRange>k__BackingField:
     <Min>k__BackingField: 0.3
     <Max>k__BackingField: 0.5
+  hardPointHealth:
+  - hardPointType: 0
+    health: 600
+    hullDamageMultiplier: 1
+  - hardPointType: 1
+    health: 1200
+    hullDamageMultiplier: 1
+  - hardPointType: 2
+    health: 1800
+    hullDamageMultiplier: 1
+  - hardPointType: 4
+    health: 900
+    hullDamageMultiplier: 1
+  - hardPointType: 5
+    health: 1000
+    hullDamageMultiplier: 1
+  - hardPointType: 6
+    health: 2200
+    hullDamageMultiplier: 1
   <Range>k__BackingField: 500
   <Delay>k__BackingField: 0.25
+  abilities: 08000000
+  hangarBays: []
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
