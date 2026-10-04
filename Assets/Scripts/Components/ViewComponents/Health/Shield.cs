@@ -8,12 +8,12 @@ namespace EmpireAtWar.ViewComponents.Health
     {
         private const int MAX_IMPACTS = 8;
         // Impact radius in world units grows with the square root of the hit's damage:
-        // laser (6) ~1.2, turbolaser (20) ~2.2, heavy turbolaser (50) ~3.5, beam (150) ~6.1.
-        private const float RADIUS_PER_SQRT_DAMAGE = 0.5f;
-        private const float MIN_IMPACT_RADIUS = 1f;
-        private const float MAX_IMPACT_RADIUS = 10f;
+        // laser (6) ~2.4, turbolaser (20) ~4.5, heavy turbolaser (50) ~7.1, beam (150) ~12.2.
+        private const float RADIUS_PER_SQRT_DAMAGE = 1f;
+        private const float MIN_IMPACT_RADIUS = 2f;
+        private const float MAX_IMPACT_RADIUS = 16f;
         // Vertex bulge as a fraction of the impact radius.
-        private const float DISPLACEMENT_RATIO = 0.06f;
+        private const float DISPLACEMENT_RATIO = 0.08f;
 
         [SerializeField] private MeshRenderer shieldRenderer;
         private readonly Vector4[] _impacts = new Vector4[MAX_IMPACTS];
