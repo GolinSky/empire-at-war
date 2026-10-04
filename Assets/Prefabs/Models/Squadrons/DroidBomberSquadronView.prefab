@@ -192,9 +192,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 291371357119956637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
   spawnDestroyedExplosion: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
@@ -202,7 +202,8 @@ MonoBehaviour:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
   prewarmEffects: 2
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 22
+  fighterIndex: 2
 --- !u!1 &572190397221090753
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,9 +388,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 906479118362100899}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
   spawnDestroyedExplosion: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -397,7 +398,8 @@ MonoBehaviour:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
   prewarmEffects: 2
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 22
+  fighterIndex: 0
 --- !u!1 &1616412449638456041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,9 +1450,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3931770810454481607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
   spawnDestroyedExplosion: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
@@ -1458,7 +1460,8 @@ MonoBehaviour:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
   prewarmEffects: 2
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 22
+  fighterIndex: 1
 --- !u!1 &4673126094889846744
 GameObject:
   m_ObjectHideFlags: 0
@@ -2213,9 +2216,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5354079951053631740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
   spawnDestroyedExplosion: 0
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
@@ -2223,7 +2226,8 @@ MonoBehaviour:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 12
   prewarmEffects: 2
-  <WeaponType>k__BackingField: 6
+  <WeaponType>k__BackingField: 22
+  fighterIndex: 3
 --- !u!1 &5413055772174472877
 GameObject:
   m_ObjectHideFlags: 0
