@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -13,13 +14,16 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly ProtonBeamSettings _settings;
         private readonly ImpactEffectPresenter _impactPresenter;
+        // Reuses the Laser Beam hardpoint's prefab, color and width.
+        private readonly WeaponProfile _beamProfile;
         private BeamShot _view;
 
         public ProtonBeamAbility(ProtonBeamSettings settings,
-            ImpactEffectPresenter impactPresenter)
+            ImpactEffectPresenter impactPresenter, WeaponsData weaponsData)
         {
             _settings = settings;
             _impactPresenter = impactPresenter;
+            _beamProfile = weaponsData.GetProfile(WeaponType.LaserBeam);
         }
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
@@ -27,9 +31,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             if (!target.TryGetFacade(out IHealthFacade health))
                 throw new InvalidOperationException($"{nameof(ProtonBeamAbility)} requires an {nameof(IHealthFacade)} on the target.");
 
-            _view = Object.Instantiate(_settings.ViewPrefab);
+            _view = (BeamShot)Object.Instantiate(_beamProfile.ShotPrefab);
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _settings.DamageType, _settings.Damage, 1.5f, true);
-            _view.PlayBeam(caster.Entity.GetFacade<IEntityTransformFacade>().Transform, target.GetFacade<IEntityTransformFacade>().Transform, definition.Duration);
+            _view.PlayBeam(caster.Entity.GetFacade<IEntityTransformFacade>().Transform, target.GetFacade<IEntityTransformFacade>().Transform, definition.Duration, _beamProfile);
             HardPointModel[] hardPoints = target.HealthModel.HardPointModels;
             for (int i = 0; i < hardPoints.Length; i++)
             {
