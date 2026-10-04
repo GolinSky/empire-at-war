@@ -43,7 +43,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         public void SetRemaining(float seconds)
         {
-            if (_state == SuperWeaponState.Charging && !_pending)
+            if ((_state == SuperWeaponState.Charging || _state == SuperWeaponState.Cooldown) && !_pending)
                 stateText.text = $"{(int)seconds / 60:00}:{(int)seconds % 60:00}";
         }
 
@@ -51,7 +51,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         {
             stateText.text = _pending ? "TARGETING" : _state.ToString().ToUpperInvariant();
             stateText.color = _pending || _state == SuperWeaponState.Charging
-                ? new Color32(243, 182, 77, 255) : new Color32(54, 200, 243, 255);
+                ? new Color32(243, 182, 77, 255)
+                : _state == SuperWeaponState.Cooldown ? new Color32(214, 92, 76, 255)
+                : new Color32(54, 200, 243, 255);
             background.OutlineColor = _pending ? new Color32(243, 182, 77, 255)
                 : _state == SuperWeaponState.Ready ? new Color32(54, 200, 243, 255)
                 : new Color32(40, 70, 87, 255);

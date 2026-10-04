@@ -158,6 +158,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                         new TooltipStat(label: "Stun duration (s)", current: profile.StunDuration)
                     }, status: state == SuperWeaponState.Charging ? $"Construction: {remaining:0.#} s remaining"
                         : state == SuperWeaponState.Ready ? "Ready: click to select a target"
+                        : state == SuperWeaponState.Cooldown ? $"Cooldown: {_model.GetCooldownRemaining(type):0.#} s remaining"
                         : "Unavailable: build a new charge at the station");
             });
         }
@@ -174,6 +175,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_model.GetState(type) != SuperWeaponState.Ready) return;
             _unitTargeting.Cancel();
             _abilities.CancelTargeting();
+            // The dropdown only picks the weapon; the target is chosen on the battlefield.
+            _isOpen = false;
+            _view.SetOpen(false);
             _targeting.Start(type);
         }
 
@@ -241,6 +245,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         public void Tick()
         {
+            _model.Tick(Time.deltaTime);
             if (_view == null) return;
             _view.SetBattleAvailable(!_isBattleEnded);
             if (_isBattleEnded)
@@ -252,6 +257,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             foreach (var queue in _faction.GetProductionQueueSnapshots())
                 if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request)
                     _view.SetRemaining(request.Key, queue.RemainingBuildTime);
+            foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
+                if (_model.GetState(type) == SuperWeaponState.Cooldown)
+                    _view.SetRemaining(type, _model.GetCooldownRemaining(type));
         }
     }
 }

@@ -26,11 +26,16 @@ namespace EmpireAtWar.Tests.Editor
             model.CompleteCharging(SuperWeaponType.IonCannon);
             Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
             model.Consume(SuperWeaponType.IonCannon);
+            Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
+            model.Tick(SuperWeaponModel.COOLDOWN_DURATION - 1f);
+            Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
+            model.Tick(1f);
 
             Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.True);
             Assert.That(states, Is.EqualTo(new[]
             {
-                SuperWeaponState.Charging, SuperWeaponState.Ready, SuperWeaponState.Unavailable
+                SuperWeaponState.Charging, SuperWeaponState.Ready, SuperWeaponState.Cooldown,
+                SuperWeaponState.Unavailable
             }));
         }
 
