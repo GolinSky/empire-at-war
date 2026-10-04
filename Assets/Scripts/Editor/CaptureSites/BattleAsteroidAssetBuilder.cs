@@ -113,7 +113,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             GameObject facility = InstantiateFacility(root.transform, "Facility");
             Renderer[] facilityRenderers = facility.GetComponentsInChildren<Renderer>();
             Bounds bounds = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(root.transform, facilityRenderers);
-            Shield shield = AsteroidMiningFacilityAssetBuilder.BuildShield(root.transform, bounds);
+            Shield shield = AsteroidMiningFacilityAssetBuilder.BuildShield(root.transform);
 
             BoxCollider collider = root.GetComponent<BoxCollider>();
             collider.center = bounds.center;

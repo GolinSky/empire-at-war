@@ -21,7 +21,6 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string INSTALLER_PATH = "Assets/Prefabs/View/AsteroidMiningFacilityInstaller.prefab";
         private const string SOURCE_DATA_PATH = "Assets/Settings/Data/Models/MiningFacilities/MiningFacilityData.asset";
         private const string DATA_PATH = "Assets/Settings/Data/Models/MiningFacilities/AsteroidMiningFacilityData.asset";
-        private const string SHIELD_MESH_PATH = "Assets/Art/Models/ShieldSurface.asset";
         private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/Vfx/ShipShield.mat";
 
         private const float SELECTION_SCALE = 2.1f;
@@ -52,7 +51,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             Transform body = root.transform.Find("Sphere");
             Object.DestroyImmediate(body.Find("ShieldView").gameObject);
             Renderer bodyRenderer = body.GetComponent<Renderer>();
-            Shield shield = BuildShield(root.transform, GetLocalBounds(root.transform, new[] { bodyRenderer }));
+            Shield shield = BuildShield(root.transform);
 
             SerializedObject fog = new SerializedObject(root.GetComponent<FogVisibilityComponent>());
             SerializedProperty renderers = fog.FindProperty("renderers");
@@ -100,7 +99,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             Renderer[] machinery = model.GetComponentsInChildren<Renderer>();
             Bounds bounds = GetLocalBounds(root.transform, machinery);
 
-            Shield shield = BuildShield(root.transform, bounds);
+            Shield shield = BuildShield(root.transform);
 
             BoxCollider collider = root.GetComponent<BoxCollider>();
             collider.center = bounds.center;
@@ -134,15 +133,12 @@ namespace EmpireAtWar.Editor.CaptureSites
             PrefabUtility.UnloadPrefabContents(root);
         }
 
-        public static Shield BuildShield(Transform root, Bounds bounds)
+        public static Shield BuildShield(Transform root)
         {
-            // Unit-sphere mesh: a uniform scale of the machinery's corner distance gives a round shell around it.
             GameObject surface = new GameObject("ShieldSurface");
             surface.layer = root.gameObject.layer;
             surface.transform.SetParent(root, false);
-            surface.transform.localPosition = bounds.center;
-            surface.transform.localScale = Vector3.one * bounds.extents.magnitude;
-            surface.AddComponent<MeshFilter>().sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(SHIELD_MESH_PATH);
+            surface.AddComponent<MeshFilter>();
             MeshRenderer renderer = surface.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(SHIELD_MATERIAL_PATH);
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -154,6 +150,8 @@ namespace EmpireAtWar.Editor.CaptureSites
             SerializedObject serializedShield = new SerializedObject(shield);
             serializedShield.FindProperty("shieldRenderer").objectReferenceValue = renderer;
             serializedShield.ApplyModifiedPropertiesWithoutUndo();
+            // Wraps the shell tightly around every visible renderer under the root.
+            ShieldHullBaker.Bake(root, shield);
             return shield;
         }
 

@@ -31,6 +31,7 @@ Shader "EmpireAtWar/Ship Shield"
                 half4 _ShieldColor;
                 float _Brightness, _FadeDuration;
             CBUFFER_END
+            // xyz: object-space hit point on the shell, w: hit time.
             float4 _Impacts[MAX_IMPACTS];
             // World-unit radius per impact, set from the hit's damage, so equal hits look equal on any shield size.
             float _ImpactRadii[MAX_IMPACTS];
@@ -42,30 +43,14 @@ Shader "EmpireAtWar/Ship Shield"
             struct Attributes { float3 positionOS : POSITION; float3 normalOS : NORMAL; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 surfaceOS : TEXCOORD0; };
 
-            float SurfaceDistance(float3 a, float3 b)
-            {
-                float cosine = clamp(dot(a, b), -1.0, 1.0);
-                float angle = acos(cosine);
-                float3 tangent = b - a * cosine;
-                float sine = length(tangent);
-                if (sine < 0.0001)
-                    tangent = normalize(cross(a, abs(a.y) < 0.9 ? float3(0, 1, 0) : float3(1, 0, 0)));
-                else
-                    tangent /= sine;
-                float3 endTangent = tangent * cosine - a * sine;
-                float3 midTangent = tangent * cos(angle * 0.5) - a * sin(angle * 0.5);
-                // Arc length along the stretched sphere (Simpson integration), never through its interior.
-                return angle * (length(tangent * _ShieldAxes) + 4.0 * length(midTangent * _ShieldAxes)
-                    + length(endTangent * _ShieldAxes)) / 6.0;
-            }
-
             void EvaluateImpact(float3 surface, int index, out float patch, out float wave, out float fade)
             {
                 float age = max(0.0, _ShieldTime - _Impacts[index].w);
                 float duration = max(0.001, _FadeDuration);
                 fade = (1.0 - smoothstep(0.0, duration, age)) * smoothstep(0.0, min(0.06, duration * 0.1), age);
                 float radius = max(0.001, _ImpactRadii[index]);
-                float distance = SurfaceDistance(_Impacts[index].xyz, surface);
+                // Straight-line distance in world units; the shell is tight, so it stays close to the surface path.
+                float distance = length((surface - _Impacts[index].xyz) * _ShieldAxes);
                 patch = 1.0 - smoothstep(0.0, radius, distance);
                 // The ring keeps full strength across the patch and dies out by WAVE_REACH radii.
                 float phase = (distance - age * radius * WAVE_REACH / duration) / (radius * WAVE_WIDTH_RATIO);
@@ -77,7 +62,7 @@ Shader "EmpireAtWar/Ship Shield"
             Varyings Vert(Attributes input)
             {
                 Varyings output;
-                output.surfaceOS = normalize(input.positionOS);
+                output.surfaceOS = input.positionOS;
                 float displacement = 0.0;
                 for (int i = 0; i < _ImpactCount; i++)
                 {
@@ -94,7 +79,7 @@ Shader "EmpireAtWar/Ship Shield"
             half4 Frag(Varyings input) : SV_Target
             {
                 float visibility = 0.0;
-                float3 surface = normalize(input.surfaceOS);
+                float3 surface = input.surfaceOS;
                 for (int i = 0; i < _ImpactCount; i++)
                 {
                     float patch, wave, fade;
