@@ -7,6 +7,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// <summary>
     /// Laser / turbolaser bolt: tracks ships but keeps its launch aim against strikecraft,
     /// arriving exactly when the scheduled damage lands. The particle stays at the transform origin.
+    /// The bolt always sits on the line from the muzzle to the predicted impact point, so steering
+    /// is spread over the whole flight instead of swinging at the end.
     /// </summary>
     public class BoltShot : ShotEffect
     {
@@ -14,6 +16,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // never drifts off the flying transform.
         private const float STRETCH_AXIS_SPEED = 0.001f;
         private const float LIFETIME_MARGIN = 1f;
+        // How fast the estimated target velocity follows the measured one, per second.
+        private const float VELOCITY_SMOOTHING_RATE = 15f;
 
         [SerializeField] private ParticleSystem vfx;
         private Transform _target;
@@ -21,10 +25,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Vector3 _aimOffset;
         private Vector3 _start;
         private Vector3 _lastAimPoint;
+        private Vector3 _flightAimPoint;
+        private Vector3 _lastTargetPosition;
+        private Vector3 _targetVelocity;
 
         [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
         [SerializeField] private float sizeScale = 3f;
         private float _arrivalTime;
+        private float _travelTime;
 
         private bool _isFlying;
 
@@ -35,7 +43,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _aimOffset = aimOffset;
             _start = start;
             _lastAimPoint = ResolveAimPoint(start, target.position + aimOffset);
+            _flightAimPoint = _lastAimPoint;
+            _lastTargetPosition = target.position;
+            _targetVelocity = Vector3.zero;
             float travelTime = GetTravelTime(start, _lastAimPoint, profile.ProjectileSpeed);
+            _travelTime = travelTime;
             _arrivalTime = Time.time + travelTime;
             _isFlying = true;
             Vector3 direction = _lastAimPoint - start;
@@ -87,19 +99,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void Fly()
         {
+            float remaining = Mathf.Max(_arrivalTime - Time.time, 0f);
             if (_target != null)
             {
-                _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
-                Vector3 direction = _lastAimPoint - transform.position;
-                if (direction.sqrMagnitude > 0f) transform.rotation = Quaternion.LookRotation(direction);
+                TrackTarget(remaining);
             }
 
-            Vector3 position = transform.position;
-
-            float remaining = _arrivalTime - Time.time;
             if (remaining <= 0f)
             {
-                Vector3 impactDirection = _lastAimPoint - position;
+                Vector3 impactDirection = _lastAimPoint - _start;
                 transform.position = _lastAimPoint;
                 _isFlying = false;
                 _target = null;
@@ -108,9 +116,30 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 return;
             }
 
-            // Cover this frame's share of the remaining gap so the bolt lands on schedule.
-            float step = Time.deltaTime / (remaining + Time.deltaTime);
-            transform.position = Vector3.Lerp(position, _lastAimPoint, step);
+            // Anchored to the muzzle: any aim correction moves the bolt by correction * progress,
+            // so the path bends gently over the whole flight and the heading never snaps.
+            float progress = 1f - remaining / _travelTime;
+            Vector3 path = _flightAimPoint - _start;
+            transform.position = _start + path * progress;
+            if (path.sqrMagnitude > 0f) transform.rotation = Quaternion.LookRotation(path);
+        }
+
+        // Leads the target by its smoothed velocity over the remaining flight time. Velocity is sampled
+        // from the raw target position so a shield dropping mid-flight does not read as movement.
+        private void TrackTarget(float remaining)
+        {
+            Vector3 targetPosition = _target.position;
+            float deltaTime = Time.deltaTime;
+            if (deltaTime > 0f)
+            {
+                Vector3 measuredVelocity = (targetPosition - _lastTargetPosition) / deltaTime;
+                float blend = 1f - Mathf.Exp(-VELOCITY_SMOOTHING_RATE * deltaTime);
+                _targetVelocity = Vector3.Lerp(_targetVelocity, measuredVelocity, blend);
+            }
+
+            _lastTargetPosition = targetPosition;
+            _lastAimPoint = ResolveAimPoint(_start, targetPosition + _aimOffset);
+            _flightAimPoint = _lastAimPoint + _targetVelocity * remaining;
         }
 
         protected override bool IsVisualComplete() => !_isFlying;
