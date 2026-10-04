@@ -10,7 +10,7 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SettingsDraftEditorTests
     {
-        private SettingsService _settings;
+        private SettingsService _settingsService;
         private FakeDisplayOptions _display;
         private RecordingAudioPreview _audioPreview;
         private SettingsModel _model;
@@ -22,12 +22,12 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
-            _settings = new SettingsService(new InMemoryRepository(), new List<ISettingsApplier>());
-            _settings.Initialize();
+            _settingsService = new SettingsService(new InMemoryRepository(), new List<ISettingsApplier>());
+            _settingsService.Initialize();
             _display = new FakeDisplayOptions();
             _audioPreview = new RecordingAudioPreview();
             _model = new SettingsModel();
-            _editor = new SettingsDraftEditor(_settings, new FakeGraphicsOptions(), _display, _audioPreview, _model);
+            _editor = new SettingsDraftEditor(_settingsService, new FakeGraphicsOptions(), _display, _audioPreview, _model);
         }
 
         [Test]
@@ -62,8 +62,8 @@ namespace EmpireAtWar.Tests.Editor
             _editor.SelectWindowMode(0);
             _editor.SelectResolution(1);
 
-            Assert.That(_settings.Draft.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Windowed));
-            Assert.That(_settings.Draft.Display.Width, Is.EqualTo(FULL_HD.x));
+            Assert.That(_settingsService.Draft.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Windowed));
+            Assert.That(_settingsService.Draft.Display.Width, Is.EqualTo(FULL_HD.x));
             Assert.That(_model.Resolution.Index, Is.EqualTo(1));
             Assert.That(_model.Resolution.Interactable, Is.True);
             Assert.That(_model.IsDirty, Is.True);
@@ -85,7 +85,7 @@ namespace EmpireAtWar.Tests.Editor
             _editor.Open();
             _editor.SetMusicVolume(0.25f);
 
-            Assert.That(_audioPreview.Previewed, Is.SameAs(_settings.Draft.Audio));
+            Assert.That(_audioPreview.Previewed, Is.SameAs(_settingsService.Draft.Audio));
             Assert.That(_audioPreview.Previewed.MusicVolume, Is.EqualTo(0.25f));
             Assert.That(_model.MusicVolume, Is.EqualTo(0.25f));
             Assert.That(_model.IsDirty, Is.True);
@@ -98,8 +98,8 @@ namespace EmpireAtWar.Tests.Editor
             _editor.SetInvertZoom(true);
             _editor.SelectQuality(0);
 
-            Assert.That(_settings.InvertZoom, Is.False);
-            Assert.That(_settings.Saved.Graphics.QualityPreset, Is.Empty);
+            Assert.That(_settingsService.InvertZoom, Is.False);
+            Assert.That(_settingsService.Saved.Graphics.QualityPreset, Is.Empty);
         }
 
         private sealed class FakeGraphicsOptions : IGraphicsOptions

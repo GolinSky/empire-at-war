@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Services.Battle;
@@ -17,14 +17,14 @@ using Zenject;
 namespace EmpireAtWar.Entities.UnitActions.Controller
 {
     public sealed class UnitActionsPresenter : UiController, IInitializable, ILateDisposable,
-        ITickable, IObserver<ISelectionSubject>
+        IObserver<ISelectionSubject>, IObserver<BattleState>
     {
         private readonly IUnitActionsViewProvider _coreUi;
-        private readonly ISelectionService _selection;
+        private readonly ISelectionService _selectionService;
         private readonly IShipAbilityTargeting _abilities;
         private readonly IPlayerOrderInputHandler _inputHandler;
-        private readonly IUnitOrderService _orders;
-        private readonly ISkirmishSessionModelObserver _session;
+        private readonly IUnitOrderService _unitOrderService;
+        private readonly INotifier<BattleState> _battleState;
         private IUnitActionsView _view;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
 
@@ -37,22 +37,22 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private bool _battleEnded;
 
         public UnitActionsPresenter(IUnitActionsViewProvider coreUi,
-            ISelectionService selection,
+            ISelectionService selectionService,
             IShipAbilityTargeting abilities, IPlayerOrderInputHandler inputHandler,
-            IUnitOrderService orders, ISkirmishSessionModelObserver session,
+            IUnitOrderService unitOrderService, INotifier<BattleState> battleState,
             IUiService uiService,
-            IUiCancelRouter cancelRouter, ITooltipService tooltips,
+            IUiCancelRouter cancelRouter, ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings,
             UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
         {
             _coreUi = coreUi;
-            _selection = selection;
+            _selectionService = selectionService;
             _abilities = abilities;
             _targeting = targeting;
             _inputHandler = inputHandler;
-            _orders = orders;
-            _session = session;
-            _tooltips = new TooltipRequests(tooltips);
+            _unitOrderService = unitOrderService;
+            _battleState = battleState;
+            _tooltips = new TooltipRequests(tooltipService);
             _bindings = bindings;
         }
 
@@ -64,17 +64,19 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
                 _tooltipHover = new TooltipHoverSubscription(
                     hover.TooltipHover, HandleTooltipHover, _tooltips);
             _view.ActionPressed += HandleAction;
-            _selection.AddObserver(this);
+            _selectionService.AddObserver(this);
             _abilities.TargetingChanged += HandleAbilityTargeting;
             _targeting.Changed += RefreshPending;
             RefreshAvailability();
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
             if (_tooltipHover != null) _tooltipHover.Dispose();
             _view.ActionPressed -= HandleAction;
-            _selection.RemoveObserver(this);
+            _selectionService.RemoveObserver(this);
             Unfocus();
             _abilities.TargetingChanged -= HandleAbilityTargeting;
             _targeting.Changed -= RefreshPending;
@@ -85,7 +87,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
         {
             UnitActionId action = Enum.Parse<UnitActionId>((string)key);
-            _tooltips.Show(source, action, anchor, () => !_session.IsBattleEnded,
+            _tooltips.Show(source, action, anchor, () => !_battleEnded,
                 () => BuildTooltip(action));
         }
 
@@ -122,14 +124,13 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             RefreshAvailability();
         }
 
-        public void Tick()
+        public void UpdateState(BattleState state)
         {
-            if (_battleEnded != _session.IsBattleEnded)
-            {
-                _battleEnded = _session.IsBattleEnded;
-                if (_battleEnded) _targeting.Cancel();
-                RefreshAvailability();
-            }
+            bool battleEnded = state == BattleState.Ended;
+            if (_battleEnded == battleEnded) return;
+            _battleEnded = battleEnded;
+            if (_battleEnded) _targeting.Cancel();
+            RefreshAvailability();
         }
 
         private void HandleAction(UnitActionId action)
@@ -138,21 +139,21 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             if (action == UnitActionId.Stop)
             {
                 _targeting.Cancel();
-                _orders.IssueStop(Snapshot());
+                _unitOrderService.IssueStop(Snapshot());
                 return;
             }
 
             if (action == UnitActionId.Hunt)
             {
                 _targeting.Cancel();
-                _orders.IssueHunt(Snapshot());
+                _unitOrderService.IssueHunt(Snapshot());
                 return;
             }
 
             if (action == UnitActionId.Retreat)
             {
                 _targeting.Cancel();
-                _orders.IssueRetreat(Snapshot());
+                _unitOrderService.IssueRetreat(Snapshot());
                 return;
             }
 
@@ -172,7 +173,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         {
             foreach (UnitActionId action in Enum.GetValues(typeof(UnitActionId)))
             {
-                bool available = !_session.IsBattleEnded && HasReceiver(action);
+                bool available = !_battleEnded && HasReceiver(action);
                 _availability[action] = available;
                 _view.SetAvailable(action, available);
             }
@@ -181,7 +182,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         private bool HasReceiver(UnitActionId action)
         {
-            foreach (IEntity entity in _selection.PlayerSelectionContext.Entities)
+            foreach (IEntity entity in _selectionService.PlayerSelectionContext.Entities)
             {
                 if (entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits) continue;
                 // Move has no panel button: moving is the default right-click order.
@@ -217,7 +218,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private List<IEntity> Snapshot()
         {
             List<IEntity> receivers = new List<IEntity>();
-            foreach (IEntity entity in _selection.PlayerSelectionContext.Entities)
+            foreach (IEntity entity in _selectionService.PlayerSelectionContext.Entities)
                 if (!entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits)
                     receivers.Add(entity);
             return receivers;

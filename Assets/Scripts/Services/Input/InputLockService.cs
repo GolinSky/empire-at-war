@@ -70,13 +70,13 @@ namespace EmpireAtWar.Services.Input
 
         private sealed class LockHandle : IDisposable
         {
-            private readonly InputLockService _owner;
+            private readonly InputLockService _inputLockService;
 
             private bool _isReleased;
 
-            public LockHandle(InputLockService owner)
+            public LockHandle(InputLockService inputLockService)
             {
-                _owner = owner;
+                _inputLockService = inputLockService;
             }
 
             public void Dispose()
@@ -87,7 +87,7 @@ namespace EmpireAtWar.Services.Input
                 }
 
                 _isReleased = true;
-                _owner.Release();
+                _inputLockService.Release();
             }
         }
     }

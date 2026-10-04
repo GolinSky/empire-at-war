@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -10,34 +11,50 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Economy
 {
-    public class EconomyService : Service, IWallet, ITickable, IEconomyProvider, IIncomeProvider, IInitializable
+    public class EconomyService : Service, IWallet, ITickable, IEconomyProvider, IIncomeProvider, IInitializable,
+        ILateDisposable, IObserver<BattleState>
     {
         private const float DEFAULT_INCOME = 1f;
 
         private readonly ITimer _incomeTimer;
 
         private readonly EconomyModel _model;
+        private readonly INotifier<BattleState> _battleState;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
         private float _commonIncome;
+        // Income is paid only while the battle runs, never during loading.
+        private bool _isRunning;
 
         public float Income => DEFAULT_INCOME;
         public float TotalIncome => _commonIncome;
 
-        public EconomyService(EconomyModel model, EconomyData data)
+        public EconomyService(EconomyModel model, EconomyData data, INotifier<BattleState> battleState)
         {
             _model = model;
+            _battleState = battleState;
             _incomeTimer = TimerFactory.ConstructTimer(data.IncomeDelay);
         }
 
         public void Initialize()
         {
             AddProvider(this);
+            _battleState.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _battleState.RemoveObserver(this);
+        }
+
+        public void UpdateState(BattleState state)
+        {
+            _isRunning = state == BattleState.Running;
         }
 
         public void Tick()
         {
-            if (_incomeTimer.IsComplete)
+            if (_isRunning && _incomeTimer.IsComplete)
             {
                 _incomeTimer.StartTimer();
                 _model.AddMoney(_commonIncome);

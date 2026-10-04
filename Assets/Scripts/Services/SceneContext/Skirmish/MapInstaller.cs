@@ -1,24 +1,15 @@
-using EmpireAtWar.Components.Obstacles;
-using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Planet;
-using EmpireAtWar.Models.MiniMap;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.ShipNavigation;
-using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using Zenject;
-using Random = System.Random;
 
 namespace EmpireAtWar.SceneContext.Skirmish
 {
     /// <summary>
-    /// Generates and spawns the battlefield during binding, because navigation and minimap
-    /// resolve the map obstacles before any Initialize runs.
+    /// Binds the battlefield services. The map itself is generated and built by
+    /// <see cref="BattleMapLoader"/> during the battle startup.
     /// </summary>
     public sealed class MapInstaller : MonoInstaller
     {
@@ -27,32 +18,12 @@ namespace EmpireAtWar.SceneContext.Skirmish
         [SerializeField] private ReinforcementZonesSystem reinforcementZonesSystem;
         [SerializeField] private CaptureSitesSystem captureSitesSystem;
 
-        [Inject] private IGameModelObserver GameModel { get; }
-
         public override void InstallBindings()
         {
-            MapLayout layout = new MapLayoutGenerator(settings, mapLayoutView.FeatureRadii).Generate(
-                GameModel.MapSize,
-                GameModel.Players,
-                new Random());
-            mapLayoutView.Build(layout);
-
-            Container.Bind(typeof(IMapModelObserver), typeof(MapLayout)).FromInstance(layout).AsSingle();
             Container.Bind<MapGenerationSettings>().FromInstance(settings).AsSingle();
-            Container.Bind<ReinforcementZoneView[]>().FromInstance(mapLayoutView.ZoneViews).AsSingle();
-            Container.Bind<CaptureSiteView[]>().FromInstance(mapLayoutView.SiteViews).AsSingle();
-            foreach (MapObstacle obstacle in mapLayoutView.Obstacles)
-            {
-                Container.Bind(typeof(IMapObstacleContactSource), typeof(IMiniMapObstacleSource))
-                    .FromInstance(obstacle);
-            }
-
-            foreach (PlayerSlot player in GameModel.Players)
-            {
-                Container.Bind<IMapObstacleContactSource>().FromInstance(new StationObstacle(
-                    layout.GetStationPosition(player.Id),
-                    settings.GetStationRadius(player.Faction)));
-            }
+            Container.Bind<MapLayoutView>().FromInstance(mapLayoutView).AsSingle();
+            Container.Bind(typeof(IMapModelObserver), typeof(MapModel)).To<MapModel>().AsSingle();
+            Container.BindInterfacesTo<BattleMapLoader>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<ReinforcementZonesSystem>()
                 .FromInstance(reinforcementZonesSystem)

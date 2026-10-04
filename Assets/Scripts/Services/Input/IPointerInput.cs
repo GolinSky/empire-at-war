@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.Input
         event Action<Vector2> PrimaryReleased;
 
         Vector2 Position { get; }
+        /// <summary>False until the device reports a real position; until then <see cref="Position"/> reads zero.</summary>
+        bool HasPosition { get; }
         int ClickCount { get; }
     }
 }

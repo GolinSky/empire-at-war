@@ -452,7 +452,7 @@ namespace EmpireAtWar.Tests.Editor
                     decisionModel: new EnemyProductionDecisionModel(),
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
-                    structurePlacementService: new StructurePlacementServiceStub(),
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     stationRegistry: new OperationalStationRegistry(),
                     owner: owner);
 
@@ -523,7 +523,7 @@ namespace EmpireAtWar.Tests.Editor
                     decisionModel: new EnemyProductionDecisionModel(),
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
-                    structurePlacementService: new StructurePlacementServiceStub(),
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     stationRegistry: new OperationalStationRegistry(),
                     owner: owner);
 

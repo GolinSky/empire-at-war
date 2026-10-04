@@ -6,7 +6,7 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class TooltipServiceTests
     {
         private TooltipModel _model;
-        private TooltipService _service;
+        private TooltipService _tooltipService;
         private ManualClock _clock;
         private readonly object _source = new object();
 
@@ -19,7 +19,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _model = new TooltipModel();
             _clock = new ManualClock();
-            _service = new TooltipService(model: _model, timing: new TooltipTiming(0.35f, 0.1f), clock: _clock);
+            _tooltipService = new TooltipService(model: _model, timing: new TooltipTiming(0.35f, 0.1f), clock: _clock);
             _valid = true;
             _health = 100f;
         }
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HoverShowsOnlyAfterDelay()
         {
-            _service.Show(Provider("ship"), default);
+            _tooltipService.Show(Provider("ship"), default);
             Advance(0.34f);
             Assert.That(_model.IsVisible, Is.False);
             Advance(0.02f);
@@ -37,10 +37,10 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ReusingSourceAndKeyKeepsDelayAndUpdatesAnchor()
         {
-            TooltipHandle first = _service.Show(Provider("ship"), default);
+            TooltipHandle first = _tooltipService.Show(Provider("ship"), default);
             Advance(0.2f);
             var anchor = new TooltipAnchor(TooltipAnchorKind.Cursor, 200f, 300f);
-            TooltipHandle second = _service.Show(Provider("ship"), anchor);
+            TooltipHandle second = _tooltipService.Show(Provider("ship"), anchor);
             Advance(0.16f);
             Assert.That(second.Id, Is.EqualTo(first.Id));
             Assert.That(_model.IsVisible, Is.True);
@@ -50,9 +50,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ReplacementHidesCurrentAndRestartsDelay()
         {
-            _service.Show(Provider("first"), default);
+            _tooltipService.Show(Provider("first"), default);
             Advance(0.36f);
-            _service.Show(Provider("second"), default);
+            _tooltipService.Show(Provider("second"), default);
             Assert.That(_model.IsVisible, Is.False);
             Advance(0.2f);
             Assert.That(_model.IsVisible, Is.False);
@@ -63,11 +63,11 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SameKeyFromDifferentSourcesCreatesNewOwnership()
         {
-            TooltipHandle old = _service.Show(Provider("ship"), default);
-            TooltipHandle current = _service.Show(new TooltipContentProvider(new object(), "ship",
+            TooltipHandle old = _tooltipService.Show(Provider("ship"), default);
+            TooltipHandle current = _tooltipService.Show(new TooltipContentProvider(new object(), "ship",
                 () => true, () => new TooltipContent(title: "new source")), default);
             Assert.That(current.Id, Is.Not.EqualTo(old.Id));
-            _service.Hide(old);
+            _tooltipService.Hide(old);
             Advance(0.36f);
             Assert.That(_model.Content.Title, Is.EqualTo("new source"));
         }
@@ -75,10 +75,10 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void StaleHandleCannotHideReplacement()
         {
-            TooltipHandle old = _service.Show(Provider("first"), default);
-            _service.Show(Provider("second"), default);
+            TooltipHandle old = _tooltipService.Show(Provider("first"), default);
+            _tooltipService.Show(Provider("second"), default);
             Advance(0.36f);
-            _service.Hide(old);
+            _tooltipService.Hide(old);
             Assert.That(_model.IsVisible, Is.True);
             Assert.That(_model.Content.Title, Is.EqualTo("second"));
         }
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void InvalidProviderHidesImmediatelyAndCancelsPendingRequest()
         {
-            _service.Show(Provider("ship"), default);
+            _tooltipService.Show(Provider("ship"), default);
             Advance(0.36f);
             _valid = false;
             Advance(0.01f);
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             int changes = 0;
             _model.ContentChanged += () => changes++;
-            _service.Show(Provider("ship"), default);
+            _tooltipService.Show(Provider("ship"), default);
             Advance(0.36f);
             Advance(0.11f);
             Assert.That(changes, Is.Zero);
@@ -116,13 +116,13 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HideAllCancelsPendingAndVisibleRequests()
         {
-            _service.Show(Provider("pending"), default);
-            _service.HideAll();
+            _tooltipService.Show(Provider("pending"), default);
+            _tooltipService.HideAll();
             Advance(1f);
             Assert.That(_model.IsVisible, Is.False);
-            _service.Show(Provider("visible"), default);
+            _tooltipService.Show(Provider("visible"), default);
             Advance(0.36f);
-            _service.HideAll();
+            _tooltipService.HideAll();
             Assert.That(_model.IsVisible, Is.False);
         }
 
@@ -132,7 +132,7 @@ namespace EmpireAtWar.Tests.Editor
         private void Advance(float seconds)
         {
             _clock.DeltaTime = seconds;
-            _service.Tick();
+            _tooltipService.Tick();
         }
 
         private sealed class ManualClock : ITooltipClock

@@ -42,7 +42,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public CaptureSitePresenter(
             ICaptureSiteView view,
             ILocalPlayer localPlayer,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             CaptureSiteModel model,
             CaptureSiteData data,
             Predicate<float> canAfford)
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             _view = view;
             _data = data;
             _canAfford = canAfford;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _tooltipHover = new TooltipHoverSubscription(
                 ((ITooltipHoverView)view).TooltipHover, HandleTooltipHover, _tooltips);
             foreach (SiteFacilityType facilityType in FacilityTypes)

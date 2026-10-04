@@ -18,7 +18,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
 {
     public class GameUnitsInstaller: Installer
     {
-        [Inject] private IAssetService Repository { get; }
+        [Inject] private IAssetService AssetService { get; }
 
         public override void InstallBindings()
         {
@@ -67,7 +67,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
 
         private GameObject GetPath<T>()
         {
-            return Repository.Load<GameObject>(typeof(T).Name);
+            return AssetService.Load<GameObject>(typeof(T).Name);
         }
     }
 }

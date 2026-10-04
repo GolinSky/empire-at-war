@@ -18,16 +18,16 @@ namespace EmpireAtWar.Services.UnitWreck
     /// </summary>
     public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IDisposable
     {
-        private readonly IPlayerRoster _roster;
+        private readonly IPlayerRoster _playerRoster;
 
         private readonly Dictionary<UnitWreckData, ViewPool<UnitWreckView>> _pools =
             new Dictionary<UnitWreckData, ViewPool<UnitWreckView>>();
         private readonly List<ActiveWreck> _activeWrecks = new List<ActiveWreck>();
         private readonly System.Random _random = new System.Random();
 
-        public UnitWreckService(IPlayerRoster roster)
+        public UnitWreckService(IPlayerRoster playerRoster)
         {
-            _roster = roster;
+            _playerRoster = playerRoster;
         }
 
         public void Dispose()
@@ -55,7 +55,7 @@ namespace EmpireAtWar.Services.UnitWreck
             float startTime = Time.time + delay;
             WreckCutPlan cutPlan = WreckCutPlan.Create(data.MinParts, data.MaxParts, data.MinCutRatio, data.MaxCutRatio, _random);
             UnitWreckView view = GetPool(data).Get();
-            view.Show(unit.position, unit.rotation, TeamColorView.GetUserValue(owner, _roster), startTime,
+            view.Show(unit.position, unit.rotation, TeamColorView.GetUserValue(owner, _playerRoster), startTime,
                 cutPlan, (float)_random.NextDouble(), data);
             _activeWrecks.Add(new ActiveWreck(data, view, startTime + data.Lifetime));
         }

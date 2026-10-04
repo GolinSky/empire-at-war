@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
@@ -21,10 +20,12 @@ namespace EmpireAtWar.Presenters.Game
 {
     public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
         IUnitActionsViewProvider, ISuperWeaponsViewProvider, ICoreGameHudStatus,
-        IObserver<ISelectionSubject>, IInitializable, ILateDisposable, ITickable
+        IObserver<ISelectionSubject>, IObserver<BattleState>, IObserver<GameSpeed>,
+        IInitializable, ILateDisposable, ITickable
     {
         private readonly ISelectionService _selectionService;
-        private readonly ISkirmishSessionModelObserver _sessionModel;
+        private readonly INotifier<BattleState> _battleState;
+        private readonly INotifier<GameSpeed> _gameSpeed;
         private readonly ISkirmishFlow _skirmishFlow;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ICinematicCameraController _cinematicCamera;
@@ -43,6 +44,11 @@ namespace EmpireAtWar.Presenters.Game
 
         private int _stationLevel;
 
+        private BattleState _state;
+        private GameSpeed _speed;
+
+        private bool IsBattleEnded => _state == BattleState.Ended;
+
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
 
@@ -50,35 +56,38 @@ namespace EmpireAtWar.Presenters.Game
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISelectionService selectionService,
-            ISkirmishSessionModelObserver sessionModel,
+            INotifier<BattleState> battleState,
+            INotifier<GameSpeed> gameSpeed,
             ISkirmishFlow skirmishFlow,
             INotifier<BattleResult> battleVictoryNotifier,
             ICinematicCameraController cinematicCamera,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
-            _sessionModel = sessionModel;
+            _battleState = battleState;
+            _gameSpeed = gameSpeed;
             _skirmishFlow = skirmishFlow;
             _battleVictoryNotifier = battleVictoryNotifier;
             _cinematicCamera = cinematicCamera;
-            _tooltips = new TooltipRequests(tooltips);
-            _tooltipService = tooltips;
+            _tooltips = new TooltipRequests(tooltipService);
+            _tooltipService = tooltipService;
             _bindings = bindings;
         }
 
         public void Initialize()
         {
             _ui = (ICoreGameUi)UiService.CreateUi(UiType.CoreGame);
-            _ui.SetModel(_sessionModel);
             _ui.SetPresenter(this);
             _ui.Initialize();
+            _battleState.AddObserver(this);
+            _gameSpeed.AddObserver(this);
             _tooltipHover = new TooltipHoverSubscription(
                 ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _endGamePresenter = new EndGamePresenter(
                 battleVictoryNotifier: _battleVictoryNotifier,
                 view: _ui.PrepareEndGameView(UiService.PopupCanvasTransform),
-                returnToMenu: _skirmishFlow.ExitSkirmish, tooltips: _tooltipService);
+                returnToMenu: _skirmishFlow.ExitSkirmish, tooltipService: _tooltipService);
             _selectionService.AddObserver(this);
 
             foreach (KeyValuePair<SkirmishUiRoutePosition, List<ISkirmishUiRoute>>
@@ -99,6 +108,8 @@ namespace EmpireAtWar.Presenters.Game
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
+            _battleState.RemoveObserver(this);
+            _gameSpeed.RemoveObserver(this);
             if (_endGamePresenter != null)
             {
                 _endGamePresenter.Dispose();
@@ -208,6 +219,18 @@ namespace EmpireAtWar.Presenters.Game
             }
         }
 
+        public void UpdateState(BattleState state)
+        {
+            _state = state;
+            _ui.SetTimeControls(_state != BattleState.Running, _speed);
+        }
+
+        public void UpdateState(GameSpeed speed)
+        {
+            _speed = speed;
+            _ui.SetTimeControls(_state != BattleState.Running, _speed);
+        }
+
         private void UpdateContentVisibility(ISelectionContext context)
         {
             _ui.SetContentLayout(
@@ -252,7 +275,7 @@ namespace EmpireAtWar.Presenters.Game
         public void Tick()
         {
             _ui.SetHudStatus(_factionName, _stationLevel,
-                _lastSelectionContext != null ? _lastSelectionContext.Count : 0, _sessionModel.IsBattleEnded);
+                _lastSelectionContext != null ? _lastSelectionContext.Count : 0, IsBattleEnded);
         }
 
         public void SetProductionStatus(string faction, int level)
@@ -268,7 +291,7 @@ namespace EmpireAtWar.Presenters.Game
 
         public void ToggleReinforcement()
         {
-            if (_sessionModel.IsBattleEnded)
+            if (IsBattleEnded)
             {
                 return;
             }
@@ -297,7 +320,7 @@ namespace EmpireAtWar.Presenters.Game
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => !_sessionModel.IsBattleEnded, () =>
+            _tooltips.Show(source, key, anchor, () => !IsBattleEnded, () =>
                 new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Pause" => "Pause or resume the battle.",

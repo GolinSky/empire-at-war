@@ -2525,7 +2525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9be72dd46644de9b2b7be335c5731e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Obstacles.MapObstacle
-  _obstacleCollider: {fileID: 4101112453355756194}
+  obstacleCollider: {fileID: 4101112453355756194}
 --- !u!1 &1190681243785789577
 GameObject:
   m_ObjectHideFlags: 0
@@ -10173,11 +10173,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7b53d14a1bf9f4884f0bc48055f22c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.SiteFacilityOptionView
-  facilityType: 1
   button: {fileID: 5783099442315661780}
   nameText: {fileID: 1097209172111093536}
   costText: {fileID: 8068281073332852173}
   tooltipTrigger: {fileID: 3554621317909797509}
+  facilityType: 1
 --- !u!114 &3554621317909797509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13003,7 +13003,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9be72dd46644de9b2b7be335c5731e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Obstacles.MapObstacle
-  _obstacleCollider: {fileID: 6127941124955372193}
+  obstacleCollider: {fileID: 6127941124955372193}
 --- !u!1 &6336633168693918123
 GameObject:
   m_ObjectHideFlags: 0
@@ -16536,9 +16536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5150a734ff7007b41849bad883282d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
-  radius: 40
-  captureDuration: 12
-  facilityHeightOffset: 0
   ringRenderer: {fileID: 8267043019128734444}
   rockObstacles:
   - {fileID: 1371629378134857726}
@@ -16551,7 +16548,6 @@ MonoBehaviour:
     - key: 1
       value: {fileID: 6399119416664276898}
   statusCanvas: {fileID: 8795181568119921258}
-  screenHeightFraction: 0.24
   progressFill: {fileID: 4196554380287589507}
   statusText: {fileID: 1013643940011584259}
   tooltipHover: {fileID: 5501161914677533251}
@@ -16564,6 +16560,10 @@ MonoBehaviour:
   allyColor: {r: 0.36, g: 0.9, b: 0.62, a: 0.1}
   opponentColor: {r: 0.94, g: 0.27, b: 0.27, a: 0.1}
   contestedColor: {r: 1, g: 0.75, b: 0.1, a: 0.14}
+  radius: 40
+  captureDuration: 12
+  facilityHeightOffset: 0
+  screenHeightFraction: 0.24
 --- !u!114 &5501161914677533251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17371,7 +17371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9be72dd46644de9b2b7be335c5731e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Obstacles.MapObstacle
-  _obstacleCollider: {fileID: 7082121134534081328}
+  obstacleCollider: {fileID: 7082121134534081328}
 --- !u!1 &8527021164409271532
 GameObject:
   m_ObjectHideFlags: 0
@@ -17907,11 +17907,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7b53d14a1bf9f4884f0bc48055f22c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.SiteFacilityOptionView
-  facilityType: 0
   button: {fileID: 327611099528315577}
   nameText: {fileID: 4430508583053746701}
   costText: {fileID: 3530786589371526221}
   tooltipTrigger: {fileID: 3127397168762009866}
+  facilityType: 0
 --- !u!114 &3127397168762009866
 MonoBehaviour:
   m_ObjectHideFlags: 0

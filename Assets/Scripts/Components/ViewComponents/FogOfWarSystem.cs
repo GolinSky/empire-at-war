@@ -55,17 +55,18 @@ namespace ViewComponents
             _cameraService = cameraService;
         }
 
-        /// <summary>Stretches the fog plane and its mask for a larger battlefield; call before Start.</summary>
-        public void ScaleArea(float scale)
+        // The mask exists only after InitializeArea, so the fog stays idle until the map is built.
+        private void Awake()
+        {
+            enabled = false;
+        }
+
+        /// <summary>Stretches the fog plane and its mask for the battlefield, then creates the mask.</summary>
+        public void InitializeArea(float scale)
         {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(scale, 1f, scale));
             textureResolution = Mathf.Min(MAX_TEXTURE_RESOLUTION, Mathf.RoundToInt(textureResolution * scale));
-        }
 
-        // Base visibility for areas we've already explored (if keepHistory is true)
-
-        private void Start()
-        {
             Bounds meshBounds = meshFilter.sharedMesh.bounds;
             if (autoDetectBounds)
             {
@@ -85,14 +86,17 @@ namespace ViewComponents
             _fogTexture.filterMode = FilterMode.Bilinear;
 
             _grid = new FogVisibilityGridModel(textureResolution);
-            NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                pixels[i] = 0;
-            }
-
-            _fogTexture.Apply();
+            WritePixels();
             _fogMaterial.SetTexture("_MainTex", _fogTexture);
+            enabled = true;
+        }
+
+        /// <summary>Shows the current vision at once instead of fading it in.</summary>
+        public void RevealImmediately()
+        {
+            UpdateFogTargets();
+            _grid.Fade(1f);
+            WritePixels();
         }
 
         // Renderer.material returns an instance this component owns; the mask texture is created here too.
@@ -115,14 +119,19 @@ namespace ViewComponents
 
             if (_grid.Fade(fadeSpeed * Time.deltaTime))
             {
-                NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
-                for (int i = 0; i < pixels.Length; i++)
-                {
-                    pixels[i] = (byte)(_grid.GetVisibility(i) * BYTE_MAX + 0.5f);
-                }
-
-                _fogTexture.Apply();
+                WritePixels();
             }
+        }
+
+        private void WritePixels()
+        {
+            NativeArray<byte> pixels = _fogTexture.GetPixelData<byte>(0);
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                pixels[i] = (byte)(_grid.GetVisibility(i) * BYTE_MAX + 0.5f);
+            }
+
+            _fogTexture.Apply();
         }
 
         private void UpdateFogTargets()

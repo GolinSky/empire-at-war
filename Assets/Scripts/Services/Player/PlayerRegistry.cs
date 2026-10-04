@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.Player
             new Dictionary<PlayerId, ISiteFacilityBuilder>();
         private readonly Dictionary<PlayerId, IEnemyReinforcementObserver> _aiReinforcements =
             new Dictionary<PlayerId, IEnemyReinforcementObserver>();
+        private readonly Dictionary<PlayerId, IStationSpawner> _stationSpawners =
+            new Dictionary<PlayerId, IStationSpawner>();
 
         public void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder)
         {
@@ -20,6 +22,11 @@ namespace EmpireAtWar.Services.Player
         public void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement)
         {
             _aiReinforcements.Add(owner, reinforcement);
+        }
+
+        public void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner)
+        {
+            _stationSpawners.Add(owner, spawner);
         }
 
         public void UnregisterSiteBuilder(PlayerId owner)
@@ -32,9 +39,19 @@ namespace EmpireAtWar.Services.Player
             _aiReinforcements.Remove(owner);
         }
 
+        public void UnregisterStationSpawner(PlayerId owner)
+        {
+            _stationSpawners.Remove(owner);
+        }
+
         public ISiteFacilityBuilder GetSiteBuilder(PlayerId owner)
         {
             return _siteBuilders[owner];
+        }
+
+        public IStationSpawner GetStationSpawner(PlayerId owner)
+        {
+            return _stationSpawners[owner];
         }
 
         public bool HasPendingReinforcement(PlayerId owner)

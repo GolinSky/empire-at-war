@@ -90,7 +90,7 @@ namespace EmpireAtWar.Editor.CaptureSites
                     collider.sharedMesh = rock.GetComponent<MeshFilter>().sharedMesh;
                     obstacle = rock.gameObject.AddComponent<MapObstacle>();
                     SerializedObject serializedObstacle = new SerializedObject(obstacle);
-                    serializedObstacle.FindProperty("_obstacleCollider").objectReferenceValue = collider;
+                    serializedObstacle.FindProperty("obstacleCollider").objectReferenceValue = collider;
                     serializedObstacle.ApplyModifiedPropertiesWithoutUndo();
                 }
 

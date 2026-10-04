@@ -20,9 +20,9 @@ namespace EmpireAtWar.Services.Audio
         private const float MAX_WEAPON_LOOP_INTERVAL = 0.2f;
         private const float MAX_MIX_VOLUME = 1f;
 
-        private readonly IAudioService _audio;
-        private readonly ICameraService _camera;
-        private readonly IFogOfWarSystem _fog;
+        private readonly IAudioService _audioService;
+        private readonly ICameraService _cameraService;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly ShipSfxSources _sources;
@@ -40,15 +40,15 @@ namespace EmpireAtWar.Services.Audio
 
         private bool _disposed;
 
-        public ShipSfxService(IAudioService audio, ICameraService camera, IFogOfWarSystem fog,
+        public ShipSfxService(IAudioService audioService, ICameraService cameraService, IFogOfWarSystem fogOfWarSystem,
             ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData)
         {
             _sources = sources;
             _data = data;
-            _audio = audio;
-            _camera = camera;
+            _audioService = audioService;
+            _cameraService = cameraService;
             _cameraData = cameraData;
-            _fog = fog;
+            _fogOfWarSystem = fogOfWarSystem;
             _localPlayer = localPlayer;
             _mixer = sources.Voice.outputAudioMixerGroup.audioMixer;
             _slots = new VoiceSlot[data.PoolVoices];
@@ -60,9 +60,9 @@ namespace EmpireAtWar.Services.Audio
             if (_disposed) return;
             _disposed = true;
             for (int i = 0; i < _slots.Length; i++) Stop(i);
-            _audio.Stop(_sources.Voice);
+            _audioService.Stop(_sources.Voice);
             _mixer.SetFloat("SfxDuckVolume", 0f);
-            _audio.SetGamePaused(false);
+            _audioService.SetGamePaused(false);
         }
 
         public bool TryPlayOneShot(IEntity ship, SfxProfile sfx, Vector3 position) =>
@@ -118,7 +118,7 @@ namespace EmpireAtWar.Services.Audio
             };
             AudioSource source = _sources.Sfx[slot];
             source.pitch = pitch;
-            _audio.Play(source, clip, 0f, loop);
+            _audioService.Play(source, clip, 0f, loop);
             _cooldowns[sound] = _time + sound.Cooldown;
             _starts.Enqueue(_time);
             ApplyMix();
@@ -158,7 +158,7 @@ namespace EmpireAtWar.Services.Audio
         public bool TryPlayVoice(AudioClip clip)
         {
             if (_disposed || _sources.Voice.isPlaying || Time.unscaledTime < _voiceReadyAt) return false;
-            _audio.Play(_sources.Voice, clip, _data.VoiceVolume, false);
+            _audioService.Play(_sources.Voice, clip, _data.VoiceVolume, false);
             _voiceReadyAt = Time.unscaledTime + _data.VoiceCooldown;
             ApplyMix();
             return true;
@@ -168,7 +168,7 @@ namespace EmpireAtWar.Services.Audio
         {
             if (_disposed) return;
             bool paused = Time.timeScale == 0f;
-            _audio.SetGamePaused(paused);
+            _audioService.SetGamePaused(paused);
             UpdateTime();
             for (int i = 0; i < _slots.Length; i++)
             {
@@ -213,17 +213,17 @@ namespace EmpireAtWar.Services.Audio
 
         private float GetGain(IEntity ship, Vector3 position, out float pan)
         {
-            Vector3 viewport = _camera.WorldToViewportPoint(position);
+            Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(ship.Owner) &&
-                _fog.IsHidden(position, MIN_ENEMY_VISIBILITY)) return 0f;
+                _fogOfWarSystem.IsHidden(position, MIN_ENEMY_VISIBILITY)) return 0f;
             float outside = Mathf.Max(0f, -viewport.x, viewport.x - 1f, -viewport.y, viewport.y - 1f);
             float edge = Mathf.Clamp01(Vector2.Distance(new Vector2(viewport.x, viewport.y),
                 new Vector2(0.5f, 0.5f)) / Mathf.Sqrt(0.5f));
             float gain = Mathf.Lerp(1f, _data.EdgeGain, edge) *
                 (1f - Mathf.Clamp01(outside / _data.OffscreenMargin));
             float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max,
-                Mathf.Abs(_camera.CameraPosition.y - position.y));
+                Mathf.Abs(_cameraService.CameraPosition.y - position.y));
             return gain * Mathf.Lerp(1f, _data.MinZoomGain, zoom);
         }
 
@@ -241,7 +241,7 @@ namespace EmpireAtWar.Services.Audio
 
         private void Stop(int index)
         {
-            _audio.Stop(_sources.Sfx[index]);
+            _audioService.Stop(_sources.Sfx[index]);
             _slots[index] = default;
         }
 

@@ -5,14 +5,14 @@ namespace EmpireAtWar.Models.Players
     /// <summary>Accumulates unit strength inside one capture circle; reuse it with <see cref="Clear"/> each tick.</summary>
     public sealed class CaptureStrengthBuilder
     {
-        private readonly IPlayerRoster _roster;
+        private readonly IPlayerRoster _playerRoster;
 
         private readonly float[] _playerStrengths = new float[MatchRules.MAX_PLAYERS];
         private readonly Dictionary<TeamId, float> _teamStrengths = new Dictionary<TeamId, float>();
 
-        public CaptureStrengthBuilder(IPlayerRoster roster)
+        public CaptureStrengthBuilder(IPlayerRoster playerRoster)
         {
-            _roster = roster;
+            _playerRoster = playerRoster;
         }
 
         public void Clear()
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Models.Players
         public CaptureStrength Build()
         {
             _teamStrengths.Clear();
-            foreach (PlayerSlot slot in _roster.Players)
+            foreach (PlayerSlot slot in _playerRoster.Players)
             {
                 float strength = _playerStrengths[slot.Id.Index];
                 if (strength <= 0f)
@@ -75,7 +75,7 @@ namespace EmpireAtWar.Models.Players
         {
             PlayerId strongest = PlayerId.None;
             float strongestStrength = 0f;
-            foreach (PlayerSlot slot in _roster.Players)
+            foreach (PlayerSlot slot in _playerRoster.Players)
             {
                 float strength = _playerStrengths[slot.Id.Index];
                 if (slot.Team == team && strength > strongestStrength)

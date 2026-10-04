@@ -11,5 +11,8 @@ namespace ViewComponents
         float GetVisibilityAtPosition(Vector3 worldPos);
 
         bool IsHidden(Vector3 worldPos, float threshold = 0.1f);
+
+        /// <summary>Shows the current vision at once instead of fading it in.</summary>
+        void RevealImmediately();
     }
 }

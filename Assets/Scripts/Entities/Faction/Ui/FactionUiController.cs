@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.UiRouting;
@@ -14,7 +15,7 @@ using Zenject;
 namespace EmpireAtWar.Presenters.Factions
 {
     public class FactionUiController : UiController, IFactionPresenter, IInitializable,
-        ILateDisposable, ISkirmishUiRoute, ITickable
+        ILateDisposable, ISkirmishUiRoute, ITickable, IObserver<BattleState>
     {
         private readonly IFactionService _factionService;
         private readonly IPlayerFactionModelObserver _model;
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Presenters.Factions
         private IFactionUi _ui;
         private readonly EmpireAtWar.Models.Economy.IEconomyModelObserver _economy;
         private readonly EmpireAtWar.Views.Game.ICoreGameHudStatus _hud;
-        private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
+        private readonly INotifier<BattleState> _battleState;
 
         private readonly FactionsData _factionsData;
         private readonly TooltipRequests _tooltips;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Presenters.Factions
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
+        private bool _isBattleEnded;
 
         public FactionUiController(
             IUiService uiService,
@@ -41,10 +43,10 @@ namespace EmpireAtWar.Presenters.Factions
             IFactionResearchModelObserver research,
             IUnitRequestFactory unitRequestFactory,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
             EmpireAtWar.Views.Game.ICoreGameHudStatus hud,
-            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session,
+            INotifier<BattleState> battleState,
             FactionsData factionsData,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
@@ -54,11 +56,11 @@ namespace EmpireAtWar.Presenters.Factions
             _factionsData = factionsData;
             _unitRequestFactory = unitRequestFactory;
             _routeNavigation = routeNavigation;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _economy = economy;
             _reinforcements = reinforcements;
             _hud = hud;
-            _session = session;
+            _battleState = battleState;
         }
 
         public void Initialize()
@@ -66,10 +68,12 @@ namespace EmpireAtWar.Presenters.Factions
             _routeNavigation.RegisterRoute(
                 SkirmishUiRoutePosition.Content,
                 this);
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(
                 SkirmishUiRoutePosition.Content,
                 this);
@@ -88,10 +92,15 @@ namespace EmpireAtWar.Presenters.Factions
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
 
+        public void UpdateState(BattleState state)
+        {
+            _isBattleEnded = state == BattleState.Ended;
+        }
+
         public void Tick()
         {
             _hud.SetProductionStatus(_model.FactionType.ToString(), _model.CurrentLevel);
-            if (_ui != null) _ui.RefreshAvailability(_economy.Money, _session.IsBattleEnded);
+            if (_ui != null) _ui.RefreshAvailability(_economy.Money, _isBattleEnded);
         }
 
         public void Activate(bool isActive, Transform parentTransform)

@@ -31,8 +31,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static readonly SerializedReference[] REQUIRED_REFERENCES =
         {
-            new SerializedReference(typeof(CameraService), "_camera"),
-            new SerializedReference(typeof(MapObstacle), "_obstacleCollider"),
+            new SerializedReference(typeof(CameraService), "camera"),
+            new SerializedReference(typeof(MapObstacle), "obstacleCollider"),
             new SerializedReference(typeof(SelectionComponent), "selectedCanvas"),
             new SerializedReference(typeof(SelectionComponent), "selectedImage"),
             new SerializedReference(typeof(BaseUi), "canvasGroup"),
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(PauseMenuUi), "resumeButton"),
             new SerializedReference(typeof(PauseMenuUi), "exitButton"),
             new SerializedReference(typeof(PauseMenuUi), "menuPanel"),
-            new SerializedReference(typeof(ReinforcementZoneView), "_captureCanvasScaler"),
+            new SerializedReference(typeof(ReinforcementZoneView), "captureCanvasScaler"),
             new SerializedReference(typeof(SkirmishServiceInstaller), "rangeDebugLineMaterial"),
             new SerializedReference(typeof(DrawCircle), "lineRenderer"),
             new SerializedReference(typeof(PlanetInstaller), "view")
@@ -196,9 +196,9 @@ namespace EmpireAtWar.Tests.Editor
             SerializedObject serializedView,
             string prefabPath)
         {
-            SerializedProperty isCapturable = serializedView.FindProperty("_isCapturable");
+            SerializedProperty isCapturable = serializedView.FindProperty("isCapturable");
             SerializedProperty startingOwner = serializedView.FindProperty("_startingOwner");
-            Assert.That(isCapturable, Is.Not.Null, $"{prefabPath}._isCapturable");
+            Assert.That(isCapturable, Is.Not.Null, $"{prefabPath}.isCapturable");
             Assert.That(startingOwner, Is.Not.Null, $"{prefabPath}._startingOwner");
 
             if (isCapturable.boolValue)

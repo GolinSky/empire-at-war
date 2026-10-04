@@ -58,7 +58,7 @@ category: Refactoring
 
 ## Decisions Pending
 
-- `SkirmishSessionModel` naming versus narrower time model + battle signal.
+- `SkirmishSessionModel` naming versus narrower time model + battle signal. → Resolved 2026-10-04: model removed; orchestrator notifies `BattleState` / `GameSpeed` — see [[TODOs/Refactoring/Battle_Startup_Sequence_Plan]].
 - Controller-owned UI visibility; optional `SkirmishUiRouteRegistry` split.
 
 ## Decision: File Placement (2026-10-01)

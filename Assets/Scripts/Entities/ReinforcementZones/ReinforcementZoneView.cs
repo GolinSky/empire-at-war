@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.Players;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.ReinforcementZones
@@ -20,108 +21,108 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
     public sealed class ReinforcementZoneView : MonoBehaviour, IReinforcementZoneView
     {
-        [SerializeField] private MeshRenderer _sphereRenderer;
-        [SerializeField] private Canvas _captureCanvas;
-        [SerializeField] private CanvasScaler _captureCanvasScaler;
-        [SerializeField] private Image _captureProgress;
-        [SerializeField] private TMP_Text _statusText;
+        [SerializeField, FormerlySerializedAs("_sphereRenderer")] private MeshRenderer sphereRenderer;
+        [SerializeField, FormerlySerializedAs("_captureCanvas")] private Canvas captureCanvas;
+        [SerializeField, FormerlySerializedAs("_captureCanvasScaler")] private CanvasScaler captureCanvasScaler;
+        [SerializeField, FormerlySerializedAs("_captureProgress")] private Image captureProgress;
+        [SerializeField, FormerlySerializedAs("_statusText")] private TMP_Text statusText;
         private MaterialPropertyBlock _propertyBlock;
 
-        [SerializeField] private Color _neutralColor = new Color(0.48f, 0.55f, 0.62f, 0.08f);
-        [SerializeField] private Color _playerColor = new Color(0.18f, 0.53f, 0.68f, 0.1f);
-        [SerializeField] private Color _allyColor = new Color(0.27f, 0.62f, 0.43f, 0.1f);
-        [SerializeField] private Color _opponentColor = new Color(0.68f, 0.27f, 0.29f, 0.1f);
-        [SerializeField] private Color _contestedColor = new Color(0.73f, 0.56f, 0.23f, 0.1f);
+        [SerializeField, FormerlySerializedAs("_neutralColor")] private Color neutralColor = new Color(0.48f, 0.55f, 0.62f, 0.08f);
+        [SerializeField, FormerlySerializedAs("_playerColor")] private Color playerColor = new Color(0.18f, 0.53f, 0.68f, 0.1f);
+        [SerializeField, FormerlySerializedAs("_allyColor")] private Color allyColor = new Color(0.27f, 0.62f, 0.43f, 0.1f);
+        [SerializeField, FormerlySerializedAs("_opponentColor")] private Color opponentColor = new Color(0.68f, 0.27f, 0.29f, 0.1f);
+        [SerializeField, FormerlySerializedAs("_contestedColor")] private Color contestedColor = new Color(0.73f, 0.56f, 0.23f, 0.1f);
         // Assigned by the map builder at runtime; the prefab itself has no owner.
         private PlayerId _startingOwner = PlayerId.None;
 
-        [SerializeField, Min(1f)] private float _captureDuration = 10f;
-        [SerializeField, Min(1f)] private float _radius = 45f;
+        [SerializeField, FormerlySerializedAs("_captureDuration"), Min(1f)] private float captureDuration = 10f;
+        [SerializeField, FormerlySerializedAs("_radius"), Min(1f)] private float radius = 45f;
 
-        [SerializeField] private bool _isCapturable = true;
+        [SerializeField, FormerlySerializedAs("_isCapturable")] private bool isCapturable = true;
 
         public Vector3 Center => transform.position;
-        public float Radius => _radius;
+        public float Radius => radius;
         public PlayerId StartingOwner => _startingOwner;
-        public bool IsCapturable => _isCapturable;
-        public float CaptureDuration => _captureDuration;
+        public bool IsCapturable => isCapturable;
+        public float CaptureDuration => captureDuration;
 
         public void Configure(PlayerId startingOwner, bool isCapturable)
         {
             _startingOwner = startingOwner;
-            _isCapturable = isCapturable;
+            this.isCapturable = isCapturable;
         }
 
         private void Awake()
         {
             _propertyBlock = new MaterialPropertyBlock();
-            if (_captureCanvas != null)
+            if (captureCanvas != null)
             {
-                _captureCanvas.overrideSorting = true;
-                _captureCanvas.sortingOrder = 100;
-                _captureCanvasScaler.dynamicPixelsPerUnit = 10f;
+                captureCanvas.overrideSorting = true;
+                captureCanvas.sortingOrder = 100;
+                captureCanvasScaler.dynamicPixelsPerUnit = 10f;
             }
         }
 
         public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested)
         {
-            if (_sphereRenderer != null)
+            if (sphereRenderer != null)
             {
                 _propertyBlock ??= new MaterialPropertyBlock();
-                _sphereRenderer.GetPropertyBlock(_propertyBlock);
+                sphereRenderer.GetPropertyBlock(_propertyBlock);
                 _propertyBlock.SetColor("_BaseColor", GetColor(owner, isContested));
                 _propertyBlock.SetColor("_Color", GetColor(owner, isContested));
-                _sphereRenderer.SetPropertyBlock(_propertyBlock);
+                sphereRenderer.SetPropertyBlock(_propertyBlock);
             }
 
-            if (_captureProgress != null)
+            if (this.captureProgress != null)
             {
                 float displayedProgress = capturer == OwnerRelation.Neutral && owner != OwnerRelation.Neutral
                     ? 1f
                     : Mathf.Clamp01(captureProgress);
                 // Sprite-free Images display progress through their rect width.
-                _captureProgress.rectTransform.anchorMax = new Vector2(displayedProgress, 1f);
+                this.captureProgress.rectTransform.anchorMax = new Vector2(displayedProgress, 1f);
                 Color progressColor = GetColor(
                     capturer == OwnerRelation.Neutral ? owner : capturer, isContested);
                 progressColor.a = 0.95f;
-                _captureProgress.color = progressColor;
+                this.captureProgress.color = progressColor;
             }
 
-            if (_statusText != null)
+            if (statusText != null)
             {
-                _statusText.text = GetStatus(owner, capturer, captureProgress, isContested);
+                statusText.text = GetStatus(owner, capturer, captureProgress, isContested);
             }
         }
 
         public void SetVisibility(bool isVisible, bool showCaptureUi)
         {
-            _sphereRenderer.enabled = isVisible;
-            _captureCanvas.gameObject.SetActive(showCaptureUi);
+            sphereRenderer.enabled = isVisible;
+            captureCanvas.gameObject.SetActive(showCaptureUi);
         }
 
         private void LateUpdate()
         {
-            if (_captureCanvas == null || Camera.main == null)
+            if (captureCanvas == null || Camera.main == null)
             {
                 return;
             }
 
-            _captureCanvas.transform.rotation = Camera.main.transform.rotation;
+            captureCanvas.transform.rotation = Camera.main.transform.rotation;
         }
 
         private Color GetColor(OwnerRelation owner, bool isContested)
         {
             if (isContested)
             {
-                return _contestedColor;
+                return contestedColor;
             }
 
             return owner switch
             {
-                OwnerRelation.Own => _playerColor,
-                OwnerRelation.Ally => _allyColor,
-                OwnerRelation.Enemy => _opponentColor,
-                _ => _neutralColor
+                OwnerRelation.Own => playerColor,
+                OwnerRelation.Ally => allyColor,
+                OwnerRelation.Enemy => opponentColor,
+                _ => neutralColor
             };
         }
 

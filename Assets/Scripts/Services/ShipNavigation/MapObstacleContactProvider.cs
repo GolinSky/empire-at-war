@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
+using Zenject;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
@@ -16,14 +18,30 @@ namespace EmpireAtWar.Services.ShipNavigation
     }
 
     public sealed class MapObstacleContactProvider : Service,
-        IMapObstacleContactProvider
+        IMapObstacleContactProvider, IInitializable, ILateDisposable, IObserver<BattleMap>
     {
-        private readonly IReadOnlyList<IMapObstacleContactSource> _sources;
+        private readonly INotifier<BattleMap> _battleMap;
+        private readonly List<IMapObstacleContactSource> _sources = new List<IMapObstacleContactSource>();
 
-        public MapObstacleContactProvider(
-            List<IMapObstacleContactSource> sources)
+        public MapObstacleContactProvider(INotifier<BattleMap> battleMap)
         {
-            _sources = sources;
+            _battleMap = battleMap;
+        }
+
+        public void Initialize()
+        {
+            _battleMap.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _battleMap.RemoveObserver(this);
+        }
+
+        public void UpdateState(BattleMap battleMap)
+        {
+            _sources.AddRange(battleMap.Obstacles);
+            _sources.AddRange(battleMap.StationObstacles);
         }
 
         public void CopyContacts(List<RadarContact> destination)

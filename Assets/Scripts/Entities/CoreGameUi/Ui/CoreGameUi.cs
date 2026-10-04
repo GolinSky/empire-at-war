@@ -1,7 +1,6 @@
 using EmpireAtWar.Components.Ui.Tooltip;
-using EmpireAtWar.Commands.Game;
 using System;
-using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
@@ -17,7 +16,6 @@ namespace EmpireAtWar.Views.Game
 {
     public class CoreGameUi : BaseUi, ICoreGameUi, ITooltipHoverView
     {
-        private ISkirmishSessionModelObserver _model;
         private ICoreGamePresenter _presenter;
 
         [SerializeField] private Button timeButton;
@@ -28,8 +26,8 @@ namespace EmpireAtWar.Views.Game
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
         [SerializeField] private MPImage panelImage;
-        [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> timeSprites;
-        [SerializeField] private DictionaryWrapper<GameTimeMode, Sprite> speedUpSprites;
+        [SerializeField] private DictionaryWrapper<bool, Sprite> timeSprites;
+        [SerializeField] private DictionaryWrapper<GameSpeed, Sprite> speedUpSprites;
         [SerializeField] private Transform miniMapRouteParent;
         [SerializeField] private Transform contentRouteParent;
         [SerializeField] private GridLayoutGroup contentGrid;
@@ -67,8 +65,6 @@ namespace EmpireAtWar.Views.Game
             reinforcementButton.onClick.AddListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.AddListener(_presenter.StartCinematic);
             clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
-            _model.OnGameTimeModeChanged += UpdateSprites;
-            UpdateSprites(_model.EffectiveTimeMode);
             _isInitialized = true;
         }
 
@@ -84,7 +80,6 @@ namespace EmpireAtWar.Views.Game
             reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
             clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
-            _model.OnGameTimeModeChanged -= UpdateSprites;
             _isInitialized = false;
         }
 
@@ -101,9 +96,10 @@ namespace EmpireAtWar.Views.Game
             battleControls.blocksRaycasts = !battleEnded && IsVisible;
         }
 
-        public void SetModel(ISkirmishSessionModelObserver model)
+        public void SetTimeControls(bool isPaused, GameSpeed speed)
         {
-            _model = model;
+            timeImage.sprite = timeSprites.Dictionary[isPaused];
+            speedUpImage.sprite = speedUpSprites.Dictionary[speed];
         }
 
         public void SetPresenter(ICoreGamePresenter presenter)
@@ -125,12 +121,6 @@ namespace EmpireAtWar.Views.Game
         public void SetContentVisible(bool isVisible)
         {
             panelImage.gameObject.SetActive(isVisible);
-        }
-
-        private void UpdateSprites(GameTimeMode gameTimeMode)
-        {
-            timeImage.sprite = timeSprites.Dictionary[gameTimeMode];
-            speedUpImage.sprite = speedUpSprites.Dictionary[gameTimeMode];
         }
 
         public void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection)

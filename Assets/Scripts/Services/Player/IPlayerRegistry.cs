@@ -14,11 +14,17 @@ namespace EmpireAtWar.Services.Player
 
         void RegisterAiReinforcement(PlayerId owner, IEnemyReinforcementObserver reinforcement);
 
+        void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner);
+
         void UnregisterSiteBuilder(PlayerId owner);
 
         void UnregisterAiReinforcement(PlayerId owner);
 
+        void UnregisterStationSpawner(PlayerId owner);
+
         ISiteFacilityBuilder GetSiteBuilder(PlayerId owner);
+
+        IStationSpawner GetStationSpawner(PlayerId owner);
 
         /// <summary>Only AI players queue builds that still arrive after their station died; humans never do.</summary>
         bool HasPendingReinforcement(PlayerId owner);

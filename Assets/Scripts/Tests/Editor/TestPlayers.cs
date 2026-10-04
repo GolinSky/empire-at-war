@@ -39,9 +39,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>Tally of a circle holding the given strength per player.</summary>
-        public static CaptureStrength Tally(IPlayerRoster roster, params (PlayerId Player, float Strength)[] units)
+        public static CaptureStrength Tally(IPlayerRoster playerRoster, params (PlayerId Player, float Strength)[] units)
         {
-            CaptureStrengthBuilder builder = new CaptureStrengthBuilder(roster);
+            CaptureStrengthBuilder builder = new CaptureStrengthBuilder(playerRoster);
             foreach ((PlayerId player, float strength) in units)
             {
                 builder.Add(player, strength);
@@ -51,19 +51,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>Duel tally with human strength first and enemy strength second.</summary>
-        public static CaptureStrength DuelTally(IPlayerRoster roster, float humanStrength, float enemyStrength)
+        public static CaptureStrength DuelTally(IPlayerRoster playerRoster, float humanStrength, float enemyStrength)
         {
-            return Tally(roster, (Human, humanStrength), (Enemy, enemyStrength));
+            return Tally(playerRoster, (Human, humanStrength), (Enemy, enemyStrength));
         }
 
-        public static LocalPlayer CreateLocalPlayer(IPlayerRoster roster)
+        public static LocalPlayer CreateLocalPlayer(IPlayerRoster playerRoster)
         {
-            return new LocalPlayer(roster);
+            return new LocalPlayer(playerRoster);
         }
 
-        public static PlayerSlot Slot(IPlayerRoster roster, PlayerId id)
+        public static PlayerSlot Slot(IPlayerRoster playerRoster, PlayerId id)
         {
-            return roster.Get(id);
+            return playerRoster.Get(id);
         }
 
         private static PlayerSlot CreateSlot(PlayerId id, TeamId team, FactionType faction,

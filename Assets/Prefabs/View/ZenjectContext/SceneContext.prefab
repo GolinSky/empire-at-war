@@ -356,8 +356,8 @@ MonoBehaviour:
   siteRoot: {fileID: 7593169863859123632}
   fieldRoot: {fileID: 6769320644097990905}
   borderLine: {fileID: 5965768392532275115}
-  borderHeight: 0
   fogOfWarSystem: {fileID: 3633680370215819205}
+  borderHeight: 0
   fogReferenceSide: 600
 --- !u!114 &1561019271551565166
 MonoBehaviour:
@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d007328b9f42124c80cc52a55266491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ReinforcementZones.ReinforcementZonesSystem
-  _spawnEdgePadding: 3
+  spawnEdgePadding: 3
 --- !u!114 &5697144160693895753
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,8 +14,8 @@ namespace EmpireAtWar.Components.Ship.Audio
 {
     public sealed class AudioShipComponent : MonoBehaviour, IAudioShipComponent, IMonoComponent
     {
-        private IShipSfxService _audio;
-        private IShipEngineAudioObserver _movement;
+        private IShipSfxService _shipSfxService;
+        private IShipEngineAudioObserver _shipEngineAudioObserver;
         private ILocalPlayer _localPlayer;
         private IEntity _ship;
         private IReadOnlyList<ShipAbilitySlot> _abilities;
@@ -35,12 +35,12 @@ namespace EmpireAtWar.Components.Ship.Audio
         public string Id => nameof(AudioShipComponent);
 
         [Inject]
-        private void Construct(IShipSfxService audio, IShipEngineAudioObserver movement, ILocalPlayer localPlayer,
+        private void Construct(IShipSfxService shipSfxService, IShipEngineAudioObserver shipEngineAudioObserver, ILocalPlayer localPlayer,
             ShipSfxData data, [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform)
         {
-            _audio = audio;
+            _shipSfxService = shipSfxService;
             _data = data;
-            _movement = movement;
+            _shipEngineAudioObserver = shipEngineAudioObserver;
             _localPlayer = localPlayer;
             _viewTransform = viewTransform;
         }
@@ -64,16 +64,16 @@ namespace EmpireAtWar.Components.Ship.Audio
         {
             if (!_initialized || Time.deltaTime <= 0f) return;
             Vector3 position = _viewTransform.position;
-            float speed = _movement.Phase == MovementPhase.Moving && _movement.Speed > 0f
-                ? Vector3.Distance(position, _previousPosition) / Time.deltaTime / _movement.Speed : 0f;
+            float speed = _shipEngineAudioObserver.Phase == MovementPhase.Moving && _shipEngineAudioObserver.Speed > 0f
+                ? Vector3.Distance(position, _previousPosition) / Time.deltaTime / _shipEngineAudioObserver.Speed : 0f;
             _previousPosition = position;
             if (_engine.Advance(speed, Time.deltaTime))
-                _audio.TryPlayOneShot(_ship, _data.Acceleration, position);
-            _audio.TryHoldLoop(_ship, _data.Engine, position, Mathf.Clamp01(_engine.Speed),
+                _shipSfxService.TryPlayOneShot(_ship, _data.Acceleration, position);
+            _shipSfxService.TryHoldLoop(_ship, _data.Engine, position, Mathf.Clamp01(_engine.Speed),
                 0.65f + _engine.Speed * 0.45f);
             for (int i = 0; i < _abilities.Count; i++)
                 if (_states[i] == ShipAbilityState.Active)
-                    _audio.TryHoldLoop(_ship, _sounds[i].Execution, position, 1f, 1f);
+                    _shipSfxService.TryHoldLoop(_ship, _sounds[i].Execution, position, 1f, 1f);
         }
 
         public void HandleAbilityChanged()
@@ -88,14 +88,14 @@ namespace EmpireAtWar.Components.Ship.Audio
                 switch (state)
                 {
                     case ShipAbilityState.Active:
-                        _audio.TryPlayOneShot(_ship, _sounds[i].Start, _viewTransform.position);
+                        _shipSfxService.TryPlayOneShot(_ship, _sounds[i].Start, _viewTransform.position);
                         break;
                     case ShipAbilityState.Recovering:
-                        _audio.TryPlayOneShot(_ship, _sounds[i].End, _viewTransform.position);
+                        _shipSfxService.TryPlayOneShot(_ship, _sounds[i].End, _viewTransform.position);
                         break;
                     case ShipAbilityState.Ready:
                         if (previous == ShipAbilityState.Recovering && _localPlayer.IsLocal(_ship.Owner))
-                            _audio.TryPlayOneShot(_ship, _sounds[i].Restore, _viewTransform.position);
+                            _shipSfxService.TryPlayOneShot(_ship, _sounds[i].Restore, _viewTransform.position);
                         break;
                 }
             }
@@ -103,23 +103,23 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public void PlayWeaponShot(WeaponProfile profile, Transform muzzle)
         {
-            if (_initialized) _audio.TryPlayWeaponShot(_ship, profile, muzzle);
+            if (_initialized) _shipSfxService.TryPlayWeaponShot(_ship, profile, muzzle);
         }
 
         public void HandleEnemyDetected()
         {
             if (Time.time < _alarmReadyAt) return;
-            if (_audio.TryPlayOneShot(_ship, _data.Alarm, _viewTransform.position))
+            if (_shipSfxService.TryPlayOneShot(_ship, _data.Alarm, _viewTransform.position))
                 _alarmReadyAt = Time.time + _data.AlarmDelay;
         }
 
-        public void PlayHyperSpace() => _audio.TryPlayOneShot(_ship, _data.Hyperspace, _viewTransform.position);
+        public void PlayHyperSpace() => _shipSfxService.TryPlayOneShot(_ship, _data.Hyperspace, _viewTransform.position);
 
         public void Release()
         {
             if (!_initialized) return;
             _initialized = false;
-            _audio.ReleaseShip(_ship);
+            _shipSfxService.ReleaseShip(_ship);
         }
 
         private void OnDisable() => Release();

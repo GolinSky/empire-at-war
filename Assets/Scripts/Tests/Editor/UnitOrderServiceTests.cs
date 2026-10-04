@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Editor
         private UnitOrderSettings _settings;
         private FakeLocator _locator;
         private FakeZones _zones;
-        private UnitOrderService _orders;
+        private UnitOrderService _unitOrderService;
 
         [SetUp]
         public void SetUp()
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
             _settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             _locator = new FakeLocator();
             _zones = new FakeZones();
-            _orders = new UnitOrderService(_locator, _zones, _settings);
+            _unitOrderService = new UnitOrderService(_locator, _zones, _settings);
         }
 
         [TearDown]
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity friendly = Entity(5, TestPlayers.Human);
             UnitOrder issued = default;
             bool fired = false;
-            _orders.OrderIssued += order => { issued = order; fired = true; };
+            _unitOrderService.OrderIssued += order => { issued = order; fired = true; };
 
             Issue(action, new IEntity[] { second }, enemy, friendly);
             Assert.That(first.Command.CallCount, Is.Zero);
@@ -84,12 +84,12 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity facility = Entity(3, TestPlayers.Human, Array.Empty<Type>());
             FakeEntity enemy = Entity(4, TestPlayers.Enemy);
 
-            _orders.IssueAttack(new IEntity[] { ship, station, facility }, enemy);
+            _unitOrderService.IssueAttack(new IEntity[] { ship, station, facility }, enemy);
             Assert.That(ship.Command.CallCount, Is.EqualTo(1));
             Assert.That(station.Command.CallCount, Is.EqualTo(1));
             Assert.That(facility.Command.CallCount, Is.Zero);
             Assert.That(station.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
-            _orders.IssueRetreat(new IEntity[] { ship, station, facility });
+            _unitOrderService.IssueRetreat(new IEntity[] { ship, station, facility });
             Assert.That(ship.Command.CallCount, Is.EqualTo(2));
             Assert.That(station.Command.CallCount, Is.EqualTo(1));
         }
@@ -100,14 +100,14 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity first = Entity(1, TestPlayers.Human);
             FakeEntity second = Entity(2, TestPlayers.Human);
             Vector3 destination = new Vector3(100f, 0f, 100f);
-            _orders.IssueMove(new IEntity[] { first, second }, destination);
+            _unitOrderService.IssueMove(new IEntity[] { first, second }, destination);
             Assert.That(first.Command.LastPoint, Is.Not.EqualTo(second.Command.LastPoint));
             Assert.That(Vector3.Distance(first.Command.LastPoint, second.Command.LastPoint),
                 Is.GreaterThanOrEqualTo(10f));
 
             Vector3[] slots = { new Vector3(10f, 0f, 20f),
                 new Vector3(30f, 0f, 40f) };
-            _orders.IssueMove(new IEntity[] { first, second }, slots);
+            _unitOrderService.IssueMove(new IEntity[] { first, second }, slots);
             Assert.That(first.Command.LastPoint, Is.EqualTo(slots[0]));
             Assert.That(second.Command.LastPoint, Is.EqualTo(slots[1]));
         }
@@ -120,10 +120,10 @@ namespace EmpireAtWar.Tests.Editor
                 Array.Empty<Type>(), new PlayerBaseFacade());
             station.Health.Transform.position = new Vector3(200f, 0f, 0f);
             _locator.EntitiesList.Add(station);
-            _orders.IssueRetreat(new IEntity[] { ship });
+            _unitOrderService.IssueRetreat(new IEntity[] { ship });
             Assert.That(ship.Command.LastPoint.x, Is.LessThan(200f));
             station.Health.IsDestroyedValue = true;
-            _orders.IssueRetreat(new IEntity[] { ship });
+            _unitOrderService.IssueRetreat(new IEntity[] { ship });
             Assert.That(ship.Command.LastPoint, Is.EqualTo(_zones.Center));
             Assert.That(_zones.LastSide, Is.EqualTo(TestPlayers.Enemy));
         }
@@ -144,16 +144,16 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 point = new Vector3(50f, 0f, 50f);
             switch (action)
             {
-                case UnitActionId.Move: _orders.IssueMove(receivers, point); break;
-                case UnitActionId.Attack: _orders.IssueAttack(receivers, enemy); break;
-                case UnitActionId.AttackMove: _orders.IssueAttackMove(receivers, point); break;
-                case UnitActionId.Stop: _orders.IssueStop(receivers); break;
-                case UnitActionId.Guard: _orders.IssueGuard(receivers, friendly); break;
+                case UnitActionId.Move: _unitOrderService.IssueMove(receivers, point); break;
+                case UnitActionId.Attack: _unitOrderService.IssueAttack(receivers, enemy); break;
+                case UnitActionId.AttackMove: _unitOrderService.IssueAttackMove(receivers, point); break;
+                case UnitActionId.Stop: _unitOrderService.IssueStop(receivers); break;
+                case UnitActionId.Guard: _unitOrderService.IssueGuard(receivers, friendly); break;
                 case UnitActionId.WaypointMove:
-                    _orders.IssueWaypointMove(receivers, new[] { point, point + Vector3.right });
+                    _unitOrderService.IssueWaypointMove(receivers, new[] { point, point + Vector3.right });
                     break;
-                case UnitActionId.Hunt: _orders.IssueHunt(receivers); break;
-                case UnitActionId.Retreat: _orders.IssueRetreat(receivers); break;
+                case UnitActionId.Hunt: _unitOrderService.IssueHunt(receivers); break;
+                case UnitActionId.Retreat: _unitOrderService.IssueRetreat(receivers); break;
             }
         }
 

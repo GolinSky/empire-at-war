@@ -25,9 +25,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private readonly IHardPointOverlayView _view;
         private readonly ISelectionQuery _selectionQuery;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
-        private readonly IUnitOrderService _orderService;
+        private readonly IUnitOrderService _unitOrderService;
         private readonly ICinematicCameraModelObserver _cinematicCamera;
         private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _localPlayer;
@@ -38,9 +38,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         public HardPointOverlayPresenter(
             IHardPointOverlayView view,
             ISelectionQuery selectionQuery,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             ICameraService cameraService,
-            IUnitOrderService orderService,
+            IUnitOrderService unitOrderService,
             ICinematicCameraModelObserver cinematicCamera,
             IFogOfWarSystem fogOfWarSystem,
             ILocalPlayer localPlayer,
@@ -51,9 +51,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _model = model;
             _data = data;
             _selectionQuery = selectionQuery;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _cameraService = cameraService;
-            _orderService = orderService;
+            _unitOrderService = unitOrderService;
             _cinematicCamera = cinematicCamera;
             _fogOfWarSystem = fogOfWarSystem;
             _localPlayer = localPlayer;
@@ -61,12 +61,12 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         public void Initialize()
         {
-            _orderService.OrderIssued += HandleOrderIssued;
+            _unitOrderService.OrderIssued += HandleOrderIssued;
         }
 
         public void LateDispose()
         {
-            _orderService.OrderIssued -= HandleOrderIssued;
+            _unitOrderService.OrderIssued -= HandleOrderIssued;
         }
 
         public void Tick()
@@ -83,7 +83,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 return;
             }
 
-            UpdateInspection(_pointer.Position);
+            UpdateInspection(_pointerInput.Position);
             Render();
         }
 

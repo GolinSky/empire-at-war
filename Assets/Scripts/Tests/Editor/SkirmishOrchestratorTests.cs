@@ -1,17 +1,14 @@
 using System;
 using EmpireAtWar.Models.Players;
-using System.Collections.Generic;
+using System.Threading;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.Menu;
-using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Models.SkirmishGame;
-using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Input;
 using NUnit.Framework;
 using UnityEngine;
 using Zenject;
@@ -20,26 +17,32 @@ namespace EmpireAtWar.Tests.Editor
 {
     public sealed class SkirmishOrchestratorTests
     {
-        private SkirmishSessionModel _model;
         private SkirmishOrchestrator _orchestrator;
         private GameCommandStub _gameCommand;
+        private InputLockStub _inputLock;
+        private StateRecorder _state;
+        private SpeedRecorder _speed;
 
         [SetUp]
         public void SetUp()
         {
-            _model = new SkirmishSessionModel();
             _gameCommand = new GameCommandStub();
+            _inputLock = new InputLockStub();
             DiContainer container = new DiContainer();
             container.Bind<IUserStateNotifier>().FromInstance(new UserStateNotifierStub());
+            container.Bind<INotifier<BattleResult>>().FromInstance(new NotifierStub<BattleResult>());
             _orchestrator = new SkirmishOrchestrator(
-                sessionModel: _model,
-                userStateNotifier: new LazyInject<IUserStateNotifier>(container,
-                    new InjectContext(container, typeof(IUserStateNotifier))),
                 gameCommand: _gameCommand,
-                cameraService: new CameraServiceStub(),
-                mapModel: new MapModelStub(),
-                battleVictoryNotifier: new NotifierStub<BattleResult>(),
-                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+                startupSequence: new CompletedStartupStub(),
+                inputLock: _inputLock,
+                battleVictoryNotifier: new LazyInject<INotifier<BattleResult>>(container,
+                    new InjectContext(container, typeof(INotifier<BattleResult>))),
+                userStateNotifier: new LazyInject<IUserStateNotifier>(container,
+                    new InjectContext(container, typeof(IUserStateNotifier))));
+            _state = new StateRecorder();
+            _speed = new SpeedRecorder();
+            _orchestrator.AddObserver(_state);
+            _orchestrator.AddObserver(_speed);
             _orchestrator.Initialize();
         }
 
@@ -50,31 +53,56 @@ namespace EmpireAtWar.Tests.Editor
             Time.timeScale = 1f;
         }
 
-        [TestCase(GameTimeMode.Common, false, GameTimeMode.Pause, 0f)]
-        [TestCase(GameTimeMode.SpeedUp, false, GameTimeMode.Pause, 0f)]
-        [TestCase(GameTimeMode.Pause, false, GameTimeMode.Common, 1f)]
-        [TestCase(GameTimeMode.Common, true, GameTimeMode.SpeedUp, 4f)]
-        [TestCase(GameTimeMode.SpeedUp, true, GameTimeMode.Common, 1f)]
-        [TestCase(GameTimeMode.Pause, true, GameTimeMode.SpeedUp, 4f)]
-        public void TimeControls_FollowTransitionTable(
-            GameTimeMode initialMode,
-            bool speedUp,
-            GameTimeMode expectedMode,
-            float expectedScale)
+        [Test]
+        public void Startup_RunsBattleAndReleasesInputLock()
         {
-            SetStoredMode(initialMode);
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Running));
+            Assert.That(_inputLock.ActiveHandles, Is.Zero);
+            Assert.That(_inputLock.AcquireCount, Is.EqualTo(1));
+            Assert.That(Time.timeScale, Is.EqualTo(1f));
+        }
 
-            if (speedUp)
-            {
-                _orchestrator.ToggleSpeedUp();
-            }
-            else
-            {
-                _orchestrator.TogglePause();
-            }
+        [Test]
+        public void AddObserver_ReplaysCurrentValues()
+        {
+            StateRecorder lateState = new StateRecorder();
+            SpeedRecorder lateSpeed = new SpeedRecorder();
 
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(expectedMode));
-            Assert.That(Time.timeScale, Is.EqualTo(expectedScale));
+            _orchestrator.AddObserver(lateState);
+            _orchestrator.AddObserver(lateSpeed);
+
+            Assert.That(lateState.Value, Is.EqualTo(BattleState.Running));
+            Assert.That(lateSpeed.Value, Is.EqualTo(GameSpeed.Normal));
+        }
+
+        [Test]
+        public void TogglePause_SwitchesBetweenRunningAndPaused()
+        {
+            _orchestrator.TogglePause();
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
+            Assert.That(Time.timeScale, Is.Zero);
+
+            _orchestrator.TogglePause();
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Running));
+            Assert.That(Time.timeScale, Is.EqualTo(1f));
+        }
+
+        [Test]
+        public void ToggleSpeedUp_SwitchesSpeedAndKeepsPause()
+        {
+            _orchestrator.ToggleSpeedUp();
+            Assert.That(_speed.Value, Is.EqualTo(GameSpeed.Fast));
+            Assert.That(Time.timeScale, Is.EqualTo(4f));
+
+            _orchestrator.TogglePause();
+            _orchestrator.ToggleSpeedUp();
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
+            Assert.That(_speed.Value, Is.EqualTo(GameSpeed.Normal));
+            Assert.That(Time.timeScale, Is.Zero);
+
+            _orchestrator.ToggleSpeedUp();
+            _orchestrator.TogglePause();
+            Assert.That(Time.timeScale, Is.EqualTo(4f));
         }
 
         [Test]
@@ -86,67 +114,101 @@ namespace EmpireAtWar.Tests.Editor
             _orchestrator.TogglePause();
             _orchestrator.ToggleSpeedUp();
 
-            Assert.That(_model.IsBattleEnded, Is.True);
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Ended));
+            Assert.That(_speed.Value, Is.EqualTo(GameSpeed.Normal));
             Assert.That(Time.timeScale, Is.Zero);
         }
 
         [Test]
-        public void MenuPause_DoesNotChangeStoredMode()
+        public void MenuPause_BlocksTimeControls()
         {
             _orchestrator.ToggleSpeedUp();
             _orchestrator.UpdateState(UserNotifierState.InMenu);
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
             Assert.That(Time.timeScale, Is.Zero);
 
             _orchestrator.TogglePause();
+            _orchestrator.ToggleSpeedUp();
 
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
+            Assert.That(_state.Value, Is.EqualTo(BattleState.Paused));
+            Assert.That(_speed.Value, Is.EqualTo(GameSpeed.Fast));
             Assert.That(Time.timeScale, Is.Zero);
         }
 
+        [TestCase(false, 4f)]
+        [TestCase(true, 0f)]
+        public void MenuClose_RestoresStateBeforeMenu(bool isPaused, float scale)
+        {
+            _orchestrator.ToggleSpeedUp();
+            if (isPaused)
+            {
+                _orchestrator.TogglePause();
+            }
+
+            _orchestrator.UpdateState(UserNotifierState.InMenu);
+            _orchestrator.UpdateState(UserNotifierState.InGame);
+
+            Assert.That(_state.Value, Is.EqualTo(isPaused ? BattleState.Paused : BattleState.Running));
+            Assert.That(Time.timeScale, Is.EqualTo(scale));
+        }
+
         [Test]
-        public void ExitSkirmish_RestoresCommonTimeAndExitsGame()
+        public void ExitSkirmish_RestoresNormalTimeAndExitsGame()
         {
             _orchestrator.TogglePause();
 
             _orchestrator.ExitSkirmish();
 
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Common));
             Assert.That(Time.timeScale, Is.EqualTo(1f));
             Assert.That(_gameCommand.ExitCount, Is.EqualTo(1));
         }
 
-        [TestCase(GameTimeMode.SpeedUp, 4f)]
-        [TestCase(GameTimeMode.Pause, 0f)]
-        public void MenuClose_RestoresRequestedModeAndNextToggleWorks(GameTimeMode requestedMode, float scale)
+        private sealed class CompletedStartupStub : IBattleStartupSequence
         {
-            SetStoredMode(requestedMode);
-            _orchestrator.UpdateState(UserNotifierState.InMenu);
-            _orchestrator.TogglePause();
-            _orchestrator.ToggleSpeedUp();
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Pause));
-
-            _orchestrator.UpdateState(UserNotifierState.InGame);
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(requestedMode));
-            Assert.That(Time.timeScale, Is.EqualTo(scale));
-
-            if (requestedMode == GameTimeMode.SpeedUp) _orchestrator.ToggleSpeedUp();
-            else _orchestrator.TogglePause();
-            Assert.That(_model.EffectiveTimeMode, Is.EqualTo(GameTimeMode.Common));
-            Assert.That(Time.timeScale, Is.EqualTo(1f));
+            public Awaitable RunAsync(CancellationToken cancellationToken)
+            {
+                AwaitableCompletionSource source = new AwaitableCompletionSource();
+                source.SetResult();
+                return source.Awaitable;
+            }
         }
 
-        private void SetStoredMode(GameTimeMode mode)
+        private sealed class StateRecorder : IObserver<BattleState>
         {
-            switch (mode)
+            public BattleState Value { get; private set; }
+
+            public void UpdateState(BattleState value) => Value = value;
+        }
+
+        private sealed class SpeedRecorder : IObserver<GameSpeed>
+        {
+            public GameSpeed Value { get; private set; }
+
+            public void UpdateState(GameSpeed value) => Value = value;
+        }
+
+        private sealed class InputLockStub : IInputLock
+        {
+            public event Action<bool> LockChanged { add { } remove { } }
+
+            public int AcquireCount { get; private set; }
+            public int ActiveHandles { get; private set; }
+            public bool IsLocked => ActiveHandles > 0;
+
+            public IDisposable Acquire()
             {
-                case GameTimeMode.SpeedUp:
-                    _orchestrator.ToggleSpeedUp();
-                    break;
-                case GameTimeMode.Pause:
-                    _orchestrator.TogglePause();
-                    break;
+                AcquireCount++;
+                ActiveHandles++;
+                return new Handle(this);
+            }
+
+            private sealed class Handle : IDisposable
+            {
+                private readonly InputLockStub _owner;
+
+                public Handle(InputLockStub owner) => _owner = owner;
+
+                public void Dispose() => _owner.ActiveHandles--;
             }
         }
 
@@ -173,36 +235,6 @@ namespace EmpireAtWar.Tests.Editor
                 MapSize mapSize,
                 BattleVictoryCondition victoryCondition,
                 float startingMoney) { }
-        }
-
-        private sealed class MapModelStub : IMapModelObserver
-        {
-            public Vector2Range SizeRange => null;
-
-            public Vector3 GetStationPosition(PlayerId owner) => Vector3.zero;
-        }
-
-        private sealed class CameraServiceStub : ICameraService
-        {
-            public string Id => nameof(CameraServiceStub);
-            public Vector3 CameraPosition => Vector3.zero;
-            public Transform CameraTransform => null;
-            public Vector3 CameraForward => Vector3.forward;
-            public float FieldOfView => 60f;
-
-            public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position) => position;
-
-            public RaycastHit ScreenPointToRay(Vector2 screenPoint) => default;
-
-            public Vector3 WorldToViewportPoint(Vector3 currentPosition) => currentPosition;
-
-            public Vector2 WorldToScreenPoint(Vector3 position) => Vector2.zero;
-
-            public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax) => Array.Empty<Vector3>();
-
-            public void MoveTo(Vector3 worldPoint) { }
-
-            public void SetPose(Vector3 position, Quaternion rotation) { }
         }
     }
 }

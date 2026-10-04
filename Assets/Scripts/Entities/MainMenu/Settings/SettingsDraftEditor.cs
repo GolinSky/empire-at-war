@@ -12,7 +12,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
     {
         private const string UNLIMITED_FRAME_RATE_LABEL = "Unlimited";
 
-        private readonly ISettingsService _settings;
+        private readonly ISettingsService _settingsService;
         private readonly IGraphicsOptions _graphicsOptions;
         private readonly IDisplayOptions _displayOptions;
         private readonly IAudioSettingsPreview _audioPreview;
@@ -33,17 +33,17 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private static readonly string[] FRAME_RATE_LIMIT_LABELS = FormatFrameRateLimits();
         private string[] _resolutionLabels = new string[0];
 
-        private SettingsData Draft => _settings.Draft;
+        private SettingsData Draft => _settingsService.Draft;
 
         public SettingsDraftEditor(
-            ISettingsService settings,
+            ISettingsService settingsService,
             IGraphicsOptions graphicsOptions,
             IDisplayOptions displayOptions,
             IAudioSettingsPreview audioPreview,
             SettingsModel model)
         {
             _audioPreview = audioPreview;
-            _settings = settings;
+            _settingsService = settingsService;
             _graphicsOptions = graphicsOptions;
             _displayOptions = displayOptions;
             _model = model;
@@ -92,7 +92,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 camera.ZoomSpeedMultiplier,
                 camera.EdgeScrolling,
                 camera.InvertZoom);
-            _model.SetDirty(_settings.IsDirty);
+            _model.SetDirty(_settingsService.IsDirty);
         }
 
         public void SelectQuality(int index)

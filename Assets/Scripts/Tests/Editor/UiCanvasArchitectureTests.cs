@@ -1,7 +1,6 @@
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Presenters.Game;
-using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Reinforcement;
 using EmpireAtWar.Services.UiRouting;
@@ -230,11 +229,11 @@ namespace EmpireAtWar.Tests.Editor
                         Is.Not.Null, $"CoreGameUi.{field} must be assigned in the prefab.");
                 }
 
-                SkirmishSessionModel model = new SkirmishSessionModel();
                 CoreGamePresenterStub presenter = new CoreGamePresenterStub();
-                ui.SetModel(model);
                 ui.SetPresenter(presenter);
                 ui.Initialize();
+                ui.SetTimeControls(true, GameSpeed.Fast);
+                ui.SetTimeControls(false, GameSpeed.Normal);
 
                 Assert.That(((Image)serializedUi.FindProperty("timeImage").objectReferenceValue).sprite,
                     Is.Not.Null);

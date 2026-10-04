@@ -15,7 +15,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
     {
         private readonly IHealthOverlayView _view;
         private readonly ISelectionQuery _selectionQuery;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
         private IEntity _target;
         private ISelectionPositionProvider _targetPositionProvider;
@@ -23,12 +23,12 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
         public HealthOverlayPresenter(
             IHealthOverlayView view,
             ISelectionQuery selectionQuery,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             ICameraService cameraService)
         {
             _view = view;
             _selectionQuery = selectionQuery;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _cameraService = cameraService;
         }
 
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Components.Ship.Health.Overlay
 
         private IEntity GetHoveredEntity()
         {
-            if (!_selectionQuery.TryFindAt(_pointer.Position, out SelectionEntry selection))
+            if (!_selectionQuery.TryFindAt(_pointerInput.Position, out SelectionEntry selection))
             {
                 return null;
             }

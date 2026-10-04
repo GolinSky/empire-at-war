@@ -25,7 +25,7 @@ namespace EmpireAtWar
 {
     public class PlayerCoreInstaller : MonoInstaller
     {
-        [Inject] private IAssetService Repository { get; }
+        [Inject] private IAssetService AssetService { get; }
         [Inject] private ILocalPlayer LocalPlayer { get; }
 
         public override void InstallBindings()
@@ -34,7 +34,7 @@ namespace EmpireAtWar
             Container.BindInstance(LocalPlayer.Slot);
             Container.Install<GameUnitsInstaller>();
             
-            Container.BindScriptableObject<ReinforcementData>(Repository);
+            Container.BindScriptableObject<ReinforcementData>(AssetService);
             Container.BindInterfacesAndSelfTo<ReinforcementModel>().AsSingle();
             Container.Bind<ReinforcementPreviewFactory>().AsSingle();
             Container.Bind<StructurePlacementArea>().AsSingle();
@@ -61,7 +61,7 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<FactionUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();
             
-            Container.BindScriptableObject<EconomyData>(Repository);
+            Container.BindScriptableObject<EconomyData>(AssetService);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
             Container.BindInterfacesNonLazyExt<EconomyUiController>();

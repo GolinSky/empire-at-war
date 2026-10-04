@@ -19,21 +19,21 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IPlayerRelations _relations;
 
         private readonly PlayerSlot _owner;
-        private readonly ShipAbilityService _abilities;
+        private readonly ShipAbilityService _shipAbilityService;
         private readonly List<IEntity> _targets = new List<IEntity>();
 
         private float _timeLeft;
 
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
-            ShipAbilityService abilities,
+            ShipAbilityService shipAbilityService,
             PlayerSlot owner)
         {
             _owner = owner;
             _entities = entities;
             _state = state;
             _relations = relations;
-            _abilities = abilities;
+            _shipAbilityService = shipAbilityService;
         }
 
         public void Tick()
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Services.Enemy
                 target = Random.value < profile.AbilityTargetPrecision
                     ? BestTarget() : _targets[Random.Range(0, _targets.Count)];
             }
-            _abilities.TryActivate(caster, slot.Id, target);
+            _shipAbilityService.TryActivate(caster, slot.Id, target);
         }
 
         private void CollectTargets(IShipAbilityFacade caster, float range)

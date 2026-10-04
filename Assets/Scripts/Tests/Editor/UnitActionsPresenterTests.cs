@@ -12,7 +12,7 @@ using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Tests.Editor
         private UnitActionTargetingModel _targeting;
         private FakeHandler _handler;
         private FakeOrders _orders;
-        private FakeSession _session;
+        private FakeBattleState _battleState;
         private UnitActionsPresenter _presenter;
 
         [SetUp]
@@ -51,10 +51,10 @@ namespace EmpireAtWar.Tests.Editor
             _targeting = new UnitActionTargetingModel();
             _handler = new FakeHandler(_targeting);
             _orders = new FakeOrders();
-            _session = new FakeSession();
+            _battleState = new FakeBattleState();
             _presenter = new UnitActionsPresenter(coreUi: new FakeProvider(_view),
-                selection: _selection, abilities: _abilities, targeting: _targeting, inputHandler: _handler, orders: _orders, session: _session,
-                uiService: new FakeUiService(), cancelRouter: _cancelRouter, tooltips: null, bindings: null);
+                selectionService: _selection, abilities: _abilities, targeting: _targeting, inputHandler: _handler, unitOrderService: _orders, battleState: _battleState,
+                uiService: new FakeUiService(), cancelRouter: _cancelRouter, tooltipService: null, bindings: null);
             _presenter.Initialize();
         }
 
@@ -298,12 +298,11 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
         }
 
-        private sealed class FakeSession : ISkirmishSessionModelObserver
+        private sealed class FakeBattleState : INotifier<BattleState>
         {
-            public event Action<GameTimeMode> OnGameTimeModeChanged { add { } remove { } }
+            public void AddObserver(IObserver<BattleState> observer) => observer.UpdateState(BattleState.Running);
 
-            public GameTimeMode EffectiveTimeMode => default;
-            public bool IsBattleEnded => false;
+            public void RemoveObserver(IObserver<BattleState> observer) { }
         }
 
         private sealed class FakeEntity : IEntity

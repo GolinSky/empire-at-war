@@ -32,7 +32,7 @@ namespace EmpireAtWar.Presenters.Reinforcement
             IUiCancelRouter cancelRouter,
             IReinforcementService reinforcementService,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             ReinforcementModel model,
             ReinforcementData data) : base(uiService, cancelRouter)
         {
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Presenters.Reinforcement
             _model = model;
             _data = data;
             _routeNavigation = routeNavigation;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()

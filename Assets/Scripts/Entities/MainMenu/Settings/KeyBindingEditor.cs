@@ -12,14 +12,14 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private const string SWAP_REJECTED_MESSAGE = "Swapping would create another conflict. Choose Replace or Cancel.";
 
         private readonly IInputBindings _bindings;
-        private readonly ISettingsService _settings;
+        private readonly ISettingsService _settingsService;
 
         private readonly SettingsModel _model;
 
-        public KeyBindingEditor(IInputBindings bindings, ISettingsService settings, SettingsModel model)
+        public KeyBindingEditor(IInputBindings bindings, ISettingsService settingsService, SettingsModel model)
         {
             _bindings = bindings;
-            _settings = settings;
+            _settingsService = settingsService;
             _model = model;
         }
 
@@ -112,9 +112,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         private void SyncDraft()
         {
-            _settings.Draft.Input.BindingOverridesJson = _bindings.ExportOverrides();
+            _settingsService.Draft.Input.BindingOverridesJson = _bindings.ExportOverrides();
             Refresh();
-            _model.SetDirty(_settings.IsDirty);
+            _model.SetDirty(_settingsService.IsDirty);
         }
     }
 }

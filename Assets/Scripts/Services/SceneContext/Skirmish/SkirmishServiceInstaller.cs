@@ -30,7 +30,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
         [SerializeField] private ShipSfxData shipSfxData;
         [SerializeField] private ShipSfxSources shipSfxSourcesPrefab;
 
-        [Inject] private IAssetService Repository { get; }
+        [Inject] private IAssetService AssetService { get; }
 
         public override void InstallBindings()
         {
@@ -51,9 +51,9 @@ namespace EmpireAtWar.SceneContext.Skirmish
             Container.BindInterfacesAndSelfTo<RangeDebugModel>().AsSingle();
             Container.Bind<DebugRangeCircleFactory>().AsSingle().WithArguments(rangeDebugLineMaterial);
             
-            Container.BindScriptableObject<CameraData>(Repository);
-            Container.BindScriptableObject<CinematicCameraData>(Repository);
-            Container.BindScriptableObject<SharedSelectionData>(Repository);
+            Container.BindScriptableObject<CameraData>(AssetService);
+            Container.BindScriptableObject<CinematicCameraData>(AssetService);
+            Container.BindScriptableObject<SharedSelectionData>(AssetService);
             Container.Bind<MarqueeSelectionModel>().AsSingle();
             Container
                 .BindInterfacesAndSelfTo<MarqueeSelectionView>()

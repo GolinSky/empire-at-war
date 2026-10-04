@@ -24,21 +24,21 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IPointerGestures _gestures;
         private readonly IUnitOrderInput _orderInput;
         private readonly ILocalPlayer _localPlayer;
-        private readonly ISelectionService _selection;
+        private readonly ISelectionService _selectionService;
         private readonly ISelectionQuery _query;
-        private readonly ICameraService _camera;
-        private readonly ILayerService _layers;
+        private readonly ICameraService _cameraService;
+        private readonly ILayerService _layerService;
         private readonly IShipAbilityTargeting _abilities;
-        private readonly IUnitOrderService _orders;
+        private readonly IUnitOrderService _unitOrderService;
         private readonly IHardPointHoverObserver _hardPointHover;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
 
         public PlayerOrderInputHandler(IPointerGestures gestures, IUnitOrderInput orderInput,
-            ISelectionService selection,
-            ISelectionQuery query, ICameraService camera, ILayerService layers,
-            IShipAbilityTargeting abilities, IUnitOrderService orders,
+            ISelectionService selectionService,
+            ISelectionQuery query, ICameraService cameraService, ILayerService layerService,
+            IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
             SuperWeaponTargetingModel superWeapons)
@@ -46,13 +46,13 @@ namespace EmpireAtWar.Services.UnitOrders
             _localPlayer = localPlayer;
             _gestures = gestures;
             _orderInput = orderInput;
-            _selection = selection;
+            _selectionService = selectionService;
             _query = query;
-            _camera = camera;
-            _layers = layers;
+            _cameraService = cameraService;
+            _layerService = layerService;
             _abilities = abilities;
             _targeting = targeting;
-            _orders = orders;
+            _unitOrderService = unitOrderService;
             _superWeapons = superWeapons;
             _hardPointHover = hardPointHover;
         }
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 List<Vector3> points = new List<Vector3>(_targeting.Waypoints.Count);
                 foreach (FormationPoint waypoint in _targeting.Waypoints)
                     points.Add(ToVector(waypoint));
-                _orders.IssueWaypointMove(Snapshot(), points);
+                _unitOrderService.IssueWaypointMove(Snapshot(), points);
             }
             _targeting.Cancel();
         }
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 if (!receiver.TryGetFacade(out IMoveFacade move)) continue;
                 worldPoint.y = move.WorldPosition.y;
-                _orders.IssueMove(receivers, worldPoint);
+                _unitOrderService.IssueMove(receivers, worldPoint);
                 return true;
             }
             return false;
@@ -149,7 +149,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 if (target != null && _localPlayer.IsFriendly(target.Owner) &&
                     target.TryGetFacade(out IEntitySelectionFacade _))
                 {
-                    _orders.IssueGuard(receivers, target);
+                    _unitOrderService.IssueGuard(receivers, target);
                     _targeting.Cancel();
                 }
                 return;
@@ -157,11 +157,11 @@ namespace EmpireAtWar.Services.UnitOrders
             if (pending != null)
             {
                 if (hasUnit || IsObstacle(screen)) return;
-                Vector3 point = _camera.GetWorldPoint(screen, ReferencePosition(receivers));
+                Vector3 point = _cameraService.GetWorldPoint(screen, ReferencePosition(receivers));
                 switch (pending.Value)
                 {
                     case UnitActionId.AttackMove:
-                        _orders.IssueAttackMove(receivers, point);
+                        _unitOrderService.IssueAttackMove(receivers, point);
                         _targeting.Cancel();
                         break;
                     case UnitActionId.WaypointMove:
@@ -173,20 +173,20 @@ namespace EmpireAtWar.Services.UnitOrders
 
             if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
             else if (!hasUnit && !IsObstacle(screen))
-                _orders.IssueMove(receivers,
-                    _camera.GetWorldPoint(screen, ReferencePosition(receivers)));
+                _unitOrderService.IssueMove(receivers,
+                    _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
         }
 
         private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId)
         {
-            if (hasHardPoint) _orders.IssueHardPointAttack(receivers, target, hardPointId);
-            else _orders.IssueAttack(receivers, target);
+            if (hasHardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, hardPointId);
+            else _unitOrderService.IssueAttack(receivers, target);
         }
 
         private List<IEntity> Snapshot()
         {
             List<IEntity> receivers = new List<IEntity>();
-            foreach (IEntity entity in _selection.PlayerSelectionContext.Entities)
+            foreach (IEntity entity in _selectionService.PlayerSelectionContext.Entities)
                 if (!entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits)
                     receivers.Add(entity);
             return receivers;
@@ -207,9 +207,9 @@ namespace EmpireAtWar.Services.UnitOrders
 
         private bool IsObstacle(Vector2 screen)
         {
-            RaycastHit hit = _camera.ScreenPointToRay(screen);
+            RaycastHit hit = _cameraService.ScreenPointToRay(screen);
             return hit.collider != null &&
-                   _layers.IsInLayer(hit.collider.gameObject, LayerKey.Obstacle);
+                   _layerService.IsInLayer(hit.collider.gameObject, LayerKey.Obstacle);
         }
     }
 }

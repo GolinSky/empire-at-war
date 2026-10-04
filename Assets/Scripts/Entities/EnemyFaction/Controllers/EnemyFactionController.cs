@@ -34,7 +34,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
         private readonly IShipSpawnPoints _shipSpawnPoints;
-        private readonly IEnemyStructurePlacementService _structurePlacement;
+        private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IStationRegistry _stationRegistry;
         private readonly ISquadronLauncher _squadronLauncher;
         private readonly IEnemySquadronCommander _squadronCommander;
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             IEconomyProvider economyProvider,
             IWallet wallet,
             IShipSpawnPoints shipSpawnPoints,
-            IEnemyStructurePlacementService structurePlacement,
+            IEnemyStructurePlacementService enemyStructurePlacementService,
             IStationRegistry stationRegistry,
             ISquadronLauncher squadronLauncher,
             IEnemySquadronCommander squadronCommander,
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _shipSpawnPoints = shipSpawnPoints;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
-            _structurePlacement = structurePlacement;
+            _enemyStructurePlacementService = enemyStructurePlacementService;
             _stationRegistry = stationRegistry;
             _squadronLauncher = squadronLauncher;
             _squadronCommander = squadronCommander;
@@ -98,7 +98,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _unitLimitModel.Reset();
-            _structurePlacement.Reset();
+            _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             _playerRegistry.RegisterAiReinforcement(Owner, this);
             _isInitialized = true;
@@ -195,7 +195,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 position);
                             facility.OnRelease += () =>
                             {
-                                _structurePlacement.RecordDestroyedPosition(
+                                _enemyStructurePlacementService.RecordDestroyedPosition(
                                     facility.transform.position);
                                 ReleaseUnit(miningFacilityUnitRequest);
                             };
@@ -218,7 +218,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 position);
                             platform.OnRelease += () =>
                             {
-                                _structurePlacement.RecordDestroyedPosition(
+                                _enemyStructurePlacementService.RecordDestroyedPosition(
                                     platform.transform.position);
                                 ReleaseUnit(defendPlatformUnitRequest);
                             };
@@ -327,7 +327,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private Vector3 GenerateMapCoordinates()
         {
-            if (_structurePlacement.TryGetPosition(out Vector3 position))
+            if (_enemyStructurePlacementService.TryGetPosition(out Vector3 position))
             {
                 return position;
             }

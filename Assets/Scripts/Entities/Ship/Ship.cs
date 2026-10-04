@@ -54,8 +54,8 @@ namespace EmpireAtWar.Ship
         private IWeaponFireEvents _weaponFireEvents;
         private IReadOnlyList<ShipAbilitySlot> _audioAbilities;
         private ILayerService _layerService;
-        private IUnitExplosionService _explosionService;
-        private IUnitWreckService _wreckService;
+        private IUnitExplosionService _unitExplosionService;
+        private IUnitWreckService _unitWreckService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         private HardPointModel _enginesUnitModel;
@@ -93,8 +93,8 @@ namespace EmpireAtWar.Ship
             IWeaponFireEvents weaponFireEvents,
             [InjectOptional] IAudioDialogShipComponent audioDialogShipComponent,
             ILayerService layerService,
-            IUnitWreckService wreckService,
-            IUnitExplosionService explosionService,
+            IUnitWreckService unitWreckService,
+            IUnitExplosionService unitExplosionService,
             ShipOrderRunner orders,
             LazyInject<IEntity> entity,
             List<IMonoComponent> monoComponents,
@@ -114,8 +114,8 @@ namespace EmpireAtWar.Ship
             _audioDialogShipComponent = audioDialogShipComponent;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _layerService = layerService;
-            _wreckService = wreckService;
-            _explosionService = explosionService;
+            _unitWreckService = unitWreckService;
+            _unitExplosionService = unitExplosionService;
             _context = context;
         }
 
@@ -200,11 +200,11 @@ namespace EmpireAtWar.Ship
             if (playDeathEffects && gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(ShipType);
-                _explosionService.Spawn(explosionHullRenderers);
+                _unitExplosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
                 if (Data.Wreck != null)
                 {
-                    _wreckService.Spawn(Data.Wreck, transform, _owner, Data.DestroyDelay);
+                    _unitWreckService.Spawn(Data.Wreck, transform, _owner, Data.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, Data.DestroyDelay);

@@ -113,6 +113,12 @@
   - **Status**: sections 1–4 implemented; Unity compile clean; asset values, GUIDs and Addressables entry verified.
   - **Remaining**: manual lock/release, zoom/invert/rebind and cinematic acceptance; open `MainMenuScene` has unsaved changes. No automated tests run.
 
+- [ ] **Battle startup sequence (state/speed notifiers, async map, gated systems)**
+  - **Plan**: [[TODOs/Refactoring/Battle_Startup_Sequence_Plan|Battle Startup Sequence Plan]]
+  - **Rule**: systems gate themselves by observing `BattleState`; never via Zenject order, `LazyInject`, or `Time.timeScale`.
+  - **Status**: 2026-10-04 phases 1–4 implemented; Unity compile clean, CoreGameUi prefab re-keyed and read back. No Play Mode or automated tests run.
+  - **Remaining**: Play Mode acceptance (fog, camera drift, hitch, Zenject graph, Esc during loading, pause/speed/menu/end/exit); fader follow-up.
+
 ### Tooling
 
 - [ ] **Add Jenkins GitHub draft releases**

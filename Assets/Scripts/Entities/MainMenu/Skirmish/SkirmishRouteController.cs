@@ -29,13 +29,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IGameCommand gameCommand,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             SkirmishModel model, TeamColorPalette teamColorPalette) : base(uiService, cancelRouter)
         {
             _teamColorPalette = teamColorPalette;
             _gameCommand = gameCommand;
             _model = model;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void LateDispose()

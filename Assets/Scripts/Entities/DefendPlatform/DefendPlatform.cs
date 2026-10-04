@@ -15,8 +15,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
     public class DefendPlatform : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
         private IHealthComponent _healthComponent;
-        private IUnitExplosionService _explosionService;
-        private IUnitWreckService _wreckService;
+        private IUnitExplosionService _unitExplosionService;
+        private IUnitWreckService _unitWreckService;
         private ILayerService _layerService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
@@ -35,8 +35,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         [Inject]
         private void Construct(
             IHealthComponent healthComponent,
-            IUnitWreckService wreckService,
-            IUnitExplosionService explosionService,
+            IUnitWreckService unitWreckService,
+            IUnitExplosionService unitExplosionService,
             ILayerService layerService,
             List<IMonoComponent> monoComponents,
             GameObjectContext context,
@@ -46,8 +46,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _healthComponent = healthComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
-            _wreckService = wreckService;
-            _explosionService = explosionService;
+            _unitWreckService = unitWreckService;
+            _unitExplosionService = unitExplosionService;
             _context = context;
             _owner = owner;
             _layerService = layerService;
@@ -76,11 +76,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
                 OnRelease?.Invoke();
                 EntityComponentData componentData = Data.ComponentData;
-                _explosionService.Spawn(explosionHullRenderers);
+                _unitExplosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the platform entity is destroyed.
                 if (Data.Wreck != null)
                 {
-                    _wreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
+                    _unitWreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);

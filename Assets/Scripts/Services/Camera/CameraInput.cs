@@ -11,7 +11,7 @@ namespace EmpireAtWar.Services.Camera
         private const float EDGE_SCROLL_THICKNESS = 16f;
         private const float MAX_PAN_DELTA = 10f;
 
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly ICameraPreferences _preferences;
 
         private readonly GameInputActions.CameraActions _camera;
@@ -25,8 +25,9 @@ namespace EmpireAtWar.Services.Camera
         {
             get
             {
-                Vector2 direction = _preferences.EdgeScrolling
-                    ? GetEdgeScrollDirection(_pointer.Position)
+                // Before the first pointer report, or while unfocused, the position is not where the cursor is.
+                Vector2 direction = _preferences.EdgeScrolling && _pointerInput.HasPosition && Application.isFocused
+                    ? GetEdgeScrollDirection(_pointerInput.Position)
                     : Vector2.zero;
                 // Ctrl+A selects units; its A key must not also move the camera.
                 if (!_battle.SelectVisible.IsPressed() && !_battle.SelectAll.IsPressed())
@@ -38,12 +39,12 @@ namespace EmpireAtWar.Services.Camera
             }
         }
 
-        public CameraInput(IPointerInput pointer, ICameraPreferences preferences, InputActionsProvider provider)
+        public CameraInput(IPointerInput pointerInput, ICameraPreferences preferences, InputActionsProvider provider)
         {
             _preferences = preferences;
             _camera = provider.Actions.Camera;
             _battle = provider.Actions.Battle;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
         }
 
         public void Tick()

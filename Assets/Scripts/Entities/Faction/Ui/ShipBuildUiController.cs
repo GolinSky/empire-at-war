@@ -32,12 +32,12 @@ namespace EmpireAtWar.Presenters.Factions
             IFactionService factionService,
             IPlayerFactionModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltips) : base(uiService, cancelRouter)
+            ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
             _factionService = factionService;
             _model = model;
             _routeNavigation = routeNavigation;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()
