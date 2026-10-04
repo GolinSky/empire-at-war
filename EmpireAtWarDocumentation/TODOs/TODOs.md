@@ -16,8 +16,8 @@
 
 - [ ] **Import Captor-class Carrier**
   - **Plan**: [[TODOs/Features/Captor_Import|Captor Import]]
-  - **Status**: 2026-10-04 Captor imported/registered as CIS ship `105`; 15 listed hardpoints, hull/shields/regen `3,400/800/50`, cost/build/population `3,500/30 s/2`. Art, placement, wreck, transparent icon, team colors and saved-reference checks complete. User-approved temporary Belbullab-22 complement configured/verified: 19 total, 2 active, 4/8 s timing; no Play Mode or automated tests run.
-  - **Remaining**: in-game acceptance and provisional balance review; original Vulture/bomber roles require squadron assets.
+  - **Status**: 2026-10-04 Captor imported/registered as CIS ship `105`; 15 listed hardpoints, hull/shields/regen `3,400/800/50`, cost/build/population `3,500/30 s/2`. Art, placement, wreck, transparent icon, team colors and saved-reference checks complete. User-selected complement configured/verified: 11 Vulture + 8 Droid Bomber squadron launches, 1 active per type (2 overall), 4/8 s timing; data/view mappings loaded. No Play Mode or automated tests run.
+  - **Remaining**: in-game acceptance, including Vulture/Droid Bomber launches, and provisional balance review.
 
 - [ ] **Finish Malevolence integration acceptance**
   - **Plan**: [[TODOs/Features/Malevolence_Import|Malevolence Import]]

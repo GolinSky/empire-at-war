@@ -15,7 +15,7 @@ updated: 2026-10-04
 - [x] Create Unity art, visual/gameplay/placement/wreck prefabs, transparent icon and ship/wreck/matchup data.
 - [x] Register `ShipType.Captor = 105` in CIS roster, ship/reinforcement/UI/tooltip mappings and existing Addressables View/Data groups.
 - [x] Reload saved assets; verify references, dimensions, attachment hierarchy, owned team colors and post-save import/Console state.
-- [x] Configure user-approved temporary Belbullab-22 launches: `19` total, maximum `2` active, first launch `4 s`, interval `8 s`; saved data and bindings verified.
+- [x] Replace temporary Belbullab-22 launches with user-selected Vulture/Droid Bomber complement: `11` Vulture + `8` Droid Bomber total squadron launches, `1` active per type (`2` overall), first launch `4 s`, interval `8 s`; saved data, squadron mappings and bindings verified.
 - [ ] In-game movement, weapons, hangar, shield, placement and wreck acceptance; provisional balance review. No Play Mode or automated tests run.
 
 ## Important Values
@@ -23,7 +23,7 @@ updated: 2026-10-04
 - Source Tech `2`; build requirement Level `3+` → project roster AvailableLevel `3`. No distinct source Tech 5 variant registered.
 - Systems total **15**, matching the supplied list: `2` turbolasers + `6` lasers + `2` ions + shield + `3` engines + hangar. Supplied total `14` is inconsistent.
 - Source complement: Tech 2 `11` Vulture + `8` Droid Bomber; Tech 5 `9` Vulture + `6` Tri-Fighter + `4` Hyena Bomber.
-- User approved temporary Belbullab-22 (`SquadronType = 100`): one bay, `Reserve = 19` total battle launches, `MaxActive = 2`; initial delay `4 s`, interval `8 s`. Original Vulture/bomber roles remain pending their squadron assets.
+- 2026-10-04 user selected original roles after both assets were imported: Vulture (`SquadronType = 102`) `Reserve = 11`, Droid Bomber (`101`) `Reserve = 8`; two bays, `MaxActive = 1` each (`2` overall). Initial delay `4 s`, shared launch interval `8 s`; capacities/timing are project choices. Reserves count total battle launches, including the first active squadron.
 - Component/hangar hardpoint/launch transform are bound. Roster description and converted package reflect the configured complement; saved Unity readback verified type/counts/timing.
 - Existing `BoostWeaponPower` supplies Power to Weapons. Original shield/engine tradeoffs and Victory/Frigate armor/shield types are not represented separately by current ship data.
 - Provisional: size `65.293 × 44.256 × 140` units; speed `7 units/s`, yaw/acceleration `5`; radius `85`, height `−118`; max count `20`.
@@ -56,6 +56,6 @@ updated: 2026-10-04
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/SeparatistShips/Captor/`.
 - Prefabs: `Assets/Prefabs/Models/Ships/Captor{,ShipView}.prefab`; `Assets/Prefabs/Models/Wrecks/CaptorWreckView.prefab`; `Assets/Prefabs/Ui/Reinforcement/CaptorReinforcementView.prefab`.
 - Data: `Assets/Settings/Data/Ship/CaptorShipData.asset`, `Ship/Wreck/CaptorWreckData.asset`, `Tooltip/Matchups/CaptorMatchups.asset`; icon: `Assets/Art/Textures/Ui/Icons/ShipIcon/CaptorIcon.png`.
-- Evidence: `Temp/CaptorImport/{report,verification}.json`, copied into converted package.
+- Evidence: `Temp/CaptorImport/{report,verification}.json`, copied into converted package. Subsequent complement readback: `Temp/VultureImport/captor-complement.json` → `Carrier-Converted/captor-complement.json`; both data/view mappings resolve.
 - Source stats: user-supplied [RaW Captor-class Carrier](https://republicatwar.wiki.gg/wiki/Captor-class_Carrier); wiki fetch returned `403`, no independent live verification.
 - Credits: model `Evillejedi`; texture `Evillejedi`, modified by `Nawrocki`; rig `Nomada_Firefox`. Pack README requests contact before public-mod use.
