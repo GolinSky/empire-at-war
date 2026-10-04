@@ -50,13 +50,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             }
         }
 
-        public void SetState(SuperWeaponType type, SuperWeaponState state)
+        public void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire)
         {
-            if (state == SuperWeaponState.Ready) _readyWeapons.Add(type);
+            if (canFire) _readyWeapons.Add(type);
             else _readyWeapons.Remove(type);
             readyIndicator.SetActive(_readyWeapons.Count > 0);
             foreach (SuperWeaponButton button in buttons)
-                if (button.WeaponType == type) button.SetState(state);
+                if (button.WeaponType == type) button.SetState(state, canFire);
         }
 
         public void SetPending(SuperWeaponType? type)

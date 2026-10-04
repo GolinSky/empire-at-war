@@ -15,6 +15,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         [SerializeField] private SuperWeaponType weaponType;
         private SuperWeaponState _state;
+        private bool _isCoolingDown;
 
         private bool _pending;
 
@@ -26,10 +27,11 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         public void Dispose() => button.onClick.RemoveListener(HandleClick);
 
-        public void SetState(SuperWeaponState state)
+        public void SetState(SuperWeaponState state, bool canFire)
         {
             _state = state;
-            button.interactable = state == SuperWeaponState.Ready;
+            _isCoolingDown = state == SuperWeaponState.Ready && !canFire;
+            button.interactable = canFire;
             contentGroup.alpha = state == SuperWeaponState.Unavailable ? 0.35f : 1f;
             RenderState();
         }
@@ -43,16 +45,16 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         public void SetRemaining(float seconds)
         {
-            if ((_state == SuperWeaponState.Charging || _state == SuperWeaponState.Cooldown) && !_pending)
+            if ((_state == SuperWeaponState.Charging || _isCoolingDown) && !_pending)
                 stateText.text = $"{(int)seconds / 60:00}:{(int)seconds % 60:00}";
         }
 
         private void RenderState()
         {
-            stateText.text = _pending ? "TARGETING" : _state.ToString().ToUpperInvariant();
+            stateText.text = _pending ? "TARGETING" : _isCoolingDown ? "COOLDOWN" : _state.ToString().ToUpperInvariant();
             stateText.color = _pending || _state == SuperWeaponState.Charging
                 ? new Color32(243, 182, 77, 255)
-                : _state == SuperWeaponState.Cooldown ? new Color32(214, 92, 76, 255)
+                : _isCoolingDown ? new Color32(214, 92, 76, 255)
                 : new Color32(54, 200, 243, 255);
             background.OutlineColor = _pending ? new Color32(243, 182, 77, 255)
                 : _state == SuperWeaponState.Ready ? new Color32(54, 200, 243, 255)

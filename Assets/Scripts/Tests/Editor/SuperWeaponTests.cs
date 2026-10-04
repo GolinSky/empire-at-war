@@ -26,17 +26,30 @@ namespace EmpireAtWar.Tests.Editor
             model.CompleteCharging(SuperWeaponType.IonCannon);
             Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
             model.Consume(SuperWeaponType.IonCannon);
-            Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
-            model.Tick(SuperWeaponModel.COOLDOWN_DURATION - 1f);
-            Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.False);
-            model.Tick(1f);
 
             Assert.That(model.CanPurchase(SuperWeaponType.IonCannon), Is.True);
             Assert.That(states, Is.EqualTo(new[]
             {
-                SuperWeaponState.Charging, SuperWeaponState.Ready, SuperWeaponState.Cooldown,
-                SuperWeaponState.Unavailable
+                SuperWeaponState.Charging, SuperWeaponState.Ready, SuperWeaponState.Unavailable
             }));
+        }
+
+        [Test]
+        public void Model_CooldownBlocksFiringButNotRebuilding()
+        {
+            SuperWeaponModel model = new SuperWeaponModel();
+            model.StartCharging(SuperWeaponType.IonCannon);
+            model.CompleteCharging(SuperWeaponType.IonCannon);
+            model.Consume(SuperWeaponType.IonCannon);
+
+            model.StartCharging(SuperWeaponType.IonCannon);
+            model.CompleteCharging(SuperWeaponType.IonCannon);
+            model.Tick(SuperWeaponModel.COOLDOWN_DURATION - 1f);
+            Assert.That(model.CanFire(SuperWeaponType.IonCannon), Is.False);
+            Assert.Throws<InvalidOperationException>(() => model.Consume(SuperWeaponType.IonCannon));
+
+            model.Tick(1f);
+            Assert.That(model.CanFire(SuperWeaponType.IonCannon), Is.True);
         }
 
         [Test]

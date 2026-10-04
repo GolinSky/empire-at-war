@@ -65,7 +65,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<SuperWeaponType, FactionData> option in _factionsData.SuperWeaponFactionData)
             {
                 SuperWeaponState state = _model.GetState(option.Key);
-                if (state == SuperWeaponState.Ready)
+                if (_model.CanFire(option.Key))
                 {
                     TryFire(option.Key);
                 }

@@ -5,6 +5,5 @@ namespace EmpireAtWar.Entities.SuperWeapons
         Unavailable = 0,
         Charging = 1,
         Ready = 2,
-        Cooldown = 3,
     }
 }

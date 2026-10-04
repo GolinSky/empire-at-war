@@ -14,7 +14,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         void Dispose();
 
-        void SetState(SuperWeaponType type, SuperWeaponState state);
+        void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire);
 
         void SetPending(SuperWeaponType? type);
 
