@@ -30,7 +30,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _lastAimPoint = ResolveAimPoint(_start, target.position + aimOffset);
             _arcNormal = Random.onUnitSphere;
             _startTime = Time.time;
-            _travelTime = Vector3.Distance(_start, _lastAimPoint) / profile.ProjectileSpeed;
+            _travelTime = GetTravelTime(_start, _lastAimPoint, profile.ProjectileSpeed);
             _isFlying = true;
             transform.position = _start;
 

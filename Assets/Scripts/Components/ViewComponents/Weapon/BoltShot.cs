@@ -35,7 +35,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _aimOffset = aimOffset;
             _start = start;
             _lastAimPoint = ResolveAimPoint(start, target.position + aimOffset);
-            float travelTime = Vector3.Distance(start, _lastAimPoint) / profile.ProjectileSpeed;
+            float travelTime = GetTravelTime(start, _lastAimPoint, profile.ProjectileSpeed);
             _arrivalTime = Time.time + travelTime;
             _isFlying = true;
             Vector3 direction = _lastAimPoint - start;

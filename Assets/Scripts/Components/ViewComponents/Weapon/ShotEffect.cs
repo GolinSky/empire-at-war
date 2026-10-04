@@ -74,6 +74,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _impactPresenter.GetImpactPosition(_impactTarget, _impactDamageType, origin, target);
         }
 
+        /// <summary>
+        /// Flight time from the horizontal distance only, so shots between ships on different heights
+        /// fly faster and take as long as shots between ships on the same height.
+        /// </summary>
+        protected static float GetTravelTime(Vector3 start, Vector3 end, float speed)
+        {
+            Vector2 horizontal = new Vector2(end.x - start.x, end.z - start.z);
+            return horizontal.magnitude / speed;
+        }
+
         /// <summary>Stops the visual early if missile defense shoots this shot down.</summary>
         public void TrackInterception(IncomingMissile missile)
         {
