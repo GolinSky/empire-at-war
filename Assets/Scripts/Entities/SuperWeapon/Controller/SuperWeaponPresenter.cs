@@ -111,7 +111,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _abilities.TargetingChanged += HandleAbilityTargetingChanged;
 
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
-                _view.SetState(type, _model.GetState(type));
+                _view.SetState(type, _model.GetState(type), _model.CanFire(type));
             RenderPending();
         }
 
@@ -157,8 +157,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                         new TooltipStat(label: "Area radius", current: profile.AreaRadius),
                         new TooltipStat(label: "Stun duration (s)", current: profile.StunDuration)
                     }, status: state == SuperWeaponState.Charging ? $"Construction: {remaining:0.#} s remaining"
+                        : state == SuperWeaponState.Ready && !_model.CanFire(type) ? $"Cooldown: can fire in {_model.GetCooldownRemaining(type):0.#} s"
                         : state == SuperWeaponState.Ready ? "Ready: click to select a target"
-                        : state == SuperWeaponState.Cooldown ? $"Cooldown: {_model.GetCooldownRemaining(type):0.#} s remaining"
                         : "Unavailable: build a new charge at the station");
             });
         }
@@ -172,7 +172,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 return;
             }
 
-            if (_model.GetState(type) != SuperWeaponState.Ready) return;
+            if (!_model.CanFire(type)) return;
             _unitTargeting.Cancel();
             _abilities.CancelTargeting();
             // The dropdown only picks the weapon; the target is chosen on the battlefield.
@@ -193,8 +193,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandleStateChanged(SuperWeaponType type, SuperWeaponState state)
         {
-            _view.SetState(type, state);
-            if (state != SuperWeaponState.Ready && _targeting.Pending == type) _targeting.Cancel();
+            _view.SetState(type, state, _model.CanFire(type));
+            if (!_model.CanFire(type) && _targeting.Pending == type) _targeting.Cancel();
         }
 
         private void HandleUnitTargetingChanged()
@@ -258,7 +258,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request)
                     _view.SetRemaining(request.Key, queue.RemainingBuildTime);
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
-                if (_model.GetState(type) == SuperWeaponState.Cooldown)
+                if (_model.GetState(type) == SuperWeaponState.Ready && !_model.CanFire(type))
                     _view.SetRemaining(type, _model.GetCooldownRemaining(type));
         }
     }

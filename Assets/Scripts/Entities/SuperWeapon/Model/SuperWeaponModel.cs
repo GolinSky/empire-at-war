@@ -6,7 +6,8 @@ namespace EmpireAtWar.Entities.SuperWeapons
 {
     /// <summary>
     /// Superweapon charges of one faction. One purchase is one shot: a weapon charges, becomes ready,
-    /// fires once, cools down for <see cref="COOLDOWN_DURATION"/> seconds and must be bought again.
+    /// fires once and must be bought again. After firing, that weapon type cannot fire again for
+    /// <see cref="COOLDOWN_DURATION"/> seconds, but a new charge can be built meanwhile.
     /// </summary>
     public sealed class SuperWeaponModel : PureModel, ISuperWeaponModelObserver
     {
@@ -30,6 +31,9 @@ namespace EmpireAtWar.Entities.SuperWeapons
 
         public bool CanPurchase(SuperWeaponType type) => GetState(type) == SuperWeaponState.Unavailable;
 
+        public bool CanFire(SuperWeaponType type) =>
+            GetState(type) == SuperWeaponState.Ready && !_cooldownLeft.ContainsKey(type);
+
         public void StartCharging(SuperWeaponType type) =>
             Transition(type, SuperWeaponState.Unavailable, SuperWeaponState.Charging);
 
@@ -41,7 +45,12 @@ namespace EmpireAtWar.Entities.SuperWeapons
 
         public void Consume(SuperWeaponType type)
         {
-            Transition(type, SuperWeaponState.Ready, SuperWeaponState.Cooldown);
+            if (_cooldownLeft.ContainsKey(type))
+            {
+                throw new InvalidOperationException($"{type} is still cooling down.");
+            }
+
+            Transition(type, SuperWeaponState.Ready, SuperWeaponState.Unavailable);
             _cooldownLeft[type] = COOLDOWN_DURATION;
         }
 
@@ -59,7 +68,8 @@ namespace EmpireAtWar.Entities.SuperWeapons
                 }
 
                 _cooldownLeft.Remove(type);
-                Transition(type, SuperWeaponState.Cooldown, SuperWeaponState.Unavailable);
+                // Re-announce the unchanged state so a charge that waited out the cooldown becomes fireable.
+                OnStateChanged?.Invoke(type, GetState(type));
             }
         }
 
