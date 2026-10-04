@@ -4,11 +4,7 @@ Shader "EmpireAtWar/Ship Shield"
     {
         [HDR] _ShieldColor ("Color", Color) = (0.15, 0.65, 1, 0.65)
         _Brightness ("Brightness", Float) = 2
-        _VisibilityRadius ("Surface Visibility Radius", Float) = 4
         _FadeDuration ("Fade Duration", Float) = 1.2
-        _WaveSpeed ("Surface Wave Speed", Float) = 6
-        _WaveWidth ("Wave Width", Float) = 0.8
-        _DisplacementStrength ("Vertex Displacement", Float) = 0.15
     }
     SubShader
     {
@@ -28,12 +24,16 @@ Shader "EmpireAtWar/Ship Shield"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
             #define MAX_IMPACTS 8
+            // Ring width as a fraction of the impact radius.
+            #define WAVE_WIDTH_RATIO 0.25
             CBUFFER_START(UnityPerMaterial)
                 half4 _ShieldColor;
-                float _Brightness, _VisibilityRadius, _FadeDuration;
-                float _WaveSpeed, _WaveWidth, _DisplacementStrength;
+                float _Brightness, _FadeDuration;
             CBUFFER_END
             float4 _Impacts[MAX_IMPACTS];
+            // World-unit radius per impact, set from the hit's damage, so equal hits look equal on any shield size.
+            float _ImpactRadii[MAX_IMPACTS];
+            float _DisplacementRatio, _MaxDisplacement;
             int _ImpactCount;
             float _ShieldTime;
             float3 _ShieldAxes;
@@ -63,11 +63,13 @@ Shader "EmpireAtWar/Ship Shield"
                 float age = max(0.0, _ShieldTime - _Impacts[index].w);
                 float duration = max(0.001, _FadeDuration);
                 fade = (1.0 - smoothstep(0.0, duration, age)) * smoothstep(0.0, min(0.06, duration * 0.1), age);
+                float radius = max(0.001, _ImpactRadii[index]);
                 float distance = SurfaceDistance(_Impacts[index].xyz, surface);
-                patch = 1.0 - smoothstep(0.0, max(0.001, _VisibilityRadius), distance);
-                float phase = (distance - age * _WaveSpeed) / max(0.001, _WaveWidth);
+                patch = 1.0 - smoothstep(0.0, radius, distance);
+                // The ring reaches the patch edge as the impact fades out, and never travels beyond it.
+                float phase = (distance - age * radius / duration) / (radius * WAVE_WIDTH_RATIO);
                 float envelope = 1.0 - smoothstep(0.0, 1.0, abs(phase));
-                wave = sin(phase * TWO_PI) * envelope;
+                wave = sin(phase * TWO_PI) * envelope * patch;
             }
 
             Varyings Vert(Attributes input)
@@ -79,10 +81,10 @@ Shader "EmpireAtWar/Ship Shield"
                 {
                     float patch, wave, fade;
                     EvaluateImpact(output.surfaceOS, i, patch, wave, fade);
-                    displacement += wave * fade;
+                    displacement += wave * fade * _ImpactRadii[i] * _DisplacementRatio;
                 }
                 float3 positionWS = TransformObjectToWorld(input.positionOS);
-                positionWS += TransformObjectToWorldNormal(input.normalOS) * clamp(displacement, -1.0, 1.0) * _DisplacementStrength;
+                positionWS += TransformObjectToWorldNormal(input.normalOS) * clamp(displacement, -_MaxDisplacement, _MaxDisplacement);
                 output.positionCS = TransformWorldToHClip(positionWS);
                 return output;
             }

@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 throw new InvalidOperationException($"{nameof(ProtonBeamAbility)} requires an {nameof(IHealthFacade)} on the target.");
 
             _view = Object.Instantiate(_settings.ViewPrefab);
-            _view.PrepareImpact(_impactPresenter, target.HealthModel, _settings.DamageType, 1.5f, true);
+            _view.PrepareImpact(_impactPresenter, target.HealthModel, _settings.DamageType, _settings.Damage, 1.5f, true);
             _view.PlayBeam(caster.Entity.GetFacade<IEntityTransformFacade>().Transform, target.GetFacade<IEntityTransformFacade>().Transform, definition.Duration);
             HardPointModel[] hardPoints = target.HealthModel.HardPointModels;
             for (int i = 0; i < hardPoints.Length; i++)

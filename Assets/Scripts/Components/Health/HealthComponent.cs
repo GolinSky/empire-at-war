@@ -226,10 +226,10 @@ namespace EmpireAtWar.Components.Ship.Health
                 : target;
         }
 
-        public bool ShowShieldImpact(Vector3 position)
+        public bool ShowShieldImpact(Vector3 position, float damage)
         {
             if (_shield == null) return false;
-            if (!_isReleased) _shield.ShowImpact(position);
+            if (!_isReleased) _shield.ShowImpact(position, damage);
             return true;
         }
     }

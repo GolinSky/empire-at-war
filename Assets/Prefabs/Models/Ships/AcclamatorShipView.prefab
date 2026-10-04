@@ -104,13 +104,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.Shield
   shieldRenderer: {fileID: 2693757955960993265}
-  visibilityRadius: 4.0622873
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 8.124575
-  waveWidth: 1.0155718
-  displacementStrength: 0.26111022
 --- !u!1 &2331451680263709618
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,9 +377,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 9
-  spawnDestroyedExplosion: 1
 --- !u!1 &4568354675040148321
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,9 +509,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 7
-  spawnDestroyedExplosion: 1
 --- !u!1 &5645895497294035997
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,9 +839,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675872bfa3914db5aaf6d0f8c8d65ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Movement.ShipMoveComponent
-  hyperSpaceEase: 32
   lineRenderer: {fileID: 4947656017401951597}
   bodyTransform: {fileID: 4834521443083230755}
+  hyperSpaceEase: 32
   logNavigationDecisions: 0
 --- !u!114 &3855780891857059193
 MonoBehaviour:
@@ -859,9 +855,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
-  selectionType: 3
   selectedCanvas: {fileID: 5010539976143032332}
   selectedImage: {fileID: 969739677928161473}
+  selectionType: 3
 --- !u!114 &3845683113570912092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,6 +882,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldView: {fileID: 5343788978132841973}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: -0.000017166138, y: 2.6178102, z: 5.244459}
+    m_Extent: {x: 20.959934, y: 7.9174824, z: 34.93815}
   <ShipUnits>k__BackingField:
   - {fileID: 8372322827020108633}
   - {fileID: 2237375456122784398}
@@ -897,12 +899,6 @@ MonoBehaviour:
   - {fileID: 1014526724357004300}
   - {fileID: 2493734567307619460}
   - {fileID: 2235957021269889044}
-  shieldView: {fileID: 5343788978132841973}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: -0.000017166138, y: 2.6178102, z: 5.244459}
-    m_Extent: {x: 20.959934, y: 7.9174824, z: 34.93815}
 --- !u!114 &6930281553757434045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1043,9 +1039,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 8
-  spawnDestroyedExplosion: 1
 --- !u!1001 &895684414653839516
 PrefabInstance:
   m_ObjectHideFlags: 0

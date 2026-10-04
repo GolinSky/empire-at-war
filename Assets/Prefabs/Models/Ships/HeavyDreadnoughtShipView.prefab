@@ -9934,9 +9934,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 7
-  spawnDestroyedExplosion: 1
 --- !u!1 &3352503884825458372
 GameObject:
   m_ObjectHideFlags: 0
@@ -10216,9 +10216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675872bfa3914db5aaf6d0f8c8d65ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Movement.ShipMoveComponent
-  hyperSpaceEase: 32
   lineRenderer: {fileID: 2456312369971648946}
   bodyTransform: {fileID: 4163113446144390163}
+  hyperSpaceEase: 32
   logNavigationDecisions: 0
 --- !u!114 &180094505895038420
 MonoBehaviour:
@@ -10232,9 +10232,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
-  selectionType: 3
   selectedCanvas: {fileID: 7103284528074192606}
   selectedImage: {fileID: 413929366897955647}
+  selectionType: 3
 --- !u!114 &613795971216639880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10259,6 +10259,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldView: {fileID: 8167182053152049854}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 20.111559, y: 10.934355, z: 50.00665}
+    m_Extent: {x: 26.168758, y: 17.334885, z: 86.36032}
   <ShipUnits>k__BackingField:
   - {fileID: 4559992297672358850}
   - {fileID: 3088172430391426635}
@@ -10268,12 +10274,6 @@ MonoBehaviour:
   - {fileID: 3529570424234396923}
   - {fileID: 7529204018236747110}
   - {fileID: 1134472641075358096}
-  shieldView: {fileID: 8167182053152049854}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 20.111559, y: 10.934355, z: 50.00665}
-    m_Extent: {x: 26.168758, y: 17.334885, z: 86.36032}
 --- !u!114 &7957814559999180952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10692,9 +10692,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 6
-  spawnDestroyedExplosion: 1
 --- !u!1 &5325041904147737092
 GameObject:
   m_ObjectHideFlags: 0
@@ -20782,13 +20782,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.Shield
   shieldRenderer: {fileID: 1751455956592963896}
-  visibilityRadius: 5.8129997
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 11.625999
-  waveWidth: 1.4532499
-  displacementStrength: 0.1667997
 --- !u!1001 &1978295048751822890
 PrefabInstance:
   m_ObjectHideFlags: 0

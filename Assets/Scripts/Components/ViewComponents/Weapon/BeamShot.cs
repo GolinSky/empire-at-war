@@ -24,20 +24,26 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private bool _isHitPlaying;
 
         /// <summary>Plays the beam outside the shot pool, e.g. from an ability.</summary>
-        public void PlayBeam(Transform muzzle, Transform target, float holdDuration)
+        public void PlayBeam(Transform muzzle, Transform target, float holdDuration, WeaponProfile profile)
         {
             // Ability damage is resolved by its presenter immediately after this call.
             CaptureImpact();
+            ApplyProfile(profile);
             StartBeam(muzzle, target, Vector3.zero, holdDuration);
         }
 
         protected override float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
         {
+            ApplyProfile(profile);
+            StartBeam(muzzle, target, aimOffset, holdDuration);
+            return growthDuration;
+        }
+
+        private void ApplyProfile(WeaponProfile profile)
+        {
             beam.startColor = profile.Color;
             beam.endColor = profile.Color;
             beam.widthMultiplier = profile.Size.x;
-            StartBeam(muzzle, target, aimOffset, holdDuration);
-            return growthDuration;
         }
 
         private void StartBeam(Transform muzzle, Transform target, Vector3 aimOffset, float hold)

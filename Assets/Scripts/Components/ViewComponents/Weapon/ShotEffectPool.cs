@@ -49,7 +49,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
             Transform targetTransform = target.Transform;
             effect = Acquire();
-            effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType,
+            effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType, _profile.Damage,
                 GetImpactSize(attackData.TargetClass), isHit);
             float duration = effect.Fire(_owner, targetTransform, aimOffset, _profile);
             _active.Add(effect, sequenceGeneration);

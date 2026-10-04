@@ -39,10 +39,10 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public void Play(IHealthModelObserver target, ImpactSurface surface, Vector3 position,
-            Vector3 direction, float size)
+            Vector3 direction, float size, float damage)
         {
             if (surface == ImpactSurface.Shield && target is IShieldTarget shield &&
-                shield.ShowShieldImpact(position)) return;
+                shield.ShowShieldImpact(position, damage)) return;
             Play(surface, position, direction, size);
         }
     }

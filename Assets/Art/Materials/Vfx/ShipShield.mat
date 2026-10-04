@@ -26,11 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Brightness: 2
-    - _DisplacementStrength: 0.15
     - _FadeDuration: 1.2
-    - _VisibilityRadius: 4
-    - _WaveSpeed: 6
-    - _WaveWidth: 0.8
     m_Colors:
     - _ShieldColor: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   m_BuildTextureStacks: []

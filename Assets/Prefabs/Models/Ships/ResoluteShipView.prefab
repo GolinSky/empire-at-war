@@ -568,12 +568,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.Shield
   shieldRenderer: {fileID: 676955951209049671}
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
-  visibilityRadius: 66.825066
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 15.651968
-  waveWidth: 1.956496
-  displacementStrength: 0.3845795
 --- !u!1 &3681717120965251219
 GameObject:
   m_ObjectHideFlags: 0

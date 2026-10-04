@@ -24,10 +24,6 @@ namespace EmpireAtWar.Editor.CaptureSites
         private const string SHIELD_MESH_PATH = "Assets/Art/Models/ShieldSurface.asset";
         private const string SHIELD_MATERIAL_PATH = "Assets/Art/Materials/Vfx/ShipShield.mat";
 
-        private const float SHIELD_VISIBILITY_RADIUS = 6f;
-        private const float SHIELD_WAVE_SPEED = 10f;
-        private const float SHIELD_WAVE_WIDTH = 1.2f;
-        private const float SHIELD_DISPLACEMENT = 0.25f;
         private const float SELECTION_SCALE = 2.1f;
         private const float INCOME = 20f;
         private const float HULL = 2500f;
@@ -157,10 +153,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             Shield shield = surface.AddComponent<Shield>();
             SerializedObject serializedShield = new SerializedObject(shield);
             serializedShield.FindProperty("shieldRenderer").objectReferenceValue = renderer;
-            serializedShield.FindProperty("visibilityRadius").floatValue = SHIELD_VISIBILITY_RADIUS;
-            serializedShield.FindProperty("waveSpeed").floatValue = SHIELD_WAVE_SPEED;
-            serializedShield.FindProperty("waveWidth").floatValue = SHIELD_WAVE_WIDTH;
-            serializedShield.FindProperty("displacementStrength").floatValue = SHIELD_DISPLACEMENT;
             serializedShield.ApplyModifiedPropertiesWithoutUndo();
             return shield;
         }

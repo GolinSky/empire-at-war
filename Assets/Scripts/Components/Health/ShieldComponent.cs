@@ -36,9 +36,9 @@ namespace EmpireAtWar.Components.Ship.Health
             return _active ? _view.GetSurfacePosition(origin, target) : target;
         }
 
-        public void ShowImpact(Vector3 position)
+        public void ShowImpact(Vector3 position, float damage)
         {
-            if (_active) _view.ShowImpact(position);
+            if (_active) _view.ShowImpact(position, damage);
         }
 
         private void UpdateState()
