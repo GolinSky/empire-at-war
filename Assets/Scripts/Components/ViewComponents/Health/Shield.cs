@@ -25,9 +25,19 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField, Min(0f)] private float brightness = 2f;
         [SerializeField, Min(0.01f)] private float fadeDuration = 1.2f;
 
+        [Tooltip("Baked by ShieldHullBaker: local planes of the convex shell around the hull, inside where dot(xyz, p) <= w.")]
+        [SerializeField] private Vector4[] hullPlanes;
+
+        private Bounds _meshBounds;
+
         private int _impactCount;
 
         private bool _active;
+
+        private void Awake()
+        {
+            _meshBounds = shieldRenderer.localBounds;
+        }
 
         public void SetActive(bool active)
         {
@@ -41,30 +51,31 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public Vector3 GetSurfacePosition(Vector3 origin, Vector3 target)
         {
-            // The shared mesh is a unit sphere; its transform supplies the ellipsoid axes.
+            // Clips the shot segment against every shell plane; the segment enters the shell at the latest entry.
             Transform surface = shieldRenderer.transform;
             Vector3 localOrigin = surface.InverseTransformPoint(origin);
-            Vector3 localTarget = surface.InverseTransformPoint(target);
-            Vector3 direction = localTarget - localOrigin;
-            float lengthSquared = direction.sqrMagnitude;
-            if (lengthSquared == 0f) return target;
+            Vector3 direction = surface.InverseTransformPoint(target) - localOrigin;
+            float enter = float.NegativeInfinity;
+            float exit = float.PositiveInfinity;
+            for (int i = 0; i < hullPlanes.Length; i++)
+            {
+                Vector3 normal = hullPlanes[i];
+                float approach = Vector3.Dot(normal, direction);
+                float gap = hullPlanes[i].w - Vector3.Dot(normal, localOrigin);
+                if (approach < 0f) enter = Mathf.Max(enter, gap / approach);
+                else if (approach > 0f) exit = Mathf.Min(exit, gap / approach);
+                else if (gap < 0f) return target;
+            }
 
-            float projection = Vector3.Dot(localOrigin, direction);
-            float discriminant = projection * projection - lengthSquared * (localOrigin.sqrMagnitude - 1f);
-            if (discriminant < 0f) return target;
-
-            float root = Mathf.Sqrt(discriminant);
-            float distance = (-projection - root) / lengthSquared;
-            if (distance < 0f) distance = (-projection + root) / lengthSquared;
             // An origin inside the shield must not shoot through the hull to its far surface.
-            if (distance < 0f || distance > 1f) return target;
-            return surface.TransformPoint(localOrigin + direction * distance);
+            if (enter > exit || enter < 0f || enter > 1f) return target;
+            return surface.TransformPoint(localOrigin + direction * enter);
         }
 
         public void ShowImpact(Vector3 position, float damage)
         {
             if (!_active) return;
-            Vector3 local = shieldRenderer.transform.InverseTransformPoint(position).normalized;
+            Vector3 local = shieldRenderer.transform.InverseTransformPoint(position);
             if (_impactCount == MAX_IMPACTS)
             {
                 System.Array.Copy(_impacts, 1, _impacts, 0, MAX_IMPACTS - 1);
@@ -116,11 +127,11 @@ namespace EmpireAtWar.ViewComponents.Health
             _properties.SetFloat("_DisplacementRatio", DISPLACEMENT_RATIO);
             _properties.SetFloat("_MaxDisplacement", maxDisplacement);
             shieldRenderer.SetPropertyBlock(_properties);
-            // GPU displacement needs bounds beyond the undeformed unit sphere.
-            shieldRenderer.localBounds = new Bounds(Vector3.zero, new Vector3(
-                2f + 2f * maxDisplacement / axes.x,
-                2f + 2f * maxDisplacement / axes.y,
-                2f + 2f * maxDisplacement / axes.z));
+            // GPU displacement needs bounds beyond the undeformed shell.
+            shieldRenderer.localBounds = new Bounds(_meshBounds.center, _meshBounds.size + new Vector3(
+                2f * maxDisplacement / axes.x,
+                2f * maxDisplacement / axes.y,
+                2f * maxDisplacement / axes.z));
             shieldRenderer.enabled = true;
         }
     }
