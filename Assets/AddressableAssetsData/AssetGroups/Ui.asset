@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9845a4795193b0b4188a9bbbb7a3ff0e
+    m_Address: FadeUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a89611b9093e21a4a8bcf6aee7005e07
     m_Address: FactionUi
     m_ReadOnly: 0

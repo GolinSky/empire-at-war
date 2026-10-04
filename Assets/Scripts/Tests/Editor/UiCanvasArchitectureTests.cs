@@ -1,5 +1,6 @@
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.Fade;
 using EmpireAtWar.Presenters.Game;
 using EmpireAtWar.Presenters.Economy;
 using EmpireAtWar.Presenters.Reinforcement;
@@ -26,8 +27,10 @@ namespace EmpireAtWar.Tests.Editor
             "Assets/Prefabs/Ui/Reinforcement/ReinforcementUi.prefab";
         private const string SHIP_BUILD_PREFAB_PATH =
             "Assets/Prefabs/Ui/Factions/ShipBuildUi.prefab";
+        private const string FADE_PREFAB_PATH =
+            "Assets/Prefabs/Ui/Fade/FadeUi.prefab";
 
-        private const int EXPECTED_SCREEN_PREFAB_COUNT = 14;
+        private const int EXPECTED_SCREEN_PREFAB_COUNT = 18;
 
         [Test]
         public void UiScreenPrefabs_UseBoundCanvasGroupsWithoutLocalCanvases()
@@ -199,6 +202,33 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(
                     reinforcementButton.objectReferenceValue,
                     Is.SameAs(expectedButton));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void FadeUiPrefab_HasAssignedReferencesAndCoverBlocksInput()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(FADE_PREFAB_PATH);
+
+            try
+            {
+                FadeUi ui = root.GetComponent<FadeUi>();
+                Assert.That(ui, Is.InstanceOf<IFadeUi>());
+                SerializedObject serializedUi = new SerializedObject(ui);
+                Image fadeImage = (Image)serializedUi.FindProperty("fadeImage").objectReferenceValue;
+                Assert.That(fadeImage, Is.Not.Null, "FadeUi.fadeImage must be assigned in the prefab.");
+                Assert.That(fadeImage.raycastTarget, Is.True);
+
+                ui.Cover();
+
+                CanvasGroup canvasGroup = root.GetComponent<CanvasGroup>();
+                Assert.That(fadeImage.color.a, Is.EqualTo(1f));
+                Assert.That(canvasGroup.alpha, Is.EqualTo(1f));
+                Assert.That(canvasGroup.blocksRaycasts, Is.True);
             }
             finally
             {

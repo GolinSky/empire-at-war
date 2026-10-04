@@ -11,6 +11,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Controllers.Menu;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
@@ -96,6 +97,7 @@ public class SkirmishMainInstaller : MonoInstaller
             .FromSubContainerResolve()
             .ByNewGameObjectInstaller<UiInstaller>();
         Container.BindInterfacesExt<UiCancelRouter>();
+        Container.BindInterfacesTo<FadeService>().AsSingle();
         Container.Bind<FpsModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<FpsUiController>();
 

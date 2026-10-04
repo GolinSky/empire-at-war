@@ -117,7 +117,7 @@
   - **Plan**: [[TODOs/Refactoring/Battle_Startup_Sequence_Plan|Battle Startup Sequence Plan]]
   - **Rule**: systems gate themselves by observing `BattleState`; never via Zenject order, `LazyInject`, or `Time.timeScale`.
   - **Status**: 2026-10-04 phases 1–4 implemented; Unity compile clean, CoreGameUi prefab re-keyed and read back. No Play Mode or automated tests run.
-  - **Remaining**: Play Mode acceptance (fog, camera drift, hitch, Zenject graph, Esc during loading, pause/speed/menu/end/exit); fader follow-up.
+  - **Remaining**: Play Mode acceptance (fade, fog, camera drift, hitch, Zenject graph, Esc during loading, pause/speed/menu/end/exit). Fader added 2026-10-04.
 
 ### Tooling
 
