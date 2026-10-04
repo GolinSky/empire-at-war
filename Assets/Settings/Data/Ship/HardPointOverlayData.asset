@@ -39,6 +39,10 @@ MonoBehaviour:
     description: Destroying it stops fighter launches.
     hardPointType: 4
   - icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
+    displayName: Tractor Beam Mount
+    description: Destroyable tractor-beam mount. Tractor Beam is not yet operational.
+    hardPointType: 7
+  - icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
     displayName: Hull Section
     description: Structural section of the hull.
     hardPointType: 3

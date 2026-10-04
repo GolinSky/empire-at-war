@@ -21,5 +21,6 @@
         HypervelocityGun = 17,
         PlasmaCannon = 18,
         MassDriver = 19,
+        QuadTurboLaser = 20,
     }
 }

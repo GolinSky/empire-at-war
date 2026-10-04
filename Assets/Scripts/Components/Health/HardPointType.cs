@@ -9,5 +9,6 @@
         Hangar = 4,
         SupplyDock = 5,
         IonPulseCannon = 6,
+        TractorBeam = 7,
     }
 }
