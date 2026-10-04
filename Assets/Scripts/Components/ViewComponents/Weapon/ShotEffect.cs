@@ -24,6 +24,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private ImpactSurface _impactSurface;
 
         private float _impactSize;
+        private float _impactDamage;
 
         private int _leaseId;
 
@@ -41,13 +42,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
-            DamageType damageType, float size, bool isHit)
+            DamageType damageType, float damage, float size, bool isHit)
         {
             _impactPresenter = presenter;
             IsStrikecraftTarget = target.ShipClass.IsStrikecraft();
             _impactTarget = isHit ? target : null;
             _impactDamageType = damageType;
             _impactSize = size;
+            _impactDamage = damage;
             _impactPending = isHit;
             _impactCaptured = false;
             _impactSurface = ImpactSurface.None;
@@ -65,7 +67,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (!_impactPending) return;
             CaptureImpact();
             _impactPending = false;
-            _impactPresenter.Play(_impactTarget, _impactSurface, position, direction, _impactSize);
+            _impactPresenter.Play(_impactTarget, _impactSurface, position, direction, _impactSize, _impactDamage);
         }
 
         protected Vector3 ResolveAimPoint(Vector3 origin, Vector3 target)

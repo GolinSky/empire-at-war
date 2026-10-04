@@ -104,13 +104,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldRenderer: {fileID: 0}
-  visibilityRadius: 4
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 6
-  waveWidth: 0.8
-  displacementStrength: 0.15
 --- !u!1 &414979512125735457
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,9 +197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
-  selectionType: 5
   selectedCanvas: {fileID: 5914117208170854696}
   selectedImage: {fileID: 5170145729685532881}
+  selectionType: 5
 --- !u!114 &2557233241895815559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +224,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldView: {fileID: 0}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 0.0000038146973, y: -4.715844, z: 4.099245}
+    m_Extent: {x: 31.361755, y: 13.123651, z: 29.2353}
   <ShipUnits>k__BackingField:
   - {fileID: 4857334380463656886}
   - {fileID: 2159636519144197231}
@@ -236,12 +238,6 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
-  shieldView: {fileID: 0}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0.0000038146973, y: -4.715844, z: 4.099245}
-    m_Extent: {x: 31.361755, y: 13.123651, z: 29.2353}
 --- !u!114 &3350890140303717934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,9 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
-  spawnDestroyedExplosion: 1
 --- !u!1 &5251928304144284263
 GameObject:
   m_ObjectHideFlags: 0

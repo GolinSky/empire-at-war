@@ -144,7 +144,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 _audioService.PlayOneShot(_hypervelocitySource, _hypervelocitySfx.GetClip(), _hypervelocitySfx.Volume);
             ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
-                profile.ImpactSize, true);
+                profile.Weapon.Damage, profile.ImpactSize, true);
             float travelTime = shot.Fire(salvo.Origin, salvo.Target.GetFacade<IEntityTransformFacade>().Transform, Vector3.zero,
                 profile.Weapon);
             shot.RetireAfterCompletion();

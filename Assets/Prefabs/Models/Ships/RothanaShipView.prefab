@@ -104,13 +104,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.Shield
   shieldRenderer: {fileID: 842929850475730042}
-  visibilityRadius: 10.5
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 21
-  waveWidth: 2.6
-  displacementStrength: 0.5
 --- !u!1 &331501365524182880
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,9 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: 10
     <Max>k__BackingField: 170
@@ -454,9 +450,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675872bfa3914db5aaf6d0f8c8d65ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Movement.ShipMoveComponent
-  hyperSpaceEase: 32
   lineRenderer: {fileID: 404319281634142982}
   bodyTransform: {fileID: 5157933399027755616}
+  hyperSpaceEase: 32
   logNavigationDecisions: 0
 --- !u!114 &2578493503462348170
 MonoBehaviour:
@@ -470,9 +466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
-  selectionType: 3
   selectedCanvas: {fileID: 4278780966370370469}
   selectedImage: {fileID: 9190992667146447274}
+  selectionType: 3
 --- !u!114 &1489862875720502058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +493,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldView: {fileID: 8473529630921450983}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: 0, y: -0.0000019073486, z: 0}
+    m_Extent: {x: 40.64435, y: 14.738352, z: 80}
   <ShipUnits>k__BackingField:
   - {fileID: 6489407877593308187}
   - {fileID: 3980309134457433477}
@@ -519,12 +521,6 @@ MonoBehaviour:
   - {fileID: 2613206955805012499}
   - {fileID: 1223602885689360016}
   - {fileID: 26160967148296332}
-  shieldView: {fileID: 8473529630921450983}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: -0.0000019073486, z: 0}
-    m_Extent: {x: 40.64435, y: 14.738352, z: 80}
 --- !u!114 &8101683937509795361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,9 +633,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -175
     <Max>k__BackingField: 20
@@ -689,9 +685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 160
@@ -741,9 +737,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 20
-  spawnDestroyedExplosion: 1
 --- !u!1 &1225697110192464810
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,9 +784,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: 10
     <Max>k__BackingField: 170
@@ -840,9 +836,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 160
@@ -892,9 +888,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: -10
@@ -944,9 +940,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -20
     <Max>k__BackingField: 175
@@ -1078,9 +1074,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 19
-  spawnDestroyedExplosion: 1
 --- !u!1 &3542052656261247809
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,9 +1121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 18
-  spawnDestroyedExplosion: 1
 --- !u!1 &4725065064969839177
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,9 +1168,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: 10
     <Max>k__BackingField: 170
@@ -1224,9 +1220,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -20
     <Max>k__BackingField: 175
@@ -1429,9 +1425,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: -10
@@ -1481,9 +1477,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
@@ -1533,9 +1529,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
@@ -1585,9 +1581,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: -10
@@ -1637,9 +1633,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: 10
     <Max>k__BackingField: 170
@@ -1689,9 +1685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -175
     <Max>k__BackingField: 20
@@ -1741,9 +1737,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: -10
@@ -1831,9 +1827,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: 10
     <Max>k__BackingField: 170
@@ -1883,9 +1879,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
-  spawnDestroyedExplosion: 1
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: -10

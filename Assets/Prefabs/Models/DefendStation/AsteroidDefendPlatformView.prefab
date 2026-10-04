@@ -784,9 +784,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 795c30369df688d4a807b96bc7634754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
-  selectionType: 5
   selectedCanvas: {fileID: 5914117208170854696}
   selectedImage: {fileID: 5170145729685532881}
+  selectionType: 5
 --- !u!114 &2557233241895815559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -811,6 +811,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb12f863d09d46b085919f1ef65e5d17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shieldView: {fileID: 3154434721882762188}
+  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
+    type: 3}
+  ionFieldBounds:
+    m_Center: {x: -3.8036861, y: 5.636515, z: -1.5041523}
+    m_Extent: {x: 31.662195, y: 11.812478, z: 26.865204}
   <ShipUnits>k__BackingField:
   - {fileID: 4857334380463656886}
   - {fileID: 2159636519144197231}
@@ -819,12 +825,6 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
-  shieldView: {fileID: 3154434721882762188}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: -3.8036861, y: 5.636515, z: -1.5041523}
-    m_Extent: {x: 31.662195, y: 11.812478, z: 26.865204}
 --- !u!114 &3350890140303717934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5069,9 +5069,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c0e7ee7c1c471b9a3c750fed830803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
-  spawnDestroyedExplosion: 1
 --- !u!1 &2601470764313617780
 GameObject:
   m_ObjectHideFlags: 0
@@ -12675,13 +12675,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.Shield
   shieldRenderer: {fileID: 8393265745385271566}
-  visibilityRadius: 6
   color: {r: 0.15, g: 0.65, b: 1, a: 0.65}
   brightness: 2
   fadeDuration: 1.2
-  waveSpeed: 10
-  waveWidth: 1.2
-  displacementStrength: 0.25
 --- !u!1 &7394825078425426602
 GameObject:
   m_ObjectHideFlags: 0
