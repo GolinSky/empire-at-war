@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _root;
         private MapStub _map;
         private ZonesStub _zones;
-        private EnemyStructurePlacementService _service;
+        private EnemyStructurePlacementService _enemyStructurePlacementService;
         private BoxCollider _stationPrefab;
         private BoxCollider _structurePrefab;
 
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Tests.Editor
             _zones = new ZonesStub();
             _stationPrefab = CreatePrefab(Vector3.one * 10f);
             _structurePrefab = CreatePrefab(Vector3.one * (32f / Mathf.Sqrt(3f)));
-            _service = CreateService();
+            _enemyStructurePlacementService = CreateService();
         }
 
         private EnemyStructurePlacementService CreateService()
@@ -71,7 +71,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _zones.Centers.Add(new Vector3(-65f, 0f, 45f));
 
-            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
             Assert.That(Vector3.Distance(position, _map.Station), Is.LessThanOrEqualTo(88f));
             Assert.That(Vector3.Distance(position, _map.Station), Is.GreaterThan(45f + 16f));
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 capturedZone = new Vector3(-65f, 0f, 45f);
             _zones.Centers.Add(capturedZone);
 
-            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
             Assert.That(Vector3.Distance(position, capturedZone), Is.LessThanOrEqualTo(88f));
             Assert.That(Vector3.Distance(position, _map.Station), Is.GreaterThan(88f));
@@ -97,7 +97,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Block(_map.Station, new Vector3(210f, 40f, 210f));
 
-            Assert.That(_service.TryGetPosition(out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
         }
 
         [Test]
@@ -106,30 +106,30 @@ namespace EmpireAtWar.Tests.Editor
             _map.Station = Vector3.zero;
             _map.SetBounds(-10f, 10f);
 
-            Assert.That(_service.TryGetPosition(out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
         }
 
         [Test]
         public void DestroyedSite_IsNotReusedWhenItsStructureBecomesDead()
         {
-            Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 first), Is.True);
             GameObject structure = Block(first, Vector3.one * 20f);
 
-            Assert.That(_service.TryGetPosition(out Vector3 second), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 second), Is.True);
             Assert.That(Vector3.Distance(first, second), Is.GreaterThan(16f));
 
             structure.layer = DEAD_LAYER;
-            _service.RecordDestroyedPosition(first);
+            _enemyStructurePlacementService.RecordDestroyedPosition(first);
 
-            Assert.That(_service.TryGetPosition(out Vector3 replacement), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 replacement), Is.True);
             Assert.That(Vector3.Distance(replacement, first), Is.GreaterThan(1f));
         }
 
         [Test]
         public void Query_WithoutRecordingPlacementDoesNotReservePosition()
         {
-            Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
-            Assert.That(_service.TryGetPosition(out Vector3 second), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 first), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 second), Is.True);
 
             Assert.That(second, Is.EqualTo(first));
         }
@@ -143,9 +143,9 @@ namespace EmpireAtWar.Tests.Editor
             _stationPrefab.size = new Vector3(100f, 30f, 80f);
             _stationPrefab.transform.localScale = Vector3.one * 3f;
             _stationPrefab.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
-            _service = CreateService();
+            _enemyStructurePlacementService = CreateService();
 
-            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
             Vector3 center = _stationPrefab.transform.TransformVector(_stationPrefab.center);
             center.y = 0f;
@@ -160,12 +160,12 @@ namespace EmpireAtWar.Tests.Editor
             _map.SetBounds(-1000f, 1000f);
             _structurePrefab.transform.localScale = Vector3.one * 3f;
             _structurePrefab.center = new Vector3(3f, 0f, 2f);
-            _service = CreateService();
-            Assert.That(_service.TryGetPosition(out Vector3 first), Is.True);
+            _enemyStructurePlacementService = CreateService();
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 first), Is.True);
             Vector3 obstaclePosition = first + Vector3.right * 35f;
             Block(obstaclePosition, Vector3.one * 4f);
 
-            Assert.That(_service.TryGetPosition(out Vector3 next), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 next), Is.True);
 
             Assert.That(next, Is.Not.EqualTo(first));
             Assert.That(Vector3.Distance(next, obstaclePosition), Is.GreaterThan(48f));
@@ -180,7 +180,7 @@ namespace EmpireAtWar.Tests.Editor
             _zones.Radius = 270f;
             _zones.Centers.Add(Vector3.zero);
 
-            Assert.That(_service.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
             Assert.That(position.magnitude, Is.GreaterThan(270f + 16f));
             Assert.That(position.magnitude, Is.LessThanOrEqualTo(270f + 16f + 36f));

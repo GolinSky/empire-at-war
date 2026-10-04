@@ -16,12 +16,12 @@ namespace EmpireAtWar.Services.Audio
 
         private const string SOURCE_PATH = "MusicSource";
 
-        private readonly ISceneService _scenes;
-        private readonly IGameModelObserver _game;
-        private readonly IAudioService _audio;
+        private readonly ISceneService _sceneService;
+        private readonly IGameModelObserver _gameModelObserver;
+        private readonly IAudioService _audioService;
 
-        private readonly MusicAudioData _data;
-        private readonly AudioSource _source;
+        private readonly MusicAudioData _musicAudioData;
+        private readonly AudioSource _audioSource;
         private readonly System.Random _random = new System.Random();
         private List<AudioClip> _clips;
 
@@ -31,68 +31,68 @@ namespace EmpireAtWar.Services.Audio
         private bool _playing;
         private bool _fadingOut;
 
-        public MusicService(ISceneService scenes, IAssetService assets, IGameModelObserver game, IAudioService audio)
+        public MusicService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver, IAudioService audioService)
         {
-            _scenes = scenes;
-            _game = game;
-            _audio = audio;
-            _data = assets.Load<MusicAudioData>(nameof(MusicAudioData));
-            _source = Object.Instantiate(assets.LoadComponent<AudioSource>(SOURCE_PATH));
-            _source.ignoreListenerPause = true;
-            _source.priority = 16;
-            _volume = _source.volume;
-            Object.DontDestroyOnLoad(_source.gameObject);
+            _sceneService = sceneService;
+            _gameModelObserver = gameModelObserver;
+            _audioService = audioService;
+            _musicAudioData = assetService.Load<MusicAudioData>(nameof(MusicAudioData));
+            _audioSource = Object.Instantiate(assetService.LoadComponent<AudioSource>(SOURCE_PATH));
+            _audioSource.ignoreListenerPause = true;
+            _audioSource.priority = 16;
+            _volume = _audioSource.volume;
+            Object.DontDestroyOnLoad(_audioSource.gameObject);
         }
 
         public void Initialize()
         {
-            OnSceneLoad(_scenes.TargetScene);
-            _scenes.OnSceneActivation += OnSceneLoad;
+            OnSceneLoad(_sceneService.TargetScene);
+            _sceneService.OnSceneActivation += OnSceneLoad;
         }
 
         public void LateDispose()
         {
             // The project context only disposes on quit or Play Mode exit, when Unity also destroys the
             // DontDestroyOnLoad source in no guaranteed order; touching it here can hit a destroyed object.
-            _scenes.OnSceneActivation -= OnSceneLoad;
+            _sceneService.OnSceneActivation -= OnSceneLoad;
         }
 
         private void OnSceneLoad(SceneType scene)
         {
             if (scene == SceneType.Loading) return;
             FactionType faction = scene == SceneType.MainMenu
-                ? default : MatchRules.FindHuman(_game.Players).Faction;
-            _clips = _data.GetMusicList(scene, faction);
+                ? default : MatchRules.FindHuman(_gameModelObserver.Players).Faction;
+            _clips = _musicAudioData.GetMusicList(scene, faction);
             if (_playing) _fadingOut = true;
             else PlayNext();
         }
 
         private void PlayNext()
         {
-            _audio.Stop(_source);
+            _audioService.Stop(_audioSource);
             _playing = false;
             _fadingOut = false;
             if (_clips.Count == 0) return;
             AudioClip clip = _clips[_random.Next(_clips.Count)];
             _fadeDuration = Mathf.Min(MUSIC_FADE_DURATION, clip.length * 0.5f);
-            _audio.Play(_source, clip, 0f, false);
+            _audioService.Play(_audioSource, clip, 0f, false);
             _playing = true;
         }
 
         public void Tick()
         {
             if (!_playing) return;
-            if (!_source.isPlaying)
+            if (!_audioSource.isPlaying)
             {
                 PlayNext();
                 return;
             }
-            AudioClip clip = _source.clip;
-            float remaining = (clip.samples - _source.timeSamples) / (float)clip.frequency;
+            AudioClip clip = _audioSource.clip;
+            float remaining = (clip.samples - _audioSource.timeSamples) / (float)clip.frequency;
             if (remaining <= _fadeDuration) _fadingOut = true;
-            _source.volume = Mathf.MoveTowards(_source.volume, _fadingOut ? 0f : _volume,
+            _audioSource.volume = Mathf.MoveTowards(_audioSource.volume, _fadingOut ? 0f : _volume,
                 _volume * Time.unscaledDeltaTime / _fadeDuration);
-            if (_fadingOut && _source.volume == 0f) PlayNext();
+            if (_fadingOut && _audioSource.volume == 0f) PlayNext();
         }
     }
 }

@@ -19,8 +19,8 @@ namespace EmpireAtWar.Entities.MiningFacility
     {
         private IEconomyProvider _economyProvider;
         private IHealthComponent _healthComponent;
-        private IUnitExplosionService _explosionService;
-        private IUnitWreckService _wreckService;
+        private IUnitExplosionService _unitExplosionService;
+        private IUnitWreckService _unitWreckService;
         private ILayerService _layerService;
         private IFactionResearchModelObserver _research;
 
@@ -43,8 +43,8 @@ namespace EmpireAtWar.Entities.MiningFacility
         private void Construct(
             IEconomyProvider economyProvider,
             IHealthComponent healthComponent,
-            IUnitWreckService wreckService,
-            IUnitExplosionService explosionService,
+            IUnitWreckService unitWreckService,
+            IUnitExplosionService unitExplosionService,
             ILayerService layerService,
             IFactionResearchModelObserver research,
             List<IMonoComponent> monoComponents,
@@ -56,8 +56,8 @@ namespace EmpireAtWar.Entities.MiningFacility
             _healthComponent = healthComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
-            _wreckService = wreckService;
-            _explosionService = explosionService;
+            _unitWreckService = unitWreckService;
+            _unitExplosionService = unitExplosionService;
             _context = context;
             _owner = owner;
             _layerService = layerService;
@@ -97,11 +97,11 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 OnRelease?.Invoke();
                 EntityComponentData componentData = Data.ComponentData;
-                _explosionService.Spawn(explosionHullRenderers);
+                _unitExplosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
                 if (Data.Wreck != null)
                 {
-                    _wreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
+                    _unitWreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);

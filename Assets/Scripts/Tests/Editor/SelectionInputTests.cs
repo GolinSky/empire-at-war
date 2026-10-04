@@ -158,6 +158,7 @@ namespace EmpireAtWar.Tests.Selection
 
             public Vector2 Position => Vector2.zero;
             public int ClickCount => 1;
+            public bool HasPosition => true;
 
             public void RaiseSelectionBegan(Vector2 position)
             {

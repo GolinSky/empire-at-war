@@ -33,7 +33,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.ShipUi;
-using EmpireAtWar.Models.SkirmishGame;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
@@ -57,12 +56,12 @@ public class SkirmishMainInstaller : MonoInstaller
     [SerializeField] private TeamColorPalette teamColorPalette;
 
     [Inject] private IGameModelObserver GameModelObserver { get; }
-    [Inject] private IAssetService Repository { get; }
+    [Inject] private IAssetService AssetService { get; }
 
     public override void InstallBindings()
     {
-        Container.BindScriptableObject<TooltipSettings>(Repository);
-        Container.BindScriptableObject<TooltipIconData>(Repository);
+        Container.BindScriptableObject<TooltipSettings>(AssetService);
+        Container.BindScriptableObject<TooltipIconData>(AssetService);
         Container.Bind<TooltipTiming>().FromMethod(context =>
             context.Container.Resolve<TooltipSettings>().Timing).AsSingle();
         Container.Bind<ITooltipClock>()
@@ -73,12 +72,12 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesTo<TooltipLifecyclePresenter>().AsSingle().NonLazy();
         Container.BindInterfacesTo<WorldTooltipPresenter>().AsSingle().NonLazy();
         Container.Bind<ReinforcementZoneData>().FromInstance(reinforcementZoneData).AsSingle();
-        Container.BindScriptableObject<CaptureSiteData>(Repository);
+        Container.BindScriptableObject<CaptureSiteData>(AssetService);
         Container.Bind<UnitOrderSettings>().FromInstance(unitOrderSettings).AsSingle();
         Container.Bind<IUnitOrderService>().To<UnitOrderService>().AsSingle();
         Container.Bind<UnitActionTargetingModel>().AsSingle();
         Container.BindInterfacesNonLazyExt<PlayerOrderInputHandler>();
-        Container.BindScriptableObject<HardPointOverlayData>(Repository);
+        Container.BindScriptableObject<HardPointOverlayData>(AssetService);
         Container.BindInterfacesAndSelfTo<HardPointOverlayModel>().AsSingle();
         Container.BindInterfacesAndSelfTo<HardPointOverlayView>().FromNewComponentOnNewGameObject().AsSingle();
         Container.BindInterfacesAndSelfTo<HardPointOverlayPresenter>().AsSingle().NonLazy();
@@ -89,7 +88,7 @@ public class SkirmishMainInstaller : MonoInstaller
 
         Container
             .BindInterfacesAndSelfTo<UiService>()
-            .FromComponentInNewPrefab(Repository.LoadPrefab(nameof(UiService)))
+            .FromComponentInNewPrefab(AssetService.LoadPrefab(nameof(UiService)))
             .AsSingle()
             .NonLazy();
         Container
@@ -108,18 +107,18 @@ public class SkirmishMainInstaller : MonoInstaller
 
         BindPlayers();
         
-        Container.BindModel<MenuData>(Repository);
+        Container.BindModel<MenuData>(AssetService);
         Container.Bind<SettingsModel>().AsSingle();
         Container.Bind<SettingsDraftEditor>().AsSingle();
         Container.Bind<KeyBindingEditor>().AsSingle();
         Container.BindInterfacesTo<SettingsRouteController>().AsSingle();
         Container.BindInterfacesNonLazyExt<PauseMenuRouteController>();
         
-        Container.BindScriptableObject<ShipUiData>(Repository);
-        Container.BindScriptableObject<ShipAbilityCatalog>(Repository);
+        Container.BindScriptableObject<ShipUiData>(AssetService);
+        Container.BindScriptableObject<ShipAbilityCatalog>(AssetService);
         Container.Bind<IShipAbilityFactory>().To<ShipAbilityFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ShipAbilityService>().AsSingle().NonLazy();
-        Container.BindScriptableObject<SuperWeaponData>(Repository);
+        Container.BindScriptableObject<SuperWeaponData>(AssetService);
         Container.Bind<SuperWeaponTargetingModel>().AsSingle();
         Container.BindInterfacesTo<SuperWeaponOriginRegistry>().AsSingle();
         Container.BindInterfacesExt<SuperWeaponFireService>();
@@ -131,7 +130,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
         Container.BindInterfacesExt<ShipSpawnClearance>();
         Container.BindInterfacesExt<ShipSpawnPoints>();
-        Container.BindModel<MiniMapData>(Repository);
+        Container.BindModel<MiniMapData>(AssetService);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()
             .AsSingle()
@@ -142,9 +141,9 @@ public class SkirmishMainInstaller : MonoInstaller
             .NonLazy();
         Container.BindInitializableExecutionOrder<CaptureSiteMiniMapPresenter>(100);
         
-        Container.BindInterfacesAndSelfTo<SkirmishSessionModel>().AsSingle();
         Container.BindInterfacesAndSelfTo<CinematicCameraModel>().AsSingle();
         Container.BindInterfacesExt<CinematicCameraPresenter>();
+        Container.BindInterfacesTo<BattleStartupSequence>().AsSingle();
         Container.BindInterfacesNonLazyExt<SkirmishOrchestrator>();
         Container.BindInterfacesNonLazyExt<CoreGameUiController>();
         Container.BindInterfacesNonLazyExt<UnitActionsPresenter>();
@@ -152,13 +151,13 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<UnitActionsPresenter>(100);
         
         Container
-            .BindModel<FactionsData>(Repository)
-            .BindModel<WeaponsData>(Repository)
-            .BindModel<DamageMatrixData>(Repository)
-            .BindModel<LayerData>(Repository);
+            .BindModel<FactionsData>(AssetService)
+            .BindModel<WeaponsData>(AssetService)
+            .BindModel<DamageMatrixData>(AssetService)
+            .BindModel<LayerData>(AssetService);
         Container.BindInterfacesAndSelfTo<LayerService>().AsSingle();
 
-        Container.BindScriptableObject<ShipsData>(Repository);
+        Container.BindScriptableObject<ShipsData>(AssetService);
 
         Container
             .BindInterfacesExt<UnitRequestFactory>();

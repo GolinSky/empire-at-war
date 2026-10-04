@@ -798,11 +798,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 1
   button: {fileID: 3828243179141239550}
   icon: {fileID: 1379885745930082841}
   pendingHighlight: {fileID: 8335567413439046172}
   contentGroup: {fileID: 7799370180763379832}
+  actionId: 1
 --- !u!114 &6974332067073958392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1527,12 +1527,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35bda34702d00324c8ae3415761359f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
-  weaponType: 2
   button: {fileID: 5733177375610946667}
   pendingHighlight: {fileID: 4727994670202779751}
   stateText: {fileID: 7862675013886877023}
   contentGroup: {fileID: 4082559219380582906}
   background: {fileID: 6260279202040386549}
+  weaponType: 2
 --- !u!114 &3048946918515453318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4362,11 +4362,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 3
   button: {fileID: 4540490237964994132}
   icon: {fileID: 3358061129530910176}
   pendingHighlight: {fileID: 7479501594532167873}
   contentGroup: {fileID: 1550726972890745879}
+  actionId: 3
 --- !u!114 &6279476445373224307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5822,11 +5822,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 5
   button: {fileID: 4391058928786129877}
   icon: {fileID: 6404310323232455668}
   pendingHighlight: {fileID: 8496322936121290647}
   contentGroup: {fileID: 4472863207914326786}
+  actionId: 5
 --- !u!114 &3346102657621965520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7336,23 +7336,17 @@ MonoBehaviour:
     keyValue:
     - key: 0
       value: {fileID: 21300000, guid: e36eb343190726140bc5a38cf6b03d45, type: 3}
-    - key: 2
-      value: {fileID: 21300000, guid: 7df58ff6f1ca2f14e9f6c9633a9deb3c, type: 3}
     - key: 1
-      value: {fileID: 21300000, guid: e36eb343190726140bc5a38cf6b03d45, type: 3}
+      value: {fileID: 21300000, guid: 7df58ff6f1ca2f14e9f6c9633a9deb3c, type: 3}
   speedUpSprites:
     keyValue:
-    - key: 1
-      value: {fileID: 21300000, guid: 24c306bf4866df74fb768040f8b65525, type: 3}
     - key: 0
       value: {fileID: 21300000, guid: 7165af870280b1d48b34c98e81e129e8, type: 3}
-    - key: 2
-      value: {fileID: 21300000, guid: 7165af870280b1d48b34c98e81e129e8, type: 3}
+    - key: 1
+      value: {fileID: 21300000, guid: 24c306bf4866df74fb768040f8b65525, type: 3}
   miniMapRouteParent: {fileID: 2166608681277666659}
   contentRouteParent: {fileID: 89060427212124258}
   contentGrid: {fileID: 7444074867788366029}
-  factionCellSize: {x: 138, y: 106}
-  shipCellSize: {x: 80, y: 198}
   contentSizeFitter: {fileID: 9219539525954383480}
   contentScroll: {fileID: 972563683416304567}
   buildPipelineRouteParent: {fileID: 8537645691187659268}
@@ -7366,6 +7360,8 @@ MonoBehaviour:
   selectionSlots: {fileID: 7628906838453872659}
   clearFleetButton: {fileID: 3482232525385387345}
   battleControls: {fileID: 8287887705338463486}
+  factionCellSize: {x: 138, y: 106}
+  shipCellSize: {x: 80, y: 198}
 --- !u!225 &8287887705338463486
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7616,11 +7612,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 7
   button: {fileID: 3780318849213429094}
   icon: {fileID: 1098388396205009571}
   pendingHighlight: {fileID: 5286205492739585151}
   contentGroup: {fileID: 1381335729783982395}
+  actionId: 7
 --- !u!114 &7688922078490027224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12986,11 +12982,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 6
   button: {fileID: 8119893199016127632}
   icon: {fileID: 3590685523784344573}
   pendingHighlight: {fileID: 3805861292012251837}
   contentGroup: {fileID: 365140715148854878}
+  actionId: 6
 --- !u!114 &7796795077040124622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13623,12 +13619,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35bda34702d00324c8ae3415761359f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
-  weaponType: 0
   button: {fileID: 2439545178034623130}
   pendingHighlight: {fileID: 7770299013056724404}
   stateText: {fileID: 4906570057928844693}
   contentGroup: {fileID: 2100317897434906163}
   background: {fileID: 2120941307801188634}
+  weaponType: 0
 --- !u!114 &3693921003757912117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15343,12 +15339,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35bda34702d00324c8ae3415761359f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
-  weaponType: 1
   button: {fileID: 6160148108838497450}
   pendingHighlight: {fileID: 3158238649828747720}
   stateText: {fileID: 8514845805970415197}
   contentGroup: {fileID: 4039485811599714650}
   background: {fileID: 4910367704413108148}
+  weaponType: 1
 --- !u!114 &1654875771341575954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15870,11 +15866,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 4
   button: {fileID: 5928799736296535071}
   icon: {fileID: 9219094411726195894}
   pendingHighlight: {fileID: 5708822368696552879}
   contentGroup: {fileID: 9091332662612190809}
+  actionId: 4
 --- !u!114 &4587566095480695659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16880,11 +16876,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd531d976a76e23458de096ca61ab426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.UnitActions.Ui.UnitActionButton
-  actionId: 2
   button: {fileID: 5956633361286898358}
   icon: {fileID: 8957237886982255862}
   pendingHighlight: {fileID: 7705140248054717583}
   contentGroup: {fileID: 42949581127564754}
+  actionId: 2
 --- !u!114 &6782033110817232630
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,7 +23,7 @@ namespace EmpireAtWar.SceneContext
     /// </summary>
     public class AiPlayerInstaller : Installer<AiPlayerInstaller>
     {
-        [Inject] private IAssetService Repository { get; }
+        [Inject] private IAssetService AssetService { get; }
         [Inject] private PlayerSlot Owner { get; }
 
         public override void InstallBindings()
@@ -37,23 +37,23 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();
             Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle()
-                .WithArguments(Repository.LoadComponent<BoxCollider>(Owner.Faction + "SpaceStationView"),
+                .WithArguments(AssetService.LoadComponent<BoxCollider>(Owner.Faction + "SpaceStationView"),
                     new[]
                     {
-                        Repository.LoadComponent<BoxCollider>("DefendPlatformView"),
-                        Repository.LoadComponent<BoxCollider>("MiningFacilityView")
+                        AssetService.LoadComponent<BoxCollider>("DefendPlatformView"),
+                        AssetService.LoadComponent<BoxCollider>("MiningFacilityView")
                     });
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.BindInterfacesExt<EnemyShipAbilityController>();
             Container.Bind<SuperWeaponModel>().AsSingle();
             Container.BindInterfacesExt<EnemySuperWeaponController>();
             Container.Bind<EnemyUnitLimitModel>().AsSingle();
-            Container.BindScriptableObject<ReinforcementData>(Repository);
+            Container.BindScriptableObject<ReinforcementData>(AssetService);
 
             // Registers itself as this AI's pending-reinforcement source in the scene-wide player registry.
             Container.BindInterfacesExt<EnemyFactionController>();
 
-            Container.BindScriptableObject<EconomyData>(Repository);
+            Container.BindScriptableObject<EconomyData>(AssetService);
             Container.BindInterfacesAndSelfTo<EconomyModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<EconomyService>();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

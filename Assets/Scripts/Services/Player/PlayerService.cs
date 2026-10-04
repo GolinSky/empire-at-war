@@ -10,29 +10,41 @@ namespace EmpireAtWar.Services.Player
     {
     }
 
-    public class PlayerService : Service, IInitializable, IPlayerService
+    public class PlayerService : Service, IInitializable, ILateDisposable, IPlayerService, IStationSpawner
     {
         private readonly SpaceStationFactory _spaceStationFactory;
-        private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IMapModelObserver _mapModel;
+        private readonly IPlayerRegistry _playerRegistry;
         private readonly PlayerSlot _owner;
 
         public PlayerService(
             SpaceStationFactory spaceStationFactory,
-            LazyInject<IMapModelObserver> mapModel,
+            IMapModelObserver mapModel,
+            IPlayerRegistry playerRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
             _spaceStationFactory = spaceStationFactory;
             _mapModel = mapModel;
+            _playerRegistry = playerRegistry;
         }
 
         public void Initialize()
         {
+            _playerRegistry.RegisterStationSpawner(_owner.Id, this);
+        }
+
+        public void LateDispose()
+        {
+            _playerRegistry.UnregisterStationSpawner(_owner.Id);
+        }
+
+        public void Spawn()
+        {
             _spaceStationFactory.Create(
                 _owner.Id,
                 _owner.Faction,
-                _mapModel.Value.GetStationPosition(_owner.Id));
-            
+                _mapModel.GetStationPosition(_owner.Id));
         }
     }
 }

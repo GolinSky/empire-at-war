@@ -1,4 +1,4 @@
-using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Presenters.Game;
@@ -16,7 +16,7 @@ namespace EmpireAtWar.Views.Game
 
         void Dispose();
 
-        void SetModel(ISkirmishSessionModelObserver model);
+        void SetTimeControls(bool isPaused, GameSpeed speed);
 
         void SetPresenter(ICoreGamePresenter presenter);
 

@@ -22,7 +22,7 @@ namespace EmpireAtWar.Services.Enemy
         // Keep enough money aside that the superweapons never starve fleet production.
         private const float MONEY_RESERVE_MULTIPLIER = 2f;
 
-        private readonly ISuperWeaponFireService _fireService;
+        private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly IEntityLocator _entities;
         private readonly IStationRegistry _stationRegistry;
 
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private float _decisionTimer;
 
-        public EnemySuperWeaponController(ISuperWeaponFireService fireService, IEntityLocator entities,
+        public EnemySuperWeaponController(ISuperWeaponFireService superWeaponFireService, IEntityLocator entities,
             IStationRegistry stationRegistry, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
             FactionsData factionsData,
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Services.Enemy
             _factionModel = factionModel;
             _economyModel = economyModel;
             _factionsData = factionsData;
-            _fireService = fireService;
+            _superWeaponFireService = superWeaponFireService;
             _entities = entities;
             _stationRegistry = stationRegistry;
         }
@@ -122,7 +122,7 @@ namespace EmpireAtWar.Services.Enemy
             if (target == null) return;
 
             _model.Consume(type);
-            _fireService.Fire(type, target);
+            _superWeaponFireService.Fire(type, target);
             Debug.Log($"[EnemyAI:SuperWeapon] Fired {type} at {target.HealthModel.ShipClass} ({target.Id})");
         }
 
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Enemy
             float bestScore = 0f;
             foreach (IEntity entity in _entities.Entities)
             {
-                if (!_fireService.CanTarget(_owner.Id, entity)) continue;
+                if (!_superWeaponFireService.CanTarget(_owner.Id, entity)) continue;
                 float score = type == SuperWeaponType.IonCannon
                     ? entity.HealthModel.Shields
                     : entity.HealthModel.Hull;

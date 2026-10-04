@@ -12,12 +12,12 @@ namespace EmpireAtWar
 {
     public class MainMenuInstaller : MonoInstaller
     {
-        [Inject] private IAssetService Repository { get; }
+        [Inject] private IAssetService AssetService { get; }
 
         public override void InstallBindings()
         {
-            Container.BindScriptableObject<TooltipSettings>(Repository);
-            Container.BindScriptableObject<TooltipIconData>(Repository);
+            Container.BindScriptableObject<TooltipSettings>(AssetService);
+            Container.BindScriptableObject<TooltipIconData>(AssetService);
             Container.Bind<TooltipTiming>().FromMethod(context =>
                 context.Container.Resolve<TooltipSettings>().Timing).AsSingle();
             Container.Bind<ITooltipClock>().To<TooltipClock>().AsSingle();
@@ -26,7 +26,7 @@ namespace EmpireAtWar
             Container.BindInterfacesTo<TooltipUiController>().AsSingle().NonLazy();
             Container
                 .BindInterfacesAndSelfTo<UiService>()
-                .FromComponentInNewPrefab(Repository.LoadPrefab(nameof(UiService)))
+                .FromComponentInNewPrefab(AssetService.LoadPrefab(nameof(UiService)))
                 .AsSingle()
                 .NonLazy();
             Container

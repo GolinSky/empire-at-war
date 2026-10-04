@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         }
 
         public ShipOrderRunner(IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
-            IPlayerRoster roster, UnitOrderModel orders, ShipStateMachine stateMachine,
+            IPlayerRoster playerRoster, UnitOrderModel orders, ShipStateMachine stateMachine,
             ShipAIBrain brain, IdleState idleState, NavigateState navigateState,
             AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
             HuntState huntState, FleeState fleeState, PlayerId owner)
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _guardState = guardState;
             _huntState = huntState;
             _fleeState = fleeState;
-            _isAiControlled = roster.Get(owner).IsAi;
+            _isAiControlled = playerRoster.Get(owner).IsAi;
         }
 
         public void Start() => _stateMachine.SetState(_idleState);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
@@ -7,6 +8,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using Zenject;
@@ -26,19 +28,27 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         private readonly SuperWeaponData _data;
         private readonly ImpactEffectPresenter _impactPresenter;
+        private readonly IAudioService _audioService;
+        private readonly SfxProfile _hypervelocitySfx;
+        private readonly AudioSource _hypervelocitySource;
         private readonly List<SuperWeaponSalvo> _salvos = new List<SuperWeaponSalvo>();
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
             IPlayerRelations relations, SuperWeaponData data,
-            ImpactEffectPresenter impactPresenter)
+            ImpactEffectPresenter impactPresenter, IAudioService audioService, ShipSfxData sfxData,
+            ShipSfxSources sfxSources)
         {
             _relations = relations;
             _data = data;
             _impactPresenter = impactPresenter;
             _entities = entities;
             _origin = origin;
+            _audioService = audioService;
+            _hypervelocitySfx = sfxData.GetWeapon(WeaponType.HypervelocityGun);
+            _hypervelocitySource = Object.Instantiate(sfxSources.Sfx[0]);
+            _hypervelocitySource.volume = 1f;
         }
 
         public void LateDispose()
@@ -56,6 +66,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 stun.Modifiers.SetIonDisabled(false);
             }
             _stuns.Clear();
+            if (_hypervelocitySource != null) Object.Destroy(_hypervelocitySource.gameObject);
         }
 
         public bool CanTarget(PlayerId owner, IEntity target)
@@ -129,6 +140,8 @@ namespace EmpireAtWar.Services.SuperWeapons
         private void FireShot(SuperWeaponSalvo salvo)
         {
             SuperWeaponProfile profile = salvo.Profile;
+            if (profile.Weapon.WeaponType == WeaponType.HypervelocityGun)
+                _audioService.PlayOneShot(_hypervelocitySource, _hypervelocitySfx.GetClip(), _hypervelocitySfx.Volume);
             ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
                 profile.ImpactSize, true);

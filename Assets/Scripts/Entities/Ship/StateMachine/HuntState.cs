@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
-        private readonly IFogOfWarSystem _fog;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly IPlayerRelations _relations;
         private IEntity _target;
 
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            IFogOfWarSystem fog, IPlayerRelations relations, ILocalPlayer localPlayer,
+            IFogOfWarSystem fogOfWarSystem, IPlayerRelations relations, ILocalPlayer localPlayer,
             UnitOrderSettings settings, PlayerId side)
         {
             _relations = relations;
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weapon = weapon;
             _attackDataFactory = attackDataFactory;
             _locator = locator;
-            _fog = fog;
+            _fogOfWarSystem = fogOfWarSystem;
             _settings = settings;
             _side = side;
         }
@@ -91,7 +91,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_respectsFog && _fog.GetVisibilityAtPosition(position) < 0.5f)
+                if (_respectsFog && _fogOfWarSystem.GetVisibilityAtPosition(position) < 0.5f)
                     continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
                 if (distance >= nearest) continue;

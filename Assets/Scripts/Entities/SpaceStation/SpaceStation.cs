@@ -17,8 +17,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IFogOfWarSystem _fogOfWarSystem;
         private ILocalPlayer _localPlayer;
         private IHealthComponent _healthComponent;
-        private IUnitExplosionService _explosionService;
-        private IUnitWreckService _wreckService;
+        private IUnitExplosionService _unitExplosionService;
+        private IUnitWreckService _unitWreckService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         private EntityComponentLifecycle _componentLifecycle;
@@ -36,8 +36,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         private void Construct(
             IFogOfWarSystem fogOfWarSystem,
             IHealthComponent healthComponent,
-            IUnitWreckService wreckService,
-            IUnitExplosionService explosionService,
+            IUnitWreckService unitWreckService,
+            IUnitExplosionService unitExplosionService,
             ILocalPlayer localPlayer,
             List<IMonoComponent> monoComponents,
             GameObjectContext context,
@@ -51,8 +51,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             _healthComponent = healthComponent;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
-            _wreckService = wreckService;
-            _explosionService = explosionService;
+            _unitWreckService = unitWreckService;
+            _unitExplosionService = unitExplosionService;
             _context = context;
             _factionType = factionType;
         }
@@ -87,11 +87,11 @@ namespace EmpireAtWar.Entities.SpaceStation
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;
-                _explosionService.Spawn(explosionHullRenderers);
+                _unitExplosionService.Spawn(explosionHullRenderers);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (Data.TryGetWreck(_factionType, out UnitWreckData wreck))
                 {
-                    _wreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
+                    _unitWreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
                 }
 
                 Destroy(_context.gameObject, componentData.DestroyDelay);

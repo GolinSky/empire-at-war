@@ -23,12 +23,12 @@ namespace EmpireAtWar.Controllers.Game
         public EndGamePresenter(
             INotifier<BattleResult> battleVictoryNotifier,
             IEndGameView view,
-            ITooltipService tooltips, Action returnToMenu)
+            ITooltipService tooltipService, Action returnToMenu)
         {
             _battleVictoryNotifier = battleVictoryNotifier;
             _view = view;
             _returnToMenu = returnToMenu;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _tooltipHover = new TooltipHoverSubscription(((ITooltipHoverView)view).TooltipHover,
                 HandleTooltipHover, _tooltips);
             _view.Hide();

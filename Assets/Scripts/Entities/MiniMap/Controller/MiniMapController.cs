@@ -21,12 +21,15 @@ namespace EmpireAtWar.Controllers.MiniMap
 {
     public class MiniMapController : UiController,
         IInitializable, ILateTickable, ILateDisposable,
-        ISkirmishUiRoute
+        ISkirmishUiRoute, IObserver<BattleMap>
     {
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
+        private readonly INotifier<BattleMap> _battleMap;
+        private readonly IPlayerRoster _playerRoster;
+        private readonly ILocalPlayer _localPlayer;
         private IMiniMapView _miniMapView;
 
         private readonly MiniMapData _model;
@@ -35,59 +38,44 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
+        private bool _hasMap;
+
         public MiniMapController(
-            IMapModelObserver mapModel,
+            INotifier<BattleMap> battleMap,
             ICameraService cameraService,
             IInputLock inputLock,
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
-            IPlayerRoster roster,
+            IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             MiniMapData model,
-            TimerPoolService timerPoolService,
-            List<IMiniMapObstacleSource> obstacleSources) : base(uiService, cancelRouter)
+            TimerPoolService timerPoolService) : base(uiService, cancelRouter)
         {
+            _battleMap = battleMap;
+            _playerRoster = playerRoster;
+            _localPlayer = localPlayer;
             _cameraService = cameraService;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _model = model;
             _inputLock = inputLock;
             _timerPoolService = timerPoolService;
             _routeNavigation = routeNavigation;
             _orderInput = orderInput;
-            _model.MapRange = mapModel.SizeRange;            
-            _model.ClearBases();
-            foreach (PlayerSlot player in roster.Players)
-            {
-                _model.AddBase(mapModel.GetStationPosition(player.Id), player.Id, localPlayer.IsHostile(player.Id));
-            }
-            // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
-            Physics.SyncTransforms();
-            foreach (IMiniMapObstacleSource obstacleSource in obstacleSources)
-            {
-                Bounds bounds = obstacleSource.WorldBounds;
-                _model.AddObstacle(new MiniMapObstacle(
-                    bounds.center.x,
-                    bounds.center.z,
-                    bounds.extents.x,
-                    bounds.extents.z));
-            }
         }
 
         public void Initialize()
         {
             _inputLock.LockChanged += UpdateBlockState;
-            LateTick();
-            _routeNavigation.RegisterRoute(
-                SkirmishUiRoutePosition.MiniMap,
-                this);
+            _battleMap.AddObserver(this);
         }
 
         public void LateDispose()
         {
             _inputLock.LockChanged -= UpdateBlockState;
+            _battleMap.RemoveObserver(this);
             if (_miniMapView != null)
             {
                 _tooltipHover.Dispose();
@@ -99,8 +87,43 @@ namespace EmpireAtWar.Controllers.MiniMap
                 this);
         }
 
+        public void UpdateState(BattleMap battleMap)
+        {
+            MapLayout layout = battleMap.Layout;
+            _model.MapRange = layout.SizeRange;
+            _model.ClearBases();
+            foreach (PlayerSlot player in _playerRoster.Players)
+            {
+                _model.AddBase(layout.GetStationPosition(player.Id), player.Id, _localPlayer.IsHostile(player.Id));
+            }
+            // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
+            Physics.SyncTransforms();
+            foreach (IMiniMapObstacleSource obstacleSource in battleMap.Obstacles)
+            {
+                Bounds bounds = obstacleSource.WorldBounds;
+                _model.AddObstacle(new MiniMapObstacle(
+                    bounds.center.x,
+                    bounds.center.z,
+                    bounds.extents.x,
+                    bounds.extents.z));
+            }
+
+            _hasMap = true;
+            LateTick();
+            // The view reads the map once when created, so the route opens only now.
+            _routeNavigation.RegisterRoute(
+                SkirmishUiRoutePosition.MiniMap,
+                this);
+        }
+
         public void LateTick()
         {
+            // The camera mark is clipped to the map, which exists once the battle map loads.
+            if (!_hasMap)
+            {
+                return;
+            }
+
             _model.CameraMark.Clear();
             var footprint = _cameraService.GetGroundFootprint(_model.MapRange.Min, _model.MapRange.Max);
             for (int i = 0; i < footprint.Count; i++)

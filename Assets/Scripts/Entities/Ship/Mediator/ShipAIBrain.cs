@@ -26,14 +26,14 @@ namespace EmpireAtWar.Entities.Ship.Mediator
         public bool IsFleeing { get; private set; }
 
         public ShipAIBrain(IHealthModelObserver healthModel, IRadarComponent radar,
-            IShipMovement movement, IPlayerRoster roster,
+            IShipMovement movement, IPlayerRoster playerRoster,
             ShipAiDecisionModel decisionModel, UnitOrderModel orders, PlayerId owner)
         {
             _healthModel = healthModel;
             _radar = radar;
             _movement = movement;
             _decisionModel = decisionModel;
-            _difficulty = roster.Get(owner).Difficulty;
+            _difficulty = playerRoster.Get(owner).Difficulty;
             _orders = orders;
         }
 

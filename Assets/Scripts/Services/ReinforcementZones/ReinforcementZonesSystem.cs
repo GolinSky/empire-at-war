@@ -10,6 +10,7 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
+using UnityEngine.Serialization;
 using ViewComponents;
 using Zenject;
 
@@ -39,7 +40,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
     }
 
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
-        IInitializable, ITickable
+        IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
         private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
 
@@ -47,17 +48,18 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private ISquadronRegistry _squadronRegistry;
         private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
-        private IPointerInput _pointer;
+        private IPointerInput _pointerInput;
         private IMapModelObserver _mapModel;
-        private IPlayerRoster _roster;
+        private INotifier<BattleMap> _battleMap;
+        private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
 
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private ReinforcementZoneData _data;
-        private ReinforcementZoneView[] _zoneViews;
-        private CaptureStrengthBuilder _tally;
+        private IReadOnlyList<ReinforcementZoneView> _zoneViews;
+        private CaptureStrengthBuilder _captureStrengthBuilder;
 
-        [SerializeField, Min(0f)] private float _spawnEdgePadding = 3f;
+        [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
 
         public event Action OwnershipChanged;
 
@@ -70,11 +72,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IMapModelObserver mapModel,
             IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
-            IPointerInput pointer,
-            IPlayerRoster roster,
+            IPointerInput pointerInput,
+            IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
-            ReinforcementZoneData data,
-            ReinforcementZoneView[] zoneViews)
+            INotifier<BattleMap> battleMap,
+            ReinforcementZoneData data)
         {
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
@@ -82,15 +84,26 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _mapModel = mapModel;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
-            _pointer = pointer;
-            _zoneViews = zoneViews;
-            _roster = roster;
+            _pointerInput = pointerInput;
+            _battleMap = battleMap;
+            _playerRoster = playerRoster;
             _localPlayer = localPlayer;
-            _tally = new CaptureStrengthBuilder(roster);
+            _captureStrengthBuilder = new CaptureStrengthBuilder(playerRoster);
         }
 
         public void Initialize()
         {
+            _battleMap.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _battleMap.RemoveObserver(this);
+        }
+
+        public void UpdateState(BattleMap battleMap)
+        {
+            _zoneViews = battleMap.ZoneViews;
             _zones.Clear();
             foreach (ReinforcementZoneView view in _zoneViews)
             {
@@ -99,7 +112,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     isCapturable: view.IsCapturable,
                     captureDuration: view.CaptureDuration,
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
-                    relations: _roster);
+                    relations: _playerRoster);
                 _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
             }
         }
@@ -108,12 +121,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                _tally.Clear();
+                _captureStrengthBuilder.Clear();
                 Func<Vector3, bool> contains = zone.Contains;
-                _shipService.AddShipStrength(contains, _tally);
-                _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _tally);
+                _shipService.AddShipStrength(contains, _captureStrengthBuilder);
+                _squadronRegistry.AddSquadronStrength(contains, _data.SquadronCaptureWeight, _captureStrengthBuilder);
 
-                if (zone.Tick(Time.deltaTime, _tally.Build()))
+                if (zone.Tick(Time.deltaTime, _captureStrengthBuilder.Build()))
                 {
                     OwnershipChanged?.Invoke();
                 }
@@ -121,7 +134,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 // The circle stays visible; labels and minimap markers require current vision.
                 bool isRevealed = !_fogOfWarSystem.IsHidden(zone.Center, MINIMUM_ZONE_VISIBILITY);
                 bool isHovered = isRevealed &&
-                    zone.Contains(_cameraService.GetWorldPoint(_pointer.Position, zone.Center));
+                    zone.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
             }
         }
@@ -130,7 +143,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             foreach (ReinforcementZonePresenter zone in _zones)
             {
-                if (_roster.IsAllied(zone.Owner, owner) && zone.Contains(position))
+                if (_playerRoster.IsAllied(zone.Owner, owner) && zone.Contains(position))
                 {
                     return true;
                 }
@@ -219,7 +232,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 }
 
                 position = zone.Center + direction.normalized *
-                    (zone.Radius + shipRadius + _spawnEdgePadding);
+                    (zone.Radius + shipRadius + spawnEdgePadding);
                 position.y = 0f;
                 return true;
             }
@@ -236,7 +249,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             foreach (ReinforcementZonePresenter zone in _zones)
             {
                 // Allies never take a zone from each other, so an allied zone is never a capture target.
-                if (!zone.IsCapturable || _roster.IsAllied(zone.Owner, owner))
+                if (!zone.IsCapturable || _playerRoster.IsAllied(zone.Owner, owner))
                 {
                     continue;
                 }

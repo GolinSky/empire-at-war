@@ -1,0 +1,67 @@
+pipeline {
+    agent none
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+        timeout(time: 60, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    parameters {
+        string(name: 'SOURCE_BUILD', defaultValue: '', description: 'Successful EmpireAtWar-Windows-Local build number with retained artifacts.', trim: true)
+        string(name: 'RELEASE_TAG', defaultValue: '', description: 'vMAJOR.MINOR.PATCH, optionally with a prerelease suffix. Always creates a draft.', trim: true)
+        booleanParam(name: 'PRERELEASE', defaultValue: true, description: 'Mark the draft as a prerelease.')
+    }
+    environment {
+        CI_TOOLS = 'F:/Jenkins/app/build-tools'
+    }
+    stages {
+        stage('Select successful build') {
+            steps {
+                script {
+                    if (!(params.SOURCE_BUILD ==~ /[1-9][0-9]*/)) {
+                        error('SOURCE_BUILD must be a positive build number; latest-build aliases are not accepted.')
+                    }
+                    if (!(params.RELEASE_TAG ==~ /v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?/)) {
+                        error('RELEASE_TAG must be vMAJOR.MINOR.PATCH with an optional prerelease suffix.')
+                    }
+                    def source = waitForBuild(runId: "EmpireAtWar-Windows-Local#${params.SOURCE_BUILD}", propagate: false, propagateAbort: false)
+                    if (source.result != 'SUCCESS') {
+                        error("Source build #${params.SOURCE_BUILD} is ${source.result}; only SUCCESS is allowed.")
+                    }
+                    currentBuild.description = "${params.RELEASE_TAG} from build #${params.SOURCE_BUILD} (draft)"
+                }
+            }
+        }
+        stage('Prepare draft release') {
+            agent { label 'windows-local-unity' }
+            stages {
+                stage('Copy and validate artifacts') {
+                    steps {
+                        deleteDir()
+                        copyArtifacts(projectName: 'EmpireAtWar-Windows-Local', selector: specific(params.SOURCE_BUILD),
+                            filter: 'artifacts/EmpireAtWar-Windows.zip,artifacts/commit.txt,artifacts/zip-sha256.json,artifacts/build-provenance.json',
+                            fingerprintArtifacts: true, optional: false)
+                        powershell '& "$env:CI_TOOLS/Publish-GitHubRelease.ps1" -ValidateOnly'
+                    }
+                }
+                stage('Upload and verify draft') {
+                    steps {
+                        withCredentials([string(credentialsId: 'github-releases', variable: 'GH_TOKEN')]) {
+                            powershell '& "$env:CI_TOOLS/Publish-GitHubRelease.ps1"'
+                        }
+                        script {
+                            def releaseUrl = readFile('release-url.txt').trim()
+                            currentBuild.description = "${params.RELEASE_TAG} from build #${params.SOURCE_BUILD}: ${releaseUrl}"
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'release-result.json,release-url.txt', allowEmptyArchive: true
+                }
+                cleanup { deleteDir() }
+            }
+        }
+    }
+}

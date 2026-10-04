@@ -31,15 +31,15 @@ namespace EmpireAtWar.Presenters.Economy
             IUiCancelRouter cancelRouter,
             IEconomyModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltips,
-            EmpireAtWar.Services.Economy.EconomyService economy,
+            ITooltipService tooltipService,
+            EmpireAtWar.Services.Economy.EconomyService economyService,
             EmpireAtWar.Models.Economy.EconomyData data,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
             _model = model;
             _routeNavigation = routeNavigation;
-            _tooltips = new TooltipRequests(tooltips);
-            _economy = economy;
+            _tooltips = new TooltipRequests(tooltipService);
+            _economy = economyService;
             _data = data;
             _reinforcements = reinforcements;
         }

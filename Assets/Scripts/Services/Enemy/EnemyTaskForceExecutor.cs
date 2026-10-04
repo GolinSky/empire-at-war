@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float CAPTURE_TARGET_EPSILON_SQUARED = 1f;
 
-        private readonly IUnitOrderService _orders;
+        private readonly IUnitOrderService _unitOrderService;
         private GameEntity _battleTarget;
 
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
@@ -35,7 +35,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool _hasCaptureTarget;
 
-        public EnemyTaskForceExecutor(IUnitOrderService orders) => _orders = orders;
+        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) => _unitOrderService = unitOrderService;
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Enemy
                             UnitOrderType.AttackMove)
                         : Resolve(context, _captureShips, captureCount);
                     if (captureReceivers.Count > 0)
-                        _orders.IssueAttackMove(captureReceivers, context.CaptureTarget);
+                        _unitOrderService.IssueAttackMove(captureReceivers, context.CaptureTarget);
                     StopRemaining(context, _captureShips, captureCount);
                     return;
                 case EnemyStrategicState.HuntFleet:
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Services.Enemy
                     }
                     int guardCount = Math.Min(decision.CommittedShipCount,
                         context.Ships.Count);
-                    _orders.IssueGuard(Resolve(context, context.Ships, guardCount),
+                    _unitOrderService.IssueGuard(Resolve(context, context.Ships, guardCount),
                         context.OwnBase, BattleOffsets(context.Ships, guardCount,
                             context.OwnBase));
                     StopRemaining(context, context.Ships, guardCount);
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Services.Enemy
                     // re-path ships that are already on their way.
                     List<GameEntity> retreatReceivers = ResolveWithout(context,
                         context.Ships, context.Ships.Count, UnitOrderType.Retreat);
-                    if (retreatReceivers.Count > 0) _orders.IssueRetreat(retreatReceivers);
+                    if (retreatReceivers.Count > 0) _unitOrderService.IssueRetreat(retreatReceivers);
                     return;
                 case EnemyStrategicState.Hold:
                 case EnemyStrategicState.RebuildFleet:
@@ -106,9 +106,9 @@ namespace EmpireAtWar.Services.Enemy
             int count = Math.Min(committed, context.Ships.Count);
             List<GameEntity> receivers = Resolve(context, context.Ships, count);
             if (target != null)
-                _orders.IssueAttack(receivers, target,
+                _unitOrderService.IssueAttack(receivers, target,
                     BattleOffsets(context.Ships, count, target));
-            else if (allowHunt) _orders.IssueHunt(receivers);
+            else if (allowHunt) _unitOrderService.IssueHunt(receivers);
             else
             {
                 StopRemaining(context, context.Ships, 0);
@@ -174,7 +174,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = start; i < ships.Count; i++)
                 if (ships[i].CurrentOrder != UnitOrderType.None)
                     idleCandidates.Add(context.Receivers[ships[i]]);
-            if (idleCandidates.Count > 0) _orders.IssueStop(idleCandidates);
+            if (idleCandidates.Count > 0) _unitOrderService.IssueStop(idleCandidates);
         }
     }
 }

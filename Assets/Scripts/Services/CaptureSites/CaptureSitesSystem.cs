@@ -4,6 +4,7 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Squadrons;
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Services.CaptureSites
     /// through each side's <see cref="ISiteFacilityBuilder"/>, and reset when the facility dies.
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
-        ILateDisposable, IUiCancelHandler
+        ILateDisposable, IUiCancelHandler, IObserver<BattleMap>
     {
         // Explored fog retains 0.35 visibility; site status requires current vision.
         private const float MINIMUM_SITE_VISIBILITY = 0.5f;
@@ -29,16 +30,17 @@ namespace EmpireAtWar.Services.CaptureSites
         private ISquadronRegistry _squadronRegistry;
         private IFogOfWarSystem _fogOfWarSystem;
         private ICameraService _cameraService;
-        private IPointerInput _pointer;
+        private IPointerInput _pointerInput;
         private IPointerGestures _gestures;
         private IUiCancelRouter _cancelRouter;
         private IPlayerRegistry _playerRegistry;
-        private IPlayerRoster _roster;
+        private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
-        private ITooltipService _tooltips;
+        private ITooltipService _tooltipService;
+        private INotifier<BattleMap> _battleMap;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
-        private CaptureSiteView[] _siteViews;
+        private IReadOnlyList<CaptureSiteView> _siteViews;
         private CaptureSiteData _data;
         private CaptureStrengthBuilder _captureStrengthBuilder;
         private CaptureSitePresenter _selectedSite;
@@ -52,51 +54,57 @@ namespace EmpireAtWar.Services.CaptureSites
             ISquadronRegistry squadronRegistry,
             IFogOfWarSystem fogOfWarSystem,
             ICameraService cameraService,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             IPointerGestures gestures,
             IUiCancelRouter cancelRouter,
             IPlayerRegistry playerRegistry,
-            IPlayerRoster roster,
+            IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
-            ITooltipService tooltips,
-            CaptureSiteData data,
-            CaptureSiteView[] siteViews)
+            ITooltipService tooltipService,
+            INotifier<BattleMap> battleMap,
+            CaptureSiteData data)
         {
-            _siteViews = siteViews;
-            _tooltips = tooltips;
+            _battleMap = battleMap;
+            _tooltipService = tooltipService;
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
             _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _gestures = gestures;
             _cancelRouter = cancelRouter;
             _playerRegistry = playerRegistry;
-            _roster = roster;
+            _playerRoster = playerRoster;
             _localPlayer = localPlayer;
-            _captureStrengthBuilder = new CaptureStrengthBuilder(roster);
+            _captureStrengthBuilder = new CaptureStrengthBuilder(playerRoster);
         }
 
         public void Initialize()
         {
-            foreach (CaptureSiteView view in _siteViews)
-            {
-                CaptureSiteModel model = new CaptureSiteModel(
-                    captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _roster);
-                CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
-                    tooltips: _tooltips, canAfford: price => GetBuilder(_localPlayer.Id).CanAfford(price));
-                site.BuildRequested += HandleBuildRequested;
-                _sites.Add(site);
-            }
-
             _canPlayerAfford = price => GetBuilder(_localPlayer.Id).CanAfford(price);
             _gestures.WorldPressed += HandleWorldPressed;
             _gestures.WorldCommanded += HandleWorldCommanded;
+            _battleMap.AddObserver(this);
+        }
+
+        public void UpdateState(BattleMap battleMap)
+        {
+            _siteViews = battleMap.SiteViews;
+            foreach (CaptureSiteView view in _siteViews)
+            {
+                CaptureSiteModel model = new CaptureSiteModel(
+                    captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
+                CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
+                    tooltipService: _tooltipService, canAfford: price => GetBuilder(_localPlayer.Id).CanAfford(price));
+                site.BuildRequested += HandleBuildRequested;
+                _sites.Add(site);
+            }
         }
 
         public void LateDispose()
         {
+            _battleMap.RemoveObserver(this);
             _gestures.WorldPressed -= HandleWorldPressed;
             _gestures.WorldCommanded -= HandleWorldCommanded;
             _cancelRouter.Unfocus(this);
@@ -133,14 +141,13 @@ namespace EmpireAtWar.Services.CaptureSites
                 }
 
                 bool isHovered = isVisible &&
-                    site.Contains(_cameraService.GetWorldPoint(_pointer.Position, site.Center));
+                    site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
                 site.SetVisibility(isVisible, isHovered, _canPlayerAfford);
             }
         }
 
         public bool IsPositionInAnySite(Vector3 position, float clearance = 0f)
         {
-            // Reads the views directly so zone layout can query sites before Initialize.
             foreach (CaptureSiteView view in _siteViews)
             {
                 float x = position.x - view.Center.x;
@@ -161,7 +168,7 @@ namespace EmpireAtWar.Services.CaptureSites
             float closestDistance = float.MaxValue;
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (!site.IsCapturable || _roster.IsAllied(site.Owner, owner))
+                if (!site.IsCapturable || _playerRoster.IsAllied(site.Owner, owner))
                 {
                     continue;
                 }
@@ -207,7 +214,7 @@ namespace EmpireAtWar.Services.CaptureSites
             float closestDistance = float.MaxValue;
             foreach (CaptureSitePresenter site in _sites)
             {
-                if (!site.IsOperational || !_roster.IsHostile(attacker, site.Owner))
+                if (!site.IsOperational || !_playerRoster.IsHostile(attacker, site.Owner))
                 {
                     continue;
                 }
@@ -353,7 +360,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             foreach (IShipEntity ship in _shipService.Ships)
             {
-                if (_roster.IsHostile(owner, ship.Owner) && site.Contains(ship.WorldPosition))
+                if (_playerRoster.IsHostile(owner, ship.Owner) && site.Contains(ship.WorldPosition))
                 {
                     return true;
                 }
@@ -361,7 +368,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
             return _squadronRegistry.HasSquadronInside(
                 position => site.Contains(position),
-                squadronOwner => _roster.IsHostile(owner, squadronOwner));
+                squadronOwner => _playerRoster.IsHostile(owner, squadronOwner));
         }
 
         private ISiteFacilityBuilder GetBuilder(PlayerId owner)

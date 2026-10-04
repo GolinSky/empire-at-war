@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Input
 
         public Vector2 Position => _pointer.Position.ReadValue<Vector2>();
         public int ClickCount => Mathf.Max(1, _pointer.ClickCount.ReadValue<int>());
+        public bool HasPosition { get; private set; }
 
         public PointerInput(InputActionsProvider provider)
         {
@@ -25,12 +26,19 @@ namespace EmpireAtWar.Services.Input
         {
             _pointer.Primary.started += HandlePrimaryStarted;
             _pointer.Primary.canceled += HandlePrimaryCanceled;
+            _pointer.Position.performed += HandlePositionPerformed;
         }
 
         public void Dispose()
         {
             _pointer.Primary.started -= HandlePrimaryStarted;
             _pointer.Primary.canceled -= HandlePrimaryCanceled;
+            _pointer.Position.performed -= HandlePositionPerformed;
+        }
+
+        private void HandlePositionPerformed(InputAction.CallbackContext context)
+        {
+            HasPosition = true;
         }
 
         private void HandlePrimaryStarted(InputAction.CallbackContext context)

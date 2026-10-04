@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.ShipNavigation;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace EmpireAtWar.Components.Obstacles
 {
@@ -10,15 +11,15 @@ namespace EmpireAtWar.Components.Obstacles
     public sealed class MapObstacle : MonoBehaviour, IMapObstacleContactSource,
         IMiniMapObstacleSource
     {
-        [SerializeField] private Collider _obstacleCollider;
+        [SerializeField, FormerlySerializedAs("_obstacleCollider")] private Collider obstacleCollider;
 
-        public Bounds WorldBounds => _obstacleCollider.bounds;
+        public Bounds WorldBounds => obstacleCollider.bounds;
 
         public RadarContact Contact
         {
             get
             {
-                Bounds bounds = _obstacleCollider.bounds;
+                Bounds bounds = obstacleCollider.bounds;
                 return new RadarContact(
                     bounds.center,
                     Mathf.Max(bounds.extents.x, bounds.extents.z),

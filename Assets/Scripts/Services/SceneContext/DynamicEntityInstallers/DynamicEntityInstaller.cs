@@ -16,7 +16,7 @@ namespace EmpireAtWar
 
         private Vector3 _startPosition;
 
-        protected IAssetService Repository { get; private set; }
+        protected IAssetService AssetService { get; private set; }
 
         protected virtual string DataPath => typeof(TData).Name;
         protected virtual string PrefabPath => typeof(TEntity).Name + VIEW_POSTFIX;
@@ -24,7 +24,7 @@ namespace EmpireAtWar
         [Inject]
         public void Constructor(IAssetService assetService, GameObjectContext context, Vector3 startPosition)
         {
-            Repository = assetService;
+            AssetService = assetService;
             _startPosition = startPosition;
             _context = context;
         }
@@ -33,13 +33,13 @@ namespace EmpireAtWar
         {
             Container.BindEntityExt(_startPosition);
 
-            TData data = Repository.Load<TData>(DataPath);
+            TData data = AssetService.Load<TData>(DataPath);
             Container.BindInterfacesAndSelfTo<TData>().FromNewScriptableObject(data).AsSingle();
 
             InstallFeatures(data);
 
             TEntity entity = Container.InstantiatePrefabForInstall(
-                Repository.LoadComponent<TEntity>(PrefabPath), transform, _context);
+                AssetService.LoadComponent<TEntity>(PrefabPath), transform, _context);
             Container.BindInterfacesAndSelfTo<TEntity>().FromInstance(entity).AsSingle();
             Container.Bind<Transform>()
                 .WithId(EntityBindType.ViewTransform)

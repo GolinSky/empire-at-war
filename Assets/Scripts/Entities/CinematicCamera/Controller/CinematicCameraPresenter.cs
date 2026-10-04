@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CinematicCamera.Model;
-using EmpireAtWar.Models.SkirmishGame;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ui.Base;
@@ -15,17 +15,17 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Controller
 {
-    public class CinematicCameraPresenter : UiController, ICinematicCameraController, ILateTickable,
-        ILateDisposable
+    public class CinematicCameraPresenter : UiController, ICinematicCameraController, IInitializable, ILateTickable,
+        ILateDisposable, IObserver<BattleState>
     {
         private const long NO_TARGET = -1;
 
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly IEntityLocator _entityLocator;
         private readonly IFogOfWarSystem _fogOfWarSystem;
-        private readonly ISkirmishSessionModelObserver _sessionModel;
+        private readonly INotifier<BattleState> _battleState;
         private readonly ILocalPlayer _localPlayer;
         private System.IDisposable _inputLockHandle;
 
@@ -55,17 +55,18 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private bool _isTargetLost;
         private bool _isCutPending;
         private bool _isExitRequested;
+        private bool _isBattleEnded;
 
         public CinematicCameraPresenter(
             ICameraService cameraService,
             IInputLock inputLock,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IEntityLocator entityLocator,
             IFogOfWarSystem fogOfWarSystem,
-            ISkirmishSessionModelObserver sessionModel,
-            IPlayerRoster roster,
+            INotifier<BattleState> battleState,
+            IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             CinematicCameraModel model,
             CinematicCameraData cinematicCameraData) : base(uiService, cancelRouter)
@@ -74,19 +75,25 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _settings = cinematicCameraData;
             _cameraService = cameraService;
             _inputLock = inputLock;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _entityLocator = entityLocator;
             _fogOfWarSystem = fogOfWarSystem;
-            _sessionModel = sessionModel;
+            _battleState = battleState;
             _localPlayer = localPlayer;
 
             Random random = new Random();
-            _scorer = new CinematicInterestScorer(settings: _settings, random: random, relations: roster);
+            _scorer = new CinematicInterestScorer(settings: _settings, random: random, relations: playerRoster);
             _sequencer = new CinematicShotSequencer(random, _settings.MinShotDuration, _settings.MaxShotDuration);
+        }
+
+        public void Initialize()
+        {
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
             if (_model.IsActive)
             {
                 Unsubscribe();
@@ -95,7 +102,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
 
         public void Enter()
         {
-            if (_model.IsActive || _sessionModel.IsBattleEnded)
+            if (_model.IsActive || _isBattleEnded)
             {
                 return;
             }
@@ -105,7 +112,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _inputLockHandle = _inputLock.Acquire();
             UiService.SetHudVisible(false);
             Focus();
-            _pointer.PrimaryReleased += OnPointerReleased;
+            _pointerInput.PrimaryReleased += OnPointerReleased;
             _model.SetActive(true);
             _enterFrame = Time.frameCount;
 
@@ -115,6 +122,11 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             StartShot(_sequencer.First());
         }
 
+        public void UpdateState(BattleState state)
+        {
+            _isBattleEnded = state == BattleState.Ended;
+        }
+
         public void LateTick()
         {
             if (!_model.IsActive)
@@ -122,7 +134,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 return;
             }
 
-            if (_isExitRequested || _sessionModel.IsBattleEnded)
+            if (_isExitRequested || _isBattleEnded)
             {
                 Exit();
                 return;
@@ -288,7 +300,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private void Unsubscribe()
         {
             Unfocus();
-            _pointer.PrimaryReleased -= OnPointerReleased;
+            _pointerInput.PrimaryReleased -= OnPointerReleased;
         }
     }
 }

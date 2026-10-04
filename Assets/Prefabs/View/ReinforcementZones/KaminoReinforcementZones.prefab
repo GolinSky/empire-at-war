@@ -48,14 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d007328b9f42124c80cc52a55266491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.ReinforcementZones.ReinforcementZonesSystem
-  republicStationRadius: 135
-  separatistStationRadius: 90
-  _spawnEdgePadding: 3
-  _zoneViews:
-  - {fileID: 2224506878029224135}
-  - {fileID: 5683336792990899957}
-  - {fileID: 7846614837344869251}
-  - {fileID: 4968265659658872434}
+  spawnEdgePadding: 3
 --- !u!1001 &16423499611422781
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -116,7 +109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
-      propertyPath: _isCapturable
+      propertyPath: isCapturable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
@@ -140,18 +133,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 16423499611422781}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5683336792990899957 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
-    type: 3}
-  m_PrefabInstance: {fileID: 16423499611422781}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
 --- !u!1001 &727277382160005306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -226,18 +207,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 727277382160005306}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4968265659658872434 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
-    type: 3}
-  m_PrefabInstance: {fileID: 727277382160005306}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
 --- !u!1001 &2450480712075150667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -312,18 +281,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2450480712075150667}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7846614837344869251 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
-    type: 3}
-  m_PrefabInstance: {fileID: 2450480712075150667}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
 --- !u!1001 &5780955742000891407
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -384,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
         type: 3}
-      propertyPath: _isCapturable
+      propertyPath: isCapturable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
@@ -402,18 +359,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cded744fa9497254487c67b9a5708579, type: 3}
---- !u!114 &2224506878029224135 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5684982705061600968, guid: cded744fa9497254487c67b9a5708579,
-    type: 3}
-  m_PrefabInstance: {fileID: 5780955742000891407}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1685efcf3ef14b04bbf6bffeb8454c33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Views.ReinforcementZones.ReinforcementZoneView
 --- !u!4 &7856297845482721538 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4412746819459471117, guid: cded744fa9497254487c67b9a5708579,

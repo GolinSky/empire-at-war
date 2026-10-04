@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using System.Reflection;
+using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -93,14 +95,18 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data, params ReinforcementZoneView[] zones)
         {
             ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
-            SetField(system, "_zoneViews", zones);
             SetField(system, "_data", data);
             SetField(system, "_mapModel", new FakeMapModel(
                 new Vector3(-180f, 0f, 170f), new Vector3(160f, 0f, -170f)));
             PlayerRoster roster = TestPlayers.CreateTeamGame();
-            SetField(system, "_roster", roster);
+            SetField(system, "_playerRoster", roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
-            system.Initialize();
+            system.UpdateState(new BattleMap(
+                layout: null,
+                zoneViews: zones,
+                siteViews: System.Array.Empty<CaptureSiteView>(),
+                obstacles: System.Array.Empty<MapObstacle>(),
+                stationObstacles: System.Array.Empty<StationObstacle>()));
             return system;
         }
 
@@ -114,12 +120,12 @@ namespace EmpireAtWar.Tests.Editor
             gameObject.transform.SetParent(parent);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
-            SetField(view, "_sphereRenderer", gameObject.AddComponent<MeshRenderer>());
+            SetField(view, "sphereRenderer", gameObject.AddComponent<MeshRenderer>());
             GameObject captureUi = new GameObject("CaptureUi", typeof(RectTransform));
             captureUi.transform.SetParent(gameObject.transform);
-            SetField(view, "_captureCanvas", captureUi.AddComponent<Canvas>());
+            SetField(view, "captureCanvas", captureUi.AddComponent<Canvas>());
             SetField(view, "_startingOwner", owner);
-            SetField(view, "_isCapturable", isCapturable);
+            SetField(view, "isCapturable", isCapturable);
             return view;
         }
 

@@ -12,14 +12,14 @@ namespace EmpireAtWar.Tests.Editor
     {
         private FakeRepository _repository;
         private RecordingApplier _applier;
-        private SettingsService _service;
+        private SettingsService _settingsService;
 
         [SetUp]
         public void SetUp()
         {
             _repository = new FakeRepository();
             _applier = new RecordingApplier();
-            _service = new SettingsService(_repository, new List<ISettingsApplier> { _applier });
+            _settingsService = new SettingsService(_repository, new List<ISettingsApplier> { _applier });
         }
 
         [Test]
@@ -29,10 +29,10 @@ namespace EmpireAtWar.Tests.Editor
             stored.Camera.PanSpeedMultiplier = 2f;
             _repository.Stored = stored;
 
-            _service.Initialize();
+            _settingsService.Initialize();
 
-            Assert.That(_service.PanSpeedMultiplier, Is.EqualTo(2f));
-            Assert.That(_service.IsDirty, Is.False);
+            Assert.That(_settingsService.PanSpeedMultiplier, Is.EqualTo(2f));
+            Assert.That(_settingsService.IsDirty, Is.False);
             Assert.That(_applier.Applied, Has.Count.EqualTo(1));
             Assert.That(_repository.SaveCount, Is.Zero);
         }
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _repository.Status = SettingsLoadStatus.Missing;
 
-            _service.Initialize();
+            _settingsService.Initialize();
 
             Assert.That(_repository.SaveCount, Is.EqualTo(1));
             Assert.That(_applier.Applied, Has.Count.EqualTo(1));
@@ -53,70 +53,70 @@ namespace EmpireAtWar.Tests.Editor
         {
             _repository.Status = SettingsLoadStatus.Unreadable;
 
-            _service.Initialize();
+            _settingsService.Initialize();
 
             Assert.That(_repository.SaveCount, Is.Zero);
-            Assert.That(_service.Saved.Matches(new SettingsData()), Is.True);
+            Assert.That(_settingsService.Saved.Matches(new SettingsData()), Is.True);
         }
 
         [Test]
         public void Apply_CommitsDraftAndClearsDirty()
         {
-            _service.Initialize();
-            _service.Draft.Audio.MasterVolume = 0.5f;
-            Assert.That(_service.IsDirty, Is.True);
+            _settingsService.Initialize();
+            _settingsService.Draft.Audio.MasterVolume = 0.5f;
+            Assert.That(_settingsService.IsDirty, Is.True);
 
-            Assert.That(_service.Apply(), Is.EqualTo(SettingsApplyResult.Committed));
+            Assert.That(_settingsService.Apply(), Is.EqualTo(SettingsApplyResult.Committed));
 
-            Assert.That(_service.IsDirty, Is.False);
-            Assert.That(_service.Saved.Audio.MasterVolume, Is.EqualTo(0.5f));
+            Assert.That(_settingsService.IsDirty, Is.False);
+            Assert.That(_settingsService.Saved.Audio.MasterVolume, Is.EqualTo(0.5f));
             Assert.That(_repository.Stored.Audio.MasterVolume, Is.EqualTo(0.5f));
         }
 
         [Test]
         public void Apply_DisplayChange_WaitsForConfirmationBeforeSaving()
         {
-            _service.Initialize();
-            _service.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
+            _settingsService.Initialize();
+            _settingsService.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
 
-            Assert.That(_service.Apply(), Is.EqualTo(SettingsApplyResult.AwaitingDisplayConfirmation));
-            Assert.That(_service.IsAwaitingDisplayConfirmation, Is.True);
+            Assert.That(_settingsService.Apply(), Is.EqualTo(SettingsApplyResult.AwaitingDisplayConfirmation));
+            Assert.That(_settingsService.IsAwaitingDisplayConfirmation, Is.True);
             Assert.That(_repository.SaveCount, Is.Zero);
             Assert.That(_applier.Last.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Windowed));
 
-            Assert.That(_service.KeepDisplay(), Is.EqualTo(SettingsApplyResult.Committed));
-            Assert.That(_service.IsAwaitingDisplayConfirmation, Is.False);
-            Assert.That(_service.Saved.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Windowed));
+            Assert.That(_settingsService.KeepDisplay(), Is.EqualTo(SettingsApplyResult.Committed));
+            Assert.That(_settingsService.IsAwaitingDisplayConfirmation, Is.False);
+            Assert.That(_settingsService.Saved.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Windowed));
         }
 
         [Test]
         public void RevertDisplay_RestoresSavedDisplayAndKeepsOtherEdits()
         {
-            _service.Initialize();
-            _service.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
-            _service.Draft.Camera.InvertZoom = true;
-            _service.Apply();
+            _settingsService.Initialize();
+            _settingsService.Draft.Display.WindowMode = DisplayWindowMode.Windowed;
+            _settingsService.Draft.Camera.InvertZoom = true;
+            _settingsService.Apply();
 
-            _service.RevertDisplay();
+            _settingsService.RevertDisplay();
 
-            Assert.That(_service.IsAwaitingDisplayConfirmation, Is.False);
+            Assert.That(_settingsService.IsAwaitingDisplayConfirmation, Is.False);
             Assert.That(_applier.Last.Display.WindowMode, Is.EqualTo(DisplayWindowMode.Borderless));
-            Assert.That(_service.Draft.Camera.InvertZoom, Is.True);
-            Assert.That(_service.IsDirty, Is.True);
+            Assert.That(_settingsService.Draft.Camera.InvertZoom, Is.True);
+            Assert.That(_settingsService.IsDirty, Is.True);
             Assert.That(_repository.SaveCount, Is.Zero);
         }
 
         [Test]
         public void Discard_RestoresDraftAndReappliesSaved()
         {
-            _service.Initialize();
-            _service.Draft.Audio.MusicVolume = 0.1f;
+            _settingsService.Initialize();
+            _settingsService.Draft.Audio.MusicVolume = 0.1f;
 
-            _service.Discard();
+            _settingsService.Discard();
 
-            Assert.That(_service.IsDirty, Is.False);
-            Assert.That(_service.Draft.Audio.MusicVolume, Is.EqualTo(1f));
-            Assert.That(_applier.Last, Is.SameAs(_service.Saved));
+            Assert.That(_settingsService.IsDirty, Is.False);
+            Assert.That(_settingsService.Draft.Audio.MusicVolume, Is.EqualTo(1f));
+            Assert.That(_applier.Last, Is.SameAs(_settingsService.Saved));
         }
 
         [Test]
@@ -125,40 +125,40 @@ namespace EmpireAtWar.Tests.Editor
             SettingsData stored = new SettingsData();
             stored.Graphics.VSync = true;
             _repository.Stored = stored;
-            _service.Initialize();
+            _settingsService.Initialize();
 
-            _service.ResetDraftToDefaults();
+            _settingsService.ResetDraftToDefaults();
 
-            Assert.That(_service.Draft.Graphics.VSync, Is.False);
-            Assert.That(_service.Saved.Graphics.VSync, Is.True);
+            Assert.That(_settingsService.Draft.Graphics.VSync, Is.False);
+            Assert.That(_settingsService.Saved.Graphics.VSync, Is.True);
             Assert.That(_applier.Applied, Has.Count.EqualTo(1));
         }
 
         [Test]
         public void Apply_WhenSaveFails_ReportsFailureAndStaysDirty()
         {
-            _service.Initialize();
-            _service.Draft.Camera.EdgeScrolling = false;
+            _settingsService.Initialize();
+            _settingsService.Draft.Camera.EdgeScrolling = false;
             _repository.FailSaves = true;
             LogAssert.Expect(LogType.Error, new Regex("Could not save settings"));
 
-            Assert.That(_service.Apply(), Is.EqualTo(SettingsApplyResult.SaveFailed));
+            Assert.That(_settingsService.Apply(), Is.EqualTo(SettingsApplyResult.SaveFailed));
 
-            Assert.That(_service.IsDirty, Is.True);
-            Assert.That(_service.EdgeScrolling, Is.True);
+            Assert.That(_settingsService.IsDirty, Is.True);
+            Assert.That(_settingsService.EdgeScrolling, Is.True);
         }
 
         [Test]
         public void CameraPreferences_ReadSavedValuesNotDraft()
         {
-            _service.Initialize();
-            _service.Draft.Camera.ZoomSpeedMultiplier = 2f;
+            _settingsService.Initialize();
+            _settingsService.Draft.Camera.ZoomSpeedMultiplier = 2f;
 
-            Assert.That(_service.ZoomSpeedMultiplier, Is.EqualTo(1f));
+            Assert.That(_settingsService.ZoomSpeedMultiplier, Is.EqualTo(1f));
 
-            _service.Apply();
+            _settingsService.Apply();
 
-            Assert.That(_service.ZoomSpeedMultiplier, Is.EqualTo(2f));
+            Assert.That(_settingsService.ZoomSpeedMultiplier, Is.EqualTo(2f));
         }
 
         private sealed class FakeRepository : ISettingsRepository

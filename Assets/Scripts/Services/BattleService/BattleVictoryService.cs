@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
@@ -13,14 +14,16 @@ using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public sealed class BattleVictoryService : IService, INotifier<BattleResult>, ITickable
+    public sealed class BattleVictoryService : IService, INotifier<BattleResult>, IInitializable, ILateDisposable,
+        ITickable, IObserver<BattleState>
     {
         private readonly IGameModelObserver _gameModel;
         private readonly IShipService _shipService;
         private readonly IEntityLocator _entityLocator;
-        private readonly IPlayerRoster _roster;
+        private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly IPlayerRegistry _playerRegistry;
+        private readonly INotifier<BattleState> _battleState;
 
         private readonly BattleVictoryModel _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
@@ -28,6 +31,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly bool[] _aliveBases = new bool[MatchRules.MAX_PLAYERS];
         private readonly List<PlayerBattleState> _states = new List<PlayerBattleState>();
         private BattleResult _finalResult;
+        private bool _isRunning;
 
         public string Id => nameof(BattleVictoryService);
 
@@ -35,18 +39,36 @@ namespace EmpireAtWar.Services.Battle
             IGameModelObserver gameModel,
             IShipService shipService,
             IEntityLocator entityLocator,
-            IPlayerRoster roster,
+            IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             IPlayerRegistry playerRegistry,
+            INotifier<BattleState> battleState,
             BattleVictoryModel victoryModel)
         {
             _gameModel = gameModel;
             _shipService = shipService;
             _entityLocator = entityLocator;
             _victoryModel = victoryModel;
-            _roster = roster;
+            _playerRoster = playerRoster;
             _localPlayer = localPlayer;
             _playerRegistry = playerRegistry;
+            _battleState = battleState;
+        }
+
+        public void Initialize()
+        {
+            _battleState.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _battleState.RemoveObserver(this);
+        }
+
+        // Before the battle runs no station exists, so evaluating would end it at once.
+        public void UpdateState(BattleState state)
+        {
+            _isRunning = state == BattleState.Running;
         }
 
         public void AddObserver(IObserver<BattleResult> observer)
@@ -70,7 +92,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void Tick()
         {
-            if (_finalResult != null)
+            if (!_isRunning || _finalResult != null)
             {
                 return;
             }
@@ -115,7 +137,7 @@ namespace EmpireAtWar.Services.Battle
             }
 
             _states.Clear();
-            foreach (PlayerSlot player in _roster.Players)
+            foreach (PlayerSlot player in _playerRoster.Players)
             {
                 int index = player.Id.Index;
                 _states.Add(new PlayerBattleState(
@@ -145,7 +167,7 @@ namespace EmpireAtWar.Services.Battle
 
                 enemyShipCount += state.ShipCount;
                 isEnemyBaseAlive |= state.IsBaseAlive;
-                FactionType faction = _roster.Get(state.Player).Faction;
+                FactionType faction = _playerRoster.Get(state.Player).Faction;
                 if (!enemyFactions.Contains(faction))
                 {
                     enemyFactions.Add(faction);

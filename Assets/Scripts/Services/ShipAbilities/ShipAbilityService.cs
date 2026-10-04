@@ -12,7 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 {
     public sealed class ShipAbilityService : ITickable, ILateDisposable, IShipAbilityTargeting
     {
-        private readonly IShipAbilityFactory _factory;
+        private readonly IShipAbilityFactory _shipAbilityFactory;
         private readonly IPlayerRelations _relations;
 
         private readonly List<ShipAbilitySlot> _running = new List<ShipAbilitySlot>();
@@ -23,9 +23,9 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
 
-        public ShipAbilityService(IShipAbilityFactory factory, IPlayerRelations relations)
+        public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations)
         {
-            _factory = factory;
+            _shipAbilityFactory = shipAbilityFactory;
             _relations = relations;
         }
 
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                  PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
                 return false;
 
-            IShipAbility ability = _factory.Create(definition);
+            IShipAbility ability = _shipAbilityFactory.Create(definition);
             if (ability is IPhasedShipAbility phased && !phased.CanStart(caster, target)) return false;
             ability.Start(caster, definition, target);
             slot.Activate(ability);

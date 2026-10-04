@@ -15,29 +15,35 @@ namespace EmpireAtWar.Services.StationFacing
     public sealed class StationFacingService : IStationFacingService
     {
         private readonly Dictionary<PlayerId, Quaternion> _rotations = new Dictionary<PlayerId, Quaternion>();
+        private readonly IMapModelObserver _mapModel;
 
-        public StationFacingService(IMapModelObserver mapModel, IPlayerRoster roster)
+        // The map loads after binding, so each rotation is derived on its first request.
+        public StationFacingService(IMapModelObserver mapModel)
         {
-            Vector3 center = new Vector3(
-                (mapModel.SizeRange.Min.x + mapModel.SizeRange.Max.x) * 0.5f,
-                0f,
-                (mapModel.SizeRange.Min.y + mapModel.SizeRange.Max.y) * 0.5f);
-            foreach (PlayerSlot player in roster.Players)
-            {
-                Vector3 toCenter = center - mapModel.GetStationPosition(player.Id);
-                toCenter.y = 0f;
-                if (toCenter.sqrMagnitude <= Mathf.Epsilon)
-                {
-                    throw new InvalidOperationException($"The station of {player.Id} sits on the map center.");
-                }
-
-                _rotations.Add(player.Id, Quaternion.LookRotation(toCenter, Vector3.up));
-            }
+            _mapModel = mapModel;
         }
 
         public Quaternion GetRotation(PlayerId owner)
         {
-            return _rotations[owner];
+            if (_rotations.TryGetValue(owner, out Quaternion rotation))
+            {
+                return rotation;
+            }
+
+            Vector3 center = new Vector3(
+                (_mapModel.SizeRange.Min.x + _mapModel.SizeRange.Max.x) * 0.5f,
+                0f,
+                (_mapModel.SizeRange.Min.y + _mapModel.SizeRange.Max.y) * 0.5f);
+            Vector3 toCenter = center - _mapModel.GetStationPosition(owner);
+            toCenter.y = 0f;
+            if (toCenter.sqrMagnitude <= Mathf.Epsilon)
+            {
+                throw new InvalidOperationException($"The station of {owner} sits on the map center.");
+            }
+
+            rotation = Quaternion.LookRotation(toCenter, Vector3.up);
+            _rotations.Add(owner, rotation);
+            return rotation;
         }
     }
 }

@@ -10,13 +10,13 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class StationFacingServiceTests
     {
         [Test]
-        public void Constructor_FacesEveryStationTowardMapCenterOnce()
+        public void GetRotation_FacesEveryStationTowardMapCenterOnce()
         {
             // The default size range is centered on the origin.
             CountingMapModel mapModel = new CountingMapModel(
                 new Vector3(-10f, 3f, 0f),
                 new Vector3(20f, 9f, 0f));
-            StationFacingService service = new StationFacingService(mapModel, TestPlayers.CreateDuel());
+            StationFacingService service = new StationFacingService(mapModel);
 
             Quaternion playerRotation = service.GetRotation(TestPlayers.Human);
             Quaternion opponentRotation = service.GetRotation(TestPlayers.Enemy);

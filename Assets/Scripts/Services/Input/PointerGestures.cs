@@ -6,7 +6,7 @@ namespace EmpireAtWar.Services.Input
 {
     public sealed class PointerGestures : IPointerGestures, ITickable
     {
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
 
         private readonly MouseDragState _drag = new MouseDragState();
@@ -25,10 +25,10 @@ namespace EmpireAtWar.Services.Input
 
         public event Action<Vector2> DragEnded;
 
-        public PointerGestures(IPointerInput pointer, IUiHitTest uiHitTest, InputActionsProvider provider)
+        public PointerGestures(IPointerInput pointerInput, IUiHitTest uiHitTest, InputActionsProvider provider)
         {
             _battle = provider.Actions.Battle;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _uiHitTest = uiHitTest;
         }
 
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.Input
                 return;
             }
 
-            Vector2 position = _pointer.Position;
+            Vector2 position = _pointerInput.Position;
             if (_battle.Select.WasPressedThisFrame())
             {
                 Press(position);

@@ -565,13 +565,13 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         private ShipNavigationPlan Plan(
-            ShipNavigationService service,
+            ShipNavigationService shipNavigationService,
             FakeAgent agent,
             Vector3 destination,
             IReadOnlyList<RadarContact> contacts = null)
         {
-            service.Register(agent, agent.NavigationPosition);
-            return service.Plan(
+            shipNavigationService.Register(agent, agent.NavigationPosition);
+            return shipNavigationService.Plan(
                 agent,
                 Vector3.right,
                 destination,
@@ -592,10 +592,10 @@ namespace EmpireAtWar.Tests.Movement
 
         private ShipMoveComponent CreateReadyComponent(
             GameObject gameObject,
-            out RecordingShipNavigationService navigationService,
+            out RecordingShipNavigationService recordingShipNavigationService,
             bool isReady = true)
         {
-            navigationService = new RecordingShipNavigationService();
+            recordingShipNavigationService = new RecordingShipNavigationService();
             ShipMoveModel model = new ShipMoveModel(new FakeShipMoveData(), new CombatModifiers());
             if (isReady)
             {
@@ -607,7 +607,7 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
-                navigationService, new IgnoredSpawnClearance(), null, null, null, null, model, null,
+                recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, null, model, null,
                 ShipType.Arquitens, Vector3.zero, TestPlayers.Human });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");

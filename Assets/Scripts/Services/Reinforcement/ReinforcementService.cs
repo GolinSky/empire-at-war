@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Reinforcement
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>
     {
         private readonly IInputLock _inputLock;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly ICameraService _cameraService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public ReinforcementService(
             IInputLock inputLock,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             ICameraService cameraService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _model = model;
             _placementFactory = placementFactory;
             _inputLock = inputLock;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _cameraService = cameraService;
             _stationRegistry = stationRegistry;
             _battleVictoryNotifier = battleVictoryNotifier;
@@ -61,13 +61,13 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void Initialize()
         {
-            _pointer.PrimaryReleased += Interrupt;
+            _pointerInput.PrimaryReleased += Interrupt;
             _battleVictoryNotifier.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _pointer.PrimaryReleased -= Interrupt;
+            _pointerInput.PrimaryReleased -= Interrupt;
             _battleVictoryNotifier.RemoveObserver(this);
         }
 
@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            Vector3 position = _cameraService.GetWorldPoint(_pointer.Position, _preview.Position);
+            Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _preview.Position);
             position.y = 0;
             _preview.UpdatePosition(position);
             _preview.SetPlacementValidity(IsPlacementValid(position));

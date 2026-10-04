@@ -25,12 +25,12 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             IUiCancelRouter cancelRouter,
             ISkirmishRoute skirmishRoute,
             ISettingsRoute settingsRoute,
-            ITooltipService tooltips, MainMenuModel model) : base(uiService, cancelRouter)
+            ITooltipService tooltipService, MainMenuModel model) : base(uiService, cancelRouter)
         {
             _skirmishRoute = skirmishRoute;
             _settingsRoute = settingsRoute;
             _model = model;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void LateDispose()

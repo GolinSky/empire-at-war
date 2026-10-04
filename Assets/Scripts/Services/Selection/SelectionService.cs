@@ -16,7 +16,7 @@ namespace EmpireAtWar.Services.Battle
         ISelectionSubject
     {
         private readonly IPointerGestures _gestures;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly ISelectionInput _selectionInput;
         private readonly IEntityLocator _entityLocator;
         private readonly ISelectionQuery _selectionQuery;
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.Battle
 
         public SelectionService(
             IPointerGestures gestures,
-            IPointerInput pointer,
+            IPointerInput pointerInput,
             ISelectionInput selectionInput,
             IEntityLocator entityLocator,
             ISelectionQuery selectionQuery,
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Services.Battle
             _playerSelectionContext = new SelectionContext(scope: SelectionScope.Local, localPlayer: localPlayer);
             _otherSelectionContext = new SelectionContext(scope: SelectionScope.Other, localPlayer: localPlayer);
             _gestures = gestures;
-            _pointer = pointer;
+            _pointerInput = pointerInput;
             _selectionInput = selectionInput;
             _entityLocator = entityLocator;
             _selectionQuery = selectionQuery;
@@ -125,7 +125,7 @@ namespace EmpireAtWar.Services.Battle
             _lastTappedEntityId = selection.Entity.Id;
             if (isRepeatedTap &&
                 _localPlayer.IsLocal(selection.Entity.Owner) &&
-                _pointer.ClickCount >= 2 &&
+                _pointerInput.ClickCount >= 2 &&
                 TryCollectSameShipType(selection))
             {
                 SetSelection(GetScope(selection.Entity), _selectionBuffer);

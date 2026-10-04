@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map.Generation;
@@ -11,6 +12,8 @@ namespace EmpireAtWar.Entities.Map
     /// <summary>Spawns a generated <see cref="MapLayout"/>: zones, capture sites, asteroid fields, border and fog area.</summary>
     public sealed class MapLayoutView : MonoBehaviour
     {
+        private const float FRAME_SLICE_SECONDS = 0.008f;
+
         [SerializeField] private ReinforcementZoneView zonePrefab;
         [SerializeField] private CaptureSiteView miningSitePrefab;
         [SerializeField] private CaptureSiteView battleSitePrefab;
@@ -37,14 +40,21 @@ namespace EmpireAtWar.Entities.Map
         public CaptureSiteView[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
-        public void Build(MapLayout layout)
+        /// <summary>Spawns the layout over several frames, at most <see cref="FRAME_SLICE_SECONDS"/> per frame.</summary>
+        public async Awaitable BuildAsync(MapLayout layout, CancellationToken cancellationToken)
         {
+            // Fog first: spawned colliders are hover-tested against the fog from their first frame.
+            fogOfWarSystem.InitializeArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
+            DrawBorder(layout);
+            float sliceStart = Time.realtimeSinceStartup;
+
             ZoneViews = new ReinforcementZoneView[layout.Zones.Count];
             for (int i = 0; i < ZoneViews.Length; i++)
             {
                 ZoneSpot zone = layout.Zones[i];
                 ZoneViews[i] = Instantiate(zonePrefab, zone.Center, Quaternion.identity, zoneRoot);
                 ZoneViews[i].Configure(zone.Owner, zone.IsCapturable);
+                sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }
 
             SiteViews = new CaptureSiteView[layout.Sites.Count];
@@ -56,40 +66,50 @@ namespace EmpireAtWar.Entities.Map
                     : battleSitePrefab;
                 SiteViews[i] = Instantiate(prefab, site.Center, Quaternion.identity, siteRoot);
                 _obstacles.AddRange(SiteViews[i].RockObstacles);
+                sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }
 
             for (int i = 0; i < layout.Fields.Count; i++)
             {
-                BuildField(layout.Fields[i], i);
-            }
+                AsteroidField field = layout.Fields[i];
+                Transform root = new GameObject($"AsteroidField_{i}").transform;
+                root.SetParent(fieldRoot, false);
+                foreach (FieldVolume volume in field.Volumes)
+                {
+                    MapObstacle obstacle = Instantiate(fieldVolumePrefab, volume.Center, Quaternion.identity, root);
+                    obstacle.transform.localScale = Vector3.one * volume.Radius * 2f;
+                    _obstacles.Add(obstacle);
+                }
 
-            DrawBorder(layout);
-            fogOfWarSystem.ScaleArea((layout.SizeRange.Max.x - layout.SizeRange.Min.x) / fogReferenceSide);
+                for (int j = 0; j < field.Rocks.Count; j++)
+                {
+                    SpawnRock(field.Rocks[j], j, root);
+                    sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
+                }
+            }
         }
 
-        private void BuildField(AsteroidField field, int index)
+        private static async Awaitable<float> YieldWhenSliceSpent(float sliceStart, CancellationToken cancellationToken)
         {
-            Transform root = new GameObject($"AsteroidField_{index}").transform;
-            root.SetParent(fieldRoot, false);
-            foreach (FieldVolume volume in field.Volumes)
+            if (Time.realtimeSinceStartup - sliceStart < FRAME_SLICE_SECONDS)
             {
-                MapObstacle obstacle = Instantiate(fieldVolumePrefab, volume.Center, Quaternion.identity, root);
-                obstacle.transform.localScale = Vector3.one * volume.Radius * 2f;
-                _obstacles.Add(obstacle);
+                return sliceStart;
             }
 
-            for (int i = 0; i < field.Rocks.Count; i++)
+            await Awaitable.NextFrameAsync(cancellationToken);
+            return Time.realtimeSinceStartup;
+        }
+
+        private void SpawnRock(AsteroidSpot rock, int index, Transform root)
+        {
+            GameObject prefab = rock.Size switch
             {
-                AsteroidSpot rock = field.Rocks[i];
-                GameObject prefab = rock.Size switch
-                {
-                    AsteroidSize.Large => largeRockPrefab,
-                    AsteroidSize.Medium => mediumRockPrefab,
-                    _ => debrisRockPrefabs[i % debrisRockPrefabs.Length]
-                };
-                GameObject instance = Instantiate(prefab, rock.Position, Quaternion.Euler(rock.Rotation), root);
-                instance.transform.localScale = prefab.transform.localScale * rock.Scale;
-            }
+                AsteroidSize.Large => largeRockPrefab,
+                AsteroidSize.Medium => mediumRockPrefab,
+                _ => debrisRockPrefabs[index % debrisRockPrefabs.Length]
+            };
+            GameObject instance = Instantiate(prefab, rock.Position, Quaternion.Euler(rock.Rotation), root);
+            instance.transform.localScale = prefab.transform.localScale * rock.Scale;
         }
 
         private void DrawBorder(MapLayout layout)

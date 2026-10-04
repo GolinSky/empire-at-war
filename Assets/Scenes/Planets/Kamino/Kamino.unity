@@ -299,7 +299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 2040345788}
     m_RemovedComponents:
@@ -933,7 +933,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 2108115119}
     m_RemovedComponents:
@@ -1702,7 +1702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 372061146}
     m_RemovedComponents:
@@ -2178,7 +2178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 1595795824}
     m_RemovedComponents:
@@ -2322,7 +2322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 1703322444}
     m_RemovedComponents:
@@ -7888,7 +7888,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8805685386956235161, guid: 2c2ad22823f534d9589612ff1ba62f27,
         type: 3}
-      propertyPath: _obstacleCollider
+      propertyPath: obstacleCollider
       value: 
       objectReference: {fileID: 543450653233231610}
     m_RemovedComponents:

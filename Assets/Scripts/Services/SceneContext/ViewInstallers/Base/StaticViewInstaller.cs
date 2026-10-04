@@ -16,7 +16,7 @@ namespace EmpireAtWar
         [SerializeField] private bool bindMonoComponent;
 
         [Inject]
-        protected IAssetService Repository { get; }
+        protected IAssetService AssetService { get; }
 
         public override void InstallBindings()
         {
@@ -46,7 +46,7 @@ namespace EmpireAtWar
 
         protected virtual void BindModel()
         {
-            Container.BindModel<TModel>(Repository);
+            Container.BindModel<TModel>(AssetService);
         }
     }
 }

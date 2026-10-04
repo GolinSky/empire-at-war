@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Settings;
@@ -16,9 +17,9 @@ namespace EmpireAtWar.Controllers.Menu
 {
     public interface IUserStateNotifier:INotifier<UserNotifierState> {}
 
-    public class PauseMenuRouteController : UiController, IPauseMenuRoute, IPauseMenuRouteNavigation, IUserStateNotifier, IObserver<BattleResult>, IInitializable, ILateDisposable
+    public class PauseMenuRouteController : UiController, IPauseMenuRoute, IPauseMenuRouteNavigation, IUserStateNotifier, IObserver<BattleState>, IInitializable, ILateDisposable
     {
-        private readonly INotifier<BattleResult> _battleVictoryNotifier;
+        private readonly INotifier<BattleState> _battleState;
         private readonly IUiCancelRouter _cancelRouter;
         private readonly ISettingsRoute _settingsRoute;
         private IPauseMenuUiView _ui;
@@ -27,19 +28,22 @@ namespace EmpireAtWar.Controllers.Menu
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
-        private bool _hasBattleEnded;
+        private BattleState _state;
+
+        // Escape is ignored while the battle loads and after it ends.
+        private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused;
 
         public PauseMenuRouteController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             ISettingsRoute settingsRoute,
-            INotifier<BattleResult> battleVictoryNotifier,
-            ITooltipService tooltips) : base(uiService, cancelRouter)
+            INotifier<BattleState> battleState,
+            ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
             _cancelRouter = cancelRouter;
             _settingsRoute = settingsRoute;
-            _battleVictoryNotifier = battleVictoryNotifier;
-            _tooltips = new TooltipRequests(tooltips);
+            _battleState = battleState;
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()
@@ -54,13 +58,13 @@ namespace EmpireAtWar.Controllers.Menu
                 ((ITooltipHoverView)_ui).TooltipHover, HandleTooltipHover, _tooltips);
             _ui.SetMenuVisible(false);
             _cancelRouter.CancelUnhandled += Open;
-            _battleVictoryNotifier.AddObserver(this);
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
             _cancelRouter.CancelUnhandled -= Open;
-            _battleVictoryNotifier.RemoveObserver(this);
+            _battleState.RemoveObserver(this);
             if (_ui != null)
             {
                 _tooltipHover.Dispose();
@@ -102,7 +106,7 @@ namespace EmpireAtWar.Controllers.Menu
         private void SetMenuOpen(bool isOpen)
         {
             _tooltips.HideAll();
-            if (_hasBattleEnded)
+            if (!CanOpen)
             {
                 return;
             }
@@ -123,7 +127,7 @@ namespace EmpireAtWar.Controllers.Menu
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => !_hasBattleEnded, () =>
+            _tooltips.Show(source, key, anchor, () => _state != BattleState.Ended, () =>
                 new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Resume" => "Close the pause menu and resume the battle.",
@@ -132,9 +136,9 @@ namespace EmpireAtWar.Controllers.Menu
                     _ => throw new ArgumentOutOfRangeException(nameof(key))
                 }));
 
-        public void UpdateState(BattleResult result)
+        public void UpdateState(BattleState state)
         {
-            _hasBattleEnded = true;
+            _state = state;
         }
 
         private void UpdateState(UserNotifierState state)

@@ -18,7 +18,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
-        private readonly IUnitOrderService _orders;
+        private readonly IUnitOrderService _unitOrderService;
         private IUnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
 
@@ -31,13 +31,13 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         public UnitOrderFeedbackUiController(IUiService uiService,
             IUiCancelRouter cancelRouter,
             ICameraService cameraService, IEntityLocator entityLocator,
-            IUnitOrderService orders, ILocalPlayer localPlayer,
+            IUnitOrderService unitOrderService, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
-            _orders = orders;
+            _unitOrderService = unitOrderService;
             _targeting = targeting;
         }
 
@@ -47,14 +47,14 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 UiType.UnitOrderFeedback, UiService.DefaultCanvasTransform);
             _ui.SetPresenter(this);
             _ui.Initialize();
-            _orders.OrderIssued += HandleOrder;
+            _unitOrderService.OrderIssued += HandleOrder;
             _targeting.Changed += HandleTargetingChanged;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
         public void LateDispose()
         {
-            _orders.OrderIssued -= HandleOrder;
+            _unitOrderService.OrderIssued -= HandleOrder;
             _targeting.Changed -= HandleTargetingChanged;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             _ui.Dispose();

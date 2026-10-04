@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
         private readonly IEnemyAiStateProvider _stateProvider;
-        private readonly IEnemyStructurePlacementService _structurePlacementService;
+        private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IStationRegistry _stationRegistry;
 
         private readonly EnemyFactionModel _factionModel;
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.Enemy
             IUnitRequestFactory requestFactory,
             IEconomyModelObserver economyModel,
             IEnemyAiStateProvider stateProvider,
-            IEnemyStructurePlacementService structurePlacementService,
+            IEnemyStructurePlacementService enemyStructurePlacementService,
             IStationRegistry stationRegistry,
             EnemyFactionModel factionModel,
             EnemyProductionDecisionModel decisionModel,
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Services.Enemy
             _decisionModel = decisionModel;
             _unitLimitModel = unitLimitModel;
             _reinforcementData = reinforcementData;
-            _structurePlacementService = structurePlacementService;
+            _enemyStructurePlacementService = enemyStructurePlacementService;
             _stationRegistry = stationRegistry;
         }
 
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.Enemy
             int shipCount = CountReservedShips();
             int miningFacilityCount = CountReservedMiningFacilities();
             int defensePlatformCount = CountReservedDefensePlatforms();
-            bool canPlaceStructure = _structurePlacementService.TryGetPosition(out _);
+            bool canPlaceStructure = _enemyStructurePlacementService.TryGetPosition(out _);
             bool hasMiningSelection = TrySelectMiningFacility(
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
             bool hasMiningOption = canPlaceStructure && hasMiningSelection;

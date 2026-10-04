@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
@@ -18,60 +19,66 @@ using Zenject;
 
 namespace EmpireAtWar.Entities.Tooltip
 {
-    public sealed class WorldTooltipPresenter : IInitializable, ITickable, ILateDisposable
+    public sealed class WorldTooltipPresenter : IInitializable, ITickable, ILateDisposable, IObserver<BattleMap>
     {
         private readonly ISelectionQuery _query;
-        private readonly IPointerInput _pointer;
+        private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _ui;
         private readonly IPointerGestures _gestures;
-        private readonly ITooltipService _tooltips;
-        private readonly IFogOfWarSystem _fog;
+        private readonly ITooltipService _tooltipService;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private readonly ILocalPlayer _local;
         private readonly IHudVisibilityObserver _hud;
         private readonly IHardPointHoverObserver _hardPointHover;
         private readonly ICaptureSitesSystem _sites;
-        private readonly ICameraService _camera;
+        private readonly ICameraService _cameraService;
 
         private readonly HardPointOverlayData _hardPointData;
-        private readonly List<IMiniMapObstacleSource> _obstacles;
+        private readonly INotifier<BattleMap> _battleMap;
+        private readonly List<IMiniMapObstacleSource> _obstacles = new List<IMiniMapObstacleSource>();
 
         private TooltipHandle _handle;
 
         private bool _dragging;
 
-        private bool CanHover => _hud.IsHudVisible && !_dragging && !_ui.IsOverUi(_pointer.Position);
+        private bool CanHover => _hud.IsHudVisible && !_dragging && !_ui.IsOverUi(_pointerInput.Position);
 
-        public WorldTooltipPresenter(ISelectionQuery query, IPointerInput pointer, IUiHitTest ui,
-            IPointerGestures gestures, ITooltipService tooltips, IFogOfWarSystem fog,
+        public WorldTooltipPresenter(ISelectionQuery query, IPointerInput pointerInput, IUiHitTest ui,
+            IPointerGestures gestures, ITooltipService tooltipService, IFogOfWarSystem fogOfWarSystem,
             ILocalPlayer local, IHudVisibilityObserver hud, IHardPointHoverObserver hardPointHover,
-            ICaptureSitesSystem sites, ICameraService camera, HardPointOverlayData hardPointData,
-            List<IMiniMapObstacleSource> obstacles)
+            ICaptureSitesSystem sites, ICameraService cameraService, HardPointOverlayData hardPointData,
+            INotifier<BattleMap> battleMap)
         {
-            _query = query; _pointer = pointer; _ui = ui; _gestures = gestures; _tooltips = tooltips;
-            _fog = fog; _local = local; _hud = hud;
-            _hardPointHover = hardPointHover; _hardPointData = hardPointData; _sites = sites; _camera = camera;
-            _obstacles = obstacles;
+            _query = query; _pointerInput = pointerInput; _ui = ui; _gestures = gestures; _tooltipService = tooltipService;
+            _fogOfWarSystem = fogOfWarSystem; _local = local; _hud = hud;
+            _hardPointHover = hardPointHover; _hardPointData = hardPointData; _sites = sites; _cameraService = cameraService;
+            _battleMap = battleMap;
         }
 
         public void Initialize()
-        { _gestures.DragStarted += StartDrag; _gestures.DragEnded += EndDrag; }
+        { _gestures.DragStarted += StartDrag; _gestures.DragEnded += EndDrag; _battleMap.AddObserver(this); }
 
         public void LateDispose()
-        { _gestures.DragStarted -= StartDrag; _gestures.DragEnded -= EndDrag; _tooltips.Hide(_handle); }
+        {
+            _gestures.DragStarted -= StartDrag; _gestures.DragEnded -= EndDrag; _battleMap.RemoveObserver(this);
+            _tooltipService.Hide(_handle);
+        }
 
-        private void StartDrag(Vector2 point) { _dragging = true; _tooltips.Hide(_handle); }
+        public void UpdateState(BattleMap battleMap) => _obstacles.AddRange(battleMap.Obstacles);
+
+        private void StartDrag(Vector2 point) { _dragging = true; _tooltipService.Hide(_handle); }
 
         private void EndDrag(Vector2 point) => _dragging = false;
 
         public void Tick()
         {
-            if (!CanHover) { _tooltips.Hide(_handle); return; }
-            Vector2 point = _pointer.Position;
+            if (!CanHover) { _tooltipService.Hide(_handle); return; }
+            Vector2 point = _pointerInput.Position;
             var anchor = new TooltipAnchor(TooltipAnchorKind.Cursor, point.x, point.y);
             if (_hardPointHover.TryGetHovered(out IEntity owner, out int hardPointId) && IsVisible(owner))
             {
                 var key = (owner.Id, hardPointId);
-                _handle = _tooltips.Show(new TooltipContentProvider(this, key,
+                _handle = _tooltipService.Show(new TooltipContentProvider(this, key,
                     () => CanHover && IsVisible(owner) && _hardPointHover.TryGetHovered(out IEntity current, out int id) &&
                         current.Id == owner.Id && id == hardPointId,
                     () => BuildHardPoint(owner, hardPointId)), anchor);
@@ -79,16 +86,16 @@ namespace EmpireAtWar.Entities.Tooltip
             else if (_query.TryFindAt(point, out SelectionEntry selection) && IsVisible(selection.Entity))
             {
                 IEntity entity = selection.Entity;
-                _handle = _tooltips.Show(new TooltipContentProvider(this, entity.Id,
+                _handle = _tooltipService.Show(new TooltipContentProvider(this, entity.Id,
                     () => CanHover && IsVisible(entity), () => EntityTooltipContent.Build(entity)), anchor);
             }
             else
             {
-                Vector3 world = _camera.GetWorldPoint(point, Vector3.zero);
+                Vector3 world = _cameraService.GetWorldPoint(point, Vector3.zero);
                 foreach (ICaptureSite site in _sites.Sites)
                 {
                     if (!site.IsRevealed || !site.Contains(world)) continue;
-                    _handle = _tooltips.Show(new TooltipContentProvider(this, site,
+                    _handle = _tooltipService.Show(new TooltipContentProvider(this, site,
                         () => CanHover && site.IsRevealed, () => new TooltipContent(title: "Capture site",
                             description: "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",
                             stats: new[] { new TooltipStat(label: "Capture (%)", current: site.CaptureProgress * 100f),
@@ -96,22 +103,22 @@ namespace EmpireAtWar.Entities.Tooltip
                             status: $"Owner: {site.Owner} · {site.State} · {site.FacilityType}")), anchor);
                     return;
                 }
-                RaycastHit hit = _camera.ScreenPointToRay(point);
-                if (hit.collider != null && !_fog.IsHidden(hit.point))
+                RaycastHit hit = _cameraService.ScreenPointToRay(point);
+                if (hit.collider != null && !_fogOfWarSystem.IsHidden(hit.point))
                     foreach (IMiniMapObstacleSource obstacle in _obstacles)
                     {
                         if (!obstacle.WorldBounds.Contains(hit.point)) continue;
-                        _handle = _tooltips.Show(new TooltipContentProvider(this, obstacle,
-                            () => CanHover && !_fog.IsHidden(hit.point),
+                        _handle = _tooltipService.Show(new TooltipContentProvider(this, obstacle,
+                            () => CanHover && !_fogOfWarSystem.IsHidden(hit.point),
                             () => new TooltipContent(title: "Obstacle", description: "Blocks movement and prevents move orders into its occupied area.")), anchor);
                         return;
                     }
-                _tooltips.Hide(_handle);
+                _tooltipService.Hide(_handle);
             }
         }
 
         private bool IsVisible(IEntity entity) => !entity.HealthModel.IsDestroyed &&
-            (_local.IsFriendly(entity.Owner) || !_fog.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position));
+            (_local.IsFriendly(entity.Owner) || !_fogOfWarSystem.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position));
 
         private TooltipContent BuildHardPoint(IEntity entity, int id)
         {

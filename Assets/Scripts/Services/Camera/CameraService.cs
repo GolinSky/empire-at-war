@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace EmpireAtWar.Services.Camera
@@ -33,29 +35,37 @@ namespace EmpireAtWar.Services.Camera
     }
 
     [RequireComponent(typeof(UnityEngine.Camera))]
-    public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable
+    public class CameraService : MonoBehaviour, ICameraService, IInitializable, ILateDisposable, ITickable,
+        IObserver<BattleState>
     {
+        // Load hitches would otherwise turn one frame of held input into a long jump.
+        private const float MAX_FRAME_DELTA = 0.05f;
+
         private IMapModelObserver _mapModel;
+        private INotifier<BattleState> _battleState;
         private ICameraInput _cameraInput;
         private ICameraPreferences _preferences;
         private IInputLock _inputLock;
 
-        [SerializeField] private UnityEngine.Camera _camera;
+        [SerializeField, FormerlySerializedAs("_camera")] private UnityEngine.Camera camera;
         private CameraData _cameraData;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
 
         private Plane _plane = new();
         private Vector2 _keyboardInput;
         private Vector2 _keyboardVelocity;
+        // The map bounds exist once the battle runs; the camera stays movable while paused.
+        private bool _canMove;
 
         public string Id => nameof(CameraService);
 
         private float PanSpeed => _cameraData.PanSpeed * _preferences.PanSpeedMultiplier;
+        private static float FrameDelta => Mathf.Min(Time.unscaledDeltaTime, MAX_FRAME_DELTA);
 
         public Vector3 CameraPosition => transform.position;
         public Transform CameraTransform => transform;
         public Vector3 CameraForward => transform.forward;
-        public float FieldOfView => _camera.fieldOfView;
+        public float FieldOfView => camera.fieldOfView;
 
         [Inject]
         public void Constructor(
@@ -63,8 +73,10 @@ namespace EmpireAtWar.Services.Camera
             IMapModelObserver mapModel,
             ICameraPreferences preferences,
             IInputLock inputLock,
+            INotifier<BattleState> battleState,
             CameraData cameraData)
         {
+            _battleState = battleState;
             _inputLock = inputLock;
             _preferences = preferences;
             _cameraData = cameraData;
@@ -79,6 +91,16 @@ namespace EmpireAtWar.Services.Camera
             _cameraInput.Zoomed += ZoomCamera;
             _cameraInput.Panned += PanCamera;
             _inputLock.LockChanged += OnLockChanged;
+            _battleState.AddObserver(this);
+        }
+
+        public void UpdateState(BattleState state)
+        {
+            _canMove = state == BattleState.Running || state == BattleState.Paused;
+            if (!_canMove)
+            {
+                _keyboardVelocity = Vector2.zero;
+            }
         }
 
         public void LateDispose()
@@ -86,28 +108,29 @@ namespace EmpireAtWar.Services.Camera
             _cameraInput.Zoomed -= ZoomCamera;
             _cameraInput.Panned -= PanCamera;
             _inputLock.LockChanged -= OnLockChanged;
+            _battleState.RemoveObserver(this);
             _keyboardInput = Vector2.zero;
             _keyboardVelocity = Vector2.zero;
         }
 
         public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
         {
-            return _frustumProjection.Project(_camera, mapMin, mapMax);
+            return _frustumProjection.Project(camera, mapMin, mapMax);
         }
 
         public Vector3 WorldToViewportPoint(Vector3 currentPosition)
         {
-            return _camera.WorldToViewportPoint(currentPosition);
+            return camera.WorldToViewportPoint(currentPosition);
         }
 
         public Vector2 WorldToScreenPoint(Vector3 position)
         {
-            return _camera.WorldToScreenPoint(position);
+            return camera.WorldToScreenPoint(position);
         }
 
         public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position)
         {
-            Ray ray = _camera.ScreenPointToRay(screenPoint);
+            Ray ray = camera.ScreenPointToRay(screenPoint);
             _plane.SetNormalAndPosition(Vector3.up, Vector3.up * position.y);
 
             if (_plane.Raycast(ray, out float distance))
@@ -118,7 +141,7 @@ namespace EmpireAtWar.Services.Camera
 
         public RaycastHit ScreenPointToRay(Vector2 screenPoint)
         {
-            Ray ray = _camera.ScreenPointToRay(screenPoint);
+            Ray ray = camera.ScreenPointToRay(screenPoint);
             Physics.Raycast(ray, out RaycastHit hit);
             return hit;
         }
@@ -145,7 +168,7 @@ namespace EmpireAtWar.Services.Camera
 
         public void Tick()
         {
-            if (_inputLock.IsLocked)
+            if (!_canMove || _inputLock.IsLocked)
             {
                 return;
             }
@@ -157,23 +180,28 @@ namespace EmpireAtWar.Services.Camera
                 PanSpeed,
                 _cameraData.PanAcceleration,
                 _cameraData.PanDeceleration,
-                Time.unscaledDeltaTime);
+                FrameDelta);
             if (_keyboardVelocity.sqrMagnitude <= Mathf.Epsilon)
             {
                 _keyboardVelocity = Vector2.zero;
                 return;
             }
 
-            Vector3 move = GetPlanarDirection(_keyboardVelocity) * Time.unscaledDeltaTime;
+            Vector3 move = GetPlanarDirection(_keyboardVelocity) * FrameDelta;
             SetPosition(ClampPosition(CameraPosition + move));
         }
 
         private void PanCamera(Vector2 direction)
         {
+            if (!_canMove)
+            {
+                return;
+            }
+
             Vector2 normalizedDirection = Vector2.ClampMagnitude(direction, 1f);
             Vector3 move = GetPlanarDirection(normalizedDirection) *
                 PanSpeed *
-                Time.unscaledDeltaTime;
+                FrameDelta;
             SetPosition(ClampPosition(CameraPosition + move));
         }
 
@@ -199,6 +227,11 @@ namespace EmpireAtWar.Services.Camera
 
         private void ZoomCamera(float scrollDelta)
         {
+            if (!_canMove)
+            {
+                return;
+            }
+
             scrollDelta = Mathf.Clamp(scrollDelta, -10, 10);
             if (_preferences.InvertZoom)
             {
@@ -206,7 +239,7 @@ namespace EmpireAtWar.Services.Camera
             }
 
             float zoomSpeed = _cameraData.ZoomSpeed * _preferences.ZoomSpeedMultiplier;
-            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * zoomSpeed * Time.unscaledDeltaTime;
+            Vector3 newPosition = CameraPosition - CameraForward * scrollDelta * zoomSpeed * FrameDelta;
 
             if (!_cameraData.ZoomRange.IsInRange(newPosition.y))
                 return;

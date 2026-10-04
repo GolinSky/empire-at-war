@@ -54,7 +54,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ICaptureSitesSystem _captureSites;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
-        private readonly IPlayerRoster _roster;
+        private readonly IPlayerRoster _playerRoster;
 
         private readonly PlayerSlot _owner;
 
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Services.Enemy
             ICaptureSitesSystem captureSites,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
-            IPlayerRoster roster,
+            IPlayerRoster playerRoster,
             PlayerSlot owner)
         {
             _shipService = shipService;
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator = entityLocator;
             _gameModel = gameModel;
             _owner = owner;
-            _roster = roster;
+            _playerRoster = playerRoster;
         }
 
         public EnemyStrategicContext Build()
@@ -97,11 +97,11 @@ namespace EmpireAtWar.Services.Enemy
                 origin);
             // Any hostile ship is a fair fleet target; the closest one wins.
             GameEntity enemyFleetTarget = FindClosestEntity(EntityRoles.IsShip,
-                owner => _roster.IsHostile(self, owner),
+                owner => _playerRoster.IsHostile(self, owner),
                 origin);
             // Strength is compared against the whole team of the focused enemy.
-            List<IShipEntity> focusTeamShips = GetShips(ship => _roster.IsAllied(focusEnemy, ship.Owner));
-            List<IShipEntity> hostileShips = GetShips(ship => _roster.IsHostile(self, ship.Owner));
+            List<IShipEntity> focusTeamShips = GetShips(ship => _playerRoster.IsAllied(focusEnemy, ship.Owner));
+            List<IShipEntity> hostileShips = GetShips(ship => _playerRoster.IsHostile(self, ship.Owner));
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
             int enemyShipsNearOwnBase = CountShipsNearBase(
                 hostileShips,
@@ -141,7 +141,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             PlayerId self = _owner.Id;
             GameEntity closestStation = FindClosestEntity(EntityRoles.IsPlayerBase,
-                owner => _roster.IsHostile(self, owner),
+                owner => _playerRoster.IsHostile(self, owner),
                 home);
             if (closestStation != null)
             {
@@ -149,7 +149,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             GameEntity closestShip = FindClosestEntity(EntityRoles.IsShip,
-                owner => _roster.IsHostile(self, owner),
+                owner => _playerRoster.IsHostile(self, owner),
                 home);
             return closestShip != null ? closestShip.Owner : PlayerId.None;
         }

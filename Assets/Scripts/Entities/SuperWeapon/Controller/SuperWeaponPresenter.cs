@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
@@ -19,17 +20,18 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
     /// Player superweapon buttons: a ready weapon starts targeting, the next valid enemy click fires it.
     /// Binds to the core UI through its route so it works regardless of container initialization order.
     /// </summary>
-    public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute, ITickable
+    public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute, ITickable,
+        IObserver<BattleState>
     {
         private readonly ILocalPlayer _localPlayer;
-        private readonly ISuperWeaponFireService _fireService;
+        private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
         private readonly EmpireAtWar.Models.Factions.IPlayerFactionModelObserver _faction;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
-        private readonly EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver _session;
+        private readonly INotifier<BattleState> _battleState;
 
         private readonly SuperWeaponModel _model;
         private readonly SuperWeaponTargetingModel _targeting;
@@ -39,13 +41,14 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isOpen;
+        private bool _isBattleEnded;
 
-        public SuperWeaponPresenter(ISuperWeaponFireService fireService, ISuperWeaponsViewProvider viewProvider,
+        public SuperWeaponPresenter(ISuperWeaponFireService superWeaponFireService, ISuperWeaponsViewProvider viewProvider,
             ISkirmishRouteNavigation routeNavigation, IShipAbilityTargeting abilities,
             ILocalPlayer localPlayer,
             IUiService uiService, IUiCancelRouter cancelRouter,
-            ITooltipService tooltips, EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction, EmpireAtWar.Services.Input.IInputBindings bindings,
-            EmpireAtWar.Models.SkirmishGame.ISkirmishSessionModelObserver session, SuperWeaponModel model,
+            ITooltipService tooltipService, EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction, EmpireAtWar.Services.Input.IInputBindings bindings,
+            INotifier<BattleState> battleState, SuperWeaponModel model,
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
             SuperWeaponData data)
@@ -54,27 +57,34 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _localPlayer = localPlayer;
             _model = model;
             _targeting = targeting;
-            _fireService = fireService;
+            _superWeaponFireService = superWeaponFireService;
             _viewProvider = viewProvider;
             _routeNavigation = routeNavigation;
             _unitTargeting = unitTargeting;
             _abilities = abilities;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _data = data;
             _faction = faction;
             _bindings = bindings;
-            _session = session;
+            _battleState = battleState;
         }
 
         public void Initialize()
         {
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.SuperWeapon, this);
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.SuperWeapon, this);
             Unbind();
+        }
+
+        public void UpdateState(BattleState state)
+        {
+            _isBattleEnded = state == BattleState.Ended;
         }
 
         public void Activate(bool isActive, Transform parentTransform)
@@ -154,7 +164,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandlePressed(SuperWeaponType type)
         {
-            if (_session.IsBattleEnded) return;
+            if (_isBattleEnded) return;
             if (_targeting.Pending == type)
             {
                 _targeting.Cancel();
@@ -169,12 +179,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandleTargetSubmitted(SuperWeaponType type, IEntity target)
         {
-            if (_session.IsBattleEnded) return;
+            if (_isBattleEnded) return;
             // Invalid picks such as fighters keep the weapon waiting for a proper target.
-            if (!_fireService.CanTarget(_localPlayer.Id, target)) return;
+            if (!_superWeaponFireService.CanTarget(_localPlayer.Id, target)) return;
             _targeting.Cancel();
             _model.Consume(type);
-            _fireService.Fire(type, target);
+            _superWeaponFireService.Fire(type, target);
         }
 
         private void HandleStateChanged(SuperWeaponType type, SuperWeaponState state)
@@ -210,7 +220,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void TogglePopup()
         {
-            if (_session.IsBattleEnded) return;
+            if (_isBattleEnded) return;
             if (_isOpen)
             {
                 ClosePopup();
@@ -232,8 +242,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         public void Tick()
         {
             if (_view == null) return;
-            _view.SetBattleAvailable(!_session.IsBattleEnded);
-            if (_session.IsBattleEnded)
+            _view.SetBattleAvailable(!_isBattleEnded);
+            if (_isBattleEnded)
             {
                 if (_isOpen || _targeting.Pending != null) ClosePopup();
                 return;

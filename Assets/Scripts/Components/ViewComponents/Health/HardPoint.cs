@@ -40,7 +40,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public bool IsDestroyed => _healthPercentage <= 0f;
 
         [Inject]
-        protected IAssetService Repository { get; }
+        protected IAssetService AssetService { get; }
 
         public void UpdateData(float healthPercentage)
         {
@@ -76,7 +76,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
             {
-                _explosionVfx = Instantiate(Repository.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
+                _explosionVfx = Instantiate(AssetService.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
                 _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);
                 _explosionVfx.Play();
                 ExplosionSpawned?.Invoke(_explosionVfx);

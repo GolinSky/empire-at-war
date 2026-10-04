@@ -1,11 +1,12 @@
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Player;
 using UnityEngine;
 using Zenject;
-using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -13,38 +14,68 @@ namespace EmpireAtWar.Services.Enemy
     {
     }
 
-    public class EnemyService : Service, IInitializable, IEnemyService, ITickable
+    public class EnemyService : Service, IInitializable, ILateDisposable, IEnemyService, ITickable,
+        IStationSpawner, IObserver<BattleState>
     {
-        private SpaceStationEntity _spaceStation;
         private readonly SpaceStationFactory _spaceStationFactory;
-        private readonly LazyInject<IMapModelObserver> _mapModel;
+        private readonly IMapModelObserver _mapModel;
+        private readonly IPlayerRegistry _playerRegistry;
+        private readonly INotifier<BattleState> _battleState;
         private readonly EnemyProductionStrategy _productionStrategy;
         private readonly PlayerSlot _owner;
 
-        private Vector3 _stationPosition;
+        private bool _isRunning;
+        private bool _hasStartedProduction;
 
         public EnemyService(
-            LazyInject<IMapModelObserver> mapModel,
+            IMapModelObserver mapModel,
             SpaceStationFactory spaceStationFactory,
+            IPlayerRegistry playerRegistry,
+            INotifier<BattleState> battleState,
             EnemyProductionStrategy productionStrategy,
             PlayerSlot owner)
         {
             _owner = owner;
             _mapModel = mapModel;
             _spaceStationFactory = spaceStationFactory;
+            _playerRegistry = playerRegistry;
+            _battleState = battleState;
             _productionStrategy = productionStrategy;
         }
 
         public void Initialize()
         {
-            _stationPosition = _mapModel.Value.GetStationPosition(_owner.Id);
-            _spaceStation = _spaceStationFactory.Create(_owner.Id, _owner.Faction, _stationPosition);
-            _productionStrategy.Start();
+            _playerRegistry.RegisterStationSpawner(_owner.Id, this);
+            _battleState.AddObserver(this);
+        }
+
+        public void LateDispose()
+        {
+            _playerRegistry.UnregisterStationSpawner(_owner.Id);
+            _battleState.RemoveObserver(this);
+        }
+
+        public void Spawn()
+        {
+            _spaceStationFactory.Create(_owner.Id, _owner.Faction, _mapModel.GetStationPosition(_owner.Id));
+        }
+
+        public void UpdateState(BattleState state)
+        {
+            _isRunning = state == BattleState.Running;
+            if (_isRunning && !_hasStartedProduction)
+            {
+                _hasStartedProduction = true;
+                _productionStrategy.Start();
+            }
         }
 
         public void Tick()
         {
-            _productionStrategy.Tick(Time.deltaTime);
+            if (_isRunning)
+            {
+                _productionStrategy.Tick(Time.deltaTime);
+            }
         }
     }
 }

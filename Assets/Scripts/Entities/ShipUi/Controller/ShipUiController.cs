@@ -35,7 +35,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
 
         private readonly ShipUiModel _model;
-        private readonly ShipAbilityService _abilityService;
+        private readonly ShipAbilityService _shipAbilityService;
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
@@ -51,19 +51,19 @@ namespace EmpireAtWar.Controllers.ShipUi
             ISelectionService selectionService,
             ISkirmishRouteNavigation routeNavigation,
             ICameraService cameraService,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings,
             ShipUiModel model,
-            ShipAbilityService abilityService,
+            ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
             EmpireAtWar.Models.Factions.FactionsData factions) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _model = model;
             _routeNavigation = routeNavigation;
-            _abilityService = abilityService;
+            _shipAbilityService = shipAbilityService;
             _cameraService = cameraService;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
             _tooltipIcons = tooltipIcons;
             _factions = factions;
             _bindings = bindings;
@@ -73,14 +73,14 @@ namespace EmpireAtWar.Controllers.ShipUi
         {
             _selectionService.AddObserver(this);
             _routeNavigation.RegisterRoute(SkirmishUiRoutePosition.Content, this);
-            _abilityService.TargetingChanged += UpdateTargeting;
+            _shipAbilityService.TargetingChanged += UpdateTargeting;
         }
 
         public void LateDispose()
         {
             _selectionService.RemoveObserver(this);
             _routeNavigation.UnregisterRoute(SkirmishUiRoutePosition.Content, this);
-            _abilityService.TargetingChanged -= UpdateTargeting;
+            _shipAbilityService.TargetingChanged -= UpdateTargeting;
             if (_shipUi != null)
             {
                 _shipTooltipHover.Dispose();
@@ -144,10 +144,10 @@ namespace EmpireAtWar.Controllers.ShipUi
         }
 
         public void PressAbility(ShipAbilityId id) =>
-            _abilityService.Press(_playerSelectionContext.Entities, id);
+            _shipAbilityService.Press(_playerSelectionContext.Entities, id);
 
         private void UpdateTargeting() => _model.SetPendingAbility(
-            _abilityService.IsWaitingForTarget ? _abilityService.PendingAbilityId : (ShipAbilityId?)null);
+            _shipAbilityService.IsWaitingForTarget ? _shipAbilityService.PendingAbilityId : (ShipAbilityId?)null);
 
         public void UpdateState(ISelectionSubject subject)
         {
@@ -158,7 +158,7 @@ namespace EmpireAtWar.Controllers.ShipUi
 
             _playerSelectionContext = subject.PlayerSelectionContext;
             _tooltips.HideAll();
-            _abilityService.CancelTargeting();
+            _shipAbilityService.CancelTargeting();
             UpdateSelection();
         }
 
@@ -257,7 +257,7 @@ namespace EmpireAtWar.Controllers.ShipUi
                         focus: () => FocusEntity(entity), entity: entity));
                 }
                 List<IEntity> casters = group.Value;
-                addGroup(group.Key, entries, id => _abilityService.Press(casters, id));
+                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id));
             }
         }
 

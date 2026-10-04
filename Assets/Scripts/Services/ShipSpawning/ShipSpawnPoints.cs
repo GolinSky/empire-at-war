@@ -15,7 +15,7 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         private readonly IReinforcementZoneSource _zoneSource;
         private readonly IShipSpawnClearance _clearance;
-        private readonly IPlayerRoster _roster;
+        private readonly IPlayerRoster _playerRoster;
 
         private readonly List<ReinforcementZonePresenter> _candidateZones = new List<ReinforcementZonePresenter>();
         private readonly List<ReinforcementZonePresenter> _capturedZones = new List<ReinforcementZonePresenter>();
@@ -23,11 +23,11 @@ namespace EmpireAtWar.Services.ShipSpawning
         public ShipSpawnPoints(
             IReinforcementZoneSource zoneSource,
             IShipSpawnClearance clearance,
-            IPlayerRoster roster)
+            IPlayerRoster playerRoster)
         {
             _zoneSource = zoneSource;
             _clearance = clearance;
-            _roster = roster;
+            _playerRoster = playerRoster;
         }
 
         public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
@@ -37,14 +37,14 @@ namespace EmpireAtWar.Services.ShipSpawning
             _capturedZones.Clear();
             foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
             {
-                if (!_roster.IsAllied(zone.Owner, owner))
+                if (!_playerRoster.IsAllied(zone.Owner, owner))
                 {
                     continue;
                 }
 
                 _candidateZones.Add(zone);
                 // AI players reinforce at their team's captured front-line zones first.
-                if (zone.IsCapturable && _roster.Get(owner).IsAi)
+                if (zone.IsCapturable && _playerRoster.Get(owner).IsAi)
                 {
                     _capturedZones.Add(zone);
                 }

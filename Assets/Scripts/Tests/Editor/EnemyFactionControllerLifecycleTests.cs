@@ -61,7 +61,7 @@ namespace EmpireAtWar.Tests.Editor
                     shipSpawnPoints: null,
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
-                    structurePlacement: new UnavailableStructurePlacement(),
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     stationRegistry: new OperationalStationRegistry(),
                     squadronLauncher: null,
                     squadronCommander: null,
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
                     shipSpawnPoints: null,
                     unitLimitModel: unitLimitModel,
                     reinforcementData: reinforcementData,
-                    structurePlacement: new UnavailableStructurePlacement(),
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     stationRegistry: new OperationalStationRegistry(),
                     squadronLauncher: null,
                     squadronCommander: null,
@@ -189,7 +189,7 @@ namespace EmpireAtWar.Tests.Editor
                 shipSpawnPoints: null,
                 unitLimitModel: new EnemyUnitLimitModel(),
                 reinforcementData: null,
-                structurePlacement: structurePlacement,
+                enemyStructurePlacementService: structurePlacement,
                 stationRegistry: new OperationalStationRegistry(),
                 squadronLauncher: null,
                 squadronCommander: null,
@@ -217,28 +217,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static int GetActiveTimerCount(
-            TimerPoolService timerPool)
+            TimerPoolService timerPoolService)
         {
-            return GetActiveTimers(timerPool).Count;
+            return GetActiveTimers(timerPoolService).Count;
         }
 
         private static ICollection GetActiveTimers(
-            TimerPoolService timerPool)
+            TimerPoolService timerPoolService)
         {
             FieldInfo activeTimersField = typeof(TimerPoolService).GetField(
                 "customCoroutines",
                 PRIVATE_INSTANCE);
             Assert.That(activeTimersField, Is.Not.Null);
             ICollection activeTimers =
-                activeTimersField.GetValue(timerPool) as ICollection;
+                activeTimersField.GetValue(timerPoolService) as ICollection;
             Assert.That(activeTimers, Is.Not.Null);
             return activeTimers;
         }
 
         private static CustomCoroutine GetOnlyActiveTimer(
-            TimerPoolService timerPool)
+            TimerPoolService timerPoolService)
         {
-            ICollection activeTimers = GetActiveTimers(timerPool);
+            ICollection activeTimers = GetActiveTimers(timerPoolService);
             Assert.That(activeTimers.Count, Is.EqualTo(1));
             foreach (object activeTimer in activeTimers)
             {

@@ -39,7 +39,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             IUiCancelRouter cancelRouter,
             ISettingsService settingsService,
             IInputBindings bindings,
-            ITooltipService tooltips,
+            ITooltipService tooltipService,
             SettingsDraftEditor draftEditor,
             KeyBindingEditor keyBindingEditor, SettingsModel model) : base(uiService, cancelRouter)
         {
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _draftEditor = draftEditor;
             _keyBindingEditor = keyBindingEditor;
             _model = model;
-            _tooltips = new TooltipRequests(tooltips);
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void LateDispose()

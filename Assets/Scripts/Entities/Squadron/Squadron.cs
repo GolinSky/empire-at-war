@@ -12,6 +12,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.UnitOrders;
@@ -36,6 +37,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private IHealthComponent _health;
         private IRadarComponent _radar;
         private IWeaponComponent _weapon;
+        private IWeaponFireEvents _weaponFireEvents;
+        private IShipSfxService _shipSfxService;
         private IAttackDataFactory _attackDataFactory;
         private ICameraService _cameraService;
         private ILayerService _layerService;
@@ -67,12 +70,15 @@ namespace EmpireAtWar.Entities.Squadrons
             IWeaponComponent weapon, IAttackDataFactory attackDataFactory, ICameraService cameraService,
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
-            GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents)
+            GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents,
+            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService)
         {
             _flight = flight;
             _health = health;
             _radar = radar;
             _weapon = weapon;
+            _weaponFireEvents = weaponFireEvents;
+            _shipSfxService = shipSfxService;
             _orders = orders;
             _pilot = pilot;
             _targetSelector = targetSelector;
@@ -89,6 +95,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             _health.HealthModelObserver.OnDestroy += HandleDestroyed;
             _radar.Enemies.ItemAdded += HandleEnemyAdded;
+            _weaponFireEvents.ShotEmitted += HandleShotEmitted;
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
@@ -109,6 +116,9 @@ namespace EmpireAtWar.Entities.Squadrons
         }
 
         private void HandleDestroyed() => Release(true);
+
+        private void HandleShotEmitted(WeaponProfile profile, Transform muzzle) =>
+            _shipSfxService.TryPlayWeaponShot(_entity.Value, profile, muzzle);
 
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _flight.Centroid));
@@ -297,6 +307,8 @@ namespace EmpireAtWar.Entities.Squadrons
 
             _isReleased = true;
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
+            _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
+            _shipSfxService.ReleaseShip(_entity.Value);
             _orders.Clear();
             _engaged = null;
             _componentLifecycle.Release();

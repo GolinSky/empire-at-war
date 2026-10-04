@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesign/Republic at War - Republic Unit Stats Reference.md",
+                "file": "TODOs/Refactoring/Battle_Startup_Sequence_Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Republic at War - Republic Unit Stats Reference"
+              "title": "Battle_Startup_Sequence_Plan"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "Malevolence ",
+                "query": "Battle_Startup_Sequence_Plan",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -188,6 +188,10 @@
   },
   "active": "3a9effa0e3d39806",
   "lastOpenFiles": [
+    "GameDesign/Republic at War - Republic Unit Stats Reference.md",
+    "TODOs/Refactoring/Battle_Startup_Sequence_Plan.md",
+    "GameDesign/Droid Bomber Import.md",
+    "TODOs/Features/Captor_Import.md",
     "TODOs/Features/Malevolence_Import.md",
     "Architecture/ALO_MODEL_IMPORT_GUIDE.md",
     "Architecture/PROJECT_ORGANIZATION.md",
@@ -212,10 +216,6 @@
     "Done/Refactoring/Codebase Audit 2026-09-27/01 Complexity - State and Input.md",
     "Done/Refactoring/Codebase Audit 2026-09-27/00 Overview.md",
     "Done/Refactoring/Codebase Audit 2026-09-27",
-    "TODOs/Refactoring/Injection_And_Guard_Conventions.md",
-    "TODOs/Refactoring/Type_File_Split_And_Placement.md",
-    "TODOs/Features/Settings_Audit_Followups.md",
-    "TODOs/Refactoring/Explicit_Component_Binding.md",
     "TODOs/Bugs",
     "TODOs/Refactoring/Codebase Audit 2026-09-27",
     "TODOs/Refactoring",

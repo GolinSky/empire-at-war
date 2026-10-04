@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
-        private readonly IUnitOrderService _orders;
+        private readonly IUnitOrderService _unitOrderService;
 
         private readonly PlayerSlot _owner;
         private readonly EnemyStrategicDecisionModel _decisionModel;
@@ -69,7 +69,7 @@ namespace EmpireAtWar.Services.Enemy
             IReinforcementZonesSystem reinforcementZonesSystem,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
-            IUnitOrderService orders,
+            IUnitOrderService unitOrderService,
             EnemyStrategicDecisionModel decisionModel,
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
@@ -83,7 +83,7 @@ namespace EmpireAtWar.Services.Enemy
             _decisionModel = decisionModel;
             _contextBuilder = contextBuilder;
             _taskForceExecutor = taskForceExecutor;
-            _orders = orders;
+            _unitOrderService = unitOrderService;
         }
 
         public void Initialize()
@@ -184,7 +184,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (_zoneExitTargets.TryGetValue(ship, out Vector3 target))
                 {
-                    _orders.IssueMove(new[] { _entityLocator.GetEntity(ship.EntityId) },
+                    _unitOrderService.IssueMove(new[] { _entityLocator.GetEntity(ship.EntityId) },
                         new[] { target });
                     continue;
                 }
@@ -197,7 +197,7 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     _zoneExitTargets.Remove(ship);
                     if (ship.CurrentOrder != UnitOrderType.None)
-                        _orders.IssueStop(new[] { _entityLocator.GetEntity(ship.EntityId) });
+                        _unitOrderService.IssueStop(new[] { _entityLocator.GetEntity(ship.EntityId) });
                     continue;
                 }
 
@@ -228,7 +228,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Vector3 target = ToVector(destinations[i]);
                 _zoneExitTargets.Add(unassignedShips[i], target);
-                _orders.IssueMove(new[] {
+                _unitOrderService.IssueMove(new[] {
                     _entityLocator.GetEntity(unassignedShips[i].EntityId) },
                     new[] { target });
             }
