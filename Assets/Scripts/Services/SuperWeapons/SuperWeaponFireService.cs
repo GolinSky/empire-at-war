@@ -62,8 +62,7 @@ namespace EmpireAtWar.Services.SuperWeapons
         {
             return target != null && _relations.IsHostile(owner, target.Owner) &&
                    !target.HealthModel.IsDestroyed && target.HealthModel.HasUnits &&
-                   target.HealthModel.ShipClass != ShipClass.Fighter &&
-                   target.HealthModel.ShipClass != ShipClass.Bomber &&
+                   !target.HealthModel.ShipClass.IsStrikecraft() &&
                    target.TryGetFacade(out IHealthFacade _);
         }
 

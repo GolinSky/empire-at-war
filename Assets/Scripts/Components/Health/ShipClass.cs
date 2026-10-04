@@ -4,6 +4,7 @@ namespace EmpireAtWar.Components.Ship.Health
     {
         Fighter = 0,
         Bomber = 1,
+        Interceptor = 7,
         Corvette = 2,
         Frigate = 3,
         Capital = 4,
