@@ -623,3 +623,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ARC170SquadronView
+      value:
+        m_AssetGUID: eb877f831f1dbb445b5f81fb1a02e7c9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ARC170SquadronData
+      value:
+        m_AssetGUID: dfcebba1024335948a6439c9e7539ed0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

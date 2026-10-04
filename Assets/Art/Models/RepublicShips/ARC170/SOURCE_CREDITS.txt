@@ -1,0 +1,16 @@
+Republic at War Version 1.2.1
+
+ARC170:
+Mesh-Evillejedi | Texture-Evillejedi/z3r0x | Rigging-z3r0x
+
+Source: Republic_At_War/credits.txt, ARC170 entry.
+Source ALO: Republic_At_War/Data/Art/Models/ReV_arc170.ALO.
+Conversion: static ALO to packed Blender source, FBX and lossless PNG textures.
+Source geometry, attachment hierarchy and hidden helpers retained; missing
+identity Root restored from the verified ALO binary. Source alpha extracted
+as the Unity team-paint mask. Gameplay values and material setup are project
+adaptations. Original ALO/DDS files are unchanged.
+
+The source credits require the corresponding model credit line above to be
+included exactly when reusing this asset. Full source credits are retained
+in the separate conversion package as Republic_at_War_Credits.txt.

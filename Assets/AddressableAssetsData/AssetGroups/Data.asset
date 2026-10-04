@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dfcebba1024335948a6439c9e7539ed0
+    m_Address: ARC170SquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ed3478929e387c44ea030eb69f10bf51
     m_Address: Delta7SquadronData
     m_ReadOnly: 0

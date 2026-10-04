@@ -55,7 +55,7 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.Bind<SquadronHealthModel>().AsSingle();
             Container.Bind<SquadronFlightModel>().AsSingle();
             Container.Bind<UnitOrderModel>().AsSingle();
-            Container.Bind<SquadronPilot>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SquadronPilot>().AsSingle();
             Container.Bind<SquadronTargetSelector>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<SquadronHealthComponent>().FromComponentInHierarchy().AsCached();

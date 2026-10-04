@@ -22,5 +22,7 @@
         PlasmaCannon = 18,
         MassDriver = 19,
         QuadTurboLaser = 20,
+        HeavyFighterLaser = 21,
+        FighterProtonTorpedo = 22,
     }
 }

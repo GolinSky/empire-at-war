@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Import ARC-170 squadron**
+  - **Plan**: [[TODOs/Features/ARC170_Import|ARC-170 Import]]
+  - **Reference**: [[GameDesign/ARC-170 Import]]
+  - **Status**: 2026-10-04 ALO/Blender/FBX imported and registered as Republic squadron `2`; five craft, twenty weapons, supplied hull/shields/regen 105/35/5 per member and tech/cost/population 5/375/1. One torpedo maximum per fighter/pass implemented. Own placement, transparent icons, authored team mask, saved-reference/geometry and Unity import/compile checks complete; source hashes unchanged. No automated tests or Play Mode run.
+  - **Remaining**: Lock S-Foils, Astromech Repair, in-game acceptance and provisional balance review.
+
 - [ ] **Import Pride of the Core / Mandator II**
   - **Plan**: [[TODOs/Features/Mandator_Import|Mandator Import]]
   - **Reference**: [[GameDesign/Mandator Import]]
