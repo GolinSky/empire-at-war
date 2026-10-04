@@ -19,6 +19,7 @@ namespace EmpireAtWar.Models.Factions
         Munificent = 102,
         Lucrehulk = 103,
         Malevolence = 104,
+        Captor = 105,
 
     }
 }

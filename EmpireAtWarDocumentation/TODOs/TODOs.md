@@ -4,6 +4,11 @@
 
 ### Features
 
+- [ ] **Import Captor-class Carrier**
+  - **Plan**: [[TODOs/Features/Captor_Import|Captor Import]]
+  - **Status**: 2026-10-04 Captor imported/registered as CIS ship `105`; 15 listed hardpoints, hull/shields/regen `3,400/800/50`, cost/build/population `3,500/30 s/2`. Art, placement, wreck, transparent icon, team colors and saved-reference checks complete. User-approved temporary Belbullab-22 complement configured/verified: 19 total, 2 active, 4/8 s timing; no Play Mode or automated tests run.
+  - **Remaining**: in-game acceptance and provisional balance review; original Vulture/bomber roles require squadron assets.
+
 - [ ] **Finish Malevolence integration acceptance**
   - **Plan**: [[TODOs/Features/Malevolence_Import|Malevolence Import]]
   - **Status**: 2026-10-03 ALO → Blender → FBX → registered Separatist ship; 73 hardpoints, exact hull/shield/population/limit values, Mass Driver bypass and Ion Pulse implemented. Length resized to **3.676× Providence (478.402 units)**; flight **Y = −370**, below Lucrehulk **−258**. Saved references, matching visual/wreck/placement bounds, team-color renders and compilation verified; no automated tests or Play Mode run.

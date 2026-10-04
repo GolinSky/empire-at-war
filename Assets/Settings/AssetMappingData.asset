@@ -567,3 +567,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CaptorShipView
+      value:
+        m_AssetGUID: 2a19f6a12786e2645b1df9a43989cc40
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -99,3 +99,24 @@ Example request:
 ```
 
 For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:/Private/empire-at-war/Tools/Blender/export_rothana.py"}`. Screenshot requests use `get_viewport_screenshot`; the client saves the returned image beside the request JSON.
+
+## Captor-class Carrier — 2026-10-04
+
+- Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Carrier/CIS_Carrier.ALO`; damaged ALO and death ALA remain separate. Original source files are unchanged.
+- Editable packed Blender file, FBX, PNGs, source credits, reports and palette previews: sibling `Carrier-Converted/` folder.
+- Exporter: `Tools/Blender/export_captor.py`, run once through MCP on a fresh intact Carrier import. It expects 63 imported bones and restores the identity `Root` verified in the 64-bone binary source.
+- The importer does not resolve textures beside this source reliably; the exporter loads the hull DDS files explicitly. `Yellow_thruster.dds` comes from `CIS_Hero_Units_Pack_2014/Admiral Trench/`. Missing original hangar-shield effects use the existing project `Shields.mat` appearance.
+- Blender round trip: 7 meshes, 6,438 triangles, 64 bones, UVs on every mesh; maximum bone displacement `0.00005928` source units.
+- Unity: 7 meshes, 6,426 triangles, 64 bones; maximum bone displacement `0.000001051` units; no parent mismatches. Unity removes 12 verified zero-area faces: hull 2, hidden `Motor` 6 and `MotorSML` 4. `MotorSML` remains as an empty hidden helper.
+- FBX import scale `0.02`; centered visual scale approximately `20.01525`; final size `65.293 × 44.256 × 140` project units. Bow `+Z`, up `+Y`, gameplay root scale `1`.
+- Visual/gameplay/placement/wreck bounds agree. Banking ±10° gives hull range `−22.823 .. 22.128`; flight height `−118`, navigation radius `85`. These are provisional project choices.
+- `ShipType.Captor = 105`; ship data, asset mapping, CIS roster, ship UI, tooltip icon, placement mapping and existing Addressables `View`/`Data` groups are registered.
+- User-supplied values: hull `3,400`, shields `800`, regeneration `50`, cost `3,500`, build `30 s`, population `2`. Station level `3` follows the supplied Level 3+ build requirement; source Tech 2/5 variants have no distinct registration here.
+- Provisional choices: maximum count `20`, speed `7`, yaw/acceleration `5`, shield regeneration delay `3 s`; weapon/hangar hardpoint HP `400`, engine/shield HP `600`, inherited wreck tuning.
+- Hardpoints total **15**, matching the supplied itemized composition; its stated total of 14 is inconsistent. `TurboMR01/02` → 2 turbolasers; `LaserR01..06` → 6 lasers; `LaserR07/08` → 2 ions; `Shield_00`, `Engines_00..02`, `Spawn_00` → shield, 3 engines, hangar. Extra ALO turret attachments remain in the visual asset.
+- All hardpoints follow `BodyPivot`; health/fog lists contain 15 unique IDs, weapons list contains 10. Launch `(0.015, −7.465, 78)` clears the collision box's forward edge by 8 units.
+- Power to Weapons uses existing `BoostWeaponPower` tuning; original shield/engine tradeoffs and Victory/Frigate armor/shield types are not recreated by the current project data model.
+- Hangar uses the user-approved temporary Belbullab-22 complement: 19 total launches (standing in for 11 Vulture + 8 Droid Bomber), maximum 2 active; first launch after 4 s, interval 8 s. Original fighter/bomber roles remain pending their squadron assets.
+- Hull and wreck livery: hue `0.67`, range `0.08`, minimum saturation `0.25`, strength `1`. All eight palettes rendered; blue/green inspected. Icon is a transparent `512 × 512` render of the model.
+- Saved assets have no missing scripts or broken references. Imports/compilation and post-save Console checks passed; no automated tests or Play Mode were run. Pending acceptance is tracked in Obsidian `TODOs/Features/Captor_Import.md`.
+- Credits: model `Evillejedi`; textures `Evillejedi`, modified by `Nawrocki`; rig `Nomada_Firefox`. Pack README asks contacting its author before public-mod use.

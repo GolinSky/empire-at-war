@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a19f6a12786e2645b1df9a43989cc40
+    m_Address: CaptorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30429bfca42a8474a86d43c1caccc370
     m_Address: Delta7SquadronView
     m_ReadOnly: 0
