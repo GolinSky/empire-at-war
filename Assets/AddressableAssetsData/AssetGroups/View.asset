@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4d889903f7d4224198e7a03e31d86af
+    m_Address: PatrolFrigateShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
     m_Address: ThrantaShipView
     m_ReadOnly: 0

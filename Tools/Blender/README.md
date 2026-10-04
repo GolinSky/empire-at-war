@@ -1,5 +1,19 @@
 # Blender / Rothana conversion
 
+## CIS Patrol Frigate — 2026-10-04
+
+- Reference: Obsidian `GameDesign/Patrol Frigate Import.md`; active acceptance plan `TODOs/Features/Patrol_Frigate_Import.md`. `ShipType.PatrolFrigate = 106`, separate from Recusant.
+- Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Recusant Patrol/CIS_Recusant_Patrol.ALO`; all five original ALO/DDS/ALA hashes unchanged. Credits: Evillejedi model, Evillejedi/Nawrocki textures, Nomada_Firefox rigging.
+- Exporter: `Tools/Blender/export_patrol_frigate.py`, once on a fresh matching Blender import; create `Temp/PatrolFrigateImport/Output/Textures` first. Restores the identity Root verified in the 33-bone binary source; preserves duplicate attachment `PPTW_PTWSA2.001` and uses `EaWName` for validation-object suffix changes.
+- Nine meshes, three visible, six disabled helpers. Source 7,021 triangles → FBX 6,989 → Unity 6,987; 34 zero-area faces removed, all 6,986 nondegenerate faces retained. Positions/UVs and bone names/parents checked; maximum Blender/Unity bone displacement 0.0000457764 source / 0.00000145024 project units.
+- Art uses type-first `SeparatistShips/PatrolFrigate` folders. Visual/gameplay: `Assets/Prefabs/Models/Ships/PatrolFrigate.prefab`, `PatrolFrigateShipView.prefab`. Centered hull 11.37934 × 12.45770 × 81.09705 units; user size = 60% of existing Recusant length (135.16174 units). Uniform resize factor 3.119117 from the original 26-unit import; bow +Z, up +Y; root scale 1. Placement and wreck match; attachments, engine effect and hull volumes refitted.
+- Eight shared Laser weapons use `TurboR01/02/03/04`, `LaserR01/02/03`, `LaserNR02`; engine/shield use `Engines_00`/`Shield_00`. Ten unique hardpoint IDs; all follow the body pivot. No hangar. User stats: hull/shields/regen 900/700/15; tech/cost/build/population 1/1,500/15 s/1; Power to Engines.
+- Navigation radius 56.14411; banked vertical hull limits −6.22884 .. +6.22884 units. Provisional corvette tuning: speed 36, turn/acceleration 60, height 80, bank 30°, limit 20; weapon/engine/shield health 160/300/300. RaW Corellian Gunboat armor is not a separate project profile.
+- Hull and normal DDS converted to PNG; normals use data import and green flip. All five materials remapped; the unnamed source material becomes Unity `Material`. Livery hue/range/saturation/strength 0.62/0.06/0.25/1, including wreck; all eight owned palettes rendered.
+- Registered CIS roster, data/view mappings, existing Addressables groups, HUD/tooltip icons, matchups, own placement preview and future icon regeneration. Transparent icon 512 × 512, uncropped.
+- `Recusant Patrol-Converted/` beside the source holds packed Blender source, FBX, PNGs, reports, palette renders and credits. Missing `W_LASER_SMALL.dds` affects disabled helpers only; damaged model/death ALA and EaW proxy/shader animations are not converted.
+- Saved asset/reference/geometry/visual inspection and compilation/import completed without new errors; no missing scripts/references or donor model dependencies. No Play Mode or automated tests run; runtime acceptance and provisional balance remain in the active plan.
+
 ## Advanced Droid Bomber — 2026-10-04
 
 - Import reference: Obsidian `GameDesign/Droid Bomber Import.md`; early-game Trade Federation / Advanced Droid Bomber, `SquadronType.DroidBomber = 101`.

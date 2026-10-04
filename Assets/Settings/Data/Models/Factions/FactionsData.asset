@@ -217,6 +217,22 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 2
             <Icon>k__BackingField: {fileID: 21300000, guid: 5f8bc4a82cc113244b19a13b489bb0f0,
               type: 3}
+        - key: 106
+          value:
+            matchups: {fileID: 11400000, guid: a185bb400e77c2f4bb926ecd586ede7a, type: 2}
+            description: CIS patrol corvette with eight laser cannons. Screens the
+              fleet against fighters and bombers; Power to Engines boosts pursuit
+              and escape. Vulnerable to frigates and larger warships.
+            role: "Corvette \xB7 Anti-fighter screen"
+            iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+            <Name>k__BackingField: Patrol Frigate
+            <MaxCount>k__BackingField: 20
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: c204e9888dc32854493ab00345e38bf4,
+              type: 3}
   squadronFactionDataWrapper:
     keyValue:
     - key: 0

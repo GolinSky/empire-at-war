@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Import CIS Patrol Frigate**
+  - **Plan**: [[TODOs/Features/Patrol_Frigate_Import|Patrol Frigate Import]]
+  - **Reference**: [[GameDesign/Patrol Frigate Import]]
+  - **Status**: 2026-10-04 ALO/FBX imported and registered as CIS ship `106`; eight lasers + engine/shield systems; Power to Engines; hull/shields/regen 900/700/15; cost/build/population 1,500/15 s/1. Wreck, placement, transparent icon, team colors and saved-reference/import checks complete. Resized to 60% of Recusant length: 81.09705 units, with matching attachments, volumes and wreck/preview. No Play Mode or automated tests run.
+  - **Remaining**: in-game acceptance and provisional movement/hardpoint balance review.
+
 - [ ] **Import Captor-class Carrier**
   - **Plan**: [[TODOs/Features/Captor_Import|Captor Import]]
   - **Status**: 2026-10-04 Captor imported/registered as CIS ship `105`; 15 listed hardpoints, hull/shields/regen `3,400/800/50`, cost/build/population `3,500/30 s/2`. Art, placement, wreck, transparent icon, team colors and saved-reference checks complete. User-approved temporary Belbullab-22 complement configured/verified: 19 total, 2 active, 4/8 s timing; no Play Mode or automated tests run.
