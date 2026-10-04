@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d1083c66fcc414eab9d1c391ce7590, type: 3}
+  m_Name: ARC170SquadronData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
+  <NavigationRadius>k__BackingField: 22
+  <GuardRadius>k__BackingField: 70
+  <CruiseSpeed>k__BackingField: 28
+  <CombatSpeed>k__BackingField: 32
+  <Acceleration>k__BackingField: 21
+  <TurnRate>k__BackingField: 80
+  <MaxBankAngle>k__BackingField: 40
+  <BankResponse>k__BackingField: 5
+  <Height>k__BackingField: 11
+  <FormationSpacing>k__BackingField: 6
+  <LoiterRadius>k__BackingField: 18
+  <BreakDistance>k__BackingField: 5
+  <ExtendDistance>k__BackingField: 30
+  <ShipClass>k__BackingField: 0
+  <MemberHull>k__BackingField: 105
+  <MemberShields>k__BackingField: 35
+  <ShieldRegenerateValue>k__BackingField: 5
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 200
+  <Delay>k__BackingField: 0.25

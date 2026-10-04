@@ -13,7 +13,7 @@ namespace EmpireAtWar.Entities.Squadrons
     /// Turns the squadron's current intent into a steering point per fighter:
     /// travel in a loose wedge, orbit a point or escorted unit, or fly attack passes against a target.
     /// </summary>
-    public sealed class SquadronPilot
+    public sealed class SquadronPilot : IFighterAttackRunObserver
     {
         private const float ARRIVAL_DISTANCE = 4f;
         private const float LEADER_TURN_SHARE = 0.6f;
@@ -34,6 +34,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private IEntity _target;
 
         private readonly FighterManeuver[] _maneuvers;
+        private readonly int[] _attackRuns;
         private Transform _escortAnchor;
         private IHardPointModel[] _aimUnits = Array.Empty<IHardPointModel>();
 
@@ -54,10 +55,13 @@ namespace EmpireAtWar.Entities.Squadrons
         public Vector3 LoiterCenter => _loiterCenter;
         private IFighterFlightData Data => _flight.Data;
 
+        public int GetAttackRun(int fighterIndex) => _mode == Mode.Engage ? _attackRuns[fighterIndex] : 0;
+
         public SquadronPilot(ISquadronFlightComponent flight)
         {
             _flight = flight;
             _maneuvers = new FighterManeuver[flight.Count];
+            _attackRuns = new int[flight.Count];
             for (int i = 0; i < _maneuvers.Length; i++)
             {
                 _maneuvers[i] = new FighterManeuver(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
@@ -104,9 +108,10 @@ namespace EmpireAtWar.Entities.Squadrons
             _targetRadius = GetRadius(target);
             _aimUnits = target.HealthModel.GetShipUnits(HardPointType.Any);
             _aimRefreshTimer = AIM_REFRESH_INTERVAL;
-            foreach (FighterManeuver maneuver in _maneuvers)
+            for (int i = 0; i < _maneuvers.Length; i++)
             {
-                maneuver.Reset(Data.FormationSpacing + _targetRadius * APPROACH_RADIUS_SHARE);
+                _maneuvers[i].Reset(Data.FormationSpacing + _targetRadius * APPROACH_RADIUS_SHARE);
+                _attackRuns[i]++;
             }
         }
 
@@ -223,9 +228,12 @@ namespace EmpireAtWar.Entities.Squadrons
                 Vector3 aimPoint = _aimUnits.Length == 0
                     ? _target.GetFacade<IEntityTransformFacade>().Transform.position
                     : _aimUnits[rank % _aimUnits.Length].Position;
+                FighterManeuverPhase previousPhase = _maneuvers[i].Phase;
                 System.Numerics.Vector3 steering = _maneuvers[i].Resolve(
                     _flight.GetPosition(i).ToNumerics(), _flight.GetForward(i).ToNumerics(),
                     aimPoint.ToNumerics(), _targetRadius, Data, out float speed);
+                if (previousPhase == FighterManeuverPhase.Extend && _maneuvers[i].Phase == FighterManeuverPhase.Approach)
+                    _attackRuns[i]++;
                 _flight.Steer(i, steering.ToUnity(), speed);
                 rank++;
             }

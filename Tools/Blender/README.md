@@ -1,5 +1,21 @@
 # Blender / Rothana conversion
 
+## ARC-170 — 2026-10-04
+
+- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/ARC-170 Import.md`; remaining work `TODOs/Features/ARC170_Import.md`.
+- Source: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_arc170.ALO`; original ALO and four DDS hashes unchanged. Credits: `Mesh-Evillejedi | Texture-Evillejedi/z3r0x | Rigging-z3r0x` (RaW 1.2.1).
+- Run `prepare_arc170_textures.py` with Pillow first. In a fresh Blender 3.6.23 file, import the ALO with animations disabled, name the scene `ARC170 Source`, then run `export_arc170.py` once through MCP. The binary has 21 bones; restore only its verified identity Root omitted by ALAMO.
+- Preserve 15 meshes, 21 bones, six visible hull/astromech/S-Foil surfaces and nine disabled helpers. Blender source 4,691 triangles → FBX reimport 4,685: six duplicate faces collapse in the disabled flashes; all four unique position/UV triangles per flash remain. Unity imports all 4,691 source triangles.
+- Blender maximum bone/corner displacement `0.000005722 / 0.000006694` source units; Unity bone error `0.0000001526915` units, correct parents and UVs throughout. DDS→PNG pixels match exactly; hull alpha is extracted as a separate linear team mask.
+- `RepublicShips/ARC170` in the type-first art folders. Visual/gameplay `Assets/Prefabs/Models/Squadrons/ARC170.prefab`, `ARC170SquadronView.prefab`; placement `Assets/Prefabs/Ui/Reinforcement/ARC170ReinforcementView.prefab`. FBX scale 0.02; visual scale 3.41317248; centered member size `7.938759 × 1.267841 × 4`, bow +Z/up +Y, roots scale 1.
+- `SquadronType.ARC170 = 2`; five Republic craft, cost 375, level 5, population 1. User health overrides local XML: 105 hull, 35 shields and 5 shield points each second per fighter. Local XML confirms build 8 s; max count 10 is provisional.
+- Per member: two `HeavyFighterLaser = 21` guns at `MuzzleA_00/01`, rear `FighterLaser = 15` at `MuzzleC_00` with a rear-facing ±30° mount, `FighterProtonTorpedo = 22` at `MuzzleB_00`. Twenty weapon IDs, health/flight member references, fog and team renderer bindings are explicit.
+- `FighterTorpedoHardPoint` reads `IFighterAttackRunObserver`: one launch maximum per fighter/pass, reset when the pilot enters a new approach. Profile is one torpedo per salvo; existing bomber/global torpedo profiles remain unchanged. Heavy damage 8, two shots/1.5 s; torpedo damage 90, reload 8 s, ranges 40/55 units are project tuning.
+- Provisional movement: cruise/combat 28/32 units/s, acceleration 21 units/s², turn 80°/s, bank 40°, spacing 6, height 11, radius 22; measured formation radius 18.68598, member collider 4.5. Placement/gameplay bounds agree. Fighter death uses existing explosion/removal behavior, without a capital-ship wreck.
+- Republic roster, dynamic view/data mapping, existing View/Data Addressables groups, HUD/tooltip icons, matchups and placement mapping registered. Transparent model icon/silhouette 512 × 512; all eight owned palettes rendered, blue/green inspected.
+- Packed Blender file, FBX, PNGs, reports, palette previews and full credits: sibling `ReV_arc170-Converted/`. Source deploy/undeploy ALA animations and original EaW gloss/effect behavior are not converted; hull gloss source is retained. Lock S-Foils and Astromech Repair require separate squadron support.
+- Saved asset/geometry/reference inspection and compilation/import/Console checks clean. No automated tests or Play Mode run; dirty MainMenu scene preserved. Abilities, battle acceptance and provisional balance review remain active in the vault plan.
+
 ## CIS Patrol Frigate — 2026-10-04
 
 - Reference: Obsidian `GameDesign/Patrol Frigate Import.md`; active acceptance plan `TODOs/Features/Patrol_Frigate_Import.md`. `ShipType.PatrolFrigate = 106`, separate from Recusant.
