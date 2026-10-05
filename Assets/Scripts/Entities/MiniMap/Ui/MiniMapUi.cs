@@ -76,10 +76,9 @@ namespace EmpireAtWar.Views.MiniMap
             if (_markerFade != null) _markerFade.Kill();
         }
 
-        public void SetFog(Texture mask, Rect uvRect)
+        public void SetFog(Texture mask)
         {
             fogImage.texture = mask;
-            fogImage.uvRect = uvRect;
         }
 
         private void AddMark(MarkData markData)
