@@ -34,6 +34,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: a5d07dd53c680c6408f3e98f4ce75765,
           type: 3}
+    - key: 301
+      value:
+        matchups: {fileID: 11400000, guid: f0593bb86a7249c46b0e783c993fec3b, type: 2}
+        description: Rebel anti-fighter and anti-bomber corvette with eight laser
+          cannons, 750 hull and 600 shields. Power to Engines doubles speed for 20
+          seconds, triples weapon delays and stops shield regeneration; 50-second
+          recovery. Use it to screen larger ships, chase strikecraft or escape. Weak
+          against frigates and capital ships.
+        role: Anti-fighter / Anti-bomber
+        iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+        isHero: 0
+        <Name>k__BackingField: Corellian Corvette / CR90
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 1250
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

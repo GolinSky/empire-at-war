@@ -812,3 +812,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: CorellianCorvetteShipView
+      value:
+        m_AssetGUID: a67c0d57d6d830f4f939d619fab31aea
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: CorellianCorvetteShipData
+      value:
+        m_AssetGUID: 58340a4c5b9423642b9ff2b84cda03c3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
