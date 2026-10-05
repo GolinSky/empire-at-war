@@ -110,6 +110,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58340a4c5b9423642b9ff2b84cda03c3
+    m_Address: CorellianCorvetteShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ce2c057b641be14fb1ec8cb5304b8ef
     m_Address: ThrantaShipData
     m_ReadOnly: 0

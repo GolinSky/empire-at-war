@@ -43,6 +43,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.Dispatcher, PrefabName = "DispatcherShipView.prefab", IconFileName = "DispatcherIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Victory, PrefabName = "VictoryShipView.prefab", IconFileName = "VictoryIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.NebulonB, PrefabName = "NebulonBShipView.prefab", IconFileName = "NebulonBIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.CorellianCorvette, PrefabName = "CorellianCorvetteShipView.prefab", IconFileName = "CorellianCorvetteIcon.png" },
         };
 
         [MenuItem("Tools/Generate Ship Icons")]

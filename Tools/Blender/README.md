@@ -1,5 +1,15 @@
 # Blender / Rothana conversion
 
+## Corellian Corvette / CR90 — 2026-10-05
+
+- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/Corellian Corvette Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_CORVETTE.ALO`; dedicated wreck `RV_CORVETTE_D.ALO`. Original ALO/DDS hashes unchanged.
+- Stage textures with `uv run --with pillow python Tools/Blender/prepare_corellian_corvette_textures.py`. Import into `CorellianCorvette Source` in Blender 3.6.23, then run `export_corellian_corvette.py` once through MCP; set `VARIANT = 'CorellianCorvetteWreck'` for the damaged source scene. Complete any ALAMO global-helper cleanup failure only on the new scene; preserve other scenes and the installed add-on. Restore only the binary-verified identity Root if absent.
+- Intact/damaged imports retain `13/3` meshes, `3,684/2,446` triangles and `17/12` bones. Blender maximum corner error `0.000110729/0.0000133514` source units; Unity ≤`0.000000475` project units, correct bone parents/UVs. Helpers and authored hidden engine effects remain disabled; source shaders/ALA/proxy animations are outside static conversion.
+- Type-first `RebellionShips/CorellianCorvette` art folders; own visual, gameplay, placement and damaged wreck prefabs. Centered living size `12.72498 × 10.07087 × 30` units; bow +Z/up +Y, roots scale 1. Hull-alpha inverse supplies the team mask. All eight living/wreck colors rendered, blue/green inspected; transparent 512 × 512 icon/silhouette uncropped.
+- Rebel `ShipType.CorellianCorvette = 301`; hull/shields/regen `750/600/15` per second; cost/build/level/population `1250/15 s/2/2`. Eight shared Laser mounts use `MuzzleA_00..07`; no destructible systems or hangar. User-approved movement scale: `24.5 units/s`, yaw `12.5°/s`. Length 30, acceleration 24, range 175, bank 15°, height Y 80 and queue limit 10 remain project choices.
+- Dedicated `CorellianCorvettePowerToEngines = 14` reuses the existing engine ability: active 20 s, recovery 50 s, speed ×2, weapon delay ×3, shield regen ×0. Shared boost definitions remain unchanged. Roster/data/view/Addressables/icon/tooltip/placement/ability audio registrations saved and reloaded.
+- `Temp/CorellianCorvetteImport/` contains editable blends, FBX/PNGs, integration scripts, saved-reference/geometry reports and renders. Asset/compile/import/Console checks passed; zero missing scripts, broken references or donor dependencies. No automated tests or Play Mode run; runtime acceptance and provisional balance remain unverified.
+
 ## IPV-2C Stealth Corvette — 2026-10-05
 
 - Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Stealth Corvette Import.md`; acceptance plan `TODOs/Features/StealthCorvette_Import.md`.
