@@ -34,12 +34,12 @@ namespace EmpireAtWar.Services.OwnedAreas
         }
 
         /// <summary>True when a circle whose owner is (or, with <paramref name="allied"/> false, is not)
-        /// allied with <paramref name="team"/> contains the position.</summary>
-        public bool AnyContains(Vector3 position, IPlayerRelations relations, PlayerId team, bool allied)
+        /// allied with <paramref name="team"/> reaches within <paramref name="margin"/> of the position.</summary>
+        public bool AnyContains(Vector3 position, float margin, IPlayerRelations relations, PlayerId team, bool allied)
         {
             foreach (OwnedCircle circle in _circles)
             {
-                if (relations.IsAllied(circle.Owner, team) == allied && circle.Contains(position)) return true;
+                if (relations.IsAllied(circle.Owner, team) == allied && circle.Contains(position, margin)) return true;
             }
 
             return false;

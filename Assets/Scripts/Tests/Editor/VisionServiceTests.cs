@@ -47,6 +47,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void IsAreaVisible_SourceReachesFootprintEdge_True()
+        {
+            _vision.Register(TestPlayers.Human, CreateSource(Vector3.zero), 100f);
+
+            Assert.That(_vision.IsVisible(TestPlayers.Human, new Vector3(350f, 0f, 0f)), Is.False);
+            Assert.That(_vision.IsAreaVisible(TestPlayers.Human, new Vector3(350f, 0f, 0f), 260f), Is.True);
+            Assert.That(_vision.IsAreaVisible(TestPlayers.Human, new Vector3(350f, 0f, 0f), 240f), Is.False);
+            Assert.That(_vision.IsAreaVisible(TestPlayers.Enemy, new Vector3(350f, 0f, 0f), 260f), Is.False);
+        }
+
+        [Test]
         public void Register_SameTransformAgain_UpdatesRadius()
         {
             Transform source = CreateSource(Vector3.zero);

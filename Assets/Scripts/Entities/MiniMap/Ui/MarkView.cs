@@ -50,9 +50,12 @@ namespace EmpireAtWar.Views.MiniMap
             iconImage.raycastTarget = true;
             _marker = marker;
             tooltipTrigger.SetKey(marker);
-            rectTransform.sizeDelta = Vector2.one * (marker.MarkType == MarkType.Ship
-                ? SHIP_SIZE
-                : PLATFORM_SIZE);
+            rectTransform.sizeDelta = Vector2.one * (marker.MarkType switch
+            {
+                MarkType.Ship => SHIP_SIZE,
+                MarkType.PlayerBase or MarkType.EnemyBase => STATION_SIZE,
+                _ => PLATFORM_SIZE
+            });
             if (marker.WorldDiameter > 0f)
             {
                 rectTransform.SetAsFirstSibling();

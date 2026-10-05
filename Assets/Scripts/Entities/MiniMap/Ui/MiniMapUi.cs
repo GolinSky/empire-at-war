@@ -53,10 +53,6 @@ namespace EmpireAtWar.Views.MiniMap
         public void Initialize()
         {
             _mapRange = Model.MapRange;
-            foreach (BaseMarkData baseMark in Model.Bases)
-            {
-                AddMark(baseMark);
-            }
             cameraFootprintView.SetData(Model.CameraMark, Model.MapRange);
             obstacleView.SetData(Model.Obstacles, Model.MapRange);
             foreach (MiniMapMarker marker in Model.Markers)
@@ -84,10 +80,6 @@ namespace EmpireAtWar.Views.MiniMap
             MarkView view = Instantiate(Model.MarkViewPrefab);
             view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
             tooltipHover.Register(view.TooltipTrigger);
-            if (markData is BaseMarkData baseMark)
-            {
-                view.IconImage.color = PlayerColors.GetColor(baseMark.Owner);
-            }
             _mapMarkers.Add(view.IconImage);
         }
 

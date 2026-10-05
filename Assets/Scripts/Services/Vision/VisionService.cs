@@ -24,6 +24,9 @@ namespace EmpireAtWar.Services.Vision
         public void Unregister(Transform source) => _sources.Unregister(source);
 
         public bool IsVisible(PlayerId viewer, Vector3 position) =>
-            _sources.AnyContains(position, _relations, viewer, true);
+            _sources.AnyContains(position, 0f, _relations, viewer, true);
+
+        public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) =>
+            _sources.AnyContains(position, radius, _relations, viewer, true);
     }
 }

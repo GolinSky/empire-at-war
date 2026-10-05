@@ -19,5 +19,8 @@ namespace EmpireAtWar.Services.Vision
         void Unregister(Transform source);
 
         bool IsVisible(PlayerId viewer, Vector3 position);
+
+        /// <summary>True when any part of the XZ circle around the position is visible to the viewer.</summary>
+        bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius);
     }
 }
