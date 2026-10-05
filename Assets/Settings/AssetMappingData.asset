@@ -756,3 +756,45 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: VictoryShipView
+      value:
+        m_AssetGUID: 0150a3a72b6005a409e879331f63ff7e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: VictoryShipData
+      value:
+        m_AssetGUID: f8ab70303aa438f479aeb05ad3bcab92
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEFighterSquadronView
+      value:
+        m_AssetGUID: 27733b82b0779be4c8f62e4c82b10539
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEFighterSquadronData
+      value:
+        m_AssetGUID: 30c0a1a6c009b8a4b84d1e46ea8d6e40
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEBomberSquadronView
+      value:
+        m_AssetGUID: d05bbbe65c3c92943a28db2ed2799f7c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEBomberSquadronData
+      value:
+        m_AssetGUID: 7445e02a6f7d76a4ea30a0e52623c366
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

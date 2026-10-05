@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
   m_SerializeEntries:
+  - m_GUID: 0150a3a72b6005a409e879331f63ff7e
+    m_Address: VictoryShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 04c1026fdf702394d95307214a4b428e
     m_Address: NTB630SquadronView
     m_ReadOnly: 0
@@ -47,6 +52,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
     m_Address: VultureSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27733b82b0779be4c8f62e4c82b10539
+    m_Address: TIEFighterSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -167,6 +177,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cf56893a070520344bf92d738403ce68
     m_Address: DispatcherShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d05bbbe65c3c92943a28db2ed2799f7c
+    m_Address: TIEBomberSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

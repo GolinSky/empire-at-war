@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify Imperial Victory integration acceptance**
+  - **Plan**: [[TODOs/Features/Victory_Import|Victory Import]]
+  - **Reference**: [[GameDesign/Victory Import]]
+  - **Status**: 2026-10-05 Victory imported/registered as Empire ship `200`; supplied stats, six targets and dedicated 20 s / 60 s Boost Weapon Power configured. Vanilla TIEs imported: 2 fighters + 1 bomber active, 4 fighters + 2 bombers replacements; seven/four craft per squadron. Separate purchases enabled: fighters `300 / 10 s / level 1`, bombers `550 / 17 s / level 2`; population `1`, queue limit `10` each. Own placement/wreck/icons/team colors, geometry/source hashes, saved references and Unity import/compile/render checks passed; no tests or Play Mode run.
+  - **Remaining**: clean-skirmish acceptance and provisional scale/movement/weapon/system/limit/launch balance review; supplied hull retains Republic roundels.
+
 - [ ] **Verify V-Wing squadron integration acceptance**
   - **Plan**: [[TODOs/Features/VWing_Import|V-Wing Integration]]
   - **Reference**: [[GameDesign/V-Wing Import]]
