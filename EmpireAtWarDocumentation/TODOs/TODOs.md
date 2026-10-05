@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Finish V-19 Torrent integration acceptance**
+  - **Plan**: [[TODOs/Features/V19Torrent_Import|V-19 Torrent Import]]
+  - **Reference**: [[GameDesign/V-19 Torrent Import]]
+  - **Status**: 2026-10-05 static ALO/Blender/FBX import and Republic squadron `5` registrations complete; five craft, ten lasers, hull/shields/regen `70/30/3`, cost/build/tech/population `400/6 s/1/1`. Own placement, icons, authored team mask, geometry/saved-reference/import/compile checks complete; source hashes unchanged. No automated tests or Play Mode run.
+  - **Remaining**: Hunt ability decision/implementation, clean-skirmish acceptance and provisional balance review; deployed wing pose is static.
+
 - [ ] **Verify Imperator-class Star Destroyer integration acceptance**
   - **Plan**: [[TODOs/Features/Imperator_Import|Imperator Import]]
   - **Reference**: [[GameDesign/Imperator Import]]

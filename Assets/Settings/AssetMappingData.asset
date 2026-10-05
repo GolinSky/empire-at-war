@@ -707,3 +707,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: V19TorrentSquadronView
+      value:
+        m_AssetGUID: 9bd2f2df149e04b4394a3896d5aa989a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: V19TorrentSquadronData
+      value:
+        m_AssetGUID: 8b9a84cf44882074aaf278f821e846a0
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

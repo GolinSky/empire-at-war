@@ -125,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9bd2f2df149e04b4394a3896d5aa989a
+    m_Address: V19TorrentSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9c0c6e83b6cae5b4891c8397b9e908b5
     m_Address: RepublicSpaceStationView
     m_ReadOnly: 0
