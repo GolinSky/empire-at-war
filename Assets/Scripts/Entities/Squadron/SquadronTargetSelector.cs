@@ -76,7 +76,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public static bool IsAlive(IEntity entity) =>
             entity != null && !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
-        private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity);
+        private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity) && !entity.IsCloaked();
 
         private float Score(IEntity entity, float sqrDistance)
         {

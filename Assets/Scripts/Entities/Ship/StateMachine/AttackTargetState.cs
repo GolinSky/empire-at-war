@@ -37,7 +37,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _shipMoveComponent.NavigationRadius,
             _weaponComponent.AttackDistance * 0.1f);
 
-        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits;
+        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
 
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,

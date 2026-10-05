@@ -153,6 +153,21 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466898397790283
+    - key: 11
+      value:
+        icon: {fileID: 21300000, guid: 0de3c6aa32ec3c74a9067d72b1062fc0, type: 3}
+        displayName: Cloak
+        description: Hide from enemy sensors, targeting and minimap for up to 80
+          s. Cannot fire while cloaked. Friendly vision and movement remain active.
+          Press again to decloak; 10 s recharge.
+        duration: 80
+        recoveryDelay: 10
+        canCancel: 1
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801466898397790284
   references:
     version: 2
     RefIds:
@@ -190,6 +205,10 @@ MonoBehaviour:
           color: {r: 1, g: 1, b: 1, a: 1}
           size: {x: 1.2, y: 1.2, z: 1.2}
         disableDuration: 3
+    - rid: 6801466898397790284
+      type: {class: CloakSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data: 
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

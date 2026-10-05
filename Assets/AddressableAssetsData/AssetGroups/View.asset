@@ -160,6 +160,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c40f2cb09a4486e4bbb404a364c1d37f
+    m_Address: StealthCorvetteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cf56893a070520344bf92d738403ce68
     m_Address: DispatcherShipView
     m_ReadOnly: 0

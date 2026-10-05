@@ -82,6 +82,6 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         }
 
         private static bool IsAlive(IEntity enemy) =>
-            !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits;
+            !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits && !enemy.IsCloaked();
     }
 }

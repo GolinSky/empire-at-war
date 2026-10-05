@@ -181,7 +181,7 @@ namespace EmpireAtWar.Services.Battle
 
         private bool IsHiddenByFog(IEntity entity) =>
             !_localPlayer.IsFriendly(entity.Owner) &&
-            !_visionService.IsVisible(_localPlayer.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position);
+            !_visionService.IsEntityVisible(_localPlayer.Id, entity);
 
         private readonly struct MarqueeCandidate
         {

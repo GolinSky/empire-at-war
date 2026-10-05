@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7810732323461852248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7204694605346375409}
+  - component: {fileID: 875435672520813035}
+  m_Layer: 0
+  m_Name: StealthCorvetteWreckView
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7204694605346375409
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7810732323461852248}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2604391533421033235}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &875435672520813035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7810732323461852248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f769ae15a9992341956ef2b7c5e1f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Wreck.UnitWreckView
+  meshRenderers:
+  - {fileID: 4920087326163614741}
+  meshFilters:
+  - {fileID: 5420205007257837043}
+--- !u!1001 &2752821415073469425
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7204694605346375409}
+    m_Modifications:
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1352653954647682661, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: m_Name
+      value: StealthCorvette
+      objectReference: {fileID: 0}
+    - target: {fileID: 7094388939349880804, guid: de4e9288143a4c9418e5875906b6a4b9,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: abe4d1e7c4c3c944b8634fbbbcf007f8, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: de4e9288143a4c9418e5875906b6a4b9, type: 3}
+--- !u!4 &2604391533421033235 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2752821415073469425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4920087326163614741 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7094388939349880804, guid: de4e9288143a4c9418e5875906b6a4b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2752821415073469425}
+  m_PrefabAsset: {fileID: 0}
+--- !u!33 &5420205007257837043 stripped
+MeshFilter:
+  m_CorrespondingSourceObject: {fileID: 7857536434111991298, guid: de4e9288143a4c9418e5875906b6a4b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2752821415073469425}
+  m_PrefabAsset: {fileID: 0}

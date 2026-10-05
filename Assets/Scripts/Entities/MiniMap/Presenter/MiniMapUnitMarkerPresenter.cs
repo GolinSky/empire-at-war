@@ -15,6 +15,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly IHealthModelObserver _healthModel;
         private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
+        private readonly EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         private readonly MiniMapData _miniMapData;
         private readonly Transform _viewTransform;
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             MiniMapData miniMapData,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
-            SelectionType selectionType)
+            SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers)
         {
             _localPlayer = localPlayer;
             _miniMapData = miniMapData;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _selectionType = selectionType;
             _healthModel = healthModel;
             _visionService = visionService;
+            _modifiers = modifiers;
         }
 
         public void Initialize()
@@ -95,7 +97,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(
-                _localPlayer.IsFriendly(_owner) || _visionService.IsVisible(_localPlayer.Id, position));
+                _localPlayer.IsFriendly(_owner) || !_modifiers.IsCloaked && _visionService.IsVisible(_localPlayer.Id, position));
         }
 
         private void RemoveMarker()

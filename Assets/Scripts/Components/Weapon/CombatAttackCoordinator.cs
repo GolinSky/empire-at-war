@@ -85,7 +85,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
                 throw new InvalidOperationException("Weapon must be registered before firing.");
-            if (!targetGroup.CanTarget(target) || !targetGroup.Contains(target)) return;
+            if (!targetGroup.CanAcquireTarget || !targetGroup.CanTarget(target) || !targetGroup.Contains(target)) return;
             if (!hardPoint.TryStartScheduledSequence(out int hardPointGeneration)) return;
 
             int shots = hardPoint.ShotsPerSalvo;
@@ -419,6 +419,7 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             if (sequence.ShotsRemaining == 0 ||
+                !sequence.TargetGroup.CanAcquireTarget ||
                 sequence.Target.Generation != sequence.TargetGeneration ||
                 !sequence.TargetGroup.CanTarget(sequence.Target) ||
                 !sequence.TargetGroup.Contains(sequence.Target))

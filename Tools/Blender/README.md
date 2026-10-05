@@ -1,5 +1,18 @@
 # Blender / Rothana conversion
 
+## IPV-2C Stealth Corvette — 2026-10-05
+
+- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Stealth Corvette Import.md`; acceptance plan `TODOs/Features/StealthCorvette_Import.md`.
+- Source: RaW `ReV_Stealthship.ALO`; mesh/textures/rigging Warbnull. Original ALO and both DDS hashes unchanged. Run `uv run --with pillow python Tools/Blender/prepare_stealth_corvette_textures.py`, import into a fresh Blender 3.6.23 `StealthCorvette Source` scene, then run `export_stealth_corvette.py` once through MCP. Restore only the binary-verified identity Root: 14 imported → 15 bones.
+- Four meshes / 15,184 triangles retained through FBX and Unity. Blender maximum geometry/bone error 0.000014949/0.000005245 source units; Unity geometry/bone error ≤0.000000225/0.000000090 project units; parents match. Visible hull, effect shell and Collision UVs verified. Unity remaps disabled Shadow UVs by ≤0.000782482; packed blend/FBX preserves original corners.
+- Both DDS→PNG conversions are pixel-identical, 1024 × 1024. Source hull alpha supplies the linear team mask (3.6116% coverage); living and wreck ownership/material bindings verified. All eight living/wreck palettes rendered; blue/green inspected. Actual-model transparent 512 × 512 icon/silhouette are uncropped.
+- Type-first `RepublicShips/StealthCorvette` art folders; visual/gameplay `StealthCorvette.prefab` / `StealthCorvetteShipView.prefab`, dedicated reinforcement preview and wreck. Centered hull `1.863283 × 2.194350 × 20` units; bow +Z/up +Y, roots scale 1, radius 11, banked Y −1.117181..1.117181.
+- Republic `ShipType.StealthCorvette = 11`; hull/shields/regen `850/900/15` per second; cost/build/tech/population/limit `2150/18 s/3/2/1`. Two concussion launchers at `MuzzleB_00/01`, two lasers at paired `MuzzleA_00/01` and `02/03` midpoints. Four mount IDs; zero destructible systems or hangar; all mounts follow the banking body. Shared Laser/ConcussionMissile profiles unchanged.
+- `ShipAbilityId.Cloak = 11`: source XML duration 80 s, recharge 10 s, manual cancel. Enemy rendering, minimap, radar, selection, tooltips, target acquisition and cached pursuit reject cloaked entities; weapons and other abilities cannot start while cloaked. Friendly movement/vision/selection stay active. Existing deployment clearance/blocker rules still apply; already-fired impacts remain valid.
+- Provisional speed/turn/acceleration `42/24°/s/36`, bank 15°, radar 175, height tier 6/Y 80, length 20. Generic Corvette damage category replaces unavailable Corellian Gunboat armor. Project has one build-level gate: level 3; separate source starbase requirement 2 is recorded rather than implemented.
+- `stealth` is a duplicate MeshShield.fx shell; preserve it but disable its Unity renderer alongside Collision/Shadow. Missing `EV_PHANTOM_SCAN_LINES.dds` / `EV_SCANLINES2.dds`; source animated/refraction/proxy effects are not recreated. Local death clone reuses intact geometry, so the project wreck shader uses the dedicated hull material.
+- Sibling `ReV_Stealthship-Converted/` contains packed blend, FBX, PNGs, source XML/credits, conversion scripts, saved-reference/geometry reports and previews. Registrations, compilation/import and references pass; no missing scripts, broken references or donor model dependencies. No automated tests or Play Mode run. Runtime acceptance and provisional balance review remain active.
+
 ## V-19 Torrent — 2026-10-05
 
 - Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/V-19 Torrent Import.md`; acceptance plan `TODOs/Features/V19Torrent_Import.md`.

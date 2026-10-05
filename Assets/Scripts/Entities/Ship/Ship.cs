@@ -241,7 +241,7 @@ namespace EmpireAtWar.Ship
             if (healthModel.HasUnits && enemy.TryGetFacade(out IHealthFacade healthFacade))
             {
                 _weaponComponent.AddTarget(
-                    new AttackData(healthModel, healthFacade, HardPointType.Any),
+                    new AttackData(healthModel, healthFacade, HardPointType.Any, enemy),
                     AttackType.Base);
             }
 

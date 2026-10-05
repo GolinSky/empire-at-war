@@ -87,7 +87,7 @@ namespace EmpireAtWar.Services.Enemy
             _targets.Clear();
             foreach (IEntity entity in _entities.Entities)
             {
-                if (!_relations.IsHostile(caster.Entity.Owner, entity.Owner) || entity.HealthModel.IsDestroyed ||
+                if (!_relations.IsHostile(caster.Entity.Owner, entity.Owner) || entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
                     PlanarGeometry.Distance(caster.WorldPosition, entity.GetFacade<IEntityTransformFacade>().Transform.position) > range)
                     continue;
                 _targets.Add(entity);

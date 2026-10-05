@@ -89,7 +89,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
-            if (_modifiers.IsIonDisabled)
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked)
             {
                 generation = _sequence.Generation;
                 return false;
@@ -99,7 +99,7 @@ namespace EmpireAtWar.ViewComponents.Health
             return true;
         }
 
-        internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && _sequence.IsEmitting(generation);
+        internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && !_modifiers.IsCloaked && _sequence.IsEmitting(generation);
 
         internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
 

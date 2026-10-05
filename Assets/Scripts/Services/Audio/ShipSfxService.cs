@@ -215,7 +215,7 @@ namespace EmpireAtWar.Services.Audio
             Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(ship.Owner) &&
-                !_visionService.IsVisible(_localPlayer.Id, position)) return 0f;
+                (ship.IsCloaked() || !_visionService.IsVisible(_localPlayer.Id, position))) return 0f;
             float outside = Mathf.Max(0f, -viewport.x, viewport.x - 1f, -viewport.y, viewport.y - 1f);
             float edge = Mathf.Clamp01(Vector2.Distance(new Vector2(viewport.x, viewport.y),
                 new Vector2(0.5f, 0.5f)) / Mathf.Sqrt(0.5f));

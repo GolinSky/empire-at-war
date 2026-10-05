@@ -18,7 +18,7 @@ namespace EmpireAtWar.Components.AttackComponent
             return new AttackData(
                 entity.HealthModel,
                 entity.GetFacade<IHealthFacade>(),
-                hardPointType);
+                hardPointType, entity);
         }
 
         public AttackData ConstructHardPointData(IEntity entity, int hardPointId)
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.AttackComponent
             return new AttackData(
                 entity.HealthModel,
                 entity.GetFacade<IHealthFacade>(),
-                entity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId]);
+                entity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId], entity);
         }
     }
 }

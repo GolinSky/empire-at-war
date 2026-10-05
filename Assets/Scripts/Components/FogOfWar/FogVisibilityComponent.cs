@@ -18,6 +18,7 @@ namespace EmpireAtWar.Components.FogOfWar
     {
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
+        private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private HardPoint[] hardPoints;
@@ -33,10 +34,11 @@ namespace EmpireAtWar.Components.FogOfWar
 
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
-            List<IIonStunViewSource> ionStunSources)
+            List<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers)
         {
             _visionService = visionService;
             _localPlayer = localPlayer;
+            _modifiers = modifiers;
             _ionStunSources = ionStunSources;
         }
 
@@ -94,7 +96,7 @@ namespace EmpireAtWar.Components.FogOfWar
         }
 
         private bool IsHiddenByFog() =>
-            !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
+            _modifiers.IsCloaked || !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
 
         private void TrackExplosion(ExplosionVfx explosion)
         {

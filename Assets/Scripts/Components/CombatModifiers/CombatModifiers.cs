@@ -15,6 +15,13 @@ namespace EmpireAtWar.Components.Combat
         private bool _superWeaponDisabled;
         private int _ionPulseDisables;
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
+        public bool IsCloaked { get; private set; }
+
+        public void SetCloaked(bool cloaked)
+        {
+            IsCloaked = cloaked;
+            if (Changed != null) Changed.Invoke();
+        }
 
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;

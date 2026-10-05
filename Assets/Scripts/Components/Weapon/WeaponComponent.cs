@@ -248,6 +248,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
+                if (!candidate.Group.CanAcquireTarget) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
@@ -292,6 +293,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
+                if (!candidate.Group.CanAcquireTarget) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
@@ -329,10 +331,10 @@ namespace EmpireAtWar.Components.Weapon
         internal void CommitTargetSelection(WeaponHardPoint weapon, int targetVersion,
             WeaponTargetSelectionJob.Result result, TargetSelectionCandidate selectedCandidate)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
 
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
+                (!selectedCandidate.Group.CanAcquireTarget || !IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
                  selectedCandidate.Unit.Generation != selectedCandidate.Generation))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback();
@@ -350,7 +352,7 @@ namespace EmpireAtWar.Components.Weapon
 
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy) return;
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
             TryFireWeapon(weapon);
         }
 
