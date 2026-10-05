@@ -62,21 +62,6 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 2ce1aa3deeeb0a541bb85a35a38c9390,
               type: 3}
-        - key: 4
-          value:
-            matchups: {fileID: 11400000, guid: 6280957ca609340419e921268a1388f0, type: 2}
-            description: Heavy turbolasers and ion cannons concentrate fire on large
-              ships.
-            role: "Capital \xB7 Heavy battle line"
-            iconKey: 71f48afd28fd17340a87652ce16e4712:21300000
-            <Name>k__BackingField: Star destroyer-2
-            <MaxCount>k__BackingField: 5
-            <AvailableLevel>k__BackingField: 5
-            <Price>k__BackingField: 5000
-            <BuildTime>k__BackingField: 25
-            <UnitCapacity>k__BackingField: 6
-            <Icon>k__BackingField: {fileID: 21300000, guid: 71f48afd28fd17340a87652ce16e4712,
-              type: 3}
         - key: 5
           value:
             matchups: {fileID: 11400000, guid: b1f3c971db8c60640b5dbd3818bb1322, type: 2}
@@ -157,6 +142,24 @@ MonoBehaviour:
             <BuildTime>k__BackingField: 110
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
+              type: 3}
+        - key: 10
+          value:
+            matchups: {fileID: 11400000, guid: fcc5b4e54bcb0104486e9c66ffac9685, type: 2}
+            description: Late Clone Wars Republic prototype battleship. Six heavy
+              twin turbolasers, two heavy twin ion cannons, fourteen turbolaser batteries
+              and five ion batteries deliver heavy direct fire. Laser Beam replaces
+              Tractor Beam. Carries ARC-170s and Y-Wings; no point defense leaves
+              it vulnerable to bombers.
+            role: Capital / Battleship / Heavy direct fire
+            iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
+            <Name>k__BackingField: Imperator-class Star Destroyer
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 8000
+            <BuildTime>k__BackingField: 90
+            <UnitCapacity>k__BackingField: 4
+            <Icon>k__BackingField: {fileID: 21300000, guid: 467453f64c3f87547aa904ce3fda10b9,
               type: 3}
     - key: 1
       value:

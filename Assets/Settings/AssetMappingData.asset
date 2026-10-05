@@ -693,3 +693,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ImperatorShipView
+      value:
+        m_AssetGUID: 1ca93b69553995d468e5f76bac1210e2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ImperatorShipData
+      value:
+        m_AssetGUID: 7bc708a10959cdc4997c1eb7b4d3da0a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

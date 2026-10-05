@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ca93b69553995d468e5f76bac1210e2
+    m_Address: ImperatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 219821300eda4f94a89310e6a97d30eb
     m_Address: StarDestroyer1ShipView
     m_ReadOnly: 0
