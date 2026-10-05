@@ -48,6 +48,8 @@ namespace ViewComponents
 
         private float _timer;
         private Material _fogMaterial;
+
+        public Texture Mask => _fogTexture;
         private ICameraService _cameraService;
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
@@ -165,7 +167,22 @@ namespace ViewComponents
             return Mathf.Max(1, Mathf.Max(radiusPxX, radiusPxY));
         }
 
+        public Rect GetMaskUvRect(Vector2 worldMin, Vector2 worldMax)
+        {
+            Vector2 min = WorldToMaskUv(new Vector3(worldMin.x, 0f, worldMin.y));
+            Vector2 max = WorldToMaskUv(new Vector3(worldMax.x, 0f, worldMax.y));
+            return new Rect(min, max - min);
+        }
+
         private Vector2Int PositionToPixel(Vector3 worldPos, out bool inside)
+        {
+            Vector2 uv = WorldToMaskUv(worldPos);
+            inside = uv.x >= 0f && uv.x <= 1f && uv.y >= 0f && uv.y <= 1f;
+            return new Vector2Int(Mathf.RoundToInt(uv.x * textureResolution),
+                Mathf.RoundToInt(uv.y * textureResolution));
+        }
+
+        private Vector2 WorldToMaskUv(Vector3 worldPos)
         {
             Vector3 localPos = transform.InverseTransformPoint(worldPos);
 
@@ -177,10 +194,7 @@ namespace ViewComponents
 
             if (flipX) normalizedX = 1f - normalizedX;
             if (flipZ) normalizedZ = 1f - normalizedZ;
-
-            inside = normalizedX >= 0f && normalizedX <= 1f && normalizedZ >= 0f && normalizedZ <= 1f;
-            return new Vector2Int(Mathf.RoundToInt(normalizedX * textureResolution),
-                Mathf.RoundToInt(normalizedZ * textureResolution));
+            return new Vector2(normalizedX, normalizedZ);
         }
 
         /// <summary>

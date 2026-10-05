@@ -14,6 +14,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Views.MiniMap;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
+using ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Controllers.MiniMap
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
         private readonly INotifier<BattleMap> _battleMap;
+        private readonly IFogOfWarSystem _fogOfWarSystem;
         private IMiniMapView _miniMapView;
 
         private readonly MiniMapData _model;
@@ -46,10 +48,12 @@ namespace EmpireAtWar.Controllers.MiniMap
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
             ITooltipService tooltipService,
+            IFogOfWarSystem fogOfWarSystem,
             MiniMapData model,
             TimerPoolService timerPoolService) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
+            _fogOfWarSystem = fogOfWarSystem;
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltipService);
             _model = model;
@@ -133,6 +137,9 @@ namespace EmpireAtWar.Controllers.MiniMap
                 _miniMapView.OnMoveOrderRequested += OrderMove;
                 _tooltipHover = new TooltipHoverSubscription(
                     ((ITooltipHoverView)_miniMapView).TooltipHover, HandleTooltipHover, _tooltips);
+                // The route opens after the map is built, so the fog mask already exists.
+                _miniMapView.SetFog(_fogOfWarSystem.Mask,
+                    _fogOfWarSystem.GetMaskUvRect(_model.MapRange.Min, _model.MapRange.Max));
             }
             else
             {
