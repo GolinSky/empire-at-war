@@ -31,6 +31,6 @@ MonoBehaviour:
   <ShieldRegenerateValue>k__BackingField: 3
   <ShieldRegenerateDelay>k__BackingField: 1
   <HullRepairPerSecond>k__BackingField: 0
-  <Abilities>k__BackingField: 
+  <Abilities>k__BackingField: 09000000
   <Range>k__BackingField: 200
   <Delay>k__BackingField: 0.25

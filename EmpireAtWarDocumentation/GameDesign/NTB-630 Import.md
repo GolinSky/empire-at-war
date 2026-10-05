@@ -13,7 +13,7 @@ tags:
 - Source: RaW 1.2.1 `Data/Art/Models/ReV_ntb630.ALO`; user-requested Republic early-game anti-capital bomber.
 - Four craft; per craft hull 60, shields 30, refresh 3; Bomber armor. Cost 550 credits, build 8 s, population 1, level 1.
 - User build 8 s overrides local `Units_Space_republic_ntb_630_fighter.xml` multiplayer 17 s. Local XML confirms four craft, hull/shields/refresh and cost/population.
-- Ion Shot excluded by user; `Abilities` remains empty. No ability, catalog, projectile or carrier changes.
+- Follow-up request: enable existing `ShipAbilityId.IonShot = 9` in `Abilities`; saved data and catalog settings/icon resolve in Unity. No ability implementation, catalog, projectile or carrier changes.
 - Separate factory-startup background Blender 3.6.23 avoids the other agent's live Blender instance.
 
 ## Implementation
