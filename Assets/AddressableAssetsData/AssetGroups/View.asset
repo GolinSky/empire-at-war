@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: View
   m_GUID: c76d02dd69a34cb44abaf1b9048349ba
   m_SerializeEntries:
+  - m_GUID: 04c1026fdf702394d95307214a4b428e
+    m_Address: NTB630SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0ba88225dba572b4194964454002a11e
     m_Address: RecusantShipView
     m_ReadOnly: 0

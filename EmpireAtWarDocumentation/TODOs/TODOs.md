@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Import NTB-630 Naval Bomber**
+  - **Plan**: [[TODOs/Features/NTB630_Import|NTB-630 Import]]
+  - **Reference**: [[GameDesign/NTB-630 Import]]
+  - **Status**: 2026-10-05 static ALO/Blender/FBX import and Republic squadron `4` registrations complete; four bombers, twelve weapons, hull/shields/refresh 60/30/3 per craft, cost/build/population 550/8 s/1. Own placement/icons/team mask, geometry and saved-reference/Unity import checks passed; source hashes unchanged. Separate Blender process; Ion Shot untouched. No tests or Play Mode run.
+  - **Remaining**: missing original turret textures (neutral metal used), in-game acceptance and provisional balance review.
+
 - [ ] **Import ARC-170 squadron**
   - **Plan**: [[TODOs/Features/ARC170_Import|ARC-170 Import]]
   - **Reference**: [[GameDesign/ARC-170 Import]]
