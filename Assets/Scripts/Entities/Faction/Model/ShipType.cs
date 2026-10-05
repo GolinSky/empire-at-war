@@ -24,6 +24,7 @@ namespace EmpireAtWar.Models.Factions
         Captor = 105,
         PatrolFrigate = 106,
         C9979 = 107,
+        Dispatcher = 108,
 
     }
 }

@@ -284,6 +284,24 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 1
             <Icon>k__BackingField: {fileID: 21300000, guid: 69c29902694322d4aacf1446e4b7f487,
               type: 3}
+        - key: 108
+          value:
+            matchups: {fileID: 11400000, guid: e053a1b798d6f5f4d85501286790670d, type: 2}
+            description: Fast CIS assault frigate, formerly the Techno Union Frigate.
+              Four twin turbolasers, seven turbolasers, two lasers, four point-defense
+              cannons and three ion cannons deliver strong offensive firepower. Thin
+              shields favor hit-and-run attacks. Power to Weapons temporarily boosts
+              offensive output.
+            role: Frigate / Fast assault / Hit-and-run
+            iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
+            <Name>k__BackingField: Dispatcher-class Frigate
+            <MaxCount>k__BackingField: 10
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 3400
+            <BuildTime>k__BackingField: 33
+            <UnitCapacity>k__BackingField: 3
+            <Icon>k__BackingField: {fileID: 21300000, guid: f7655a1be55b2a74aa984b640ec46f5d,
+              type: 3}
   squadronFactionDataWrapper:
     keyValue:
     - key: 0

@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 540c813cdf8ad1249b871f6abf3454ff
+    m_Address: DispatcherShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 55480b9ceb1c92b46974e5b131bb4f34
     m_Address: CinematicCameraData
     m_ReadOnly: 0

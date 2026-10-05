@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 553d1e23eae7824438fd41f0e682b0d4, type: 3}
+  m_Name: DispatcherWreckData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.UnitWreck.UnitWreckData
+  <Prefab>k__BackingField: {fileID: 875435672520813035, guid: 76b110f4b976620489e2f84386ec5661,
+    type: 3}
+  <MaxActive>k__BackingField: 32
+  <MinParts>k__BackingField: 2
+  <MaxParts>k__BackingField: 3
+  <MinCutRatio>k__BackingField: 0.5
+  <MaxCutRatio>k__BackingField: 0.7
+  <Lifetime>k__BackingField: 30
+  <DissolveDuration>k__BackingField: 8
+  <GlowDuration>k__BackingField: 8
+  <SeparationSpeed>k__BackingField: 1.5
+  <TiltSpeed>k__BackingField: 2
+  <SinkSpeed>k__BackingField: 1
+  <TornEdgeWidth>k__BackingField: 4
+  <HeatColor>k__BackingField: {r: 4, g: 1.2, b: 0.2, a: 1}
+  <DissolveEdgeColor>k__BackingField: {r: 6, g: 2, b: 0.4, a: 1}
+  <DissolveEdgeWidth>k__BackingField: 0.08
+  <DissolveNoiseScale>k__BackingField: 0.05

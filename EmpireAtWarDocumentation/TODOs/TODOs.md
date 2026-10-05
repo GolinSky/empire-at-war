@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify Dispatcher-class Frigate integration acceptance**
+  - **Plan**: [[TODOs/Features/Dispatcher_Import|Dispatcher Import]]
+  - **Reference**: [[GameDesign/Dispatcher Import]]
+  - **Status**: 2026-10-05 intact/damaged ALOs imported and CIS ship `108` registered; Munificent length 82.56805, hull/shields/regen 3,500/1,000/50, cost/build/population/tech 3,400/33 s/3/2. Twenty weapons + shield/engine, Power to Weapons, dedicated wreck/placement/icons/team colors complete. Saved-reference/geometry/import/compile checks passed; source hashes unchanged. No automated tests or Play Mode started for this import.
+  - **Remaining**: clean-skirmish acceptance and provisional movement/weapon/system/limit/matchup balance review; source death ALA remains outside static conversion.
+
 - [ ] **Verify C-9979 Lander integration acceptance**
   - **Plan**: [[TODOs/Features/C9979_Import|C-9979 Import]]
   - **Reference**: [[GameDesign/C-9979 Import]]
