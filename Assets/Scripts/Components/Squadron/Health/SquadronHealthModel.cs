@@ -131,6 +131,21 @@ namespace EmpireAtWar.Components.Squadrons.Health
             OnValueChanged?.Invoke();
         }
 
+        public void RepairHull(float value)
+        {
+            if (IsDestroyed || value <= 0f) return;
+            bool changed = false;
+            foreach (HardPointModel member in Members)
+            {
+                if (member.IsDestroyed || member.Health >= member.MaxHealth) continue;
+                member.Repair(value);
+                changed = true;
+            }
+            if (!changed) return;
+            Recalculate();
+            OnValueChanged?.Invoke();
+        }
+
         private void Recalculate()
         {
             float hull = 0f;

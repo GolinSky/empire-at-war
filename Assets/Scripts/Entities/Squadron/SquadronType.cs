@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.Squadrons
         Delta7 = 0,
         AWing = 1,
         ARC170 = 2,
+        YWing = 3,
         NTB630 = 4,
 
         //separatist

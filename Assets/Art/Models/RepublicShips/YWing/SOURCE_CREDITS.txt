@@ -1,0 +1,13 @@
+BTL-B Y-Wing / ReV_ywing.ALO
+
+Source: Republic at War 1.2.1 MINIMAL, supplied by the user.
+Original: F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_ywing.ALO
+Textures: ReV_ywing.dds, ReV_ywing_b.dds, flash_red.dds from the same installation.
+
+The complete supplied credits.txt is retained as Republic_at_War_Credits.txt.
+That file contains no identifiable ReV_ywing/Y-Wing-specific attribution line.
+Individual model, texture and rig authors are unresolved; do not invent attribution.
+Resolve the original asset's attribution before any public redistribution.
+
+Conversion: Blender 3.6.23 + upstream ALAMO importer; static FBX and lossless PNGs.
+Original ALO/DDS files remain unchanged. SourceAudit.json records SHA-256 values.

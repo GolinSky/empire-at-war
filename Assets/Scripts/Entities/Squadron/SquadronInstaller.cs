@@ -63,6 +63,7 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInterfacesAndSelfTo<SquadronIconComponent>().FromComponentInHierarchy().AsCached();
 
             Container.BindInterfacesExt<SquadronOrderFacade>();
+            Container.BindInterfacesExt<SquadronAbilityFacade>();
             Container.BindInterfacesExt<HealthFacade>();
             Container.BindInterfacesExt<SquadronTooltipFacade>();
             Container.BindInterfacesAndSelfTo<UnitTypeFacade>().AsSingle().WithArguments(UnitTypeId.Squadron(_squadronType));

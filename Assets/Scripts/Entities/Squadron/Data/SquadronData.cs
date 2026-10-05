@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons.Data
@@ -41,6 +42,11 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [field: SerializeField] public float MemberShields { get; private set; } = 25f;
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; } = 2f;
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; } = 2f;
+        [Tooltip("Hull points repaired per second on each surviving fighter.")]
+        [field: SerializeField] public float HullRepairPerSecond { get; private set; }
+
+        [Header("Abilities")]
+        [field: SerializeField] public ShipAbilityId[] Abilities { get; private set; } = System.Array.Empty<ShipAbilityId>();
 
         [Header("Radar")]
         [field: SerializeField] public float Range { get; private set; } = 80f;
