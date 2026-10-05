@@ -120,11 +120,12 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
+            if (caster.Modifiers.IsCloaked && id != ShipAbilityId.Cloak) return false;
             if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || !slot.CanActivate)
                 return false;
             ShipAbilityDefinition definition = slot.Definition;
             if (definition.RequiresEnemyTarget &&
-                (target == null || target.HealthModel.IsDestroyed ||
+                (target == null || target.HealthModel.IsDestroyed || target.IsCloaked() ||
                  !_relations.IsHostile(caster.Entity.Owner, target.Owner) ||
                  PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
                 return false;

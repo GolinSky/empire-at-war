@@ -236,7 +236,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_localPlayer.IsFriendly(entity.Owner) && !_visionService.IsVisible(_localPlayer.Id, position))
+                if (!_localPlayer.IsFriendly(entity.Owner) && !_visionService.IsEntityVisible(_localPlayer.Id, entity))
                 {
                     continue;
                 }

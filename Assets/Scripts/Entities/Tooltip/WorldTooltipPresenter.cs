@@ -118,7 +118,7 @@ namespace EmpireAtWar.Entities.Tooltip
         }
 
         private bool IsVisible(IEntity entity) => !entity.HealthModel.IsDestroyed &&
-            (_local.IsFriendly(entity.Owner) || _visionService.IsVisible(_local.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position));
+            (_local.IsFriendly(entity.Owner) || _visionService.IsEntityVisible(_local.Id, entity));
 
         private TooltipContent BuildHardPoint(IEntity entity, int id)
         {

@@ -217,7 +217,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         {
             return !ship.HealthModel.IsDestroyed &&
                    (_localPlayer.IsFriendly(ship.Owner) ||
-                    _visionService.IsVisible(_localPlayer.Id, ship.GetFacade<IEntityTransformFacade>().Transform.position));
+                    _visionService.IsEntityVisible(_localPlayer.Id, ship));
         }
 
         private bool TryGetScreenPosition(IHardPointModel hardPoint, out Vector2 screenPosition)

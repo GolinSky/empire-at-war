@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         ConcentrateFire = 7,
         IonPulse = 8,
         IonShot = 9,
-        LaserBeam = 10
+        LaserBeam = 10,
+        Cloak = 11
     }
 }

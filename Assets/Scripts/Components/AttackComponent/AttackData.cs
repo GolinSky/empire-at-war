@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Components.AttackComponent
@@ -12,6 +13,9 @@ namespace EmpireAtWar.Components.AttackComponent
         private readonly IHealthModelObserver _shipUnitsProvider;
         private readonly HardPointType _hardPointType;
         private readonly bool _isFocused;
+        private readonly IEntity _targetEntity;
+
+        public bool CanAcquireTarget => !_targetEntity.IsCloaked();
 
         public event Action UnitsChanged;
 
@@ -28,8 +32,9 @@ namespace EmpireAtWar.Components.AttackComponent
         public IHealthModelObserver TargetHealth => _shipUnitsProvider;
         public List<IHardPointModel> Units { get; private set; }
 
-        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType)
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType, IEntity targetEntity)
         {
+            _targetEntity = targetEntity;
             _shipUnitsProvider = shipUnitsProvider;
             _hardPointType = hardPointType;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
@@ -37,8 +42,9 @@ namespace EmpireAtWar.Components.AttackComponent
         }
 
         /// <summary>Focuses fire on one hardpoint the player picked explicitly.</summary>
-        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, IHardPointModel hardPoint)
+        public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, IHardPointModel hardPoint, IEntity targetEntity)
         {
+            _targetEntity = targetEntity;
             _shipUnitsProvider = shipUnitsProvider;
             _isFocused = true;
             Units = new List<IHardPointModel> { hardPoint };

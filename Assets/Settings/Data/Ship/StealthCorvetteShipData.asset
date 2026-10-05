@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: StealthCorvetteShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <Speed>k__BackingField: 42
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 6
+  <HullBottom>k__BackingField: -1.1171812
+  <HullTop>k__BackingField: 1.1171811
+  <RotationSpeed>k__BackingField: 24
+  <TurnAcceleration>k__BackingField: 36
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 15
+  <NavigationRadius>k__BackingField: 11
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 41e9e95a3f1f7484eb79eaccba98f93a,
+    type: 2}
+  <ShipClass>k__BackingField: 2
+  <Hull>k__BackingField: 850
+  <Shields>k__BackingField: 900
+  <ShieldRegenerateValue>k__BackingField: 15
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <ShieldDangerStateRange>k__BackingField:
+    <Min>k__BackingField: 0.7
+    <Max>k__BackingField: 0.9
+  hardPointHealth: []
+  <Range>k__BackingField: 175
+  <Delay>k__BackingField: 0.25
+  abilities: 0b000000
+  hangarBays: []
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8

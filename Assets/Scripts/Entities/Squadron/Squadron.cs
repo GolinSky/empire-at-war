@@ -134,7 +134,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public void Attack(IEntity target, Vector3 formationOffset)
         {
             // Fighters swarm the target, so a formation offset has no meaning for squadrons.
-            if (!SquadronTargetSelector.IsAlive(target) ||
+            if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked() ||
                 _orders.Matches(UnitOrderType.Attack, target: target)) return;
             _orders.Replace(UnitOrderType.Attack, target: target);
             Engage(target);
@@ -195,7 +195,7 @@ namespace EmpireAtWar.Entities.Squadrons
             IEntity entity = args.item;
             if (entity.HealthModel.HasUnits && entity.TryGetFacade(out IHealthFacade healthFacade))
             {
-                _weapon.AddTarget(new AttackData(entity.HealthModel, healthFacade, HardPointType.Any),
+                _weapon.AddTarget(new AttackData(entity.HealthModel, healthFacade, HardPointType.Any, entity),
                     AttackType.Base);
             }
         }
@@ -205,7 +205,7 @@ namespace EmpireAtWar.Entities.Squadrons
             switch (_orders.Current)
             {
                 case UnitOrderType.Attack:
-                    if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
+                    if (!SquadronTargetSelector.IsAlive(_orders.Target) || _orders.Target.IsCloaked()) Stop();
                     break;
                 case UnitOrderType.Hunt:
                     UpdateHunt();
@@ -236,7 +236,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private void UpdateHunt()
         {
             _huntRetargetTimer -= Time.deltaTime;
-            if (SquadronTargetSelector.IsAlive(_engaged) && _huntRetargetTimer > 0f) return;
+            if (SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked() && _huntRetargetTimer > 0f) return;
             _huntRetargetTimer = _orderSettings.HuntRetargetInterval;
             IEntity target = _targetSelector.SelectAnywhere(_flight.Centroid);
             if (target != null) Engage(target);
@@ -246,7 +246,7 @@ namespace EmpireAtWar.Entities.Squadrons
         /// <summary>Engages radar contacts near <paramref name="center"/> and resumes the order once they are gone.</summary>
         private void DefendArea(Vector3 center)
         {
-            if (SquadronTargetSelector.IsAlive(_engaged)) return;
+            if (SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked()) return;
             IEntity enemy = _targetSelector.SelectNear(_radar.Enemies, center, Data.GuardRadius);
             if (enemy != null)
             {

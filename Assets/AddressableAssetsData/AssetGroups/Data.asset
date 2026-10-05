@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 413c64af046c0534095a8e92f601bc37
+    m_Address: StealthCorvetteShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 44554d34b94f02045a8bf8e7f1f3817d
     m_Address: Belbullab22SquadronData
     m_ReadOnly: 0

@@ -110,6 +110,7 @@ namespace EmpireAtWar.Components.Radar
                     if (_entityLocator.TryGetEntity(_overlapHits[i], out IEntity entity) &&
                         !entity.HealthModel.IsDestroyed)
                     {
+                        if (_relations.IsHostile(Model.Owner, entity.Owner) && entity.IsCloaked()) continue;
                         if (_relations.IsHostile(Model.Owner, entity.Owner) && entity.HealthModel.HasUnits &&
                             PlanarGeometry.DistanceSquared(
                                 entity.GetFacade<IEntityTransformFacade>().Transform.position, _viewTransform.position) <=

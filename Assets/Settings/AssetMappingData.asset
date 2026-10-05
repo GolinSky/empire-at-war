@@ -721,3 +721,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: StealthCorvetteShipView
+      value:
+        m_AssetGUID: c40f2cb09a4486e4bbb404a364c1d37f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: StealthCorvetteShipData
+      value:
+        m_AssetGUID: 413c64af046c0534095a8e92f601bc37
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

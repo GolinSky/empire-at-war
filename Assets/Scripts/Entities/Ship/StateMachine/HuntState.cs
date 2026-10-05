@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _retargetTimer -= deltaTime;
             if (_retargetTimer <= 0f || _target == null ||
-                _target.HealthModel.IsDestroyed)
+                _target.HealthModel.IsDestroyed || _target.IsCloaked())
             {
                 FindTarget();
                 _retargetTimer = _settings.HuntRetargetInterval;
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             foreach (IEntity entity in _locator.Entities)
             {
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
-                    !entity.HealthModel.HasUnits) continue;
+                    !entity.HealthModel.HasUnits || entity.IsCloaked()) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (_respectsFog && !_visionService.IsVisible(_side, position))
                     continue;

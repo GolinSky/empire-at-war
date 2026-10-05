@@ -66,7 +66,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     _friendlyTransform.position) > _settings.GuardChaseDistance)
                 _isReturning = true;
             if (_engagementTarget != null &&
-                (_isReturning || _engagementTarget.HealthModel.IsDestroyed ||
+                (_isReturning || _engagementTarget.HealthModel.IsDestroyed || _engagementTarget.IsCloaked() ||
                  !_radar.Enemies.Contains(_engagementTarget)))
             {
                 _weapon.ResetTarget();
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 foreach (IEntity enemy in _radar.Enemies)
                 {
-                    if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits ||
+                    if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits || enemy.IsCloaked() ||
                         PlanarGeometry.Distance(enemy.GetFacade<IEntityTransformFacade>().Transform.position, home) >
                         _settings.GuardChaseDistance) continue;
                     _engagementTarget = enemy;
