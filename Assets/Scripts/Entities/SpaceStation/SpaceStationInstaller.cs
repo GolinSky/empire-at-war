@@ -14,14 +14,16 @@ namespace EmpireAtWar.SpaceStation
     {
         private FactionType _factionType;
         private PlayerId _owner;
+        private bool _isHiddenByLocalFog;
 
         protected override string PrefabPath => _factionType + base.PrefabPath;
 
         [Inject]
-        public void Construct(FactionType factionType, PlayerId owner)
+        public void Construct(FactionType factionType, PlayerId owner, ILocalPlayer localPlayer)
         {
             _factionType = factionType;
             _owner = owner;
+            _isHiddenByLocalFog = !localPlayer.IsFriendly(owner);
         }
 
         protected override void InstallFeatures(SpaceStationData data)
@@ -38,7 +40,8 @@ namespace EmpireAtWar.SpaceStation
                 .BindRadarFeature()
                 .BindWeaponFeature()
                 .BindCombatModifiersFeature()
-                .BindStationaryCombatFeature();
+                .BindStationaryCombatFeature()
+                .BindFogOfWarFeature(_isHiddenByLocalFog);
 
             Container.Bind<IHangarData>().To<StationHangarData>().AsSingle();
             Container.Bind<HangarModel>().AsSingle();

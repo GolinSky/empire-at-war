@@ -1513,6 +1513,7 @@ GameObject:
   - component: {fileID: 8636846628301652099}
   - component: {fileID: 4922508454177302544}
   - component: {fileID: 8884538507175374387}
+  - component: {fileID: 3489274481667719342}
   m_Layer: 0
   m_Name: RepublicSpaceStationView
   m_TagString: Untagged
@@ -1702,6 +1703,52 @@ MonoBehaviour:
   - {fileID: 6773111060450377339}
   - {fileID: 6164268158150407079}
   - {fileID: 9046699686680731835}
+--- !u!114 &3489274481667719342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8430518895033861752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4396c7fd45f4a094c9d92689bcbb4b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.FogOfWar.FogVisibilityComponent
+  renderers:
+  - {fileID: 555100115181004464}
+  - {fileID: 2641999123679171728}
+  - {fileID: 8426188828586698579}
+  - {fileID: 253668630777400967}
+  - {fileID: 6488916625286535517}
+  - {fileID: 9093703196654673226}
+  - {fileID: 8824072863644394166}
+  - {fileID: 4144613105397337534}
+  - {fileID: 2488626554368185859}
+  - {fileID: 5392373877904681124}
+  - {fileID: 6773111060450377339}
+  - {fileID: 6164268158150407079}
+  - {fileID: 9046699686680731835}
+  hardPoints:
+  - {fileID: 2124114673325768231}
+  - {fileID: 8177678813357081521}
+  - {fileID: 3338842454457253282}
+  - {fileID: 8636718447074006593}
+  - {fileID: 5541572143087454584}
+  - {fileID: 5815424670973702410}
+  - {fileID: 7944783967518754487}
+  - {fileID: 7567556860422496307}
+  - {fileID: 5747464592025652541}
+  - {fileID: 7161018705896444829}
+  - {fileID: 5781722779553142075}
+  - {fileID: 2252433830453111801}
+  - {fileID: 7466611236617004935}
+  - {fileID: 774076073732919523}
+  - {fileID: 8576188791618883331}
+  - {fileID: 337064068512335514}
+  - {fileID: 7178114026213147903}
+  revealRadius: 396
+  staysRevealedOnceSeen: 1
 --- !u!1001 &873871534162254315
 PrefabInstance:
   m_ObjectHideFlags: 0

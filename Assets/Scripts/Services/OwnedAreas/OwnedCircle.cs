@@ -17,12 +17,14 @@ namespace EmpireAtWar.Services.OwnedAreas
             Radius = radius;
         }
 
-        public bool Contains(Vector3 position)
+        /// <summary>True when a circle of <paramref name="margin"/> radius at the position overlaps this one.</summary>
+        public bool Contains(Vector3 position, float margin)
         {
             Vector3 center = Transform.position;
             float x = position.x - center.x;
             float z = position.z - center.z;
-            return x * x + z * z <= Radius * Radius;
+            float reach = Radius + margin;
+            return x * x + z * z <= reach * reach;
         }
     }
 }

@@ -3,7 +3,6 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
@@ -28,8 +27,6 @@ namespace EmpireAtWar.Controllers.MiniMap
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
         private readonly INotifier<BattleMap> _battleMap;
-        private readonly IPlayerRoster _playerRoster;
-        private readonly ILocalPlayer _localPlayer;
         private IMiniMapView _miniMapView;
 
         private readonly MiniMapData _model;
@@ -48,15 +45,11 @@ namespace EmpireAtWar.Controllers.MiniMap
             IUiCancelRouter cancelRouter,
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
-            IPlayerRoster playerRoster,
-            ILocalPlayer localPlayer,
             ITooltipService tooltipService,
             MiniMapData model,
             TimerPoolService timerPoolService) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
-            _playerRoster = playerRoster;
-            _localPlayer = localPlayer;
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltipService);
             _model = model;
@@ -91,11 +84,6 @@ namespace EmpireAtWar.Controllers.MiniMap
         {
             MapLayout layout = battleMap.Layout;
             _model.MapRange = layout.SizeRange;
-            _model.ClearBases();
-            foreach (PlayerSlot player in _playerRoster.Players)
-            {
-                _model.AddBase(layout.GetStationPosition(player.Id), player.Id, _localPlayer.IsHostile(player.Id));
-            }
             // Obstacles are spawned and scaled this frame; auto sync is off, so collider bounds are stale until synced.
             Physics.SyncTransforms();
             foreach (IMiniMapObstacleSource obstacleSource in battleMap.Obstacles)

@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.MiniMap;
@@ -19,7 +18,6 @@ namespace EmpireAtWar.Models.MiniMap
 
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
-        IReadOnlyList<BaseMarkData> Bases { get; }
         CameraMarkData CameraMark { get;}
         IReadOnlyList<MiniMapMarker> Markers { get; }
         IReadOnlyList<MiniMapObstacle> Obstacles { get; }
@@ -32,7 +30,6 @@ namespace EmpireAtWar.Models.MiniMap
     public class MiniMapData : Data, IModel, IMiniMapModelObserver
     {
         private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
-        private readonly List<BaseMarkData> _bases = new List<BaseMarkData>();
         private readonly List<MiniMapObstacle> _obstacles = new List<MiniMapObstacle>();
 
         public event Action<MarkData> OnMarkAdded;
@@ -42,7 +39,6 @@ namespace EmpireAtWar.Models.MiniMap
         public event Action<MiniMapMarker> OnMarkerRemoved;
 
         public Vector2Range MapRange { get; set; }
-        public IReadOnlyList<BaseMarkData> Bases => _bases;
         public CameraMarkData CameraMark { get; } = new CameraMarkData();
         public IReadOnlyList<MiniMapMarker> Markers => _markers;
         public IReadOnlyList<MiniMapObstacle> Obstacles => _obstacles;
@@ -51,19 +47,6 @@ namespace EmpireAtWar.Models.MiniMap
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }
 
         public bool IsInputBlocked { get; set; }
-
-        // The asset outlives a battle in the Editor, so every battle starts from an empty list.
-        public void ClearBases()
-        {
-            _bases.Clear();
-        }
-
-        /// <param name="isHostile">Hostile stations use the enemy base icon; the color always comes from the owner.</param>
-        public void AddBase(Vector3 position, PlayerId owner, bool isHostile)
-        {
-            MarkType iconType = isHostile ? MarkType.EnemyBase : MarkType.PlayerBase;
-            _bases.Add(new BaseMarkData(position: position, icon: GetIcon(iconType), owner: owner));
-        }
 
         public void AddMark(MarkType markType, Vector3 position)
         {

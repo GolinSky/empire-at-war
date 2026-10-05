@@ -24,6 +24,6 @@ namespace EmpireAtWar.Services.SpawnBlocking
         public void Unregister(Transform source) => _blockers.Unregister(source);
 
         public bool IsBlocked(PlayerId team, Vector3 position) =>
-            _blockers.AnyContains(position, _relations, team, false);
+            _blockers.AnyContains(position, 0f, _relations, team, false);
     }
 }

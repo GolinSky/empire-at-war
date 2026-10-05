@@ -12,6 +12,7 @@ namespace EmpireAtWar.Components.FogOfWar
     /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
     /// Hardpoint explosion VFX and the ion stun effect spawned at runtime are hidden with the unit. Bound only for opponent entities.
+    /// Static buildings such as space stations stay drawn once discovered.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable
     {
@@ -20,6 +21,10 @@ namespace EmpireAtWar.Components.FogOfWar
 
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private HardPoint[] hardPoints;
+        [Tooltip("XZ footprint radius: the unit is revealed when vision reaches any part of it.")]
+        [SerializeField, Min(0f)] private float revealRadius;
+        [Tooltip("Once seen, stay drawn for the rest of the battle (static buildings).")]
+        [SerializeField] private bool staysRevealedOnceSeen;
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private List<IIonStunViewSource> _ionStunSources;
 
@@ -48,7 +53,7 @@ namespace EmpireAtWar.Components.FogOfWar
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
 
-            _isHidden = !_visionService.IsVisible(_localPlayer.Id, transform.position);
+            _isHidden = IsHiddenByFog();
             ApplyVisibility();
         }
 
@@ -73,12 +78,12 @@ namespace EmpireAtWar.Components.FogOfWar
 
         public void LateTick()
         {
-            if (_isReleased)
+            if (_isReleased || staysRevealedOnceSeen && !_isHidden)
             {
                 return;
             }
 
-            bool isHidden = !_visionService.IsVisible(_localPlayer.Id, transform.position);
+            bool isHidden = IsHiddenByFog();
             if (isHidden == _isHidden)
             {
                 return;
@@ -87,6 +92,9 @@ namespace EmpireAtWar.Components.FogOfWar
             _isHidden = isHidden;
             ApplyVisibility();
         }
+
+        private bool IsHiddenByFog() =>
+            !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
 
         private void TrackExplosion(ExplosionVfx explosion)
         {
