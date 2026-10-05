@@ -31,5 +31,8 @@ namespace EmpireAtWar.Models.Factions
         //empire
         Victory = 200,
 
+        //rebellion
+        NebulonB = 300,
+
     }
 }
