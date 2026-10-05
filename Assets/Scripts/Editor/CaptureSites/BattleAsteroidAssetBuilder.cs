@@ -102,13 +102,13 @@ namespace EmpireAtWar.Editor.CaptureSites
             GameObject root = PrefabUtility.LoadPrefabContents(VIEW_PATH);
             root.name = "AsteroidDefendPlatformView";
 
-            // The XQ6 hull and its always-visible shell give way to the mine's machinery, turrets and a ship-style,
-            // impact-only shield.
+            // The XQ6 hull and its shield shell give way to the mine's machinery, turrets and a shield shell
+            // baked around them.
             Transform platformModel = root.transform.Find("default");
             Bounds platformBounds = AsteroidMiningFacilityAssetBuilder.GetLocalBounds(
                 root.transform, new[] { platformModel.GetComponent<Renderer>() });
             Object.DestroyImmediate(platformModel.gameObject);
-            Object.DestroyImmediate(root.transform.Find("ShieldView").gameObject);
+            Object.DestroyImmediate(root.transform.Find("ShieldSurface").gameObject);
 
             GameObject facility = InstantiateFacility(root.transform, "Facility");
             Renderer[] facilityRenderers = facility.GetComponentsInChildren<Renderer>();
