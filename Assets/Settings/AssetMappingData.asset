@@ -826,16 +826,16 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: XWingSquadronView
+    - key: MonCalCruiserShipView
       value:
-        m_AssetGUID: 54d09cd5e31fdef4690255567dcdbea9
+        m_AssetGUID: 321af9a415a384045a4e8a7ce25163bd
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: XWingSquadronData
+    - key: MonCalCruiserShipData
       value:
-        m_AssetGUID: 718a28a27e285794ea1ed1cdec08ee79
+        m_AssetGUID: cdad4e759db14fe49a913c830277b8cf
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -850,6 +850,20 @@ MonoBehaviour:
     - key: HomeOneShipData
       value:
         m_AssetGUID: 3edd71041c50da54f9e4ca7ccd66c36e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: XWingSquadronView
+      value:
+        m_AssetGUID: 54d09cd5e31fdef4690255567dcdbea9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: XWingSquadronData
+      value:
+        m_AssetGUID: 718a28a27e285794ea1ed1cdec08ee79
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

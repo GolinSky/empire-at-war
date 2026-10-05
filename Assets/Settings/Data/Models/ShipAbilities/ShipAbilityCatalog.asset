@@ -89,6 +89,21 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 6801466898397790286
+    - key: 15
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Power to Shields
+        description: Increase shield regeneration to 700/s for 15 s; reduce movement
+          speed by 20% and weapon damage by 50%. Recovers in 40 s.
+        duration: 15
+        recoveryDelay: 40
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801466898397790288
     - key: 17
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -342,15 +357,15 @@ MonoBehaviour:
           speedMultiplier: 2
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
-    - rid: 6801466898397790291
-      type: {class: LockSFoilsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+    - rid: 6801466898397790288
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 3
-          speedMultiplier: 1.3
-          shieldRegenMultiplier: 3
+          damageMultiplier: 0.5
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 10
           damageTakenMultiplier: 1
     - rid: 6801466898397790289
       type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -373,6 +388,16 @@ MonoBehaviour:
           fireDelayMultiplier: 3
           speedMultiplier: 0.8
           shieldRegenMultiplier: 10
+          damageTakenMultiplier: 1
+    - rid: 6801466898397790291
+      type: {class: LockSFoilsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 3
+          speedMultiplier: 1.3
+          shieldRegenMultiplier: 3
           damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
