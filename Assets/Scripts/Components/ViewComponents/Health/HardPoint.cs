@@ -27,13 +27,18 @@ namespace EmpireAtWar.ViewComponents.Health
 
         private float _healthPercentage = MAX_HEALTH;
 
+        private bool _isInstalled = true;
+
         [SerializeField] private bool spawnDestroyedExplosion = true;
+        [Tooltip("Upgrade level of the owner that installs this hardpoint; 1 = installed from the start.")]
+        [SerializeField, Min(1)] private int unlockLevel = 1;
 
         public event System.Action<ExplosionVfx> ExplosionSpawned;
 
         [field: SerializeField] public HardPointType HardPointType { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
         public GameObject GameObject => gameObject;
+        public int UnlockLevel => unlockLevel;
 
         public Vector3 Position => Transform.position;
         public Transform Transform => transform;
@@ -51,6 +56,12 @@ namespace EmpireAtWar.ViewComponents.Health
             }
 
             OnStateUpdated(healthPercentage);
+        }
+
+        public void SetInstalled(bool installed)
+        {
+            _isInstalled = installed;
+            gameObject.SetActive(installed);
         }
 
         void INotifier<float>.AddObserver(IObserver<float> observer)
@@ -74,7 +85,7 @@ namespace EmpireAtWar.ViewComponents.Health
 
         protected virtual void OnStateUpdated(float healthPercentage)
         {
-            if (healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
+            if (_isInstalled && healthPercentage <= 0 && _explosionVfx == null && spawnDestroyedExplosion)
             {
                 _explosionVfx = Instantiate(AssetService.LoadComponent<ExplosionVfx>(EXPLOSION_VFX_PATH), transform);
                 _explosionVfx.transform.SetPositionAndRotation(transform.position, Quaternion.identity);

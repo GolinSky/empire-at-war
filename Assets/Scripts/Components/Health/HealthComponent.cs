@@ -26,7 +26,8 @@ namespace EmpireAtWar.Components.Ship.Health
     }
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource
+        IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
+        IHealthUpgrade
     {
         private ITimer _refreshShieldsTimer;
         private IIonStunView _ionStunView;
@@ -187,7 +188,10 @@ namespace EmpireAtWar.Components.Ship.Health
                 .ToArray();
             if (currentHardPoints.Length == 0)
             {
-                return _hardPointAdapters.Cast<IHardPointModel>().ToArray();
+                return _hardPointAdapters
+                    .Where(hardPoint => hardPoint.IsInstalled)
+                    .Cast<IHardPointModel>()
+                    .ToArray();
             }
 
             if (hardPointType == HardPointType.Any ||
@@ -204,19 +208,39 @@ namespace EmpireAtWar.Components.Ship.Health
         private void InitializeHardPoints()
         {
             HardPointModel[] hardPointModels = new HardPointModel[ShipUnits.Count];
-            _hardPointAdapters = new HardPointAdapter[ShipUnits.Count];
             for (int index = 0; index < ShipUnits.Count; index++)
             {
-                IHardPoint hardPoint = ShipUnits[index];
+                HardPoint hardPoint = ShipUnits[index];
                 // Damage is routed by list index, so the model id must be the index, not the serialized view id.
-                HardPointModel hardPointModel = new HardPointModel(
+                hardPointModels[index] = new HardPointModel(
                     id: index,
-                    hardPointType: hardPoint.HardPointType);
-                hardPointModels[index] = hardPointModel;
-                _hardPointAdapters[index] = new HardPointAdapter(model: hardPointModel, view: hardPoint, pivot: transform);
+                    hardPointType: hardPoint.HardPointType,
+                    unlockLevel: hardPoint.UnlockLevel);
             }
 
             Model.InitializeHardPoints(hardPointModels);
+            // Views learn their install state before the adapters push health, so locked hardpoints never explode.
+            SyncInstalledHardPoints();
+
+            _hardPointAdapters = new HardPointAdapter[ShipUnits.Count];
+            for (int index = 0; index < ShipUnits.Count; index++)
+            {
+                _hardPointAdapters[index] = new HardPointAdapter(model: hardPointModels[index], view: ShipUnits[index], pivot: transform);
+            }
+        }
+
+        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale)
+        {
+            Model.Upgrade(level, hullScale, shieldsScale, shieldRegenerateScale);
+            SyncInstalledHardPoints();
+        }
+
+        private void SyncInstalledHardPoints()
+        {
+            for (int index = 0; index < ShipUnits.Count; index++)
+            {
+                ShipUnits[index].SetInstalled(Model.HardPointModels[index].IsInstalled);
+            }
         }
 
         public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType damageType)

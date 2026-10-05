@@ -18,6 +18,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IVisionService _visionService;
         private ISpawnBlockerService _spawnBlockerService;
         private IHealthComponent _healthComponent;
+        private IHealthUpgrade _healthUpgrade;
+        private IFactionLevelObserver _factionLevel;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
 
@@ -38,6 +40,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             IVisionService visionService,
             ISpawnBlockerService spawnBlockerService,
             IHealthComponent healthComponent,
+            IHealthUpgrade healthUpgrade,
+            IFactionLevelObserver factionLevel,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
             List<IMonoComponent> monoComponents,
@@ -50,6 +54,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             _spawnBlockerService = spawnBlockerService;
             _owner = owner;
             _healthComponent = healthComponent;
+            _healthUpgrade = healthUpgrade;
+            _factionLevel = factionLevel;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
             _unitWreckService = unitWreckService;
@@ -61,6 +67,8 @@ namespace EmpireAtWar.Entities.SpaceStation
         public void Initialize()
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
+            _factionLevel.OnLevelUpgraded += ApplyLevel;
+            ApplyLevel(_factionLevel.CurrentLevel);
             gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
             _visionService.Register(_owner, transform, 900f);
@@ -74,9 +82,17 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         private void HandleDestroyed() => Release(true);
 
+        // Each level toughens the station, installs that level's hardpoints and restores destroyed ones.
+        private void ApplyLevel(int level)
+        {
+            StationLevelStats stats = Data.GetLevelStats(level);
+            _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier);
+        }
+
         private void Release(bool playDeathAnimation)
         {
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
+            _factionLevel.OnLevelUpgraded -= ApplyLevel;
             if (!_componentLifecycle.Release())
             {
                 return;

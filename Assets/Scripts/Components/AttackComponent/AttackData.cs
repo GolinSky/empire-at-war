@@ -10,6 +10,8 @@ namespace EmpireAtWar.Components.AttackComponent
     public class AttackData
     {
         private readonly IHealthModelObserver _shipUnitsProvider;
+        private readonly HardPointType _hardPointType;
+        private readonly bool _isFocused;
 
         public event Action UnitsChanged;
 
@@ -29,6 +31,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType)
         {
             _shipUnitsProvider = shipUnitsProvider;
+            _hardPointType = hardPointType;
             Units = shipUnitsProvider.GetShipUnits(hardPointType).ToList();
             HealthFacade = healthFacade;
         }
@@ -37,6 +40,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, IHardPointModel hardPoint)
         {
             _shipUnitsProvider = shipUnitsProvider;
+            _isFocused = true;
             Units = new List<IHardPointModel> { hardPoint };
             HealthFacade = healthFacade;
         }
@@ -50,6 +54,20 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool CanTarget(IHardPointModel hardPointModel)
         {
             return !IsDestroyed && (!hardPointModel.IsDestroyed || !_shipUnitsProvider.HasLiveHardPoints);
+        }
+
+        /// <summary>
+        /// Re-reads the target's hardpoints once none of the listed ones can be hit while the target still has
+        /// live ones elsewhere, e.g. hardpoints restored or installed by a station upgrade.
+        /// </summary>
+        public void RefreshStaleUnits()
+        {
+            if (_isFocused || IsDestroyed || Units.Exists(CanTarget))
+            {
+                return;
+            }
+
+            Units = _shipUnitsProvider.GetShipUnits(_hardPointType).ToList();
         }
 
         public void ApplyDamage(float damage, DamageType damageType, int id)

@@ -123,7 +123,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 IReadOnlyList<IHardPointStatus> hardPoints = GetHardPoints(inspected);
                 for (int id = 0; id < hardPoints.Count; id++)
                 {
-                    if (TryShowMarker(slot, inspected, hardPoints[id]))
+                    if (hardPoints[id].IsInstalled && TryShowMarker(slot, inspected, hardPoints[id]))
                     {
                         slot++;
                     }
@@ -178,7 +178,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             float closestDistance = float.MaxValue;
             foreach (IHardPointStatus hardPoint in hardPoints)
             {
-                if (!TryGetScreenPosition(hardPoint, out Vector2 position) ||
+                if (!hardPoint.IsInstalled ||
+                    !TryGetScreenPosition(hardPoint, out Vector2 position) ||
                     !IsInside(position, cursor, hitHalfSize))
                 {
                     continue;
