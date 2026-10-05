@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         BoostWeaponPower = 5,
         Assault = 6,
         ConcentrateFire = 7,
-        IonPulse = 8
+        IonPulse = 8,
+        IonShot = 9
     }
 }

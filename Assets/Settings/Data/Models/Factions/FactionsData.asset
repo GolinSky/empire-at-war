@@ -321,6 +321,23 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 1
             <Icon>k__BackingField: {fileID: 21300000, guid: 14a57369a6b0b6447917d19a5a8114c8,
               type: 3}
+        - key: 3
+          value:
+            matchups: {fileID: 11400000, guid: 07a5885f26b41c34386b125bd4fb6e6a, type: 2}
+            description: Five BTL-B heavy bombers, each with 60 hull, 30 shields,
+              two lasers and a two-torpedo salvo per attack run. Ion Shot disables
+              a target; astromechs repair surviving craft. Effective against large
+              ships and important hardpoints; vulnerable to fighters.
+            role: "Heavy bomber \xB7 Anti-capital strikecraft"
+            iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+            <Name>k__BackingField: BTL-B Y-Wing Squadron
+            <MaxCount>k__BackingField: 10
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 500
+            <BuildTime>k__BackingField: 8
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: 8aec8fa8b8581064dbf2721ad11585bb,
+              type: 3}
         - key: 4
           value:
             matchups: {fileID: 11400000, guid: 0e5a3e64998bb0b4fa271e997ebf93f6, type: 2}

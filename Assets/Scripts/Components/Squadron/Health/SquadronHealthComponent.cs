@@ -42,6 +42,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             remove => Model.OnDestroy -= value;
         }
 
+        [Inject] private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; }
+
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
         public ShipClass ShipClass => Model.ShipClass;
@@ -94,10 +96,9 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public void Tick()
         {
-            if (_isReleased || Model.IsDestroyed || !_regenerateShieldsTimer.IsComplete)
-            {
-                return;
-            }
+            if (_isReleased || Model.IsDestroyed) return;
+            Model.RepairHull(Data.HullRepairPerSecond * Time.deltaTime);
+            if (!_regenerateShieldsTimer.IsComplete) return;
 
             Model.RegenerateShields(Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier);
             _regenerateShieldsTimer.StartTimer();

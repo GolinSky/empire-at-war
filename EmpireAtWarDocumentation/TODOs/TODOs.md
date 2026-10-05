@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify BTL-B Y-Wing integration acceptance**
+  - **Plan**: [[TODOs/Features/YWing_Import|Y-Wing Import]]
+  - **Reference**: [[GameDesign/Y-Wing Import]]
+  - **Status**: 2026-10-05 imported and registered as Republic squadron `3`; five craft, fifteen weapons, hull/shields/regen 60/30/3 per member, two-shot torpedo salvos, white Ion Shot and passive astromech repair implemented. Art, placement, icons, team colors, saved references, source hashes and Unity import/compile/render checks complete; no automated tests or Play Mode run.
+  - **Remaining**: clean-skirmish acceptance and provisional ability/repair/economy/weapon/flight balance review.
+
 - [ ] **Import NTB-630 Naval Bomber**
   - **Plan**: [[TODOs/Features/NTB630_Import|NTB-630 Import]]
   - **Reference**: [[GameDesign/NTB-630 Import]]

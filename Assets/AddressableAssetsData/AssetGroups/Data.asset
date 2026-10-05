@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Data
   m_GUID: aa721ac4d24c6f84c8bc548a9397084b
   m_SerializeEntries:
+  - m_GUID: 112a722429b68b44b9bf748ac57265f8
+    m_Address: YWingSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d140216380c85748897755e4552362b
     m_Address: VultureSquadronData
     m_ReadOnly: 0

@@ -637,6 +637,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: YWingSquadronView
+      value:
+        m_AssetGUID: 19f58f4f65663c34699b863c800b6ded
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: YWingSquadronData
+      value:
+        m_AssetGUID: 112a722429b68b44b9bf748ac57265f8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: NTB630SquadronView
       value:
         m_AssetGUID: 04c1026fdf702394d95307214a4b428e

@@ -44,6 +44,14 @@ namespace EmpireAtWar.Models.Health
             OnHardPointHealthChanged?.Invoke();
         }
 
+        public void Repair(float value)
+        {
+            if (IsDestroyed || Health >= MaxHealth || value <= 0f) return;
+            Health = Math.Min(MaxHealth, Health + value);
+            HealthPercentage = Health / MaxHealth;
+            OnHardPointHealthChanged?.Invoke();
+        }
+
         public void ScaleHealth(float multiplier)
         {
             _originHealth *= multiplier;
