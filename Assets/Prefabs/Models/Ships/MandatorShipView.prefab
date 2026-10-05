@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
@@ -172,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 58
 --- !u!1 &565947276283767354
@@ -219,6 +221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
   yAxisRange:
@@ -271,6 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 56
 --- !u!1 &753835534886818128
@@ -318,6 +322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 27
   yAxisRange:
@@ -370,6 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 45
   yAxisRange:
@@ -465,6 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 49
   yAxisRange:
@@ -517,6 +524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 36
   yAxisRange:
@@ -681,7 +689,6 @@ MonoBehaviour:
   - {fileID: 3259162796005303551}
   - {fileID: 1912862004562251899}
   - {fileID: 5087217409695052771}
-  useWeaponDamageRange: 0
 --- !u!1 &1412046396409914018
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,6 +734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
@@ -810,6 +818,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 40
   yAxisRange:
@@ -862,6 +871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 29
   yAxisRange:
@@ -999,6 +1009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 31
   yAxisRange:
@@ -1051,6 +1062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
@@ -1103,6 +1115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
@@ -1155,6 +1168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 62
 --- !u!1 &2872980134380509213
@@ -1202,6 +1216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 59
 --- !u!1 &2951895197074399649
@@ -1249,6 +1264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 37
   yAxisRange:
@@ -1301,6 +1317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
   yAxisRange:
@@ -1353,6 +1370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 52
   yAxisRange:
@@ -1405,6 +1423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
   yAxisRange:
@@ -1457,6 +1476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
@@ -1509,6 +1529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
   yAxisRange:
@@ -1561,6 +1582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
@@ -1613,6 +1635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -1665,6 +1688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 38
   yAxisRange:
@@ -1717,6 +1741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 34
   yAxisRange:
@@ -1769,6 +1794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 47
   yAxisRange:
@@ -1821,6 +1847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 44
   yAxisRange:
@@ -1873,6 +1900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 24
   yAxisRange:
@@ -1925,6 +1953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 53
   yAxisRange:
@@ -1977,6 +2006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 23
   yAxisRange:
@@ -2029,6 +2059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
@@ -2081,6 +2112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 30
   yAxisRange:
@@ -2133,6 +2165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
@@ -2185,6 +2218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 55
   yAxisRange:
@@ -2237,6 +2271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 42
   yAxisRange:
@@ -2289,6 +2324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 28
   yAxisRange:
@@ -2341,6 +2377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 60
 --- !u!1 &4582517948878519515
@@ -2435,6 +2472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
   yAxisRange:
@@ -2487,6 +2525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 57
 --- !u!1 &5338787902285042842
@@ -2534,6 +2573,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -2586,6 +2626,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 26
   yAxisRange:
@@ -2638,6 +2679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 41
   yAxisRange:
@@ -2690,6 +2732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 54
   yAxisRange:
@@ -2742,6 +2785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 61
 --- !u!1 &6346526845146130391
@@ -2789,6 +2833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 39
   yAxisRange:
@@ -2841,6 +2886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 51
   yAxisRange:
@@ -2893,6 +2939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 33
   yAxisRange:
@@ -2945,6 +2992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 50
   yAxisRange:
@@ -2997,6 +3045,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 48
   yAxisRange:
@@ -3049,6 +3098,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
@@ -3101,6 +3151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 43
   yAxisRange:
@@ -3153,6 +3204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
   yAxisRange:
@@ -3205,6 +3257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 7
   <Id>k__BackingField: 63
 --- !u!1 &7736716621605267874
@@ -3609,6 +3662,8 @@ MonoBehaviour:
   - {fileID: 6382360941920134404}
   - {fileID: 532131652679304566}
   - {fileID: 1829063693958915486}
+  revealRadius: 0
+  staysRevealedOnceSeen: 0
 --- !u!114 &5053218396512207102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3673,6 +3728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 25
   yAxisRange:
@@ -3725,6 +3781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
   yAxisRange:
@@ -3777,6 +3834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 32
   yAxisRange:
@@ -3829,6 +3887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
   yAxisRange:
@@ -3881,6 +3940,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 35
   yAxisRange:
@@ -3933,6 +3993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -3985,6 +4046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 46
   yAxisRange:
@@ -5169,6 +5231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
@@ -5221,6 +5284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -5273,6 +5337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:

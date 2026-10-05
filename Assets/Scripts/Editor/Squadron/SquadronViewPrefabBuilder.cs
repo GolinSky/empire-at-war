@@ -119,9 +119,6 @@ namespace EmpireAtWar.Editor.Squadrons
 
             SetObjectList(flight, "fighters", fighters);
             SetObjectList(health, "fighters", fighters);
-            SerializedObject weaponObject = new SerializedObject(weaponComponent);
-            weaponObject.FindProperty("useWeaponDamageRange").boolValue = true;
-            weaponObject.ApplyModifiedPropertiesWithoutUndo();
             SetObjectList(weaponComponent, "hardPoints", guns);
             AddSelectionRing(root.transform, selection);
             Sprite unitIcon = AssetDatabase.LoadAssetAtPath<FactionCatalog>(

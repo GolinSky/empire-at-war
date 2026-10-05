@@ -5867,6 +5867,8 @@ MonoBehaviour:
   - {fileID: 8454343590614963124}
   - {fileID: 3903550607387018400}
   - {fileID: 7775145686498964087}
+  revealRadius: 0
+  staysRevealedOnceSeen: 0
 --- !u!114 &170039148551410930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6214,7 +6216,6 @@ MonoBehaviour:
   - {fileID: 8147369351787477626}
   - {fileID: 4640658691257196511}
   - {fileID: 8454343590614963124}
-  useWeaponDamageRange: 1
 --- !u!1 &7454089369755373652
 GameObject:
   m_ObjectHideFlags: 0

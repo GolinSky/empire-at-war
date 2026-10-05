@@ -51,7 +51,6 @@ namespace EmpireAtWar.Components.Weapon
         private int _currentWeaponIndex = 0;
         private int _targetVersion;
 
-        [SerializeField] private bool useWeaponDamageRange;
         private bool _isReleased;
         private bool _isInitialized;
 
@@ -78,14 +77,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             _isInitialized = true;
             _attackCoordinator.Register(this);
-            if (useWeaponDamageRange)
-            {
-                Model.SetOptimalAttackRange(hardPoints.Select(hardPoint => _weaponsData.GetProfile(hardPoint.WeaponType).Range));
-            }
-            else
-            {
-                Model.SetAttackRange(_radarModel.Range);
-            }
+            Model.SetAttackRange(_radarModel.Range);
 
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
@@ -182,7 +174,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public bool HasEnoughRange(float distance)
         {
-            return distance <= Model.OptimalAttackRange * (useWeaponDamageRange ? 1f : ENGAGE_RANGE_FACTOR);
+            return distance <= Model.OptimalAttackRange * ENGAGE_RANGE_FACTOR;
         }
 
         public float GetFiringTurnAngle(Vector3 targetPosition)

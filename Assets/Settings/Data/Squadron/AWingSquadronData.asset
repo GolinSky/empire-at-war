@@ -30,6 +30,7 @@ MonoBehaviour:
   <MemberShields>k__BackingField: 40
   <ShieldRegenerateValue>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 2
-  <Range>k__BackingField: 200
+  <HullRepairPerSecond>k__BackingField: 0
+  <Abilities>k__BackingField: 
+  <Range>k__BackingField: 70
   <Delay>k__BackingField: 0.25
-  <Distance>k__BackingField: 200

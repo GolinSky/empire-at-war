@@ -271,7 +271,6 @@ MonoBehaviour:
   - {fileID: 8858635612751336186}
   - {fileID: 8095806493946112071}
   - {fileID: 8823826004483227801}
-  useWeaponDamageRange: 1
 --- !u!1 &1291114367085149591
 GameObject:
   m_ObjectHideFlags: 0
