@@ -840,3 +840,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: HomeOneShipView
+      value:
+        m_AssetGUID: 870b0e4f67a6e994c8121130474d0fbb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: HomeOneShipData
+      value:
+        m_AssetGUID: 3edd71041c50da54f9e4ca7ccd66c36e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

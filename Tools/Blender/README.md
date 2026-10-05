@@ -308,6 +308,24 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Reloaded saved prefabs: five hulls, five health/flight members, fifteen weapons; no missing scripts, broken references or donor dependencies. Import/compile checks passed; unrelated existing camera/empty-third-party-assembly warnings remain. MainMenu scene stayed clean; no automated tests or Play Mode run. Runtime and balance acceptance: `TODOs/Features/YWing_Import.md`.
 - Full supplied RaW credits retained. No Y-Wing-specific attribution line was identifiable; `SOURCE_CREDITS.txt` records unresolved individual authors rather than guessing.
 
+## Home One / Admiral Ackbar — 2026-10-05
+
+- Read Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; import reference: `GameDesign/Home One Import.md`.
+- Sources: `output/eaw-rebel-ships/DATA/ART/MODELS/RV_HOMEONE.ALO`, `RV_HOMEONE_D.ALO`, eight weapon pods and shield-generator pod. Original ALO/DDS hashes remain unchanged.
+- Preparation/export: `prepare_home_one_textures.py`, `export_home_one.py`; Blender 3.6.23 + ALAMO, animations disabled. Import each variant into its `<VARIANT> Source` scene; audited source roots remain intact.
+- Packed Blender files, FBXs, textures, reports and previews are staged in ignored `Temp/HomeOneImport/`. The exporter is model-specific; choose its `VARIANT` for each source.
+- Source → FBX → Unity: living 16 meshes / 9,002 triangles / 107 bones; damaged 13 / 5,948 / 50; each of nine pods retains 111 bones. All 56 Unity meshes retain triangle counts and UV corners; maximum corner/bone displacement 0.000002720 / 0.000003054 project units, no parent mismatches.
+- FBX scale 0.02, `preserveHierarchy=true`; centered visual scale 13.3160114. Ship/gameplay/placement bounds 39.14969 × 34.43432 × 180; damaged bounds 39.14969 × 29.92235 × 179.99995. Root scale 1, bow +Z, up +Y.
+- Pods use `HP_*_Bone`, avoiding similarly named offset helpers. Eight weapons use `FP_{TBL/IC}_{FL/FR/BL/BR}_00`; shield/engine use `HP_SHG_Bone` / `HP_E_Bone`. Fighter bay and side launch point are project-authored; launch clears the collider by 8 units.
+- Dedicated damaged skinned meshes use `BakeMesh(mesh, true)` and explicit static vertex/index assignment. `EditorUtility.CopySerialized` alone left stale GPU buffers; saved mesh import and the wreck render were verified afterward.
+- `ShipType.HomeOne = 303`: Rebellion hero, maximum 1, population 4; all ship data, view/data Addressables, icons/tooltips, placement, ability and audio mappings resolve. User values: hull 8,100, shields 2,500, regen 80/s, speed 1.5, turn 0.3.
+- Eleven hardpoints: 4 turbolasers, 4 ions, shield generator, engines, fighter bay; IDs 0..10, health/fog bindings 11, weapon bindings 8; all bank with the body.
+- `HomeOneConcentrateFire = 16`: caster deals +50% against the selected enemy; own fleet within 400 receives focus orders. `HomeOnePowerToShields = 17`: provisional 10× regeneration, 80% speed, 3× fire delay. Both last 15 s with 20 s recovery after expiry.
+- Ackbar's fleet-wide Rebel passive reuses non-stacking project bonuses: damage/speed +10%, hull +20%, shields +10%, vision +50%, incoming damage ×0.65; excludes itself, disabled on death/ion stun.
+- Provisional choices: level 5, cost 6,500, build 45 s, range 500, ±5° bank, navigation radius 90, weapon/system HP 400/600. A-Wing + Y-Wing bays each have 3 total reserve launches and 1 active slot; initial/interval 4/8 s. Fighter types were unspecified.
+- Hull/wreck use inverted hull alpha as linear team mask; normal green flipped, HSV livery disabled. Eight palettes rendered; blue/green inspected. Own-model transparent 512×512 icon/silhouette saved.
+- Four reloaded prefabs have no missing scripts or broken references; all `.meta` files exist. Final compilation/import/serialization checks are clean. No automated tests or Play Mode run; runtime combat and balance acceptance remain unverified. Source death animation and animated EaW shader/proxy effects are not converted.
+
 ## T-65 X-Wing — 2026-10-05
 
 - Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/X-Wing Import.md`. Source is vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_XWING.ALO`, with Deploy/Undeploy ALA and three DDS files. Source hashes remain unchanged.

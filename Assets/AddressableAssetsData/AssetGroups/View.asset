@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 870b0e4f67a6e994c8121130474d0fbb
+    m_Address: HomeOneShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8b70c9c30de88af48a0ad58a72d76f4b
     m_Address: AsteroidMiningFacilityView
     m_ReadOnly: 0

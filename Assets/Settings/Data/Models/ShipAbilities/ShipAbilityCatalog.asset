@@ -89,6 +89,21 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 6801466898397790286
+    - key: 17
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Power to Shields
+        description: Shield regeneration rises to 800/s; movement speed becomes 80%
+          and weapon fire delays triple for 15 s. Recovers in 20 s.
+        duration: 15
+        recoveryDelay: 20
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801466898397790290
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -194,6 +209,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 7607833764655792208
+    - key: 16
+      value:
+        icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
+        displayName: Concentrate Fire
+        description: Home One deals +50% weapon damage against the selected enemy
+          for 15 s. Friendly ships and squadrons within 400 focus that target. Recovers
+          in 20 s.
+        duration: 15
+        recoveryDelay: 20
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 6801466898397790289
     - key: 7
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
@@ -321,6 +352,28 @@ MonoBehaviour:
           speedMultiplier: 1.3
           shieldRegenMultiplier: 3
           damageTakenMultiplier: 1
+    - rid: 6801466898397790289
+      type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        allyStatModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 1
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1
+        commandRadius: 400
+        targetDamageMultiplier: 1.5
+    - rid: 6801466898397790290
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 3
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 10
+          damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -388,3 +441,4 @@ MonoBehaviour:
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
         commandRadius: 400
+        targetDamageMultiplier: 1

@@ -53,6 +53,29 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
           type: 3}
+    - key: 303
+      value:
+        matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
+        description: 'Admiral Ackbar''s hero command cruiser: 8,100 hull, 3,500 shields,
+          four turbolaser, four dual heavy turbolaser, four dual medium turbolaser
+          and four ion cannon batteries. Shield generator, engines and fighter bay
+          can be destroyed. Concentrate Fire grants Home One +50% damage against
+          one selected enemy and directs nearby fleet units to attack it for 15 s;
+          20 s recovery. Power to Shields grants 10x shield recovery, 80% speed and
+          3x weapon delays for 15 s; 20 s recovery. Fleet Commander supports allied
+          Rebel ships and squadrons throughout the battle. Carries A-Wing and Y-Wing
+          squadrons.'
+        role: Hero capital ship / Fleet command cruiser
+        iconKey: f71730a251297854b97875858cdb2249:21300000
+        isHero: 1
+        <Name>k__BackingField: Home One / Admiral Ackbar
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 6500
+        <BuildTime>k__BackingField: 45
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: f71730a251297854b97875858cdb2249,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

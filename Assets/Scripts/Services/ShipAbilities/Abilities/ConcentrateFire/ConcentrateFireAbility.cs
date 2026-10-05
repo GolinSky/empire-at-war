@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         private readonly ConcentrateFireSettings _settings;
         private readonly List<CombatModifiers> _affected = new List<CombatModifiers>();
+        private CombatModifiers _focusModifiers;
 
         public ConcentrateFireAbility(IEntityLocator entities, ConcentrateFireSettings settings)
         {
@@ -23,6 +24,22 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
+            if (_settings.TargetDamageMultiplier > 1f)
+            {
+                _focusModifiers = caster.Modifiers;
+                _focusModifiers.SetFocusFire(target, _settings.TargetDamageMultiplier);
+                foreach (IEntity entity in _entities.Entities)
+                {
+                    if (entity.Owner != caster.Entity.Owner || entity.HealthModel.IsDestroyed ||
+                        !entity.TryGetFacade(out IAttackFacade attack) ||
+                        !entity.TryGetFacade(out IEntityTransformFacade transform) ||
+                        PlanarGeometry.Distance(caster.WorldPosition, transform.Transform.position) > _settings.CommandRadius)
+                        continue;
+                    attack.Attack(target, Vector3.zero);
+                }
+                return;
+            }
+
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.Owner != caster.Entity.Owner || entity.HealthModel.IsDestroyed ||
@@ -39,6 +56,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Stop()
         {
+            if (_focusModifiers != null)
+            {
+                _focusModifiers.ClearFocusFire();
+                _focusModifiers = null;
+            }
             for (int i = 0; i < _affected.Count; i++) _affected[i].Remove(_settings.AllyStatModifier);
             _affected.Clear();
         }

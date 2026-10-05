@@ -104,7 +104,7 @@ half4 ShipWreckPassFragment(WreckVaryings input, FRONT_FACE_TYPE frontFace : FRO
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-    half dissolveEdge = ClipWreck(input.restPositionOS, input.part);
+    half dissolveEdge = ClipWreck(input.restPositionOS, input.part, input.uv);
     bool isFrontFace = IS_FRONT_VFACE(frontFace, true, false);
     Varyings lit = ToLitVaryings(input, isFrontFace);
 

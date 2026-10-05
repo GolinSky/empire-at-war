@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.BaseEntity;
 
 namespace EmpireAtWar.Components.Combat
 {
@@ -9,6 +10,8 @@ namespace EmpireAtWar.Components.Combat
 
         private readonly List<CombatStatModifier> _active = new List<CombatStatModifier>();
         private bool _fleetCommandActive;
+        private IEntity _focusTarget;
+        private float _focusDamageMultiplier = 1f;
 
         public event Action Changed;
 
@@ -59,6 +62,21 @@ namespace EmpireAtWar.Components.Combat
         }
 
         public bool IsDamageDealtModified() => DamageMultiplier != UNMODIFIED_MULTIPLIER;
+
+        public float GetDamageMultiplier(IEntity target) =>
+            DamageMultiplier * (ReferenceEquals(target, _focusTarget) ? _focusDamageMultiplier : 1f);
+
+        public void SetFocusFire(IEntity target, float damageMultiplier)
+        {
+            _focusTarget = target;
+            _focusDamageMultiplier = damageMultiplier;
+        }
+
+        public void ClearFocusFire()
+        {
+            _focusTarget = null;
+            _focusDamageMultiplier = 1f;
+        }
 
         public bool IsSpeedModified() => SpeedMultiplier != UNMODIFIED_MULTIPLIER;
 
