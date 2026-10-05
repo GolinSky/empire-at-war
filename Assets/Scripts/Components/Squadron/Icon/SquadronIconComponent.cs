@@ -2,6 +2,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Player;
 using UnityEngine;
 using UnityEngine.UI;
 using EmpireAtWar.Services.Vision;
@@ -10,7 +11,7 @@ using Zenject;
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
     /// <summary>
-    /// Floating marker that stands in for the whole squadron: a hollow frame with the fighter silhouette,
+    /// Floating marker that stands in for the whole squadron: a team-colored frame and shadow behind the fighter icon,
     /// drawn slightly above the smoothed squadron centroid. Its screen size follows camera zoom so tiny fighters
     /// stay easy to find and click, and it is the squadron's click target for selection and attack orders.
     /// </summary>
@@ -20,22 +21,20 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private ICameraService _cameraService;
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
+        private IPlayerColors _playerColors;
 
         [SerializeField] private Canvas iconCanvas;
         [SerializeField] private Image frameImage;
         [SerializeField] private Image silhouetteImage;
+        [SerializeField] private Image iconImage;
         private CameraData _cameraData;
 
-        [SerializeField] private Color friendlyColor = new Color(0.55f, 1f, 0.55f);
-        [SerializeField] private Color selectedColor = new Color(1f, 0.92f, 0.35f);
-        [SerializeField] private Color allyColor = new Color(0.4f, 0.8f, 1f);
-        [SerializeField] private Color enemyColor = new Color(1f, 0.3f, 0.25f);
         private PlayerId _owner;
         private Vector3 _anchor;
         private Vector3 _iconPosition;
 
         [Tooltip("Visible marker width and height in screen pixels at the midpoint of camera zoom.")]
-        [SerializeField, Min(1f)] private float screenSize = 96f;
+        [SerializeField, Min(1f)] private float screenSize = 72f;
         [Tooltip("Clickable square width and height in screen pixels at the midpoint of camera zoom.")]
         [SerializeField, Min(1f)] private float clickSize = 132f;
         [Tooltip("Screen pixels the marker sits above the squadron centroid at the midpoint of camera zoom.")]
@@ -48,7 +47,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         [Inject]
         private void Construct(ICameraService cameraService, IVisionService visionService, ILocalPlayer localPlayer,
-            SelectionModel model, CameraData cameraData, PlayerId owner)
+            SelectionModel model, CameraData cameraData, PlayerId owner, IPlayerColors playerColors)
         {
             SetModel(model);
             _cameraService = cameraService;
@@ -56,6 +55,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _visionService = visionService;
             _owner = owner;
             _localPlayer = localPlayer;
+            _playerColors = playerColors;
         }
 
         public void Initialize()
@@ -122,12 +122,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private void UpdateColor(bool isSelected)
         {
-            Color color = !_localPlayer.IsFriendly(_owner) ? enemyColor
-                : !_localPlayer.IsLocal(_owner) ? allyColor
-                : isSelected ? selectedColor
-                : friendlyColor;
+            Color color = _playerColors.GetColor(_owner);
             frameImage.color = color;
-            silhouetteImage.color = Color.white;
+            color.a = isSelected ? 0.35f : 0.2f;
+            silhouetteImage.color = color;
+            iconImage.color = Color.white;
         }
     }
 }
