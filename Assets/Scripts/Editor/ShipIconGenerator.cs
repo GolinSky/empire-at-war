@@ -31,6 +31,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.Thranta, PrefabName = "ThrantaShipView.prefab", IconFileName = "ThrantaIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Rothana, PrefabName = "RothanaShipView.prefab", IconFileName = "RothanaIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Mandator, PrefabName = "MandatorShipView.prefab", IconFileName = "MandatorIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.Imperator, PrefabName = "ImperatorShipView.prefab", IconFileName = "ImperatorIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Providence, PrefabName = "ProvidenceShipView.prefab", IconFileName = "ProvidenceIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Recusant, PrefabName = "RecusantShipView.prefab", IconFileName = "RecusantIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Munificent, PrefabName = "MunificentShipView.prefab", IconFileName = "MunificentIcon.png" },

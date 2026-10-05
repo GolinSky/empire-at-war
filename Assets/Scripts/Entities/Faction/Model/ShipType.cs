@@ -14,6 +14,7 @@ namespace EmpireAtWar.Models.Factions
         Rothana = 7,
         Resolute = 8,
         Mandator = 9,
+        Imperator = 10,
 
         //separatist
         Providence = 100,

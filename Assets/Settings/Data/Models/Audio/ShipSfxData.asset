@@ -323,6 +323,43 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    abilityId: 10
+  - start:
+      clip: {fileID: 8300000, guid: 80dd32d6735abb544a18326002bb3411, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 055d00a28b6d65e4aa73e5419e8539ff, type: 3}
+      clips:
+        array: []
+      volume: 0.2
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: e58eb5cb3a1ba2f4fa2f9fd257ac7a75, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 74fce3ac1fa57114d9d235a7182e3f61, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     abilityId: 1
   - start:
       clip: {fileID: 8300000, guid: 1d72cc7526d0017409c8ea0be0d3c971, type: 3}

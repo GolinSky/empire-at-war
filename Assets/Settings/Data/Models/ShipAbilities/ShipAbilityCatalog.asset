@@ -29,6 +29,20 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466862182334539
+    - key: 10
+      value:
+        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        displayName: Laser Beam
+        description: Fire a focused laser beam at an enemy. Deals 6,000 beam damage.
+          Active for 8 s, then recovers for 50 s.
+        duration: 8
+        recoveryDelay: 50
+        canCancel: 0
+        requiresEnemyTarget: 1
+        range: 500
+        aiUse: 2
+        settings:
+          rid: 7607833764655792203
     - key: 1
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}

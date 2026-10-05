@@ -4,6 +4,11 @@
 
 ### Features
 
+- [ ] **Verify Imperator-class Star Destroyer integration acceptance**
+  - **Plan**: [[TODOs/Features/Imperator_Import|Imperator Import]]
+  - **Reference**: [[GameDesign/Imperator Import]]
+  - **Status**: 2026-10-05 import/static verification complete; Laser Beam, 14 ARC-170 launches / 4 active and 8 Y-Wings / 2 active configured. StarDestroyer2 disabled in Republic build roster. Runtime acceptance and provisional balance review remain.
+
 - [ ] **Verify Dispatcher-class Frigate integration acceptance**
   - **Plan**: [[TODOs/Features/Dispatcher_Import|Dispatcher Import]]
   - **Reference**: [[GameDesign/Dispatcher Import]]
