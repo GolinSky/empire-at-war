@@ -8,6 +8,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
@@ -35,10 +36,12 @@ namespace EmpireAtWar.Editor.Squadrons
         private const float EDITOR_SLOT_SPACING = 2f;
         private const float TRAIL_TIME = 0.6f;
         private const float TRAIL_WIDTH = 0.16f;
-        private const float ICON_SIZE = 96f;
-        private const float ICON_FRAME_STROKE = 2f;
-        private const float ICON_FRAME_CORNER_RADIUS = 4f;
-        private const float ICON_SILHOUETTE_PADDING = 9f;
+        private const float ICON_SIZE = 72f;
+        private const float ICON_FRAME_STROKE = 1.5f;
+        private const float ICON_FRAME_CORNER_RADIUS = 3f;
+        private const float ICON_SILHOUETTE_PADDING = 6.75f;
+        private const float ICON_SHADOW_OFFSET = -1.5f;
+        private const float ICON_PADDING = 9f;
 
         [MenuItem("Tools/Squadrons/Build Squadron Views")]
         public static void BuildAll()
@@ -47,12 +50,12 @@ namespace EmpireAtWar.Editor.Squadrons
                 modelPath: "Assets/Art/Models/RepublicShips/Delta7/Delta7.obj", memberCount: 5, modelScale: 0.306f,
                 modelEuler: Vector3.zero, modelOffset: new Vector3(0f, -0.551f, 0f), gunForward: 1.98f, colliderRadius: 1.5f,
                 trailOffsets: new[] { new Vector3(-0.72f, 0f, -1.62f), new Vector3(0.72f, 0f, -1.62f) },
-                trailColor: new Color(0.55f, 0.75f, 1f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/Delta7Silhouette.png"));
+                trailColor: new Color(0.55f, 0.75f, 1f)));
             Build(new SquadronViewSpec(type: SquadronType.Belbullab22,
                 modelPath: "Assets/Art/Models/SeparatistShips/Belbullab22/Belbullab22.obj", memberCount: 4, modelScale: 0.244f,
                 modelEuler: new Vector3(0f, 180f, 0f), modelOffset: new Vector3(0f, -0.095f, -0.196f), gunForward: 1.96f, colliderRadius: 1.5f,
                 trailOffsets: new[] { new Vector3(-0.812f, 0f, -1.68f), new Vector3(0.812f, 0f, -1.68f) },
-                trailColor: new Color(1f, 0.62f, 0.3f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Silhouette.png"));
+                trailColor: new Color(1f, 0.62f, 0.3f)));
             BuildAWing();
             AssetDatabase.SaveAssets();
         }
@@ -64,7 +67,7 @@ namespace EmpireAtWar.Editor.Squadrons
                 modelPath: "Assets/Art/Models/RepublicShips/AWing/AWing.dae", memberCount: 6, modelScale: 0.00015f,
                 modelEuler: new Vector3(0f, 270f, 0f), modelOffset: new Vector3(0.036f, 0.041f, -0.309f), gunForward: 1.6f, colliderRadius: 1.5f,
                 trailOffsets: new[] { new Vector3(-0.65f, 0f, -1.5f), new Vector3(0.65f, 0f, -1.5f) },
-                trailColor: new Color(0.55f, 0.75f, 1f), silhouettePath: "Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingSilhouette.png"));
+                trailColor: new Color(0.55f, 0.75f, 1f)));
             AssetDatabase.SaveAssets();
         }
 
@@ -121,7 +124,9 @@ namespace EmpireAtWar.Editor.Squadrons
             weaponObject.ApplyModifiedPropertiesWithoutUndo();
             SetObjectList(weaponComponent, "hardPoints", guns);
             AddSelectionRing(root.transform, selection);
-            AddWorldIcon(root, AssetDatabase.LoadAssetAtPath<Sprite>(spec.SilhouettePath));
+            Sprite unitIcon = AssetDatabase.LoadAssetAtPath<FactionsData>(
+                "Assets/Settings/Data/Models/Factions/FactionsData.asset").GetSquadronFactionData(spec.Type).Icon;
+            AddWorldIcon(root, unitIcon);
         }
 
         private static FighterView CreateFighter(Transform parent, int index, SquadronViewSpec spec,
@@ -216,16 +221,24 @@ namespace EmpireAtWar.Editor.Squadrons
             selectionObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        /// <summary>Adds the floating squadron marker: a hollow frame with the fighter silhouette inside.</summary>
-        public static void AddWorldIcon(GameObject root, Sprite silhouette)
+        /// <summary>Adds the floating squadron marker with a full-color icon above its team-colored silhouette shadow.</summary>
+        public static void AddWorldIcon(GameObject root, Sprite unitIcon)
         {
             SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
-            GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform), typeof(Canvas));
+            GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform));
             canvasObject.transform.SetParent(root.transform, false);
             RectTransform canvasRect = (RectTransform)canvasObject.transform;
             canvasRect.sizeDelta = Vector2.one * ICON_SIZE;
-            Canvas canvas = canvasObject.GetComponent<Canvas>();
+            Canvas canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
+
+            MPImage background = CreateIconImage<MPImage>("Background", canvasObject.transform, 0f);
+            background.DrawShape = DrawShape.Rectangle;
+            background.color = new Color(0f, 0f, 0f, 0.5f);
+            background.FalloffDistance = 1f;
+            Rectangle backgroundRectangle = background.Rectangle;
+            backgroundRectangle.CornerRadius = Vector4.one * ICON_FRAME_CORNER_RADIUS;
+            background.Rectangle = backgroundRectangle;
 
             MPImage frame = CreateIconImage<MPImage>("Frame", canvasObject.transform, 0f);
             frame.DrawShape = DrawShape.Rectangle;
@@ -237,13 +250,22 @@ namespace EmpireAtWar.Editor.Squadrons
 
             UnityEngine.UI.Image silhouetteImage =
                 CreateIconImage<UnityEngine.UI.Image>("Silhouette", canvasObject.transform, ICON_SILHOUETTE_PADDING);
-            silhouetteImage.sprite = silhouette;
+            silhouetteImage.sprite = unitIcon;
+            silhouetteImage.material = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Ui/IconShadow.mat");
             silhouetteImage.preserveAspect = true;
+            silhouetteImage.rectTransform.anchoredPosition = new Vector2(0f, ICON_SHADOW_OFFSET);
+
+            UnityEngine.UI.Image iconImage =
+                CreateIconImage<UnityEngine.UI.Image>("Icon", canvasObject.transform, ICON_PADDING);
+            iconImage.sprite = unitIcon;
+            iconImage.preserveAspect = true;
+            iconImage.color = Color.white;
 
             SerializedObject iconObject = new SerializedObject(icon);
             iconObject.FindProperty("iconCanvas").objectReferenceValue = canvas;
             iconObject.FindProperty("frameImage").objectReferenceValue = frame;
             iconObject.FindProperty("silhouetteImage").objectReferenceValue = silhouetteImage;
+            iconObject.FindProperty("iconImage").objectReferenceValue = iconImage;
             iconObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
