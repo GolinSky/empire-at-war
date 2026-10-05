@@ -22,5 +22,6 @@ namespace EmpireAtWar.Ui.Base
         Fps = 14,
         Tooltip = 15,
         Fade = 16,
+        Hero = 17,
     }
 }

@@ -12,10 +12,12 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField, TextArea] private string description;
         [SerializeField] private string role;
         [SerializeField] private string iconKey;
+        [SerializeField] private bool isHero;
 
         public string Description => description;
         public string Role => role;
         public string IconKey => iconKey;
+        public bool IsHero => isHero;
         public UnitMatchupData Matchups => matchups;
         [field:SerializeField] public string Name { get; private set; }
         [field:SerializeField] public int MaxCount { get; private set; }

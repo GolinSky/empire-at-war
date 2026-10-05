@@ -24,6 +24,7 @@ MonoBehaviour:
               screen the fleet.
             role: "Capital \xB7 Heavy gunship / carrier"
             iconKey: d899a22bd6d129e46a5aed14df2b81fa:21300000
+            isHero: 0
             <Name>k__BackingField: 'Venator '
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 4
@@ -39,6 +40,7 @@ MonoBehaviour:
               light targets.
             role: "Frigate \xB7 Escort"
             iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+            isHero: 0
             <Name>k__BackingField: Arquitens
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
@@ -54,6 +56,7 @@ MonoBehaviour:
               the battle line.
             role: "Capital \xB7 Multirole support"
             iconKey: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
+            isHero: 0
             <Name>k__BackingField: Acclamator
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 2
@@ -69,6 +72,7 @@ MonoBehaviour:
               damage large targets.
             role: "Frigate \xB7 Shield breaker"
             iconKey: 003f227a5109a5745879774b3be70886:21300000
+            isHero: 0
             <Name>k__BackingField: Heavy Dreadnought
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
@@ -84,6 +88,7 @@ MonoBehaviour:
               against light targets.
             role: "Corvette \xB7 Light screen"
             iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+            isHero: 0
             <Name>k__BackingField: Thranta
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 1
@@ -100,6 +105,7 @@ MonoBehaviour:
               and Delta-7/A-Wing squadrons protect the fleet.
             role: "Capital \xB7 Heavy gunship / carrier"
             iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
+            isHero: 0
             <Name>k__BackingField: Rothana Star Destroyer
             <MaxCount>k__BackingField: 3
             <AvailableLevel>k__BackingField: 5
@@ -117,6 +123,7 @@ MonoBehaviour:
               incoming damage. One at a time; replaceable after destruction.
             role: "Hero \xB7 Fleet command carrier"
             iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
+            isHero: 1
             <Name>k__BackingField: "Resolute \u2014 Admiral Yularen"
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -135,6 +142,7 @@ MonoBehaviour:
               Malevolence.
             role: "Mandator II \xB7 Dreadnought"
             iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
+            isHero: 0
             <Name>k__BackingField: Pride of the Core
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -153,6 +161,7 @@ MonoBehaviour:
               it vulnerable to bombers.
             role: Capital / Battleship / Heavy direct fire
             iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
+            isHero: 0
             <Name>k__BackingField: Imperator-class Star Destroyer
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -171,6 +180,7 @@ MonoBehaviour:
               engage large ships.
             role: "Capital \xB7 Battle line / carrier"
             iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+            isHero: 0
             <Name>k__BackingField: Providence
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 5
@@ -186,6 +196,7 @@ MonoBehaviour:
               warships.
             role: "Frigate \xB7 Fire support"
             iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+            isHero: 0
             <Name>k__BackingField: Recusant
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 3
@@ -200,6 +211,7 @@ MonoBehaviour:
             description: Medium turbolasers concentrate fire on corvettes and frigates.
             role: "Frigate \xB7 Medium gunship"
             iconKey: abf3987a701188747b639680e9203c3e:21300000
+            isHero: 0
             <Name>k__BackingField: Munificent
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 1
@@ -214,6 +226,7 @@ MonoBehaviour:
             description: Heavy and medium turbolasers defend a large carrier hull.
             role: "Heavy capital \xB7 Carrier / heavy gunship"
             iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+            isHero: 0
             <Name>k__BackingField: Lucrehulk
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 4
@@ -231,6 +244,7 @@ MonoBehaviour:
               Vulture/bomber implementation.'
             role: "Capital \xB7 Heavy gunship / carrier"
             iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
+            isHero: 0
             <Name>k__BackingField: Malevolence
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5
@@ -247,6 +261,7 @@ MonoBehaviour:
               one of each active at once. Power to Weapons improves self-defense.
             role: "Capital \xB7 Dedicated carrier"
             iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
+            isHero: 0
             <Name>k__BackingField: Captor-class Carrier
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
@@ -263,6 +278,7 @@ MonoBehaviour:
               and escape. Vulnerable to frigates and larger warships.
             role: "Corvette \xB7 Anti-fighter screen"
             iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+            isHero: 0
             <Name>k__BackingField: Patrol Frigate
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 1
@@ -279,6 +295,7 @@ MonoBehaviour:
               sustained combat with warships.
             role: "Transport \xB7 Light support"
             iconKey: 69c29902694322d4aacf1446e4b7f487:21300000
+            isHero: 0
             <Name>k__BackingField: C-9979 Lander
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 1
@@ -297,6 +314,7 @@ MonoBehaviour:
               offensive output.
             role: Frigate / Fast assault / Hit-and-run
             iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
+            isHero: 0
             <Name>k__BackingField: Dispatcher-class Frigate
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 2
@@ -317,6 +335,7 @@ MonoBehaviour:
               take damage individually.
             role: "Fighter squadron \xB7 Interceptor"
             iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+            isHero: 0
             <Name>k__BackingField: Delta-7 Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -332,6 +351,7 @@ MonoBehaviour:
               take damage individually.
             role: "Fighter squadron \xB7 Interceptor"
             iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
+            isHero: 0
             <Name>k__BackingField: A-Wing Interceptor Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -350,6 +370,7 @@ MonoBehaviour:
               Dedicated bombers have greater torpedo output.
             role: "Heavy fighter \xB7 Fighter-bomber"
             iconKey: 14a57369a6b0b6447917d19a5a8114c8:21300000
+            isHero: 0
             <Name>k__BackingField: ARC-170 Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 5
@@ -367,6 +388,7 @@ MonoBehaviour:
               ships and important hardpoints; vulnerable to fighters.
             role: "Heavy bomber \xB7 Anti-capital strikecraft"
             iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+            isHero: 0
             <Name>k__BackingField: BTL-B Y-Wing Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 2
@@ -383,6 +405,7 @@ MonoBehaviour:
               and important hardpoints; vulnerable to fighters and anti-fighter weapons.
             role: "Naval bomber \xB7 Anti-capital strikecraft"
             iconKey: 83b847ad5990b534c940f6bcc1abfbf1:21300000
+            isHero: 0
             <Name>k__BackingField: NTB-630 Naval Bomber Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -400,6 +423,7 @@ MonoBehaviour:
               and dedicated anti-fighter weapons.
             role: "Fighter \xB7 Interceptor"
             iconKey: 47bb7927ce6b11a40a4930c0e6e95426:21300000
+            isHero: 0
             <Name>k__BackingField: V-19 Torrent Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -418,6 +442,7 @@ MonoBehaviour:
               take damage individually.
             role: "Fighter squadron \xB7 Interceptor"
             iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
+            isHero: 0
             <Name>k__BackingField: Belbullab-22 Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -434,6 +459,7 @@ MonoBehaviour:
               ships, frigates and stations; slow and vulnerable to fighters. No hyperdrive.
             role: "Bomber squadron \xB7 Anti-capital"
             iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+            isHero: 0
             <Name>k__BackingField: Advanced Droid Bomber Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -451,6 +477,7 @@ MonoBehaviour:
               dedicated anti-fighter weapons. No hyperdrive.
             role: "Interceptor squadron \xB7 Swarm fighter"
             iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+            isHero: 0
             <Name>k__BackingField: Vulture Droid Squadron
             <MaxCount>k__BackingField: 10
             <AvailableLevel>k__BackingField: 1
@@ -467,6 +494,7 @@ MonoBehaviour:
         description: Construct at an owned capture site to provide recurring credits.
         role: Mining facility
         iconKey: c54029d425acba74c9c5d702e49710b6:21300000
+        isHero: 0
         <Name>k__BackingField: Mining Facility
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 0
@@ -483,6 +511,7 @@ MonoBehaviour:
         description: Construct at an owned capture site to defend the area.
         role: Defensive platform
         iconKey: 9e99f16d754a042a3b1b0f2d25045f52:21300000
+        isHero: 0
         <Name>k__BackingField: XQ-6
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 1
@@ -505,6 +534,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                isHero: 0
                 <Name>k__BackingField: Increased Production I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -523,6 +553,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                isHero: 0
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -544,6 +575,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -562,6 +594,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -580,6 +613,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -601,6 +635,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 46e861879378cc441bb7260e899b7559:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Shields I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -619,6 +654,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 46e861879378cc441bb7260e899b7559:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Shields II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -637,6 +673,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 46e861879378cc441bb7260e899b7559:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Shields III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -658,6 +695,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -676,6 +714,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -694,6 +733,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -715,6 +755,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+                isHero: 0
                 <Name>k__BackingField: Reinforced Structures
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -739,6 +780,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                isHero: 0
                 <Name>k__BackingField: Increased Production I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -757,6 +799,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+                isHero: 0
                 <Name>k__BackingField: Increased Production II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -778,6 +821,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -796,6 +840,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -814,6 +859,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Weapons III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -835,6 +881,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Engines I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -853,6 +900,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Engines II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -871,6 +919,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+                isHero: 0
                 <Name>k__BackingField: Enhanced Engines III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 4
@@ -892,6 +941,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses I
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 1
@@ -910,6 +960,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses II
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -928,6 +979,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+                isHero: 0
                 <Name>k__BackingField: Improved Defenses III
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 3
@@ -949,6 +1001,7 @@ MonoBehaviour:
                   improves the affected units.
                 role: Research
                 iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+                isHero: 0
                 <Name>k__BackingField: Reinforced Structures
                 <MaxCount>k__BackingField: 1
                 <AvailableLevel>k__BackingField: 2
@@ -970,6 +1023,7 @@ MonoBehaviour:
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
         iconKey: 2e60ab884151e074caf67bb570ba533b:21300000
+        isHero: 0
         <Name>k__BackingField: Ion Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -985,6 +1039,7 @@ MonoBehaviour:
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
         iconKey: c09ba886d721a5b48ae81ff6b7ddf9bb:21300000
+        isHero: 0
         <Name>k__BackingField: Hypervelocity Gun
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -1000,6 +1055,7 @@ MonoBehaviour:
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
         iconKey: 3f8628327c2f7ab4d905d41954f545b1:21300000
+        isHero: 0
         <Name>k__BackingField: Plasma Cannon
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -1013,6 +1069,7 @@ MonoBehaviour:
     description: Upgrade the station to unlock higher-level production.
     role: Station upgrade
     iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
     <Name>k__BackingField: Level 2
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 1
@@ -1025,6 +1082,7 @@ MonoBehaviour:
     description: Upgrade the station to unlock higher-level production.
     role: Station upgrade
     iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
     <Name>k__BackingField: Level 3
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 2
@@ -1037,6 +1095,7 @@ MonoBehaviour:
     description: Upgrade the station to unlock higher-level production.
     role: Station upgrade
     iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
     <Name>k__BackingField: Level 4
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 3
@@ -1049,6 +1108,7 @@ MonoBehaviour:
     description: Upgrade the station to unlock higher-level production.
     role: Station upgrade
     iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
     <Name>k__BackingField: Level 5
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 4

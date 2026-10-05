@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.Heroes;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Extentions;
@@ -58,6 +59,7 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<SuperWeaponPresenter>();
             Container.BindInterfacesNonLazyExt<FactionService>();
             Container.BindInterfacesNonLazyExt<FactionUiController>();
+            Container.BindInterfacesNonLazyExt<HeroUiController>();
             Container.BindInterfacesNonLazyExt<ShipBuildUiController>();
             
             Container.BindScriptableObject<EconomyData>(AssetService);
