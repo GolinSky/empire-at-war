@@ -52,6 +52,23 @@ tags:
 - Not changed: `SuperWeaponPresenter`/`CheatView` still loop all `SuperWeaponType` (render-only; prefab has one button per weapon).
 - Pending: skirmish playtest (build menu, levels, research, AI super weapons).
 
+### New factions (2026-10-05)
+- `FactionType`: `Rebellion = 2`, `Empire = 3`. Skirmish dropdown picks them up from the enum.
+- `Factions/Rebellion/RebellionFaction.asset`: ships none, squadrons `AWing` (Republic A-Wing purchase data copied).
+- `Factions/Empire/EmpireFaction.asset`: no ships, no squadrons.
+- Both: research = copy of Republic; all mining/platform/super weapon types; listed in `FactionCatalog`.
+- Placeholders borrowed from Republic (replace when content exists):
+  - `MapGenerationSettings.stationRadii`, `MusicAudioData.battleMusicData`, `ShipSfxData.voices`, `SpaceStationData.wrecks`.
+  - `SpaceStationData.hangarBays`: Rebellion → `AWing`, Empire → `Delta7`.
+  - `AssetMappingData`: `RebellionSpaceStationView`, `EmpireSpaceStationView` → Republic station prefab.
+- Fleet-command aura still Republic-only (`FleetCommandService.cs:54`).
+
+## Adding a unit to a faction (until Phase 2)
+1. Unit must already exist: `ShipType`/`SquadronType` member, `<Name>ShipView` / `<Name>SquadronView` + data addresses, `ShipsData` (ships), `ShipUiData` icon, `ReinforcementData` spawn preview.
+2. Add `ShipType → FactionData` to `ships` (or `SquadronType → FactionData` to `squadrons`) in `Assets/Settings/Data/Factions/<Faction>/<Faction>Faction.asset`.
+3. A ship may belong to one faction only (`CheatPresenter` throws on duplicates); squadrons may be shared (e.g. A-Wing in Republic + Rebellion).
+4. Station hangar squadron: `SpaceStationData.hangarBays[<faction>].squadronType`.
+
 ## Out of scope (noted)
 - `WeaponType` enum growth; `SiteFacilityBuilder` switch; `PlanetType` switch; IonCannon AI rule; Cloak special case; ability-specific `HardPointType` values.
 

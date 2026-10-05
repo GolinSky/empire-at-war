@@ -88,6 +88,10 @@ MonoBehaviour:
         <RockDensity>k__BackingField: 2
   stationRadii:
     keyValue:
+    - key: 2
+      value: 396
+    - key: 3
+      value: 396
     - key: 0
       value: 396
     - key: 1

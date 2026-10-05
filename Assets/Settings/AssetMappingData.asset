@@ -385,6 +385,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: EmpireSpaceStationView
+      value:
+        m_AssetGUID: 9c0c6e83b6cae5b4891c8397b9e908b5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RebellionSpaceStationView
+      value:
+        m_AssetGUID: 9c0c6e83b6cae5b4891c8397b9e908b5
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: ArquitensShipView
       value:
         m_AssetGUID: 9d00a7db30c4cfd4fa25a15ab1d04197

@@ -15,3 +15,5 @@ MonoBehaviour:
   factions:
   - {fileID: 11400000, guid: e8c9b195b6b249c4e9528ef11dcb0efc, type: 2}
   - {fileID: 11400000, guid: c614e46ec946e90468f5c01f542dd78c, type: 2}
+  - {fileID: 11400000, guid: 382e7106c0f27f640a7758327194390b, type: 2}
+  - {fileID: 11400000, guid: 18358301bcc0e384082c72fc67995d01, type: 2}
