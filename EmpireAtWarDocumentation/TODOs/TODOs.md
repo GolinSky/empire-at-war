@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify C-9979 Lander integration acceptance**
+  - **Plan**: [[TODOs/Features/C9979_Import|C-9979 Import]]
+  - **Reference**: [[GameDesign/C-9979 Import]]
+  - **Status**: 2026-10-05 static ALO/Blender/FBX import and CIS ship `107` registrations complete; hull/shields/regen `300/20/2`, one medium laser / `5 s`, zero destructible hardpoints. Own wreck/placement/icons/team mask, hull-only target/damage support, source hashes, saved references and Unity import/compile/render checks complete. No tests or Play Mode run by this task.
+  - **Remaining**: clean-skirmish acceptance and provisional balance review; project uses Corvette damage category because Transport armor is unavailable.
+
 - [ ] **Verify BTL-B Y-Wing integration acceptance**
   - **Plan**: [[TODOs/Features/YWing_Import|Y-Wing Import]]
   - **Reference**: [[GameDesign/Y-Wing Import]]

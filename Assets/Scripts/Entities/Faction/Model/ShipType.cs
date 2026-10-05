@@ -23,6 +23,7 @@ namespace EmpireAtWar.Models.Factions
         Malevolence = 104,
         Captor = 105,
         PatrolFrigate = 106,
+        C9979 = 107,
 
     }
 }

@@ -24,5 +24,6 @@
         QuadTurboLaser = 20,
         HeavyFighterLaser = 21,
         FighterProtonTorpedo = 22,
+        MediumLaser = 23,
     }
 }

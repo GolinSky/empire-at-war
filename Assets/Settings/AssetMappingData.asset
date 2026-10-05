@@ -665,3 +665,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: C9979ShipView
+      value:
+        m_AssetGUID: 56bb18bf97f2ecb48acecbafea14543a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: C9979ShipData
+      value:
+        m_AssetGUID: 05364b3836516dc4ca3d774f9d4a230e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

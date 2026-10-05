@@ -38,6 +38,7 @@ namespace EmpireAtWar.Components.Ship.Health
         private CombatModifiers _modifiers;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
+        private IHardPointModel[] _hullTargets = Array.Empty<IHardPointModel>();
 
         [SerializeField] private Bounds ionFieldBounds;
         private PlayerId _owner;
@@ -182,6 +183,11 @@ namespace EmpireAtWar.Components.Ship.Health
         /// </summary>
         public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
         {
+            if (_hardPointAdapters.Length == 0)
+            {
+                return _hullTargets;
+            }
+
             IHardPointModel[] currentHardPoints = _hardPointAdapters
                 .Where(hardPoint => !hardPoint.IsDestroyed)
                 .Cast<IHardPointModel>()
@@ -219,6 +225,10 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             Model.InitializeHardPoints(hardPointModels);
+            if (ShipUnits.Count == 0)
+            {
+                _hullTargets = new IHardPointModel[] { new HullTarget(Model, _viewTransform) };
+            }
             // Views learn their install state before the adapters push health, so locked hardpoints never explode.
             SyncInstalledHardPoints();
 
