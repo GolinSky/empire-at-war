@@ -83,7 +83,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             _modifiers.Changed += Model.RefreshStatModifiers;
             for (int i = 0; i < fighters.Count; i++)
             {
-                _adapters[i] = new HardPointAdapter(model: members[i], view: fighters[i]);
+                _adapters[i] = new HardPointAdapter(model: members[i], view: fighters[i],
+                    pivot: fighters[i].Transform);
             }
 
             _regenerateShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);

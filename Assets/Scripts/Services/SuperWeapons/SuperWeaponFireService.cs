@@ -145,8 +145,8 @@ namespace EmpireAtWar.Services.SuperWeapons
             ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
                 profile.Weapon.Damage, profile.ImpactSize, true);
-            float travelTime = shot.Fire(salvo.Origin, salvo.Target.GetFacade<IEntityTransformFacade>().Transform, Vector3.zero,
-                profile.Weapon);
+            Transform target = salvo.Target.GetFacade<IEntityTransformFacade>().Transform;
+            float travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon);
             shot.RetireAfterCompletion();
             salvo.ImpactTimes.Add(travelTime);
             salvo.ShotsFired++;

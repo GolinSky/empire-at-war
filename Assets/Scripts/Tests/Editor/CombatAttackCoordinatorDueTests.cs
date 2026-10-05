@@ -216,6 +216,7 @@ namespace EmpireAtWar.Tests.Weapon
             public bool IsDestroyed => false;
             public Vector3 Position => Transform.position;
             public Transform Transform { get; }
+            public Transform Pivot => Transform;
 
             public FakeTarget(Transform transform) => Transform = transform;
         }

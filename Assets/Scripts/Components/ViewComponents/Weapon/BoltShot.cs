@@ -18,6 +18,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const float LIFETIME_MARGIN = 1f;
         // How fast the estimated target velocity follows the measured one, per second.
         private const float VELOCITY_SMOOTHING_RATE = 15f;
+        // Velocity is measured only this long after launch, then the lead is locked. A lead that keeps
+        // updating multiplies every target manoeuvre by the remaining flight time and jerks the bolt.
+        private const float LEAD_SETTLE_TIME = 0.15f;
 
         [SerializeField] private ParticleSystem vfx;
         private Transform _target;
@@ -26,7 +29,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private Vector3 _start;
         private Vector3 _lastAimPoint;
         private Vector3 _flightAimPoint;
-        private Vector3 _lastTargetPosition;
+        private Vector3 _lastPivotPosition;
         private Vector3 _targetVelocity;
 
         [Tooltip("Multiplies the weapon profile size for the bolt particle only (not the muzzle flash).")]
@@ -44,7 +47,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _start = start;
             _lastAimPoint = ResolveAimPoint(start, target.position + aimOffset);
             _flightAimPoint = _lastAimPoint;
-            _lastTargetPosition = target.position;
+            _lastPivotPosition = TargetPivot.position;
             _targetVelocity = Vector3.zero;
             float travelTime = GetTravelTime(start, _lastAimPoint, profile.ProjectileSpeed);
             _travelTime = travelTime;
@@ -124,21 +127,23 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (path.sqrMagnitude > 0f) transform.rotation = Quaternion.LookRotation(path);
         }
 
-        // Leads the target by its smoothed velocity over the remaining flight time. Velocity is sampled
-        // from the raw target position so a shield dropping mid-flight does not read as movement.
+        // Leads the target by the ship's travel velocity measured at launch over the remaining flight time.
+        // Velocity comes from the ship pivot, not the hardpoint: a ship turning to face a new target swings
+        // its hardpoints in an arc, and extrapolating that arc as straight-line motion throws the bolt off.
+        // Hardpoint swing is still followed through the tracked aim point.
         private void TrackTarget(float remaining)
         {
-            Vector3 targetPosition = _target.position;
+            Vector3 pivotPosition = TargetPivot.position;
             float deltaTime = Time.deltaTime;
-            if (deltaTime > 0f)
+            if (deltaTime > 0f && _travelTime - remaining < LEAD_SETTLE_TIME)
             {
-                Vector3 measuredVelocity = (targetPosition - _lastTargetPosition) / deltaTime;
+                Vector3 measuredVelocity = (pivotPosition - _lastPivotPosition) / deltaTime;
                 float blend = 1f - Mathf.Exp(-VELOCITY_SMOOTHING_RATE * deltaTime);
                 _targetVelocity = Vector3.Lerp(_targetVelocity, measuredVelocity, blend);
             }
 
-            _lastTargetPosition = targetPosition;
-            _lastAimPoint = ResolveAimPoint(_start, targetPosition + _aimOffset);
+            _lastPivotPosition = pivotPosition;
+            _lastAimPoint = ResolveAimPoint(_start, _target.position + _aimOffset);
             _flightAimPoint = _lastAimPoint + _targetVelocity * remaining;
         }
 

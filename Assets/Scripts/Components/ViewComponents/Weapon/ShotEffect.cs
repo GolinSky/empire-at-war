@@ -39,6 +39,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public int LeaseId => _leaseId;
         protected bool IsStrikecraftTarget { get; private set; }
+        /// <summary>Moves the whole target unit; read it for the unit's travel, free of its turning.</summary>
+        protected Transform TargetPivot { get; private set; }
         protected bool HasArmorImpact => _impactCaptured && _impactSurface == ImpactSurface.Armor;
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
@@ -95,8 +97,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
-        public float Fire(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile)
+        public float Fire(Transform muzzle, Transform target, Transform targetPivot, Vector3 aimOffset,
+            WeaponProfile profile)
         {
+            TargetPivot = targetPivot;
             muzzleFlash.Play(muzzle, ResolveAimPoint(muzzle.position, target.position + aimOffset),
                 profile.Color, profile.Size.x);
             float travelTime = Play(muzzle, target, aimOffset, profile);
@@ -123,6 +127,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _leaseActive = false;
             OnLeaseCompleted();
             _impactTarget = null;
+            TargetPivot = null;
             ReleaseMissile();
             EffectCompleted?.Invoke(this, _leaseId);
 

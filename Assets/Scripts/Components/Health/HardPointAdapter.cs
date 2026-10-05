@@ -8,6 +8,7 @@ namespace EmpireAtWar.Models.Health
     public sealed class HardPointAdapter : IHardPointStatus, IDisposable
     {
         private readonly IHardPoint _view;
+        private readonly Transform _pivot;
 
         private readonly HardPointModel _model;
 
@@ -26,11 +27,13 @@ namespace EmpireAtWar.Models.Health
         public bool IsDestroyed => _model.IsDestroyed;
         public Vector3 Position => _view.Position;
         public Transform Transform => _view.Transform;
+        public Transform Pivot => _pivot;
 
-        public HardPointAdapter(IHardPoint view, HardPointModel model)
+        public HardPointAdapter(IHardPoint view, HardPointModel model, Transform pivot)
         {
             _model = model;
             _view = view;
+            _pivot = pivot;
             _wasDestroyed = _model.IsDestroyed;
 
             _model.OnHardPointHealthChanged += HandleHealthChanged;

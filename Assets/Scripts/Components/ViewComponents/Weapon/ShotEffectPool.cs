@@ -51,7 +51,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType, _profile.Damage,
                 GetImpactSize(attackData.TargetClass), isHit);
-            float duration = effect.Fire(_owner, targetTransform, aimOffset, _profile);
+            float duration = effect.Fire(_owner, targetTransform, target.Pivot, aimOffset, _profile);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;
