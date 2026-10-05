@@ -213,7 +213,7 @@ namespace EmpireAtWar.Components.Ship.Health
                     id: index,
                     hardPointType: hardPoint.HardPointType);
                 hardPointModels[index] = hardPointModel;
-                _hardPointAdapters[index] = new HardPointAdapter(model: hardPointModel, view: hardPoint);
+                _hardPointAdapters[index] = new HardPointAdapter(model: hardPointModel, view: hardPoint, pivot: transform);
             }
 
             Model.InitializeHardPoints(hardPointModels);
