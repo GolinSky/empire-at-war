@@ -291,6 +291,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 47bb7927ce6b11a40a4930c0e6e95426,
           type: 3}
+    - key: 6
+      value:
+        matchups: {fileID: 11400000, guid: 18c01a8cde9f0da4e94f9136167261ab, type: 2}
+        description: Five fast V-Wing interceptors, each with 80 hull, 25 shields
+          and four laser cannons. Hunt seeks enemies and favors strikecraft; astromechs
+          repair surviving fighters in flight. Screens the fleet and intercepts hostile
+          fighters and bombers. Vulnerable to corvettes and dedicated anti-fighter
+          weapons.
+        role: "Fighter \xB7 Interceptor"
+        iconKey: 6db48aa8ac87e0e4faf79f796d5b3f37:21300000
+        isHero: 0
+        <Name>k__BackingField: V-Wing Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 600
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 6db48aa8ac87e0e4faf79f796d5b3f37,
+          type: 3}
   research:
     keyValue:
     - key: 0

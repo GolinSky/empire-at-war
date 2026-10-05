@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e037efd4385974649834ea63ee74d8ed
+    m_Address: VWingSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e0774fe75b1a01c4e97fbf73968a9a81
     m_Address: SeparatistSpaceStationView
     m_ReadOnly: 0

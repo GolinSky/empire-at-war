@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify V-Wing squadron integration acceptance**
+  - **Plan**: [[TODOs/Features/VWing_Import|V-Wing Integration]]
+  - **Reference**: [[GameDesign/V-Wing Import]]
+  - **Status**: 2026-10-05 local OBJ integrated as Republic squadron `6`; five craft/twenty lasers, hull/shields/regen `80/25/3`, cost/build/population `600/15 s/1`. Existing Hunt order and passive repair `1 HP/s`; own placement/icons/team colors, source hashes and saved-reference/import/compile/render checks complete. No automated tests or Play Mode run.
+  - **Remaining**: clean-skirmish acceptance and provisional flight/repair/weapon/tech/limit/matchup balance review.
+
 - [ ] **Verify IPV-2C Stealth Corvette integration acceptance**
   - **Plan**: [[TODOs/Features/StealthCorvette_Import|Stealth Corvette Import]]
   - **Reference**: [[GameDesign/Stealth Corvette Import]]

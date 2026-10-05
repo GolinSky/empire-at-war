@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621f037e9a796d149b93e6450fa8e471, type: 3}
+  m_Name: VWingSquadronMatchups
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
+  strongAgainst:
+  - iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+    label: Bombers
+  - iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+    label: Fighters
+  weakAgainst:
+  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+    label: Corvettes
+  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+    label: Dedicated anti-fighter weapons

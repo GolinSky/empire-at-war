@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74eb4967f5b531d49b222beaafb9c6c2
+    m_Address: VWingSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bc708a10959cdc4997c1eb7b4d3da0a
     m_Address: ImperatorShipData
     m_ReadOnly: 0

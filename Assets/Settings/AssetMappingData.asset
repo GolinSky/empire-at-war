@@ -742,3 +742,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: VWingSquadronView
+      value:
+        m_AssetGUID: e037efd4385974649834ea63ee74d8ed
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: VWingSquadronData
+      value:
+        m_AssetGUID: 74eb4967f5b531d49b222beaafb9c6c2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
