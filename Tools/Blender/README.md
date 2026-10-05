@@ -1,5 +1,19 @@
 # Blender / Rothana conversion
 
+## NTB-630 — 2026-10-05
+
+- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/NTB-630 Import.md`; acceptance plan `TODOs/Features/NTB630_Import.md`.
+- Source: RaW 1.2.1 `ReV_ntb630.ALO`. Run `prepare_ntb630_textures.py` with Pillow, then `export_ntb630.py` using portable Blender 3.6.23 with `--background --factory-startup --python`. This deliberately avoids the shared Blender instance used by another agent; no preference or MCP connection changes.
+- Eight meshes / 5,097 triangles / fourteen verified bones survive Blender and Unity imports. Restore only the binary-verified identity `Root`; preserve all UVs, attachments and five disabled helpers. Maximum Blender bone/geometry error `0.000002876 / 0.000005723` source units; Unity bone error `0.0000001062` project units, no parent mismatches. Original ALO and four DDS hashes unchanged; PNG conversions are pixel-identical.
+- Art: type-first `RepublicShips/NTB630` folders. Visual/gameplay: `Assets/Prefabs/Models/Squadrons/NTB630.prefab`, `NTB630SquadronView.prefab`; placement: `Assets/Prefabs/Ui/Reinforcement/NTB630ReinforcementView.prefab`. Centered craft size `2.650344 × 0.853184 × 4`; bow +Z, up +Y, prefab roots scale 1. Gameplay/placement formation bounds match.
+- `SquadronType.NTB630 = 4`: four Republic bombers, Bomber armor, hull/shields/refresh `60/30/3` per craft; cost/build/population `550/8 s/1`, early tech level 1. User build time overrides local XML `17 s`. Ion Shot is excluded; no ability, catalog, VFX or carrier-complement changes.
+- Each craft uses two existing `FighterLaser = 15` mounts at `MuzzleA_00/01`, one `FighterProtonTorpedo = 22` at the midpoint of `MuzzleB_00/01`, and one trail at `Pe_TieBomberEngine`. Twelve unique weapon IDs and explicit health/flight/fog/team bindings; existing torpedo attack-run behavior is reused.
+- Provisional tuning: cruise/combat `24/27`, acceleration `18`, turn `65°/s`, bank `35°`, spacing `4`, height `11`, limit `10`; shield refresh interval `1 s`. Measured formation/member radii `12.52512/2.37352` → navigation/collision `13/2.4`; selection diameter `26`.
+- Registered Republic roster, data/view lookup, existing View/Data Addressables groups, HUD/tooltip icons, matchups and own placement. Actual-model transparent icon/silhouette `512 × 512`; source alpha supplies a linear team mask. All eight palettes rendered; blue/green inspected.
+- Supplied package lacks `ReV_ntb2.dds` and `ReV_ntb2_gloss.dds`; intact turret geometry uses an explicit neutral-metal material. Hull gloss source is preserved without recreating the EaW shader. No ALA animations or animated source effects are converted.
+- Sibling `ReV_ntb630-Converted/` contains packed Blender source, FBX, PNGs, reports, previews, scripts and RaW credits. Original mesh: Howard Day; low-poly rebuild: Major Payne; textures: Howard Day/Major Payne/Bryant; rigging: z3r0x.
+- Saved geometry/reference and visual inspections passed; no new Unity import/serialization/Console errors. No automated tests or Play Mode run. Original turret textures, runtime acceptance and provisional balance review remain in the active vault plan.
+
 ## ARC-170 — 2026-10-04
 
 - Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/ARC-170 Import.md`; remaining work `TODOs/Features/ARC170_Import.md`.

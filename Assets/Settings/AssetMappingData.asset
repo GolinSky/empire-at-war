@@ -637,3 +637,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: NTB630SquadronView
+      value:
+        m_AssetGUID: 04c1026fdf702394d95307214a4b428e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: NTB630SquadronData
+      value:
+        m_AssetGUID: 2eb413ef673c4f0428fa6071e1634573
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

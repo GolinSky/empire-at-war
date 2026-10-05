@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2eb413ef673c4f0428fa6071e1634573
+    m_Address: NTB630SquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f1adfeeeb291814aa6cf57198365aab
     m_Address: MunificentShipData
     m_ReadOnly: 0

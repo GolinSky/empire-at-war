@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621f037e9a796d149b93e6450fa8e471, type: 3}
+  m_Name: NTB630SquadronMatchups
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Tooltip.UnitMatchupData
+  strongAgainst:
+  - iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    label: Capital ships
+  - iconKey: abf3987a701188747b639680e9203c3e:21300000
+    label: Cruisers
+  - iconKey: 3d8c2c187dbb7c149b2b91ea81cc45fd:21300000
+    label: Stations
+  weakAgainst:
+  - iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    label: Fighters / interceptors
+  - iconKey: 28476024afa7c5f47bd010e6e4460dc4:21300000
+    label: Anti-fighter weapons
+  - iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+    label: Corvettes
