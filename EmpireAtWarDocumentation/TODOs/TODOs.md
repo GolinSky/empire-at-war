@@ -4,6 +4,11 @@
 
 ### Features
 
+- [ ] **Spawn blockers and relays (replace reinforcement-zone spawning)**
+  - **Plan**: [[TODOs/Features/Spawn_Blockers_And_Relays|Spawn Blockers and Relays]]
+  - **Status**: 2026-10-05 Phases 0–4 implemented (vision service, spawn blockers, unified spawn rule, zones → relays, spawn overlay); compile clean; EditMode 978/1013 pass, all 35 failures pre-existing/unrelated.
+  - **Remaining**: Play Mode acceptance, radius tuning, relay art, structure collision unification.
+
 - [ ] **Verify BTL-B Y-Wing integration acceptance**
   - **Plan**: [[TODOs/Features/YWing_Import|Y-Wing Import]]
   - **Reference**: [[GameDesign/Y-Wing Import]]

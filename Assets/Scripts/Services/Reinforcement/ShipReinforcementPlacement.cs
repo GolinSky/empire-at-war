@@ -1,8 +1,6 @@
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
@@ -12,8 +10,7 @@ namespace EmpireAtWar.Services.Reinforcement
 {
     public sealed class ShipReinforcementPlacement : IReinforcementPlacement
     {
-        private readonly IReinforcementZonesSystem _zones;
-        private readonly IShipSpawnClearance _clearance;
+        private readonly IReinforcementSpawnRule _spawnRule;
 
         private readonly ReinforcementPreviewFactory _previewFactory;
         private readonly ReinforcementModel _model;
@@ -24,8 +21,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly float _height;
 
         public ShipReinforcementPlacement(
-            IReinforcementZonesSystem zones,
-            IShipSpawnClearance clearance,
+            IReinforcementSpawnRule spawnRule,
             ReinforcementPreviewFactory previewFactory,
             ReinforcementModel model,
             ShipFactory shipFactory,
@@ -34,8 +30,7 @@ namespace EmpireAtWar.Services.Reinforcement
             ShipType shipType,
             float height)
         {
-            _zones = zones;
-            _clearance = clearance;
+            _spawnRule = spawnRule;
             _previewFactory = previewFactory;
             _model = model;
             _shipFactory = shipFactory;
@@ -53,11 +48,7 @@ namespace EmpireAtWar.Services.Reinforcement
             return preview;
         }
 
-        public bool IsPositionValid(Vector3 position)
-        {
-            return _zones.IsPositionInAlliedZone(_owner, position) &&
-                   _clearance.IsClear(_owner, _shipType, position);
-        }
+        public bool IsPositionValid(Vector3 position) => _spawnRule.CanSpawnShip(_owner, _shipType, position);
 
         public void Spawn(Vector3 position)
         {

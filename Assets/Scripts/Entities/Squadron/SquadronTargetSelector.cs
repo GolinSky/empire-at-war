@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Components.Squadrons.Health;
 
@@ -13,10 +13,9 @@ namespace EmpireAtWar.Entities.Squadrons
     public sealed class SquadronTargetSelector
     {
         private const float PREFERRED_TARGET_DISTANCE_WEIGHT = 0.25f;
-        private const float VISIBLE_THRESHOLD = 0.5f;
 
         private readonly IEntityLocator _entityLocator;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly IPlayerRelations _relations;
 
         private readonly PlayerId _side;
@@ -24,14 +23,14 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private readonly bool _respectsFog;
 
-        public SquadronTargetSelector(IEntityLocator entityLocator, IFogOfWarSystem fogOfWarSystem,
+        public SquadronTargetSelector(IEntityLocator entityLocator, IVisionService visionService,
             IPlayerRelations relations, ILocalPlayer localPlayer, PlayerId side, ISquadronHealthData data)
         {
             _relations = relations;
-            // Only the human's squadrons are limited to what the fog of war reveals.
+            // Only the human's squadrons are limited to what their side can see.
             _respectsFog = localPlayer.IsLocal(side);
             _entityLocator = entityLocator;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _side = side;
             _shipClass = data.ShipClass;
         }
@@ -64,7 +63,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 if (!IsValidEnemy(candidate)) continue;
                 Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (_respectsFog &&
-                    _fogOfWarSystem.GetVisibilityAtPosition(position) < VISIBLE_THRESHOLD) continue;
+                    !_visionService.IsVisible(_side, position)) continue;
                 float score = Score(candidate, (position - origin).sqrMagnitude);
                 if (score >= bestScore) continue;
                 best = candidate;

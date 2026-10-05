@@ -9,7 +9,8 @@ using ViewComponents;
 
 namespace EmpireAtWar.Entities.Map
 {
-    /// <summary>Spawns a generated <see cref="MapLayout"/>: zones, capture sites, asteroid fields, border and fog area.</summary>
+    /// <summary>Spawns a generated <see cref="MapLayout"/>: relays, capture sites, asteroid fields, border and fog area.
+    /// Home (non-capturable) zones stay layout data only; nothing is spawned for them.</summary>
     public sealed class MapLayoutView : MonoBehaviour
     {
         private const float FRAME_SLICE_SECONDS = 0.008f;
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private LineRenderer borderLine;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
+        private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
 
         [SerializeField] private float borderHeight;
         [SerializeField, Min(1f), Tooltip("Map side the fog plane was authored for.")]
@@ -39,7 +41,7 @@ namespace EmpireAtWar.Entities.Map
         public MapFeatureRadii FeatureRadii =>
             new MapFeatureRadii(zonePrefab.Radius, miningSitePrefab.Radius, battleSitePrefab.Radius);
 
-        public ReinforcementZoneView[] ZoneViews { get; private set; }
+        public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
         public CaptureSiteView[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
@@ -51,12 +53,12 @@ namespace EmpireAtWar.Entities.Map
             DrawBorder(layout);
             float sliceStart = Time.realtimeSinceStartup;
 
-            ZoneViews = new ReinforcementZoneView[layout.Zones.Count];
-            for (int i = 0; i < ZoneViews.Length; i++)
+            foreach (ZoneSpot zone in layout.Zones)
             {
-                ZoneSpot zone = layout.Zones[i];
-                ZoneViews[i] = Instantiate(zonePrefab, zone.Center, Quaternion.identity, zoneRoot);
-                ZoneViews[i].Configure(zone.Owner, zone.IsCapturable);
+                if (!zone.IsCapturable) continue;
+                ReinforcementZoneView relay = Instantiate(zonePrefab, zone.Center, Quaternion.identity, zoneRoot);
+                relay.Configure(zone.Owner, zone.IsCapturable);
+                _zoneViews.Add(relay);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }
 

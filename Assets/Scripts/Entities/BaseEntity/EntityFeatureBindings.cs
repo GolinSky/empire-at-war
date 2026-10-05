@@ -84,11 +84,17 @@ namespace EmpireAtWar.Entities.BaseEntity
             return container;
         }
 
-        /// <param name="sharesLocalVision">True for the local team's structures; they reveal the local fog of war.</param>
-        public static DiContainer BindFogVisionFeature(this DiContainer container, bool sharesLocalVision)
+        /// <summary>Every structure gives its owner's team vision around it.</summary>
+        public static DiContainer BindFogVisionFeature(this DiContainer container)
         {
-            if (sharesLocalVision)
-                container.BindInterfacesTo<FogVisionSource>().AsSingle();
+            container.BindInterfacesTo<FogVisionSource>().AsSingle();
+            return container;
+        }
+
+        /// <summary>Every structure keeps hostile reinforcements out of its spawn-block radius.</summary>
+        public static DiContainer BindSpawnBlockerFeature(this DiContainer container)
+        {
+            container.BindInterfacesTo<SpawnBlockerSource>().AsSingle();
             return container;
         }
     }

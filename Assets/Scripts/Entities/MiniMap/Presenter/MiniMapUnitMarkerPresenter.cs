@@ -5,7 +5,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Presenters.MiniMap
@@ -13,7 +13,7 @@ namespace EmpireAtWar.Presenters.MiniMap
     public sealed class MiniMapUnitMarkerPresenter : IInitializable, ILateTickable, ILateDisposable
     {
         private readonly IHealthModelObserver _healthModel;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly MiniMapData _miniMapData;
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public MiniMapUnitMarkerPresenter(
             IHealthModelObserver healthModel,
-            IFogOfWarSystem fogOfWarSystem,
+            IVisionService visionService,
             ILocalPlayer localPlayer,
             MiniMapData miniMapData,
             [Inject(Id = EntityBindType.ViewTransform)] Transform viewTransform,
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _owner = owner;
             _selectionType = selectionType;
             _healthModel = healthModel;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
         }
 
         public void Initialize()
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(
-                _localPlayer.IsFriendly(_owner) || !_fogOfWarSystem.IsHidden(position));
+                _localPlayer.IsFriendly(_owner) || _visionService.IsVisible(_localPlayer.Id, position));
         }
 
         private void RemoveMarker()

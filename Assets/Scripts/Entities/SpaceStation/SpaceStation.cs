@@ -5,17 +5,18 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.UnitWreck;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.UnitExplosion;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
     public class SpaceStation : MonoBehaviour, IController, IInitializable, ILateDisposable
     {
-        private IFogOfWarSystem _fogOfWarSystem;
-        private ILocalPlayer _localPlayer;
+        private IVisionService _visionService;
+        private ISpawnBlockerService _spawnBlockerService;
         private IHealthComponent _healthComponent;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
@@ -34,19 +35,19 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         [Inject]
         private void Construct(
-            IFogOfWarSystem fogOfWarSystem,
+            IVisionService visionService,
+            ISpawnBlockerService spawnBlockerService,
             IHealthComponent healthComponent,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
-            ILocalPlayer localPlayer,
             List<IMonoComponent> monoComponents,
             GameObjectContext context,
             PlayerId owner,
             Vector3 startPosition,
             FactionType factionType)
         {
-            _fogOfWarSystem = fogOfWarSystem;
-            _localPlayer = localPlayer;
+            _visionService = visionService;
+            _spawnBlockerService = spawnBlockerService;
             _owner = owner;
             _healthComponent = healthComponent;
             _startPosition = startPosition;
@@ -62,12 +63,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
-
-            // Allied stations share vision with the local player.
-            if (_localPlayer.IsFriendly(_owner))
-            {
-                _fogOfWarSystem.RegisterVisionSource(transform, 900f);
-            }
+            _visionService.Register(_owner, transform, 900f);
+            _spawnBlockerService.Register(_owner, transform, Data.ComponentData.SpawnBlockRadius);
         }
 
         public void LateDispose()
@@ -84,6 +81,8 @@ namespace EmpireAtWar.Entities.SpaceStation
             {
                 return;
             }
+            _visionService.Unregister(transform);
+            _spawnBlockerService.Unregister(transform);
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;

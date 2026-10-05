@@ -1,17 +1,8 @@
-using UnityEngine;
-
 namespace ViewComponents
 {
+    /// <summary>Draws the local team's vision. Visibility queries go through <c>IVisionService</c>.</summary>
     public interface IFogOfWarSystem
     {
-        void RegisterVisionSource(Transform targetTransform, float radius, float intensity = 1.0f);
-
-        void UnregisterVisionSource(Transform targetTransform);
-
-        float GetVisibilityAtPosition(Vector3 worldPos);
-
-        bool IsHidden(Vector3 worldPos, float threshold = 0.1f);
-
         /// <summary>Shows the current vision at once instead of fading it in.</summary>
         void RevealImmediately();
     }

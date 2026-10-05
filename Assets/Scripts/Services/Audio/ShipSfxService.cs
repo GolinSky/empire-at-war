@@ -4,7 +4,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
@@ -13,7 +13,6 @@ namespace EmpireAtWar.Services.Audio
 {
     public sealed class ShipSfxService : IShipSfxService, ITickable, IDisposable
     {
-        private const float MIN_ENEMY_VISIBILITY = 0.5f;
         private const float MIN_AUDIBLE_GAIN = 0.01f;
         private const float FADE_TIME = 0.04f;
         private const float LOOP_LEASE = 0.12f;
@@ -22,7 +21,7 @@ namespace EmpireAtWar.Services.Audio
 
         private readonly IAudioService _audioService;
         private readonly ICameraService _cameraService;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly ShipSfxSources _sources;
@@ -40,7 +39,7 @@ namespace EmpireAtWar.Services.Audio
 
         private bool _disposed;
 
-        public ShipSfxService(IAudioService audioService, ICameraService cameraService, IFogOfWarSystem fogOfWarSystem,
+        public ShipSfxService(IAudioService audioService, ICameraService cameraService, IVisionService visionService,
             ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData)
         {
             _sources = sources;
@@ -48,7 +47,7 @@ namespace EmpireAtWar.Services.Audio
             _audioService = audioService;
             _cameraService = cameraService;
             _cameraData = cameraData;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _localPlayer = localPlayer;
             _mixer = sources.Voice.outputAudioMixerGroup.audioMixer;
             _slots = new VoiceSlot[data.PoolVoices];
@@ -216,7 +215,7 @@ namespace EmpireAtWar.Services.Audio
             Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(ship.Owner) &&
-                _fogOfWarSystem.IsHidden(position, MIN_ENEMY_VISIBILITY)) return 0f;
+                !_visionService.IsVisible(_localPlayer.Id, position)) return 0f;
             float outside = Mathf.Max(0f, -viewport.x, viewport.x - 1f, -viewport.y, viewport.y - 1f);
             float edge = Mathf.Clamp01(Vector2.Distance(new Vector2(viewport.x, viewport.y),
                 new Vector2(0.5f, 0.5f)) / Mathf.Sqrt(0.5f));

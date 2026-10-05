@@ -1,6 +1,8 @@
-using System.Collections.Generic;
 using EmpireAtWar.Models.FogOfWar;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.OwnedAreas;
+using EmpireAtWar.Services.Vision;
 using Unity.Collections;
 using UnityEngine;
 using Zenject;
@@ -44,15 +46,18 @@ namespace ViewComponents
         private Texture2D _fogTexture;
         private FogVisibilityGridModel _grid;
 
-        private List<VisionSource> _activeSources = new List<VisionSource>();
         private float _timer;
         private Material _fogMaterial;
         private ICameraService _cameraService;
+        private IVisionService _visionService;
+        private ILocalPlayer _localPlayer;
 
         [Inject]
-        private void Construct(ICameraService cameraService)
+        private void Construct(ICameraService cameraService, IVisionService visionService, ILocalPlayer localPlayer)
         {
             _cameraService = cameraService;
+            _visionService = visionService;
+            _localPlayer = localPlayer;
         }
 
         // The mask exists only after InitializeArea, so the fog stays idle until the map is built.
@@ -138,14 +143,13 @@ namespace ViewComponents
         {
             _grid.ResetTargets(keepHistory);
 
-            // Cleanup destroyed objects automatically
-            _activeSources.RemoveAll(s => s.transform == null);
-
-            foreach (var source in _activeSources)
+            foreach (OwnedCircle source in _visionService.Sources)
             {
-                Vector2Int pixel = PositionToPixel(ProjectOntoFog(source.transform.position), out bool inside);
+                // Allies share vision, so their sources reveal the local fog too.
+                if (!_localPlayer.IsFriendly(source.Owner)) continue;
+                Vector2Int pixel = PositionToPixel(ProjectOntoFog(source.Transform.position), out bool inside);
                 if (!inside) continue;
-                _grid.Reveal(pixel.x, pixel.y, RadiusToPixels(source.radius), edgeSoftness, source.intensity);
+                _grid.Reveal(pixel.x, pixel.y, RadiusToPixels(source.Radius), edgeSoftness, 1f);
             }
         }
 
@@ -159,38 +163,6 @@ namespace ViewComponents
 
             // Ensure a minimum of at least 1 pixel radius if there is supposed to be a hole
             return Mathf.Max(1, Mathf.Max(radiusPxX, radiusPxY));
-        }
-
-        // ===================================
-        // PUBLIC API
-        // ===================================
-
-        /// <summary>
-        /// Registers a transform as a continuous vision source. 
-        /// You only need to call this ONCE per ship/unit when it spawns.
-        /// </summary>
-        public void RegisterVisionSource(Transform targetTransform, float radius, float intensity = 1.0f)
-        {
-            if (targetTransform == null) return;
-
-            VisionSource existing = _activeSources.Find(s => s.transform == targetTransform);
-            if (existing != null)
-            {
-                existing.radius = radius;
-                existing.intensity = intensity;
-                return;
-            }
-
-            _activeSources.Add(new VisionSource { transform = targetTransform, radius = radius, intensity = intensity });
-        }
-
-        /// <summary>
-        /// Manually unregister a vision source. This happens automatically if the Transform is destroyed.
-        /// </summary>
-        public void UnregisterVisionSource(Transform targetTransform)
-        {
-            if (targetTransform == null) return;
-            _activeSources.RemoveAll(s => s.transform == targetTransform);
         }
 
         private Vector2Int PositionToPixel(Vector3 worldPos, out bool inside)
@@ -212,19 +184,9 @@ namespace ViewComponents
         }
 
         /// <summary>
-        /// Checks the current fog density at a specific world coordinate.
-        /// Useful for disabling the rendering of enemy ships that fall into unseen fog areas!
-        /// Returns 1.0 if fully revealed, 0.0 if not.
-        /// </summary>
-        public float GetVisibilityAtPosition(Vector3 worldPos)
-        {
-            Vector2Int pixel = PositionToPixel(ProjectOntoFog(worldPos), out _);
-            return _grid.GetVisibility(pixel.x, pixel.y);
-        }
-
-        /// <summary>
         /// Units fly at different heights, but the fog is drawn on one plane. The player sees a unit
-        /// where the camera ray through it crosses that plane, so vision and visibility use that point.
+        /// where the camera ray through it crosses that plane, so the drawn holes use that point.
+        /// Drawing only: gameplay visibility in IVisionService ignores height and the camera.
         /// </summary>
         private Vector3 ProjectOntoFog(Vector3 worldPos)
         {
@@ -235,23 +197,6 @@ namespace ViewComponents
 
             float rayFraction = (cameraPosition.y - fogHeight) / (cameraPosition.y - worldPos.y);
             return cameraPosition + (worldPos - cameraPosition) * rayFraction;
-        }
-
-        /// <summary>
-        /// Helper to quickly query if an object is hidden by fog.
-        /// </summary>
-        public bool IsHidden(Vector3 worldPos, float threshold = 0.1f)
-        {
-            return GetVisibilityAtPosition(worldPos) < threshold;
-        }
-
-        // Represents a single area of vision
-        public class VisionSource
-        {
-            public Transform transform;
-
-            public float radius;
-            public float intensity;
         }
     }
 }

@@ -13,3 +13,7 @@ MonoBehaviour:
   m_Name: ReinforcementZoneData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.ReinforcementZones.ReinforcementZoneData
   <CaptureSpeedPerNetShip>k__BackingField: 1
+  <SquadronCaptureWeight>k__BackingField: 0.5
+  <HomeAreaRadius>k__BackingField: 270
+  <RelaySpawnBlockRadius>k__BackingField: 900
+  <AsteroidSpawnBlockMargin>k__BackingField: 60

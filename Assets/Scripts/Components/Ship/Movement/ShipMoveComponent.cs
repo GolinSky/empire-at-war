@@ -11,10 +11,10 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.StationFacing;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
-using ViewComponents;
 using Zenject;
 using NumericsVector3 = System.Numerics.Vector3;
 
@@ -30,10 +30,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IStationFacingService _stationFacingService;
         private IShipNavigationService _shipNavigationService;
         private IShipSpawnClearance _shipSpawnClearance;
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
-        private ILocalPlayer _localPlayer;
 
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private Transform bodyTransform;
@@ -47,7 +46,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         private ShipType _shipType;
 
         [SerializeField] private bool logNavigationDecisions;
-        private bool _sharesLocalVision;
         private bool _isNavigationRegistered;
         private bool _isReleased;
 
@@ -72,9 +70,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         [Inject]
         private void Construct(IMapModelObserver mapModel,
             IStationFacingService stationFacingService, IShipNavigationService shipNavigationService,
-            IShipSpawnClearance shipSpawnClearance, IFogOfWarSystem fogOfWarSystem,
+            IShipSpawnClearance shipSpawnClearance, IVisionService visionService,
             IRadarModelObserver radarModel,
-            IWeaponFacing weaponFacing, ILocalPlayer localPlayer,
+            IWeaponFacing weaponFacing,
             ShipMoveModel model, CombatModifiers modifiers, ShipType shipType, Vector3 startPosition,
             PlayerId owner)
         {
@@ -89,9 +87,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             _stationFacingService = stationFacingService;
             _shipNavigationService = shipNavigationService;
             _shipSpawnClearance = shipSpawnClearance;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _radarModel = radarModel;
-            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -113,10 +110,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _shipSpawnClearance.ReserveLanding(this, _owner, _shipType, _startPosition);
             _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
                 Model.HyperSpaceDuration, FinishHyperSpaceJump);
-            // Allies share vision, so their ships reveal the local fog too.
-            _sharesLocalVision = _localPlayer.IsFriendly(_owner);
-            if (_sharesLocalVision)
-                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
+            _visionService.Register(_owner, transform, _radarModel.Range);
         }
 
         public void LateDispose() => Release();
@@ -137,8 +131,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Unregister(this);
                 _isNavigationRegistered = false;
             }
-            if (_sharesLocalVision)
-                _fogOfWarSystem.UnregisterVisionSource(transform);
+            _visionService.Unregister(transform);
             _motion.Release();
         }
 
@@ -294,8 +287,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private void UpdateRouteSpeed()
         {
             _motion.SetRouteSpeed(Model.Speed);
-            if (_sharesLocalVision)
-                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
+            _visionService.Register(_owner, transform, _radarModel.Range);
         }
     }
 }

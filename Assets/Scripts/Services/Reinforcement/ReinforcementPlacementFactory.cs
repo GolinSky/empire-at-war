@@ -8,8 +8,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
 
@@ -18,8 +16,7 @@ namespace EmpireAtWar.Services.Reinforcement
     /// <summary>Turns a reinforcement request into the placement rules for that unit kind.</summary>
     public sealed class ReinforcementPlacementFactory
     {
-        private readonly IReinforcementZonesSystem _zones;
-        private readonly IShipSpawnClearance _shipSpawnClearance;
+        private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IStationFacingService _stationFacingService;
         private readonly IAssetService _assetService;
 
@@ -36,8 +33,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly PlayerSlot _owner;
 
         public ReinforcementPlacementFactory(
-            IReinforcementZonesSystem zones,
-            IShipSpawnClearance shipSpawnClearance,
+            IReinforcementSpawnRule spawnRule,
             IStationFacingService stationFacingService,
             IAssetService assetService,
             StructurePlacementArea structureArea,
@@ -52,8 +48,7 @@ namespace EmpireAtWar.Services.Reinforcement
             ShipsData shipsData,
             PlayerSlot owner)
         {
-            _zones = zones;
-            _shipSpawnClearance = shipSpawnClearance;
+            _spawnRule = spawnRule;
             _stationFacingService = stationFacingService;
             _assetService = assetService;
             _structureArea = structureArea;
@@ -79,13 +74,13 @@ namespace EmpireAtWar.Services.Reinforcement
                     placement = null;
                     return false;
                 case ShipUnitRequest shipRequest:
-                    placement = new ShipReinforcementPlacement(_zones, _shipSpawnClearance, _previewFactory,
+                    placement = new ShipReinforcementPlacement(_spawnRule, _previewFactory,
                         _model, _shipFactory, _data.GetSpawnPrefab(shipRequest.Key), _owner.Id,
                         shipRequest.Key,
                         _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipRequest.Key)).Height);
                     return true;
                 case SquadronUnitRequest squadronRequest:
-                    placement = new SquadronReinforcementPlacement(_zones, _stationFacingService,
+                    placement = new SquadronReinforcementPlacement(_spawnRule, _stationFacingService,
                         _previewFactory, _model, _squadronFactory, _data.GetSpawnPrefab(squadronRequest.Key),
                         _owner.Id, squadronRequest.Key);
                     return true;

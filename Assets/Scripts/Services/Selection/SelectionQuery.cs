@@ -7,7 +7,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
@@ -30,16 +30,16 @@ namespace EmpireAtWar.Services.Battle
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
 
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
         public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer,
-            IFogOfWarSystem fogOfWarSystem)
+            IVisionService visionService)
         {
             _localPlayer = localPlayer;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
         }
@@ -181,7 +181,7 @@ namespace EmpireAtWar.Services.Battle
 
         private bool IsHiddenByFog(IEntity entity) =>
             !_localPlayer.IsFriendly(entity.Owner) &&
-            _fogOfWarSystem.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+            !_visionService.IsVisible(_localPlayer.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position);
 
         private readonly struct MarqueeCandidate
         {

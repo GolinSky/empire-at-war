@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -71,18 +72,41 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void AlliedZone_AcceptsAlliesAndRejectsHostiles()
+        public void Relay_BlocksSpawningForHostilesOfItsOwnerTeamOnly()
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
             try
             {
                 ReinforcementZoneView allied = CreateZone(
                     root.transform, TestPlayers.Ally, false, Vector3.zero);
-                ReinforcementZonesSystem system = CreateSystem(root, data, allied);
+                CreateSystem(root, data, blockers, allied);
 
-                Assert.That(system.IsPositionInAlliedZone(TestPlayers.Human, allied.Center), Is.True);
-                Assert.That(system.IsPositionInAlliedZone(TestPlayers.Enemy, allied.Center), Is.False);
+                Assert.That(blockers.IsBlocked(TestPlayers.Human, allied.Center), Is.False);
+                Assert.That(blockers.IsBlocked(TestPlayers.Enemy, allied.Center), Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void NeutralRelay_BlocksEveryTeam()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
+            try
+            {
+                ReinforcementZoneView neutral = CreateZone(
+                    root.transform, PlayerId.None, true, Vector3.zero);
+                CreateSystem(root, data, blockers, neutral);
+
+                Assert.That(blockers.IsBlocked(TestPlayers.Human, neutral.Center), Is.True);
+                Assert.That(blockers.IsBlocked(TestPlayers.Enemy, neutral.Center), Is.True);
             }
             finally
             {
@@ -92,7 +116,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
-            ReinforcementZoneData data, params ReinforcementZoneView[] zones)
+            ReinforcementZoneData data, params ReinforcementZoneView[] zones) =>
+            CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), zones);
+
+        private static ReinforcementZonesSystem CreateSystem(GameObject root,
+            ReinforcementZoneData data, SpawnBlockerService blockers, params ReinforcementZoneView[] zones)
         {
             ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
             SetField(system, "_data", data);
@@ -101,8 +129,16 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             SetField(system, "_playerRoster", roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
+            SetField(system, "_spawnBlockerService", blockers);
             system.UpdateState(new BattleMap(
-                layout: null,
+                layout: new MapLayout(
+                    stationPositions: new Dictionary<PlayerId, Vector3>(),
+                    zones: System.Array.Empty<ZoneSpot>(),
+                    sites: System.Array.Empty<SiteSpot>(),
+                    lanes: System.Array.Empty<MapLane>(),
+                    fields: System.Array.Empty<AsteroidField>(),
+                    sizeRange: new Vector2Range(),
+                    planetPosition: Vector3.zero),
                 zoneViews: zones,
                 siteViews: System.Array.Empty<CaptureSiteView>(),
                 obstacles: System.Array.Empty<MapObstacle>(),

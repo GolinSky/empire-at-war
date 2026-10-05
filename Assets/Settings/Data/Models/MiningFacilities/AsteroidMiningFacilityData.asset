@@ -38,6 +38,7 @@ MonoBehaviour:
     <Range>k__BackingField: 75
     <Delay>k__BackingField: 0.25
     <VisionRange>k__BackingField: 350
+    <SpawnBlockRadius>k__BackingField: 400
   <Wreck>k__BackingField: {fileID: 11400000, guid: 87c122af171b71a41b7a92fd1f025cdd,
     type: 2}
   <Income>k__BackingField: 20

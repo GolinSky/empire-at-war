@@ -7,11 +7,12 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
 using UnityEngine.Serialization;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Services.ReinforcementZones
@@ -23,8 +24,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
         bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
 
         void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination);
-
-        bool IsPositionInAlliedZone(PlayerId owner, Vector3 position);
 
         int GetOwnedCapturableZoneCount(PlayerId owner);
 
@@ -42,11 +41,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
         IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
-        private const float MINIMUM_ZONE_VISIBILITY = 0.5f;
-
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
+        private ISpawnBlockerService _spawnBlockerService;
         private ICameraService _cameraService;
         private IPointerInput _pointerInput;
         private IMapModelObserver _mapModel;
@@ -57,6 +55,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
         private ReinforcementZoneData _data;
         private IReadOnlyList<ReinforcementZoneView> _zoneViews;
+        private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
         private CaptureStrengthBuilder _captureStrengthBuilder;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
@@ -70,7 +69,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
             IMapModelObserver mapModel,
-            IFogOfWarSystem fogOfWarSystem,
+            IVisionService visionService,
+            ISpawnBlockerService spawnBlockerService,
             ICameraService cameraService,
             IPointerInput pointerInput,
             IPlayerRoster playerRoster,
@@ -82,7 +82,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _squadronRegistry = squadronRegistry;
             _data = data;
             _mapModel = mapModel;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
+            _spawnBlockerService = spawnBlockerService;
             _cameraService = cameraService;
             _pointerInput = pointerInput;
             _battleMap = battleMap;
@@ -104,6 +105,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void UpdateState(BattleMap battleMap)
         {
             _zoneViews = battleMap.ZoneViews;
+            _homes.Clear();
+            foreach (ZoneSpot spot in battleMap.Layout.Zones)
+            {
+                if (!spot.IsCapturable) _homes.Add(spot);
+            }
+
             _zones.Clear();
             foreach (ReinforcementZoneView view in _zoneViews)
             {
@@ -114,13 +121,16 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
                     relations: _playerRoster);
                 _zones.Add(new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer));
+                // Each zone centre holds a relay: only its owner's team may spawn around it.
+                _spawnBlockerService.Register(view.StartingOwner, view.transform, _data.RelaySpawnBlockRadius);
             }
         }
 
         public void Tick()
         {
-            foreach (ReinforcementZonePresenter zone in _zones)
+            for (int i = 0; i < _zones.Count; i++)
             {
+                ReinforcementZonePresenter zone = _zones[i];
                 _captureStrengthBuilder.Clear();
                 Func<Vector3, bool> contains = zone.Contains;
                 _shipService.AddShipStrength(contains, _captureStrengthBuilder);
@@ -128,28 +138,16 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
                 if (zone.Tick(Time.deltaTime, _captureStrengthBuilder.Build()))
                 {
+                    _spawnBlockerService.Register(zone.Owner, _zoneViews[i].transform, _data.RelaySpawnBlockRadius);
                     OwnershipChanged?.Invoke();
                 }
 
                 // The circle stays visible; labels and minimap markers require current vision.
-                bool isRevealed = !_fogOfWarSystem.IsHidden(zone.Center, MINIMUM_ZONE_VISIBILITY);
+                bool isRevealed = _visionService.IsVisible(_localPlayer.Id, zone.Center);
                 bool isHovered = isRevealed &&
                     zone.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
             }
-        }
-
-        public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position)
-        {
-            foreach (ReinforcementZonePresenter zone in _zones)
-            {
-                if (_playerRoster.IsAllied(zone.Owner, owner) && zone.Contains(position))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
@@ -196,10 +194,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
         {
-            foreach (ReinforcementZoneView view in _zoneViews)
+            foreach (ZoneSpot home in _homes)
             {
-                if (view.StartingOwner != owner || view.IsCapturable) continue;
-                position = view.Center;
+                if (home.Owner != owner) continue;
+                position = home.Center;
                 position.y = 0f;
                 return true;
             }
@@ -214,25 +212,26 @@ namespace EmpireAtWar.Services.ReinforcementZones
             float shipRadius,
             out Vector3 position)
         {
-            foreach (ReinforcementZonePresenter zone in _zones)
+            float homeRadius = _data.HomeAreaRadius;
+            foreach (ZoneSpot home in _homes)
             {
-                if (zone.Owner != owner || zone.IsCapturable ||
-                    !zone.Contains(shipPosition))
+                Vector3 offset = shipPosition - home.Center;
+                if (home.Owner != owner || offset.x * offset.x + offset.z * offset.z > homeRadius * homeRadius)
                 {
                     continue;
                 }
 
                 Vector3 direction = new Vector3(
-                    (_mapModel.SizeRange.Min.x + _mapModel.SizeRange.Max.x) * 0.5f - zone.Center.x,
+                    (_mapModel.SizeRange.Min.x + _mapModel.SizeRange.Max.x) * 0.5f - home.Center.x,
                     0f,
-                    (_mapModel.SizeRange.Min.y + _mapModel.SizeRange.Max.y) * 0.5f - zone.Center.z);
+                    (_mapModel.SizeRange.Min.y + _mapModel.SizeRange.Max.y) * 0.5f - home.Center.z);
                 if (direction.sqrMagnitude <= Mathf.Epsilon)
                 {
                     direction = Vector3.right;
                 }
 
-                position = zone.Center + direction.normalized *
-                    (zone.Radius + shipRadius + spawnEdgePadding);
+                position = home.Center + direction.normalized *
+                    (homeRadius + shipRadius + spawnEdgePadding);
                 position.y = 0f;
                 return true;
             }
