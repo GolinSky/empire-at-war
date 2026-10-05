@@ -70,6 +70,20 @@ MonoBehaviour:
         aiUse: 0
         settings:
           rid: 7607833764655792204
+    - key: 13
+      value:
+        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        displayName: Boost Shield Strength
+        description: Increase shield regeneration to 500/s for 15 s; reduce movement
+          speed by 20% and weapon damage by 50%. Recovers in 60 s.
+        duration: 15
+        recoveryDelay: 60
+        canCancel: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 0
+        settings:
+          rid: 6801466898397790286
     - key: 3
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
@@ -232,6 +246,16 @@ MonoBehaviour:
           fireDelayMultiplier: 0.5
           speedMultiplier: 0.5
           shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1
+    - rid: 6801466898397790286
+      type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 0.5
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.8
+          shieldRegenMultiplier: 10
           damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,

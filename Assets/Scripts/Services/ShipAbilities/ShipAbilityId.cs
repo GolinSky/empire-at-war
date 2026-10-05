@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         IonShot = 9,
         LaserBeam = 10,
         Cloak = 11,
-        VictoryBoostWeaponPower = 12
+        VictoryBoostWeaponPower = 12,
+        NebulonBBoostShieldStrength = 13
     }
 }

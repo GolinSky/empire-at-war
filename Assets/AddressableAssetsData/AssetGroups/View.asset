@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24b90477440a9e44c8e15df587b3cc01
+    m_Address: NebulonBShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 27733b82b0779be4c8f62e4c82b10539
     m_Address: TIEFighterSquadronView
     m_ReadOnly: 0

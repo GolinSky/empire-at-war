@@ -14,7 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Factions.FactionDefinition
   factionType: 2
   ships:
-    keyValue: []
+    keyValue:
+    - key: 300
+      value:
+        matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
+        description: Rebel general-purpose frigate effective against corvettes and
+          light cruisers. Two turbolaser batteries, two laser cannon batteries and
+          targetable engines. Boost Shield Strength increases shield recovery tenfold
+          for 15 seconds, reducing speed by 20% and weapon damage by 50%; 60-second
+          cooldown.
+        role: General-purpose frigate / Anti-corvette
+        iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
+        isHero: 0
+        <Name>k__BackingField: Nebulon-B Frigate
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2200
+        <BuildTime>k__BackingField: 30
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: a5d07dd53c680c6408f3e98f4ce75765,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

@@ -798,3 +798,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: NebulonBShipView
+      value:
+        m_AssetGUID: 24b90477440a9e44c8e15df587b3cc01
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: NebulonBShipData
+      value:
+        m_AssetGUID: 3704d6292f860024fbec5979596072c4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

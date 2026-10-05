@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3704d6292f860024fbec5979596072c4
+    m_Address: NebulonBShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d6ced770e54a9e409ab435c0e52ec58
     m_Address: StarDestroyer1ShipData
     m_ReadOnly: 0
