@@ -163,7 +163,6 @@ MonoBehaviour:
   - {fileID: 6195188883714117337}
   - {fileID: 1622308249098015778}
   - {fileID: 6031658977657759008}
-  useWeaponDamageRange: 0
 --- !u!1 &1247551640511911488
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 14
 --- !u!1 &2110172131775320575
@@ -287,6 +287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 15
 --- !u!1 &2163849209457247730
@@ -334,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 16
 --- !u!1 &2383908866047400070
@@ -643,6 +645,8 @@ MonoBehaviour:
   - {fileID: 4600017003600548054}
   - {fileID: 6238289069403358111}
   - {fileID: 2758428850559181635}
+  revealRadius: 0
+  staysRevealedOnceSeen: 0
 --- !u!114 &8241506666829177959
 MonoBehaviour:
   m_ObjectHideFlags: 0

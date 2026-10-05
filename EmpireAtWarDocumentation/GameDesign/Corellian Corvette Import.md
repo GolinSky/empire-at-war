@@ -19,7 +19,7 @@ tags:
 - User-approved movement conversion: speed `2.45 × 10 = 24.5 units/s`; yaw `1.25 × 10 = 12.5°/s`.
 - Provisional acceleration `24°/s²`; bank `15°`; hull length `30 units`; size `12.72498 × 10.07087 × 30`; radius `17`; radar `175`; height tier `6` / Y `80`.
 - Power to Engines: active `20 s` → recovery `50 s`; speed `×2`, weapon delay `×3`, shield regeneration `×0`; damage unchanged. Cannot cancel; AI use `Escape`.
-- Eight `WeaponType.Laser` mounts, IDs `0..7`, mapped one-to-one to `MuzzleA_00..07`; all follow the banking body. No separately destructible systems or hangar.
+- Eight `WeaponType.Laser` mounts, IDs `0..7`, mapped one-to-one to `MuzzleA_00..07`; all follow the banking body. No engine/shield hardpoints or hangar.
 - Shared Laser profile unchanged: damage `6`, three-shot salvo, interval `0.1 s`, reload `1.5 s`, range `100`. Laser damage multipliers: fighter/bomber `1.5`, frigate `0.5`, capital `0.25`. Weapon tuning and `360°` arcs are project choices.
 
 ## Implementation
@@ -33,8 +33,9 @@ tags:
 - All mappings saved: Rebel roster, ship data, view/data asset mappings, existing View/Data Addressables groups, own reinforcement preview, roster/HUD/tooltip sprite, matchups, future icon generation and ability audio.
 
 ## Decision
-- Chosen: existing hull-only corvette health path and shared Laser combat profile; no new combat logic.
-- Why: vanilla corvette uses whole-hull targeting; eight source muzzles exactly match the supplied weapon count.
+- Chosen: shared Laser combat profile; no new combat logic. Eight source muzzles match the supplied weapon count.
+- Hardpoints (2026-10-05, user request): all eight Laser mounts are targetable `Weapon` hardpoints in `HealthComponent.ShipUnits`, `160` HP each, `hullDamageMultiplier 1`, destroyed explosion on. Deviates from vanilla `HARDPOINTS.XML` (`Is_Targetable No`).
+- Attack range = radar `Range` `175` (`useWeaponDamageRange` removed project-wide 2026-10-05). Play Mode: destroys a C-9979 at ~`140` units.
 - Avoid: changing shared engine-boost balance for other ships, enabling authored hidden effect helpers, donor ship registrations or inherited geometry references.
 
 ## Verification

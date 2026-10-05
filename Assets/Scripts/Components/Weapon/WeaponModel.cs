@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
-using System;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -23,14 +22,6 @@ namespace EmpireAtWar.Components.Weapon
         public void SetAttackRange(float range)
         {
             OptimalAttackRange = range;
-        }
-
-        public void SetOptimalAttackRange(IEnumerable<float> ranges)
-        {
-            float maxAttackDistance = 0f;
-            foreach (float range in ranges)
-                maxAttackDistance = Math.Max(maxAttackDistance, range);
-            OptimalAttackRange = maxAttackDistance * 0.5f;
         }
     }
 }

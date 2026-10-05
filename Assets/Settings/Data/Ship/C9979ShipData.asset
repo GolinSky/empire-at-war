@@ -34,7 +34,10 @@ MonoBehaviour:
   <ShieldDangerStateRange>k__BackingField:
     <Min>k__BackingField: 0.7
     <Max>k__BackingField: 0.9
-  hardPointHealth: []
+  hardPointHealth:
+  - hardPointType: 0
+    health: 160
+    hullDamageMultiplier: 1
   <Range>k__BackingField: 112.5
   <Delay>k__BackingField: 0.25
   abilities: 

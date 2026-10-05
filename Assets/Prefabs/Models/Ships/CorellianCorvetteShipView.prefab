@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
@@ -714,7 +714,15 @@ MonoBehaviour:
   ionFieldBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 6.6806145, y: 5.2872076, z: 15.75}
-  <ShipUnits>k__BackingField: []
+  <ShipUnits>k__BackingField:
+  - {fileID: 7101288472067677479}
+  - {fileID: 9106320891396340252}
+  - {fileID: 4683839651180028799}
+  - {fileID: 6324063917991992867}
+  - {fileID: 5657904625241908718}
+  - {fileID: 7452769209951022049}
+  - {fileID: 127721561644855024}
+  - {fileID: 6338819259485000777}
 --- !u!114 &4150898646505647277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -801,7 +809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
@@ -863,7 +871,6 @@ MonoBehaviour:
   - {fileID: 7452769209951022049}
   - {fileID: 127721561644855024}
   - {fileID: 6338819259485000777}
-  useWeaponDamageRange: 1
 --- !u!1 &7703917796130669250
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,7 +915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
@@ -2093,7 +2100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6

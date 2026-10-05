@@ -41,6 +41,7 @@ tags:
 - Weapon damage -50% is a provisional project choice matching the user's requested firepower tradeoff. Vanilla XML has weapon-delay ×1 and no direct damage penalty.
 - Avoid changing the shared `BoostShieldPower` definition; other ships retain their settings.
 - No hangar, shield-generator hardpoint or additional weapon batteries.
+- Attack range = radar `Range` `500` (`useWeaponDamageRange` removed project-wide 2026-10-05; it capped hardpoints at `50`). Play Mode: damages a Patrol Frigate at `250` units.
 
 ## Implementation
 

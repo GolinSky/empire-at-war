@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
@@ -604,7 +604,11 @@ MonoBehaviour:
   ionFieldBounds:
     m_Center: {x: 0.0000000023520705, y: 0.0000000040745363, z: 0}
     m_Extent: {x: 0.97822344, y: 1.1520336, z: 10.500001}
-  <ShipUnits>k__BackingField: []
+  <ShipUnits>k__BackingField:
+  - {fileID: 5697200022859796242}
+  - {fileID: 9150785772394284087}
+  - {fileID: 486078332435444740}
+  - {fileID: 3399428037646888758}
 --- !u!114 &4150898646505647277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -692,7 +696,6 @@ MonoBehaviour:
   - {fileID: 9150785772394284087}
   - {fileID: 486078332435444740}
   - {fileID: 3399428037646888758}
-  useWeaponDamageRange: 1
 --- !u!1 &8327578505235340560
 GameObject:
   m_ObjectHideFlags: 0
@@ -1869,7 +1872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
+  spawnDestroyedExplosion: 1
   unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1

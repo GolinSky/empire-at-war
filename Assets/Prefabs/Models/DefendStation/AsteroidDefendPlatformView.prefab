@@ -984,6 +984,8 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
+  revealRadius: 0
+  staysRevealedOnceSeen: 0
 --- !u!114 &1741931594841422934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5070,6 +5072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 0
 --- !u!1 &2601470764313617780
@@ -15935,7 +15938,6 @@ MonoBehaviour:
   - {fileID: 3904722521049085063}
   - {fileID: 4187391721111521243}
   - {fileID: 3007545869417895737}
-  useWeaponDamageRange: 1
 --- !u!1001 &1052237977207897725
 PrefabInstance:
   m_ObjectHideFlags: 0

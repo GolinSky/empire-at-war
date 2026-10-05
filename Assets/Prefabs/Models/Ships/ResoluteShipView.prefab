@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
@@ -97,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 4
   <Id>k__BackingField: 17
 --- !u!1 &882918847468188300
@@ -144,6 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
@@ -196,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
@@ -248,6 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
@@ -300,6 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
   yAxisRange:
@@ -352,6 +358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
@@ -404,6 +411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
@@ -1641,6 +1649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
@@ -1964,6 +1973,8 @@ MonoBehaviour:
   - {fileID: 6417737377622744439}
   - {fileID: 822917991191530380}
   - {fileID: 2892213579736504004}
+  revealRadius: 0
+  staysRevealedOnceSeen: 0
 --- !u!114 &7469138526702055200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2029,6 +2040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
@@ -2081,6 +2093,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
@@ -2133,6 +2146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
@@ -2345,6 +2359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
@@ -2397,6 +2412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 16
 --- !u!1 &6696049592693764896
@@ -2444,6 +2460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
@@ -2496,6 +2513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 2
   <Id>k__BackingField: 15
 --- !u!1 &7648094566829919587
@@ -2543,6 +2561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:
@@ -2626,6 +2645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnDestroyedExplosion: 1
+  unlockLevel: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
@@ -2693,7 +2713,6 @@ MonoBehaviour:
   - {fileID: 6467999925488969112}
   - {fileID: 7305492475153598623}
   - {fileID: 2972332168292140794}
-  useWeaponDamageRange: 0
 --- !u!1 &9130461819773229114
 GameObject:
   m_ObjectHideFlags: 0
