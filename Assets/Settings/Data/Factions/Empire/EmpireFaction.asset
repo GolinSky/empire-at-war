@@ -14,9 +14,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Factions.FactionDefinition
   factionType: 3
   ships:
-    keyValue: []
+    keyValue:
+    - key: 200
+      value:
+        matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
+        description: Imperial heavy cruiser built to destroy corvettes and frigates.
+          Two enhanced turbolaser batteries and one ion cannon battery; six targetable
+          hardpoints. Boost Weapon Power doubles fire rate for 20 seconds, halves
+          speed and stops shield recovery; 60-second cooldown.
+        role: Heavy cruiser / Anti-corvette / Anti-frigate
+        iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
+        isHero: 0
+        <Name>k__BackingField: Victory-class Star Destroyer
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 4200
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 552ac5636e4f65c44994f1337d051b8a,
+          type: 3}
   squadrons:
-    keyValue: []
+    keyValue:
+    - key: 200
+      value:
+        matchups: {fileID: 11400000, guid: 42b9d7cba8dab804589da64ac8ce570f, type: 2}
+        description: 'Imperial squadron: seven TIE Fighters, each with 50 hull, no
+          shields and two laser cannons. Screens carriers against fighters and bombers;
+          vulnerable to anti-fighter corvettes.'
+        role: "Fighter \xB7 Interceptor"
+        iconKey: 7c8d76c748665eb4f8c008d83b753703:21300000
+        isHero: 0
+        <Name>k__BackingField: TIE Fighter Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 300
+        <BuildTime>k__BackingField: 10
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 7c8d76c748665eb4f8c008d83b753703,
+          type: 3}
+    - key: 201
+      value:
+        matchups: {fileID: 11400000, guid: 7c52c799b307ef24ab481ca1f82ccfb9, type: 2}
+        description: 'Imperial squadron: four TIE Bombers, each with 60 hull, no
+          shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
+          vulnerable to fighters and anti-fighter weapons.'
+        role: Bomber / Anti-ship
+        iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
+        isHero: 0
+        <Name>k__BackingField: TIE Bomber Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 550
+        <BuildTime>k__BackingField: 17
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 6deef1e660f9c3a41b4d343f91418382,
+          type: 3}
   research:
     keyValue:
     - key: 0

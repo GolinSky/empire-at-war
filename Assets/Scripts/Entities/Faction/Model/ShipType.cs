@@ -28,5 +28,8 @@ namespace EmpireAtWar.Models.Factions
         C9979 = 107,
         Dispatcher = 108,
 
+        //empire
+        Victory = 200,
+
     }
 }

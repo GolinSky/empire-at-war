@@ -15,5 +15,9 @@ namespace EmpireAtWar.Entities.Squadrons
         Belbullab22 = 100,
         DroidBomber = 101,
         Vulture = 102,
+
+        //empire
+        TIEFighter = 200,
+        TIEBomber = 201,
     }
 }
