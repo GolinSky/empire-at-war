@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         VictoryBoostWeaponPower = 12,
         NebulonBBoostShieldStrength = 13,
         CorellianCorvettePowerToEngines = 14,
+        MonCalCruiserPowerToShields = 15,
         HomeOneConcentrateFire = 16,
         HomeOnePowerToShields = 17,
         LockSFoils = 18

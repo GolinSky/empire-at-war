@@ -34,6 +34,7 @@ namespace EmpireAtWar.Models.Factions
         //rebellion
         NebulonB = 300,
         CorellianCorvette = 301,
+        MonCalCruiser = 302,
         HomeOne = 303,
 
     }

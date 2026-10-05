@@ -53,6 +53,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
           type: 3}
+    - key: 302
+      value:
+        matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
+        description: Heavy Rebel capital ship with 8,500 hull, 2,500 shields and
+          70/s shield regeneration. Four enhanced turbolaser, four dual heavy turbolaser,
+          two turbolaser and two ion cannon batteries and targetable engines. No
+          targetable shield generator. Power to Shields boosts regeneration tenfold
+          for 15 seconds, reduces speed by 20% and weapon damage by 50%; 40-second
+          cooldown. Strong against frigates; vulnerable to bombers.
+        role: Heavy capital ship / Anti-frigate
+        iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
+        isHero: 0
+        <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 4500
+        <BuildTime>k__BackingField: 30
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: b95f55f2e2f204f42a94f0c44c5baa85,
+          type: 3}
     - key: 303
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}

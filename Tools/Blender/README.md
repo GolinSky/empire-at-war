@@ -1,5 +1,17 @@
 # Blender / Rothana conversion
 
+## Mon Calamari Star Cruiser / MC80 — 2026-10-05
+
+- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/Mon Calamari Cruiser Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_MONCALCRUISER.ALO`, damaged `_D.ALO` and six `HP00_*` pod variants; original ALO/DDS hashes unchanged.
+- Stage textures with `uv run --with pillow python Tools/Blender/prepare_mon_cal_cruiser_textures.py`. Import each variant into its own `<VARIANT> Source` scene in Blender 3.6.23; run `export_mon_cal_cruiser.py` through MCP with its matching `VARIANT`. Complete ALAMO helper cleanup only on the new scene. No root repair: main/damaged/pods already retain 71/79/77 bones.
+- Eight exported models preserve 47 meshes and all source triangle corners/UVs/parents. Main/damaged triangles 7,290/4,177; pod totals F-L/F-R/M-L/M-R/B-L/B-R 52/58/93/130/221/272. Blender max geometry error 0.000070222 source units; Unity corner/bone error ≤0.000002416/0.000001527 project units. Eight DDS→PNG conversions are pixel-identical.
+- Type-first `RebellionShips/MonCalCruiser` art folders; own visual/gameplay/placement/damaged wreck assets. Attach pod roots to the model using the main `HP00_*` local positions; do not inherit scaled FBX bone transforms. Centered size 86.52927 × 23.62375 × 160 units, bow +Z/up +Y, gameplay roots scale 1. Hull-alpha inverse team mask; all eight living/wreck palettes rendered, blue/green inspected. Transparent actual-model icon/silhouette 512 × 512, uncropped.
+- Rebel `MonCalCruiser = 302`: latest user-approved hull/shields/regen 8,500/2,500/70 per second; speed/turn/acceleration 15/6/6; cost/build/tech/population 4,500/30 s/5/4. Four `HeavyTurboLaser`, four `DualHeavyTurboLaser`, two `TurboLaser`, two `IonCannon` and engines: 13 IDs, no shield generator or hangar. Added mount names: `Turbolaser_FL/FR`, `DualHeavyTurbolaser_ML/MR/BL2/BR2`. All weapon/health/fog bindings bank together. Length 160, radar 500, bank 5°, hardpoint health 400 and queue limit 10 remain project choices.
+- Dedicated `MonCalCruiserPowerToShields = 15`: active 15 s, recovery 40 s, speed ×0.8, damage ×0.5 and regen ×10 → 700/s. Registrations and ability audio saved; shared boost tuning unchanged.
+- Damaged hull/shadow use scale-compensated `BakeMesh(..., true)` and fresh static vertex/normal/tangent/UV/index arrays. Update existing mesh arrays directly to refresh GPU data while retaining GUIDs. Source girder cutouts use opt-in `_ALPHATEST_ON` in all wreck shader passes; opaque materials retain the existing variant.
+- `Temp/MonCalCruiserImport/` holds packed blends, exports, scripts, reports and previews. Original integration scripts retain initial tuning; saved assets include later fixes. Saved references/import/C#/shader inspections pass. No automated tests or Play Mode run; runtime/balance acceptance remains unverified. Source ALA/shader/proxy animation is outside this static conversion.
+- Unity compilation is up to date with zero errors at commit preparation; the concurrent `TeamColorView` error reported during import is resolved. This import did not modify `TeamColorView`.
+
 ## Corellian Corvette / CR90 — 2026-10-05
 
 - Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/Corellian Corvette Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_CORVETTE.ALO`; dedicated wreck `RV_CORVETTE_D.ALO`. Original ALO/DDS hashes unchanged.

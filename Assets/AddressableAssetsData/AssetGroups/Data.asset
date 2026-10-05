@@ -195,6 +195,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cdad4e759db14fe49a913c830277b8cf
+    m_Address: MonCalCruiserShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cdb94166dd02cbf4e96265875ea992ce
     m_Address: TooltipSettings
     m_ReadOnly: 0
