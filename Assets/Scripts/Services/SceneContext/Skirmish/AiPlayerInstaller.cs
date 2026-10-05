@@ -37,12 +37,7 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();
             Container.Bind<IEnemyStructurePlacementService>().To<EnemyStructurePlacementService>().AsSingle()
-                .WithArguments(AssetService.LoadComponent<BoxCollider>(Owner.Faction + "SpaceStationView"),
-                    new[]
-                    {
-                        AssetService.LoadComponent<BoxCollider>("DefendPlatformView"),
-                        AssetService.LoadComponent<BoxCollider>("MiningFacilityView")
-                    });
+                .WithArguments(AssetService.LoadComponent<BoxCollider>(Owner.Faction + "SpaceStationView"));
             Container.BindInterfacesExt<EnemyUnitCommander>();
             Container.BindInterfacesExt<EnemyShipAbilityController>();
             Container.Bind<SuperWeaponModel>().AsSingle();

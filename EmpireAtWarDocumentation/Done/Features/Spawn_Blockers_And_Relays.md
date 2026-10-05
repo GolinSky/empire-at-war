@@ -1,7 +1,8 @@
 ---
 category: Features
-status: in-progress
+status: done
 created: 2026-10-05
+completed: 2026-10-05
 ---
 # Spawn Blockers and Relays
 
@@ -55,9 +56,17 @@ created: 2026-10-05
 - `HuntState` / `SquadronTargetSelector`: only the human's units are fog-limited (unchanged), now by own-side vision.
 - Overlay is raster (≈35 units/cell on the largest map); the rule check is exact.
 
-## TODO
-- Play acceptance: relay capture flips blocker, overlay colours/alignment, AI deploys near held relays, cheat spawn.
-- Radius tuning in play.
-- Relay art (placeholder primitive mesh).
-- Structure collision: player uses preview triggers, AI uses `CheckSphere` — not yet unified.
-- Pre-existing EditMode failures (35) unrelated to this plan.
+- [x] Phase 5 — Structure collision unified: `IStructureSpawnClearance` / `StructureSpawnClearance` (radius from `DefendPlatformView` + `MiningFacilityView` colliders, `CheckSphere` on Unit+Obstacle); `IReinforcementSpawnRule.CanSpawnStructure` = open + outside relay rings/capture sites (with clearance) + clear. Player structure placements and `EnemyStructurePlacementService` both use it; `StructurePlacementArea` removed.
+- [x] Phase 6 — Relay art: `Relay/RelayModel` uses unused `SpaceStationModular.fbx` + its 6 slot materials, ×5 (≈90 units wide) inside the 270 capture ring.
+- [x] Phase 7 — Play Mode acceptance (Coruscant, Small, Human vs AI Medium):
+  - Blockers live: stations 1200 (owners P0/P1), 2 neutral relays 900, 124 small + 9 large asteroid blockers, AI mining facilities 400.
+  - Relays captured by AI ships → owner + blocker flipped to P1; human blocked there; AI open only where it has vision.
+  - AI deployed ships and built mining through the rule; `TryGetRandomSpawnPosition` / home spawn 50/50 for both sides.
+  - Overlay: green open area + red relay block circle; alpha lowered to open `0.05` / blocked `0.08` (0.18 was too bright in linear space).
+  - Human visible ≈11.6% / open ≈9.0% of the small map at start.
+  - No errors from this feature; exit showed pre-existing UI teardown exceptions (`EconomyUiController`, `CoreGameUiController` → see Scene Teardown bug).
+- Final EditMode 1019: 982 pass / 37 fail; only new failures are `DispatcherShipView` wreck tests (parallel import).
+
+## Notes
+- Human home anchor (906 from station) sits outside station vision 900; home spawn still succeeds by sampling the visible part. Large maps (`DefaultZoneGap 360`) shrink that overlap — watch AI fallback if no relay is held.
+- Radii remain provisional; tune with real matches.

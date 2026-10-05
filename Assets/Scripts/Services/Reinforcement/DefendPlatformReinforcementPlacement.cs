@@ -10,7 +10,7 @@ namespace EmpireAtWar.Services.Reinforcement
 {
     public sealed class DefendPlatformReinforcementPlacement : IReinforcementPlacement
     {
-        private readonly StructurePlacementArea _area;
+        private readonly IReinforcementSpawnRule _spawnRule;
         private readonly ReinforcementPreviewFactory _previewFactory;
         private readonly PlayerFactionModel _playerFactionModel;
         private readonly DefendPlatformFactory _defendPlatformFactory;
@@ -19,7 +19,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly DefendPlatformType _platformType;
 
         public DefendPlatformReinforcementPlacement(
-            StructurePlacementArea area,
+            IReinforcementSpawnRule spawnRule,
             ReinforcementPreviewFactory previewFactory,
             PlayerFactionModel playerFactionModel,
             DefendPlatformFactory defendPlatformFactory,
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Services.Reinforcement
             PlayerId owner,
             DefendPlatformType platformType)
         {
-            _area = area;
+            _spawnRule = spawnRule;
             _previewFactory = previewFactory;
             _playerFactionModel = playerFactionModel;
             _defendPlatformFactory = defendPlatformFactory;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab);
 
-        public bool IsPositionValid(Vector3 position) => _area.Contains(position);
+        public bool IsPositionValid(Vector3 position) => _spawnRule.CanSpawnStructure(_owner, position);
 
         public void Spawn(Vector3 position)
         {
