@@ -6,7 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly IPlayerRelations _relations;
         private IEntity _target;
 
@@ -34,17 +34,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            IFogOfWarSystem fogOfWarSystem, IPlayerRelations relations, ILocalPlayer localPlayer,
+            IVisionService visionService, IPlayerRelations relations, ILocalPlayer localPlayer,
             UnitOrderSettings settings, PlayerId side)
         {
             _relations = relations;
-            // Only the human's ships are limited to what the fog of war reveals.
+            // Only the human's ships are limited to what their side can see.
             _respectsFog = localPlayer.IsLocal(side);
             _movement = movement;
             _weapon = weapon;
             _attackDataFactory = attackDataFactory;
             _locator = locator;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _settings = settings;
             _side = side;
         }
@@ -91,7 +91,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_respectsFog && _fogOfWarSystem.GetVisibilityAtPosition(position) < 0.5f)
+                if (_respectsFog && !_visionService.IsVisible(_side, position))
                     continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
                 if (distance >= nearest) continue;

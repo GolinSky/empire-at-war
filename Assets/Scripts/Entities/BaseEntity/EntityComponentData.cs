@@ -4,13 +4,14 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData
+    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData, ISpawnBlockerData
     {
         [Header("Destruction Settings")]
         [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
@@ -33,5 +34,9 @@ namespace EmpireAtWar.Entities.BaseEntity
         [Header("Vision Settings")]
         [Tooltip("Fog of war radius this structure reveals for its team.")]
         [field: SerializeField, Min(0f)] public float VisionRange { get; private set; }
+
+        [Header("Spawn Block Settings")]
+        [Tooltip("Hostile reinforcements cannot arrive within this radius of the structure.")]
+        [field: SerializeField, Min(0f)] public float SpawnBlockRadius { get; private set; }
     }
 }

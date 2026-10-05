@@ -14,7 +14,7 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Entities.Tooltip
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly IUiHitTest _ui;
         private readonly IPointerGestures _gestures;
         private readonly ITooltipService _tooltipService;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly ILocalPlayer _local;
         private readonly IHudVisibilityObserver _hud;
         private readonly IHardPointHoverObserver _hardPointHover;
@@ -44,13 +44,13 @@ namespace EmpireAtWar.Entities.Tooltip
         private bool CanHover => _hud.IsHudVisible && !_dragging && !_ui.IsOverUi(_pointerInput.Position);
 
         public WorldTooltipPresenter(ISelectionQuery query, IPointerInput pointerInput, IUiHitTest ui,
-            IPointerGestures gestures, ITooltipService tooltipService, IFogOfWarSystem fogOfWarSystem,
+            IPointerGestures gestures, ITooltipService tooltipService, IVisionService visionService,
             ILocalPlayer local, IHudVisibilityObserver hud, IHardPointHoverObserver hardPointHover,
             ICaptureSitesSystem sites, ICameraService cameraService, HardPointOverlayData hardPointData,
             INotifier<BattleMap> battleMap)
         {
             _query = query; _pointerInput = pointerInput; _ui = ui; _gestures = gestures; _tooltipService = tooltipService;
-            _fogOfWarSystem = fogOfWarSystem; _local = local; _hud = hud;
+            _visionService = visionService; _local = local; _hud = hud;
             _hardPointHover = hardPointHover; _hardPointData = hardPointData; _sites = sites; _cameraService = cameraService;
             _battleMap = battleMap;
         }
@@ -104,12 +104,12 @@ namespace EmpireAtWar.Entities.Tooltip
                     return;
                 }
                 RaycastHit hit = _cameraService.ScreenPointToRay(point);
-                if (hit.collider != null && !_fogOfWarSystem.IsHidden(hit.point))
+                if (hit.collider != null && _visionService.IsVisible(_local.Id, hit.point))
                     foreach (IMiniMapObstacleSource obstacle in _obstacles)
                     {
                         if (!obstacle.WorldBounds.Contains(hit.point)) continue;
                         _handle = _tooltipService.Show(new TooltipContentProvider(this, obstacle,
-                            () => CanHover && !_fogOfWarSystem.IsHidden(hit.point),
+                            () => CanHover && _visionService.IsVisible(_local.Id, hit.point),
                             () => new TooltipContent(title: "Obstacle", description: "Blocks movement and prevents move orders into its occupied area.")), anchor);
                         return;
                     }
@@ -118,7 +118,7 @@ namespace EmpireAtWar.Entities.Tooltip
         }
 
         private bool IsVisible(IEntity entity) => !entity.HealthModel.IsDestroyed &&
-            (_local.IsFriendly(entity.Owner) || !_fogOfWarSystem.IsHidden(entity.GetFacade<IEntityTransformFacade>().Transform.position));
+            (_local.IsFriendly(entity.Owner) || _visionService.IsVisible(_local.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position));
 
         private TooltipContent BuildHardPoint(IEntity entity, int id)
         {

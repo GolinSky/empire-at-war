@@ -4,7 +4,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
 using UnityEngine.UI;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
@@ -18,7 +18,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         IInitializable, ILateTickable, ILateDisposable
     {
         private ICameraService _cameraService;
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
 
         [SerializeField] private Canvas iconCanvas;
@@ -47,13 +47,13 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private bool _isReleased;
 
         [Inject]
-        private void Construct(ICameraService cameraService, IFogOfWarSystem fogOfWarSystem, ILocalPlayer localPlayer,
+        private void Construct(ICameraService cameraService, IVisionService visionService, ILocalPlayer localPlayer,
             SelectionModel model, CameraData cameraData, PlayerId owner)
         {
             SetModel(model);
             _cameraService = cameraService;
             _cameraData = cameraData;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _owner = owner;
             _localPlayer = localPlayer;
         }
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
 
             _anchor = Vector3.Lerp(_anchor, transform.position, 1f - Mathf.Exp(-followSharpness * Time.deltaTime));
-            iconCanvas.enabled = _localPlayer.IsFriendly(_owner) || !_fogOfWarSystem.IsHidden(transform.position);
+            iconCanvas.enabled = _localPlayer.IsFriendly(_owner) || _visionService.IsVisible(_localPlayer.Id, transform.position);
             if (!iconCanvas.enabled)
             {
                 return;

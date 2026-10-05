@@ -11,7 +11,7 @@ using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Services.CaptureSites
@@ -23,12 +23,9 @@ namespace EmpireAtWar.Services.CaptureSites
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSitesSystem, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>
     {
-        // Explored fog retains 0.35 visibility; site status requires current vision.
-        private const float MINIMUM_SITE_VISIBILITY = 0.5f;
-
         private IShipService _shipService;
         private ISquadronRegistry _squadronRegistry;
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
         private ICameraService _cameraService;
         private IPointerInput _pointerInput;
         private IPointerGestures _gestures;
@@ -52,7 +49,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private void Construct(
             IShipService shipService,
             ISquadronRegistry squadronRegistry,
-            IFogOfWarSystem fogOfWarSystem,
+            IVisionService visionService,
             ICameraService cameraService,
             IPointerInput pointerInput,
             IPointerGestures gestures,
@@ -69,7 +66,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _cameraService = cameraService;
             _pointerInput = pointerInput;
             _gestures = gestures;
@@ -133,7 +130,7 @@ namespace EmpireAtWar.Services.CaptureSites
                     GetBuilder(site.Owner).Build(site.FacilityType, site.FacilityPosition, site.ReleaseFacility);
                 }
 
-                bool isVisible = !_fogOfWarSystem.IsHidden(site.Center, MINIMUM_SITE_VISIBILITY);
+                bool isVisible = _visionService.IsVisible(_localPlayer.Id, site.Center);
                 if (isVisible)
                 {
                     // Out of vision the ring keeps its last seen owner.

@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
 using Zenject;
 
@@ -32,6 +33,7 @@ namespace EmpireAtWar.SceneContext.Skirmish
                 .FromInstance(captureSitesSystem)
                 .AsSingle();
             Container.BindInterfacesTo<PlanetSpawner>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<AsteroidSpawnBlockers>().AsSingle().NonLazy();
         }
     }
 }

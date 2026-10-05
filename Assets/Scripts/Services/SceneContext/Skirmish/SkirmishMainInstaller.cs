@@ -42,6 +42,10 @@ using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Services.SpawnBlocking;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Views.SpawnArea;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Mvc;
@@ -52,6 +56,7 @@ using Zenject;
 public class SkirmishMainInstaller : MonoInstaller
 {
     [SerializeField] private FogOfWarSystem fogOfWarSystem;
+    [SerializeField] private SpawnAreaOverlay spawnAreaOverlay;
     [SerializeField] private ReinforcementZoneData reinforcementZoneData;
     [SerializeField] private UnitOrderSettings unitOrderSettings;
     [SerializeField] private TeamColorPalette teamColorPalette;
@@ -132,6 +137,7 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<StationFacingService>().AsSingle().NonLazy();
         Container.BindInterfacesExt<ShipSpawnClearance>();
         Container.BindInterfacesExt<ShipSpawnPoints>();
+        Container.Bind<IReinforcementSpawnRule>().To<ReinforcementSpawnRule>().AsSingle();
         Container.BindModel<MiniMapData>(AssetService);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()
@@ -164,7 +170,10 @@ public class SkirmishMainInstaller : MonoInstaller
         Container
             .BindInterfacesExt<UnitRequestFactory>();
 
+        Container.Bind<IVisionService>().To<VisionService>().AsSingle();
+        Container.Bind<ISpawnBlockerService>().To<SpawnBlockerService>().AsSingle();
         Container.BindInterfacesAndSelfTo<FogOfWarSystem>().FromInstance(fogOfWarSystem).AsSingle();
+        Container.BindInterfacesTo<SpawnAreaOverlay>().FromInstance(spawnAreaOverlay).AsSingle();
 
     }
 

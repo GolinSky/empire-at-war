@@ -8,6 +8,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Views.Reinforcement;
+using EmpireAtWar.Views.SpawnArea;
 using UnityEngine;
 using Zenject;
 
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ICameraService _cameraService;
         private readonly IStationRegistry _stationRegistry;
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
+        private readonly ISpawnAreaOverlay _spawnAreaOverlay;
         private IDisposable _placementLock;
         private IReinforcementPlacement _placement;
 
@@ -45,6 +47,7 @@ namespace EmpireAtWar.Services.Reinforcement
             ICameraService cameraService,
             IStationRegistry stationRegistry,
             INotifier<BattleResult> battleVictoryNotifier,
+            ISpawnAreaOverlay spawnAreaOverlay,
             ReinforcementModel model,
             ReinforcementPlacementFactory placementFactory,
             PlayerSlot owner)
@@ -57,6 +60,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _cameraService = cameraService;
             _stationRegistry = stationRegistry;
             _battleVictoryNotifier = battleVictoryNotifier;
+            _spawnAreaOverlay = spawnAreaOverlay;
         }
 
         public void Initialize()
@@ -131,6 +135,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _placementLock = _inputLock.Acquire();
             _model.IsTrySpawning = true;
             _preview = placement.CreatePreview();
+            _spawnAreaOverlay.Show(_owner.Id);
         }
 
         private void CancelPlacement()
@@ -142,6 +147,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             _preview.Destroy();
+            _spawnAreaOverlay.Hide();
             _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(false);
         }
@@ -164,6 +170,7 @@ namespace EmpireAtWar.Services.Reinforcement
             }
 
             _preview.Destroy();
+            _spawnAreaOverlay.Hide();
             _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(canSpawn);
         }

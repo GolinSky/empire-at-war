@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.CaptureSites;
@@ -5,8 +6,11 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
+using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -17,93 +21,111 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
-        private const float HULL_RADIUS = 5f;
+        private static readonly Vector3 HOME = new Vector3(-3000f, 0f, 0f);
+        private static readonly Vector3 RELAY = new Vector3(3000f, 0f, 0f);
 
-        [TestCase(40f, true)]
-        [TestCase(1f, false)]
-        public void EnemySpawn_PrefersCapturedZoneAndFallsBackWhenShipDoesNotFit(
-            float capturedRadius,
-            bool usesCapturedZone)
+        private GameObject _root;
+        private ReinforcementZoneData _data;
+        private PlayerRoster _roster;
+
+        [SetUp]
+        public void SetUp()
         {
-            GameObject root = new GameObject(nameof(ShipSpawnPointsTests));
-            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-            try
-            {
-                ReinforcementZoneView home = CreateZone(
-                    root.transform, TestPlayers.Enemy, false, new Vector3(160f, 0f, -170f));
-                ReinforcementZoneView captured = CreateZone(
-                    root.transform, TestPlayers.Enemy, true, Vector3.zero);
-                SetField(captured, "_radius", capturedRadius);
-                PlayerRoster roster = TestPlayers.CreateTeamGame();
-                ShipSpawnPoints spawnPoints = new ShipSpawnPoints(
-                    CreateZoneSource(root, data, roster, home, captured), new OpenClearance(), roster);
+            _root = new GameObject(nameof(ShipSpawnPointsTests));
+            _data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            _roster = TestPlayers.CreateTeamGame();
+        }
 
-                bool found = spawnPoints.TryGetRandomSpawnPosition(
-                    TestPlayers.Enemy, ShipType.Arquitens, out Vector3 position);
-
-                Assert.That(found, Is.True);
-                ReinforcementZoneView expectedZone = usesCapturedZone ? captured : home;
-                Assert.That(Vector3.Distance(position, expectedZone.Center),
-                    Is.LessThanOrEqualTo(expectedZone.Radius - HULL_RADIUS));
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-                Object.DestroyImmediate(data);
-            }
+        [TearDown]
+        public void TearDown()
+        {
+            Object.DestroyImmediate(_root);
+            Object.DestroyImmediate(_data);
         }
 
         [Test]
-        public void Spawn_AllowsAlliedZonesAndRejectsHostileZones()
+        public void RandomSpawn_PrefersRelayHeldByOwnerTeam()
         {
-            GameObject root = new GameObject(nameof(ShipSpawnPointsTests));
-            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-            try
-            {
-                ReinforcementZoneView allied = CreateZone(
-                    root.transform, TestPlayers.Ally, false, Vector3.zero);
-                PlayerRoster roster = TestPlayers.CreateTeamGame();
-                ShipSpawnPoints spawnPoints = new ShipSpawnPoints(
-                    CreateZoneSource(root, data, roster, allied), new OpenClearance(), roster);
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere());
 
-                Assert.That(spawnPoints.TryGetRandomSpawnPosition(
-                    TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
-                Assert.That(Vector3.Distance(position, allied.Center),
-                    Is.LessThanOrEqualTo(allied.Radius));
-                Assert.That(spawnPoints.TryGetRandomSpawnPosition(
-                    TestPlayers.Enemy, ShipType.Arquitens, out _), Is.False);
-            }
-            finally
-            {
-                Object.DestroyImmediate(root);
-                Object.DestroyImmediate(data);
-            }
+            Assert.That(spawnPoints.TryGetRandomSpawnPosition(
+                TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, RELAY), Is.LessThanOrEqualTo(_data.RelaySpawnBlockRadius));
         }
 
-        private static ReinforcementZonesSystem CreateZoneSource(GameObject root,
-            ReinforcementZoneData data, PlayerRoster roster, params ReinforcementZoneView[] zones)
+        [Test]
+        public void RandomSpawn_RelayClosed_FallsBackToHome()
         {
-            ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
-            SetField(system, "_data", data);
-            SetField(system, "_playerRoster", roster);
-            SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Human,
+                new OpenNear(HOME, _data.HomeAreaRadius));
+
+            Assert.That(spawnPoints.TryGetRandomSpawnPosition(
+                TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, HOME), Is.LessThanOrEqualTo(_data.HomeAreaRadius));
+        }
+
+        [Test]
+        public void RandomSpawn_HostileRelay_IsNeverAnAnchor()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Enemy, new OpenEverywhere());
+
+            Assert.That(spawnPoints.TryGetRandomSpawnPosition(
+                TestPlayers.Human, ShipType.Arquitens, out Vector3 position), Is.True);
+            Assert.That(PlanarDistance(position, HOME), Is.LessThanOrEqualTo(_data.HomeAreaRadius));
+        }
+
+        [Test]
+        public void RandomSpawn_NothingOpen_ReturnsFalse()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Human, new OpenNear(Vector3.zero, 1f));
+
+            Assert.That(spawnPoints.TryGetRandomSpawnPosition(
+                TestPlayers.Human, ShipType.Arquitens, out _), Is.False);
+        }
+
+        [Test]
+        public void DefaultZoneSpawn_NoHomeForOwner_ReturnsFalse()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Human, new OpenEverywhere());
+
+            Assert.That(spawnPoints.TryGetDefaultZoneSpawnPosition(
+                TestPlayers.SecondEnemy, ShipType.Arquitens, out _), Is.False);
+        }
+
+        private ShipSpawnPoints CreateSpawnPoints(PlayerId relayOwner, IReinforcementSpawnRule rule)
+        {
+            ReinforcementZoneView relay = CreateRelay(relayOwner, RELAY);
+            ReinforcementZonesSystem system = _root.AddComponent<ReinforcementZonesSystem>();
+            SetField(system, "_data", _data);
+            SetField(system, "_playerRoster", _roster);
+            SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(_roster));
+            SetField(system, "_spawnBlockerService", new SpawnBlockerService(_roster));
             system.UpdateState(new BattleMap(
-                layout: null,
-                zoneViews: zones,
+                layout: CreateLayout(new ZoneSpot(HOME, TestPlayers.Human, false),
+                    new ZoneSpot(RELAY, relayOwner, true)),
+                zoneViews: new[] { relay },
                 siteViews: System.Array.Empty<CaptureSiteView>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
                 stationObstacles: System.Array.Empty<StationObstacle>()));
-            return system;
+            return new ShipSpawnPoints(system, system, rule, _roster, _data);
         }
 
-        private static ReinforcementZoneView CreateZone(
-            Transform parent,
-            PlayerId owner,
-            bool isCapturable,
-            Vector3 center)
+        private static MapLayout CreateLayout(params ZoneSpot[] zones)
         {
-            GameObject gameObject = new GameObject($"{owner}Zone");
-            gameObject.transform.SetParent(parent);
+            return new MapLayout(
+                stationPositions: new Dictionary<PlayerId, Vector3>(),
+                zones: zones,
+                sites: System.Array.Empty<SiteSpot>(),
+                lanes: System.Array.Empty<MapLane>(),
+                fields: System.Array.Empty<AsteroidField>(),
+                sizeRange: new Vector2Range(),
+                planetPosition: Vector3.zero);
+        }
+
+        private ReinforcementZoneView CreateRelay(PlayerId owner, Vector3 center)
+        {
+            GameObject gameObject = new GameObject($"{owner}Relay");
+            gameObject.transform.SetParent(_root.transform);
             gameObject.transform.position = center;
             ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
             SetField(view, "sphereRenderer", gameObject.AddComponent<MeshRenderer>());
@@ -111,9 +133,12 @@ namespace EmpireAtWar.Tests.Editor
             captureUi.transform.SetParent(gameObject.transform);
             SetField(view, "captureCanvas", captureUi.AddComponent<Canvas>());
             SetField(view, "_startingOwner", owner);
-            SetField(view, "isCapturable", isCapturable);
+            SetField(view, "isCapturable", true);
             return view;
         }
+
+        private static float PlanarDistance(Vector3 first, Vector3 second) =>
+            new Vector2(first.x - second.x, first.z - second.z).magnitude;
 
         private static void SetField(object target, string fieldName, object value)
         {
@@ -122,19 +147,27 @@ namespace EmpireAtWar.Tests.Editor
             field.SetValue(target, value);
         }
 
-        private sealed class OpenClearance : IShipSpawnClearance
+        private sealed class OpenEverywhere : IReinforcementSpawnRule
         {
-            public float GetPlanarRadius(ShipType shipType) => HULL_RADIUS;
+            public bool IsOpen(PlayerId team, Vector3 position) => true;
 
-            public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => true;
+            public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => true;
+        }
 
-            public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)
+        private sealed class OpenNear : IReinforcementSpawnRule
+        {
+            private readonly Vector3 _center;
+            private readonly float _radius;
+
+            public OpenNear(Vector3 center, float radius)
             {
+                _center = center;
+                _radius = radius;
             }
 
-            public void ReleaseLanding(object ship)
-            {
-            }
+            public bool IsOpen(PlayerId team, Vector3 position) => PlanarDistance(position, _center) <= _radius;
+
+            public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => IsOpen(owner, position);
         }
     }
 }

@@ -38,6 +38,7 @@ MonoBehaviour:
     <Range>k__BackingField: 187.5
     <Delay>k__BackingField: 0.25
     <Distance>k__BackingField: 100
+    <SpawnBlockRadius>k__BackingField: 1200
   wrecks:
     keyValue:
     - key: 0

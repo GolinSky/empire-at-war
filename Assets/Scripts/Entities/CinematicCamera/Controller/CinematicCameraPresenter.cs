@@ -8,7 +8,7 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Utils;
 using UnityEngine;
-using ViewComponents;
+using EmpireAtWar.Services.Vision;
 using Zenject;
 using Random = System.Random;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointerInput;
         private readonly IEntityLocator _entityLocator;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IVisionService _visionService;
         private readonly INotifier<BattleState> _battleState;
         private readonly ILocalPlayer _localPlayer;
         private System.IDisposable _inputLockHandle;
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             IUiService uiService,
             IUiCancelRouter cancelRouter,
             IEntityLocator entityLocator,
-            IFogOfWarSystem fogOfWarSystem,
+            IVisionService visionService,
             INotifier<BattleState> battleState,
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
             _inputLock = inputLock;
             _pointerInput = pointerInput;
             _entityLocator = entityLocator;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _battleState = battleState;
             _localPlayer = localPlayer;
 
@@ -236,7 +236,7 @@ namespace EmpireAtWar.Entities.CinematicCamera.Controller
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_localPlayer.IsFriendly(entity.Owner) && _fogOfWarSystem.IsHidden(position))
+                if (!_localPlayer.IsFriendly(entity.Owner) && !_visionService.IsVisible(_localPlayer.Id, position))
                 {
                     continue;
                 }

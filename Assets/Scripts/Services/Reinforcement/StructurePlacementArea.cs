@@ -1,30 +1,33 @@
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
-using ViewComponents;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
-    /// <summary>Structures go on visible open space: outside reinforcement zones and capture sites.</summary>
+    /// <summary>Structures follow the reinforcement spawn rule and stay outside relay rings and capture sites.</summary>
     public sealed class StructurePlacementArea
     {
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IReinforcementZonesSystem _zones;
         private readonly ICaptureSitesSystem _captureSites;
+        private readonly PlayerSlot _owner;
 
         public StructurePlacementArea(
-            IFogOfWarSystem fogOfWarSystem,
+            IReinforcementSpawnRule spawnRule,
             IReinforcementZonesSystem zones,
-            ICaptureSitesSystem captureSites)
+            ICaptureSitesSystem captureSites,
+            PlayerSlot owner)
         {
-            _fogOfWarSystem = fogOfWarSystem;
+            _spawnRule = spawnRule;
             _zones = zones;
             _captureSites = captureSites;
+            _owner = owner;
         }
 
         public bool Contains(Vector3 position)
         {
-            return !_fogOfWarSystem.IsHidden(position) &&
+            return _spawnRule.IsOpen(_owner.Id, position) &&
                    !_zones.IsPositionInAnyZone(position) &&
                    !_captureSites.IsPositionInAnySite(position);
         }

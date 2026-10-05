@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
 using Zenject;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IReinforcementZonesSystem _zones;
         private readonly ICaptureSitesSystem _captureSites;
+        private readonly IReinforcementSpawnRule _spawnRule;
 
         private readonly PlayerSlot _owner;
         private readonly LazyInject<IMapModelObserver> _mapModel;
@@ -40,6 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStructurePlacementService(
             IReinforcementZonesSystem zones,
             ICaptureSitesSystem captureSites,
+            IReinforcementSpawnRule spawnRule,
             ILayerService layerService,
             LazyInject<IMapModelObserver> mapModel,
             PlayerSlot owner,
@@ -50,6 +53,7 @@ namespace EmpireAtWar.Services.Enemy
             _mapModel = mapModel;
             _zones = zones;
             _captureSites = captureSites;
+            _spawnRule = spawnRule;
             _obstacleMask = layerService.GetMask(LayerKey.Unit, LayerKey.Obstacle);
             _stationBounds = GetSpawnBounds(stationPrefab);
             foreach (BoxCollider prefab in structurePrefabs)
@@ -119,6 +123,7 @@ namespace EmpireAtWar.Services.Enemy
                         candidate.x + _structureClearance > bounds.Max.x ||
                         candidate.z - _structureClearance < bounds.Min.y ||
                         candidate.z + _structureClearance > bounds.Max.y ||
+                        !_spawnRule.IsOpen(_owner.Id, candidate) ||
                         IsNearRecentDestroyedPosition(candidate) ||
                         _zones.IsPositionInAnyZone(candidate, _structureClearance) ||
                         _captureSites.IsPositionInAnySite(candidate, _structureClearance) ||

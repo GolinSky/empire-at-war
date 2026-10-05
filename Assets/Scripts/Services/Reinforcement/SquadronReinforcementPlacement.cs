@@ -1,7 +1,6 @@
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Views.Reinforcement;
 using UnityEngine;
@@ -10,7 +9,7 @@ namespace EmpireAtWar.Services.Reinforcement
 {
     public sealed class SquadronReinforcementPlacement : IReinforcementPlacement
     {
-        private readonly IReinforcementZonesSystem _zones;
+        private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IStationFacingService _stationFacingService;
 
         private readonly ReinforcementPreviewFactory _previewFactory;
@@ -21,7 +20,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly SquadronType _squadronType;
 
         public SquadronReinforcementPlacement(
-            IReinforcementZonesSystem zones,
+            IReinforcementSpawnRule spawnRule,
             IStationFacingService stationFacingService,
             ReinforcementPreviewFactory previewFactory,
             ReinforcementModel model,
@@ -30,7 +29,7 @@ namespace EmpireAtWar.Services.Reinforcement
             PlayerId owner,
             SquadronType squadronType)
         {
-            _zones = zones;
+            _spawnRule = spawnRule;
             _stationFacingService = stationFacingService;
             _previewFactory = previewFactory;
             _model = model;
@@ -42,7 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab);
 
-        public bool IsPositionValid(Vector3 position) => _zones.IsPositionInAlliedZone(_owner, position);
+        public bool IsPositionValid(Vector3 position) => _spawnRule.IsOpen(_owner, position);
 
         public void Spawn(Vector3 position)
         {

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
-using ViewComponents;
 using Zenject;
 
 namespace EmpireAtWar.Components.FogOfWar
@@ -14,7 +15,8 @@ namespace EmpireAtWar.Components.FogOfWar
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable
     {
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
+        private ILocalPlayer _localPlayer;
 
         [SerializeField] private Renderer[] renderers;
         [SerializeField] private HardPoint[] hardPoints;
@@ -25,9 +27,11 @@ namespace EmpireAtWar.Components.FogOfWar
         private bool _isReleased;
 
         [Inject]
-        private void Construct(IFogOfWarSystem fogOfWarSystem, List<IIonStunViewSource> ionStunSources)
+        private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
+            List<IIonStunViewSource> ionStunSources)
         {
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
+            _localPlayer = localPlayer;
             _ionStunSources = ionStunSources;
         }
 
@@ -44,7 +48,7 @@ namespace EmpireAtWar.Components.FogOfWar
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
 
-            _isHidden = _fogOfWarSystem.IsHidden(transform.position);
+            _isHidden = !_visionService.IsVisible(_localPlayer.Id, transform.position);
             ApplyVisibility();
         }
 
@@ -74,7 +78,7 @@ namespace EmpireAtWar.Components.FogOfWar
                 return;
             }
 
-            bool isHidden = _fogOfWarSystem.IsHidden(transform.position);
+            bool isHidden = !_visionService.IsVisible(_localPlayer.Id, transform.position);
             if (isHidden == _isHidden)
             {
                 return;

@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
-using ViewComponents;
 using Zenject;
 using NumericsVector3 = System.Numerics.Vector3;
 
@@ -18,9 +18,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     public sealed class SquadronFlightComponent : MonoComponent<SquadronFlightModel>, ISquadronFlightComponent,
         IInitializable, ILateDisposable
     {
-        private IFogOfWarSystem _fogOfWarSystem;
+        private IVisionService _visionService;
         private IRadarModelObserver _radarModel;
-        private ILocalPlayer _localPlayer;
         private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private List<FighterView> fighters;
@@ -30,7 +29,6 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private Quaternion _startRotation;
         private PlayerId _owner;
 
-        private bool _sharesLocalVision;
         private bool _isReleased;
 
         public IFighterFlightData Data => Model.Data;
@@ -39,7 +37,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public Vector3 Heading => Model.GetHeading().ToUnity();
 
         [Inject]
-        private void Construct(IFogOfWarSystem fogOfWarSystem, IRadarModelObserver radarModel, ILocalPlayer localPlayer,
+        private void Construct(IVisionService visionService, IRadarModelObserver radarModel,
             SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner,
             EmpireAtWar.Components.Combat.CombatModifiers modifiers)
         {
@@ -47,9 +45,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             _startPosition = startPosition;
             _startRotation = startRotation;
             _owner = owner;
-            _fogOfWarSystem = fogOfWarSystem;
+            _visionService = visionService;
             _radarModel = radarModel;
-            _localPlayer = localPlayer;
             _modifiers = modifiers;
         }
 
@@ -75,13 +72,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 fighter.ClearTrails();
             }
 
-            // Allies share vision, so their squadrons reveal the local fog too.
-            _sharesLocalVision = _localPlayer.IsFriendly(_owner);
             _modifiers.Changed += RefreshVision;
-            if (_sharesLocalVision)
-            {
-                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
-            }
+            _visionService.Register(_owner, transform, _radarModel.Range);
         }
 
         public void LateDispose() => Release();
@@ -95,19 +87,12 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
             _isReleased = true;
             _modifiers.Changed -= RefreshVision;
-            if (_sharesLocalVision)
-            {
-                _fogOfWarSystem.UnregisterVisionSource(transform);
-            }
+            _visionService.Unregister(transform);
         }
 
         public bool IsAlive(int index) => Model.IsAlive(index);
 
-        private void RefreshVision()
-        {
-            if (_sharesLocalVision)
-                _fogOfWarSystem.RegisterVisionSource(transform, _radarModel.Range);
-        }
+        private void RefreshVision() => _visionService.Register(_owner, transform, _radarModel.Range);
 
         public Vector3 GetPosition(int index) => Model.Get(index).Position.ToUnity();
 

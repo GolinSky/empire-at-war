@@ -10,6 +10,8 @@ using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Reinforcement;
 using NUnit.Framework;
 using UnityEngine;
 using Zenject;
@@ -46,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
             return new EnemyStructurePlacementService(
                 mapModel: new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                zones: _zones, captureSites: new NoCaptureSites(), layerService: new LayersStub(), owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                zones: _zones, captureSites: new NoCaptureSites(), spawnRule: new AllOpen(), layerService: new LayersStub(), owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
                 stationPrefab: _stationPrefab, structurePrefabs: new[] { _structurePrefab });
         }
 
@@ -243,8 +245,6 @@ namespace EmpireAtWar.Tests.Editor
                 return Centers.Exists(center => Vector3.Distance(center, position) <= Radius + clearance);
             }
 
-            public bool IsPositionInAlliedZone(PlayerId owner, Vector3 position) => false;
-
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
 
             public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
@@ -277,6 +277,13 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+        }
+
+        private sealed class AllOpen : IReinforcementSpawnRule
+        {
+            public bool IsOpen(PlayerId team, Vector3 position) => true;
+
+            public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => true;
         }
 
         private sealed class NoCaptureSites : ICaptureSitesSystem
