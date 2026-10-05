@@ -12,7 +12,7 @@ updated: 2026-10-05
 ## Rules
 - Original ALO/DDS remain unchanged; preserve hidden geometry, UVs, bones and attachments.
 - Separate background Blender 3.6.23 process; shared Blender instance belongs to another agent.
-- Ion Shot excluded by user; no ability code, catalog, projectile or effect changes.
+- Follow-up request enables existing `ShipAbilityId.IonShot = 9`; no ability code, catalog, projectile or effect changes.
 - No automated tests or Play Mode requested; carrier changes outside scope.
 
 ## Implementation
@@ -23,12 +23,13 @@ updated: 2026-10-05
 - [x] Read back saved references and values; no missing scripts, broken references or donor geometry. Matching placement/gameplay bounds; blue/green and transparent icon visually inspected.
 - [x] Verify original source hashes and pixel-identical PNGs; no new Unity import, serialization, compile or Console errors.
 - [ ] Restore original turret textures if supplied: missing `ReV_ntb2.dds` / `ReV_ntb2_gloss.dds`; current material is explicit neutral metal.
-- [ ] In-game acceptance: production, placement, flight, laser/torpedo runs, hull/shields, fog/selection, team colors and craft death.
+- [x] Enable existing Ion Shot in squadron data; verify saved ability ID, catalog settings/icon and clean Unity import/Console checks.
+- [ ] In-game acceptance: production, placement, flight, laser/torpedo runs, Ion Shot targeting/disruption, hull/shields, fog/selection, team colors and craft death.
 - [ ] Review provisional movement, weapon profiles, scale, shield-refresh interval and unit limit.
 
 ## Important Values
 - `SquadronType.NTB630 = 4`; level/cost/build/population `1/550/8 s/1`. User build overrides local XML `17 s`.
-- Per member: Bomber armor, hull/shields/refresh `60/30/3`; refresh interval 1 s, no passive repair, no abilities.
+- Per member: Bomber armor, hull/shields/refresh `60/30/3`; refresh interval 1 s, no passive repair; existing Ion Shot ability `9`.
 - Centered craft size `2.650344 × 0.853184 × 4`; formation radius 12.52512 → navigation 13; member radius 2.37352 → collider 2.4; selection diameter 26.
 - Source/FBX/Unity all `8 / 5,097 / 14` meshes/triangles/bones. Max Blender geometry error `0.000005723` source units; Unity bone error `0.0000001062` units; no parent mismatches.
 
