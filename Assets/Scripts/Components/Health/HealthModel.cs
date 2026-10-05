@@ -44,7 +44,7 @@ namespace EmpireAtWar.Models.Health
         public bool IsDestroyed { get; private set; }
         public bool HasShields => Shields > 0f;
         public bool IsLostShieldGenerator { get; private set; }
-        public bool HasUnits => !IsDestroyed && HardPointModels.Length > 0;
+        public bool HasUnits => !IsDestroyed;
         public bool HasLiveHardPoints => HardPointModels.Any(hardPoint => !hardPoint.IsDestroyed);
 
         public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers)
@@ -125,7 +125,14 @@ namespace EmpireAtWar.Models.Health
             else
             {
                 float hullDamage = damage * _damageMatrix.GetDamageMultiplier(damageType, ShipClass);
-                DamageHardPoint(HardPointModels[hardPointId], hullDamage);
+                if (HardPointModels.Length == 0)
+                {
+                    DamageHull(hullDamage);
+                }
+                else
+                {
+                    DamageHardPoint(HardPointModels[hardPointId], hullDamage);
+                }
             }
 
             OnValueChanged?.Invoke();
@@ -170,7 +177,12 @@ namespace EmpireAtWar.Models.Health
                 }
             }
 
-            Hull = Math.Max(0f, Hull - damage * hardPoint.HullDamageMultiplier);
+            DamageHull(damage * hardPoint.HullDamageMultiplier);
+        }
+
+        private void DamageHull(float damage)
+        {
+            Hull = Math.Max(0f, Hull - damage);
             if (Hull <= 0f)
             {
                 IsDestroyed = true;

@@ -268,6 +268,22 @@ MonoBehaviour:
             <UnitCapacity>k__BackingField: 1
             <Icon>k__BackingField: {fileID: 21300000, guid: c204e9888dc32854493ab00345e38bf4,
               type: 3}
+        - key: 107
+          value:
+            matchups: {fileID: 11400000, guid: 5253bdace10ccf24b9253110f4869c48, type: 2}
+            description: Lightly armed CIS transport with 300 hull, 20 shields and
+              a medium laser cannon. Its weapon cannot be targeted separately. Avoid
+              sustained combat with warships.
+            role: "Transport \xB7 Light support"
+            iconKey: 69c29902694322d4aacf1446e4b7f487:21300000
+            <Name>k__BackingField: C-9979 Lander
+            <MaxCount>k__BackingField: 20
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 500
+            <BuildTime>k__BackingField: 10
+            <UnitCapacity>k__BackingField: 1
+            <Icon>k__BackingField: {fileID: 21300000, guid: 69c29902694322d4aacf1446e4b7f487,
+              type: 3}
   squadronFactionDataWrapper:
     keyValue:
     - key: 0

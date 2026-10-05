@@ -1,5 +1,18 @@
 # Blender / Rothana conversion
 
+## C-9979 Lander — 2026-10-05
+
+- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/C-9979 Import.md`; acceptance plan `TODOs/Features/C9979_Import.md`.
+- Source: RaW 1.2.1 `SeV_c9979.ALO`. Original ALO and three DDS hashes unchanged. Credits: Evillejedi mesh/textures; z3r0x rigging.
+- Run `prepare_c9979_textures.py` with Pillow first. In Blender 3.6.23, import with animations disabled into `C9979 Source`, then run `export_c9979.py` once through MCP as direct code. Restore only the binary-verified identity Root omitted by ALAMO.
+- Three meshes / 4,182 triangles / eight bones, four muzzle attachments and all UVs preserved. Hull/lights visible; Collision disabled. Maximum Blender geometry displacement `0.000003053` source units; Unity bone error `0.000000090946` project units, correct parents. DDS-to-PNG conversions are pixel-identical; hull alpha supplies the linear team mask.
+- Art: type-first `SeparatistShips/C9979` folders. Visual/gameplay: `Assets/Prefabs/Models/Ships/C9979.prefab`, `C9979ShipView.prefab`; own reinforcement and wreck prefabs. Centered size `32 × 5.138031 × 12.09517`; matching bounds, root scale 1, bow +Z, up +Y.
+- CIS `ShipType.C9979 = 107`; hull/shields/regen `300/20/2` each second. One `MediumLaser = 23` mount at the four-muzzle midpoint, one shot per 5 s; zero destructible hardpoints, abilities or hangar. `HullTarget` and the hull-only health path support whole-hull targeting and damage after shields.
+- Authorized provisional values: level/cost/build/population/limit `1/500/10 s/1/20`; speed/turn/acceleration `48/45°/s/36`, bank 15°, flight Y 80, navigation radius 17, selection diameter 36. Laser damage/range `6/100`; source range 800 maps by provisional 1/8. Project lacks Transport armor; uses the existing Corvette damage category pending balance review.
+- Registered roster, data/view mapping, existing View/Data Addressables, placement, matchups, weapon audio and HUD/tooltip icons. Actual-model transparent icon/silhouette 512 × 512, uncropped; all eight team palettes rendered, blue/green inspected.
+- Source sibling `SeV_c9979-Converted/` contains packed Blender source, FBX, PNGs, reports, previews, converter scripts and full RaW credits. Separate land model/ALA animations and EaW animated effects are not converted.
+- Saved geometry/reference checks and Unity compilation passed; no missing scripts/references, donor model dependencies or new import/serialization errors. No automated tests or Play Mode run by this task. Runtime acceptance and provisional balance remain in the active plan.
+
 ## NTB-630 — 2026-10-05
 
 - Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/NTB-630 Import.md`; acceptance plan `TODOs/Features/NTB630_Import.md`.
