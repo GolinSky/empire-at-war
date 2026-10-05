@@ -69,7 +69,7 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemySquadronCommander>();
 
             Container
-                .Bind<EnemyFactionModel>()
+                .BindInterfacesAndSelfTo<EnemyFactionModel>()
                 .AsSingle()
                 .WithArguments(Owner.Faction);
             Container

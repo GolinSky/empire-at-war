@@ -6,18 +6,15 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Factions
 {
-    public interface IPlayerFactionModelObserver : IModelObserver
+    public interface IPlayerFactionModelObserver : IModelObserver, IFactionLevelObserver
     {
         event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
-
-        event Action<int> OnLevelUpgraded;
 
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
         bool IsResoluteReserved { get; }
         FactionType FactionType { get; }
-        int CurrentLevel { get; }
 
         FactionData GetCurrentLevelFactionData();
 

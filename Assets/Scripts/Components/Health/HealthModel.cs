@@ -22,6 +22,10 @@ namespace EmpireAtWar.Models.Health
         private readonly CombatModifiers _modifiers;
         private float _hullMultiplier;
         private float _shieldsMultiplier;
+        private int _level = 1;
+        private float _levelHullScale = 1f;
+        private float _levelShieldsScale = 1f;
+        private float _levelShieldRegenerateScale = 1f;
 
         public event Action OnValueChanged;
 
@@ -29,12 +33,12 @@ namespace EmpireAtWar.Models.Health
 
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
-        public float MaxHull => _data.Hull * _hullMultiplier;
+        public float MaxHull => _data.Hull * _hullMultiplier * _levelHullScale;
         public float HullPercentage => MaxHull <= 0f ? 0f : Hull / MaxHull;
         public float Shields { get; private set; }
         public float ShieldPercentage => MaxShields <= 0f ? 0f : Shields / MaxShields;
-        public float MaxShields => _data.Shields * _shieldsMultiplier;
-        public float ShieldRegenerateValue => _data.ShieldRegenerateValue;
+        public float MaxShields => _data.Shields * _shieldsMultiplier * _levelShieldsScale;
+        public float ShieldRegenerateValue => _data.ShieldRegenerateValue * _levelShieldRegenerateScale;
         public float ShieldRegenerateDelay => _data.ShieldRegenerateDelay;
         public HardPointModel[] HardPointModels { get; private set; } = Array.Empty<HardPointModel>();
         public bool IsDestroyed { get; private set; }
@@ -70,9 +74,40 @@ namespace EmpireAtWar.Models.Health
             HardPointModels = hardPointModels.ToArray();
             foreach (HardPointModel hardPoint in HardPointModels)
             {
+                if (hardPoint.UnlockLevel > _level)
+                {
+                    hardPoint.Uninstall();
+                    continue;
+                }
+
                 HardPointHealth health = GetHardPointHealth(hardPoint.HardPointType);
                 hardPoint.SetHealth(health.Health, health.HullDamageMultiplier);
             }
+        }
+
+        /// <summary>
+        /// Raises the unit to an upgrade level: hull, shields and shield regeneration take the level's scales
+        /// (current hull and shields keep their percentage), hardpoints unlocked by the level are installed
+        /// and every installed hardpoint, the shield generator included, is restored to full health.
+        /// </summary>
+        public void Upgrade(int level, float hullScale, float shieldsScale, float shieldRegenerateScale)
+        {
+            if (IsDestroyed)
+            {
+                return;
+            }
+
+            float hullPercentage = HullPercentage;
+            float shieldPercentage = ShieldPercentage;
+            _level = level;
+            _levelHullScale = hullScale;
+            _levelShieldsScale = shieldsScale;
+            _levelShieldRegenerateScale = shieldRegenerateScale;
+            Hull = MaxHull * hullPercentage;
+            Shields = MaxShields * shieldPercentage;
+            IsLostShieldGenerator = false;
+            InitializeHardPoints(HardPointModels);
+            OnValueChanged?.Invoke();
         }
 
         public void ApplyDamage(float damage, DamageType damageType, int hardPointId)

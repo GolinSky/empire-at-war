@@ -14,6 +14,9 @@ namespace EmpireAtWar.Models.Health
         public int Id { get; }
         public int Generation { get; private set; }
         public HardPointType HardPointType { get; }
+        /// <summary>Upgrade level that installs this hardpoint; until then it is absent and counts as destroyed.</summary>
+        public int UnlockLevel { get; }
+        public bool IsInstalled { get; private set; } = true;
         public float HealthPercentage { get; private set; } = 1f;
 
         public float Health { get; private set; }
@@ -21,19 +24,31 @@ namespace EmpireAtWar.Models.Health
         public float HullDamageMultiplier { get; private set; }
         public bool IsDestroyed => HealthPercentage <= 0f;
 
-        public HardPointModel(HardPointType hardPointType, int id)
+        public HardPointModel(HardPointType hardPointType, int id, int unlockLevel = 1)
         {
             Id = id;
             HardPointType = hardPointType;
+            UnlockLevel = unlockLevel;
         }
 
         public void SetHealth(float health, float hullDamageMultiplier)
         {
             Generation++;
+            IsInstalled = true;
             _originHealth = health;
             Health = health;
             HullDamageMultiplier = hullDamageMultiplier;
             HealthPercentage = health <= 0f ? 0f : 1f;
+            OnHardPointHealthChanged?.Invoke();
+        }
+
+        public void Uninstall()
+        {
+            Generation++;
+            IsInstalled = false;
+            _originHealth = 0f;
+            Health = 0f;
+            HealthPercentage = 0f;
             OnHardPointHealthChanged?.Invoke();
         }
 

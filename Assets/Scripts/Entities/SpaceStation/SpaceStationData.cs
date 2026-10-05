@@ -21,7 +21,13 @@ namespace EmpireAtWar.Entities.SpaceStation
         [field: SerializeField] public float HangarInitialDelay { get; private set; } = 1f;
         [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
 
+        [Header("Upgrades")]
+        [Tooltip("Durability per station level; element 0 is level 1. Hardpoints set their own unlock level.")]
+        [SerializeField] private StationLevelStats[] levelStats;
+
         public HangarBay GetHangarBay(FactionType factionType) => hangarBays.Dictionary[factionType];
+
+        public StationLevelStats GetLevelStats(int level) => levelStats[level - 1];
 
         public bool TryGetWreck(FactionType factionType, out UnitWreckData wreck) =>
             wrecks.Dictionary.TryGetValue(factionType, out wreck);

@@ -412,6 +412,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private void AddCandidates(AttackData group)
         {
+            group.RefreshStaleUnits();
             List<IHardPointModel> units = group.Units;
             for (int i = 0; i < units.Count; i++)
                 if (group.CanTarget(units[i]))

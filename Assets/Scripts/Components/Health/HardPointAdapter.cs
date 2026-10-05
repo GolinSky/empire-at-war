@@ -25,6 +25,7 @@ namespace EmpireAtWar.Models.Health
         public int Id => _model.Id;
         public int Generation => _model.Generation;
         public bool IsDestroyed => _model.IsDestroyed;
+        public bool IsInstalled => _model.IsInstalled;
         public Vector3 Position => _view.Position;
         public Transform Transform => _view.Transform;
         public Transform Pivot => _pivot;

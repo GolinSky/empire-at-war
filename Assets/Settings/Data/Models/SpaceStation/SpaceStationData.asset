@@ -37,7 +37,7 @@ MonoBehaviour:
       hullDamageMultiplier: 1
     <Range>k__BackingField: 187.5
     <Delay>k__BackingField: 0.25
-    <Distance>k__BackingField: 100
+    <VisionRange>k__BackingField: 0
     <SpawnBlockRadius>k__BackingField: 1200
   wrecks:
     keyValue:
@@ -59,3 +59,19 @@ MonoBehaviour:
         maxActive: 2
   <HangarInitialDelay>k__BackingField: 1
   <HangarLaunchInterval>k__BackingField: 3
+  levelStats:
+  - hullMultiplier: 1
+    shieldsMultiplier: 1
+    shieldRegenerateMultiplier: 1
+  - hullMultiplier: 1.4
+    shieldsMultiplier: 1.5
+    shieldRegenerateMultiplier: 1.15
+  - hullMultiplier: 1.9
+    shieldsMultiplier: 2.2
+    shieldRegenerateMultiplier: 1.35
+  - hullMultiplier: 2.6
+    shieldsMultiplier: 3.1
+    shieldRegenerateMultiplier: 1.6
+  - hullMultiplier: 3.5
+    shieldsMultiplier: 4.2
+    shieldRegenerateMultiplier: 1.9
