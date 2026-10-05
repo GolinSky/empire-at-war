@@ -518,6 +518,43 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    abilityId: 17
+  - start:
+      clip: {fileID: 8300000, guid: 515190c14e0a5b24495c279533e9d587, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 66938b94a78349b4da738c050731ebc1, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: b1dea434baaa2f9498363391b806d141, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 7ae9af26cc105b54283de7a49d8a5c65, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     abilityId: 3
   - start:
       clip: {fileID: 8300000, guid: 57f061cb89eeb9b4b83c1c9ab259e59f, type: 3}
@@ -741,6 +778,43 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     abilityId: 6
+  - start:
+      clip: {fileID: 8300000, guid: 024288d8816f19d4abc70615a5edc107, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 27185b9dc66a4c64babd4dfdedd94f07, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: 8a732a29e619bee48bae4f6b2135c829, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 6eec054dfe49ce6478e228003f00cab9, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    abilityId: 16
   - start:
       clip: {fileID: 8300000, guid: 024288d8816f19d4abc70615a5edc107, type: 3}
       clips:

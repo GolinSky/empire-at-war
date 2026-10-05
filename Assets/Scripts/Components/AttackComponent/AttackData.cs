@@ -30,6 +30,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool IsDestroyed => _shipUnitsProvider == null || _shipUnitsProvider.IsDestroyed;
         public ShipClass TargetClass => _shipUnitsProvider.ShipClass;
         public IHealthModelObserver TargetHealth => _shipUnitsProvider;
+        public IEntity TargetEntity => _targetEntity;
         public List<IHardPointModel> Units { get; private set; }
 
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType, IEntity targetEntity)

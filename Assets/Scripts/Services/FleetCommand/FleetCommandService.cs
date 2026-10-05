@@ -39,7 +39,8 @@ namespace EmpireAtWar.Services.FleetCommand
             {
                 if (!entity.HealthModel.IsDestroyed &&
                     entity.TryGetFacade(out IUnitTypeFacade type) &&
-                    type.UnitTypeId == UnitTypeId.Ship(ShipType.Resolute) &&
+                    (type.UnitTypeId == UnitTypeId.Ship(ShipType.Resolute) ||
+                     type.UnitTypeId == UnitTypeId.Ship(ShipType.HomeOne)) &&
                     !entity.GetFacade<ICombatModifiersFacade>().Modifiers.IsIonDisabled)
                     _commanders.Add(entity);
             }
@@ -51,13 +52,16 @@ namespace EmpireAtWar.Services.FleetCommand
                     !entity.TryGetFacade(out ICombatModifiersFacade combat) ||
                     !entity.TryGetFacade(out IUnitTypeFacade type) ||
                     !(type.UnitTypeId.IsShip || type.UnitTypeId.IsSquadron) ||
-                    _players.Get(entity.Owner).Faction != FactionType.Republic) continue;
+                    (_players.Get(entity.Owner).Faction != FactionType.Republic &&
+                     _players.Get(entity.Owner).Faction != FactionType.Rebellion)) continue;
                 foreach (IEntity commander in _commanders)
                 {
-                    // The commander's own upgraded base stats remain 7,000 / 5,000.
+                    // Command ships retain their own configured base stats.
                     if (ReferenceEquals(entity, commander) ||
+                        _players.Get(commander.Owner).Faction != _players.Get(entity.Owner).Faction ||
                         !_players.IsAllied(commander.Owner, entity.Owner)) continue;
-                    if (PlanarGeometry.DistanceSquared(
+                    if (commander.GetFacade<IUnitTypeFacade>().UnitTypeId != UnitTypeId.Ship(ShipType.HomeOne) &&
+                        PlanarGeometry.DistanceSquared(
                         commander.GetFacade<IEntityTransformFacade>().Transform.position,
                         entity.GetFacade<IEntityTransformFacade>().Transform.position) >
                         COMMAND_RADIUS * COMMAND_RADIUS) continue;

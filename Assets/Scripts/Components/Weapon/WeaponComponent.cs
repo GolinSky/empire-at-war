@@ -444,7 +444,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
             _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel,
-                profile.Damage * _modifiers.DamageMultiplier, profile.DamageType, attackDelay, missile);
+                profile.Damage * _modifiers.GetDamageMultiplier(attackData.TargetEntity), profile.DamageType, attackDelay, missile);
         }
 
         public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,

@@ -129,8 +129,11 @@ float GetWreckDissolveProgress(float part)
 // Returns how much of the burning dissolve edge covers this pixel (0..1). Discards the pixel before the
 // wreck appears, on triangles torn by a cut (fractional part id), and where the dissolve ate the hull.
 // restPositionOS is the undeformed position, so the noise pattern sticks to the hull.
-half ClipWreck(float3 restPositionOS, float interpolatedPart)
+half ClipWreck(float3 restPositionOS, float interpolatedPart, float2 uv)
 {
+#if defined(_ALPHATEST_ON)
+    clip(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, uv).a * _BaseColor.a - _Cutoff);
+#endif
     clip(GetWreckAge());
     clip(0.001 - abs(interpolatedPart - round(interpolatedPart)));
 

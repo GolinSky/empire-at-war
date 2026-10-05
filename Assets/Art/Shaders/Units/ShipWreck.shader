@@ -79,6 +79,7 @@ Shader "EmpireAtWar/Ship Wreck"
             #pragma target 3.5
             #pragma vertex ShipWreckPassVertex
             #pragma fragment ShipWreckPassFragment
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
@@ -116,6 +117,7 @@ Shader "EmpireAtWar/Ship Wreck"
             #pragma target 3.5
             #pragma vertex ShipWreckShadowVertex
             #pragma fragment ShipWreckShadowFragment
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -140,6 +142,7 @@ Shader "EmpireAtWar/Ship Wreck"
             #pragma target 3.5
             #pragma vertex ShipWreckDepthVertex
             #pragma fragment ShipWreckDepthFragment
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -162,6 +165,7 @@ Shader "EmpireAtWar/Ship Wreck"
             #pragma target 3.5
             #pragma vertex ShipWreckDepthVertex
             #pragma fragment ShipWreckDepthNormalsFragment
+            #pragma shader_feature_local_fragment _ALPHATEST_ON
 
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"

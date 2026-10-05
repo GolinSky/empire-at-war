@@ -80,7 +80,7 @@ WreckDepthVaryings ShipWreckDepthVertex(WreckDepthAttributes input)
 half4 ShipWreckShadowFragment(WreckDepthVaryings input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
-    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w);
+    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w, input.uv);
     return 0;
 }
 
@@ -88,7 +88,7 @@ half ShipWreckDepthFragment(WreckDepthVaryings input) : SV_Target
 {
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w);
+    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w, input.uv);
     return input.positionCS.z;
 }
 
@@ -96,7 +96,7 @@ half4 ShipWreckDepthNormalsFragment(WreckDepthVaryings input, FRONT_FACE_TYPE fr
 {
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w);
+    ClipWreck(input.restPositionOS.xyz, input.restPositionOS.w, input.uv);
 
     half3 normalWS = IS_FRONT_VFACE(frontFace, true, false) ? input.normalWS : -input.normalWS;
     half3 normalTS = UnpackNormalScale(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, input.uv), _BumpScale);
