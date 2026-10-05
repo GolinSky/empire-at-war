@@ -16,5 +16,8 @@ namespace EmpireAtWar.Views.MiniMap
         void Hide();
 
         void PlayMoveTarget(Vector3 worldPoint);
+
+        /// <summary>Draws the fog mask over the map; <paramref name="uvRect"/> maps the mask onto the map area.</summary>
+        void SetFog(Texture mask, Rect uvRect);
     }
 }

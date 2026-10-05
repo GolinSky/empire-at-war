@@ -34,6 +34,7 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private CameraFootprintView cameraFootprintView;
         [SerializeField] private MiniMapObstacleView obstacleView;
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
+        [SerializeField] private RawImage fogImage;
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
@@ -73,6 +74,12 @@ namespace EmpireAtWar.Views.MiniMap
             cameraFootprintView.DOKill();
             obstacleView.DOKill();
             if (_markerFade != null) _markerFade.Kill();
+        }
+
+        public void SetFog(Texture mask, Rect uvRect)
+        {
+            fogImage.texture = mask;
+            fogImage.uvRect = uvRect;
         }
 
         private void AddMark(MarkData markData)
