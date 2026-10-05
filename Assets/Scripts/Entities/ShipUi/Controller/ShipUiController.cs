@@ -39,7 +39,7 @@ namespace EmpireAtWar.Controllers.ShipUi
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
-        private readonly EmpireAtWar.Models.Factions.FactionsData _factions;
+        private readonly EmpireAtWar.Models.Factions.FactionCatalog _factions;
         private TooltipHoverSubscription _shipTooltipHover;
         private TooltipHoverSubscription _groupTooltipHover;
 
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Controllers.ShipUi
             ShipUiModel model,
             ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
-            EmpireAtWar.Models.Factions.FactionsData factions) : base(uiService, cancelRouter)
+            EmpireAtWar.Models.Factions.FactionCatalog factions) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _model = model;

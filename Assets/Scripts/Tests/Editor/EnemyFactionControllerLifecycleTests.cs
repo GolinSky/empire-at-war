@@ -30,7 +30,7 @@ namespace EmpireAtWar.Tests.Editor
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
             EnemyFactionModel model =
-                new EnemyFactionModel(null, FactionType.Republic);
+                new EnemyFactionModel(null, null);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ScheduledBuildFailure_RefundsOnceAndDoesNotBlockLaterBuilds()
         {
             EnemyFactionModel model =
-                new EnemyFactionModel(null, FactionType.Republic);
+                new EnemyFactionModel(null, null);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
@@ -174,7 +174,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Initialize_ResetsStructurePlacementStateOncePerBattle()
         {
             EnemyFactionModel model =
-                new EnemyFactionModel(null, FactionType.Republic);
+                new EnemyFactionModel(null, null);
 
             TrackingStructurePlacement structurePlacement =
                 new TrackingStructurePlacement();

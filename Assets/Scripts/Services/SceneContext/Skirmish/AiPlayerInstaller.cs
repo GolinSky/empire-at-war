@@ -25,6 +25,7 @@ namespace EmpireAtWar.SceneContext
     {
         [Inject] private IAssetService AssetService { get; }
         [Inject] private PlayerSlot Owner { get; }
+        [Inject] private FactionCatalog FactionCatalog { get; }
 
         public override void InstallBindings()
         {
@@ -64,13 +65,11 @@ namespace EmpireAtWar.SceneContext
             Container.BindInterfacesExt<EnemySquadronCommander>();
 
             Container
-                .BindInterfacesAndSelfTo<EnemyFactionModel>()
+                .Bind<FactionRoster>()
                 .AsSingle()
-                .WithArguments(Owner.Faction);
-            Container
-                .BindInterfacesAndSelfTo<FactionResearchModel>()
-                .AsSingle()
-                .WithArguments(Owner.Faction);
+                .WithArguments(FactionCatalog.Get(Owner.Faction));
+            Container.BindInterfacesAndSelfTo<EnemyFactionModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FactionResearchModel>().AsSingle();
         }
     }
 }

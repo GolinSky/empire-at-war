@@ -25,7 +25,8 @@ namespace EmpireAtWar.Models.Factions
     {
         private const int MAX_ACTIVE_PIPELINES = 7;
 
-        private readonly FactionsData _factionsData;
+        private readonly StationLevelData _stationLevels;
+        private readonly FactionRoster _roster;
         private readonly Dictionary<string, Queue<ProductionQueueItem>> _productionQueues = new();
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Models.Factions
             }
         }
 
-        public FactionType FactionType { get; }
+        public FactionType FactionType => _roster.FactionType;
 
         public int CurrentLevel
         {
@@ -66,16 +67,16 @@ namespace EmpireAtWar.Models.Factions
         }
 
         public PlayerFactionModel(
-            FactionsData factionsData,
-            FactionType factionType)
+            StationLevelData stationLevels,
+            FactionRoster roster)
         {
-            _factionsData = factionsData;
-            FactionType = factionType;
+            _stationLevels = stationLevels;
+            _roster = roster;
         }
 
         public FactionData GetCurrentLevelFactionData()
         {
-            return _factionsData.GetLevelFactionData(CurrentLevel);
+            return _stationLevels.GetLevelFactionData(CurrentLevel);
         }
 
         public bool CanQueueUnit(UnitRequest unitRequest)

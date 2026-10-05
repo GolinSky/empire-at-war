@@ -15,16 +15,16 @@ namespace EmpireAtWar.Presenters.Cheats
         private readonly ICheatView _view;
         private readonly ICheatService _cheatService;
 
-        private readonly FactionsData _factionsModel;
+        private readonly FactionCatalog _factionCatalog;
         private readonly Dictionary<ShipType, FactionData> _shipData = new();
 
         public CheatPresenter(
             ICheatView view,
             ICheatService cheatService,
-            FactionsData factionsModel)
+            FactionCatalog factionCatalog)
         {
             _view = view;
-            _factionsModel = factionsModel;
+            _factionCatalog = factionCatalog;
             _cheatService = cheatService;
         }
 
@@ -55,10 +55,9 @@ namespace EmpireAtWar.Presenters.Cheats
         private List<ShipType> BuildShipCatalog()
         {
             _shipData.Clear();
-            foreach (FactionType factionType in Enum.GetValues(typeof(FactionType)))
+            foreach (FactionDefinition faction in _factionCatalog.Factions)
             {
-                foreach (KeyValuePair<ShipType, FactionData> ship in
-                         _factionsModel.GetShipFactionData(factionType))
+                foreach (KeyValuePair<ShipType, FactionData> ship in faction.Ships)
                 {
                     if (_shipData.ContainsKey(ship.Key))
                     {

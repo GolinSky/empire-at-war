@@ -89,13 +89,13 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Data_DefinesPurchaseAndProfileForEverySuperWeapon()
         {
-            FactionsData factions = AssetDatabase.LoadAssetAtPath<FactionsData>(
-                "Assets/Settings/Data/Models/Factions/FactionsData.asset");
+            SuperWeaponCatalog catalog = AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(
+                "Assets/Settings/Data/Factions/Shared/SuperWeaponCatalog.asset");
             SuperWeaponData data = AssetDatabase.LoadAssetAtPath<SuperWeaponData>(
                 "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
             {
-                FactionData purchase = factions.SuperWeaponFactionData[type];
+                FactionData purchase = catalog.Get(type);
                 Assert.That(purchase.MaxCount, Is.EqualTo(1));
                 Assert.That(purchase.Icon, Is.Not.Null);
                 SuperWeaponProfile profile = data.GetProfile(type);

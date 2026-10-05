@@ -114,7 +114,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static PlayerFactionModel CreateModel()
         {
-            return new PlayerFactionModel(null, FactionType.Republic);
+            return new PlayerFactionModel(null, null);
         }
 
         private static FactionData CreateFactionData(int maxCount, int buildTime)

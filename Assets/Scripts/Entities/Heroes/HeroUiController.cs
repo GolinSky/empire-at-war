@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Heroes
     {
         private readonly IUiService _uiService;
         private readonly IEntityLocator _entities;
-        private readonly FactionsData _factions;
+        private readonly FactionCatalog _factions;
         private readonly ILocalPlayer _localPlayer;
         private readonly IVisionService _vision;
         private readonly ICameraService _camera;
@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.Heroes
         private IHeroUi _ui;
         private bool _isBattleActive;
 
-        public HeroUiController(IUiService uiService, IEntityLocator entities, FactionsData factions,
+        public HeroUiController(IUiService uiService, IEntityLocator entities, FactionCatalog factions,
             ILocalPlayer localPlayer, IVisionService vision, ICameraService camera,
             INotifier<BattleState> battleState)
         {
