@@ -4,6 +4,13 @@
 
 ### Features
 
+- [ ] **Verify T-65 X-Wing import acceptance**
+  - **Plan**: [[TODOs/Features/XWing_Import|X-Wing Import]]
+  - **Reference**: [[GameDesign/X-Wing Import|Integration and source verification]]
+  - **Status**: 2026-10-05 imported `RV_XWING.ALO`: five craft, 20 lasers, animated S-Foils, Rebel roster/Addressables/UI. Source geometry/textures, six poses, eight team palettes, saved bindings and compilation verified.
+  - **Remaining**: clean-scene in-game acceptance and provisional movement/range/balance review. No automated tests or Play Mode run.
+
+
 - [ ] **Verify Imperial Victory integration acceptance**
   - **Plan**: [[TODOs/Features/Victory_Import|Victory Import]]
   - **Reference**: [[GameDesign/Victory Import]]

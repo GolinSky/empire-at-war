@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         Cloak = 11,
         VictoryBoostWeaponPower = 12,
         NebulonBBoostShieldStrength = 13,
-        CorellianCorvettePowerToEngines = 14
+        CorellianCorvettePowerToEngines = 14,
+        LockSFoils = 18
     }
 }

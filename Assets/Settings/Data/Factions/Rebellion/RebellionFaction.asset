@@ -71,6 +71,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 524d65b06058f0a428ee3d2a9b9b78e9,
           type: 3}
+    - key: 300
+      value:
+        matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
+        description: 'Five Rebel multirole fighters, each with 60 hull, 20 shields,
+          3/s shield regeneration and four laser cannons. Intercept bombers, dogfight
+          fighters, escort bombers and scout. Lock S-Foils closes the wings: speed
+          x1.3, weapon delays x3 and shield regeneration x3. Toggle again to reopen
+          the wings and return to combat configuration.'
+        role: Multirole fighter / Anti-bomber
+        iconKey: ea53c8c126651444aaedb6d6761e02b3:21300000
+        isHero: 0
+        <Name>k__BackingField: T-65 X-Wing Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3,
+          type: 3}
   research:
     keyValue:
     - key: 0

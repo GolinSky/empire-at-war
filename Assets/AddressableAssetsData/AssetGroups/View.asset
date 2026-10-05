@@ -90,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54d09cd5e31fdef4690255567dcdbea9
+    m_Address: XWingSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 56bb18bf97f2ecb48acecbafea14543a
     m_Address: C9979ShipView
     m_ReadOnly: 0

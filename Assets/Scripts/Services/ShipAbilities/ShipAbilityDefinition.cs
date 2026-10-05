@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         [SerializeField] private float duration;
         [SerializeField] private float recoveryDelay;
         [SerializeField] private bool canCancel;
+        [SerializeField] private bool isToggle;
         [Header("Targeting")]
         [SerializeField] private bool requiresEnemyTarget;
         [SerializeField] private float range;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public float Duration => duration;
         public float RecoveryDelay => recoveryDelay;
         public bool CanCancel => canCancel;
+        public bool IsToggle => isToggle;
         public bool RequiresEnemyTarget => requiresEnemyTarget;
         public float Range => range;
         public ShipAbilityAiUse AiUse => aiUse;

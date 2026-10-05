@@ -170,6 +170,8 @@ namespace EmpireAtWar.Services.ShipAbilities
                     }
                 }
 
+                if (slot.State == ShipAbilityState.Active && slot.Definition.IsToggle) continue;
+
                 slot.Elapse(deltaTime);
                 if (slot.TimeLeft > 0f) continue;
                 if (slot.State == ShipAbilityState.Active)
