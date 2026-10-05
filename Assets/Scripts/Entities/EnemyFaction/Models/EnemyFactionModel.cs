@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 
@@ -10,19 +11,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public class EnemyFactionModel : IModel, IFactionLevelObserver
     {
-        private readonly FactionsData _factionsData;
+        private readonly StationLevelData _stationLevels;
+        private readonly FactionRoster _roster;
 
         private int _currentLevel = 1;
 
         public event Action<int> OnLevelUpgraded;
 
-        public FactionType FactionType { get; }
-
-        public Dictionary<ShipType, FactionData> ShipFactionData => _factionsData.GetShipFactionData(FactionType);
-        public Dictionary<SquadronType, FactionData> SquadronFactionData =>
-            _factionsData.GetSquadronFactionData(FactionType);
-        public Dictionary<MiningFacilityType, FactionData> MiningFactions => _factionsData.MiningFactionsData;
-        public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => _factionsData.DefendPlatformDictionary;
+        public Dictionary<ShipType, FactionData> ShipFactionData => _roster.Ships;
+        public Dictionary<SquadronType, FactionData> SquadronFactionData => _roster.Squadrons;
+        public Dictionary<MiningFacilityType, FactionData> MiningFactions => _roster.MiningFacilities;
+        public Dictionary<DefendPlatformType, FactionData> DefendPlatforms => _roster.DefendPlatforms;
+        public Dictionary<SuperWeaponType, FactionData> SuperWeapons => _roster.SuperWeapons;
 
         public int CurrentLevel
         {
@@ -34,15 +34,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
         }
 
-        public EnemyFactionModel(FactionsData factionsData, FactionType factionType)
+        public EnemyFactionModel(StationLevelData stationLevels, FactionRoster roster)
         {
-            _factionsData = factionsData;
-            FactionType = factionType;
+            _stationLevels = stationLevels;
+            _roster = roster;
         }
 
         public FactionData GetCurrentLevelFactionData()
         {
-            return _factionsData.GetLevelFactionData(CurrentLevel);
+            return _stationLevels.GetLevelFactionData(CurrentLevel);
         }
     }
 }

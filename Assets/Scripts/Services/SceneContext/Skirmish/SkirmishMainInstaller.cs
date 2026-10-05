@@ -28,6 +28,8 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Extentions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -167,7 +169,11 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInitializableExecutionOrder<UnitActionsPresenter>(100);
         
         Container
-            .BindModel<FactionsData>(AssetService)
+            .BindModel<FactionCatalog>(AssetService)
+            .BindModel<StationLevelData>(AssetService)
+            .BindModel<MiningFacilityCatalog>(AssetService)
+            .BindModel<DefendPlatformCatalog>(AssetService)
+            .BindModel<SuperWeaponCatalog>(AssetService)
             .BindModel<WeaponsData>(AssetService)
             .BindModel<DamageMatrixData>(AssetService)
             .BindModel<LayerData>(AssetService);

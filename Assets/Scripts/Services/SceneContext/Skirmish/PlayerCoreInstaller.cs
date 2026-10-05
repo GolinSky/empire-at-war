@@ -28,6 +28,7 @@ namespace EmpireAtWar
     {
         [Inject] private IAssetService AssetService { get; }
         [Inject] private ILocalPlayer LocalPlayer { get; }
+        [Inject] private FactionCatalog FactionCatalog { get; }
 
         public override void InstallBindings()
         {
@@ -48,13 +49,11 @@ namespace EmpireAtWar
             Container.BindInterfacesNonLazyExt<ReinforcementUiController>();
 
             Container
-                .BindInterfacesAndSelfTo<PlayerFactionModel>()
+                .Bind<FactionRoster>()
                 .AsSingle()
-                .WithArguments(LocalPlayer.Slot.Faction);
-            Container
-                .BindInterfacesAndSelfTo<FactionResearchModel>()
-                .AsSingle()
-                .WithArguments(LocalPlayer.Slot.Faction);
+                .WithArguments(FactionCatalog.Get(LocalPlayer.Slot.Faction));
+            Container.BindInterfacesAndSelfTo<PlayerFactionModel>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FactionResearchModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<SuperWeaponModel>().AsSingle();
             Container.BindInterfacesNonLazyExt<SuperWeaponPresenter>();
             Container.BindInterfacesNonLazyExt<FactionService>();

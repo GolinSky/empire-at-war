@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f183621239f198344ac5bde90521deb0, type: 3}
+  m_Name: MiningFacilityCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.MiningFacility.MiningFacilityCatalog
+  entries:
+    keyValue:
+    - key: 0
+      value:
+        matchups: {fileID: 0}
+        description: Construct at an owned capture site to provide recurring credits.
+        role: Mining facility
+        iconKey: c54029d425acba74c9c5d702e49710b6:21300000
+        isHero: 0
+        <Name>k__BackingField: Mining Facility
+        <MaxCount>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 0
+        <Price>k__BackingField: 200
+        <BuildTime>k__BackingField: 5
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: c54029d425acba74c9c5d702e49710b6,
+          type: 3}

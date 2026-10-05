@@ -1,0 +1,467 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02badccc713aa9748baa10babdf75dd5, type: 3}
+  m_Name: SeparatistFaction
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Factions.FactionDefinition
+  factionType: 1
+  ships:
+    keyValue:
+    - key: 100
+      value:
+        matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
+        description: Heavy and medium turbolasers, supported by ion cannons, engage
+          large ships.
+        role: "Capital \xB7 Battle line / carrier"
+        iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+        isHero: 0
+        <Name>k__BackingField: Providence
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 60
+        <UnitCapacity>k__BackingField: 5
+        <Icon>k__BackingField: {fileID: 21300000, guid: 60d91c69afc54ad4fa9b45f6990ff8af,
+          type: 3}
+    - key: 101
+      value:
+        matchups: {fileID: 11400000, guid: 2565f6fe8bb5a3243986c21b8d92a67b, type: 2}
+        description: Medium turbolasers provide supporting fire against smaller warships.
+        role: "Frigate \xB7 Fire support"
+        iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+        isHero: 0
+        <Name>k__BackingField: Recusant
+        <MaxCount>k__BackingField: 30
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 3500
+        <BuildTime>k__BackingField: 29
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f,
+          type: 3}
+    - key: 102
+      value:
+        matchups: {fileID: 11400000, guid: 8178ba0fff7501a4887859b5e2e4069e, type: 2}
+        description: Medium turbolasers concentrate fire on corvettes and frigates.
+        role: "Frigate \xB7 Medium gunship"
+        iconKey: abf3987a701188747b639680e9203c3e:21300000
+        isHero: 0
+        <Name>k__BackingField: Munificent
+        <MaxCount>k__BackingField: 40
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 3200
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: abf3987a701188747b639680e9203c3e,
+          type: 3}
+    - key: 103
+      value:
+        matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
+        description: Heavy and medium turbolasers defend a large carrier hull.
+        role: "Heavy capital \xB7 Carrier / heavy gunship"
+        iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+        isHero: 0
+        <Name>k__BackingField: Lucrehulk
+        <MaxCount>k__BackingField: 40
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 8000
+        <BuildTime>k__BackingField: 90
+        <UnitCapacity>k__BackingField: 5
+        <Icon>k__BackingField: {fileID: 21300000, guid: 8128fcc8b8e454e47ab592309d37208e,
+          type: 3}
+    - key: 104
+      value:
+        matchups: {fileID: 11400000, guid: 06d3083dadc16bb4ea8e64a692ecfa1e, type: 2}
+        description: 'Subjugator-class dreadnought: 34 turbolaser batteries, 20 laser
+          batteries and 8 shield-piercing Mass Drivers. Ion Pulse disables enemy
+          ships; a malfunction can disable Malevolence. Four hangars await Vulture/bomber
+          implementation.'
+        role: "Capital \xB7 Heavy gunship / carrier"
+        iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
+        isHero: 0
+        <Name>k__BackingField: Malevolence
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 60000
+        <BuildTime>k__BackingField: 120
+        <UnitCapacity>k__BackingField: 5
+        <Icon>k__BackingField: {fileID: 21300000, guid: 026b6c5cca68d9b49918db3c7c0c0a5f,
+          type: 3}
+    - key: 105
+      value:
+        matchups: {fileID: 11400000, guid: 699f1928bcda3284f9ae9ff3f683f5d8, type: 2}
+        description: Support carrier with 2 turbolasers, 6 lasers and 2 ion cannons.
+          Deploys 11 Vulture Droid and 8 Advanced Droid Bomber squadrons, with one
+          of each active at once. Power to Weapons improves self-defense.
+        role: "Capital \xB7 Dedicated carrier"
+        iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
+        isHero: 0
+        <Name>k__BackingField: Captor-class Carrier
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 3500
+        <BuildTime>k__BackingField: 30
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 5f8bc4a82cc113244b19a13b489bb0f0,
+          type: 3}
+    - key: 106
+      value:
+        matchups: {fileID: 11400000, guid: a185bb400e77c2f4bb926ecd586ede7a, type: 2}
+        description: CIS patrol corvette with eight laser cannons. Screens the fleet
+          against fighters and bombers; Power to Engines boosts pursuit and escape.
+          Vulnerable to frigates and larger warships.
+        role: "Corvette \xB7 Anti-fighter screen"
+        iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+        isHero: 0
+        <Name>k__BackingField: Patrol Frigate
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 1500
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: c204e9888dc32854493ab00345e38bf4,
+          type: 3}
+    - key: 107
+      value:
+        matchups: {fileID: 11400000, guid: 5253bdace10ccf24b9253110f4869c48, type: 2}
+        description: Lightly armed CIS transport with 300 hull, 20 shields and a
+          medium laser cannon. Its weapon cannot be targeted separately. Avoid sustained
+          combat with warships.
+        role: "Transport \xB7 Light support"
+        iconKey: 69c29902694322d4aacf1446e4b7f487:21300000
+        isHero: 0
+        <Name>k__BackingField: C-9979 Lander
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 10
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 69c29902694322d4aacf1446e4b7f487,
+          type: 3}
+    - key: 108
+      value:
+        matchups: {fileID: 11400000, guid: e053a1b798d6f5f4d85501286790670d, type: 2}
+        description: Fast CIS assault frigate, formerly the Techno Union Frigate.
+          Four twin turbolasers, seven turbolasers, two lasers, four point-defense
+          cannons and three ion cannons deliver strong offensive firepower. Thin
+          shields favor hit-and-run attacks. Power to Weapons temporarily boosts
+          offensive output.
+        role: Frigate / Fast assault / Hit-and-run
+        iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
+        isHero: 0
+        <Name>k__BackingField: Dispatcher-class Frigate
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 3400
+        <BuildTime>k__BackingField: 33
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: f7655a1be55b2a74aa984b640ec46f5d,
+          type: 3}
+  squadrons:
+    keyValue:
+    - key: 100
+      value:
+        matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
+        description: A squadron of fighters. Surviving members share orders and take
+          damage individually.
+        role: "Fighter squadron \xB7 Interceptor"
+        iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
+        isHero: 0
+        <Name>k__BackingField: Belbullab-22 Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 600
+        <BuildTime>k__BackingField: 5
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 6475693b4e9a23943aa6f6d43d698437,
+          type: 3}
+    - key: 101
+      value:
+        matchups: {fileID: 11400000, guid: cfd79fcde45f938438f66f8a3a6f392e, type: 2}
+        description: Four autonomous Trade Federation droid bombers with 2 laser
+          cannons and 1 proton torpedo launcher each. Effective against capital ships,
+          frigates and stations; slow and vulnerable to fighters. No hyperdrive.
+        role: "Bomber squadron \xB7 Anti-capital"
+        iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+        isHero: 0
+        <Name>k__BackingField: Advanced Droid Bomber Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 450
+        <BuildTime>k__BackingField: 8
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 0148d1e047b1c024494b31fb02e655ed,
+          type: 3}
+    - key: 102
+      value:
+        matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
+        description: Seven Vulture-class droid starfighters with four laser cannons
+          each. Cheap, fast interceptors with 35 hull per fighter and no shields.
+          Effective against bombers and fighters; vulnerable to corvettes and dedicated
+          anti-fighter weapons. No hyperdrive.
+        role: "Interceptor squadron \xB7 Swarm fighter"
+        iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+        isHero: 0
+        <Name>k__BackingField: Vulture Droid Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 350
+        <BuildTime>k__BackingField: 8
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 9fcb02cde6a89f84a91b532e31af44f4,
+          type: 3}
+  research:
+    keyValue:
+    - key: 0
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+            isHero: 0
+            <Name>k__BackingField: Increased Production I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 250
+            <BuildTime>k__BackingField: 10
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 1ef035bcae2fad145ab8ce8fa5776004,
+              type: 3}
+          effects:
+          - shipClasses: 
+            stat: 0
+            multiplier: 1.2
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
+            isHero: 0
+            <Name>k__BackingField: Increased Production II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 500
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 1ef035bcae2fad145ab8ce8fa5776004,
+              type: 3}
+          effects:
+          - shipClasses: 
+            stat: 0
+            multiplier: 1.4
+    - key: 1
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Weapons I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1000
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
+              type: 3}
+          effects:
+          - shipClasses: 0200000003000000
+            stat: 1
+            multiplier: 1.25
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Weapons II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 20
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
+              type: 3}
+          effects:
+          - shipClasses: 020000000300000004000000
+            stat: 1
+            multiplier: 1.25
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Weapons III
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 2000
+            <BuildTime>k__BackingField: 25
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
+              type: 3}
+          effects:
+          - shipClasses: 02000000030000000400000005000000
+            stat: 1
+            multiplier: 1.25
+    - key: 3
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Engines I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1000
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
+              type: 3}
+          effects:
+          - shipClasses: 0200000003000000
+            stat: 2
+            multiplier: 1.15
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Engines II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 20
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
+              type: 3}
+          effects:
+          - shipClasses: 020000000300000004000000
+            stat: 2
+            multiplier: 1.15
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Engines III
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 2000
+            <BuildTime>k__BackingField: 25
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 129f6cb74bcbfd146abb8dcd483d2864,
+              type: 3}
+          effects:
+          - shipClasses: 02000000030000000400000005000000
+            stat: 2
+            multiplier: 1.15
+    - key: 4
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Defenses I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 950
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 1
+            multiplier: 1.15
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Defenses II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 20
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 1
+            multiplier: 1.3
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
+            isHero: 0
+            <Name>k__BackingField: Improved Defenses III
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 2800
+            <BuildTime>k__BackingField: 25
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: fd2f2005d81ff1545af20e1feec39c0e,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 1
+            multiplier: 1.5
+    - key: 5
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Reinforced Structures
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1000
+            <BuildTime>k__BackingField: 20
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 3
+            multiplier: 0.85
+  miningFacilities: 00000000
+  defendPlatforms: 00000000
+  superWeapons: 000000000100000002000000

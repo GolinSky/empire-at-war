@@ -124,8 +124,8 @@ namespace EmpireAtWar.Editor.Squadrons
             weaponObject.ApplyModifiedPropertiesWithoutUndo();
             SetObjectList(weaponComponent, "hardPoints", guns);
             AddSelectionRing(root.transform, selection);
-            Sprite unitIcon = AssetDatabase.LoadAssetAtPath<FactionsData>(
-                "Assets/Settings/Data/Models/Factions/FactionsData.asset").GetSquadronFactionData(spec.Type).Icon;
+            Sprite unitIcon = AssetDatabase.LoadAssetAtPath<FactionCatalog>(
+                "Assets/Settings/Data/Factions/Shared/FactionCatalog.asset").GetSquadronFactionData(spec.Type).Icon;
             AddWorldIcon(root, unitIcon);
         }
 

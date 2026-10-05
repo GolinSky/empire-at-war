@@ -11,11 +11,11 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
     {
         private readonly IHealthModelObserver _health;
 
-        private readonly FactionsData _factions;
+        private readonly FactionCatalog _factions;
 
         private readonly SquadronType _squadronType;
 
-        public SquadronTooltipFacade(IHealthModelObserver health, FactionsData factions, SquadronType squadronType)
+        public SquadronTooltipFacade(IHealthModelObserver health, FactionCatalog factions, SquadronType squadronType)
         {
             _squadronType = squadronType;
             _factions = factions;

@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -369,8 +370,7 @@ namespace EmpireAtWar.Tests.Editor
 
     public sealed class EnemyProductionStrategyTests
     {
-        private const string FACTIONS_MODEL_PATH =
-            "Assets/Settings/Data/Models/Factions/FactionsData.asset";
+        private const string SHARED_FACTION_DATA_PATH = "Assets/Settings/Data/Factions/Shared/";
 
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
@@ -398,18 +398,12 @@ namespace EmpireAtWar.Tests.Editor
             ShipType preferredShip,
             ShipType expectedShip)
         {
-            FactionsData source =
-                AssetDatabase.LoadAssetAtPath<FactionsData>(FACTIONS_MODEL_PATH);
-            Assert.That(source, Is.Not.Null);
-
-            FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
             try
             {
-                EnemyFactionModel factionModel =
-                    new EnemyFactionModel(factionsModel, FactionType.Republic);
+                EnemyFactionModel factionModel = CreateFactionModel(FactionType.Republic);
                 SetBackingField(
                     reinforcementData,
                     nameof(ReinforcementData.MaxUnitCapacity),
@@ -468,7 +462,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(factionsModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -480,18 +473,12 @@ namespace EmpireAtWar.Tests.Editor
             float money,
             ShipType? expectedShip)
         {
-            FactionsData source =
-                AssetDatabase.LoadAssetAtPath<FactionsData>(FACTIONS_MODEL_PATH);
-            Assert.That(source, Is.Not.Null);
-
-            FactionsData factionsModel = UnityEngine.Object.Instantiate(source);
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
 
             try
             {
-                EnemyFactionModel factionModel =
-                    new EnemyFactionModel(factionsModel, FactionType.Separatist);
+                EnemyFactionModel factionModel = CreateFactionModel(FactionType.Separatist);
                 factionModel.CurrentLevel = 5;
                 SetBackingField(
                     reinforcementData,
@@ -559,7 +546,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                UnityEngine.Object.DestroyImmediate(factionsModel);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
             }
         }
@@ -607,6 +593,24 @@ namespace EmpireAtWar.Tests.Editor
         private static UnitLimitKey GetUnitId<TRequest>(string requestId)
         {
             return UnitLimitKey.For<TRequest>(requestId);
+        }
+
+        private static EnemyFactionModel CreateFactionModel(FactionType factionType)
+        {
+            FactionCatalog catalog = LoadSharedData<FactionCatalog>();
+            FactionRoster roster = new FactionRoster(
+                catalog.Get(factionType),
+                LoadSharedData<MiningFacilityCatalog>(),
+                LoadSharedData<DefendPlatformCatalog>(),
+                LoadSharedData<SuperWeaponCatalog>());
+            return new EnemyFactionModel(LoadSharedData<StationLevelData>(), roster);
+        }
+
+        private static T LoadSharedData<T>() where T : ScriptableObject
+        {
+            T data = AssetDatabase.LoadAssetAtPath<T>(SHARED_FACTION_DATA_PATH + typeof(T).Name + ".asset");
+            Assert.That(data, Is.Not.Null, typeof(T).Name);
+            return data;
         }
 
         private static void SetBackingField<T>(

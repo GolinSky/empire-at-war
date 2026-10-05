@@ -30,7 +30,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly EnemyFactionModel _factionModel;
         private readonly EconomyModel _economyModel;
-        private readonly FactionsData _factionsData;
         private readonly Dictionary<SuperWeaponType, float> _chargeTimeLeft =
             new Dictionary<SuperWeaponType, float>();
         private readonly List<SuperWeaponType> _charging = new List<SuperWeaponType>();
@@ -40,14 +39,12 @@ namespace EmpireAtWar.Services.Enemy
         public EnemySuperWeaponController(ISuperWeaponFireService superWeaponFireService, IEntityLocator entities,
             IStationRegistry stationRegistry, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
-            FactionsData factionsData,
             PlayerSlot owner)
         {
             _owner = owner;
             _model = model;
             _factionModel = factionModel;
             _economyModel = economyModel;
-            _factionsData = factionsData;
             _superWeaponFireService = superWeaponFireService;
             _entities = entities;
             _stationRegistry = stationRegistry;
@@ -62,7 +59,7 @@ namespace EmpireAtWar.Services.Enemy
             if (_decisionTimer > 0f) return;
             _decisionTimer = DECISION_INTERVAL;
 
-            foreach (KeyValuePair<SuperWeaponType, FactionData> option in _factionsData.SuperWeaponFactionData)
+            foreach (KeyValuePair<SuperWeaponType, FactionData> option in _factionModel.SuperWeapons)
             {
                 SuperWeaponState state = _model.GetState(option.Key);
                 if (_model.CanFire(option.Key))
@@ -99,7 +96,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 // Same rule as player production: a charge that completes without a station is refunded.
                 _model.CancelCharging(type);
-                _economyModel.AddMoney(_factionsData.SuperWeaponFactionData[type].Price);
+                _economyModel.AddMoney(_factionModel.SuperWeapons[type].Price);
             }
         }
 

@@ -182,6 +182,10 @@
   - **Status**: 2026-10-04 phases 1–4 implemented; Unity compile clean, CoreGameUi prefab re-keyed and read back. No Play Mode or automated tests run.
   - **Remaining**: Play Mode acceptance (fade, fog, camera drift, hitch, Zenject graph, Esc during loading, pause/speed/menu/end/exit). Fader added 2026-10-04.
 
+- [ ] **Faction scalability (per-faction data, unit/faction definitions)**
+  - **Plan**: [[TODOs/Refactoring/Faction_Scalability|Faction Scalability]]
+  - **Remaining**: Phase 1 playtest; Phases 2–5.
+
 ### Tooling
 
 - [ ] **Add Jenkins GitHub draft releases**

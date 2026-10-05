@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
@@ -19,14 +23,23 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject root = new GameObject(nameof(PlayerCoreInstallerTests));
             root.SetActive(false);
-            FactionsData factionsData = ScriptableObject.CreateInstance<FactionsData>();
             using TestAssetService assets = new TestAssetService();
 
             try
             {
                 DiContainer parent = new DiContainer();
                 parent.Bind<FactionType>().WithId(TestPlayers.Human).FromInstance(factionType);
-                parent.Bind<FactionsData>().FromInstance(factionsData);
+                const string sharedPath = "Assets/Settings/Data/Factions/Shared/";
+                parent.Bind<FactionCatalog>().FromInstance(
+                    AssetDatabase.LoadAssetAtPath<FactionCatalog>(sharedPath + "FactionCatalog.asset"));
+                parent.Bind<StationLevelData>().FromInstance(
+                    AssetDatabase.LoadAssetAtPath<StationLevelData>(sharedPath + "StationLevelData.asset"));
+                parent.Bind<MiningFacilityCatalog>().FromInstance(
+                    AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(sharedPath + "MiningFacilityCatalog.asset"));
+                parent.Bind<DefendPlatformCatalog>().FromInstance(
+                    AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(sharedPath + "DefendPlatformCatalog.asset"));
+                parent.Bind<SuperWeaponCatalog>().FromInstance(
+                    AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(sharedPath + "SuperWeaponCatalog.asset"));
                 DiContainer container = parent.CreateSubContainer();
                 container.Bind<IAssetService>().FromInstance(assets);
                 container.Bind<Zenject.SceneContext>().FromInstance(root.AddComponent<Zenject.SceneContext>());
@@ -41,7 +54,6 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                Object.DestroyImmediate(factionsData);
                 Object.DestroyImmediate(root);
             }
         }

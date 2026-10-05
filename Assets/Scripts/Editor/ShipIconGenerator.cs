@@ -14,7 +14,6 @@ namespace EmpireAtWar.Editor
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Ships";
         private const string ICON_OUTPUT_FOLDER = "Assets/Art/Textures/Ui/Icons/ShipIcon";
         private const string SHIP_UI_MODEL_PATH = "Assets/Settings/Data/Models/ShipUi/ShipUiData.asset";
-        private const string FACTIONS_MODEL_PATH = "Assets/Settings/Data/Models/Factions/FactionsData.asset";
 
         private const int ICON_RESOLUTION = 512;
         private const int ICON_RENDER_LAYER = 31; // Dedicated layer to isolate ship from scene environment
@@ -267,8 +266,8 @@ namespace EmpireAtWar.Editor
                 }
 
                 UpdateShipUiData(generatedSprites);
-                UpdateFactionsData(generatedSprites);
-                Debug.Log("[ShipIconGenerator] Successfully generated dead-centered 85%-fill blueprint ship icons and updated ShipUiData & FactionsData!");
+                UpdateFactionDefinitions(generatedSprites);
+                Debug.Log("[ShipIconGenerator] Successfully generated dead-centered 85%-fill blueprint ship icons and updated ShipUiData & faction definitions!");
             }
             finally
             {
@@ -428,62 +427,29 @@ namespace EmpireAtWar.Editor
             EditorUtility.SetDirty(modelAsset);
         }
 
-        private static void UpdateFactionsData(Dictionary<ShipType, Sprite> generatedSprites)
+        private static void UpdateFactionDefinitions(Dictionary<ShipType, Sprite> generatedSprites)
         {
-            UnityEngine.Object modelAsset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(FACTIONS_MODEL_PATH);
-            if (modelAsset == null)
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition)))
             {
-                Debug.LogError($"[ShipIconGenerator] Could not load FactionsData at {FACTIONS_MODEL_PATH}");
-                return;
-            }
-
-            SerializedObject serializedModel = new SerializedObject(modelAsset);
-            SerializedProperty wrapperProp = serializedModel.FindProperty("factionDataWrapper");
-            if (wrapperProp == null)
-            {
-                Debug.LogError("[ShipIconGenerator] Could not find factionDataWrapper property in FactionsData");
-                return;
-            }
-
-            SerializedProperty keyValueArray = wrapperProp.FindPropertyRelative("keyValue");
-            if (keyValueArray == null)
-            {
-                Debug.LogError("[ShipIconGenerator] Could not find keyValue array property in factionDataWrapper");
-                return;
-            }
-
-            for (int i = 0; i < keyValueArray.arraySize; i++)
-            {
-                SerializedProperty element = keyValueArray.GetArrayElementAtIndex(i);
-                SerializedProperty factionDictProp = element.FindPropertyRelative("value");
-                if (factionDictProp == null) continue;
-
-                SerializedProperty shipDataArray = factionDictProp.FindPropertyRelative("keyValue");
-                if (shipDataArray == null) continue;
+                FactionDefinition faction =
+                    AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                SerializedObject serializedFaction = new SerializedObject(faction);
+                SerializedProperty shipDataArray = serializedFaction.FindProperty("ships.keyValue");
 
                 for (int j = 0; j < shipDataArray.arraySize; j++)
                 {
                     SerializedProperty shipElement = shipDataArray.GetArrayElementAtIndex(j);
-                    SerializedProperty keyProp = shipElement.FindPropertyRelative("key");
-                    int shipTypeKey = keyProp.intValue;
+                    int shipTypeKey = shipElement.FindPropertyRelative("key").intValue;
 
                     if (generatedSprites.TryGetValue((ShipType)shipTypeKey, out Sprite sprite))
                     {
-                        SerializedProperty valueProp = shipElement.FindPropertyRelative("value");
-                        if (valueProp != null)
-                        {
-                            SerializedProperty iconProp = valueProp.FindPropertyRelative("<Icon>k__BackingField");
-                            if (iconProp != null)
-                            {
-                                iconProp.objectReferenceValue = sprite;
-                            }
-                        }
+                        shipElement.FindPropertyRelative("value.<Icon>k__BackingField").objectReferenceValue = sprite;
                     }
                 }
-            }
 
-            serializedModel.ApplyModifiedProperties();
-            EditorUtility.SetDirty(modelAsset);
+                serializedFaction.ApplyModifiedProperties();
+                EditorUtility.SetDirty(faction);
+            }
         }
 
         private class ShipMappingInfo

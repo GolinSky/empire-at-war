@@ -20,9 +20,9 @@ namespace EmpireAtWar.Models.Factions
         public IReadOnlyCollection<ResearchType> ResearchTypes => _lines.Keys;
         public float IncomeMultiplier { get; private set; } = 1f;
 
-        public FactionResearchModel(FactionsData factionsData, FactionType factionType)
+        public FactionResearchModel(FactionRoster roster)
         {
-            _lines = factionsData.GetResearchLines(factionType);
+            _lines = roster.ResearchLines;
         }
 
         public bool TryGetNextTier(ResearchType researchType, out ResearchTierData tier)

@@ -105,13 +105,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: FactionsData
-      value:
-        m_AssetGUID: 3de703d0a2c0ac5428de8b8f64093d18
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: MiningFacilityData
       value:
         m_AssetGUID: 4e9982630aa2fc24aadc3d4d3e5dea74

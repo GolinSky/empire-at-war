@@ -27,7 +27,7 @@ namespace EmpireAtWar.Presenters.Factions
         private readonly EmpireAtWar.Views.Game.ICoreGameHudStatus _hud;
         private readonly INotifier<BattleState> _battleState;
 
-        private readonly FactionsData _factionsData;
+        private readonly FactionRoster _roster;
         private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
         private TooltipHoverSubscription _tooltipHover;
@@ -47,13 +47,13 @@ namespace EmpireAtWar.Presenters.Factions
             EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
             EmpireAtWar.Views.Game.ICoreGameHudStatus hud,
             INotifier<BattleState> battleState,
-            FactionsData factionsData,
+            FactionRoster roster,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
             _factionService = factionService;
             _model = model;
             _research = research;
-            _factionsData = factionsData;
+            _roster = roster;
             _unitRequestFactory = unitRequestFactory;
             _routeNavigation = routeNavigation;
             _tooltips = new TooltipRequests(tooltipService);
@@ -122,7 +122,7 @@ namespace EmpireAtWar.Presenters.Factions
                 _ui.SetModel(_model);
                 _ui.SetResearch(_research);
                 _ui.SetPresenter(this);
-                _ui.SetData(_factionsData);
+                _ui.SetData(_roster);
                 _ui.SetUnitRequestFactory(_unitRequestFactory);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
