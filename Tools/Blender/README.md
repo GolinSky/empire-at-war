@@ -1,5 +1,18 @@
 # Blender / Rothana conversion
 
+## V-19 Torrent — 2026-10-05
+
+- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/V-19 Torrent Import.md`; acceptance plan `TODOs/Features/V19Torrent_Import.md`.
+- Source: RaW `ReV_v19_torrent.ALO`; original ALO and three referenced DDS hashes unchanged. Credits: mesh/textures Evillejedi; rigging z3r0x (`credits.txt`, V-19 entry).
+- Stage textures/binary audit with `uv run --with pillow python Tools/Blender/prepare_v19_torrent_textures.py`. Run `export_v19_torrent.py` once through Blender MCP on a fresh `V19Torrent Source` import. Requires Blender 3.6.23 and 23 imported bones; restore the binary-verified identity Root → 24 bones. Preserve deployed wings, attachments and four hidden helpers.
+- Source 12 meshes / 4,020 triangles → FBX/Unity 3,960; 60 zero-area engine faces removed. All nondegenerate triangle corners/UVs and bone names/parents match. Blender geometry/bone error ≤0.000164265/0.000106171 source units; Unity ≤0.000003258/0.000002030 project units, UV error 0. DDS→PNG pixels match exactly.
+- Type-first `RepublicShips/V19Torrent` art folders; visual/gameplay `V19Torrent.prefab` / `V19TorrentSquadronView.prefab`; own five-member reinforcement preview. FBX scale 0.02, centered member size 7.01667 × 3.24540 × 4 project units, root scale 1, bow +Z/up +Y.
+- Republic `SquadronType.V19Torrent = 5`: five fighters, ten `FighterLaser` weapons using `MuzzleA_00/01`, three engine trails per craft using `Object01/02/03`; hull/shields/regen 70/30/3, Fighter armor, cost/build/tech/population 400/6 s/1/1. User values override local RaW damage 8/build 8 s with 5/6 s; no separately targetable fighter systems.
+- Provisional cruise/combat 35/40 units/s, acceleration 30 units/s², turn 120°/s, bank 60°, spacing 5, height 11, limit 10; regeneration 3 each second. Navigation radius 17, selection diameter 34, member collider radius 4. Source movement 5/3.5/6 uses different units; no tech-5 V-Wing replacement configured.
+- Registered roster, View/Data addresses, asset mappings, HUD/tooltip icons, silhouette, matchups and own placement. Authored alpha team mask covers 20.00885%; all eight palettes rendered, blue/green inspected. Icon 512 × 512 and five-member formation rendered.
+- Source sibling `ReV_v19_torrent-Converted/` contains packed editable blends, FBX, PNGs, reports, scripts, previews and full RaW credits. Hunt is absent from the current ability system and remains pending; wing/EaW shader animation is outside the static import.
+- Saved references, geometry, imports and compilation verified; no missing scripts, broken references, donor models or new Console errors. MainMenuScene stayed clean. No automated tests or Play Mode run; runtime acceptance and provisional balance remain active.
+
 ## Imperator-class Star Destroyer — 2026-10-05
 
 - Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Imperator Import.md`; remaining acceptance plan `TODOs/Features/Imperator_Import.md`.

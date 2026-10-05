@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.Squadrons
         ARC170 = 2,
         YWing = 3,
         NTB630 = 4,
+        V19Torrent = 5,
 
         //separatist
         Belbullab22 = 100,
