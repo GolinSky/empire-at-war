@@ -54,6 +54,12 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInitializableExecutionOrder<SquadronFlightComponent>(-90);
             Container.Bind<SquadronHealthModel>().AsSingle();
             Container.Bind<SquadronFlightModel>().AsSingle();
+            Container.Bind<SFoilsModel>().AsSingle();
+            if (System.Array.IndexOf(data.Abilities, EmpireAtWar.Services.ShipAbilities.ShipAbilityId.LockSFoils) >= 0)
+            {
+                Container.BindInterfacesAndSelfTo<EmpireAtWar.ViewComponents.Squadrons.SFoilsView>().FromComponentInHierarchy().AsCached();
+                Container.BindInterfacesExt<SFoilsFacade>();
+            }
             Container.Bind<UnitOrderModel>().AsSingle();
             Container.BindInterfacesAndSelfTo<SquadronPilot>().AsSingle();
             Container.Bind<SquadronTargetSelector>().AsSingle();

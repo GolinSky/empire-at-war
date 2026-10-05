@@ -51,6 +51,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private GameObjectContext _context;
         private LazyInject<IEntity> _entity;
         private EntityComponentLifecycle _componentLifecycle;
+        private SFoilsModel _sFoils;
+        private List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
 
         private float _huntRetargetTimer;
 
@@ -71,7 +73,8 @@ namespace EmpireAtWar.Entities.Squadrons
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents,
-            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService)
+            IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
+            SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews)
         {
             _flight = flight;
             _health = health;
@@ -79,6 +82,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon = weapon;
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
+            _sFoils = sFoils;
+            _sFoilsViews = sFoilsViews;
             _orders = orders;
             _pilot = pilot;
             _targetSelector = targetSelector;
@@ -96,6 +101,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _health.HealthModelObserver.OnDestroy += HandleDestroyed;
             _radar.Enemies.ItemAdded += HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted += HandleShotEmitted;
+            _sFoils.Changed += HandleSFoilsChanged;
+            foreach (var view in _sFoilsViews) view.SetClosed(_sFoils.IsClosed, true);
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
@@ -116,6 +123,11 @@ namespace EmpireAtWar.Entities.Squadrons
         }
 
         private void HandleDestroyed() => Release(true);
+
+        private void HandleSFoilsChanged()
+        {
+            foreach (var view in _sFoilsViews) view.SetClosed(_sFoils.IsClosed, false);
+        }
 
         private void HandleShotEmitted(WeaponProfile profile, Transform muzzle) =>
             _shipSfxService.TryPlayWeaponShot(_entity.Value, profile, muzzle);
@@ -308,6 +320,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _isReleased = true;
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
+            _sFoils.Changed -= HandleSFoilsChanged;
             _shipSfxService.ReleaseShip(_entity.Value);
             _orders.Clear();
             _engaged = null;

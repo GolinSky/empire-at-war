@@ -1,0 +1,4 @@
+Vanilla Star Wars: Empire at War T-65 X-Wing art, extracted from the locally supplied game data.
+Original game: Petroglyph Games / LucasArts. Star Wars property: Lucasfilm.
+The individual model and texture artists are not identified in the supplied extraction.
+This conversion preserves the original ALO, ALA and DDS files and does not claim ownership of their art.

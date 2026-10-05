@@ -1,0 +1,78 @@
+{
+  "meshes": [
+    {
+      "mesh": "collisionbox",
+      "triangles": 12,
+      "max_position_error": 1.574683581489465e-07,
+      "max_uv_error": 0,
+      "uv_verified": true
+    },
+    {
+      "mesh": "engines",
+      "triangles": 2,
+      "max_position_error": 4.14893139856128e-08,
+      "max_uv_error": 0,
+      "uv_verified": true
+    },
+    {
+      "mesh": "X_Wing_LOD0",
+      "triangles": 472,
+      "max_position_error": 8.367782175587544e-08,
+      "max_uv_error": 0.00034322624515339647,
+      "uv_verified": false
+    },
+    {
+      "mesh": "X_Wing_LOD1",
+      "triangles": 1732,
+      "max_position_error": 8.367782175587544e-08,
+      "max_uv_error": 3.9400567310001824e-08,
+      "uv_verified": true
+    },
+    {
+      "mesh": "shadow",
+      "triangles": 387,
+      "max_position_error": 5.706050831524134e-08,
+      "max_uv_error": 3.784456553773163e-08,
+      "uv_verified": false
+    },
+    {
+      "mesh": "MuzzleA_03_Flash",
+      "triangles": 8,
+      "max_position_error": 7.88249675819922e-08,
+      "max_uv_error": 1.515046276540983e-08,
+      "uv_verified": true
+    },
+    {
+      "mesh": "MuzzleA_01_Flash",
+      "triangles": 8,
+      "max_position_error": 8.072728955900693e-08,
+      "max_uv_error": 1.515046276540983e-08,
+      "uv_verified": true
+    },
+    {
+      "mesh": "MuzzleA_02_Flash",
+      "triangles": 8,
+      "max_position_error": 6.526330531601608e-08,
+      "max_uv_error": 1.515046276540983e-08,
+      "uv_verified": true
+    },
+    {
+      "mesh": "MuzzleA_00_Flash",
+      "triangles": 8,
+      "max_position_error": 6.277500329266747e-08,
+      "max_uv_error": 1.515046276540983e-08,
+      "uv_verified": true
+    },
+    {
+      "mesh": "engines01",
+      "triangles": 2,
+      "max_position_error": 4.325095849659559e-08,
+      "max_uv_error": 0,
+      "uv_verified": true
+    }
+  ],
+  "source_hashes_unchanged": true,
+  "bones": {
+    "boneError": 1.67195856e-06
+  }
+}

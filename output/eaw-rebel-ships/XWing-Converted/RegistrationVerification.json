@@ -1,0 +1,56 @@
+{
+  "factionName": "T-65 X-Wing Squadron",
+  "Price": 500,
+  "BuildTime": 15,
+  "AvailableLevel": 1,
+  "UnitCapacity": 1,
+  "IsToggle": true,
+  "CanCancel": true,
+  "Duration": 0.0,
+  "RecoveryDelay": 0.0,
+  "settings": "LockSFoilsSettings",
+  "registrations": [
+    {
+      "asset": "Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset",
+      "key": "300",
+      "target": "Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png"
+    },
+    {
+      "asset": "Assets/Settings/Data/Models/ShipUi/ShipUiData.asset",
+      "key": "300",
+      "target": "Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png"
+    },
+    {
+      "asset": "Assets/Settings/Data/Reinforcement/ReinforcementData.asset",
+      "key": "300",
+      "target": "Assets/Prefabs/Ui/Reinforcement/XWingReinforcementView.prefab"
+    },
+    {
+      "asset": "Assets/Settings/Data/Models/Audio/ShipSfxData.asset",
+      "key": "24",
+      "target": ""
+    },
+    {
+      "asset": "Assets/Settings/Data/Models/Audio/ShipSfxData.asset",
+      "key": "18",
+      "target": ""
+    },
+    {
+      "asset": "Assets/Settings/Data/Models/Weapon/WeaponsData.asset",
+      "key": "24",
+      "target": ""
+    },
+    {
+      "asset": "Assets/Prefabs/Models/Squadrons/XWingSquadronView.prefab",
+      "address": "XWingSquadronView",
+      "group": "View",
+      "guid": "54d09cd5e31fdef4690255567dcdbea9"
+    },
+    {
+      "asset": "Assets/Settings/Data/Squadron/XWingSquadronData.asset",
+      "address": "XWingSquadronData",
+      "group": "Data",
+      "guid": "718a28a27e285794ea1ed1cdec08ee79"
+    }
+  ]
+}

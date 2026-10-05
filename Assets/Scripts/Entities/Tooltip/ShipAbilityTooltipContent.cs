@@ -22,7 +22,7 @@ namespace EmpireAtWar.Entities.Tooltip
                 remaining = Math.Max(remaining, slot.TimeLeft);
             }
             return new TooltipContent(title: definition.DisplayName, description: definition.Description, iconKey: icons.Register(definition.Icon),
-                stats: new[]
+                stats: definition.IsToggle ? Array.Empty<TooltipStat>() : new[]
                 {
                     new TooltipStat(label: "Range", current: definition.Range),
                     new TooltipStat(label: "Duration (s)", current: definition.Settings.GetEffectDuration(definition.Duration)),

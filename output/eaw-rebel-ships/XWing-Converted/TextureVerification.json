@@ -1,0 +1,19 @@
+{
+  "RV_XWING.DDS": true,
+  "RV_XWING_GLOSS.DDS": true,
+  "W_LASER_SMALL.DDS": true,
+  "team_mask_exact": true,
+  "icon_bbox": [
+    34,
+    80,
+    457,
+    414
+  ],
+  "silhouette_bbox": [
+    34,
+    80,
+    457,
+    414
+  ],
+  "unique_palettes": 8
+}

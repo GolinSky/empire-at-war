@@ -826,3 +826,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: XWingSquadronView
+      value:
+        m_AssetGUID: 54d09cd5e31fdef4690255567dcdbea9
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: XWingSquadronData
+      value:
+        m_AssetGUID: 718a28a27e285794ea1ed1cdec08ee79
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

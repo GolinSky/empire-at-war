@@ -1,0 +1,948 @@
+{
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/XWing.prefab",
+      "missingScripts": 0,
+      "broken": [],
+      "collections": {},
+      "guns": [],
+      "visibleRenderers": 5,
+      "visibleTriangles": 1732,
+      "rootScale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0,
+        "normalized": {
+          "x": 0.577350259,
+          "y": 0.577350259,
+          "z": 0.577350259,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 1.73205078,
+        "sqrMagnitude": 3.0
+      },
+      "bounds": {
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "magnitude": 0.0,
+          "sqrMagnitude": 0.0
+        },
+        "size": {
+          "x": 3.16831827,
+          "y": 1.28642273,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 5.262426,
+          "sqrMagnitude": 27.6931248
+        },
+        "extents": {
+          "x": 1.58415914,
+          "y": 0.643211365,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "min": {
+          "x": -1.58415914,
+          "y": -0.643211365,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.6020642,
+            "y": -0.244454324,
+            "z": -0.7601057,
+            "normalized": {
+              "x": -0.602064252,
+              "y": -0.244454339,
+              "z": -0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "max": {
+          "x": 1.58415914,
+          "y": 0.643211365,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        }
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/XWingSquadronView.prefab",
+      "missingScripts": 0,
+      "broken": [],
+      "collections": {
+        "SquadronFlightComponent/XWingSquadronView/fighters": 5,
+        "SquadronHealthComponent/XWingSquadronView/fighters": 5,
+        "FogVisibilityComponent/XWingSquadronView/hardPoints": 20,
+        "FogVisibilityComponent/XWingSquadronView/renderers": 60,
+        "TeamColorView/XWingSquadronView/meshRenderers": 25,
+        "SFoilsView/XWingSquadronView/animations": 5,
+        "WeaponComponent/Weapons/hardPoints": 20,
+        "FighterView/Fighter0/engineTrails": 4,
+        "FighterView/Fighter0/additionalGuns": 3,
+        "FighterView/Fighter1/engineTrails": 4,
+        "FighterView/Fighter1/additionalGuns": 3,
+        "FighterView/Fighter2/engineTrails": 4,
+        "FighterView/Fighter2/additionalGuns": 3,
+        "FighterView/Fighter3/engineTrails": 4,
+        "FighterView/Fighter3/additionalGuns": 3,
+        "FighterView/Fighter4/engineTrails": 4,
+        "FighterView/Fighter4/additionalGuns": 3
+      },
+      "guns": [
+        {
+          "id": 3,
+          "parent": "MuzzleA_03",
+          "weapon": 24
+        },
+        {
+          "id": 1,
+          "parent": "MuzzleA_01",
+          "weapon": 24
+        },
+        {
+          "id": 2,
+          "parent": "MuzzleA_02",
+          "weapon": 24
+        },
+        {
+          "id": 0,
+          "parent": "MuzzleA_00",
+          "weapon": 24
+        },
+        {
+          "id": 7,
+          "parent": "MuzzleA_03",
+          "weapon": 24
+        },
+        {
+          "id": 5,
+          "parent": "MuzzleA_01",
+          "weapon": 24
+        },
+        {
+          "id": 6,
+          "parent": "MuzzleA_02",
+          "weapon": 24
+        },
+        {
+          "id": 4,
+          "parent": "MuzzleA_00",
+          "weapon": 24
+        },
+        {
+          "id": 11,
+          "parent": "MuzzleA_03",
+          "weapon": 24
+        },
+        {
+          "id": 9,
+          "parent": "MuzzleA_01",
+          "weapon": 24
+        },
+        {
+          "id": 10,
+          "parent": "MuzzleA_02",
+          "weapon": 24
+        },
+        {
+          "id": 8,
+          "parent": "MuzzleA_00",
+          "weapon": 24
+        },
+        {
+          "id": 15,
+          "parent": "MuzzleA_03",
+          "weapon": 24
+        },
+        {
+          "id": 13,
+          "parent": "MuzzleA_01",
+          "weapon": 24
+        },
+        {
+          "id": 14,
+          "parent": "MuzzleA_02",
+          "weapon": 24
+        },
+        {
+          "id": 12,
+          "parent": "MuzzleA_00",
+          "weapon": 24
+        },
+        {
+          "id": 19,
+          "parent": "MuzzleA_03",
+          "weapon": 24
+        },
+        {
+          "id": 17,
+          "parent": "MuzzleA_01",
+          "weapon": 24
+        },
+        {
+          "id": 18,
+          "parent": "MuzzleA_02",
+          "weapon": 24
+        },
+        {
+          "id": 16,
+          "parent": "MuzzleA_00",
+          "weapon": 24
+        }
+      ],
+      "visibleRenderers": 25,
+      "visibleTriangles": 8660,
+      "rootScale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0,
+        "normalized": {
+          "x": 0.577350259,
+          "y": 0.577350259,
+          "z": 0.577350259,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 1.73205078,
+        "sqrMagnitude": 3.0
+      },
+      "bounds": {
+        "center": {
+          "x": 9.536743E-07,
+          "y": 0.0,
+          "z": -4.0,
+          "normalized": {
+            "x": 2.38418579E-07,
+            "y": 0.0,
+            "z": -1.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 4.0,
+          "sqrMagnitude": 16.0
+        },
+        "size": {
+          "x": 23.16832,
+          "y": 2.48642254,
+          "z": 12.0,
+          "normalized": {
+            "x": 0.883956552,
+            "y": 0.09486616,
+            "z": 0.4578441,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 26.209795,
+          "sqrMagnitude": 686.9533
+        },
+        "extents": {
+          "x": 11.58416,
+          "y": 1.24321127,
+          "z": 6.0,
+          "normalized": {
+            "x": 0.883956552,
+            "y": 0.09486616,
+            "z": 0.4578441,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 13.1048975,
+          "sqrMagnitude": 171.738327
+        },
+        "min": {
+          "x": -11.5841589,
+          "y": -1.24321127,
+          "z": -10.0,
+          "normalized": {
+            "x": -0.7544829,
+            "y": -0.08097106,
+            "z": -0.651305735,
+            "magnitude": 1.0,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 15.3537722,
+          "sqrMagnitude": 235.738312
+        },
+        "max": {
+          "x": 11.5841608,
+          "y": 1.24321127,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.9799564,
+            "y": 0.105168849,
+            "z": 0.169189021,
+            "normalized": {
+              "x": 0.979956448,
+              "y": 0.105168857,
+              "z": 0.169189036,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.0
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 11.8210983,
+          "sqrMagnitude": 139.738358
+        }
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/XWingReinforcementView.prefab",
+      "missingScripts": 0,
+      "broken": [],
+      "collections": {
+        "UnitSpawnView/XWingReinforcementView/meshRenderers": 25
+      },
+      "guns": [],
+      "visibleRenderers": 25,
+      "visibleTriangles": 8660,
+      "rootScale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0,
+        "normalized": {
+          "x": 0.577350259,
+          "y": 0.577350259,
+          "z": 0.577350259,
+          "magnitude": 1.0,
+          "sqrMagnitude": 0.99999994
+        },
+        "magnitude": 1.73205078,
+        "sqrMagnitude": 3.0
+      },
+      "bounds": {
+        "center": {
+          "x": 9.536743E-07,
+          "y": 0.0,
+          "z": -4.0,
+          "normalized": {
+            "x": 2.38418579E-07,
+            "y": 0.0,
+            "z": -1.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 4.0,
+          "sqrMagnitude": 16.0
+        },
+        "size": {
+          "x": 23.16832,
+          "y": 2.48642254,
+          "z": 12.0,
+          "normalized": {
+            "x": 0.883956552,
+            "y": 0.09486616,
+            "z": 0.4578441,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 26.209795,
+          "sqrMagnitude": 686.9533
+        },
+        "extents": {
+          "x": 11.58416,
+          "y": 1.24321127,
+          "z": 6.0,
+          "normalized": {
+            "x": 0.883956552,
+            "y": 0.09486616,
+            "z": 0.4578441,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 13.1048975,
+          "sqrMagnitude": 171.738327
+        },
+        "min": {
+          "x": -11.5841589,
+          "y": -1.24321127,
+          "z": -10.0,
+          "normalized": {
+            "x": -0.7544829,
+            "y": -0.08097106,
+            "z": -0.651305735,
+            "magnitude": 1.0,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 15.3537722,
+          "sqrMagnitude": 235.738312
+        },
+        "max": {
+          "x": 11.5841608,
+          "y": 1.24321127,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.9799564,
+            "y": 0.105168849,
+            "z": 0.169189021,
+            "normalized": {
+              "x": 0.979956448,
+              "y": 0.105168857,
+              "z": 0.169189036,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.0
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 11.8210983,
+          "sqrMagnitude": 139.738358
+        }
+      }
+    }
+  ],
+  "animationReports": [
+    {
+      "name": "CloseSFoils",
+      "frame": 0,
+      "bounds": {
+        "center": {
+          "x": 0.0,
+          "y": -5.96046448E-08,
+          "z": 0.0,
+          "normalized": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "magnitude": 0.0,
+            "sqrMagnitude": 0.0
+          },
+          "magnitude": 5.96046448E-08,
+          "sqrMagnitude": 3.55271368E-15
+        },
+        "size": {
+          "x": 3.16831827,
+          "y": 1.28642273,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 5.262426,
+          "sqrMagnitude": 27.6931248
+        },
+        "extents": {
+          "x": 1.58415914,
+          "y": 0.643211365,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "min": {
+          "x": -1.58415914,
+          "y": -0.6432114,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.6020642,
+            "y": -0.244454339,
+            "z": -0.7601057,
+            "normalized": {
+              "x": -0.602064252,
+              "y": -0.244454354,
+              "z": -0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "max": {
+          "x": 1.58415914,
+          "y": 0.6432113,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.602064252,
+            "y": 0.244454309,
+            "z": 0.7601058,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.63121271,
+          "sqrMagnitude": 6.92328072
+        }
+      }
+    },
+    {
+      "name": "CloseSFoils",
+      "frame": 15,
+      "bounds": {
+        "center": {
+          "x": -0.00180184841,
+          "y": -0.0007562041,
+          "z": 0.0,
+          "normalized": {
+            "x": -0.9220866,
+            "y": -0.386983544,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 0.001954099,
+          "sqrMagnitude": 3.81850259E-06
+        },
+        "size": {
+          "x": 3.32634759,
+          "y": 1.25757408,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.621491253,
+            "y": 0.2349638,
+            "z": 0.747355759,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 5.35220337,
+          "sqrMagnitude": 28.64608
+        },
+        "extents": {
+          "x": 1.66317379,
+          "y": 0.628787041,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.621491253,
+            "y": 0.2349638,
+            "z": 0.747355759,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 2.67610168,
+          "sqrMagnitude": 7.16152
+        },
+        "min": {
+          "x": -1.66497564,
+          "y": -0.629543245,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.621862948,
+            "y": -0.235132337,
+            "z": -0.7469935,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 2.67739964,
+          "sqrMagnitude": 7.16846848
+        },
+        "max": {
+          "x": 1.661372,
+          "y": 0.628030837,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.621119,
+            "y": 0.234795049,
+            "z": 0.7477182,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.67480445,
+          "sqrMagnitude": 7.15457964
+        }
+      }
+    },
+    {
+      "name": "CloseSFoils",
+      "frame": 30,
+      "bounds": {
+        "center": {
+          "x": -0.004511714,
+          "y": -0.00265419483,
+          "z": 0.0,
+          "normalized": {
+            "x": -0.861913741,
+            "y": -0.507055,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 0.00523453066,
+          "sqrMagnitude": 2.74003141E-05
+        },
+        "size": {
+          "x": 3.419139,
+          "y": 1.20403457,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6333889,
+            "y": 0.223045066,
+            "z": 0.740992248,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 5.398167,
+          "sqrMagnitude": 29.14021
+        },
+        "extents": {
+          "x": 1.70956945,
+          "y": 0.6020173,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6333889,
+            "y": 0.223045066,
+            "z": 0.740992248,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.69908357,
+          "sqrMagnitude": 7.2850523
+        },
+        "min": {
+          "x": -1.71408117,
+          "y": -0.6046715,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.634249151,
+            "y": -0.223742232,
+            "z": -0.7400456,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.702536,
+          "sqrMagnitude": 7.303702
+        },
+        "max": {
+          "x": 1.70505774,
+          "y": 0.5993631,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.632525,
+            "y": 0.22234565,
+            "z": 0.7419397,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 2.69563675,
+          "sqrMagnitude": 7.266458
+        }
+      }
+    },
+    {
+      "name": "OpenSFoils",
+      "frame": 0,
+      "bounds": {
+        "center": {
+          "x": -0.004511714,
+          "y": -0.00265419483,
+          "z": 0.0,
+          "normalized": {
+            "x": -0.861913741,
+            "y": -0.507055,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 0.00523453066,
+          "sqrMagnitude": 2.74003141E-05
+        },
+        "size": {
+          "x": 3.419139,
+          "y": 1.20403457,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6333889,
+            "y": 0.223045066,
+            "z": 0.740992248,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 5.398167,
+          "sqrMagnitude": 29.14021
+        },
+        "extents": {
+          "x": 1.70956945,
+          "y": 0.6020173,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6333889,
+            "y": 0.223045066,
+            "z": 0.740992248,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.69908357,
+          "sqrMagnitude": 7.2850523
+        },
+        "min": {
+          "x": -1.71408117,
+          "y": -0.6046715,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.634249151,
+            "y": -0.223742232,
+            "z": -0.7400456,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.702536,
+          "sqrMagnitude": 7.303702
+        },
+        "max": {
+          "x": 1.70505774,
+          "y": 0.5993631,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.632525,
+            "y": 0.22234565,
+            "z": 0.7419397,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 2.69563675,
+          "sqrMagnitude": 7.266458
+        }
+      }
+    },
+    {
+      "name": "OpenSFoils",
+      "frame": 15,
+      "bounds": {
+        "center": {
+          "x": -0.00180184841,
+          "y": -0.0007562041,
+          "z": 0.0,
+          "normalized": {
+            "x": -0.9220866,
+            "y": -0.386983544,
+            "z": 0.0,
+            "magnitude": 1.0,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 0.001954099,
+          "sqrMagnitude": 3.81850259E-06
+        },
+        "size": {
+          "x": 3.32634783,
+          "y": 1.25757408,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6214913,
+            "y": 0.2349638,
+            "z": 0.747355759,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 5.35220337,
+          "sqrMagnitude": 28.6460819
+        },
+        "extents": {
+          "x": 1.66317391,
+          "y": 0.628787041,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6214913,
+            "y": 0.2349638,
+            "z": 0.747355759,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.67610168,
+          "sqrMagnitude": 7.16152048
+        },
+        "min": {
+          "x": -1.66497576,
+          "y": -0.629543245,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.621863,
+            "y": -0.235132337,
+            "z": -0.7469935,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.00000012
+          },
+          "magnitude": 2.67739964,
+          "sqrMagnitude": 7.168469
+        },
+        "max": {
+          "x": 1.66137207,
+          "y": 0.628030837,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.621119,
+            "y": 0.234795019,
+            "z": 0.747718155,
+            "magnitude": 1.0,
+            "sqrMagnitude": 1.0
+          },
+          "magnitude": 2.67480469,
+          "sqrMagnitude": 7.15457964
+        }
+      }
+    },
+    {
+      "name": "OpenSFoils",
+      "frame": 30,
+      "bounds": {
+        "center": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0,
+          "magnitude": 0.0,
+          "sqrMagnitude": 0.0
+        },
+        "size": {
+          "x": 3.16831827,
+          "y": 1.28642273,
+          "z": 4.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 5.262426,
+          "sqrMagnitude": 27.6931248
+        },
+        "extents": {
+          "x": 1.58415914,
+          "y": 0.643211365,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "min": {
+          "x": -1.58415914,
+          "y": -0.643211365,
+          "z": -2.0,
+          "normalized": {
+            "x": -0.6020642,
+            "y": -0.244454324,
+            "z": -0.7601057,
+            "normalized": {
+              "x": -0.602064252,
+              "y": -0.244454339,
+              "z": -0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        },
+        "max": {
+          "x": 1.58415914,
+          "y": 0.643211365,
+          "z": 2.0,
+          "normalized": {
+            "x": 0.6020642,
+            "y": 0.244454324,
+            "z": 0.7601057,
+            "normalized": {
+              "x": 0.602064252,
+              "y": 0.244454339,
+              "z": 0.7601058,
+              "magnitude": 1.0,
+              "sqrMagnitude": 1.00000012
+            },
+            "magnitude": 0.99999994,
+            "sqrMagnitude": 0.99999994
+          },
+          "magnitude": 2.631213,
+          "sqrMagnitude": 6.923281
+        }
+      }
+    }
+  ],
+  "poseError": 0.000254618149,
+  "partitionError": 0.0,
+  "isCompiling": false
+}

@@ -25,5 +25,6 @@
         HeavyFighterLaser = 21,
         FighterProtonTorpedo = 22,
         MediumLaser = 23,
+        XWingLaser = 24,
     }
 }

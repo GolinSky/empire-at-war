@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 718a28a27e285794ea1ed1cdec08ee79
+    m_Address: XWingSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7445e02a6f7d76a4ea30a0e52623c366
     m_Address: TIEBomberSquadronData
     m_ReadOnly: 0
