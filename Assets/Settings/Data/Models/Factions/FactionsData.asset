@@ -27,8 +27,8 @@ MonoBehaviour:
             <Name>k__BackingField: 'Venator '
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 4
-            <Price>k__BackingField: 4500
-            <BuildTime>k__BackingField: 10
+            <Price>k__BackingField: 5800
+            <BuildTime>k__BackingField: 55
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: d899a22bd6d129e46a5aed14df2b81fa,
               type: 3}
@@ -42,8 +42,8 @@ MonoBehaviour:
             <Name>k__BackingField: Arquitens
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 3
-            <Price>k__BackingField: 3200
-            <BuildTime>k__BackingField: 5
+            <Price>k__BackingField: 3500
+            <BuildTime>k__BackingField: 28
             <UnitCapacity>k__BackingField: 2
             <Icon>k__BackingField: {fileID: 21300000, guid: ae699c8c0850c9245b84a34c5fb8d767,
               type: 3}
@@ -57,8 +57,8 @@ MonoBehaviour:
             <Name>k__BackingField: Acclamator
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 2
-            <Price>k__BackingField: 2500
-            <BuildTime>k__BackingField: 7
+            <Price>k__BackingField: 3000
+            <BuildTime>k__BackingField: 25
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 2ce1aa3deeeb0a541bb85a35a38c9390,
               type: 3}
@@ -136,7 +136,7 @@ MonoBehaviour:
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
             <Price>k__BackingField: 6000
-            <BuildTime>k__BackingField: 10
+            <BuildTime>k__BackingField: 55
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: 8ee3ff50731492c43b11469ff405c5d6,
               type: 3}
@@ -154,7 +154,7 @@ MonoBehaviour:
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
             <Price>k__BackingField: 70000
-            <BuildTime>k__BackingField: 90
+            <BuildTime>k__BackingField: 110
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
               type: 3}
@@ -171,8 +171,8 @@ MonoBehaviour:
             <Name>k__BackingField: Providence
             <MaxCount>k__BackingField: 20
             <AvailableLevel>k__BackingField: 5
-            <Price>k__BackingField: 4500
-            <BuildTime>k__BackingField: 20
+            <Price>k__BackingField: 6000
+            <BuildTime>k__BackingField: 60
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 60d91c69afc54ad4fa9b45f6990ff8af,
               type: 3}
@@ -186,8 +186,8 @@ MonoBehaviour:
             <Name>k__BackingField: Recusant
             <MaxCount>k__BackingField: 30
             <AvailableLevel>k__BackingField: 3
-            <Price>k__BackingField: 4000
-            <BuildTime>k__BackingField: 15
+            <Price>k__BackingField: 3500
+            <BuildTime>k__BackingField: 29
             <UnitCapacity>k__BackingField: 4
             <Icon>k__BackingField: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f,
               type: 3}
@@ -200,8 +200,8 @@ MonoBehaviour:
             <Name>k__BackingField: Munificent
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 1
-            <Price>k__BackingField: 2100
-            <BuildTime>k__BackingField: 10
+            <Price>k__BackingField: 3200
+            <BuildTime>k__BackingField: 25
             <UnitCapacity>k__BackingField: 3
             <Icon>k__BackingField: {fileID: 21300000, guid: abf3987a701188747b639680e9203c3e,
               type: 3}
@@ -214,8 +214,8 @@ MonoBehaviour:
             <Name>k__BackingField: Lucrehulk
             <MaxCount>k__BackingField: 40
             <AvailableLevel>k__BackingField: 4
-            <Price>k__BackingField: 5000
-            <BuildTime>k__BackingField: 25
+            <Price>k__BackingField: 8000
+            <BuildTime>k__BackingField: 90
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 8128fcc8b8e454e47ab592309d37208e,
               type: 3}
@@ -231,8 +231,8 @@ MonoBehaviour:
             <Name>k__BackingField: Malevolence
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5
-            <Price>k__BackingField: 20000
-            <BuildTime>k__BackingField: 90
+            <Price>k__BackingField: 60000
+            <BuildTime>k__BackingField: 120
             <UnitCapacity>k__BackingField: 5
             <Icon>k__BackingField: {fileID: 21300000, guid: 026b6c5cca68d9b49918db3c7c0c0a5f,
               type: 3}
@@ -929,7 +929,7 @@ MonoBehaviour:
     <Name>k__BackingField: Level 2
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 1
-    <Price>k__BackingField: 100
+    <Price>k__BackingField: 2000
     <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
@@ -941,7 +941,7 @@ MonoBehaviour:
     <Name>k__BackingField: Level 3
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 2
-    <Price>k__BackingField: 200
+    <Price>k__BackingField: 3200
     <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
@@ -953,7 +953,7 @@ MonoBehaviour:
     <Name>k__BackingField: Level 4
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 3
-    <Price>k__BackingField: 400
+    <Price>k__BackingField: 4000
     <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
@@ -965,7 +965,7 @@ MonoBehaviour:
     <Name>k__BackingField: Level 5
     <MaxCount>k__BackingField: 1
     <AvailableLevel>k__BackingField: 4
-    <Price>k__BackingField: 800
+    <Price>k__BackingField: 5500
     <BuildTime>k__BackingField: 5
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
