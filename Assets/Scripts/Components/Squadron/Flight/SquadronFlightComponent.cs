@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
@@ -19,7 +19,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         IInitializable, ILateDisposable
     {
         private IVisionService _visionService;
-        private IRadarModelObserver _radarModel;
+        private IFogVisionData _visionData;
         private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
 
         [SerializeField] private List<FighterView> fighters;
@@ -37,7 +37,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public Vector3 Heading => Model.GetHeading().ToUnity();
 
         [Inject]
-        private void Construct(IVisionService visionService, IRadarModelObserver radarModel,
+        private void Construct(IVisionService visionService, IFogVisionData visionData,
             SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner,
             EmpireAtWar.Components.Combat.CombatModifiers modifiers)
         {
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             _startRotation = startRotation;
             _owner = owner;
             _visionService = visionService;
-            _radarModel = radarModel;
+            _visionData = visionData;
             _modifiers = modifiers;
         }
 
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
 
             _modifiers.Changed += RefreshVision;
-            _visionService.Register(_owner, transform, _radarModel.Range);
+            _visionService.Register(_owner, transform, VisionRange);
         }
 
         public void LateDispose() => Release();
@@ -92,7 +92,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         public bool IsAlive(int index) => Model.IsAlive(index);
 
-        private void RefreshVision() => _visionService.Register(_owner, transform, _radarModel.Range);
+        private float VisionRange => _visionData.VisionRange * _modifiers.VisionMultiplier;
+
+        private void RefreshVision() => _visionService.Register(_owner, transform, VisionRange);
 
         public Vector3 GetPosition(int index) => Model.Get(index).Position.ToUnity();
 

@@ -34,3 +34,4 @@ MonoBehaviour:
   <Abilities>k__BackingField: 09000000
   <Range>k__BackingField: 70
   <Delay>k__BackingField: 0.25
+  <VisionRange>k__BackingField: 175
