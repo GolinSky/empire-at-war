@@ -41,12 +41,26 @@ MonoBehaviour:
     <SpawnBlockRadius>k__BackingField: 1200
   wrecks:
     keyValue:
+    - key: 2
+      value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
+    - key: 3
+      value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
     - key: 0
       value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
     - key: 1
       value: {fileID: 11400000, guid: a363bae8f25566841a66676da42ea93d, type: 2}
   hangarBays:
     keyValue:
+    - key: 2
+      value:
+        squadronType: 1
+        reserve: 6
+        maxActive: 2
+    - key: 3
+      value:
+        squadronType: 0
+        reserve: 6
+        maxActive: 2
     - key: 0
       value:
         squadronType: 0

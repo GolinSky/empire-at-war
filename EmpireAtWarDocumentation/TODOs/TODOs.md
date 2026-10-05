@@ -184,6 +184,7 @@
 
 - [ ] **Faction scalability (per-faction data, unit/faction definitions)**
   - **Plan**: [[TODOs/Refactoring/Faction_Scalability|Faction Scalability]]
+  - **Status**: Phase 1 done; Rebellion + Empire factions added (placeholder station/audio from Republic).
   - **Remaining**: Phase 1 playtest; Phases 2–5.
 
 ### Tooling
