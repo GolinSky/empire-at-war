@@ -20,7 +20,6 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IStationFacingService _stationFacingService;
         private readonly IAssetService _assetService;
 
-        private readonly StructurePlacementArea _structureArea;
         private readonly ReinforcementPreviewFactory _previewFactory;
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
@@ -36,7 +35,6 @@ namespace EmpireAtWar.Services.Reinforcement
             IReinforcementSpawnRule spawnRule,
             IStationFacingService stationFacingService,
             IAssetService assetService,
-            StructurePlacementArea structureArea,
             ReinforcementPreviewFactory previewFactory,
             ReinforcementModel model,
             ReinforcementData data,
@@ -51,7 +49,6 @@ namespace EmpireAtWar.Services.Reinforcement
             _spawnRule = spawnRule;
             _stationFacingService = stationFacingService;
             _assetService = assetService;
-            _structureArea = structureArea;
             _previewFactory = previewFactory;
             _model = model;
             _data = data;
@@ -85,12 +82,12 @@ namespace EmpireAtWar.Services.Reinforcement
                         _owner.Id, squadronRequest.Key);
                     return true;
                 case MiningFacilityUnitRequest facilityRequest:
-                    placement = new MiningFacilityReinforcementPlacement(_structureArea, _previewFactory,
+                    placement = new MiningFacilityReinforcementPlacement(_spawnRule, _previewFactory,
                         _playerFactionModel, _miningFacilityFactory, _data.GetSpawnPrefab(facilityRequest.Key),
                         _owner.Id, facilityRequest.Key);
                     return true;
                 case DefendPlatformUnitRequest platformRequest:
-                    placement = new DefendPlatformReinforcementPlacement(_structureArea, _previewFactory,
+                    placement = new DefendPlatformReinforcementPlacement(_spawnRule, _previewFactory,
                         _playerFactionModel, _defendPlatformFactory, _data.GetSpawnPrefab(platformRequest.Key),
                         _owner.Id, platformRequest.Key);
                     return true;

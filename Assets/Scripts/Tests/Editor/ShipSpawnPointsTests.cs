@@ -152,6 +152,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsOpen(PlayerId team, Vector3 position) => true;
 
             public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => true;
+
+            public bool CanSpawnStructure(PlayerId owner, Vector3 position) => true;
         }
 
         private sealed class OpenNear : IReinforcementSpawnRule
@@ -168,6 +170,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsOpen(PlayerId team, Vector3 position) => PlanarDistance(position, _center) <= _radius;
 
             public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => IsOpen(owner, position);
+
+            public bool CanSpawnStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
         }
     }
 }

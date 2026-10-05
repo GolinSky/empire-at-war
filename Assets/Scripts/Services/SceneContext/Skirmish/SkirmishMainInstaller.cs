@@ -138,6 +138,12 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesExt<ShipSpawnClearance>();
         Container.BindInterfacesExt<ShipSpawnPoints>();
         Container.Bind<IReinforcementSpawnRule>().To<ReinforcementSpawnRule>().AsSingle();
+        Container.Bind<IStructureSpawnClearance>().To<StructureSpawnClearance>().AsSingle()
+            .WithArguments(new[]
+            {
+                AssetService.LoadComponent<BoxCollider>("DefendPlatformView"),
+                AssetService.LoadComponent<BoxCollider>("MiningFacilityView")
+            });
         Container.BindModel<MiniMapData>(AssetService);
         Container.BindInterfacesNonLazyExt<MiniMapController>();
         Container.BindInterfacesAndSelfTo<ReinforcementZoneMiniMapPresenter>()

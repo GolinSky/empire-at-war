@@ -1,6 +1,8 @@
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
@@ -12,18 +14,27 @@ namespace EmpireAtWar.Services.Reinforcement
     {
         private readonly IVisionService _vision;
         private readonly ISpawnBlockerService _blockers;
-        private readonly IShipSpawnClearance _clearance;
+        private readonly IShipSpawnClearance _shipClearance;
+        private readonly IStructureSpawnClearance _structureClearance;
+        private readonly IReinforcementZonesSystem _relays;
+        private readonly ICaptureSitesSystem _captureSites;
         private readonly IMapModelObserver _mapModel;
 
         public ReinforcementSpawnRule(
             IVisionService vision,
             ISpawnBlockerService blockers,
-            IShipSpawnClearance clearance,
+            IShipSpawnClearance shipClearance,
+            IStructureSpawnClearance structureClearance,
+            IReinforcementZonesSystem relays,
+            ICaptureSitesSystem captureSites,
             IMapModelObserver mapModel)
         {
             _vision = vision;
             _blockers = blockers;
-            _clearance = clearance;
+            _shipClearance = shipClearance;
+            _structureClearance = structureClearance;
+            _relays = relays;
+            _captureSites = captureSites;
             _mapModel = mapModel;
         }
 
@@ -38,6 +49,15 @@ namespace EmpireAtWar.Services.Reinforcement
         }
 
         public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) =>
-            IsOpen(owner, position) && _clearance.IsClear(owner, shipType, position);
+            IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position);
+
+        public bool CanSpawnStructure(PlayerId owner, Vector3 position)
+        {
+            float radius = _structureClearance.Radius;
+            return IsOpen(owner, position) &&
+                   !_relays.IsPositionInAnyZone(position, radius) &&
+                   !_captureSites.IsPositionInAnySite(position, radius) &&
+                   _structureClearance.IsClear(position);
+        }
     }
 }

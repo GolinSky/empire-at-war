@@ -1,9 +1,6 @@
-using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
@@ -11,6 +8,8 @@ using Zenject;
 
 namespace EmpireAtWar.Services.Enemy
 {
+    /// <summary>Chooses where an AI builds a structure: rings around its station, then around its captured relays.
+    /// Every candidate must pass the same structure spawn rule as a player placement.</summary>
     public sealed class EnemyStructurePlacementService : IEnemyStructurePlacementService
     {
         private const float MINIMUM_ANCHOR_DISTANCE = 64f;
@@ -25,8 +24,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
 
         private readonly IReinforcementZonesSystem _zones;
-        private readonly ICaptureSitesSystem _captureSites;
         private readonly IReinforcementSpawnRule _spawnRule;
+        private readonly IStructureSpawnClearance _structureClearance;
 
         private readonly PlayerSlot _owner;
         private readonly LazyInject<IMapModelObserver> _mapModel;
@@ -35,35 +34,20 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly Bounds _stationBounds;
 
-        private readonly float _structureClearance;
-
-        private readonly int _obstacleMask;
-
         public EnemyStructurePlacementService(
             IReinforcementZonesSystem zones,
-            ICaptureSitesSystem captureSites,
             IReinforcementSpawnRule spawnRule,
-            ILayerService layerService,
+            IStructureSpawnClearance structureClearance,
             LazyInject<IMapModelObserver> mapModel,
             PlayerSlot owner,
-            BoxCollider stationPrefab,
-            BoxCollider[] structurePrefabs)
+            BoxCollider stationPrefab)
         {
             _owner = owner;
             _mapModel = mapModel;
             _zones = zones;
-            _captureSites = captureSites;
             _spawnRule = spawnRule;
-            _obstacleMask = layerService.GetMask(LayerKey.Unit, LayerKey.Obstacle);
-            _stationBounds = GetSpawnBounds(stationPrefab);
-            foreach (BoxCollider prefab in structurePrefabs)
-            {
-                Bounds bounds = GetSpawnBounds(prefab);
-                Vector3 reach = bounds.extents + new Vector3(
-                    Mathf.Abs(bounds.center.x), Mathf.Abs(bounds.center.y), Mathf.Abs(bounds.center.z));
-                // Enclose the entire scaled collider, including its offset from the spawn pivot.
-                _structureClearance = Mathf.Max(_structureClearance, reach.magnitude);
-            }
+            _structureClearance = structureClearance;
+            _stationBounds = StructureSpawnClearance.GetSpawnBounds(stationPrefab);
         }
 
         public bool TryGetPosition(out Vector3 position)
@@ -107,8 +91,9 @@ namespace EmpireAtWar.Services.Enemy
         private bool TryGetPositionNear(Vector3 anchor, float anchorRadius, out Vector3 position)
         {
             var bounds = _mapModel.Value.SizeRange;
+            float clearance = _structureClearance.Radius;
             float firstRadius = Mathf.Max(MINIMUM_ANCHOR_DISTANCE,
-                anchorRadius + _structureClearance + RING_SPACING);
+                anchorRadius + clearance + RING_SPACING);
             for (int ring = 0; ring < RING_COUNT; ring++)
             {
                 float radius = firstRadius + ring * RING_SPACING;
@@ -119,16 +104,12 @@ namespace EmpireAtWar.Services.Enemy
                         anchor.x + Mathf.Cos(angle) * radius,
                         0f,
                         anchor.z + Mathf.Sin(angle) * radius);
-                    if (candidate.x - _structureClearance < bounds.Min.x ||
-                        candidate.x + _structureClearance > bounds.Max.x ||
-                        candidate.z - _structureClearance < bounds.Min.y ||
-                        candidate.z + _structureClearance > bounds.Max.y ||
-                        !_spawnRule.IsOpen(_owner.Id, candidate) ||
+                    if (candidate.x - clearance < bounds.Min.x ||
+                        candidate.x + clearance > bounds.Max.x ||
+                        candidate.z - clearance < bounds.Min.y ||
+                        candidate.z + clearance > bounds.Max.y ||
                         IsNearRecentDestroyedPosition(candidate) ||
-                        _zones.IsPositionInAnyZone(candidate, _structureClearance) ||
-                        _captureSites.IsPositionInAnySite(candidate, _structureClearance) ||
-                        Physics.CheckSphere(candidate, _structureClearance,
-                            _obstacleMask, QueryTriggerInteraction.Ignore))
+                        !_spawnRule.CanSpawnStructure(_owner.Id, candidate))
                     {
                         continue;
                     }
@@ -140,25 +121,6 @@ namespace EmpireAtWar.Services.Enemy
 
             position = default;
             return false;
-        }
-
-        private static Bounds GetSpawnBounds(BoxCollider prefab)
-        {
-            // Entity initialization replaces the prefab position, preserving its rotation and scale.
-            Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero,
-                prefab.transform.localRotation, prefab.transform.localScale);
-            Bounds bounds = new Bounds(matrix.MultiplyPoint3x4(prefab.center), Vector3.zero);
-            for (int corner = 0; corner < 8; corner++)
-            {
-                Vector3 sign = new Vector3(
-                    (corner & 1) == 0 ? -1f : 1f,
-                    (corner & 2) == 0 ? -1f : 1f,
-                    (corner & 4) == 0 ? -1f : 1f);
-                bounds.Encapsulate(matrix.MultiplyPoint3x4(
-                    prefab.center + Vector3.Scale(prefab.size * 0.5f, sign)));
-            }
-
-            return bounds;
         }
 
         private bool IsNearRecentDestroyedPosition(Vector3 candidate)

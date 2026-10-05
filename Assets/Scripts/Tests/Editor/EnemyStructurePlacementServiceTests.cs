@@ -12,6 +12,9 @@ using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Services.SpawnBlocking;
+using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
 using UnityEngine;
 using Zenject;
@@ -45,11 +48,19 @@ namespace EmpireAtWar.Tests.Editor
         {
             DiContainer container = new DiContainer();
             container.Bind<IMapModelObserver>().FromInstance(_map);
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            // The enemy sees the whole test map, so only clearance, relays and bounds decide placement.
+            VisionService vision = new VisionService(roster);
+            vision.Register(TestPlayers.Enemy, _root.transform, 100000f);
+            StructureSpawnClearance structureClearance =
+                new StructureSpawnClearance(new LayersStub(), new[] { _structurePrefab });
+            ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, new SpawnBlockerService(roster),
+                new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map);
             return new EnemyStructurePlacementService(
                 mapModel: new LazyInject<IMapModelObserver>(container,
                     new InjectContext(container, typeof(IMapModelObserver))),
-                zones: _zones, captureSites: new NoCaptureSites(), spawnRule: new AllOpen(), layerService: new LayersStub(), owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                stationPrefab: _stationPrefab, structurePrefabs: new[] { _structurePrefab });
+                zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
+                owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab);
         }
 
         private BoxCollider CreatePrefab(Vector3 size)
@@ -279,11 +290,19 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class AllOpen : IReinforcementSpawnRule
+        private sealed class OpenShipClearance : IShipSpawnClearance
         {
-            public bool IsOpen(PlayerId team, Vector3 position) => true;
+            public float GetPlanarRadius(ShipType shipType) => 1f;
 
-            public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => true;
+            public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => true;
+
+            public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)
+            {
+            }
+
+            public void ReleaseLanding(object ship)
+            {
+            }
         }
 
         private sealed class NoCaptureSites : ICaptureSitesSystem

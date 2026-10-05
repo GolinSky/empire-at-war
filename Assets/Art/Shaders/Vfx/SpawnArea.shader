@@ -3,8 +3,8 @@ Shader "Custom/URP_SpawnArea"
     Properties
     {
         _MainTex ("Spawn Mask Texture", 2D) = "black" {} // r: 0 hidden, 0.5 blocked, 1 open
-        _OpenColor ("Open Cell Color", Color) = (0.3, 0.9, 0.45, 0.18)
-        _BlockedColor ("Blocked Cell Color", Color) = (0.95, 0.25, 0.2, 0.22)
+        _OpenColor ("Open Cell Color", Color) = (0.3, 0.9, 0.45, 0.05)
+        _BlockedColor ("Blocked Cell Color", Color) = (0.95, 0.25, 0.2, 0.08)
 
         _GridSize ("Grid Cell Size", Float) = 40.0
         _GridThickness ("Cell Gap (Fraction)", Range(0, 0.5)) = 0.12
