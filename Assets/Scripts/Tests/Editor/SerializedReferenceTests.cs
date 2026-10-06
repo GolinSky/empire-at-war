@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MapInstaller), "captureSitesSystem"),
             new SerializedReference(typeof(SkirmishUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "closeButton"),
-            new SerializedReference(typeof(SettingsUi), "qualitySettingsDropdown"),
+            new SerializedReference(typeof(SettingsUi), "qualityRow"),
             new SerializedReference(typeof(CoreGameUi), "reinforcementButton"),
             new SerializedReference(typeof(CoreGameUi), "miniMapRouteParent"),
             new SerializedReference(typeof(CoreGameUi), "contentRouteParent"),
