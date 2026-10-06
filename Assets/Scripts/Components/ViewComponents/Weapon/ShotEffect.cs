@@ -110,6 +110,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         protected abstract float Play(Transform muzzle, Transform target, Vector3 aimOffset, WeaponProfile profile);
 
+        /// <summary>Seconds after arrival over which the shot's damage is spread; 0 lands it all on arrival.</summary>
+        public virtual float DamageDuration => 0f;
+
         protected virtual void OnLeaseCompleted() { }
 
         protected virtual void OnIntercepted() { }
