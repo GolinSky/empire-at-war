@@ -12,7 +12,7 @@
 - Keep source geometry, UVs, bones, parents and texture channels. Disable collision/shadow helper renderers. Use shared source textures for identical turret materials.
 - FBX scale `0.02`; cancel the transport basis on attachments. Prefab root scale is one; hull length is 180 project units.
 - Maximum FBX roundtrip geometry error `0.000103` source units; bone matrix error `0.00000301`.
-- Own gameplay view, fitted shield, reinforcement hologram, wreck, icon and silhouette. All 99 gameplay mesh renderers are explicitly bound for team colors.
+- Own gameplay view, fitted shield, reinforcement hologram, wreck, icon and silhouette. All 100 gameplay mesh renderers are explicitly bound for team colors, including the fitted foredeck stripes shared with Imperial I Advanced. Neutral hull/turrets, stripe mask strength 1; matching wreck material and renderer/filter binding.
 
 ## Loadout
 
@@ -34,7 +34,8 @@
 2. Run `Convert.py` through the configured Blender MCP SDK client on isolated port `9884`, with safe mode enabled; it reuses `Tools/Blender/export_imperial_i_advanced.py`. Preserve the connected user's scene.
 3. Run `Stage.py` with Pillow.
 4. Evaluate `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildPreview.cs`, `Render.cs` and `Register.cs`, in that order, through official `unity command eval`. Each script exposes `Main()` on its named static class.
-5. Inspect saved assets and renders, then follow repository scene safety before asynchronous Unity tests.
+5. After both Imperial I Advanced and Imperial II gameplay/wreck prefabs exist, run `unity command run_script --file Tools/Blender/ImperialIAdvanced/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` to restore their localized team stripes.
+6. Inspect saved assets and renders, then follow repository scene safety before asynchronous Unity tests.
 
 ## Verification
 
@@ -42,3 +43,4 @@
 - Related fixes: all team renderers bound; weapon arcs correctly cover both broadsides; interrupted secondary salvos cannot restart during Power to Main Batteries.
 - Remaining full-suite failure is the existing `VictoryIIAdvancedShipView.prefab` renderer binding (`65` expected, `42` listed), outside this import.
 - Inspected top/stern hull views, placement hologram, wreck and eight team palettes. No manual skirmish or Play Mode run performed.
+- Team-color follow-up 2026-10-06: red/blue top and angled ship/wreck renders inspected; all four saved prefab checks passed (ownership, fog, banking, explosion and wreck pairs). No import/serialization errors; no combat or automated Unity test run for this fix. Evidence: `Temp/ImperialTeamColorFix/Verification.json`, `After/`, `WreckAfter/`.

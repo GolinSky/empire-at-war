@@ -59,9 +59,9 @@ Material:
     - _TeamLiveryHueRange: 0.07
     - _TeamLiveryMinSaturation: 0.4
     - _TeamLiveryStrength: 0
-    - _TeamMaskStrength: 1
+    - _TeamMaskStrength: 0
     - _TeamRimPower: 3
-    - _TeamRimStrength: 0.6
+    - _TeamRimStrength: 0
     - _WreckDissolveDuration: 8
     - _WreckDissolveEdgeWidth: 0.08
     - _WreckDissolveNoiseScale: 0.05

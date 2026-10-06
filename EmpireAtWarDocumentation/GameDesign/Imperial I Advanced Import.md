@@ -22,6 +22,8 @@ updated: 2026-10-06
 - Advanced bays: TIEInterceptor 203 / TIEBrute 204 / TIEPunisher 205; each 2 total launches and 1 active squadron. Initial/shared interval 4/30 s.
 - Squadron counts 8/6/4; member hull/shields 15/0, 50/0, 55/30; Punisher regeneration 0.15/s. Dedicated models, gameplay/placement prefabs, data, icons and Empire registrations.
 - Registrations: Empire roster; ShipsData; data/view maps and existing Addressables groups; HUD/tooltip; reinforcement; wreck; matchups; abilities/audio; ShipIconGenerator.
+- Team-color fix 2026-10-06: neutral hull/turrets, four mirrored foredeck stripes per side shared with Imperial II. Fitted 540-vertex / 250-triangle mesh preserves source albedo/UVs/normals; avoids repeated markings from tiled hull UVs. Stripe mask strength 1; hull mask/rim strengths 0.
+- Stripe renderer follows `BankingBody`; explicit ownership/fog/explosion bindings and matching wreck renderer/filter pair. Team arrays I/II 90/100; wreck pairs 40/43. Red/blue top/angled ship and wreck renders plus all four saved-prefab checks passed; no import/serialization errors. No combat or automated Unity tests run for this fix.
 
 ## Important Values
 
