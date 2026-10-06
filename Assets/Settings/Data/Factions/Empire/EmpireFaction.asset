@@ -19,7 +19,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
         description: Imperial heavy cruiser built to destroy corvettes and frigates.
-          Two enhanced turbolaser batteries and one ion cannon battery; six targetable
+          Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
+          two concussion missile and one ion cannon battery; fourteen targetable
           hardpoints. Boost Weapon Power doubles fire rate for 20 seconds, halves
           speed and stops shield recovery; 60-second cooldown.
         role: Heavy cruiser / Anti-corvette / Anti-frigate
@@ -30,7 +31,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 25
-        <UnitCapacity>k__BackingField: 1
+        <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 552ac5636e4f65c44994f1337d051b8a,
           type: 3}
   squadrons:
