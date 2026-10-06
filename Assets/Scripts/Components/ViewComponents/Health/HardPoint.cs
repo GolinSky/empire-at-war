@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.MiniMap;
 using EmpireAtWar.Mvc;
@@ -77,6 +78,12 @@ namespace EmpireAtWar.ViewComponents.Health
         void IHardPointProvider.SetId(int id)
         {
             Id = id;
+        }
+
+        public virtual bool TryGetWeaponType(out WeaponType weaponType)
+        {
+            weaponType = default;
+            return false;
         }
 
         protected virtual void OnInit(){}

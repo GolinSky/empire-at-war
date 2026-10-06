@@ -45,6 +45,12 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
 
+        public override bool TryGetWeaponType(out WeaponType weaponType)
+        {
+            weaponType = WeaponType;
+            return true;
+        }
+
         public void SetData(FloatRange floatRange)
         {
             yAxisRange.SetValue(floatRange);

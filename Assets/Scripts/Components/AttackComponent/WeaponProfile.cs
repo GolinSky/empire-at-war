@@ -8,6 +8,8 @@ namespace EmpireAtWar.Components.AttackComponent
     public sealed class WeaponProfile
     {
         [SerializeField] private WeaponType weaponType;
+        [Tooltip("Player-facing weapon name, e.g. in the hardpoint tooltip.")]
+        [SerializeField] private string displayName;
         [SerializeField] private DamageType damageType;
 
         [Header("Damage")]
@@ -34,6 +36,7 @@ namespace EmpireAtWar.Components.AttackComponent
         [SerializeField] private Vector3 size = Vector3.one;
 
         public WeaponType WeaponType => weaponType;
+        public string DisplayName => displayName;
         public DamageType DamageType => damageType;
         public float Damage => damage;
         public int ShotsPerSalvo => shotsPerSalvo;

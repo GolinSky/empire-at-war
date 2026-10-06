@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly ICameraService _cameraService;
 
         private readonly HardPointOverlayData _hardPointData;
+        private readonly WeaponsData _weaponsData;
         private readonly INotifier<BattleMap> _battleMap;
         private readonly List<IMiniMapObstacleSource> _obstacles = new List<IMiniMapObstacleSource>();
 
@@ -47,11 +49,11 @@ namespace EmpireAtWar.Entities.Tooltip
             IPointerGestures gestures, ITooltipService tooltipService, IVisionService visionService,
             ILocalPlayer local, IHudVisibilityObserver hud, IHardPointHoverObserver hardPointHover,
             ICaptureSitesSystem sites, ICameraService cameraService, HardPointOverlayData hardPointData,
-            INotifier<BattleMap> battleMap)
+            WeaponsData weaponsData, INotifier<BattleMap> battleMap)
         {
             _query = query; _pointerInput = pointerInput; _ui = ui; _gestures = gestures; _tooltipService = tooltipService;
             _visionService = visionService; _local = local; _hud = hud;
-            _hardPointHover = hardPointHover; _hardPointData = hardPointData; _sites = sites; _cameraService = cameraService;
+            _hardPointHover = hardPointHover; _hardPointData = hardPointData; _weaponsData = weaponsData; _sites = sites; _cameraService = cameraService;
             _battleMap = battleMap;
         }
 
@@ -127,8 +129,15 @@ namespace EmpireAtWar.Entities.Tooltip
             HardPointOverlayEntry entry = _hardPointData.Get(hardPoint.HardPointType);
             var stats = new List<TooltipStat> { new TooltipStat(label: "Component health", current: hardPoint.Health, max: hardPoint.MaxHealth) };
             if (facade.MaxShields > 0f) stats.Add(new TooltipStat(label: "Shared ship shields", current: entity.HealthModel.Shields, max: facade.MaxShields));
-            return new TooltipContent(title: entry.DisplayName, description: entry.Description,
-                stats: stats, status: hardPoint.IsDestroyed ? "Destroyed" : "Operational");
+            string status = hardPoint.IsDestroyed ? "Destroyed" : "Operational";
+            if (!hardPoint.TryGetWeaponType(out WeaponType weaponType))
+                return new TooltipContent(title: entry.DisplayName, description: entry.Description, stats: stats, status: status);
+
+            WeaponProfile weapon = _weaponsData.GetProfile(weaponType);
+            stats.Add(new TooltipStat(label: "Salvo damage", current: weapon.Damage * weapon.ShotsPerSalvo));
+            stats.Add(new TooltipStat(label: "Range", current: weapon.Range, format: "0"));
+            return new TooltipContent(title: weapon.DisplayName, subtitle: entry.DisplayName, description: entry.Description,
+                stats: stats, status: status);
         }
     }
 }

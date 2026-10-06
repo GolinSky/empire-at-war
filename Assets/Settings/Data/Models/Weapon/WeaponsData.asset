@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.AttackComponent.WeaponsData
   weapons:
   - weaponType: 23
+    displayName: Medium Laser Cannon
     damageType: 0
     damage: 6
     shotsPerSalvo: 1
@@ -28,6 +29,7 @@ MonoBehaviour:
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 8
+    displayName: Laser Cannon
     damageType: 0
     damage: 6
     shotsPerSalvo: 3
@@ -42,6 +44,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.31, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 7
+    displayName: Dual Laser Cannon
     damageType: 0
     damage: 6
     shotsPerSalvo: 6
@@ -56,6 +59,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.68, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 14
+    displayName: Point Defense Laser
     damageType: 1
     damage: 4
     shotsPerSalvo: 8
@@ -70,6 +74,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.85, b: 0.2, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 19
+    displayName: Mass Driver Cannon
     damageType: 11
     damage: 35
     shotsPerSalvo: 3
@@ -84,6 +89,7 @@ MonoBehaviour:
     color: {r: 0.85, g: 0.9, b: 1, a: 1}
     size: {x: 0.6, y: 0.6, z: 1}
   - weaponType: 1
+    displayName: Turbolaser
     damageType: 2
     damage: 20
     shotsPerSalvo: 3
@@ -98,6 +104,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.04, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 4
+    displayName: Medium Turbolaser
     damageType: 2
     damage: 25
     shotsPerSalvo: 3
@@ -112,6 +119,7 @@ MonoBehaviour:
     color: {r: 1, g: 0, b: 0.12, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 5
+    displayName: Dual Medium Turbolaser
     damageType: 2
     damage: 25
     shotsPerSalvo: 6
@@ -126,6 +134,7 @@ MonoBehaviour:
     color: {r: 1, g: 0, b: 0.05, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 2
+    displayName: Heavy Turbolaser
     damageType: 3
     damage: 50
     shotsPerSalvo: 2
@@ -140,6 +149,7 @@ MonoBehaviour:
     color: {r: 1, g: 0, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 20
+    displayName: Quad Turbolaser
     damageType: 3
     damage: 50
     shotsPerSalvo: 8
@@ -154,6 +164,7 @@ MonoBehaviour:
     color: {r: 0.98, g: 0, b: 0.19, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 3
+    displayName: Dual Heavy Turbolaser
     damageType: 3
     damage: 50
     shotsPerSalvo: 4
@@ -168,6 +179,7 @@ MonoBehaviour:
     color: {r: 0.98, g: 0, b: 0.19, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 9
+    displayName: DBY-827 Heavy Turbolaser
     damageType: 3
     damage: 45
     shotsPerSalvo: 4
@@ -182,6 +194,7 @@ MonoBehaviour:
     color: {r: 0, g: 0.78, b: 1, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 10
+    displayName: Ion Cannon
     damageType: 4
     damage: 30
     shotsPerSalvo: 2
@@ -196,6 +209,7 @@ MonoBehaviour:
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 11
+    displayName: Heavy Ion Cannon
     damageType: 4
     damage: 60
     shotsPerSalvo: 2
@@ -210,6 +224,7 @@ MonoBehaviour:
     color: {r: 0.55, g: 1, b: 1, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 12
+    displayName: Laser Beam
     damageType: 7
     damage: 150
     shotsPerSalvo: 1
@@ -224,6 +239,7 @@ MonoBehaviour:
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 13
+    displayName: Concussion Missile Launcher
     damageType: 5
     damage: 40
     shotsPerSalvo: 4
@@ -238,6 +254,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 22
+    displayName: Fighter Proton Torpedo
     damageType: 6
     damage: 90
     shotsPerSalvo: 1
@@ -252,6 +269,7 @@ MonoBehaviour:
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 6
+    displayName: Proton Torpedo Launcher
     damageType: 6
     damage: 90
     shotsPerSalvo: 2
@@ -266,6 +284,7 @@ MonoBehaviour:
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 21
+    displayName: Heavy Fighter Laser Cannon
     damageType: 0
     damage: 8
     shotsPerSalvo: 2
@@ -280,6 +299,7 @@ MonoBehaviour:
     color: {r: 0.2, g: 1, b: 0.2, a: 1}
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 24
+    displayName: X-Wing Laser Cannon
     damageType: 0
     damage: 5
     shotsPerSalvo: 1
@@ -294,6 +314,7 @@ MonoBehaviour:
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 0.45, y: 0.45, z: 0.6}
   - weaponType: 15
+    displayName: Fighter Laser Cannon
     damageType: 0
     damage: 5
     shotsPerSalvo: 2

@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace EmpireAtWar.Models.Health
         public Vector3 Position => _view.Position;
         public Transform Transform => _view.Transform;
         public Transform Pivot => _pivot;
+
+        public bool TryGetWeaponType(out WeaponType weaponType) => _view.TryGetWeaponType(out weaponType);
 
         public HardPointAdapter(IHardPoint view, HardPointModel model, Transform pivot)
         {
