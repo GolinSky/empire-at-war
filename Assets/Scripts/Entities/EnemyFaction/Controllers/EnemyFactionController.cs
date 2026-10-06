@@ -165,9 +165,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     ScheduleBuild(squadronUnitRequest, () =>
                         {
-                            ISquadron squadron = _squadronLauncher.LaunchFromStation(
-                                Owner,
-                                squadronUnitRequest.Key);
+                            if (!_squadronLauncher.TryLaunchFromStation(
+                                    Owner,
+                                    squadronUnitRequest.Key,
+                                    out ISquadron squadron))
+                            {
+                                // The station fell during the build, so no hangar can launch the squadron.
+                                ReleaseUnit(squadronUnitRequest);
+                                _wallet.Refund(squadronUnitRequest);
+                                Debug.Log(
+                                    $"[EnemyAI:Production] {squadronUnitRequest.Id} not launched: " +
+                                    "no living station. Purchase refunded.");
+                                return;
+                            }
+
                             Action handler = null;
                             handler = () =>
                             {
