@@ -8,6 +8,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
     {
         [SerializeField] private ParticleSystem head;
         [SerializeField] private ParticleSystem trail;
+        [Tooltip("Burst played where point defense shoots the missile down.")]
+        [SerializeField] private ParticleSystem interceptExplosion;
         private Transform _target;
 
         private Vector3 _aimOffset;
@@ -65,6 +67,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             float distance = Vector3.Distance(_start, _lastAimPoint);
             Vector3 arc = _arcNormal * (Mathf.Sin(progress * Mathf.PI) * arcHeight * distance);
             transform.position = Vector3.Lerp(_start, _lastAimPoint, progress) + arc;
+            ReportFlightPosition(transform.position);
 
             if (progress >= 1f)
             {
@@ -83,8 +86,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _target = null;
             head.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             trail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            interceptExplosion.Play(true);
         }
 
-        protected override bool IsVisualComplete() => !_isFlying && !trail.IsAlive(true);
+        protected override bool IsVisualComplete() =>
+            !_isFlying && !trail.IsAlive(true) && !interceptExplosion.IsAlive(true);
     }
 }

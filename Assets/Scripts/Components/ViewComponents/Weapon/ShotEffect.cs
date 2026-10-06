@@ -95,6 +95,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             missile.Intercepted += HandleIntercepted;
         }
 
+        /// <summary>Keeps the tracked missile's position on the drawn shot, so point defense aims at the visual.</summary>
+        protected void ReportFlightPosition(Vector3 position)
+        {
+            if (_missile != null) _missile.ReportPosition(position);
+        }
+
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Transform targetPivot, Vector3 aimOffset,

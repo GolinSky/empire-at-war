@@ -48,7 +48,7 @@ namespace EmpireAtWar.ViewComponents.Health
                 return;
 
             _reloadTimer.ChangeDelay(reload * _modifiers.FireDelayMultiplier).StartTimer();
-            FlashLaser(missile.GetPosition(Time.time));
+            FlashLaser(missile.Position);
             if (Random.value < interceptChance) missile.Intercept();
         }
 

@@ -12,10 +12,10 @@ namespace EmpireAtWar.Components.Weapon
     {
         private readonly List<IncomingMissile> _missiles = new List<IncomingMissile>();
 
-        public IncomingMissile Launch(IHealthModelObserver targetHealth, IHardPointModel target, Vector3 origin,
-            float travelTime, DamageType damageType = DamageType.ConcussionMissile)
+        public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, float travelTime,
+            DamageType damageType = DamageType.ConcussionMissile)
         {
-            IncomingMissile missile = new IncomingMissile(targetHealth, target, origin, Time.time, travelTime, damageType);
+            IncomingMissile missile = new IncomingMissile(targetHealth, origin, Time.time, travelTime, damageType);
             _missiles.Add(missile);
             return missile;
         }
@@ -32,7 +32,7 @@ namespace EmpireAtWar.Components.Weapon
                 if (!IsInFlight(missile, now) || missile.TargetHealth.Owner != owner) continue;
                 if (damageType.HasValue && missile.DamageType != damageType.Value) continue;
                 if (minimumTravel > 0f && missile.DistanceTravelled < minimumTravel) continue;
-                float distance = (missile.GetPosition(now) - position).sqrMagnitude;
+                float distance = (missile.Position - position).sqrMagnitude;
                 if (distance > bestDistance) continue;
                 bestDistance = distance;
                 threat = missile;

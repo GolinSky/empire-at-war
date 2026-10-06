@@ -9705,6 +9705,7 @@ Transform:
   - {fileID: 8569368066526337997}
   - {fileID: 8116491930617197493}
   - {fileID: 9162011000203128754}
+  - {fileID: 4297278956422415941}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4988471887356409813
@@ -9722,6 +9723,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 5147115974028276821}
   head: {fileID: 8367424328431833655}
   trail: {fileID: 7418445961353876213}
+  interceptExplosion: {fileID: 887533187812514628}
   arcHeight: 0.06
 --- !u!1 &6445144919066494231
 GameObject:
@@ -9889,3 +9891,83 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Weapon.MuzzleFlashView
   flash: {fileID: 34802317710896739}
   duration: 0.1
+--- !u!1001 &3660928642088801317
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3138180836697521720}
+    m_Modifications:
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 992365165172597046, guid: 54f8def27abde8249aeb5df35d3462d9,
+        type: 3}
+      propertyPath: m_Name
+      value: InterceptExplosion
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 54f8def27abde8249aeb5df35d3462d9, type: 3}
+--- !u!198 &887533187812514628 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4512357853715943265, guid: 54f8def27abde8249aeb5df35d3462d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 3660928642088801317}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4297278956422415941 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 679264288381096544, guid: 54f8def27abde8249aeb5df35d3462d9,
+    type: 3}
+  m_PrefabInstance: {fileID: 3660928642088801317}
+  m_PrefabAsset: {fileID: 0}
