@@ -126,7 +126,7 @@ namespace EmpireAtWar.ViewComponents.Health
                     effect.TrackInterception(missile);
                 }
 
-                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, missile);
+                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, effect.DamageDuration, missile);
             }
         }
 

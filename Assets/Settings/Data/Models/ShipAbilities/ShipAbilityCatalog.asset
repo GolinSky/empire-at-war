@@ -34,8 +34,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 6,000 beam damage.
-          Active for 8 s, then recovers for 50 s.
+        description: Fire a focused laser beam at an enemy. Deals 6,000 beam damage
+          continuously over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
         canCancel: 0
@@ -49,8 +49,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Proton Beam
-        description: Focus a proton beam on an enemy target; deals 600 configured
-          beam damage.
+        description: Focus a proton beam on an enemy target; deals 6,000 beam damage
+          continuously over 8 s.
         duration: 8
         recoveryDelay: 50
         canCancel: 0

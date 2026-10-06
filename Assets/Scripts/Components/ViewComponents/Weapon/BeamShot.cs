@@ -115,6 +115,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _target = null;
         }
 
+        // Beams deal damage continuously while they hold on the target.
+        public override float DamageDuration => holdDuration;
+
         protected override bool IsVisualComplete() => !beam.enabled;
     }
 }

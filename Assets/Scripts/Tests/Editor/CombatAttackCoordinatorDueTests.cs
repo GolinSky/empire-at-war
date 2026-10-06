@@ -192,7 +192,7 @@ namespace EmpireAtWar.Tests.Weapon
             public bool RollHit(AttackData attackData, WeaponProfile profile) => throw new InvalidOperationException();
 
             public void ApplyDamage(AttackData attackData, IHardPointModel unitView,
-                WeaponProfile profile, float attackDelay, IncomingMissile missile) => throw new InvalidOperationException();
+                WeaponProfile profile, float attackDelay, float damageDuration, IncomingMissile missile) => throw new InvalidOperationException();
 
             public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel,
                 float damage, DamageType damageType, int targetId)

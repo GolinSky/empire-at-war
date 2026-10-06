@@ -22,6 +22,8 @@ namespace EmpireAtWar.Components.Weapon
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
+        // Continuous weapons such as beams land their damage in ticks this far apart.
+        private const float DAMAGE_TICK_INTERVAL = 0.1f;
 
         private IRadarModelObserver _radarModel;
         private ISelectionModelObserver _selection;
@@ -440,11 +442,16 @@ namespace EmpireAtWar.Components.Weapon
             Model.RollHit(profile.DamageType, attackData.TargetClass, UnityEngine.Random.value);
 
         public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile, float attackDelay,
-            IncomingMissile missile)
+            float damageDuration, IncomingMissile missile)
         {
             if (_isReleased || !IsTargetValid(attackData, hardPointModel)) return;
-            _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel,
-                profile.Damage * _modifiers.GetDamageMultiplier(attackData.TargetEntity), profile.DamageType, attackDelay, missile);
+            float damage = profile.Damage * _modifiers.GetDamageMultiplier(attackData.TargetEntity);
+            int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
+            for (int i = 0; i < ticks; i++)
+            {
+                _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel, damage / ticks, profile.DamageType,
+                    attackDelay + damageDuration * i / ticks, missile);
+            }
         }
 
         public bool CommitImpact(AttackData attackData, IHardPointModel hardPointModel, float damage,
