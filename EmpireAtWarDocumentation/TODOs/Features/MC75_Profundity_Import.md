@@ -27,3 +27,6 @@ status: in-progress
 - 2026-10-06: import and static integration complete; no missing scripts/broken saved references/donor geometry. Source ALO/seven DDS unchanged.
 - Unity bones `147`, maximum displacement `0.000001585` units, no parent mismatches; hardpoint errors `0`, launch clearance `8` units.
 - Active plan remains for unverified runtime acceptance and provisional balance review.
+- 2026-10-06 rebalance: hull/shields `18,000/13,000` → `8,000/3,500`; range `400` → `500` (enemies at 500 outranged/out-saw it); price/build/capacity `13,000/260 s/8` → `5,500/40 s/4`.
+- 2026-10-06 wreck rebuilt via `ShipWreckBuilder.Build`: was 17 parts incl. engine glows, lens flares, lights, hidden shadow meshes → `Engines`, `Hull`. Team color list `2` → `18` renderers.
+- Edit Mode: 1043/1044 pass; only failure is concurrent `ArquitensAdvancedShipView` team color. Firing still not Play Mode verified.
