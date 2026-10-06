@@ -19,10 +19,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
         description: Rebel general-purpose frigate effective against corvettes and
-          light cruisers. Two turbolaser batteries, two laser cannon batteries and
-          targetable engines. Boost Shield Strength increases shield recovery tenfold
-          for 15 seconds, reducing speed by 20% and weapon damage by 50%; 60-second
-          cooldown.
+          light cruisers. Four turbolaser batteries, four laser cannon batteries
+          and targetable engines. Boost Shield Strength increases shield recovery
+          tenfold for 15 seconds, reducing speed by 20% and weapon damage by 50%;
+          60-second cooldown.
         role: General-purpose frigate / Anti-corvette
         iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
         isHero: 0
@@ -31,15 +31,15 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2200
         <BuildTime>k__BackingField: 30
-        <UnitCapacity>k__BackingField: 3
+        <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: a5d07dd53c680c6408f3e98f4ce75765,
           type: 3}
     - key: 301
       value:
         matchups: {fileID: 11400000, guid: f0593bb86a7249c46b0e783c993fec3b, type: 2}
         description: Rebel anti-fighter and anti-bomber corvette with eight laser
-          cannons, 750 hull and 600 shields. Power to Engines doubles speed for 20
-          seconds, triples weapon delays and stops shield regeneration; 50-second
+          cannons, 1,000 hull and 800 shields. Power to Engines doubles speed for
+          20 seconds, triples weapon delays and stops shield regeneration; 50-second
           recovery. Use it to screen larger ships, chase strikecraft or escape. Weak
           against frigates and capital ships.
         role: Anti-fighter / Anti-bomber
@@ -50,7 +50,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 1250
         <BuildTime>k__BackingField: 15
-        <UnitCapacity>k__BackingField: 2
+        <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
           type: 3}
     - key: 302
