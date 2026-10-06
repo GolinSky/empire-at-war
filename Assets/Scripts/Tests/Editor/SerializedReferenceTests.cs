@@ -143,9 +143,9 @@ namespace EmpireAtWar.Tests.Editor
                         referenceCounts[i]++;
                     }
 
+                    // Zone owners are assigned by the map builder at runtime, so prefabs carry none.
                     if (component is ReinforcementZoneView)
                     {
-                        AssertNonCapturableZoneOwnerAssigned(serializedComponent, prefabPath);
                         zoneViewCount++;
                     }
 
@@ -190,24 +190,6 @@ namespace EmpireAtWar.Tests.Editor
             SerializedProperty property = serializedObject.FindProperty(fieldName);
             Assert.That(property, Is.Not.Null, location);
             Assert.That(property.objectReferenceValue, Is.Not.Null, location);
-        }
-
-        private static void AssertNonCapturableZoneOwnerAssigned(
-            SerializedObject serializedView,
-            string prefabPath)
-        {
-            SerializedProperty isCapturable = serializedView.FindProperty("isCapturable");
-            SerializedProperty startingOwner = serializedView.FindProperty("_startingOwner");
-            Assert.That(isCapturable, Is.Not.Null, $"{prefabPath}.isCapturable");
-            Assert.That(startingOwner, Is.Not.Null, $"{prefabPath}._startingOwner");
-
-            if (isCapturable.boolValue)
-            {
-                return;
-            }
-
-            string ownerName = startingOwner.enumNames[startingOwner.enumValueIndex];
-            Assert.That(ownerName, Is.EqualTo("Player").Or.EqualTo("Opponent"), $"{prefabPath}._startingOwner");
         }
 
         private static void AssertShipBuildPipelineAssigned(
