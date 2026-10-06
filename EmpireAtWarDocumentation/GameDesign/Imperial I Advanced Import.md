@@ -18,7 +18,7 @@ updated: 2026-10-06
 - Non-targetable: 3 medium 3-burst turbolasers, 4 light turbolasers, 4 lasers. IDs 16..26; 21 weapon bindings / 27 fog hardpoint bindings / 16 health bindings.
 - Shields fail only when both generators are destroyed. HP: weapon 750; shield/engine 1,000; hangar 2,000; tractor 1,500. Shield regeneration 20/s.
 - `ImperialBoostEnginePower=21`: speed ×2, weapon delay ×4, shield regeneration ×0; 20 s duration / 50 s recovery.
-- `TractorBeam=22`: enemy speed ×0.4; 25 s recovery. Stops on beam/caster/target loss, target removal, ion stun or leaving range; modifier removed on stop.
+- `TractorBeam=22`: enemy speed ×0.25; 25 s recovery. Targets only `TractorBeamSettings.targetClasses` (default Corvette, Frigate); ineligible clicks are rejected, caster does not fly to them. Stops on beam/caster/target loss, target removal, ion stun or leaving planar range; modifier removed on stop.
 - Advanced bays: TIEInterceptor 203 / TIEBrute 204 / TIEPunisher 205; each 2 total launches and 1 active squadron. Initial/shared interval 4/30 s.
 - Squadron counts 8/6/4; member hull/shields 15/0, 50/0, 55/30; Punisher regeneration 0.15/s. Dedicated models, gameplay/placement prefabs, data, icons and Empire registrations.
 - Registrations: Empire roster; ShipsData; data/view maps and existing Addressables groups; HUD/tooltip; reinforcement; wreck; matchups; abilities/audio; ShipIconGenerator.
