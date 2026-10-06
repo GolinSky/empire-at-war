@@ -10342,8 +10342,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
-  - {fileID: 532031077112773532}
   - {fileID: 2561499397476259715}
+  - {fileID: 135620336714333325}
+  - {fileID: 295433823712343759}
+  - {fileID: 1349120504424286518}
+  - {fileID: 532031077112773532}
+  - {fileID: 5261028156585414171}
+  - {fileID: 4414454398250443956}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0
@@ -21996,9 +22001,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc97b91173de0434ab3687e6332e9cdc, type: 3}
+--- !u!23 &135620336714333325 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2620325159178576996, guid: dc97b91173de0434ab3687e6332e9cdc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2719208954834360553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &295433823712343759 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2424349869183659558, guid: dc97b91173de0434ab3687e6332e9cdc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2719208954834360553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &532031077112773532 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2512645001854378869, guid: dc97b91173de0434ab3687e6332e9cdc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2719208954834360553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1349120504424286518 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3964746365825798623, guid: dc97b91173de0434ab3687e6332e9cdc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2719208954834360553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4414454398250443956 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1801396702668029021, guid: dc97b91173de0434ab3687e6332e9cdc,
     type: 3}
   m_PrefabInstance: {fileID: 2719208954834360553}
   m_PrefabAsset: {fileID: 0}
