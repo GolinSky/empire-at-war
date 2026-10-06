@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         LockSFoils = 18,
         FullSalvo = 19,
         TIEAvengerPowerToWeapons = 20,
+        ImperialBoostEnginePower = 21,
         TractorBeam = 22,
     }
 }

@@ -356,6 +356,38 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     weaponType: 35
+  - sfx:
+      clip: {fileID: 0}
+      clips:
+        array:
+        - {fileID: 8300000, guid: 6997a1803138dce4db12729c7c541109, type: 3}
+        - {fileID: 8300000, guid: da6fab0506d44c240bc938330dd76339, type: 3}
+      volume: 0.65
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 33
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.65
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    weaponType: 32
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.72
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    weaponType: 31
   abilities:
   - start:
       clip: {fileID: 8300000, guid: 80dd32d6735abb544a18326002bb3411, type: 3}
@@ -1097,6 +1129,43 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     abilityId: 22
+  - start:
+      clip: {fileID: 8300000, guid: 57f061cb89eeb9b4b83c1c9ab259e59f, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 4d636b63456c90a4f99f7f4c460a9975, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: 0f6ac9fa190ae914fb693b7d8d59673a, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 3c661cac560c72242b8fcec805a3df90, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    abilityId: 21
   engine:
     clip: {fileID: 8300000, guid: aa5595974c8463346852c657c3f27e31, type: 3}
     clips:
