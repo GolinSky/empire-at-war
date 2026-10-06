@@ -317,6 +317,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466921437888588
+    - key: 22
+      value:
+        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        displayName: Tractor Beam
+        description: Restrict a targeted enemy to 40% speed for up to 20 s within
+          150 units. Ends when the beam hardpoint, caster or target is destroyed,
+          the caster is ion-disabled, or the target leaves range. 25 s recovery.
+        duration: 20
+        recoveryDelay: 25
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 1
+        range: 150
+        aiUse: 2
+        settings:
+          rid: 6801466921437888597
   references:
     version: 2
     RefIds:
@@ -514,3 +530,24 @@ MonoBehaviour:
           speedMultiplier: 0.75
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1.5
+    - rid: 6801466921437888597
+      type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        speedMultiplier: 0.4
+        beam:
+          weaponType: 12
+          displayName: Laser Beam
+          damageType: 7
+          damage: 150
+          shotsPerSalvo: 1
+          shotInterval: 0
+          reload: 15
+          range: 75
+          strikecraftOnly: 0
+          interceptable: 0
+          shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+            type: 3}
+          projectileSpeed: 0
+          color: {r: 0.2, g: 0.7, b: 1, a: 1}
+          size: {x: 0.4, y: 0.4, z: 1}

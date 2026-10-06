@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify Victory I Advanced integration acceptance**
+  - **Plan**: [[TODOs/Features/VictoryIAdvanced_Import|Victory I Advanced Import]]
+  - **Reference**: [[GameDesign/Victory I Advanced Import]]
+  - **Status**: 2026-10-06 AOTR Victory I Advanced imported as Empire ship `202`; `12,000/8,000/175`, 10 targets/16 weapons, 4/6-shot rocket salvos, Full Salvo, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, geometry/UVs/source hashes, saved bindings and import/compile/render checks verified. No automated tests or Play Mode run.
+  - **Remaining**: clean-skirmish acceptance and provisional scale/movement/weapon/system/ability/economy/launch balance review.
+
 - [ ] **Verify MC75 Profundity integration acceptance**
   - **Plan**: [[TODOs/Features/MC75_Profundity_Import|MC75 Profundity Import]]
   - **Reference**: [[GameDesign/MC75 Profundity Import]]

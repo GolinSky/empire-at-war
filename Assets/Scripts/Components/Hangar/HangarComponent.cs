@@ -26,6 +26,7 @@ namespace EmpireAtWar.Components.Hangar
 
         [SerializeField] private Transform launchPoint;
         [SerializeField] private HardPoint hangarHardPoint;
+        [SerializeField] private bool isDestroyable = true;
         private readonly List<(ISquadron Squadron, Action Handler)> _launched =
             new List<(ISquadron Squadron, Action Handler)>();
         private SquadronFactory _squadronFactory;
@@ -49,6 +50,11 @@ namespace EmpireAtWar.Components.Hangar
 
         public void Initialize()
         {
+            if (!isDestroyable)
+            {
+                return;
+            }
+
             foreach (IHardPointModel unit in _health.GetShipUnits(HardPointType.Any))
             {
                 if (unit.Transform == hangarHardPoint.transform)
@@ -88,7 +94,10 @@ namespace EmpireAtWar.Components.Hangar
             }
 
             _isReleased = true;
-            _hangarUnit.OnDestroyed -= Model.Shutdown;
+            if (isDestroyable)
+            {
+                _hangarUnit.OnDestroyed -= Model.Shutdown;
+            }
             Model.Shutdown();
             foreach ((ISquadron squadron, Action handler) in _launched)
             {

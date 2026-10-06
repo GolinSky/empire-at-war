@@ -418,3 +418,48 @@ MonoBehaviour:
     projectileSpeed: 35
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 36
+    displayName: Light Dual Turbolaser
+    damageType: 2
+    damage: 45
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 6.91
+    range: 125
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 34
+    displayName: Heavy Artillery-Rocket Launcher
+    damageType: 11
+    damage: 20
+    shotsPerSalvo: 4
+    shotInterval: 3
+    reload: 15
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 75
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 35
+    displayName: Barrage-Rocket Launcher
+    damageType: 0
+    damage: 40
+    shotsPerSalvo: 6
+    shotInterval: 2
+    reload: 15
+    range: 100
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 90
+    color: {r: 1, g: 0.25, b: 0.65, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}

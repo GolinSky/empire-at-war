@@ -68,6 +68,8 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: f71730a251297854b97875858cdb2249, type: 3}
     - key: 304
       value: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a, type: 3}
+    - key: 202
+      value: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9, type: 3}
   squadronIconWrapper:
     keyValue:
     - key: 0
@@ -98,3 +100,5 @@ MonoBehaviour:
       value: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3, type: 3}
     - key: 202
       value: {fileID: 21300000, guid: 3ebf9b17840b8ee4daae27c4f063d4af, type: 3}
+    - key: 203
+      value: {fileID: 21300000, guid: 64e95301a26b2ca498bc930f9eae7727, type: 3}
