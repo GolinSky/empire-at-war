@@ -69,10 +69,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             Vector2 min = size.Bounds.Min;
             Vector2 max = size.Bounds.Max;
             Vector2 inset = (max - min) * _settings.PlanetBorderInset;
+            // The tilted battle camera sees more of the planet in the forward half of the map.
             return new Vector3(
                 Mathf.Lerp(min.x + inset.x, max.x - inset.x, (float)random.NextDouble()),
                 0f,
-                Mathf.Lerp(min.y + inset.y, max.y - inset.y, (float)random.NextDouble()));
+                Mathf.Lerp((min.y + max.y) * 0.5f, max.y - inset.y, (float)random.NextDouble()));
         }
 
         /// <summary>Node radius plus the clearance and, for pocketed nodes, room for the asteroid pocket.</summary>

@@ -14,7 +14,7 @@ Shader "EmpireAtWar/Planet Atmosphere"
 
     SubShader
     {
-        Tags { "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent+10" "RenderType" = "Transparent" }
+        Tags { "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent-420" "RenderType" = "Transparent" }
         Pass
         {
             Name "Atmosphere"
