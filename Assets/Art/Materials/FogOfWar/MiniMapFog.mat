@@ -29,13 +29,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _CellCount: 72
     - _ColorMask: 15
+    - _GridThickness: 0.12
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     m_Colors:
+    - _CellTint: {r: 1, g: 1, b: 1, a: 0.06}
     - _Color: {r: 0.012, g: 0.02, b: 0.031, a: 0.9}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

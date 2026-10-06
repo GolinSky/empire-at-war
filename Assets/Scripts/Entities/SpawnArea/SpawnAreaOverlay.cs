@@ -13,6 +13,7 @@ namespace EmpireAtWar.Views.SpawnArea
     /// <summary>
     /// Second fog layer, drawn only during reinforcement placement: open cells are tinted, cells the team
     /// sees but a hostile blocker covers are marked blocked. Flat on the XZ plane, like the rule it shows.
+    /// It lies on the fog plane and copies the fog's cell grid, so it reads as the same fog painted green/red.
     /// </summary>
     public sealed class SpawnAreaOverlay : MonoBehaviour, ISpawnAreaOverlay, IInitializable, ILateDisposable,
         IObserver<BattleMap>
@@ -21,10 +22,13 @@ namespace EmpireAtWar.Views.SpawnArea
         // Unity's built-in plane is 10 x 10 units.
         private const float PLANE_MESH_SIZE = 10f;
 
+        private static readonly int GRID_SIZE_ID = Shader.PropertyToID("_GridSize");
+        private static readonly int GRID_THICKNESS_ID = Shader.PropertyToID("_GridThickness");
+
         [SerializeField] private MeshRenderer overlayRenderer;
         [SerializeField, Min(16)] private int textureResolution = 256;
         [SerializeField, Min(0.02f)] private float updateInterval = 0.1f;
-        [SerializeField] private float height = -35f;
+        [SerializeField] private MeshRenderer fogRenderer;
 
         private IVisionService _vision;
         private ISpawnBlockerService _blockers;
@@ -61,7 +65,8 @@ namespace EmpireAtWar.Views.SpawnArea
         {
             Vector2 min = battleMap.Layout.SizeRange.Min;
             Vector2 size = battleMap.Layout.SizeRange.Max - min;
-            transform.position = new Vector3(min.x + size.x * 0.5f, height, min.y + size.y * 0.5f);
+            transform.position = new Vector3(min.x + size.x * 0.5f, fogRenderer.transform.position.y,
+                min.y + size.y * 0.5f);
             transform.localScale = new Vector3(size.x / PLANE_MESH_SIZE, 1f, size.y / PLANE_MESH_SIZE);
 
             _grid = new SpawnAreaGridModel(textureResolution, min.x, min.y, size.x, size.y);
@@ -70,6 +75,9 @@ namespace EmpireAtWar.Views.SpawnArea
             _texture.filterMode = FilterMode.Bilinear;
             _material = overlayRenderer.material;
             _material.SetTexture("_MainTex", _texture);
+            Material fogMaterial = fogRenderer.sharedMaterial;
+            _material.SetFloat(GRID_SIZE_ID, fogMaterial.GetFloat(GRID_SIZE_ID));
+            _material.SetFloat(GRID_THICKNESS_ID, fogMaterial.GetFloat(GRID_THICKNESS_ID));
         }
 
         public void Show(PlayerId team)
