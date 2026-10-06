@@ -1,5 +1,8 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
 using UnityEditor;
@@ -14,6 +17,10 @@ namespace EmpireAtWar.Tests.Editor
         {
             DiContainer container = new DiContainer();
             container.Bind<IEntityLocator>().FromInstance(new EntityLocator());
+            container.Bind<IPlayerRelations>().FromInstance(TestPlayers.CreateDuel());
+            container.Bind<ImpactEffectPresenter>().FromInstance(new ImpactEffectPresenter(null, null));
+            container.Bind<WeaponsData>().FromInstance(
+                AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"));
 
             foreach (Type settingsType in TypeCache.GetTypesDerivedFrom<ShipAbilitySettings>())
             {
