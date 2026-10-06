@@ -106,6 +106,10 @@ namespace EmpireAtWar.Editor.Rendering
 
         public static UnitWreckView Build(string viewPrefabPath)
         {
+            // In Play Mode AddComponent runs UnitWreckView.Awake before its renderers are assigned.
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new System.InvalidOperationException("Exit Play Mode (including test runs) before building wrecks.");
+
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPrefabPath);
             string shipName = GetUnitName(view);
             Shader wreckShader = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_WRECK_SHADER_PATH);

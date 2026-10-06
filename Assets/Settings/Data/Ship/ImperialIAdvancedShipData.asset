@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ImperialIAdvancedShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 250
+  <Speed>k__BackingField: 15
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1
   <HullBottom>k__BackingField: -18.816692
@@ -27,8 +27,8 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: c9149ad3d2d4aa744840faa73249ecff,
     type: 2}
   <ShipClass>k__BackingField: 4
-  <Hull>k__BackingField: 20000
-  <Shields>k__BackingField: 16000
+  <Hull>k__BackingField: 8000
+  <Shields>k__BackingField: 4000
   <ShieldRegenerateValue>k__BackingField: 20
   <ShieldRegenerateDelay>k__BackingField: 1
   hardPointHealth:
@@ -47,7 +47,7 @@ MonoBehaviour:
   - hardPointType: 7
     health: 1500
     hullDamageMultiplier: 1
-  <Range>k__BackingField: 250
+  <Range>k__BackingField: 500
   <Delay>k__BackingField: 0.25
   abilities: 1500000016000000
   hangarBays:

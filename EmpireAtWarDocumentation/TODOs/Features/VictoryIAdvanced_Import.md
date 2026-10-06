@@ -29,6 +29,9 @@ updated: 2026-10-06
 - Visible bounds `67.5321 × 38.1539 × 110`; navigation radius `70`.
 - Source/verification package: `output/aotr-empire-units/VictoryIAdvanced-Converted/`.
 - Shared Tractor Beam and TIE-Interceptor assets reused; source difference/provisional values recorded in the reference.
+- 2026-10-06 rebalance: `12,000/8,000/175` → `5,500/2,200/24`; range `250` → `500`; price/build/capacity `12,250/245 s/7` → `5,000/30 s/4`. Team color list `45` → `81` renderers.
+- 2026-10-06 also: Imperial I Advanced `20,000/16,000/250`, range `250` → `8,000/4,000/15`, range `500`; `22,000/440 s/8` → `8,500/60 s/5`; team color `51` → `89`. TIE Avenger `650/10 s`, Interceptor `450/8 s`, Punisher `800/12 s`.
+- Wreck tests pass; firing still not Play Mode verified.
 
 ## Files
 
