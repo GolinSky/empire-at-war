@@ -39,11 +39,9 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(capacityText, Is.Not.Null);
                 Assert.That(countText, Is.Not.Null);
 
-                Assert.That(capacityText.enableAutoSizing, Is.True, "unitCapacityText must have auto-sizing enabled.");
-                Assert.That(capacityText.fontSizeMin, Is.LessThan(12f), "unitCapacityText fontSizeMin must be < 12.");
-
-                Assert.That(countText.enableAutoSizing, Is.True, "unitCountText must have auto-sizing enabled.");
-                Assert.That(countText.fontSizeMin, Is.LessThan(12f), "unitCountText fontSizeMin must be < 12.");
+                // The core HUD uses fixed font sizes, so card text does not shrink per card.
+                Assert.That(capacityText.enableAutoSizing, Is.False, "unitCapacityText must use a fixed font size.");
+                Assert.That(countText.enableAutoSizing, Is.False, "unitCountText must use a fixed font size.");
 
                 MPImage mpImage = root.GetComponent<MPImage>();
                 Assert.That(mpImage, Is.Not.Null, "Root background must feature an MPImage component.");
