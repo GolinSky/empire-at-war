@@ -7,7 +7,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Camera;
 using UnityEngine;
-using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Battle
@@ -30,16 +29,13 @@ namespace EmpireAtWar.Services.Battle
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
-        private readonly IVisionService _visionService;
 
         private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
         private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
 
-        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer,
-            IVisionService visionService)
+        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
         {
             _localPlayer = localPlayer;
-            _visionService = visionService;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
         }
@@ -63,7 +59,7 @@ namespace EmpireAtWar.Services.Battle
             if (raycastHit.collider != null &&
                 _entityLocator.TryGetEntity(raycastHit, out IEntity entity) &&
                 !entity.HealthModel.IsDestroyed &&
-                !IsHiddenByFog(entity) &&
+                !entity.IsHiddenByFog() &&
                 entity.TryGetFacade(out IEntitySelectionFacade command))
             {
                 selection = new SelectionEntry(entity, command);
@@ -178,10 +174,6 @@ namespace EmpireAtWar.Services.Battle
                 results.Add(_marqueeResults[i].Entry);
             }
         }
-
-        private bool IsHiddenByFog(IEntity entity) =>
-            !_localPlayer.IsFriendly(entity.Owner) &&
-            !_visionService.IsEntityVisible(_localPlayer.Id, entity);
 
         private readonly struct MarqueeCandidate
         {
