@@ -34,7 +34,7 @@ namespace EmpireAtWar.Models.Factions
         ImperialII = 205,
         ImperialIIIStarDestroyer = 206,
         VictoryIAdvanced = 202,
-        VictoryIIAdvanced = 203,
+        VictoryII = 203,
         ArquitensImperialCruiser = 204,
 
         //rebellion

@@ -3471,7 +3471,7 @@
         "FullName": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
         "Status": "Failed",
         "Duration": 0.2361927,
-        "Message": "  Assets/Prefabs/Models/Ships/VictoryIIAdvancedShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 65\r\n  But was:  42\r\n",
+        "Message": "  Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 65\r\n  But was:  42\r\n",
         "StackTrace": "at EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries () [0x000b5] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TeamColorViewPrefabTests.cs:46\r\n"
       }
     ],

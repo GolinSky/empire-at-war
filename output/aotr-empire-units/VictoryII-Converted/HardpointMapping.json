@@ -1,0 +1,134 @@
+[
+  {
+    "name": "HP_VictoryII_Ion_01",
+    "bone": "MuzzleC_07",
+    "targetable": true,
+    "id": 0
+  },
+  {
+    "name": "HP_VictoryII_Ion_02",
+    "bone": "MuzzleC_01",
+    "targetable": true,
+    "id": 1
+  },
+  {
+    "name": "HP_VictoryII_Ion_03",
+    "bone": "MuzzleC_04",
+    "targetable": true,
+    "id": 2
+  },
+  {
+    "name": "HP_VictoryII_Ion_04",
+    "bone": "MuzzleC_10",
+    "targetable": true,
+    "id": 3
+  },
+  {
+    "name": "HP_VictoryII_Ion_05",
+    "bone": "MuzzleC_22",
+    "targetable": true,
+    "id": 4
+  },
+  {
+    "name": "HP_VictoryII_Ion_06",
+    "bone": "MuzzleC_17",
+    "targetable": true,
+    "id": 5
+  },
+  {
+    "name": "ShieldGenerator",
+    "bone": "HP_S_BONE_03",
+    "targetable": true,
+    "id": 6
+  },
+  {
+    "name": "Engine1",
+    "bone": "HP_E_BONE_01",
+    "targetable": true,
+    "id": 7
+  },
+  {
+    "name": "Engine2",
+    "bone": "HP_E_BONE_02",
+    "targetable": true,
+    "id": 8
+  },
+  {
+    "name": "TractorBeam",
+    "bone": "HP_T_BONE",
+    "targetable": true,
+    "id": 9
+  },
+  {
+    "name": "HP_Victory2_Weapon_01",
+    "bone": "MuzzleB_08",
+    "targetable": false,
+    "id": 10
+  },
+  {
+    "name": "HP_Victory2_Weapon_02",
+    "bone": "MuzzleB_09",
+    "targetable": false,
+    "id": 11
+  },
+  {
+    "name": "HP_Victory2_Weapon_03",
+    "bone": "MuzzleB_04",
+    "targetable": false,
+    "id": 12
+  },
+  {
+    "name": "HP_Victory2_Weapon_04",
+    "bone": "MuzzleB_05",
+    "targetable": false,
+    "id": 13
+  },
+  {
+    "name": "HP_Victory2_Weapon_05",
+    "bone": "MuzzleA_01",
+    "targetable": false,
+    "id": 14
+  },
+  {
+    "name": "HP_Victory2_Weapon_06",
+    "bone": "MuzzleA_03",
+    "targetable": false,
+    "id": 15
+  },
+  {
+    "name": "MediumBurstTurbolaser1",
+    "bone": "T_01/FP_01",
+    "targetable": false,
+    "id": 16
+  },
+  {
+    "name": "MediumBurstTurbolaser2",
+    "bone": "T_02/FP_01",
+    "targetable": false,
+    "id": 17
+  },
+  {
+    "name": "MediumBurstTurbolaser3",
+    "bone": "T_03/FP_01",
+    "targetable": false,
+    "id": 18
+  },
+  {
+    "name": "MediumBurstTurbolaser4",
+    "bone": "T_04/FP_01",
+    "targetable": false,
+    "id": 19
+  },
+  {
+    "name": "MediumBurstTurbolaser5",
+    "bone": "T_05/FP_01",
+    "targetable": false,
+    "id": 20
+  },
+  {
+    "name": "MediumBurstTurbolaser6",
+    "bone": "T_06/FP_01",
+    "targetable": false,
+    "id": 21
+  }
+]

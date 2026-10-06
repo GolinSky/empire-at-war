@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "command": "command run_script",
+  "data": {
+    "command": "run_script",
+    "parameters": {
+      "file": "Tools/Blender/VictoryII/VerifyVictoryII.cs"
+    },
+    "result": {
+      "diagnostics": [],
+      "compileMs": 139,
+      "executeMs": 278,
+      "assemblyName": "PipelineRunScript_VerifyVictoryII_c7099ee7d65f407b880283cfa1a01b29",
+      "success": true,
+      "result": "{\"asset\":\"Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab\",\"hull\":12000,\"shields\":10000,\"speed\":20,\"targetableHardpoints\":[{\"name\":\"HP_VictoryII_Ion_01\",\"Id\":0,\"type\":0},{\"name\":\"HP_VictoryII_Ion_02\",\"Id\":1,\"type\":0},{\"name\":\"HP_VictoryII_Ion_03\",\"Id\":2,\"type\":0},{\"name\":\"HP_VictoryII_Ion_04\",\"Id\":3,\"type\":0},{\"name\":\"HP_VictoryII_Ion_05\",\"Id\":4,\"type\":0},{\"name\":\"HP_VictoryII_Ion_06\",\"Id\":5,\"type\":0},{\"name\":\"ShieldGenerator\",\"Id\":6,\"type\":2},{\"name\":\"Engine1\",\"Id\":7,\"type\":1},{\"name\":\"Engine2\",\"Id\":8,\"type\":1},{\"name\":\"TractorBeam\",\"Id\":9,\"type\":7}],\"weapons\":[{\"type\":37,\"count\":4},{\"type\":32,\"count\":2},{\"type\":28,\"count\":6},{\"type\":38,\"count\":6}],\"bounds\":[65.43347,42.2673645,110.0],\"navigationRadius\":69.0,\"bankedRange\":[-24.06689,21.4409618],\"hangarExit\":[0.0255427063,-32.06689,-4.439789],\"geometry\":[{\"name\":\"VictoryII\",\"meshes\":40,\"triangles\":24024,\"bones\":180,\"maximumBoneError\":0.00148578116},{\"name\":\"VictoryIITurret01\",\"meshes\":4,\"triangles\":1447,\"bones\":6,\"maximumBoneError\":4.80579239E-08},{\"name\":\"VictoryIITurret02\",\"meshes\":4,\"triangles\":1447,\"bones\":6,\"maximumBoneError\":4.80579239E-08}],\"maximumMountError\":0.0,\"maximumGameplayAttachmentError\":9.573598E-07,\"registrations\":true,\"dependencies\":true,\"missingScripts\":0,\"brokenReferences\":0,\"playMode\":false,\"automatedTests\":false}"
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "F:\\Private\\empire-at-war"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

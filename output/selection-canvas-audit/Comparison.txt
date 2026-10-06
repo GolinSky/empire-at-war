@@ -24,7 +24,7 @@ Empire       TIEFighter                            44 x 44         44 x 44    33
 Empire       TIEInterceptor                        58 x 58         58 x 58      38,41 x 20     1,51
 Empire       TIEPunisher                           34 x 34         34 x 34      21,03 x 13     1,62
 Empire       VictoryIAdvanced                    840 x 840       140 x 140     67,53 x 110     1,27
-Empire       VictoryIIAdvanced                   828 x 828       138 x 138     65,43 x 110     1,25
+Empire       VictoryII                           828 x 828       138 x 138     65,43 x 110     1,25
 Rebellion    AWing                                   8 x 8           8 x 8    12,51 x 8,45     0,64
 Rebellion    CorellianCorvette                     36 x 36         36 x 36      12,72 x 30      1,2
 Rebellion    HomeOne                             196 x 196       196 x 196     39,15 x 180     1,09
@@ -67,7 +67,7 @@ Verification: reloaded all 57 prefabs; exactly five selection dimensions changed
 
 Editor tests: 1,067 total; 1,065 passed; 2 failed.
 Existing failure: ImperialIIWreckView TeamStripes uses a material containing Advanced in its name.
-Existing failure: VictoryIIAdvancedShipView TeamColorView lists 42 of 65 mesh renderers.
+Existing failure: VictoryIIShipView TeamColorView lists 42 of 65 mesh renderers.
 Verified against pre-edit snapshots: material and renderer references did not change in this task.
 Play Mode exit exposed two unrelated UI teardown ArgumentNullException errors for null parent references in CoreGameUiController/EconomyUiController.
 No asset import or serialization errors detected. Unity remains out of Play Mode with MainMenuScene clean.
