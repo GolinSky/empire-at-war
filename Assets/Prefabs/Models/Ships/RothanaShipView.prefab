@@ -1610,10 +1610,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
   - {fileID: 1188152516807967770}
+  - {fileID: 6926531668707408176}
+  - {fileID: 7600352431923194612}
+  - {fileID: 3888058625884465015}
   - {fileID: 5732535132558506495}
   - {fileID: 2067789261130643474}
   - {fileID: 6926057727599157024}
+  - {fileID: 8990767333336860405}
   - {fileID: 3922524842532441800}
+  - {fileID: 3060906402718066618}
+  - {fileID: 7241419750016682799}
   - {fileID: 2340190698033240963}
   - {fileID: 7345423154027387301}
   - {fileID: 842929850475730042}
@@ -3026,6 +3032,12 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 2100918486311818917}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &3060906402718066618 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3989468112730747167, guid: 0953bfb937901dd479ddb0204ae44d17,
+    type: 3}
+  m_PrefabInstance: {fileID: 2100918486311818917}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &3888058625884465015 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2941658160900239826, guid: 0953bfb937901dd479ddb0204ae44d17,
@@ -3047,6 +3059,18 @@ MeshRenderer:
 --- !u!23 &6926057727599157024 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 9023448893564602757, guid: 0953bfb937901dd479ddb0204ae44d17,
+    type: 3}
+  m_PrefabInstance: {fileID: 2100918486311818917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6926531668707408176 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9022977117086199701, guid: 0953bfb937901dd479ddb0204ae44d17,
+    type: 3}
+  m_PrefabInstance: {fileID: 2100918486311818917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7241419750016682799 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8744098071678606730, guid: 0953bfb937901dd479ddb0204ae44d17,
     type: 3}
   m_PrefabInstance: {fileID: 2100918486311818917}
   m_PrefabAsset: {fileID: 0}
