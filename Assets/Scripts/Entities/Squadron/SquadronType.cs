@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.Squadrons
         //empire
         TIEFighter = 200,
         TIEBomber = 201,
+        TIEAvenger = 202,
 
         //rebellion
         XWing = 300,

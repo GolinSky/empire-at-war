@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
 
@@ -17,12 +18,15 @@ namespace EmpireAtWar.Components.Weapon
         public event Action Intercepted;
 
         public IHealthModelObserver TargetHealth { get; }
+        public DamageType DamageType { get; }
+        public float DistanceTravelled => Vector3.Distance(_origin, GetPosition(Time.time));
         public bool IsIntercepted { get; private set; }
 
         public IncomingMissile(IHealthModelObserver targetHealth, IHardPointModel target, Vector3 origin,
-            float launchTime, float travelTime)
+            float launchTime, float travelTime, DamageType damageType = DamageType.ConcussionMissile)
         {
             TargetHealth = targetHealth;
+            DamageType = damageType;
             _target = target;
             _origin = origin;
             _launchTime = launchTime;

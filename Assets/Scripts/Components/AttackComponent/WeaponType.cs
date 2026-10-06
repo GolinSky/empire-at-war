@@ -30,5 +30,7 @@
         MediumIonTorpedo = 26,
         LightCloseRangeTurbolaser = 27,
         HeavyLaser = 28,
+        LightRepeatingLaser = 29,
+        FighterConcussionMissile = 30,
     }
 }

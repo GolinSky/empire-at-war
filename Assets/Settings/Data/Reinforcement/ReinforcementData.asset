@@ -134,6 +134,9 @@ MonoBehaviour:
     - key: 300
       value: {fileID: 6212059282449992695, guid: f837d798fc6ea1642957908e4a30c189,
         type: 3}
+    - key: 202
+      value: {fileID: 8868922897241180148, guid: d4b0ee7a90423404a9df04366d853336,
+        type: 3}
   spawnFacilityWrapper:
     keyValue:
     - key: 0

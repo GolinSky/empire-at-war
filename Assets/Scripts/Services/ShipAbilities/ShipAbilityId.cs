@@ -22,5 +22,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         HomeOnePowerToShields = 17,
         LockSFoils = 18,
         FullSalvo = 19,
+        TIEAvengerPowerToWeapons = 20,
     }
 }

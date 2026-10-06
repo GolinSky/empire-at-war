@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
@@ -12,15 +13,16 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<IncomingMissile> _missiles = new List<IncomingMissile>();
 
         public IncomingMissile Launch(IHealthModelObserver targetHealth, IHardPointModel target, Vector3 origin,
-            float travelTime)
+            float travelTime, DamageType damageType = DamageType.ConcussionMissile)
         {
-            IncomingMissile missile = new IncomingMissile(targetHealth, target, origin, Time.time, travelTime);
+            IncomingMissile missile = new IncomingMissile(targetHealth, target, origin, Time.time, travelTime, damageType);
             _missiles.Add(missile);
             return missile;
         }
 
         /// <summary>Finds the nearest missile in range that is heading for a ship of <paramref name="owner"/>.</summary>
-        public bool TryFindThreat(PlayerId owner, Vector3 position, float range, out IncomingMissile threat)
+        public bool TryFindThreat(PlayerId owner, Vector3 position, float range, out IncomingMissile threat,
+            DamageType? damageType = null, float minimumTravel = 0f)
         {
             float now = Time.time;
             float bestDistance = range * range;
@@ -28,6 +30,8 @@ namespace EmpireAtWar.Components.Weapon
             foreach (IncomingMissile missile in _missiles)
             {
                 if (!IsInFlight(missile, now) || missile.TargetHealth.Owner != owner) continue;
+                if (damageType.HasValue && missile.DamageType != damageType.Value) continue;
+                if (minimumTravel > 0f && missile.DistanceTravelled < minimumTravel) continue;
                 float distance = (missile.GetPosition(now) - position).sqrMagnitude;
                 if (distance > bestDistance) continue;
                 bestDistance = distance;

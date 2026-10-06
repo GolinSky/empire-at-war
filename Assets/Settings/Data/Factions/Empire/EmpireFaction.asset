@@ -51,6 +51,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 6deef1e660f9c3a41b4d343f91418382,
           type: 3}
+    - key: 202
+      value:
+        matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
+        description: Six TIE Avengers. Each fighter has 20 hull, 12 shields, two
+          light repeating lasers and two concussion-missile launchers. Power to Weapons
+          doubles fire rate for 10 s, reduces speed by 25% and increases damage taken
+          by 50%; 60 s recovery. Seeker Warhead Countermeasure automatically intercepts
+          incoming missiles. Weapons are not separately targetable.
+        role: Fighter / Interceptor
+        iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000
+        isHero: 0
+        <Name>k__BackingField: TIE Avenger Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 750
+        <BuildTime>k__BackingField: 20
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 3ebf9b17840b8ee4daae27c4f063d4af,
+          type: 3}
   research:
     keyValue:
     - key: 0

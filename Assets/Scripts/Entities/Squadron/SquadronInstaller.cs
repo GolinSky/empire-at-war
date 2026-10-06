@@ -53,6 +53,10 @@ namespace EmpireAtWar.Entities.Squadrons
             Container.BindInitializableExecutionOrder<SquadronHealthComponent>(-100);
             Container.BindInitializableExecutionOrder<SquadronFlightComponent>(-90);
             Container.Bind<SquadronHealthModel>().AsSingle();
+            if (data.SeekerWarheadRange > 0f)
+            {
+                Container.BindInterfacesAndSelfTo<SeekerWarheadCountermeasure>().AsSingle();
+            }
             Container.Bind<SquadronFlightModel>().AsSingle();
             Container.Bind<SFoilsModel>().AsSingle();
             if (System.Array.IndexOf(data.Abilities, EmpireAtWar.Services.ShipAbilities.ShipAbilityId.LockSFoils) >= 0)
