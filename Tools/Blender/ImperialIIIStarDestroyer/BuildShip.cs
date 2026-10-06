@@ -100,7 +100,7 @@ public static class BuildImperialIIIStarDestroyerShip
         }
         finally{PrefabUtility.UnloadPrefabContents(root);}
         var data=AssetDatabase.LoadAssetAtPath<ShipData>(DATA);data.name="ImperialIIIStarDestroyerShipData";var so=new SerializedObject(data);
-        Set(so,"Hull",28000);Set(so,"Shields",18000);Set(so,"Speed",250);Set(so,"ShieldRegenerateValue",22.5f);so.FindProperty("<ShipClass>k__BackingField").intValue=4;Set(so,"ShieldRegenerateDelay",1);
+        Set(so,"Hull",28000);Set(so,"Shields",18000);Set(so,"Speed",25);Set(so,"ShieldRegenerateValue",22.5f);so.FindProperty("<ShipClass>k__BackingField").intValue=4;Set(so,"ShieldRegenerateDelay",1);
         Set(so,"HullBottom",bottom);Set(so,"HullTop",top);Set(so,"NavigationRadius",radius);Set(so,"Range",625);Set(so,"BodyRotationMaxAngle",8);
         var list=so.FindProperty("hardPointHealth");list.arraySize=5;
         int[] types={0,2,1,7,4};float[] hpValues={1000,1000,1000,1500,2000};
@@ -128,7 +128,7 @@ public static class BuildImperialIIIStarDestroyerShip
         finally{PrefabUtility.UnloadPrefabContents(root);}
         AssetDatabase.SaveAssets();
         File.WriteAllText("Temp/ImperialIIIStarDestroyerImport/GameplayBounds.json",JsonConvert.SerializeObject(new{size=new[]{bounds.size.x,bounds.size.y,bounds.size.z},bottom,top,radius},Formatting.Indented));
-        return "Imperial III: 31 automatic weapons plus ability-only composite beam; 19 targets; 28000/18000/250; targetable hangar with Avengers and Punishers; own preview and wreck.";
+        return "Imperial III: 31 automatic weapons plus ability-only composite beam; 19 targets; 28000/18000/25; targetable hangar with Avengers and Punishers; own preview and wreck.";
     }
     static void Copy(string source,string target){if(!File.Exists(target)&&!AssetDatabase.CopyAsset(source,target))throw new InvalidOperationException(target);}
     static MonoBehaviour Component(GameObject root,string name)=>root.GetComponentsInChildren<MonoBehaviour>(true).Single(m=>m.GetType().Name==name);

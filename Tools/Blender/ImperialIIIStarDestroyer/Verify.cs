@@ -28,7 +28,7 @@ public static class VerifyImperialIIIStarDestroyer
         var hangar=Config(root,"HangarComponent");var exit=(Transform)hangar.FindProperty("launchPoint").objectReferenceValue;
         Check(hangar.FindProperty("isDestroyable").boolValue && targets.Contains((HardPoint)hangar.FindProperty("hangarHardPoint").objectReferenceValue),"Targetable hangar");
         var data=new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>(DATA));
-        Check(Number(data,"Hull")==28000 && Number(data,"Shields")==18000 && Number(data,"Speed")==250,"Requested ship stats");
+        Check(Number(data,"Hull")==28000 && Number(data,"Shields")==18000 && Number(data,"Speed")==25,"Requested ship stats");
         Check(exit.localPosition.y<Number(data,"HullBottom"),"Hangar exit below banked hull");
         var bays=data.FindProperty("hangarBays");Check(bays.arraySize==2,"Two complement types");
         for(int i=0;i<2;i++){var bay=bays.GetArrayElementAtIndex(i);Check(bay.FindPropertyRelative("squadronType").intValue==(i==0?202:205) && bay.FindPropertyRelative("reserve").intValue==(i==0?3:2) && bay.FindPropertyRelative("maxActive").intValue==1,"Avenger/Punisher complement");}
@@ -135,7 +135,7 @@ public static class VerifyImperialIIIStarDestroyer
             attachmentError=Mathf.Max(attachmentError,Vector3.Distance(rawTransforms.Single(t=>string.Equals(t.name,bone,StringComparison.OrdinalIgnoreCase)).position,expected));
         }
         Check(attachmentError<.0001f,"Gameplay source attachment precision: "+attachmentError);
-        var report=new{asset=VIEW,hull=28000,shields=18000,speed=250,targetableHardpoints=targets.Select(t=>new{t.name,t.Id,type=(int)t.HardPointType}).ToArray(),weapons=guns.GroupBy(g=>(int)g.WeaponType).Select(g=>new{type=g.Key,count=g.Count()}).ToArray(),bounds=new[]{bounds.size.x,bounds.size.y,bounds.size.z},navigationRadius=Number(data,"NavigationRadius"),bankedRange=new[]{Number(data,"HullBottom"),Number(data,"HullTop")},hangarExit=new[]{exit.localPosition.x,exit.localPosition.y,exit.localPosition.z},geometry,maximumMountError=mountError,maximumGameplayAttachmentError=attachmentError,registrations=true,dependencies=true,missingScripts=0,brokenReferences=0,editorPlayMode=EditorApplication.isPlaying,playModeAcceptance=false,automatedTests=false};
+        var report=new{asset=VIEW,hull=28000,shields=18000,speed=25,targetableHardpoints=targets.Select(t=>new{t.name,t.Id,type=(int)t.HardPointType}).ToArray(),weapons=guns.GroupBy(g=>(int)g.WeaponType).Select(g=>new{type=g.Key,count=g.Count()}).ToArray(),bounds=new[]{bounds.size.x,bounds.size.y,bounds.size.z},navigationRadius=Number(data,"NavigationRadius"),bankedRange=new[]{Number(data,"HullBottom"),Number(data,"HullTop")},hangarExit=new[]{exit.localPosition.x,exit.localPosition.y,exit.localPosition.z},geometry,maximumMountError=mountError,maximumGameplayAttachmentError=attachmentError,registrations=true,dependencies=true,missingScripts=0,brokenReferences=0,editorPlayMode=EditorApplication.isPlaying,playModeAcceptance=false,automatedTests=false};
         File.WriteAllText("Temp/ImperialIIIStarDestroyerImport/Verification.json",JsonConvert.SerializeObject(report,Formatting.Indented));
         return JsonConvert.SerializeObject(report);
     }

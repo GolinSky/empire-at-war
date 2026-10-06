@@ -62,8 +62,9 @@ public static class BuildImperialIIIStarDestroyerArt
                 if (row["maskMap"] != null)
                 {
                     material.SetTexture("_TeamMaskMap", AssetDatabase.LoadAssetAtPath<Texture2D>((string)row["maskMap"]));
-                    material.SetFloat("_TeamMaskStrength", 1);
                 }
+                if (material.HasProperty("_TeamMaskStrength")) material.SetFloat("_TeamMaskStrength", name == "ImperialIIIStarDestroyer" && sourceName == "ISDII_diff Material" ? 1 : 0);
+                if (material.HasProperty("_TeamRimStrength")) material.SetFloat("_TeamRimStrength", 0);
                 if (material.HasProperty("_TeamLiveryStrength")) material.SetFloat("_TeamLiveryStrength", 0);
                 if (material.HasProperty("_Metallic")) material.SetFloat("_Metallic", .15f);
                 if (material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness", .25f);
