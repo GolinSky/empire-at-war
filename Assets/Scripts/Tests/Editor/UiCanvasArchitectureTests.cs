@@ -30,7 +30,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string FADE_PREFAB_PATH =
             "Assets/Prefabs/Ui/Fade/FadeUi.prefab";
 
-        private const int EXPECTED_SCREEN_PREFAB_COUNT = 18;
+        private const int EXPECTED_SCREEN_PREFAB_COUNT = 19;
 
         [Test]
         public void UiScreenPrefabs_UseBoundCanvasGroupsWithoutLocalCanvases()
