@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Ui.Tooltip;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,10 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
+            // NUnit reuses the fixture instance, so per-test counters must start from zero.
+            _starts = 0;
+            _ends = 0;
+            _lastKey = null;
             _target = new GameObject("Tooltip target", typeof(RectTransform), typeof(TooltipTrigger));
             _trigger = _target.GetComponent<TooltipTrigger>();
             var serialized = new SerializedObject(_trigger);
@@ -52,7 +57,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void DisabledSourceEndsHover()
         {
-            _target.SetActive(false);
+            // Edit Mode skips OnDisable for components without [ExecuteAlways], so raise it directly.
+            typeof(TooltipTrigger).GetMethod("OnDisable", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_trigger, null);
             Assert.That(_ends, Is.EqualTo(1));
         }
     }
