@@ -26,6 +26,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         ImperialBoostEnginePower = 21,
         TractorBeam = 22,
         PowerToMainBatteries = 24,
+        CompositeBeam = 25,
         ArquitensBoostWeaponPower = 23,
     }
 }

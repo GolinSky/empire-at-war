@@ -44,6 +44,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.Victory, PrefabName = "VictoryShipView.prefab", IconFileName = "VictoryIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.ImperialIAdvanced, PrefabName = "ImperialIAdvancedShipView.prefab", IconFileName = "ImperialIAdvancedIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.ImperialII, PrefabName = "ImperialIIShipView.prefab", IconFileName = "ImperialIIIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.ImperialIIIStarDestroyer, PrefabName = "ImperialIIIStarDestroyerShipView.prefab", IconFileName = "ImperialIIIStarDestroyerIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.VictoryIAdvanced, PrefabName = "VictoryIAdvancedShipView.prefab", IconFileName = "VictoryIAdvancedIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.VictoryIIAdvanced, PrefabName = "VictoryIIAdvancedShipView.prefab", IconFileName = "VictoryIIAdvancedIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.ArquitensImperialCruiser, PrefabName = "ArquitensImperialCruiserShipView.prefab", IconFileName = "ArquitensImperialCruiserIcon.png" },

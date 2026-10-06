@@ -160,6 +160,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f428c58ff383cf47b93c8ab3f55b2f5
+    m_Address: ImperialIIIStarDestroyerShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 805152c4e5b48d44ea985871b332e269
     m_Address: AcclamatorShipView
     m_ReadOnly: 0

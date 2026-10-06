@@ -58,6 +58,9 @@ namespace EmpireAtWar.Ship
         private IUnitWreckService _unitWreckService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
+        [SerializeField] private Transform compositeBeamMuzzle;
+
+        public Transform CompositeBeamMuzzle => compositeBeamMuzzle;
         private HardPointModel _enginesUnitModel;
         private ShipOrderRunner _orders;
         private LazyInject<IEntity> _entity;

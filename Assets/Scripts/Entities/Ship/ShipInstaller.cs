@@ -1,4 +1,6 @@
 using EmpireAtWar.Entities.Units;
+using System.Linq;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Audio;
@@ -70,6 +72,8 @@ namespace EmpireAtWar.Ship
             BindOrders();
 
             Container.BindInterfacesExt<ShipAbilityFacade>();
+            if (data.Abilities.Contains(ShipAbilityId.CompositeBeam))
+                Container.BindInterfacesExt<CompositeBeamFacade>();
             Container.BindInterfacesExt<ShipOrderFacade>();
             Container.BindInterfacesExt<ShipDestroyFacade>();
             Container.BindInterfacesExt<ShipTooltipFacade>();

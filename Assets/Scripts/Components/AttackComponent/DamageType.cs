@@ -14,5 +14,6 @@ namespace EmpireAtWar.Components.AttackComponent
         HypervelocityGun = 9,
         PlasmaCannon = 10,
         MassDriver = 11,
+        CompositeBeam = 12,
     }
 }

@@ -96,6 +96,27 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: e54026c071416a845b2d23e814c1e8d5,
           type: 3}
+    - key: 206
+      value:
+        matchups: {fileID: 11400000, guid: d97e28a4f08e56d4facc33597cbd7d32, type: 2}
+        description: 28,000 hull; 18,000 shields; speed 25. Ten targetable heavy
+          dual turbolasers and two heavy long-range 2-burst turbo-ion cannons; two
+          shield generators, three engines, hangar and tractor beam. Five medium
+          3-burst turbolasers, four medium turbolasers, four medium turbo-ions, six
+          heavy lasers and composite beam are not separately targetable. Fire Composite
+          Beam targets ships larger than corvettes and has poor shield damage. Tractor
+          Beam restricts enemy movement. TIE Avenger and TIE Punisher complement.
+        role: Ship of the Line / Capital Ship
+        iconKey: dcd7ea16edf5bfd4ca9c2f1c95c1fda4:21300000
+        isHero: 0
+        <Name>k__BackingField: Imperial III Star Destroyer
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 26000
+        <BuildTime>k__BackingField: 520
+        <UnitCapacity>k__BackingField: 9
+        <Icon>k__BackingField: {fileID: 21300000, guid: dcd7ea16edf5bfd4ca9c2f1c95c1fda4,
+          type: 3}
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
