@@ -9,13 +9,16 @@ using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Zenject;
@@ -42,6 +45,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private IAttackDataFactory _attackDataFactory;
         private ICameraService _cameraService;
         private ILayerService _layerService;
+        private ShipAbilityService _abilities;
+        private IShipAbilityFacade _abilityCaster;
         private IEntity _engaged;
 
         private UnitOrderModel _orders;
@@ -54,7 +59,10 @@ namespace EmpireAtWar.Entities.Squadrons
         private SFoilsModel _sFoils;
         private List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
 
+        private ShipAbilityId _pendingAbilityId;
+
         private float _huntRetargetTimer;
+        private float _pendingAbilityRange;
 
         private bool _isReleased;
 
@@ -74,7 +82,8 @@ namespace EmpireAtWar.Entities.Squadrons
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             GameObjectContext context, LazyInject<IEntity> entity, List<IMonoComponent> monoComponents,
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService,
-            SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews)
+            SFoilsModel sFoils, List<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> sFoilsViews,
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster)
         {
             _flight = flight;
             _health = health;
@@ -90,6 +99,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _attackDataFactory = attackDataFactory;
             _cameraService = cameraService;
             _layerService = layerService;
+            _abilities = abilities;
+            _abilityCaster = abilityCaster;
             _orderSettings = orderSettings;
             _context = context;
             _entity = entity;
@@ -149,6 +160,14 @@ namespace EmpireAtWar.Entities.Squadrons
             if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked() ||
                 _orders.Matches(UnitOrderType.Attack, target: target)) return;
             _orders.Replace(UnitOrderType.Attack, target: target);
+            Engage(target);
+        }
+
+        public void CastAbility(ShipAbilityId id, IEntity target, float range)
+        {
+            _pendingAbilityId = id;
+            _pendingAbilityRange = range;
+            _orders.Replace(UnitOrderType.UseAbility, target: target);
             Engage(target);
         }
 
@@ -222,6 +241,9 @@ namespace EmpireAtWar.Entities.Squadrons
                 case UnitOrderType.Hunt:
                     UpdateHunt();
                     break;
+                case UnitOrderType.UseAbility:
+                    UpdateAbilityCast();
+                    break;
                 case UnitOrderType.Guard:
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
                     else DefendArea(_orders.Target.GetFacade<IEntityTransformFacade>().Transform.position);
@@ -243,6 +265,22 @@ namespace EmpireAtWar.Entities.Squadrons
                     DefendArea(_pilot.LoiterCenter);
                     break;
             }
+        }
+
+        private void UpdateAbilityCast()
+        {
+            IEntity target = _orders.Target;
+            if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked())
+            {
+                Stop();
+                return;
+            }
+
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            if (PlanarGeometry.Distance(_abilityCaster.WorldPosition, targetPosition) > _pendingAbilityRange) return;
+            // The squadron keeps engaging the target after the cast.
+            _orders.Replace(UnitOrderType.Attack, target: target);
+            _abilities.TryActivate(_abilityCaster, _pendingAbilityId, target);
         }
 
         private void UpdateHunt()

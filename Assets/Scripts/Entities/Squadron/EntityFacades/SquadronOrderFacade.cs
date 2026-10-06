@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 {
     public sealed class SquadronOrderFacade : IUnitOrderObserverFacade, IMoveFacade, IAttackFacade, IAttackMoveFacade, IStopFacade,
-        IGuardFacade, IWaypointMoveFacade, IHuntFacade, IRetreatFacade
+        IGuardFacade, IWaypointMoveFacade, IHuntFacade, IRetreatFacade, IShipAbilityCastFacade
     {
         private readonly Squadron _squadron;
 
@@ -37,5 +39,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public void Hunt() => _squadron.Hunt();
 
         public void Retreat(Vector3 destination) => _squadron.Retreat(destination);
+
+        public void CastAbility(ShipAbilityId id, IEntity target, float range) =>
+            _squadron.CastAbility(id, target, range);
     }
 }

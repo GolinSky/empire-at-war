@@ -5,9 +5,11 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -22,6 +24,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly ICameraService _cameraService;
+        private readonly ShipAbilityService _abilities;
+        private readonly IShipAbilityFacade _abilityCaster;
 
         private readonly UnitOrderModel _orders;
         private readonly ShipStateMachine _stateMachine;
@@ -33,7 +37,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly GuardState _guardState;
         private readonly HuntState _huntState;
         private readonly FleeState _fleeState;
+        private readonly AbilityApproachState _abilityApproachState;
         private AttackMoveEngagement _attackMoveEngagement;
+        private ShipAbilityId _pendingAbilityId;
+        private float _pendingAbilityRange;
 
         private readonly bool _isAiControlled;
 
@@ -62,7 +69,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IPlayerRoster playerRoster, UnitOrderModel orders, ShipStateMachine stateMachine,
             ShipAIBrain brain, IdleState idleState, NavigateState navigateState,
             AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
-            HuntState huntState, FleeState fleeState, PlayerId owner)
+            HuntState huntState, FleeState fleeState, AbilityApproachState abilityApproachState,
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, PlayerId owner)
         {
             _orders = orders;
             _stateMachine = stateMachine;
@@ -77,6 +85,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _guardState = guardState;
             _huntState = huntState;
             _fleeState = fleeState;
+            _abilityApproachState = abilityApproachState;
+            _abilities = abilities;
+            _abilityCaster = abilityCaster;
             _isAiControlled = playerRoster.Get(owner).IsAi;
         }
 
@@ -171,6 +182,13 @@ namespace EmpireAtWar.Entities.Ship.Orders
             Issue(UnitOrderType.Retreat, point);
         }
 
+        public void CastAbility(ShipAbilityId id, IEntity target, float range)
+        {
+            _pendingAbilityId = id;
+            _pendingAbilityRange = range;
+            Issue(UnitOrderType.UseAbility, target: target);
+        }
+
         public void Stop()
         {
             _weapon.ResetTarget();
@@ -227,6 +245,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 case UnitOrderType.Hunt:
                     _stateMachine.SetState(_huntState);
                     break;
+                case UnitOrderType.UseAbility:
+                    _abilityApproachState.SetData(_orders.Target, _pendingAbilityRange);
+                    _stateMachine.SetState(_abilityApproachState);
+                    break;
                 default:
                     _movement.Stop();
                     _stateMachine.SetState(_idleState);
@@ -243,8 +265,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 return;
             }
 
+            IEntity abilityTarget = _orders.Current == UnitOrderType.UseAbility ? _orders.Target : null;
             _orders.Clear();
             _stateMachine.SetState(_idleState);
+            // Cast after going idle: abilities that take over the ship's facing expect an idle ship.
+            if (abilityTarget != null) _abilities.TryActivate(_abilityCaster, _pendingAbilityId, abilityTarget);
         }
 
     }

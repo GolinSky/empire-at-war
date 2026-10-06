@@ -99,6 +99,7 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<GuardState>().AsSingle();
             Container.BindInterfacesAndSelfTo<HuntState>().AsSingle();
             Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AbilityApproachState>().AsSingle();
             Container.Bind<UnitOrderModel>().AsSingle();
             Container.Bind<ShipAIBrain>().AsSingle();
             Container.Bind<ShipOrderRunner>().AsSingle();

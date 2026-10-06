@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         Guard,
         WaypointMove,
         Hunt,
-        Retreat
+        Retreat,
+        UseAbility
     }
 }
