@@ -39,7 +39,8 @@ tags:
 - Restore identity `Root` only after binary bone audit confirmed importer removal. Preserve authored hidden meshes and UVs.
 - Native Blender 3.6.23 MCP safe mode; isolated process/port `9880` avoids the other active conversion scene.
 - Separate FBXs: hull and turret; cancel the turret FBX root's repeated coordinate rotation/scale when attaching beneath hull bones.
-- Lossless DDS → PNG conversion; opaque Ship Lit materials, additive effects and source-alpha-derived Colorize masks. Eight owned palettes rendered; source brightness retained.
+- Lossless DDS → PNG albedo conversion; opaque Ship Lit materials and additive effects. Source Colorize alpha produced all-white hull/turret masks.
+- 2026-10-06: authored hull mask → four mirrored team stripes; neutral turrets; `_TeamRimStrength = 0` on hull/turrets and corresponding wrecks. `_TeamMaskStrength = 0` on turret materials; original albedo preserved. Red/blue top/angled Unity renders: team-colored surface `99.9% → 7.5%`; GUIDs/linear imports retained; no new import/serialization errors.
 - `HangarComponent.isDestroyable = false` permits the non-targetable hangar outside the health list. Existing hangars default to `true`.
 - New weapon profiles: `HeavyArtilleryRocket = 34`, `BarrageRocket = 35`, `LightDualTurbolaser = 36`; four heavy lasers reuse profile `28`.
 - Heavy artillery rockets reuse the shield-piercing MassDriver damage matrix. Barrage rockets reuse the laser matrix. Existing projectile effects/audio reused.
