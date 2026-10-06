@@ -375,3 +375,12 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Full Salvo 19 and shared Tractor Beam 22 registered; Interceptor data/view references resolve. All faction, Addressables, ship data, three icon consumers and own preview/wreck registrations verified. Source-alpha team masks, eight palettes and transparent 512-pixel icon inspected.
 - `HangarComponent.isDestroyable` defaults true for existing hangars; this ship sets false and keeps its hangar outside the health list. Weapon profiles 34/35/36 and matching firing audio added; original Victory assets retained.
 - Saved asset checks passed with no missing scripts or broken references; no new Unity import/serialization/production compile errors. No automated tests or Play Mode run. Runtime acceptance and provisional balance/source differences remain in `TODOs/Features/VictoryIAdvanced_Import.md`.
+
+## ArquitensImperialCruiser - 2026-10-06
+
+- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `GameDesign/Arquitens Advanced Import`.
+- Isolated Blender 3.6.23 MCP port 9882; identity Root restored from binary audit. Hull: 10 meshes / 13,861 triangles / 78 bones. Quad turret: 6 / 680 / 8; dual turret: 4 / 436 / 7; eight mounted instances from two byte-identical families.
+- Source/FBX vertex and UV checks passed; Unity mesh/triangle counts and all bone parents/positions verified. Vertex welding disabled to retain eight tiny triangles. Centered length 40 units, bow +Z/up +Y.
+- Empire ship 204: hull/shields/speed 1,300/1,200/30, zero targetable systems, four two-shot light long-range turbolasers and four two-shot laser cannons, no fighters. Dedicated weapon/audio profiles 39/40; Boost Weapon Power 23 with activation/execution/recovery audio.
+- Own fitted shield, all 51 team renderer bindings, fog/hull-only health, opaque placement, shader-breaking wreck, actual-model icons, roster/data/view Addressables/UI mappings saved. Eight live/wreck palettes and placement/icon renders inspected.
+- All 21 original source hashes unchanged; saved references/imports/compilation verified. Editable blends/FBXs/textures/credits/evidence: `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`. No Unity tests or Play Mode run by this import; runtime/provisional balance acceptance: `TODOs/Features/ArquitensImperialCruiser_Import.md`.
