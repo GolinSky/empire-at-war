@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ImperialII_Common_Empire_Imperial_Star_Destroyer_Armor_MeshBumpColorize_Wreck
-  m_Shader: {fileID: 4800000, guid: 423a9599c199c944e999717f28ca7991, type: 3}
+  m_Name: ImperialIAdvanced_TeamStripes
+  m_Shader: {fileID: 4800000, guid: f2a9a9f1727de0c4a912563406aea950, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -25,11 +25,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 242b2f845a3be7c4d9f1d0d4549a0c27, type: 3}
+        m_Texture: {fileID: 2800000, guid: f4608f9542b48664ab8a8a3064ae18b2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: df7a6ef0c818dfa43ac58a6bed31e936, type: 3}
+        m_Texture: {fileID: 2800000, guid: e526a571a8bf2b949acd469a466e715c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -45,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
-        m_Texture: {fileID: 2800000, guid: d14b90473ddc90644ba3ebe629652207, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9616acc9a0f3f754db3702076fae65c4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -60,28 +60,11 @@ Material:
     - _TeamLiveryHueRange: 0.07
     - _TeamLiveryMinSaturation: 0.4
     - _TeamLiveryStrength: 0
-    - _TeamMaskStrength: 0
+    - _TeamMaskStrength: 1
     - _TeamRimPower: 3
     - _TeamRimStrength: 0
-    - _WreckDissolveDuration: 8
-    - _WreckDissolveEdgeWidth: 0.08
-    - _WreckDissolveNoiseScale: 0.05
-    - _WreckGlowDuration: 8
-    - _WreckLifetime: 30
-    - _WreckSeed: 0
-    - _WreckSeparationSpeed: 1.5
-    - _WreckSinkSpeed: 1
-    - _WreckStartTime: 0
-    - _WreckTiltSpeed: 2
-    - _WreckTornEdgeWidth: 4
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WreckAxis: {r: 1, g: 0, b: 0, a: 0}
-    - _WreckAxisRange: {r: -1, g: 1, b: 0, a: 0}
-    - _WreckCenter: {r: 0, g: 0, b: 0, a: 0}
-    - _WreckCuts: {r: 0, g: 1000000, b: 1000000, a: 1000000}
-    - _WreckDissolveEdgeColor: {r: 6, g: 2, b: 0.4, a: 1}
-    - _WreckHeatColor: {r: 4, g: 1.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

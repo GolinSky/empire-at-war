@@ -14,6 +14,14 @@
 5. Run these model-specific builders using `unity command run_script --file Tools/Blender/ImperialIAdvanced/<file> --json`: `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildFighters.cs`, `BuildPreviews.cs`, `Register.cs`.
 6. Run `Inspect.cs` to inspect saved assets without Play Mode. It writes `Temp/ImperialIAdvancedImport/UnityInspection.json`.
 
+## Team Colors
+
+- Imperial I Advanced and Imperial II share four mirrored foredeck stripes per side; the hull and turrets remain neutral. Tiled hull UVs require fitted geometry instead of a repeating texture mask.
+- `ImperialIAdvanced_TeamStripes.asset`: 540 vertices / 250 triangles, width 2.6 units, surface offset 0.015 units. Original hull albedo, UVs and normal map are preserved; stripe mask strength 1, hull mask/rim strengths 0.
+- The stripe renderer is under `BankingBody` and explicitly bound to ownership, fog and explosion rendering. Both wrecks include the matching renderer/filter pair and wreck material. Team bindings: Imperial I Advanced 90, Imperial II 100; wreck pairs 40/43.
+- After rebuilding either ship, run `unity command run_script --file Tools/Blender/ImperialIAdvanced/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` after both gameplay/wreck prefabs exist. Repeated runs preserve asset GUIDs and avoid duplicate bindings.
+- 2026-10-06: red/blue top and angled ship/wreck renders inspected; all four saved prefab checks passed; no import or serialization errors. Evidence: `Temp/ImperialTeamColorFix/Verification.json`, `After/`, `WreckAfter/`. No combat or automated Unity test run for this fix.
+
 - Hull: 26 meshes / 67,925 triangles / 245 bones. ISD-I parts: 8 / 5,024 / 11.
 - Six heavy turrets: each 5 / 1,137 / 9. Two ion turrets: each 6 / 1,206 / 10. Three triple turrets: each 4 / 1,447 / 6.
 - Interceptor: 4 / 2,850 / 14; Brute: 5 / 3,015 / 9; Punisher: 6 / 6,172 / 25.
@@ -56,6 +64,6 @@
 
 - 13 saved prefabs reload with no missing scripts, broken references or embedded FBX materials. Gameplay views contain the requested models; placement excludes source additive planes and uses the shared hologram material.
 - Empire roster, `ShipsData`, data/view asset mappings and existing Addressables groups, HUD/tooltip icons, reinforcement component mappings, matchups, abilities, audio and future ship icon generation are registered.
-- Opaque hull/wreck use source alpha-derived team masks at strength 0.2, with HSV livery disabled and normal green flipped. All eight palettes rendered; blue and green inspected for every model. Own 512×512 transparent icons/silhouettes, hologram and fresh-wreck previews are uncropped.
+- Opaque hull/wreck retain source surface textures, with HSV livery disabled and normal green flipped. Foredeck stripe geometry provides localized team color as described above. The original import rendered all eight palettes; blue and green inspected for every model. Own 512×512 transparent icons/silhouettes, hologram and fresh-wreck previews are uncropped.
 - Production scripts compiled and imports/persistence checks succeeded. Final Console error count is 0; `MainMenuScene` stayed clean.
 - No automated tests or Play Mode combat verification were run. Combat arcs, hangar replacement launches, tractor/boost lifecycle, shields, fog/selection, reinforcement and death/wreck behavior still need runtime acceptance. Balance is unverified; source animations and animated shader effects were not recreated.

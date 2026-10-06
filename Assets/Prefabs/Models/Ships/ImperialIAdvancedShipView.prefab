@@ -83,6 +83,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &386215164320640440
@@ -158,6 +159,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &8867338141183462101
@@ -232,6 +234,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &588562274913901624
@@ -286,6 +289,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 32
 --- !u!135 &5553187017503993619
@@ -360,6 +364,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &1307882242034749318
@@ -414,6 +419,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 31
 --- !u!135 &6073247450736417605
@@ -488,6 +494,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &1636472848886669620
@@ -5378,6 +5385,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 31
 --- !u!135 &2437515490323469296
@@ -5453,6 +5461,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &7816416689016495062
@@ -5476,6 +5485,96 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2534613281238631072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6369162721722261810}
+  - component: {fileID: 5587084221098108460}
+  - component: {fileID: 2190437395908656699}
+  m_Layer: 0
+  m_Name: TeamStripes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6369162721722261810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2534613281238631072}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6288173655347290105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5587084221098108460
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2534613281238631072}
+  m_Mesh: {fileID: 4300000, guid: d07ff240a6be3924c94c638e460dc8b7, type: 2}
+--- !u!23 &2190437395908656699
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2534613281238631072}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 23db9b2475ba9e64fb669e2cbe444859, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3051218407164065247
 GameObject:
   m_ObjectHideFlags: 0
@@ -5528,6 +5627,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 32
 --- !u!135 &1653049888499502354
@@ -5602,6 +5702,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &3613914591953561589
@@ -5772,6 +5873,8 @@ MonoBehaviour:
   - {fileID: 5868460820039953741}
   - {fileID: 2182797942105435439}
   - {fileID: 658741766455336468}
+  - {fileID: 2190437395908656699}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &5952501562155706629
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6048,6 +6151,7 @@ MonoBehaviour:
   - {fileID: 7413230647160101176}
   - {fileID: 1947354296347925025}
   - {fileID: 2724415228439531562}
+  - {fileID: 2190437395908656699}
   hardPoints:
   - {fileID: 7420647377336711011}
   - {fileID: 253133968755723827}
@@ -6180,6 +6284,7 @@ MonoBehaviour:
   - {fileID: 7563217718790286870}
   - {fileID: 5165039504829213800}
   - {fileID: 658741766455336468}
+  - {fileID: 2190437395908656699}
 --- !u!1 &4134226818109768861
 GameObject:
   m_ObjectHideFlags: 0
@@ -6232,6 +6337,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &4826141878688397238
@@ -11260,6 +11366,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 33
 --- !u!1 &4491833434800477522
@@ -11417,6 +11524,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &4662462117314765363
@@ -11615,6 +11723,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 33
 --- !u!1 &5496146784751829218
@@ -11765,6 +11874,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 33
 --- !u!1 &6257633756938739951
@@ -11889,6 +11999,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &7030692970364672285
@@ -11971,6 +12082,7 @@ Transform:
   - {fileID: 6988172117159726378}
   - {fileID: 8490571301135280986}
   - {fileID: 1925927761892226004}
+  - {fileID: 6369162721722261810}
   m_Father: {fileID: 773376535087680568}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6690396513675622672
@@ -12025,6 +12137,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &5496738534796629055
@@ -18152,6 +18265,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &8150953842140684004
@@ -18205,6 +18319,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 33
 --- !u!1 &8380727831503248740
@@ -18258,6 +18373,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &8976876851169044855

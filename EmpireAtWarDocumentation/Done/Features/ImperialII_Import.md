@@ -22,6 +22,7 @@ completed: 2026-10-06
 - [x] Final full EditMode suite: 1,066/1,067; all 11 Imperial II/main-battery checks passed. Remaining failure: existing Victory II renderer bindings, outside this import.
 - [x] After wreck-material renames: saved-ship suite 8/8; console errors zero. Verify all staged Unity GUID dependencies and new asset names.
 - [x] Commit 123 scoped files: `f17fcd22` — `Add Imperial II Star Destroyer to Empire`.
+- [x] Team-color follow-up 2026-10-06: neutral hull/turrets and four mirrored foredeck stripes per side, shared with Imperial I Advanced; matching wreck material. Team bindings now 100, fog 57, explosion/wreck pairs 43. Red/blue top/angled ship and wreck renders and all four saved-prefab checks passed; no import/serialization errors. No combat or automated Unity test run for this follow-up.
 
 ## Decision
 
