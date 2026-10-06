@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using Object = UnityEngine.Object;
@@ -40,7 +41,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
             target.HealthModel.ShipClass == ShipClass.Frigate ||
             target.HealthModel.ShipClass == ShipClass.Capital ||
-            target.HealthModel.ShipClass == ShipClass.HeavyCapital;
+            target.HealthModel.ShipClass == ShipClass.HeavyCapital ||
+            target.IsPlayerBase();
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {

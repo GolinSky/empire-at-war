@@ -247,6 +247,8 @@ namespace EmpireAtWar.Tests.Editor
             public void StartTargeting()
             { IsWaitingForTarget = true; TargetingChanged?.Invoke(); }
 
+            public bool IsValidTarget(IEntity target) => true;
+
             public void SubmitTarget(IEntity target) { }
 
             public void CancelTargeting()
