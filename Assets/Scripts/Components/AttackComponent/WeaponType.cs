@@ -32,5 +32,8 @@
         HeavyLaser = 28,
         LightRepeatingLaser = 29,
         FighterConcussionMissile = 30,
+        HeavyArtilleryRocket = 34,
+        BarrageRocket = 35,
+        LightDualTurbolaser = 36,
     }
 }

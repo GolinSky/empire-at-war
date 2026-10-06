@@ -14,7 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Factions.FactionDefinition
   factionType: 3
   ships:
-    keyValue: []
+    keyValue:
+    - key: 202
+      value:
+        matchups: {fileID: 11400000, guid: 6887148f139f280438d9d67f651593e6, type: 2}
+        description: 12,000 hull; 8,000 shields; speed 175. Four heavy 4-burst artillery-rocket
+          launchers and two 6-burst barrage-rocket launchers. Targetable shield generator,
+          two engines and tractor beam. Six light dual turbolasers, four heavy laser
+          cannons and hangar are not separately targetable. Full Salvo accelerates
+          rockets and slows other weapons. Tractor Beam restricts enemy movement.
+          TIE-Interceptor complement.
+        role: Artillery / Cruiser
+        iconKey: 3896a253ad3c5024b8b7260fb0c214a9:21300000
+        isHero: 0
+        <Name>k__BackingField: "Victory I Star Destroyer \u2014 Advanced Loadout"
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 12250
+        <BuildTime>k__BackingField: 245
+        <UnitCapacity>k__BackingField: 7
+        <Icon>k__BackingField: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200
@@ -69,6 +89,22 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 20
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 3ebf9b17840b8ee4daae27c4f063d4af,
+          type: 3}
+    - key: 203
+      value:
+        matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
+        description: Eight fast TIE Interceptors, each with 15 hull and four laser
+          cannons. Advanced-loadout carrier fighter.
+        role: Fighter / Interceptor
+        iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
+        isHero: 0
+        <Name>k__BackingField: TIE Interceptor Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 525
+        <BuildTime>k__BackingField: 18
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 64e95301a26b2ca498bc930f9eae7727,
           type: 3}
   research:
     keyValue:
