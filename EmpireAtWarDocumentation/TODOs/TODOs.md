@@ -17,10 +17,11 @@
   - **Status**: 2026-10-06 AOTR Arquitens imported as Empire ship `204`; Republic-aligned hull/shields/speed `2,600/1,400/48`, regeneration `14/s`, cost/build/population/tech/cap `3,500/30 s/2/3/20`. Zero targets/eight weapons, four two-shot light long-range turbolasers + four two-shot laser cannons, Boost Weapon Power, no fighters. Saved tuning/tooltip/live readback passed; zero console errors. Own fitted shield/placement/wreck/icons/team colors, source hashes, geometry/UVs and prior import/compile/render checks verified. No automated Unity tests or Play Mode run by these tasks.
   - **Remaining**: clean-skirmish acceptance and remaining provisional balance/source-difference review.
 
-- [ ] **Verify Victory II Advanced integration acceptance**
-  - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
-  - **Reference**: [[GameDesign/Victory II Advanced Import]]
-  - **Status**: 2026-10-06 AOTR Victory II Advanced imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
+- [ ] **Verify Victory II integration acceptance**
+  - **Plan**: [[TODOs/Features/VictoryII_Import|Victory II Import]]
+  - **Reference**: [[GameDesign/Victory II Import]]
+  - **Naming**: 2026-10-06 renamed to `VictoryII = 203` across assets, embedded rigs, tooling and links; GUIDs/geometry retained, saved-ship verifier and reinforcement prefab EditMode test passed.
+  - **Status**: 2026-10-06 AOTR Victory II imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
   - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
   - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
 

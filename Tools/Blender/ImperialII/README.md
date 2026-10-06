@@ -41,6 +41,6 @@
 
 - Final full EditMode suite: `1,066 / 1,067` passed. All 11 Imperial II/main-battery checks passed; no current console errors.
 - Related fixes: all team renderers bound; weapon arcs correctly cover both broadsides; interrupted secondary salvos cannot restart during Power to Main Batteries.
-- Remaining full-suite failure is the existing `VictoryIIAdvancedShipView.prefab` renderer binding (`65` expected, `42` listed), outside this import.
+- Remaining full-suite failure is the existing `VictoryIIShipView.prefab` renderer binding (`65` expected, `42` listed), outside this import.
 - Inspected top/stern hull views, placement hologram, wreck and eight team palettes. No manual skirmish or Play Mode run performed.
 - Team-color follow-up 2026-10-06: red/blue top and angled ship/wreck renders inspected; all four saved prefab checks passed (ownership, fog, banking, explosion and wreck pairs). No import/serialization errors; no combat or automated Unity test run for this fix. Evidence: `Temp/ImperialTeamColorFix/Verification.json`, `After/`, `WreckAfter/`.

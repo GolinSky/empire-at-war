@@ -966,14 +966,14 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: VictoryIIAdvancedShipView
+    - key: VictoryIIShipView
       value:
         m_AssetGUID: d350016d0347cd346baf0a1fce39145c
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: VictoryIIAdvancedShipData
+    - key: VictoryIIShipData
       value:
         m_AssetGUID: 4c2873b9054b88e438fe2bd075bd74df
         m_SubObjectName: 
