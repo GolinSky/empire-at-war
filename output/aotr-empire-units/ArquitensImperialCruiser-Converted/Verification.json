@@ -1,0 +1,53 @@
+{
+  "asset": "Assets/Prefabs/Models/Ships/ArquitensImperialCruiserShipView.prefab",
+  "hull": 1300,
+  "shields": 1200,
+  "speed": 30,
+  "targetableHardpoints": 0,
+  "teamRendererBindings": 51,
+  "wreckMeshes": 19,
+  "weapons": [
+    {
+      "type": 39,
+      "count": 4
+    },
+    {
+      "type": 40,
+      "count": 4
+    }
+  ],
+  "bounds": [
+    29.5791531,
+    15.7409725,
+    40.0
+  ],
+  "geometry": [
+    {
+      "name": "ArquitensImperialCruiser",
+      "meshes": 10,
+      "triangles": 13861,
+      "bones": 78,
+      "maximumBoneError": 4.51544537E-07
+    },
+    {
+      "name": "ArquitensImperialCruiserQuadTurret",
+      "meshes": 6,
+      "triangles": 680,
+      "bones": 8,
+      "maximumBoneError": 3.659591E-08
+    },
+    {
+      "name": "ArquitensImperialCruiserDualTurret",
+      "meshes": 4,
+      "triangles": 436,
+      "bones": 7,
+      "maximumBoneError": 3.00919538E-08
+    }
+  ],
+  "registrations": true,
+  "missingScripts": 0,
+  "brokenReferences": 0,
+  "playModeStartedByThisImport": false,
+  "editorWasPlayingDuringReadback": false,
+  "automatedTests": false
+}

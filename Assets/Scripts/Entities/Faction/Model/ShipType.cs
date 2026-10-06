@@ -32,6 +32,7 @@ namespace EmpireAtWar.Models.Factions
         Victory = 200,
         ImperialIAdvanced = 201,
         VictoryIAdvanced = 202,
+        ArquitensImperialCruiser = 204,
 
         //rebellion
         NebulonB = 300,

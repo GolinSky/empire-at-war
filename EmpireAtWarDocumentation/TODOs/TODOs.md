@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify ArquitensImperialCruiser integration acceptance**
+  - **Plan**: [[TODOs/Features/ArquitensAdvanced_Import|ArquitensImperialCruiser Import]]
+  - **Reference**: [[GameDesign/ArquitensImperialCruiser Import]]
+  - **Status**: 2026-10-06 AOTR Arquitens imported as Empire ship `204`; `1,300/1,200/30`, zero targets/eight weapons, four two-shot light long-range turbolasers + four two-shot laser cannons, Boost Weapon Power, no fighters. Own fitted shield/placement/wreck/icons/team colors, source hashes, geometry/UVs and saved-reference/import/compile/render checks verified. No automated Unity tests or Play Mode run by this import.
+  - **Remaining**: clean-skirmish acceptance and provisional balance/source-difference review.
+
 - [ ] **Verify Victory I Advanced integration acceptance**
   - **Plan**: [[TODOs/Features/VictoryIAdvanced_Import|Victory I Advanced Import]]
   - **Reference**: [[GameDesign/Victory I Advanced Import]]

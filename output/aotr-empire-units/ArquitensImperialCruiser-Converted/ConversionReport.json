@@ -1,0 +1,2019 @@
+[
+  {
+    "name": "ArquitensImperialCruiser",
+    "source": {
+      "meshes": {
+        "LensEffect_1": {
+          "triangles": 6,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_ISD_ENG Material"
+          ]
+        },
+        "LensEffect_2": {
+          "triangles": 6,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_ISD_ENG Material"
+          ]
+        },
+        "Hull": {
+          "triangles": 4746,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Superstructure_Base Material"
+          ]
+        },
+        "Mesh": {
+          "triangles": 3584,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD Material"
+          ]
+        },
+        "Light": {
+          "triangles": 104,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material"
+          ]
+        },
+        "Kitbash": {
+          "triangles": 617,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD Material"
+          ]
+        },
+        "Light_Kitbash": {
+          "triangles": 68,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD_Lights Material"
+          ]
+        },
+        "Collisionmesh": {
+          "triangles": 244,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 2504,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadowmesh2": {
+          "triangles": 1982,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/Shadowmesh": {
+          "parent": "Root",
+          "head": [
+            -0.582643985748291,
+            9.55549144744873,
+            -2.164708137512207
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small": {
+          "parent": "Root",
+          "head": [
+            32.303924560546875,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small01": {
+          "parent": "Root",
+          "head": [
+            32.303924560546875,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small02": {
+          "parent": "Root",
+          "head": [
+            -0.47929906845092773,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small03": {
+          "parent": "Root",
+          "head": [
+            -0.47929906845092773,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small04": {
+          "parent": "Root",
+          "head": [
+            -33.2357292175293,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small05": {
+          "parent": "Root",
+          "head": [
+            -33.2357292175293,
+            93.67218017578125,
+            -2.1938374042510986
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE": {
+          "parent": "Root",
+          "head": [
+            9.152204513549805,
+            23.22119140625,
+            20.065837860107422
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.001": {
+          "parent": "Root",
+          "head": [
+            -9.322749137878418,
+            23.22119140625,
+            20.065837860107422
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.002": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            0.402036190032959
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.003": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            -4.953006744384766
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.004": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            -4.888952732086182
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.005": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            0.41188669204711914
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.006": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            0.41188669204711914
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.007": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            -4.888952732086182
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.008": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            -4.953006744384766
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.009": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            0.402036190032959
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.010": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            6.122621059417725
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.011": {
+          "parent": "Root",
+          "head": [
+            2.3986334800720215,
+            -59.04971694946289,
+            6.104466438293457
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.012": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            -5.9447712898254395
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.013": {
+          "parent": "Root",
+          "head": [
+            2.4071297645568848,
+            -59.07672119140625,
+            -5.9447712898254395
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.014": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            4.658939838409424,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.015": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            4.658939838409424,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.016": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            14.152595520019531,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.017": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            14.089620590209961,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_01": {
+          "parent": "Root",
+          "head": [
+            31.000612258911133,
+            -6.7518415451049805,
+            -3.581249475479126
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_02": {
+          "parent": "Root",
+          "head": [
+            12.575006484985352,
+            -65.37686920166016,
+            -3.524428367614746
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_03": {
+          "parent": "Root",
+          "head": [
+            -32.15120315551758,
+            -7.198696136474609,
+            -3.6445271968841553
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_04": {
+          "parent": "Root",
+          "head": [
+            -14.293394088745117,
+            -66.14368438720703,
+            -3.688884973526001
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_E_BONE": {
+          "parent": "Root",
+          "head": [
+            -0.4791567325592041,
+            95.06378936767578,
+            -2.1903414726257324
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT3": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -0.49855858087539673,
+            88.88182067871094,
+            -2.0760397911071777
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT1": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135833740234,
+            -2.0760397911071777
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT2": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135833740234,
+            -2.0760397911071777
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT3.001": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135833740234,
+            -2.0760397911071777
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -0.5049976110458374,
+            92.94984436035156,
+            -2.1110591888427734
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens.001": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -33.2629508972168,
+            92.94983673095703,
+            -2.1110591888427734
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens.002": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.213626861572266,
+            92.94985961914062,
+            -2.1110591888427734
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_S_BONE": {
+          "parent": "Root",
+          "head": [
+            -0.4791598320007324,
+            25.188064575195312,
+            18.90465545654297
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T01": {
+          "parent": "Root",
+          "head": [
+            15.463691711425781,
+            -40.69258499145508,
+            -5.8423171043396
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T02": {
+          "parent": "Root",
+          "head": [
+            -15.463691711425781,
+            -40.69258499145508,
+            -5.8423171043396
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T03": {
+          "parent": "Root",
+          "head": [
+            14.670785903930664,
+            -7.1815505027771,
+            6.282268524169922
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T04": {
+          "parent": "Root",
+          "head": [
+            -14.670785903930664,
+            -7.1815505027771,
+            6.282268524169922
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_FACING": {
+          "parent": "Root",
+          "head": [
+            -0.37241601943969727,
+            -95.65373229980469,
+            -2.6991560459136963
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA": {
+          "parent": "Root",
+          "head": [
+            9.152204513549805,
+            23.22119140625,
+            20.065837860107422
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.001": {
+          "parent": "Root",
+          "head": [
+            -9.322749137878418,
+            23.22119140625,
+            20.065837860107422
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.002": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            0.402036190032959
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.003": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            -4.953006744384766
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.004": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            -4.888952732086182
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.005": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            0.41188669204711914
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.006": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            0.41188669204711914
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.007": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            -4.888952732086182
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.008": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            -4.953006744384766
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.009": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            0.402036190032959
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.010": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            6.122621059417725
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.011": {
+          "parent": "Root",
+          "head": [
+            2.3986334800720215,
+            -59.04971694946289,
+            6.104466438293457
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.012": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            -5.9447712898254395
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.013": {
+          "parent": "Root",
+          "head": [
+            2.4071297645568848,
+            -59.07672119140625,
+            -5.9447712898254395
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.014": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            4.658939838409424,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.015": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            4.658939838409424,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.016": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            14.152595520019531,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.017": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            14.089620590209961,
+            -13.8132963180542
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.018": {
+          "parent": "Root",
+          "head": [
+            -3.297545909881592,
+            25.27464485168457,
+            26.1322021484375
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.019": {
+          "parent": "Root",
+          "head": [
+            -3.8882243633270264,
+            24.90646743774414,
+            23.917537689208984
+          ]
+        },
+        "ArquitensImperialCruiserRig/Collisionmesh": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/Hull": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/PI_DAMAGE_ELEC_SD00": {
+          "parent": "Hull",
+          "head": [
+            -24.92722511291504,
+            -47.17963790893555,
+            -2.076040744781494
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_MED_ALT2": {
+          "parent": "Hull",
+          "head": [
+            0.3168017864227295,
+            -5.952248573303223,
+            -0.6941019296646118
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_MED_ALT3": {
+          "parent": "Hull",
+          "head": [
+            -0.03228121995925903,
+            -5.245194435119629,
+            -1.4771146774291992
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3": {
+          "parent": "Hull",
+          "head": [
+            -0.03228121995925903,
+            25.317672729492188,
+            17.85000991821289
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT1": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898340225219727
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT2": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898340225219727
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3.001": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898340225219727
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT2.001": {
+          "parent": "Hull",
+          "head": [
+            -38.04323196411133,
+            9.432043075561523,
+            -1.7802824974060059
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3.002": {
+          "parent": "Hull",
+          "head": [
+            -38.04323196411133,
+            9.432043075561523,
+            -1.7802824974060059
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_SML_ALT2": {
+          "parent": "Hull",
+          "head": [
+            6.6471943855285645,
+            -88.30292510986328,
+            -0.6941019296646118
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_SML_ALT3": {
+          "parent": "Hull",
+          "head": [
+            6.6471943855285645,
+            -88.30292510986328,
+            -0.6941019296646118
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_MED_ALT3": {
+          "parent": "Hull",
+          "head": [
+            11.144258499145508,
+            -61.21544647216797,
+            1.8958792686462402
+          ]
+        }
+      },
+      "bounds_min": [
+        -70.51153564453125,
+        -95.77377319335938,
+        -39.46963882446289
+      ],
+      "bounds_max": [
+        69.57972717285156,
+        93.67220306396484,
+        35.081966400146484
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "LensEffect_1": {
+          "triangles": 6,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_ISD_ENG Material.001"
+          ]
+        },
+        "LensEffect_2": {
+          "triangles": 6,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "P_ISD_ENG Material.001"
+          ]
+        },
+        "Collisionmesh": {
+          "triangles": 244,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "COLLISION.001"
+          ]
+        },
+        "Hull": {
+          "triangles": 4746,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Superstructure_Base Material.001"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 2504,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        },
+        "Mesh": {
+          "triangles": 3584,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD Material.001"
+          ]
+        },
+        "Light": {
+          "triangles": 104,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material.001"
+          ]
+        },
+        "Kitbash": {
+          "triangles": 617,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD Material.001"
+          ]
+        },
+        "Light_Kitbash": {
+          "triangles": 68,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Kitbash_Pieces_ISD_Lights Material.001"
+          ]
+        },
+        "Shadowmesh2": {
+          "triangles": 1982,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/Shadowmesh": {
+          "parent": "Root",
+          "head": [
+            -0.582643985748291,
+            9.55549144744873,
+            -2.1647098064422607
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small": {
+          "parent": "Root",
+          "head": [
+            32.303924560546875,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small01": {
+          "parent": "Root",
+          "head": [
+            32.303924560546875,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small02": {
+          "parent": "Root",
+          "head": [
+            -0.47929906845092773,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small03": {
+          "parent": "Root",
+          "head": [
+            -0.47929906845092773,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small04": {
+          "parent": "Root",
+          "head": [
+            -33.2357292175293,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/LensEffect_Small05": {
+          "parent": "Root",
+          "head": [
+            -33.2357292175293,
+            93.67218017578125,
+            -2.193852663040161
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE": {
+          "parent": "Root",
+          "head": [
+            9.152204513549805,
+            23.221195220947266,
+            20.065834045410156
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.001": {
+          "parent": "Root",
+          "head": [
+            -9.322749137878418,
+            23.221195220947266,
+            20.065834045410156
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.002": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            0.4020354449748993
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.003": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.537093162536621,
+            -4.953007698059082
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.004": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.11005687713623,
+            -4.888955116271973
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.005": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            0.4118843972682953
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.006": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            0.41188594698905945
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.007": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.5383124351501465,
+            -4.888953685760498
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.008": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111274719238281,
+            -4.953009128570557
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.009": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            0.40203389525413513
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.010": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            6.122630596160889
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.011": {
+          "parent": "Root",
+          "head": [
+            2.3986334800720215,
+            -59.04971694946289,
+            6.104475975036621
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.012": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            -5.944761753082275
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.013": {
+          "parent": "Root",
+          "head": [
+            2.4071297645568848,
+            -59.07672119140625,
+            -5.944761753082275
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.014": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            4.658937454223633,
+            -13.813297271728516
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.015": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            4.658937454223633,
+            -13.813297271728516
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.016": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            14.152593612670898,
+            -13.813298225402832
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_BLINK_WHITE.017": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            14.089618682861328,
+            -13.813298225402832
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_01": {
+          "parent": "Root",
+          "head": [
+            31.000612258911133,
+            -6.751842021942139,
+            -3.5812482833862305
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_02": {
+          "parent": "Root",
+          "head": [
+            12.575006484985352,
+            -65.37686920166016,
+            -3.5244176387786865
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_03": {
+          "parent": "Root",
+          "head": [
+            -32.15120315551758,
+            -7.198696613311768,
+            -3.6445260047912598
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_04": {
+          "parent": "Root",
+          "head": [
+            -14.293394088745117,
+            -66.14368438720703,
+            -3.6888742446899414
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_E_BONE": {
+          "parent": "Root",
+          "head": [
+            -0.4791567325592041,
+            95.06378936767578,
+            -2.190356969833374
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT3": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -0.49855953454971313,
+            88.88182067871094,
+            -2.076054334640503
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT1": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135070800781,
+            -2.076054334640503
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT2": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135070800781,
+            -2.076054334640503
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_SML_ALT3.001": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.46000289916992,
+            88.68135070800781,
+            -2.076054334640503
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -0.504997968673706,
+            92.94984436035156,
+            -2.111074447631836
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens.001": {
+          "parent": "HP_E_BONE",
+          "head": [
+            -33.2629508972168,
+            92.94984436035156,
+            -2.111074447631836
+          ]
+        },
+        "ArquitensImperialCruiserRig/PE_Arquitens.002": {
+          "parent": "HP_E_BONE",
+          "head": [
+            32.213626861572266,
+            92.9498519897461,
+            -2.111074447631836
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_S_BONE": {
+          "parent": "Root",
+          "head": [
+            -0.4791598320007324,
+            25.188068389892578,
+            18.904651641845703
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T01": {
+          "parent": "Root",
+          "head": [
+            15.463691711425781,
+            -40.69258499145508,
+            -5.842310428619385
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T02": {
+          "parent": "Root",
+          "head": [
+            -15.463691711425781,
+            -40.69258499145508,
+            -5.842310428619385
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T03": {
+          "parent": "Root",
+          "head": [
+            14.670785903930664,
+            -7.181550025939941,
+            6.282269477844238
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_T04": {
+          "parent": "Root",
+          "head": [
+            -14.670785903930664,
+            -7.181550025939941,
+            6.282269477844238
+          ]
+        },
+        "ArquitensImperialCruiserRig/HP_FACING": {
+          "parent": "Root",
+          "head": [
+            -0.37241601943969727,
+            -95.65373229980469,
+            -2.6991405487060547
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA": {
+          "parent": "Root",
+          "head": [
+            9.152204513549805,
+            23.221195220947266,
+            20.065834045410156
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.001": {
+          "parent": "Root",
+          "head": [
+            -9.322749137878418,
+            23.221195220947266,
+            20.065834045410156
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.002": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.5370941162109375,
+            0.4020354449748993
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.003": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            4.537093162536621,
+            -4.953007698059082
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.004": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.11005687713623,
+            -4.888955116271973
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.005": {
+          "parent": "Root",
+          "head": [
+            -37.60092544555664,
+            14.110057830810547,
+            0.4118843972682953
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.006": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.538313388824463,
+            0.41188594698905945
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.007": {
+          "parent": "Root",
+          "head": [
+            36.6224250793457,
+            4.5383124351501465,
+            -4.888953685760498
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.008": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111274719238281,
+            -4.953009128570557
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.009": {
+          "parent": "Root",
+          "head": [
+            36.62484359741211,
+            14.111275672912598,
+            0.40203389525413513
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.010": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            6.122630596160889
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.011": {
+          "parent": "Root",
+          "head": [
+            2.3986334800720215,
+            -59.04971694946289,
+            6.104475975036621
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.012": {
+          "parent": "Root",
+          "head": [
+            -3.328497886657715,
+            -59.07672119140625,
+            -5.944761753082275
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.013": {
+          "parent": "Root",
+          "head": [
+            2.4071297645568848,
+            -59.07672119140625,
+            -5.944761753082275
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.014": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            4.658937454223633,
+            -13.813297271728516
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.015": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            4.658937454223633,
+            -13.813297271728516
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.016": {
+          "parent": "Root",
+          "head": [
+            -4.083087921142578,
+            14.152593612670898,
+            -13.813298225402832
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.017": {
+          "parent": "Root",
+          "head": [
+            3.257915496826172,
+            14.089618682861328,
+            -13.813298225402832
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.018": {
+          "parent": "Root",
+          "head": [
+            -3.297545909881592,
+            25.274648666381836,
+            26.132198333740234
+          ]
+        },
+        "ArquitensImperialCruiserRig/PPTW_PTWSA.019": {
+          "parent": "Root",
+          "head": [
+            -3.8882243633270264,
+            24.906471252441406,
+            23.91753387451172
+          ]
+        },
+        "ArquitensImperialCruiserRig/Collisionmesh": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/Hull": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserRig/PI_DAMAGE_ELEC_SD00": {
+          "parent": "Hull",
+          "head": [
+            -24.92722511291504,
+            -47.17963790893555,
+            -2.076033115386963
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_MED_ALT2": {
+          "parent": "Hull",
+          "head": [
+            0.3168017864227295,
+            -5.952248573303223,
+            -0.6941009759902954
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_BILLOW_MED_ALT3": {
+          "parent": "Hull",
+          "head": [
+            -0.03228121995925903,
+            -5.245194911956787,
+            -1.4771138429641724
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3": {
+          "parent": "Hull",
+          "head": [
+            -0.03228121995925903,
+            25.317676544189453,
+            17.850006103515625
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT1": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898354530334473
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT2": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898354530334473
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3.001": {
+          "parent": "Hull",
+          "head": [
+            36.38133239746094,
+            9.432043075561523,
+            -2.2898354530334473
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT2.001": {
+          "parent": "Hull",
+          "head": [
+            -38.04323196411133,
+            9.432043075561523,
+            -1.78028404712677
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_TINY_ALT3.002": {
+          "parent": "Hull",
+          "head": [
+            -38.04323196411133,
+            9.432043075561523,
+            -1.78028404712677
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_SML_ALT2": {
+          "parent": "Hull",
+          "head": [
+            6.6471943855285645,
+            -88.30292510986328,
+            -0.694087564945221
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_SML_ALT3": {
+          "parent": "Hull",
+          "head": [
+            6.6471943855285645,
+            -88.30292510986328,
+            -0.694087564945221
+          ]
+        },
+        "ArquitensImperialCruiserRig/P_FIRE_MED_ALT3": {
+          "parent": "Hull",
+          "head": [
+            11.144258499145508,
+            -61.21544647216797,
+            1.8958892822265625
+          ]
+        }
+      },
+      "bounds_min": [
+        -70.51153564453125,
+        -95.77377319335938,
+        -39.46965408325195
+      ],
+      "bounds_max": [
+        69.57972717285156,
+        93.67220306396484,
+        35.08195114135742
+      ]
+    },
+    "materials": [
+      {
+        "name": "P_ISD_ENG Material",
+        "shader": "MeshAdditive.fx",
+        "base": "P_ISD_ENG.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_P_ISD_ENG_Albedo.png"
+      },
+      {
+        "name": "COLLISION",
+        "shader": "MeshCollision.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "Hull_Kitbash_Pieces_ISD Material",
+        "shader": "MeshBumpColorize.fx",
+        "base": "Hull_Kitbash_Pieces_ISD.dds",
+        "normal": "Hull_Kitbash_Pieces_ISD_B.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Kitbash_Pieces_ISD_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Kitbash_Pieces_ISD_TeamMask.png",
+        "maskCoverage": 0.0,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Kitbash_Pieces_ISD_B_Normal.png"
+      },
+      {
+        "name": "Hull_Kitbash_Pieces_ISD_Lights Material",
+        "shader": "MeshAdditive.fx",
+        "base": "Hull_Kitbash_Pieces_ISD_Lights.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Kitbash_Pieces_ISD_Lights_Albedo.png"
+      },
+      {
+        "name": "Hull_Lights_Grid Material",
+        "shader": "MeshAdditive.fx",
+        "base": "Hull_Lights_Grid.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Lights_Grid_Albedo.png"
+      },
+      {
+        "name": "Hull_Superstructure_Base Material",
+        "shader": "MeshBumpColorize.fx",
+        "base": "Hull_Superstructure_Base.dds",
+        "normal": "Hull_Superstructure_Base_B.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Superstructure_Base_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Superstructure_Base_TeamMask.png",
+        "maskCoverage": 0.0,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiser/ArquitensImperialCruiser_Hull_Superstructure_Base_B_Normal.png"
+      }
+    ],
+    "bone_error": 1.7059844799040144e-05,
+    "bounds_error": 1.52587890625e-05
+  },
+  {
+    "name": "ArquitensImperialCruiserQuadTurret",
+    "source": {
+      "meshes": {
+        "Turret": {
+          "triangles": 164,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material"
+          ]
+        },
+        "Barrel": {
+          "triangles": 160,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material"
+          ]
+        },
+        "Shadowmesh_Barrels": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Lightmesh": {
+          "triangles": 2,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material"
+          ]
+        },
+        "Lightmesh2": {
+          "triangles": 2,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserQuadTurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Turret": {
+          "parent": "Root",
+          "head": [
+            0.003000538796186447,
+            -0.09119558334350586,
+            0.05048990249633789
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Light_Turret": {
+          "parent": "Turret",
+          "head": [
+            -0.001336366985924542,
+            -3.088948965072632,
+            1.5813149213790894
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Barrel": {
+          "parent": "Turret",
+          "head": [
+            -0.0005925039877183735,
+            1.7245205640792847,
+            1.0934447050094604
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/MuzzleA_01": {
+          "parent": "Barrel",
+          "head": [
+            0.10940678417682648,
+            -6.551215171813965,
+            0.6799006462097168
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/MuzzleA_00": {
+          "parent": "Barrel",
+          "head": [
+            0.10522694140672684,
+            -6.528376579284668,
+            1.581085443496704
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Shadowmesh_Barrels": {
+          "parent": "Barrel",
+          "head": [
+            0.003000725992023945,
+            0.9101781249046326,
+            0.05049014091491699
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Shadowmesh": {
+          "parent": "Turret",
+          "head": [
+            0.003000538796186447,
+            -0.09119558334350586,
+            0.05048990249633789
+          ]
+        }
+      },
+      "bounds_min": [
+        -3.259812593460083,
+        -6.675816059112549,
+        -0.002362380735576153
+      ],
+      "bounds_max": [
+        3.259812593460083,
+        3.0461020469665527,
+        2.8717451095581055
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Turret": {
+          "triangles": 164,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material.001"
+          ]
+        },
+        "Lightmesh": {
+          "triangles": 2,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material.001"
+          ]
+        },
+        "Lightmesh2": {
+          "triangles": 2,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hull_Lights_Grid Material.001"
+          ]
+        },
+        "Barrel": {
+          "triangles": 160,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material.001"
+          ]
+        },
+        "Shadowmesh_Barrels": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 176,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserQuadTurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Turret": {
+          "parent": "Root",
+          "head": [
+            0.003000538796186447,
+            -0.09119557589292526,
+            0.050489917397499084
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Light_Turret": {
+          "parent": "Turret",
+          "head": [
+            -0.0013361289165914059,
+            -3.0889487266540527,
+            1.5813153982162476
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Barrel": {
+          "parent": "Turret",
+          "head": [
+            -0.0005925819277763367,
+            1.7245208024978638,
+            1.0934444665908813
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/MuzzleA_01": {
+          "parent": "Barrel",
+          "head": [
+            0.1094072163105011,
+            -6.551215171813965,
+            0.6799015998840332
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/MuzzleA_00": {
+          "parent": "Barrel",
+          "head": [
+            0.10522738844156265,
+            -6.52837610244751,
+            1.58108651638031
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Shadowmesh_Barrels": {
+          "parent": "Barrel",
+          "head": [
+            0.0030006468296051025,
+            0.9101781249046326,
+            0.050489991903305054
+          ]
+        },
+        "ArquitensImperialCruiserQuadTurretRig/Shadowmesh": {
+          "parent": "Turret",
+          "head": [
+            0.003000538796186447,
+            -0.09119551628828049,
+            0.050489917397499084
+          ]
+        }
+      },
+      "bounds_min": [
+        -3.259812831878662,
+        -6.675816059112549,
+        -0.002362876897677779
+      ],
+      "bounds_max": [
+        3.259812355041504,
+        3.046102523803711,
+        2.8717446327209473
+      ]
+    },
+    "materials": [
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "Hull_Lights_Grid Material",
+        "shader": "MeshAdditive.fx",
+        "base": "Hull_Lights_Grid.dds",
+        "normal": null,
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserQuadTurret/ArquitensImperialCruiserQuadTurret_Hull_Lights_Grid_Albedo.png"
+      },
+      {
+        "name": "Hullplates_diffuse Material",
+        "shader": "MeshBumpColorize.fx",
+        "base": "Hullplates_diffuse.dds",
+        "normal": "Hullplates_normal_specular.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserQuadTurret/ArquitensImperialCruiserQuadTurret_Hullplates_diffuse_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserQuadTurret/ArquitensImperialCruiserQuadTurret_Hullplates_diffuse_TeamMask.png",
+        "maskCoverage": 0.05592823028564453,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserQuadTurret/ArquitensImperialCruiserQuadTurret_Hullplates_normal_specular_Normal.png"
+      }
+    ],
+    "bone_error": 1.2563013379787201e-06,
+    "bounds_error": 4.961621016263962e-07
+  },
+  {
+    "name": "ArquitensImperialCruiserDualTurret",
+    "source": {
+      "meshes": {
+        "Turret_00": {
+          "triangles": 88,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material"
+          ]
+        },
+        "Barrel_00": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material"
+          ]
+        },
+        "Shadowmesh_barrel": {
+          "triangles": 120,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 120,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserDualTurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Turret_00": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Barrel_00": {
+          "parent": "Turret_00",
+          "head": [
+            0.037696849554777145,
+            -2.852975368499756,
+            1.5067057609558105
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/MuzzleA_00": {
+          "parent": "Barrel_00",
+          "head": [
+            -1.3815995454788208,
+            -8.074239730834961,
+            1.5810801982879639
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/MuzzleA_01": {
+          "parent": "Barrel_00",
+          "head": [
+            1.5358258485794067,
+            -8.074239730834961,
+            1.5810801982879639
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Shadowmesh_barrel": {
+          "parent": "Barrel_00",
+          "head": [
+            -3.3527612686157227e-08,
+            -2.559650182723999,
+            1.5468038320541382
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Shadowmesh": {
+          "parent": "Turret_00",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.1116561889648438,
+        -8.208263397216797,
+        0.0
+      ],
+      "bounds_max": [
+        2.2671432495117188,
+        2.7625083923339844,
+        2.86041259765625
+      ]
+    },
+    "roundtrip": {
+      "meshes": {
+        "Turret_00": {
+          "triangles": 88,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material.001"
+          ]
+        },
+        "Barrel_00": {
+          "triangles": 108,
+          "uv_layers": 1,
+          "hidden": false,
+          "materials": [
+            "Hullplates_diffuse Material.001"
+          ]
+        },
+        "Shadowmesh_barrel": {
+          "triangles": 120,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        },
+        "Shadowmesh": {
+          "triangles": 120,
+          "uv_layers": 1,
+          "hidden": true,
+          "materials": [
+            "SHADOW.001"
+          ]
+        }
+      },
+      "bones": {
+        "ArquitensImperialCruiserDualTurretRig/Root": {
+          "parent": null,
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Turret_00": {
+          "parent": "Root",
+          "head": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Barrel_00": {
+          "parent": "Turret_00",
+          "head": [
+            0.037696730345487595,
+            -2.8529748916625977,
+            1.5067062377929688
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/MuzzleA_00": {
+          "parent": "Barrel_00",
+          "head": [
+            -1.3815996646881104,
+            -8.074239730834961,
+            1.581081509590149
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/MuzzleA_01": {
+          "parent": "Barrel_00",
+          "head": [
+            1.535825490951538,
+            -8.074239730834961,
+            1.581081509590149
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Shadowmesh_barrel": {
+          "parent": "Barrel_00",
+          "head": [
+            -6.024467325005389e-08,
+            -2.559649705886841,
+            1.5468041896820068
+          ]
+        },
+        "ArquitensImperialCruiserDualTurretRig/Shadowmesh": {
+          "parent": "Turret_00",
+          "head": [
+            2.315242183825412e-21,
+            1.4210854715202004e-14,
+            -2.31524198187702e-21
+          ]
+        }
+      },
+      "bounds_min": [
+        -2.1116559505462646,
+        -8.20826244354248,
+        -3.4402557957946556e-07
+      ],
+      "bounds_max": [
+        2.2671430110931396,
+        2.7625086307525635,
+        2.860412359237671
+      ]
+    },
+    "materials": [
+      {
+        "name": "SHADOW",
+        "shader": "MeshShadowVolume.fx",
+        "base": "None",
+        "normal": null
+      },
+      {
+        "name": "Hullplates_diffuse Material",
+        "shader": "MeshBumpColorize.fx",
+        "base": "Hullplates_diffuse.dds",
+        "normal": "Hullplates_normal_specular.dds",
+        "baseMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserDualTurret/ArquitensImperialCruiserDualTurret_Hullplates_diffuse_Albedo.png",
+        "maskMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserDualTurret/ArquitensImperialCruiserDualTurret_Hullplates_diffuse_TeamMask.png",
+        "maskCoverage": 0.05592823028564453,
+        "normalMap": "Assets/Art/Textures/Models/EmpireShips/ArquitensImperialCruiserDualTurret/ArquitensImperialCruiserDualTurret_Hullplates_normal_specular_Normal.png"
+      }
+    ],
+    "bone_error": 1.3591950238932823e-06,
+    "bounds_error": 9.5367431640625e-07
+  }
+]

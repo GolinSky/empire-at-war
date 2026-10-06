@@ -966,3 +966,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ArquitensImperialCruiserShipView
+      value:
+        m_AssetGUID: 2f201f3499a8bfc4ba07003aa8343973
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ArquitensImperialCruiserShipData
+      value:
+        m_AssetGUID: 0a5dd52da80dd4b409e816ecbec32d68
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

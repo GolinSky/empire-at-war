@@ -38,5 +38,7 @@
         HeavyArtilleryRocket = 34,
         BarrageRocket = 35,
         LightDualTurbolaser = 36,
+        LightLongRangeTurbolaser = 39,
+        BurstLaserCannon = 40,
     }
 }

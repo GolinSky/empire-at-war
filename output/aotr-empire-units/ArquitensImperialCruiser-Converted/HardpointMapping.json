@@ -1,0 +1,114 @@
+[
+  {
+    "attachment": "HP_T01",
+    "id": 0,
+    "weaponType": 39,
+    "position": [
+      -3.34074783,
+      -1.00903821,
+      9.750873
+    ],
+    "yaw": 0.7480851,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_T02",
+    "id": 1,
+    "weaponType": 39,
+    "position": [
+      3.18932056,
+      -1.00903821,
+      9.750873
+    ],
+    "yaw": 0.7480225,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_T03",
+    "id": 2,
+    "weaponType": 39,
+    "position": [
+      -3.27732921,
+      1.92656708,
+      2.68687248
+    ],
+    "yaw": 358.4835,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_T04",
+    "id": 3,
+    "weaponType": 39,
+    "position": [
+      3.037191,
+      1.936552,
+      2.68771315
+    ],
+    "yaw": 0.09139604,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_01",
+    "id": 4,
+    "weaponType": 40,
+    "position": [
+      -8.284288,
+      0.0408937037,
+      1.66825259
+    ],
+    "yaw": 285.925629,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_02",
+    "id": 5,
+    "weaponType": 40,
+    "position": [
+      -4.344374,
+      0.05289179,
+      14.194891
+    ],
+    "yaw": 291.185883,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_03",
+    "id": 6,
+    "weaponType": 40,
+    "position": [
+      8.282684,
+      0.0275330991,
+      1.90661228
+    ],
+    "yaw": 69.2027,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "HP_04",
+    "id": 7,
+    "weaponType": 40,
+    "position": [
+      4.54528427,
+      0.01816839,
+      14.2573366
+    ],
+    "yaw": 72.58566,
+    "muzzleA": "MuzzleA_00",
+    "muzzleB": "MuzzleA_01",
+    "targetable": false
+  }
+]

@@ -348,6 +348,21 @@ MonoBehaviour:
         aiUse: 1
         settings:
           rid: 6801466921437888596
+    - key: 23
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Boost Weapon Power
+        description: Double fire rate for 20 s. Shield regeneration stops, speed
+          falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
+        duration: 20
+        recoveryDelay: 60
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801466921437888599
   references:
     version: 2
     RefIds:
@@ -577,3 +592,13 @@ MonoBehaviour:
           speedMultiplier: 2
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
+    - rid: 6801466921437888599
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 0.25
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1.5
