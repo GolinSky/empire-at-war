@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify Victory II Advanced integration acceptance**
+  - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
+  - **Reference**: [[GameDesign/Victory II Advanced Import]]
+  - **Status**: 2026-10-06 AOTR Victory II Advanced imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
+  - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
+
 - [ ] **Verify ArquitensImperialCruiser integration acceptance**
   - **Plan**: [[TODOs/Features/ArquitensAdvanced_Import|ArquitensImperialCruiser Import]]
   - **Reference**: [[GameDesign/ArquitensImperialCruiser Import]]

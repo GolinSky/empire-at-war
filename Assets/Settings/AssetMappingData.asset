@@ -966,6 +966,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: VictoryIIAdvancedShipView
+      value:
+        m_AssetGUID: d350016d0347cd346baf0a1fce39145c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: VictoryIIAdvancedShipData
+      value:
+        m_AssetGUID: 4c2873b9054b88e438fe2bd075bd74df
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: ArquitensImperialCruiserShipView
       value:
         m_AssetGUID: 2f201f3499a8bfc4ba07003aa8343973

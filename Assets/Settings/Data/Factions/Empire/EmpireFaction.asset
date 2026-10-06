@@ -57,6 +57,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: b8f66d736a9c0a841b8957320119ca55,
           type: 3}
+    - key: 203
+      value:
+        matchups: {fileID: 11400000, guid: 514f46b309303c04eaaaeb7733662a3e, type: 2}
+        description: 12,000 hull; 10,000 shields; speed 20. Four medium dual turbo-ion
+          cannons and two medium turbo-ion cannons. Targetable shield generator,
+          two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
+          laser cannons and hangar are not separately targetable. Boost Weapon Power
+          doubles fire rate, stops shield regeneration and halves speed for 20 s.
+          Tractor Beam restricts enemy movement. TIE-Interceptor complement.
+        role: Ion Support / Cruiser
+        iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
+        isHero: 0
+        <Name>k__BackingField: "Victory II Star Destroyer \u2014 Advanced Loadout"
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 13750
+        <BuildTime>k__BackingField: 275
+        <UnitCapacity>k__BackingField: 7
+        <Icon>k__BackingField: {fileID: 21300000, guid: 73509b3f4bebe5542ba69d62230fff68,
+          type: 3}
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}

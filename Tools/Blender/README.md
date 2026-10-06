@@ -376,6 +376,15 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - `HangarComponent.isDestroyable` defaults true for existing hangars; this ship sets false and keeps its hangar outside the health list. Weapon profiles 34/35/36 and matching firing audio added; original Victory assets retained.
 - Saved asset checks passed with no missing scripts or broken references; no new Unity import/serialization/production compile errors. No automated tests or Play Mode run. Runtime acceptance and provisional balance/source differences remain in `TODOs/Features/VictoryIAdvanced_Import.md`.
 
+## Victory II Star Destroyer - Advanced Loadout - 2026-10-06
+
+- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; reference `GameDesign/Victory II Advanced Import`. AOTR advanced unit `E_Victory_Star_Destroyer_2_Fighters` uses `EV_VSD_II.ALO`; source stats 12,000 hull / 10,000 shields; user speed 20.
+- Model-specific scripts: `Tools/Blender/VictoryIIAdvanced/README.md`. Blender 3.6.23 MCP safe mode, isolated port 9880; primary conversion session preserved. Binary-verified identity Root restoration; source hidden flags, UVs and parents retained.
+- Hull 40 meshes / 24,024 triangles / 180 bones; each of two distinct turret files 4 / 1,447 / 6. Six turrets attach to T_01..06; compensate their nested rig rotation/scale. Non-lens Unity geometry error <=0.000002101 raw units; documented engine glow-plane error <=0.008128 raw (~0.088 gameplay units). Gameplay muzzle/system bindings have zero displacement; source attachment error <=0.000000958 raw units.
+- Empire ship `VictoryIIAdvanced = 203`: 10 targets (4 dual + 2 single medium turbo-ions, shield, two engines, tractor), 18 weapons; 6 medium 3-burst turbolasers + 6 heavy lasers and hangar are non-targetable. Shared TIE-Interceptor: two launches, one active. Shared Boost Weapon Power 12 + Tractor Beam 22; new weapon profiles 37/38 and firing audio.
+- Saved visual/gameplay/opaque-hull hologram/wreck/icons, Empire roster, data/view Addressables and three icon mappings. Bounds 65.43347 x 42.26736 x 110, bank +/-8 degrees, navigation radius 69. Eight team palettes and own placement/wreck/icon renders inspected.
+- Source hashes, metadata, saved references and import/compile checks verified; shared entries preserved. Packed blends/FBXs/textures/evidence: `output/aotr-empire-units/VictoryIIAdvanced-Converted/`. No automated Unity tests or Play Mode run. Runtime acceptance and provisional source/balance differences remain in `TODOs/Features/VictoryIIAdvanced_Import.md`; death-clone ALA is not converted.
+
 ## ArquitensImperialCruiser - 2026-10-06
 
 - Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `GameDesign/Arquitens Advanced Import`.
