@@ -924,3 +924,45 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ImperialIAdvancedShipView
+      value:
+        m_AssetGUID: c5a735dafc563ad45b16c92aeabb3b3f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ImperialIAdvancedShipData
+      value:
+        m_AssetGUID: 0c379a49e2b12644b963e47657c852bf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEBruteSquadronView
+      value:
+        m_AssetGUID: 71636a83fa02a684f8f5b9d119219573
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEBruteSquadronData
+      value:
+        m_AssetGUID: 1506a6723d71f5443a3443ae9ccc9180
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEPunisherSquadronView
+      value:
+        m_AssetGUID: 6fd0cc7d74bff17459c45351f3dfa248
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEPunisherSquadronData
+      value:
+        m_AssetGUID: ed8703d3b0c11eb48bcc35df4870c7bb
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

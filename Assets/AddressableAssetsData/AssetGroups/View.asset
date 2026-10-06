@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c220f025d702824bb0ded6ab9bec89d
+    m_Address: TIEInterceptorSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30429bfca42a8474a86d43c1caccc370
     m_Address: Delta7SquadronView
     m_ReadOnly: 0
@@ -130,8 +135,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fd0cc7d74bff17459c45351f3dfa248
+    m_Address: TIEPunisherSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fe00dc9b94303b489d883da86697685
     m_Address: StarDestroyer2ShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71636a83fa02a684f8f5b9d119219573
+    m_Address: TIEBruteSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -195,6 +210,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a796cdb49bcc72145a58a9e9c820cd57
+    m_Address: VictoryIAdvancedShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: abaede0c24b88f34f8ba60f5017d8a59
     m_Address: AsteroidDefendPlatformView
     m_ReadOnly: 0
@@ -207,6 +227,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c40f2cb09a4486e4bbb404a364c1d37f
     m_Address: StealthCorvetteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5a735dafc563ad45b16c92aeabb3b3f
+    m_Address: ImperialIAdvancedShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -247,16 +272,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb877f831f1dbb445b5f81fb1a02e7c9
     m_Address: ARC170SquadronView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2c220f025d702824bb0ded6ab9bec89d
-    m_Address: TIEInterceptorSquadronView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a796cdb49bcc72145a58a9e9c820cd57
-    m_Address: VictoryIAdvancedShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

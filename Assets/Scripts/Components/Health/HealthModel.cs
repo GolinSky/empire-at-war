@@ -170,7 +170,9 @@ namespace EmpireAtWar.Models.Health
             if (!hardPoint.IsDestroyed)
             {
                 hardPoint.ApplyDamage(damage);
-                if (hardPoint.IsDestroyed && hardPoint.HardPointType == HardPointType.ShieldGenerator)
+                if (hardPoint.IsDestroyed && hardPoint.HardPointType == HardPointType.ShieldGenerator &&
+                    HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
+                        .All(point => point.IsDestroyed))
                 {
                     IsLostShieldGenerator = true;
                     Shields = 0f;

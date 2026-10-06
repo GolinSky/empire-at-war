@@ -1,0 +1,1135 @@
+{
+  "date": "2026-10-06",
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD.ALO": "2e7537437ef1c86a5b3116f370c96ab52f343319e4cbe626cdbd1d6bfae6922a",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hangar_Imp_1k.dds": "8693b3b8f23db2258d5cddd810c24fcf5c60cb9a5b2e179faabf069456578a7d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Armor_B.dds": "2bd44154de7f51262cae852eef823a4c31ad85e12d8fb2cdf36748608abaa3fe",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Armor_Thick.dds": "3ef6a582a29eb066822a8fabd0c82b58a8bfc598123ed6f2c3a04adbdfbafb92",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD.dds": "92ddc4a77335bfabd687e7107916174d0d76f03cebceddaffda527c8648dabb3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_B.dds": "678eec9f6056e0f1205e7e9e630eb4dd602754dc0490a2253d6c251659728f8d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_Lights.dds": "6b6fe104c7e1227fdbe662f3de45a2efaa7cf45a81f5db2b1598254dac62fe74",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds": "099112ab4920b4b55fc1ba69c98750bb3dc1269d50c4f6424dc70ace58b24564",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base.dds": "6d7753b511f9f67d1270e2396925b0218897354f5bfd86ee5acc12af0a7d1026",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base_B.dds": "dd61f882f7eda6db3015fcae8b825911b49bd34a1b0d00fbdb060871f5c3e5e1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_ISD_diffuse.dds": "1c9313e8d6673edec8a741fe458fad54675aeb1cc3cd4d26a5e98a0e4346ed3b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_normal_specular.dds": "1678f960166c8362d03c67d7946131f65b36a7d879c6e315a7a2b6f781e4d448",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\P_ISD_ENG.dds": "f5428cc1c8cd48221410265af6bbfb7a89b7bebbfaa8d8aadc92ec2ea621f4a4",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\EV_TIE_INTERCEPTOR_E.ALO": "b3df8ecde8208a26ca8996f3b7f3539b9ee237ac79c5278d40344546fe05e479",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Tie_F_I_Def_Diffuse.dds": "32135c2dd18c2670fe492f9268c066ae177ef750a719bc177a33fd9b0896a427",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\EV_Tie_F_I_Def_Normal.dds": "f978fc8c5185949d0b9f6f7085cc42a953a8f0fc91206a7f786c4a702d56c1b2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\P_Orange_ENG.dds": "e9b97961d278513733d513a64d58b52b628470bbbc520e897c201713e6f9fca4",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\EV_TIE_Brute.ALO": "c6dbdd579884a8474e248131523214ba679dd666dd682f44e6fe535127d0f4ae",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\EV_TIE_Punisher.ALO": "ae0ba41a992d7c34fbdd800af20c3ce4cf743403013654cac973df51820a1c65",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\TIEBOMB_Diffuse.dds": "48c8d13a856dc794f546647a350ebf6e06502b6e9cd528ef01a5573535e41abb",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\TIEBOMB_Normal.dds": "796533f78112939b4e0eff3b693d160bc81c3c3e622a440a84ab5c570b20a433",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\TIEBOMB_specular.dds": "7079d613cf0300ecb74cab72beb1dc2dbabcf0a3d702c4f3a10cd537b49f5831",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1.alo": "46c5931300d210ce848e5c23eb753088d00fcbf6529ed2e634ef24fa7c10d3fa",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_01.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_02.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_03.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_04.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_05.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_06.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_ICD_01.ALO": "62d39c9a900f20dee4b2dc064f35eee84afacf0589f72244a435cce55eb2e7cc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_ICD_02.ALO": "62d39c9a900f20dee4b2dc064f35eee84afacf0589f72244a435cce55eb2e7cc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_01.ALO": "7733f4beb6989af1a9b7882e6ee8c15cbafeb260c1a8c0ee9842435866932d64",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Imperial_Star_Destroyer_Armor.dds": "22e41cf8269724bdf35156487b6a618e964e6f8f4dd388c8f0b1214653ef8ea0",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Imperial_Star_Destroyer_Armor_B.dds": "86ddc16343419c883d7628f6e46d7dcee7465bd795f292e4093e316cb7863e5f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_02.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_03.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3"
+  },
+  "blender_max_geometry_error": 0.00022396123057970768,
+  "blender_max_bone_error": 9.938160744917008e-05,
+  "unity_art": [
+    {
+      "name": "ImperialIAdvanced",
+      "meshes": [
+        {
+          "name": "Kitbash_Bridge.001",
+          "triangles": 5130,
+          "expected_triangles": 5130,
+          "uv": 9240,
+          "vertices": 9240
+        },
+        {
+          "name": "Collision.001",
+          "triangles": 2492,
+          "expected_triangles": 2492,
+          "uv": 4291,
+          "vertices": 4291
+        },
+        {
+          "name": "Bridge.001",
+          "triangles": 861,
+          "expected_triangles": 861,
+          "uv": 1429,
+          "vertices": 1429
+        },
+        {
+          "name": "Kitbash_Bridge2.001",
+          "triangles": 1198,
+          "expected_triangles": 1198,
+          "uv": 2048,
+          "vertices": 2048
+        },
+        {
+          "name": "Trench.001",
+          "triangles": 108,
+          "expected_triangles": 108,
+          "uv": 200,
+          "vertices": 200
+        },
+        {
+          "name": "Hangar.001",
+          "triangles": 2291,
+          "expected_triangles": 2291,
+          "uv": 3737,
+          "vertices": 3737
+        },
+        {
+          "name": "Hangar_Light.001",
+          "triangles": 2291,
+          "expected_triangles": 2291,
+          "uv": 3737,
+          "vertices": 3737
+        },
+        {
+          "name": "Glow_Center.001",
+          "triangles": 12,
+          "expected_triangles": 12,
+          "uv": 24,
+          "vertices": 24
+        },
+        {
+          "name": "Hull_Armor.001",
+          "triangles": 756,
+          "expected_triangles": 756,
+          "uv": 1224,
+          "vertices": 1224
+        },
+        {
+          "name": "Hull_Armor_XZ.001",
+          "triangles": 654,
+          "expected_triangles": 654,
+          "uv": 1134,
+          "vertices": 1134
+        },
+        {
+          "name": "Hull_Metal.001",
+          "triangles": 1578,
+          "expected_triangles": 1578,
+          "uv": 3009,
+          "vertices": 3009
+        },
+        {
+          "name": "Hull_Metal_X.001",
+          "triangles": 6764,
+          "expected_triangles": 6764,
+          "uv": 11638,
+          "vertices": 11638
+        },
+        {
+          "name": "Hull_Metal_XZ.001",
+          "triangles": 5240,
+          "expected_triangles": 5240,
+          "uv": 9416,
+          "vertices": 9416
+        },
+        {
+          "name": "Kitbash_01.001",
+          "triangles": 156,
+          "expected_triangles": 156,
+          "uv": 284,
+          "vertices": 284
+        },
+        {
+          "name": "Kitbash_03.001",
+          "triangles": 9464,
+          "expected_triangles": 9464,
+          "uv": 15676,
+          "vertices": 15676
+        },
+        {
+          "name": "Kitbash_04.001",
+          "triangles": 9254,
+          "expected_triangles": 9254,
+          "uv": 15264,
+          "vertices": 15264
+        },
+        {
+          "name": "Kitbash_05.001",
+          "triangles": 476,
+          "expected_triangles": 476,
+          "uv": 817,
+          "vertices": 817
+        },
+        {
+          "name": "Hull_Lights_Grid.001",
+          "triangles": 110,
+          "expected_triangles": 110,
+          "uv": 218,
+          "vertices": 218
+        },
+        {
+          "name": "Kitbash_Lights.001",
+          "triangles": 1620,
+          "expected_triangles": 1620,
+          "uv": 2324,
+          "vertices": 2324
+        },
+        {
+          "name": "LensEffect_Small.001",
+          "triangles": 8,
+          "expected_triangles": 8,
+          "uv": 9,
+          "vertices": 9
+        },
+        {
+          "name": "LensEffect_Small01.001",
+          "triangles": 8,
+          "expected_triangles": 8,
+          "uv": 9,
+          "vertices": 9
+        },
+        {
+          "name": "LensEffect_Small02.001",
+          "triangles": 8,
+          "expected_triangles": 8,
+          "uv": 9,
+          "vertices": 9
+        },
+        {
+          "name": "LensEffect_Small03.001",
+          "triangles": 8,
+          "expected_triangles": 8,
+          "uv": 9,
+          "vertices": 9
+        },
+        {
+          "name": "Shadow_1.001",
+          "triangles": 2862,
+          "expected_triangles": 2862,
+          "uv": 1523,
+          "vertices": 1523
+        },
+        {
+          "name": "Shadow_2.001",
+          "triangles": 10936,
+          "expected_triangles": 10936,
+          "uv": 6212,
+          "vertices": 6212
+        },
+        {
+          "name": "Shadow_3.001",
+          "triangles": 3640,
+          "expected_triangles": 3640,
+          "uv": 1892,
+          "vertices": 1892
+        }
+      ],
+      "bones": 245,
+      "maximum_bone_error": 1.98529187e-06
+    },
+    {
+      "name": "ImperialIAdvancedICD01",
+      "meshes": [
+        {
+          "name": "Barrel.012",
+          "triangles": 168,
+          "expected_triangles": 168,
+          "uv": 251,
+          "vertices": 251
+        },
+        {
+          "name": "Barrel_Shadow.012",
+          "triangles": 192,
+          "expected_triangles": 192,
+          "uv": 258,
+          "vertices": 258
+        },
+        {
+          "name": "Collision.017",
+          "triangles": 44,
+          "expected_triangles": 44,
+          "uv": 43,
+          "vertices": 43
+        },
+        {
+          "name": "Turret.012",
+          "triangles": 366,
+          "expected_triangles": 366,
+          "uv": 500,
+          "vertices": 500
+        },
+        {
+          "name": "Turret_Kitbash_Lights",
+          "triangles": 40,
+          "expected_triangles": 40,
+          "uv": 63,
+          "vertices": 63
+        },
+        {
+          "name": "Turret_Shadow.012",
+          "triangles": 396,
+          "expected_triangles": 396,
+          "uv": 512,
+          "vertices": 512
+        }
+      ],
+      "bones": 10,
+      "maximum_bone_error": 1.96605e-06
+    },
+    {
+      "name": "ImperialIAdvancedICD02",
+      "meshes": [
+        {
+          "name": "Barrel.014",
+          "triangles": 168,
+          "expected_triangles": 168,
+          "uv": 251,
+          "vertices": 251
+        },
+        {
+          "name": "Barrel_Shadow.014",
+          "triangles": 192,
+          "expected_triangles": 192,
+          "uv": 258,
+          "vertices": 258
+        },
+        {
+          "name": "Collision.019",
+          "triangles": 44,
+          "expected_triangles": 44,
+          "uv": 43,
+          "vertices": 43
+        },
+        {
+          "name": "Turret.014",
+          "triangles": 366,
+          "expected_triangles": 366,
+          "uv": 500,
+          "vertices": 500
+        },
+        {
+          "name": "Turret_Kitbash_Lights.002",
+          "triangles": 40,
+          "expected_triangles": 40,
+          "uv": 63,
+          "vertices": 63
+        },
+        {
+          "name": "Turret_Shadow.014",
+          "triangles": 396,
+          "expected_triangles": 396,
+          "uv": 512,
+          "vertices": 512
+        }
+      ],
+      "bones": 10,
+      "maximum_bone_error": 1.96605e-06
+    },
+    {
+      "name": "ImperialIAdvancedParts",
+      "meshes": [
+        {
+          "name": "Collision.003",
+          "triangles": 188,
+          "expected_triangles": 188,
+          "uv": 264,
+          "vertices": 264
+        },
+        {
+          "name": "ISD1_Bridge",
+          "triangles": 1316,
+          "expected_triangles": 1316,
+          "uv": 2626,
+          "vertices": 2626
+        },
+        {
+          "name": "Shadow.002",
+          "triangles": 1454,
+          "expected_triangles": 1454,
+          "uv": 867,
+          "vertices": 867
+        },
+        {
+          "name": "ISD1_Collision",
+          "triangles": 160,
+          "expected_triangles": 160,
+          "uv": 134,
+          "vertices": 134
+        },
+        {
+          "name": "ISD1_Shadow",
+          "triangles": 616,
+          "expected_triangles": 616,
+          "uv": 328,
+          "vertices": 328
+        },
+        {
+          "name": "ISD1_TurretArmor_Inner",
+          "triangles": 514,
+          "expected_triangles": 514,
+          "uv": 866,
+          "vertices": 866
+        },
+        {
+          "name": "Kitbash01",
+          "triangles": 756,
+          "expected_triangles": 756,
+          "uv": 1352,
+          "vertices": 1352
+        },
+        {
+          "name": "Kitbash_Lights.003",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        }
+      ],
+      "bones": 11,
+      "maximum_bone_error": 9.570476e-07
+    },
+    {
+      "name": "ImperialIAdvancedTLD01",
+      "meshes": [
+        {
+          "name": "Barrel",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.005",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLD02",
+      "meshes": [
+        {
+          "name": "Barrel.002",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow.002",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.007",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret.002",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow.002",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLD03",
+      "meshes": [
+        {
+          "name": "Barrel.004",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow.004",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.009",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret.004",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow.004",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLD04",
+      "meshes": [
+        {
+          "name": "Barrel.006",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow.006",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.011",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret.006",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow.006",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLD05",
+      "meshes": [
+        {
+          "name": "Barrel.008",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow.008",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.013",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret.008",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow.008",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLD06",
+      "meshes": [
+        {
+          "name": "Barrel.010",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 304,
+          "vertices": 304
+        },
+        {
+          "name": "Barrel_Shadow.010",
+          "triangles": 196,
+          "expected_triangles": 196,
+          "uv": 260,
+          "vertices": 260
+        },
+        {
+          "name": "Collision.015",
+          "triangles": 20,
+          "expected_triangles": 20,
+          "uv": 32,
+          "vertices": 32
+        },
+        {
+          "name": "Turret.010",
+          "triangles": 339,
+          "expected_triangles": 339,
+          "uv": 582,
+          "vertices": 582
+        },
+        {
+          "name": "Turret_Shadow.010",
+          "triangles": 386,
+          "expected_triangles": 386,
+          "uv": 528,
+          "vertices": 528
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 6.365779e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLT01",
+      "meshes": [
+        {
+          "name": "Barrel.016",
+          "triangles": 198,
+          "expected_triangles": 198,
+          "uv": 360,
+          "vertices": 360
+        },
+        {
+          "name": "Bshadow",
+          "triangles": 252,
+          "expected_triangles": 252,
+          "uv": 453,
+          "vertices": 453
+        },
+        {
+          "name": "Tshadow",
+          "triangles": 559,
+          "expected_triangles": 559,
+          "uv": 893,
+          "vertices": 893
+        },
+        {
+          "name": "Turret.016",
+          "triangles": 438,
+          "expected_triangles": 438,
+          "uv": 722,
+          "vertices": 722
+        }
+      ],
+      "bones": 6,
+      "maximum_bone_error": 4.672759e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLT02",
+      "meshes": [
+        {
+          "name": "Barrel.018",
+          "triangles": 198,
+          "expected_triangles": 198,
+          "uv": 360,
+          "vertices": 360
+        },
+        {
+          "name": "Bshadow.002",
+          "triangles": 252,
+          "expected_triangles": 252,
+          "uv": 453,
+          "vertices": 453
+        },
+        {
+          "name": "Tshadow.002",
+          "triangles": 559,
+          "expected_triangles": 559,
+          "uv": 893,
+          "vertices": 893
+        },
+        {
+          "name": "Turret.018",
+          "triangles": 438,
+          "expected_triangles": 438,
+          "uv": 722,
+          "vertices": 722
+        }
+      ],
+      "bones": 6,
+      "maximum_bone_error": 4.672759e-08
+    },
+    {
+      "name": "ImperialIAdvancedTLT03",
+      "meshes": [
+        {
+          "name": "Barrel.020",
+          "triangles": 198,
+          "expected_triangles": 198,
+          "uv": 360,
+          "vertices": 360
+        },
+        {
+          "name": "Bshadow.004",
+          "triangles": 252,
+          "expected_triangles": 252,
+          "uv": 453,
+          "vertices": 453
+        },
+        {
+          "name": "Tshadow.004",
+          "triangles": 559,
+          "expected_triangles": 559,
+          "uv": 893,
+          "vertices": 893
+        },
+        {
+          "name": "Turret.020",
+          "triangles": 438,
+          "expected_triangles": 438,
+          "uv": 722,
+          "vertices": 722
+        }
+      ],
+      "bones": 6,
+      "maximum_bone_error": 4.672759e-08
+    },
+    {
+      "name": "TIEBrute",
+      "meshes": [
+        {
+          "name": "Glow_Engine.002",
+          "triangles": 4,
+          "expected_triangles": 4,
+          "uv": 8,
+          "vertices": 8
+        },
+        {
+          "name": "Brute",
+          "triangles": 2079,
+          "expected_triangles": 2079,
+          "uv": 2616,
+          "vertices": 2616
+        },
+        {
+          "name": "Brute_Collission",
+          "triangles": 76,
+          "expected_triangles": 76,
+          "uv": 110,
+          "vertices": 110
+        },
+        {
+          "name": "Brute_Shadowmesh",
+          "triangles": 192,
+          "expected_triangles": 192,
+          "uv": 98,
+          "vertices": 98
+        },
+        {
+          "name": "Brute_turret",
+          "triangles": 664,
+          "expected_triangles": 664,
+          "uv": 740,
+          "vertices": 740
+        }
+      ],
+      "bones": 9,
+      "maximum_bone_error": 1.34639739e-08
+    },
+    {
+      "name": "TIEInterceptor",
+      "meshes": [
+        {
+          "name": "Glow_Engine",
+          "triangles": 4,
+          "expected_triangles": 4,
+          "uv": 8,
+          "vertices": 8
+        },
+        {
+          "name": "Tie_I",
+          "triangles": 2646,
+          "expected_triangles": 2646,
+          "uv": 3589,
+          "vertices": 3589
+        },
+        {
+          "name": "TIE_I_Collission",
+          "triangles": 24,
+          "expected_triangles": 24,
+          "uv": 48,
+          "vertices": 48
+        },
+        {
+          "name": "TIE_I_Shadowmesh",
+          "triangles": 176,
+          "expected_triangles": 176,
+          "uv": 90,
+          "vertices": 90
+        }
+      ],
+      "bones": 14,
+      "maximum_bone_error": 1.75721588e-08
+    },
+    {
+      "name": "TIEPunisher",
+      "meshes": [
+        {
+          "name": "Collission",
+          "triangles": 160,
+          "expected_triangles": 160,
+          "uv": 212,
+          "vertices": 212
+        },
+        {
+          "name": "Hull",
+          "triangles": 2452,
+          "expected_triangles": 2466,
+          "uv": 4270,
+          "vertices": 4270
+        },
+        {
+          "name": "Object08",
+          "triangles": 384,
+          "expected_triangles": 384,
+          "uv": 860,
+          "vertices": 860
+        },
+        {
+          "name": "Panelcarrier",
+          "triangles": 48,
+          "expected_triangles": 48,
+          "uv": 104,
+          "vertices": 104
+        },
+        {
+          "name": "Warpods",
+          "triangles": 2954,
+          "expected_triangles": 2954,
+          "uv": 3874,
+          "vertices": 3874
+        },
+        {
+          "name": "Shadow",
+          "triangles": 160,
+          "expected_triangles": 160,
+          "uv": 219,
+          "vertices": 219
+        }
+      ],
+      "bones": 25,
+      "maximum_bone_error": 7.805905e-09
+    }
+  ],
+  "saved_prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/ImperialIAdvanced.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(102.61, 68.56, 180.00)",
+      "visible_meshes": 50,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/ImperialIAdvancedShipView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(102.61, 68.56, 180.00)",
+      "visible_meshes": 50,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/ImperialIAdvancedReinforcementView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(100.89, 53.10, 180.00)",
+      "visible_meshes": 39,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEInterceptor.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(3.41, 2.62, 4.00)",
+      "visible_meshes": 2,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEInterceptorSquadronView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(38.41, 3.82, 20.00)",
+      "visible_meshes": 16,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/TIEInterceptorReinforcementView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(38.41, 3.82, 20.00)",
+      "visible_meshes": 8,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEBrute.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(6.55, 5.71, 5.00)",
+      "visible_meshes": 3,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEBruteSquadronView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(31.55, 6.91, 17.00)",
+      "visible_meshes": 18,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/TIEBruteReinforcementView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(31.55, 6.91, 17.00)",
+      "visible_meshes": 12,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEPunisher.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(6.03, 3.64, 5.00)",
+      "visible_meshes": 4,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEPunisherSquadronView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(21.03, 4.84, 13.00)",
+      "visible_meshes": 16,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/TIEPunisherReinforcementView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(21.03, 4.84, 13.00)",
+      "visible_meshes": 16,
+      "embedded_materials": []
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/ImperialIAdvancedWreckView.prefab",
+      "missing_scripts": 0,
+      "broken_references": [],
+      "root_scale": "(1.00, 1.00, 1.00)",
+      "size": "(100.89, 53.10, 180.00)",
+      "visible_meshes": 39,
+      "embedded_materials": []
+    }
+  ],
+  "ship": {
+    "health_count": 16,
+    "weapon_count": 21,
+    "all_hardpoint_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26
+    ],
+    "weapon_counts": {
+      "2": 6,
+      "31": 2,
+      "32": 2,
+      "4": 3,
+      "33": 4,
+      "8": 4
+    },
+    "collider_size": "(100.89, 53.10, 180.00)",
+    "hangar_launch": "(0.51, -26.82, -2.82)",
+    "hangar_outside_collider": true,
+    "engines_behind_center": true
+  },
+  "fighters": [
+    {
+      "name": "TIEInterceptor",
+      "members": 8,
+      "weapons": 32,
+      "unique_weapon_ids": 32
+    },
+    {
+      "name": "TIEBrute",
+      "members": 6,
+      "weapons": 12,
+      "unique_weapon_ids": 12
+    },
+    {
+      "name": "TIEPunisher",
+      "members": 4,
+      "weapons": 20,
+      "unique_weapon_ids": 20
+    }
+  ],
+  "registrations": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/ImperialIAdvancedShipView.prefab",
+      "guid": "c5a735dafc563ad45b16c92aeabb3b3f",
+      "address": "ImperialIAdvancedShipView",
+      "group": "View"
+    },
+    {
+      "path": "Assets/Settings/Data/Ship/ImperialIAdvancedShipData.asset",
+      "guid": "0c379a49e2b12644b963e47657c852bf",
+      "address": "ImperialIAdvancedShipData",
+      "group": "Data"
+    },
+    {
+      "id": 201,
+      "name": "Imperial I Star Destroyer \u00e2\u20ac\u201d Advanced Loadout",
+      "icon": "Assets/Art/Textures/Ui/Icons/ShipIcon/ImperialIAdvancedIcon.png"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEInterceptorSquadronView.prefab",
+      "guid": "2c220f025d702824bb0ded6ab9bec89d",
+      "address": "TIEInterceptorSquadronView",
+      "group": "View"
+    },
+    {
+      "path": "Assets/Settings/Data/Squadron/TIEInterceptorSquadronData.asset",
+      "guid": "e7ef3854238c3b94fbc301ccdac48bc7",
+      "address": "TIEInterceptorSquadronData",
+      "group": "Data"
+    },
+    {
+      "id": 203,
+      "name": "TIE Interceptor Squadron",
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEInterceptorIcon.png"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEBruteSquadronView.prefab",
+      "guid": "71636a83fa02a684f8f5b9d119219573",
+      "address": "TIEBruteSquadronView",
+      "group": "View"
+    },
+    {
+      "path": "Assets/Settings/Data/Squadron/TIEBruteSquadronData.asset",
+      "guid": "1506a6723d71f5443a3443ae9ccc9180",
+      "address": "TIEBruteSquadronData",
+      "group": "Data"
+    },
+    {
+      "id": 204,
+      "name": "TIE Brute Squadron",
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBruteIcon.png"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/TIEPunisherSquadronView.prefab",
+      "guid": "6fd0cc7d74bff17459c45351f3dfa248",
+      "address": "TIEPunisherSquadronView",
+      "group": "View"
+    },
+    {
+      "path": "Assets/Settings/Data/Squadron/TIEPunisherSquadronData.asset",
+      "guid": "ed8703d3b0c11eb48bcc35df4870c7bb",
+      "address": "TIEPunisherSquadronData",
+      "group": "Data"
+    },
+    {
+      "id": 205,
+      "name": "TIE Punisher Squadron",
+      "icon": "Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEPunisherIcon.png"
+    }
+  ],
+  "punisher_zero_area_triangles_removed": 14,
+  "automated_tests_run": false,
+  "play_mode_run": false
+}

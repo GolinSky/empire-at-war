@@ -30,6 +30,7 @@ namespace EmpireAtWar.Models.Factions
 
         //empire
         Victory = 200,
+        ImperialIAdvanced = 201,
         VictoryIAdvanced = 202,
 
         //rebellion

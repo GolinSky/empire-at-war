@@ -21,6 +21,8 @@ namespace EmpireAtWar.Entities.Squadrons
         TIEBomber = 201,
         TIEAvenger = 202,
         TIEInterceptor = 203,
+        TIEBrute = 204,
+        TIEPunisher = 205,
 
         //rebellion
         XWing = 300,
