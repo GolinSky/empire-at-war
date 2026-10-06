@@ -6,7 +6,6 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.Map;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;

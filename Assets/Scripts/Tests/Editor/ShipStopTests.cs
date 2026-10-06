@@ -1,9 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Patterns.StateMachine;
@@ -33,11 +31,9 @@ namespace EmpireAtWar.Tests.Editor
             IdleState idle = new IdleState(movement, weapon, null);
             ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
-            PlayerRoster roster = TestPlayers.CreateDuel();
-            ShipAIBrain brain = new ShipAIBrain(healthModel: null, radar: null, movement: movement, decisionModel: null, orders: model, owner: TestPlayers.Human, playerRoster: roster);
-            ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, brain: brain, movement: movement, weapon: weapon,
-                cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null, fleeState: null,
-                abilityApproachState: null, abilities: null, abilityCaster: null, owner: TestPlayers.Human, playerRoster: roster);
+            ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, movement: movement, weapon: weapon,
+                cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null,
+                abilityApproachState: null, abilities: null, abilityCaster: null);
 
             runner.Stop();
 

@@ -8,7 +8,6 @@ using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Extentions;
@@ -98,12 +97,9 @@ namespace EmpireAtWar.Ship
             Container.BindInterfacesAndSelfTo<AttackMoveState>().AsSingle();
             Container.BindInterfacesAndSelfTo<GuardState>().AsSingle();
             Container.BindInterfacesAndSelfTo<HuntState>().AsSingle();
-            Container.BindInterfacesAndSelfTo<FleeState>().AsSingle();
             Container.BindInterfacesAndSelfTo<AbilityApproachState>().AsSingle();
             Container.Bind<UnitOrderModel>().AsSingle();
-            Container.Bind<ShipAIBrain>().AsSingle();
             Container.Bind<ShipOrderRunner>().AsSingle();
-            Container.BindInterfacesAndSelfTo<ShipAiDecisionModel>().AsSingle();
         }
     }
 }

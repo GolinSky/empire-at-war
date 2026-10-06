@@ -8,7 +8,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
-using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Entities.Ship.Data
 {
@@ -53,7 +52,6 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float Shields { get; private set; }
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [field: SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
         [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
         public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
 
