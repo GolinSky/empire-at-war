@@ -1,12 +1,10 @@
 using static EmpireAtWar.Utils.FormationConversion;
-using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
-using EmpireAtWar.Entities.Ship.Mediator;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
@@ -17,7 +15,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
 {
     /// <summary>
     /// Turns the ship's current order into a state and is the only place that changes ship state.
-    /// The AI brain can override the order with fleeing; once it stops fleeing the order restarts.
     /// </summary>
     public sealed class ShipOrderRunner
     {
@@ -29,20 +26,16 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         private readonly UnitOrderModel _orders;
         private readonly ShipStateMachine _stateMachine;
-        private readonly ShipAIBrain _brain;
         private readonly IdleState _idleState;
         private readonly NavigateState _navigateState;
         private readonly AttackTargetState _attackTargetState;
         private readonly AttackMoveState _attackMoveState;
         private readonly GuardState _guardState;
         private readonly HuntState _huntState;
-        private readonly FleeState _fleeState;
         private readonly AbilityApproachState _abilityApproachState;
         private AttackMoveEngagement _attackMoveEngagement;
         private ShipAbilityId _pendingAbilityId;
         private float _pendingAbilityRange;
-
-        private readonly bool _isAiControlled;
 
         public UnitOrderType CurrentOrder => _orders.Current;
         public bool IsAbilityFacing { get; private set; }
@@ -50,7 +43,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void BeginAbilityFacing()
         {
             IsAbilityFacing = true;
-            _brain.Enable(false);
             _stateMachine.SetState(_idleState);
             _movement.Stop();
         }
@@ -61,20 +53,18 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             if (!IsAbilityFacing) return;
             IsAbilityFacing = false;
-            _brain.Enable(_isAiControlled);
             StartOrder();
         }
 
         public ShipOrderRunner(IShipMovement movement, IWeaponComponent weapon, ICameraService cameraService,
-            IPlayerRoster playerRoster, UnitOrderModel orders, ShipStateMachine stateMachine,
-            ShipAIBrain brain, IdleState idleState, NavigateState navigateState,
+            UnitOrderModel orders, ShipStateMachine stateMachine,
+            IdleState idleState, NavigateState navigateState,
             AttackTargetState attackTargetState, AttackMoveState attackMoveState, GuardState guardState,
-            HuntState huntState, FleeState fleeState, AbilityApproachState abilityApproachState,
-            ShipAbilityService abilities, IShipAbilityFacade abilityCaster, PlayerId owner)
+            HuntState huntState, AbilityApproachState abilityApproachState,
+            ShipAbilityService abilities, IShipAbilityFacade abilityCaster)
         {
             _orders = orders;
             _stateMachine = stateMachine;
-            _brain = brain;
             _movement = movement;
             _weapon = weapon;
             _cameraService = cameraService;
@@ -84,11 +74,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _attackMoveState = attackMoveState;
             _guardState = guardState;
             _huntState = huntState;
-            _fleeState = fleeState;
             _abilityApproachState = abilityApproachState;
             _abilities = abilities;
             _abilityCaster = abilityCaster;
-            _isAiControlled = playerRoster.Get(owner).IsAi;
         }
 
         public void Start() => _stateMachine.SetState(_idleState);
@@ -96,16 +84,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void Tick(float deltaTime)
         {
             if (IsAbilityFacing) return;
-            _brain.Tick(deltaTime);
-            if (_brain.IsFleeing)
-            {
-                if (_stateMachine.CurrentState != _fleeState) _stateMachine.SetState(_fleeState);
-            }
-            else if (_stateMachine.CurrentState == _fleeState)
-            {
-                StartOrder();
-            }
-
             _stateMachine.Tick(deltaTime);
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
         }
@@ -114,7 +92,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             IsAbilityFacing = false;
             _orders.Clear();
-            _brain.Enable(false);
             // Leaves the shared attack-move engagement so the group stops counting this ship.
             if (_stateMachine.CurrentState == _attackMoveState) _stateMachine.SetState(_idleState);
         }
@@ -201,14 +178,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             IsAbilityFacing = false;
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
-            _brain.Enable(_isAiControlled);
             StartOrder();
         }
 
         private void StartOrder()
         {
-            // Fleeing overrides every order; Tick restarts the order once the brain stops fleeing.
-            if (_brain.IsFleeing) return;
             switch (_orders.Current)
             {
                 case UnitOrderType.Move:

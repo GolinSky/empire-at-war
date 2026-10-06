@@ -7,7 +7,6 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
-using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
@@ -25,7 +24,6 @@ namespace EmpireAtWar.Entities.BaseEntity
         [field: SerializeField] public float Shields { get; private set; }
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; }
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
-        [field: SerializeField] public FloatRange ShieldDangerStateRange { get; private set; }
         [SerializeField] private List<HardPointHealth> hardPointHealth = new List<HardPointHealth>();
         public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
 

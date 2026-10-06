@@ -31,9 +31,6 @@ MonoBehaviour:
   <Shields>k__BackingField: 6600
   <ShieldRegenerateValue>k__BackingField: 198
   <ShieldRegenerateDelay>k__BackingField: 3
-  <ShieldDangerStateRange>k__BackingField:
-    <Min>k__BackingField: 0.3
-    <Max>k__BackingField: 0.5
   hardPointHealth:
   - hardPointType: 0
     health: 600
