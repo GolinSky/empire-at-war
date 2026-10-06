@@ -47,7 +47,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Corellian Corvette / CR90
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1250
         <BuildTime>k__BackingField: 15
         <UnitCapacity>k__BackingField: 1
