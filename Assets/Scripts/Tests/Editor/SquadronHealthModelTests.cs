@@ -123,6 +123,7 @@ namespace EmpireAtWar.Tests.Editor
             public float MemberShields => MEMBER_SHIELDS;
             public float ShieldRegenerateValue => 1f;
             public float ShieldRegenerateDelay => 1f;
+            public float LaserShieldDamageMultiplier => 1f;
         }
     }
 }

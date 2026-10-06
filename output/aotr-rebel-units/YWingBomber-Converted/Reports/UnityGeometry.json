@@ -1,0 +1,393 @@
+[
+  {
+    "path": "Assets/Art/Models/RebellionShips/YWingBomber/YWingBomber.fbx",
+    "meshes": [
+      {
+        "name": "Collision.006",
+        "triangles": 64,
+        "uv": 112,
+        "vertices": 112
+      },
+      {
+        "name": "Glass",
+        "triangles": 46,
+        "uv": 62,
+        "vertices": 62
+      },
+      {
+        "name": "Plane01",
+        "triangles": 8,
+        "uv": 9,
+        "vertices": 9
+      },
+      {
+        "name": "Plane02",
+        "triangles": 8,
+        "uv": 9,
+        "vertices": 9
+      },
+      {
+        "name": "Plane03",
+        "triangles": 8,
+        "uv": 9,
+        "vertices": 9
+      },
+      {
+        "name": "Plane04",
+        "triangles": 8,
+        "uv": 9,
+        "vertices": 9
+      },
+      {
+        "name": "REB_YWing",
+        "triangles": 4878,
+        "uv": 6985,
+        "vertices": 6985
+      },
+      {
+        "name": "Shadow.036",
+        "triangles": 384,
+        "uv": 218,
+        "vertices": 218
+      }
+    ],
+    "scale": 1,
+    "model": [
+      {
+        "name": "YWingBomber",
+        "parent": null,
+        "position": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Root",
+        "parent": "YWingBomber",
+        "position": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Collision",
+        "parent": "Root",
+        "position": [
+          -0.0109454393,
+          0.158746958,
+          2.361469
+        ]
+      },
+      {
+        "name": "Collision.006",
+        "parent": "Collision",
+        "position": [
+          -0.0109454393,
+          0.158746958,
+          2.361469
+        ]
+      },
+      {
+        "name": "MuzzleA_00",
+        "parent": "Root",
+        "position": [
+          -0.005550174,
+          0.111798048,
+          3.91951156
+        ]
+      },
+      {
+        "name": "MuzzleC_00",
+        "parent": "Root",
+        "position": [
+          0.376956642,
+          0.0380904675,
+          2.43477154
+        ]
+      },
+      {
+        "name": "MuzzleC_01",
+        "parent": "Root",
+        "position": [
+          -0.367769957,
+          0.0380904675,
+          2.432848
+        ]
+      },
+      {
+        "name": "PE_Ywing",
+        "parent": "Root",
+        "position": [
+          1.94992185,
+          0.06477499,
+          -2.929932
+        ]
+      },
+      {
+        "name": "PE_Ywing.001",
+        "parent": "Root",
+        "position": [
+          -1.97177434,
+          0.06477499,
+          -2.929932
+        ]
+      },
+      {
+        "name": "Plane01",
+        "parent": "Root",
+        "position": [
+          -1.97178888,
+          0.06430626,
+          -3.096628
+        ]
+      },
+      {
+        "name": "Plane01",
+        "parent": "Plane01",
+        "position": [
+          -1.97178888,
+          0.06430626,
+          -3.096628
+        ]
+      },
+      {
+        "name": "Plane02",
+        "parent": "Root",
+        "position": [
+          1.94963217,
+          0.06430626,
+          -3.09662747
+        ]
+      },
+      {
+        "name": "Plane02",
+        "parent": "Plane02",
+        "position": [
+          1.94963217,
+          0.06430626,
+          -3.09662747
+        ]
+      },
+      {
+        "name": "Plane03",
+        "parent": "Root",
+        "position": [
+          -1.97178888,
+          0.06430626,
+          -3.096636
+        ]
+      },
+      {
+        "name": "Plane03",
+        "parent": "Plane03",
+        "position": [
+          -1.97178888,
+          0.06430626,
+          -3.096636
+        ]
+      },
+      {
+        "name": "Plane04",
+        "parent": "Root",
+        "position": [
+          1.94963217,
+          0.06430626,
+          -3.09663558
+        ]
+      },
+      {
+        "name": "Plane04",
+        "parent": "Plane04",
+        "position": [
+          1.94963217,
+          0.06430626,
+          -3.09663558
+        ]
+      },
+      {
+        "name": "PTE_Ywing",
+        "parent": "Root",
+        "position": [
+          -1.97177434,
+          0.06477499,
+          -2.929932
+        ]
+      },
+      {
+        "name": "PTE_Ywing.001",
+        "parent": "Root",
+        "position": [
+          1.94992185,
+          0.06477499,
+          -2.929932
+        ]
+      },
+      {
+        "name": "REB_YWing#0",
+        "parent": "Root",
+        "position": [
+          0.006135855,
+          -0.7924075,
+          -0.717633069
+        ]
+      },
+      {
+        "name": "Glass",
+        "parent": "REB_YWing#0",
+        "position": [
+          0.0061358544,
+          -0.792407632,
+          -0.717633069
+        ]
+      },
+      {
+        "name": "REB_YWing#1",
+        "parent": "Root",
+        "position": [
+          0.006135855,
+          -0.7924075,
+          -0.717633069
+        ]
+      },
+      {
+        "name": "REB_YWing",
+        "parent": "REB_YWing#1",
+        "position": [
+          0.0061358544,
+          -0.792407632,
+          -0.717633069
+        ]
+      },
+      {
+        "name": "Shadow",
+        "parent": "Root",
+        "position": [
+          -0.0109454393,
+          0.158746958,
+          2.361469
+        ]
+      },
+      {
+        "name": "Shadow.036",
+        "parent": "Shadow",
+        "position": [
+          -0.0109454393,
+          0.158746958,
+          2.361469
+        ]
+      },
+      {
+        "name": "Turretbase",
+        "parent": "Root",
+        "position": [
+          -0.009664568,
+          0.6877465,
+          1.56032729
+        ]
+      }
+    ]
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/YWingBomber/YWingBomberTurret.fbx",
+    "meshes": [
+      {
+        "name": "lasers",
+        "triangles": 256,
+        "uv": 398,
+        "vertices": 398
+      },
+      {
+        "name": "turret",
+        "triangles": 16,
+        "uv": 20,
+        "vertices": 20
+      }
+    ],
+    "scale": 1,
+    "model": [
+      {
+        "name": "YWingBomberTurret",
+        "parent": null,
+        "position": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Root",
+        "parent": "YWingBomberTurret",
+        "position": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Turret",
+        "parent": "Root",
+        "position": [
+          1.39116764e-7,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "Barrel",
+        "parent": "Turret",
+        "position": [
+          0.0029739337,
+          0.115843229,
+          0.000008113682
+        ]
+      },
+      {
+        "name": "lasers",
+        "parent": "Barrel",
+        "position": [
+          0.0029733975,
+          0.1129573,
+          0.0000191479921
+        ]
+      },
+      {
+        "name": "lasers",
+        "parent": "lasers",
+        "position": [
+          0.0029733975,
+          0.1129573,
+          0.0000191479921
+        ]
+      },
+      {
+        "name": "MuzzleB_00",
+        "parent": "lasers",
+        "position": [
+          0.000143923127,
+          0.222257018,
+          0.7876587
+        ]
+      },
+      {
+        "name": "turret",
+        "parent": "Turret",
+        "position": [
+          0.002973457,
+          0.201611325,
+          0.000019133091
+        ]
+      },
+      {
+        "name": "turret",
+        "parent": "turret",
+        "position": [
+          0.002973457,
+          0.201611325,
+          0.000019133091
+        ]
+      }
+    ]
+  }
+]

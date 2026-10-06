@@ -1,0 +1,23 @@
+{
+  "members": 6,
+  "weapon_count": 24,
+  "weapons_per_craft": 4,
+  "total_hull": 180,
+  "total_shields": 180,
+  "unique_weapon_ids": 24,
+  "faction": "Rebellion only",
+  "icon_crop": [
+    146,
+    138,
+    437,
+    348
+  ],
+  "registrations_verified": true,
+  "donor_visuals_absent": true,
+  "source_hashes_unchanged": true,
+  "live_final_readback": "passed",
+  "unity_mesh_triangle_uv_and_bone_hierarchy": "passed",
+  "maximum_unity_bone_error": 8.000267557552693e-07,
+  "team_palette_and_placement_renders": "eight distinct team renders; blue/green and six-craft placement visually checked",
+  "play_mode_or_automated_tests": "not run by this task"
+}

@@ -1,0 +1,73 @@
+{
+  "fighters": 6,
+  "guns": [
+    {
+      "type": "LightDualLaser",
+      "count": 6
+    },
+    {
+      "type": "HeavyDualIonStunner",
+      "count": 6
+    },
+    {
+      "type": "MediumProtonTorpedo",
+      "count": 12
+    }
+  ],
+  "uniqueIds": 24,
+  "missingScripts": 0,
+  "brokenReferences": [],
+  "healthMembers": 6,
+  "flightMembers": 6,
+  "weaponBindings": 24,
+  "fogWeapons": 24,
+  "teamRenderers": 24,
+  "hull": 30.0,
+  "shields": 30.0,
+  "totalHull": 180.0,
+  "totalShields": 180.0,
+  "CombatSpeed": 30.0,
+  "CruiseSpeed": 30.0,
+  "ShieldRegenerateValue": 0.15,
+  "LaserShieldDamageMultiplier": 0.7,
+  "ability": {
+    "DisplayName": "Ion Shot",
+    "RecoveryDelay": 20.0,
+    "Range": 100.0
+  },
+  "roster": {
+    "Name": "BTL-A4 Y-Wing Bomber Squadron",
+    "Price": 500,
+    "AvailableLevel": 1,
+    "icon": "Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png"
+  },
+  "preview": "Assets/Prefabs/Ui/Reinforcement/YWingBomberReinforcementView.prefab",
+  "addressables": [
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/YWingBomberSquadronView.prefab",
+      "address": "YWingBomberSquadronView"
+    },
+    {
+      "path": "Assets/Settings/Data/Squadron/YWingBomberSquadronData.asset",
+      "address": "YWingBomberSquadronData"
+    }
+  ],
+  "profiles": [
+    {
+      "type": "LightDualLaser",
+      "shots": 2,
+      "damage": 5.0
+    },
+    {
+      "type": "HeavyDualIonStunner",
+      "shots": 2,
+      "damage": 4.0
+    },
+    {
+      "type": "MediumProtonTorpedo",
+      "shots": 1,
+      "damage": 90.0
+    }
+  ],
+  "existingRepublicYWingHull": 60.0
+}

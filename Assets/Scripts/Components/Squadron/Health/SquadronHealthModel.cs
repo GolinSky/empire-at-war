@@ -96,6 +96,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             damage *= _modifiers.DamageTakenMultiplier;
             if (_shields[memberId] > 0f && !_damageMatrix.IsShieldPiercing(damageType))
             {
+                if (damageType == DamageType.Laser)
+                    damage *= _data.LaserShieldDamageMultiplier;
                 _shields[memberId] = Math.Max(0f,
                     _shields[memberId] - damage * _damageMatrix.GetShieldMultiplier(damageType));
             }

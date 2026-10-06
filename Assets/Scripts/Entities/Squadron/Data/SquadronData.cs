@@ -44,6 +44,8 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [field: SerializeField] public float MemberShields { get; private set; } = 25f;
         [field: SerializeField] public float ShieldRegenerateValue { get; private set; } = 2f;
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; } = 2f;
+        [Tooltip("Laser damage multiplier for this squadron's shields.")]
+        [field: SerializeField] public float LaserShieldDamageMultiplier { get; private set; } = 1f;
         [Tooltip("Hull points repaired per second on each surviving fighter.")]
         [field: SerializeField] public float HullRepairPerSecond { get; private set; }
 

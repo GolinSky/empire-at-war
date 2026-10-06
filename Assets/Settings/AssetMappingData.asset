@@ -1022,3 +1022,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: YWingBomberSquadronView
+      value:
+        m_AssetGUID: 997565e14375a324d91a2e56614879d4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: YWingBomberSquadronData
+      value:
+        m_AssetGUID: a4d8a9b5cdac59f47879a4de8a460952
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

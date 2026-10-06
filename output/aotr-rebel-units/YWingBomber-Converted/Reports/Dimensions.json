@@ -1,0 +1,31 @@
+{
+  "size": [
+    2.11970854,
+    0.6025995,
+    4.00000048
+  ],
+  "center": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "rootScale": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "visible": [
+    "Plane01",
+    "Plane02",
+    "Plane03",
+    "Plane04",
+    "Glass",
+    "REB_YWing",
+    "lasers",
+    "turret"
+  ],
+  "hidden": [
+    "Collision.006",
+    "Shadow.036"
+  ]
+}

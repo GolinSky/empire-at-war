@@ -151,6 +151,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3,
           type: 3}
+    - key: 301
+      value:
+        matchups: {fileID: 11400000, guid: b9ce6e1dd47fb3c43a95e0feda9a7bee, type: 2}
+        description: Six BTL-A4 Y-Wing bombers. Each bomber has 30 hull, 30 slow-charging
+          anti-laser shields and tactical speed 30. One light dual laser, one heavy
+          dual ion stunner and two medium proton-torpedo launchers per craft. Ion
+          Shot disables the target for 3 s on arrival; 20 s recovery. Weapons are
+          not separately targetable.
+        role: Bomber / Anti-ship
+        iconKey: 793233063a2c3d241ab5dbc0af1a35d4:21300000
+        isHero: 0
+        <Name>k__BackingField: BTL-A4 Y-Wing Bomber Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 15
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: 793233063a2c3d241ab5dbc0af1a35d4,
+          type: 3}
   research:
     keyValue:
     - key: 0
