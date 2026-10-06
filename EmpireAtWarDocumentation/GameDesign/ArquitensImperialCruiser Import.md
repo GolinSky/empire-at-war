@@ -3,7 +3,7 @@
 ## Goal
 
 - Empire light cruiser `ArquitensImperialCruiser = 204`; source AOTR 2.11.9 `E_Arquitens_Light_Cruiser`.
-- Import/static integration complete on `2026-10-06`; gameplay acceptance remains in [[TODOs/Features/ArquitensImperialCruiser_Import]].
+- Import/static integration complete on `2026-10-06`; gameplay acceptance remains in [[TODOs/Features/ArquitensAdvanced_Import|ArquitensImperialCruiser Import]].
 
 ## Decision
 
