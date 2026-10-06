@@ -100,7 +100,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}
         description: Eight DBY-827 heavy twin turbolasers lead a durable Republic
           battle line. Ion cannons weaken shields; laser batteries, point defense
-          and Delta-7/A-Wing squadrons protect the fleet.
+          and Delta-7/ARC-170 squadrons protect the fleet.
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
         isHero: 0
@@ -135,7 +135,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
         description: Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
           16 point-defense batteries, eight missile and four torpedo launchers. Power
-          to Weapons boosts battery output. Deploys Delta-7 and A-Wing squadrons;
+          to Weapons boosts battery output. Deploys Delta-7 and ARC-170 squadrons;
           vulnerable to concentrated bomber attacks and Malevolence.
         role: "Mandator II \xB7 Dreadnought"
         iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
@@ -202,22 +202,6 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 5
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 41429e00e6d997249adaf10dc6d292a6,
-          type: 3}
-    - key: 1
-      value:
-        matchups: {fileID: 11400000, guid: 5b8d183986aa6104291623ddd0143550, type: 2}
-        description: A squadron of fighters. Surviving members share orders and take
-          damage individually.
-        role: "Fighter squadron \xB7 Interceptor"
-        iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
-        isHero: 0
-        <Name>k__BackingField: A-Wing Interceptor Squadron
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 700
-        <BuildTime>k__BackingField: 6
-        <UnitCapacity>k__BackingField: 1
-        <Icon>k__BackingField: {fileID: 21300000, guid: 524d65b06058f0a428ee3d2a9b9b78e9,
           type: 3}
     - key: 2
       value:
