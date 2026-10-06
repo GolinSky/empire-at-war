@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(MapSize.Medium, 1.5f)]
-        [TestCase(MapSize.Large, 5f)]
+        [TestCase(MapSize.Large, 2.25f)]
         public void MapSide_ScalesFromSmallMap(MapSize mapSize, float expectedScale)
         {
             float smallSide = GetSide(_settings.GetSize(MapSize.Small).Bounds.Max, _settings.GetSize(MapSize.Small).Bounds.Min);
