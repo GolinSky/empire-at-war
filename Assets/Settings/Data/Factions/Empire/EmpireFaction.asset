@@ -80,7 +80,7 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
-        description: 1,300 hull; 1,200 shields; speed 30. Four light long-range 2-burst
+        description: 2,600 hull; 1,400 shields; speed 48. Four light long-range 2-burst
           turbolasers and four 2-burst laser cannons. Weapons, engines and shields
           cannot be targeted separately. No hangar or fighter complement. Boost Weapon
           Power doubles fire rate for 20 s, stops shield regeneration, reduces speed
@@ -89,11 +89,11 @@ MonoBehaviour:
         iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
         isHero: 0
         <Name>k__BackingField: ArquitensImperialCruiser
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 3250
-        <BuildTime>k__BackingField: 65
-        <UnitCapacity>k__BackingField: 3
+        <MaxCount>k__BackingField: 20
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 3500
+        <BuildTime>k__BackingField: 30
+        <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: e54026c071416a845b2d23e814c1e8d5,
           type: 3}
   squadrons:

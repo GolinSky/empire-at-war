@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ArquitensImperialCruiserShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 30
+  <Speed>k__BackingField: 48
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
   <HullBottom>k__BackingField: -11.430131
@@ -27,9 +27,9 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: e3afc014d64aca446a7caae163c4ea3b,
     type: 2}
   <ShipClass>k__BackingField: 3
-  <Hull>k__BackingField: 1300
-  <Shields>k__BackingField: 1200
-  <ShieldRegenerateValue>k__BackingField: 4
+  <Hull>k__BackingField: 2600
+  <Shields>k__BackingField: 1400
+  <ShieldRegenerateValue>k__BackingField: 14
   <ShieldRegenerateDelay>k__BackingField: 1
   hardPointHealth: []
   <Range>k__BackingField: 562.5
