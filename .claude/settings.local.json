@@ -1,5 +1,4 @@
 {
-  "enableAllProjectMcpServers": true,
   "permissions": {
     "allow": [
       "mcp__graphify__query_graph",
@@ -9,5 +8,17 @@
       "mcp__graphify__graph_stats",
       "mcp__graphify__shortest_path"
     ]
+  },
+  "enableAllProjectMcpServers": true,
+  "extraKnownMarketplaces": {
+    "visual-explainer-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "nicobailon/visual-explainer"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "visual-explainer@visual-explainer-marketplace": true
   }
 }
