@@ -1,4 +1,3 @@
-using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
@@ -17,16 +16,17 @@ namespace EmpireAtWar.Services.Squadrons
             _stationRegistry = stationRegistry;
         }
 
-        public ISquadron LaunchFromStation(PlayerId owner, SquadronType squadronType)
+        public bool TryLaunchFromStation(PlayerId owner, SquadronType squadronType, out ISquadron squadron)
         {
             if (_stationRegistry.TryGetLivingStation(owner, out IEntity station) &&
                 station.TryGetFacade(out IHangarCommand hangar))
             {
-                return hangar.Launch(squadronType);
+                squadron = hangar.Launch(squadronType);
+                return true;
             }
 
-            throw new InvalidOperationException(
-                $"{owner} has no operational space station with a hangar to launch {squadronType}.");
+            squadron = null;
+            return false;
         }
     }
 }
