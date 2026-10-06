@@ -4,6 +4,11 @@ Shader "Custom/UI_MiniMapFog"
     {
         [PerRendererData] _MainTex ("Fog Mask", 2D) = "black" {} // r: 1 visible, 0 fog
         _Color ("Fog Color", Color) = (0.012, 0.02, 0.031, 0.9)
+        _CellTint ("Cell Tint", Color) = (1, 1, 1, 0.06)
+
+        // The 3D fog's cell grid, scaled down: cells across the whole map and the gap between them.
+        _CellCount ("Cells Across Map", Float) = 72
+        _GridThickness ("Cell Gap (Fraction)", Range(0, 0.5)) = 0.12
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -62,6 +67,9 @@ Shader "Custom/UI_MiniMapFog"
 
             sampler2D _MainTex;
             fixed4 _Color;
+            fixed4 _CellTint;
+            float _CellCount;
+            float _GridThickness;
             float4 _ClipRect;
 
             v2f vert(appdata v)
@@ -78,7 +86,18 @@ Shader "Custom/UI_MiniMapFog"
             {
                 // Fog covers what the local team cannot see; revealed areas stay clear.
                 fixed visibility = tex2D(_MainTex, i.uv).r;
-                fixed4 color = fixed4(_Color.rgb, _Color.a * (1 - visibility) * i.color.a);
+
+                // Same cell pattern as the 3D fog: lit cell interiors separated by darker gaps.
+                float2 gridPosition = i.uv * _CellCount;
+                float2 gridUv = frac(gridPosition);
+                float2 edgeDistance = min(gridUv, 1.0 - gridUv);
+                float halfGap = _GridThickness * 0.5;
+                float2 antialiasWidth = max(fwidth(gridPosition), 0.0001);
+                float2 cellCoverage = smoothstep(halfGap, halfGap + antialiasWidth, edgeDistance);
+                fixed cellMask = cellCoverage.x * cellCoverage.y;
+
+                fixed3 rgb = lerp(_Color.rgb, _CellTint.rgb, _CellTint.a * cellMask);
+                fixed4 color = fixed4(rgb, _Color.a * (1 - visibility) * i.color.a);
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(i.worldPosition.xy, _ClipRect);
                 #endif

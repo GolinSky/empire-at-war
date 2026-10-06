@@ -106,7 +106,7 @@ MonoBehaviour:
   overlayRenderer: {fileID: 7683977378553841259}
   textureResolution: 256
   updateInterval: 0.1
-  height: -35
+  fogRenderer: {fileID: 8093512405509483612}
 --- !u!1 &707912932471261288
 GameObject:
   m_ObjectHideFlags: 0
