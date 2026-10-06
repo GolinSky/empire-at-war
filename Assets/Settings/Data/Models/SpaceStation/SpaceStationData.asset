@@ -58,17 +58,17 @@ MonoBehaviour:
         maxActive: 2
     - key: 3
       value:
-        squadronType: 0
+        squadronType: 200
         reserve: 6
         maxActive: 2
     - key: 0
       value:
-        squadronType: 0
+        squadronType: 2
         reserve: 6
         maxActive: 2
     - key: 1
       value:
-        squadronType: 100
+        squadronType: 102
         reserve: 6
         maxActive: 2
   <HangarInitialDelay>k__BackingField: 1
