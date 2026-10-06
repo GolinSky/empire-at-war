@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify MC75 Profundity integration acceptance**
+  - **Plan**: [[TODOs/Features/MC75_Profundity_Import|MC75 Profundity Import]]
+  - **Reference**: [[GameDesign/MC75 Profundity Import]]
+  - **Status**: 2026-10-06 imported AOTR `RV_Profundity.ALO` and registered Rebellion ship `304`; hull/shields/speed `18,000/13,000/22.5`, 12 targets/30 weapons, Full Salvo, approved X-Wing/Y-Wing complement, own shield/placement/wreck/icons/team colors. Source hashes, geometry, saved bindings, imports/compilation and renders inspected; no automated tests or Play Mode run.
+  - **Remaining**: clean-skirmish hardpoint/combat/launch/ability/destruction acceptance and provisional balance review.
+
 - [ ] **Verify T-65 X-Wing import acceptance**
   - **Plan**: [[TODOs/Features/XWing_Import|X-Wing Import]]
   - **Reference**: [[GameDesign/X-Wing Import|Integration and source verification]]

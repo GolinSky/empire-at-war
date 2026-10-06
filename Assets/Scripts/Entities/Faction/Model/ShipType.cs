@@ -36,6 +36,7 @@ namespace EmpireAtWar.Models.Factions
         CorellianCorvette = 301,
         MonCalCruiser = 302,
         HomeOne = 303,
+        MC75Profundity = 304,
 
     }
 }

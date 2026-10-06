@@ -26,5 +26,9 @@
         FighterProtonTorpedo = 22,
         MediumLaser = 23,
         XWingLaser = 24,
+        MediumLargeProtonTorpedo = 25,
+        MediumIonTorpedo = 26,
+        LightCloseRangeTurbolaser = 27,
+        HeavyLaser = 28,
     }
 }

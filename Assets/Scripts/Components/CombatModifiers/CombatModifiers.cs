@@ -12,6 +12,8 @@ namespace EmpireAtWar.Components.Combat
         private bool _fleetCommandActive;
         private IEntity _focusTarget;
         private float _focusDamageMultiplier = 1f;
+        private float _projectileFireDelayMultiplier = 1f;
+        private float _otherFireDelayMultiplier = 1f;
 
         public event Action Changed;
 
@@ -34,6 +36,16 @@ namespace EmpireAtWar.Components.Combat
         public float HullMultiplier => _fleetCommandActive ? 1.2f : 1f;
         public float ShieldsMultiplier => _fleetCommandActive ? 1.1f : 1f;
         public float VisionMultiplier => _fleetCommandActive ? 1.5f : 1f;
+
+        public float GetFullSalvoFireDelayMultiplier(bool interceptable) =>
+            interceptable ? _projectileFireDelayMultiplier : _otherFireDelayMultiplier;
+
+        public void SetFullSalvo(float projectileFireDelayMultiplier, float otherFireDelayMultiplier)
+        {
+            _projectileFireDelayMultiplier = projectileFireDelayMultiplier;
+            _otherFireDelayMultiplier = otherFireDelayMultiplier;
+            Changed?.Invoke();
+        }
 
         public void SetFleetCommand(bool active)
         {

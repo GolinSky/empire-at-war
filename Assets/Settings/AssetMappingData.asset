@@ -868,3 +868,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC75ProfundityShipView
+      value:
+        m_AssetGUID: 20cbb251c16df5249b6a784e77107a52
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC75ProfundityShipData
+      value:
+        m_AssetGUID: f0fe1152d97de994f8491771788e65e7
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
