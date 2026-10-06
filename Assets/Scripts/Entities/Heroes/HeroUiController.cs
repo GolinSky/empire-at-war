@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
@@ -13,7 +14,7 @@ using Zenject;
 namespace EmpireAtWar.Entities.Heroes
 {
     public sealed class HeroUiController : IHeroPresenter, IInitializable, ITickable,
-        ILateDisposable, IObserver<BattleState>
+        IDisposable, IObserver<BattleState>
     {
         private readonly IUiService _uiService;
         private readonly IEntityLocator _entities;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Entities.Heroes
 
         private IHeroUi _ui;
         private bool _isBattleActive;
+        private bool _isDisposed;
 
         public HeroUiController(IUiService uiService, IEntityLocator entities, FactionCatalog factions,
             ILocalPlayer localPlayer, IVisionService vision, ICameraService camera,
@@ -43,6 +45,7 @@ namespace EmpireAtWar.Entities.Heroes
         public void Initialize()
         {
             _ui = (IHeroUi)_uiService.CreateUi(UiType.Hero);
+            _ui.Disposed += Dispose;
             _ui.SetPresenter(this);
             _ui.Initialize();
             _entities.EntityAdded += AddHero;
@@ -117,8 +120,13 @@ namespace EmpireAtWar.Entities.Heroes
                 _ui.Hide();
         }
 
-        public void LateDispose()
+        public void Dispose()
         {
+            if (_isDisposed)
+                return;
+
+            _isDisposed = true;
+            _ui.Disposed -= Dispose;
             _entities.EntityAdded -= AddHero;
             _entities.EntityRemoved -= RemoveHero;
             _battleState.RemoveObserver(this);

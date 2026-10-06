@@ -5,6 +5,8 @@ namespace EmpireAtWar.Entities.Heroes
 {
     public interface IHeroUi : IDisposable
     {
+        event Action Disposed;
+
         void SetPresenter(IHeroPresenter presenter);
         void Initialize();
         void AddHero(long entityId, Sprite icon, bool isFriendly, bool canFocus);
