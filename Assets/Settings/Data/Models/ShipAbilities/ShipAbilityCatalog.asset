@@ -45,6 +45,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 7607833764655792203
+    - key: 25
+      value:
+        icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
+        displayName: Fire Composite Beam
+        description: Fire the composite beam for 6 seconds at an enemy ship larger
+          than a corvette. Deals 1,000 damage before armor/shield modifiers, with
+          only 10% damage against shields. Recovers in 45 seconds.
+        duration: 6
+        recoveryDelay: 45
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 1
+        range: 375
+        aiUse: 2
+        settings:
+          rid: 6801466921437888600
     - key: 1
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
@@ -629,3 +645,8 @@ MonoBehaviour:
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
+    - rid: 6801466921437888600
+      type: {class: CompositeBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        damage: 1000

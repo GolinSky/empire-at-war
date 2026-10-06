@@ -1,0 +1,236 @@
+[
+  {
+    "name": "HP_ISD3_Weapon_Turret_01",
+    "bone": "BASE_01_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 0
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_02",
+    "bone": "BASE_02_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 1
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_03",
+    "bone": "BASE_03_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 2
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_04",
+    "bone": "BASE_04_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 3
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_05",
+    "bone": "BASE_05_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 4
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_06",
+    "bone": "BASE_06_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 5
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_07",
+    "bone": "BASE_07_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 6
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_08",
+    "bone": "BASE_08_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 7
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_09",
+    "bone": "BASE_09_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 8
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_10",
+    "bone": "BASE_00_Turret/MUZZLEA_00",
+    "targetable": true,
+    "id": 9
+  },
+  {
+    "name": "HP_ISD3_Weapon_Ion_Ball_Turret_01",
+    "bone": "ION_BASE_00_Turret/FP_01",
+    "targetable": true,
+    "id": 10
+  },
+  {
+    "name": "HP_ISD3_Weapon_Ion_Ball_Turret_02",
+    "bone": "ION_BASE_01_Turret/FP_01",
+    "targetable": true,
+    "id": 11
+  },
+  {
+    "name": "HP_ISD3_Shields_01",
+    "bone": "HP_S_BONE_01",
+    "targetable": true,
+    "id": 12
+  },
+  {
+    "name": "HP_ISD3_Shields_02",
+    "bone": "HP_S_BONE_02",
+    "targetable": true,
+    "id": 13
+  },
+  {
+    "name": "HP_ISD3_Engines_01",
+    "bone": "HP_E_BONE_01",
+    "targetable": true,
+    "id": 14
+  },
+  {
+    "name": "HP_ISD3_Engines_02",
+    "bone": "HP_E_BONE_02",
+    "targetable": true,
+    "id": 15
+  },
+  {
+    "name": "HP_ISD3_Engines_03",
+    "bone": "HP_E_BONE_03",
+    "targetable": true,
+    "id": 16
+  },
+  {
+    "name": "HP_ISD3_Tractor_Beam",
+    "bone": "SPAWN_01",
+    "targetable": true,
+    "id": 17
+  },
+  {
+    "name": "HP_ISD3_Fighter_Bay",
+    "bone": "SPAWN_00",
+    "targetable": true,
+    "id": 18
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_01",
+    "bone": "MuzzleA_00",
+    "targetable": false,
+    "id": 19
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_02",
+    "bone": "MuzzleA_02",
+    "targetable": false,
+    "id": 20
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_03",
+    "bone": "MuzzleA_08",
+    "targetable": false,
+    "id": 21
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_04",
+    "bone": "MuzzleA_18",
+    "targetable": false,
+    "id": 22
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_05",
+    "bone": "PD_Laser03",
+    "targetable": false,
+    "id": 23
+  },
+  {
+    "name": "HP_ISD3_Weapon_Laser_06",
+    "bone": "PD_Laser00",
+    "targetable": false,
+    "id": 24
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTIC_01",
+    "bone": "MuzzleA_07",
+    "targetable": false,
+    "id": 25
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTIC_02",
+    "bone": "MuzzleA_19",
+    "targetable": false,
+    "id": 26
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTIC_03",
+    "bone": "MuzzleA_02",
+    "targetable": false,
+    "id": 27
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTIC_04",
+    "bone": "MuzzleA_03",
+    "targetable": false,
+    "id": 28
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTL_01",
+    "bone": "MuzzleA_10",
+    "targetable": false,
+    "id": 29
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTL_02",
+    "bone": "MuzzleA_11",
+    "targetable": false,
+    "id": 30
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTL_03",
+    "bone": "MuzzleA_04",
+    "targetable": false,
+    "id": 31
+  },
+  {
+    "name": "HP_ISD3_Weapon_MTL_04",
+    "bone": "MuzzleA_05",
+    "targetable": false,
+    "id": 32
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_Turbo_01",
+    "bone": "TURRET_TRIPLE_BASE12_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 33
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_Turbo_02",
+    "bone": "TURRET_TRIPLE_BASE_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 34
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_Turbo_03",
+    "bone": "TURRET_TRIPLE_BASE01_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 35
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_Turbo_04",
+    "bone": "TURRET_TRIPLE_BASE02_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 36
+  },
+  {
+    "name": "HP_ISD3_Weapon_Turret_Turbo_05",
+    "bone": "TURRET_TRIPLE_BASE09_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 37
+  },
+  {
+    "name": "HP_ISD3_Weapon_Proton_Turret_01",
+    "bone": "PROTON_BASE_00_Turret/MuzzleA_00",
+    "targetable": false,
+    "id": 38
+  }
+]

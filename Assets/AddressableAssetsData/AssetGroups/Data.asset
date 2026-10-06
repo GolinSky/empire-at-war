@@ -195,6 +195,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3858034bc188a740997a46830d4827e
+    m_Address: ImperialIIIStarDestroyerShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5b5a5e33bc0650428444f9d2024ee89
     m_Address: VenatorShipData
     m_ReadOnly: 0

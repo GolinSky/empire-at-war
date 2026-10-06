@@ -1,0 +1,776 @@
+[
+  {
+    "name": "ImperialIIIStarDestroyer",
+    "maximumPositionError": 4.87486659E-06,
+    "meshes": [
+      {
+        "name": "Hangarlight",
+        "corners": 25,
+        "maximumPositionError": 1.31130219E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane01",
+        "corners": 9,
+        "maximumPositionError": 1.18011178E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane03",
+        "corners": 18,
+        "maximumPositionError": 1.34641289E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane02",
+        "corners": 4,
+        "maximumPositionError": 1.02893569E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane05",
+        "corners": 4,
+        "maximumPositionError": 9.775889E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane04",
+        "corners": 4,
+        "maximumPositionError": 1.143124E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane06",
+        "corners": 4,
+        "maximumPositionError": 1.68751944E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane07",
+        "corners": 4,
+        "maximumPositionError": 1.07765891E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane08",
+        "corners": 4,
+        "maximumPositionError": 1.07765891E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Plane09",
+        "corners": 9,
+        "maximumPositionError": 8.278195E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Lights",
+        "corners": 8,
+        "maximumPositionError": 2.17209663E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Lights.001",
+        "corners": 9,
+        "maximumPositionError": 7.54093E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "TURRET_GOBS",
+        "corners": 127,
+        "maximumPositionError": 7.53954964E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "TURRET_GOBS.001",
+        "corners": 127,
+        "maximumPositionError": 9.702933E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "TURRET_GOBS.002",
+        "corners": 127,
+        "maximumPositionError": 8.940697E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW",
+        "corners": 127,
+        "maximumPositionError": 7.53954964E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.001",
+        "corners": 127,
+        "maximumPositionError": 9.702933E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.002",
+        "corners": 127,
+        "maximumPositionError": 8.940697E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.003",
+        "corners": 127,
+        "maximumPositionError": 3.37174782E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.003",
+        "corners": 127,
+        "maximumPositionError": 3.37174782E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.004",
+        "corners": 127,
+        "maximumPositionError": 3.998401E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.004",
+        "corners": 127,
+        "maximumPositionError": 3.998401E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.005",
+        "corners": 127,
+        "maximumPositionError": 3.998401E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.005",
+        "corners": 127,
+        "maximumPositionError": 3.998401E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.006",
+        "corners": 127,
+        "maximumPositionError": 3.57627869E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.006",
+        "corners": 127,
+        "maximumPositionError": 3.57627869E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.007",
+        "corners": 127,
+        "maximumPositionError": 3.81655951E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.007",
+        "corners": 127,
+        "maximumPositionError": 3.81655951E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.008",
+        "corners": 127,
+        "maximumPositionError": 5.33120158E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.008",
+        "corners": 127,
+        "maximumPositionError": 5.33120158E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.009",
+        "corners": 127,
+        "maximumPositionError": 5.092623E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.009",
+        "corners": 127,
+        "maximumPositionError": 5.092623E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.010",
+        "corners": 127,
+        "maximumPositionError": 1.94058657E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.010",
+        "corners": 127,
+        "maximumPositionError": 1.94058657E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.011",
+        "corners": 127,
+        "maximumPositionError": 5.331332E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "TURRET_GOBS.011",
+        "corners": 127,
+        "maximumPositionError": 5.331332E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "TURRET_GOBS.012",
+        "corners": 127,
+        "maximumPositionError": 5.96046448E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Triple_Turret_Base_SHADOW.012",
+        "corners": 127,
+        "maximumPositionError": 5.96046448E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "LensEffect_Big",
+        "corners": 9,
+        "maximumPositionError": 2.02304864E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Small",
+        "corners": 9,
+        "maximumPositionError": 1.09257121E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Small.001",
+        "corners": 9,
+        "maximumPositionError": 1.13405576E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R",
+        "corners": 9,
+        "maximumPositionError": 1.59936042E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R01",
+        "corners": 9,
+        "maximumPositionError": 1.93692176E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R02",
+        "corners": 9,
+        "maximumPositionError": 2.13248063E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R03",
+        "corners": 9,
+        "maximumPositionError": 2.13248063E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R04",
+        "corners": 9,
+        "maximumPositionError": 1.93692176E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R05",
+        "corners": 9,
+        "maximumPositionError": 2.75989464E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R06",
+        "corners": 9,
+        "maximumPositionError": 2.75989464E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R07",
+        "corners": 9,
+        "maximumPositionError": 3.05324761E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R08",
+        "corners": 9,
+        "maximumPositionError": 3.05324761E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big.001",
+        "corners": 9,
+        "maximumPositionError": 1.92363541E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Small.002",
+        "corners": 9,
+        "maximumPositionError": 1.94058657E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Small.003",
+        "corners": 9,
+        "maximumPositionError": 1.52778694E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "LensEffect_Big_R.001",
+        "corners": 9,
+        "maximumPositionError": 2.13378166E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Lights.002",
+        "corners": 268,
+        "maximumPositionError": 4.79845176E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow",
+        "corners": 384,
+        "maximumPositionError": 1.19358208E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.001",
+        "corners": 160,
+        "maximumPositionError": 1.19358208E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Dishes",
+        "corners": 69,
+        "maximumPositionError": 1.72338866E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Dishes.001",
+        "corners": 69,
+        "maximumPositionError": 1.62251683E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow.002",
+        "corners": 426,
+        "maximumPositionError": 5.339525E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Greebles01",
+        "corners": 1840,
+        "maximumPositionError": 3.00693478E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "shadow",
+        "corners": 9588,
+        "maximumPositionError": 4.188048E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.003",
+        "corners": 470,
+        "maximumPositionError": 1.34869913E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.004",
+        "corners": 628,
+        "maximumPositionError": 1.34869913E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.005",
+        "corners": 496,
+        "maximumPositionError": 1.12619659E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.006",
+        "corners": 550,
+        "maximumPositionError": 1.69533041E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.007",
+        "corners": 265,
+        "maximumPositionError": 2.03967716E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.008",
+        "corners": 265,
+        "maximumPositionError": 1.86306238E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Box01",
+        "corners": 64,
+        "maximumPositionError": 1.62251683E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Box17",
+        "corners": 450,
+        "maximumPositionError": 1.98135012E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Box18",
+        "corners": 66,
+        "maximumPositionError": 1.01896057E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Bridge02",
+        "corners": 1036,
+        "maximumPositionError": 4.29153442E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Bridge_gobs04",
+        "corners": 384,
+        "maximumPositionError": 1.19358208E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Bridge_gobs05",
+        "corners": 160,
+        "maximumPositionError": 1.19358208E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow.009",
+        "corners": 69,
+        "maximumPositionError": 1.72338866E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.010",
+        "corners": 69,
+        "maximumPositionError": 1.62251683E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Goblin_Super02",
+        "corners": 274,
+        "maximumPositionError": 5.339525E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull21",
+        "corners": 38,
+        "maximumPositionError": 1.5312711E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull22",
+        "corners": 712,
+        "maximumPositionError": 1.27280691E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull23",
+        "corners": 184,
+        "maximumPositionError": 4.182955E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull25",
+        "corners": 84,
+        "maximumPositionError": 1.66039331E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull26",
+        "corners": 126,
+        "maximumPositionError": 1.54972076E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull27",
+        "corners": 126,
+        "maximumPositionError": 2.50055518E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull28",
+        "corners": 84,
+        "maximumPositionError": 1.47671938E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull29",
+        "corners": 126,
+        "maximumPositionError": 1.54405086E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Goblins_Hull30",
+        "corners": 84,
+        "maximumPositionError": 1.564551E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Thruster06",
+        "corners": 265,
+        "maximumPositionError": 2.03967716E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Thruster07",
+        "corners": 550,
+        "maximumPositionError": 1.69533041E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "L-Ext03",
+        "corners": 142,
+        "maximumPositionError": 1.26756254E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Object11",
+        "corners": 87,
+        "maximumPositionError": 3.10001451E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Object13",
+        "corners": 9,
+        "maximumPositionError": 1.067905E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Object14",
+        "corners": 470,
+        "maximumPositionError": 1.34869913E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Radardome02",
+        "corners": 628,
+        "maximumPositionError": 1.34869913E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Super_Structure05",
+        "corners": 496,
+        "maximumPositionError": 1.17407535E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Super_Structure06",
+        "corners": 349,
+        "maximumPositionError": 1.12619659E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Thruster08",
+        "corners": 265,
+        "maximumPositionError": 1.86306238E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow.011",
+        "corners": 1840,
+        "maximumPositionError": 3.00693478E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "ISDII02",
+        "corners": 7617,
+        "maximumPositionError": 4.87486659E-06,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow.012",
+        "corners": 64,
+        "maximumPositionError": 3.09944153E-06,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.013",
+        "corners": 248,
+        "maximumPositionError": 6.36403456E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.014",
+        "corners": 136,
+        "maximumPositionError": 4.182955E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Collision",
+        "corners": 17196,
+        "maximumPositionError": 4.188048E-06,
+        "uvChecked": false
+      }
+    ]
+  },
+  {
+    "name": "ImperialIIIStarDestroyerHeavyDualTurret",
+    "maximumPositionError": 1.30597854E-07,
+    "meshes": [
+      {
+        "name": "Turret",
+        "corners": 277,
+        "maximumPositionError": 8.720681E-08,
+        "uvChecked": true
+      },
+      {
+        "name": "Box03",
+        "corners": 230,
+        "maximumPositionError": 8.363256E-08,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel",
+        "corners": 354,
+        "maximumPositionError": 1.29262745E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel_Shadow",
+        "corners": 354,
+        "maximumPositionError": 1.30597854E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Turret_Shadow_1",
+        "corners": 230,
+        "maximumPositionError": 8.363256E-08,
+        "uvChecked": false
+      },
+      {
+        "name": "Turret_Shadow",
+        "corners": 277,
+        "maximumPositionError": 8.720681E-08,
+        "uvChecked": false
+      }
+    ]
+  },
+  {
+    "name": "ImperialIIIStarDestroyerMediumTripleTurret",
+    "maximumPositionError": 1.515969E-07,
+    "meshes": [
+      {
+        "name": "Medium Triple TL_INSTALOD",
+        "corners": 160,
+        "maximumPositionError": 7.63457351E-08,
+        "uvChecked": true
+      },
+      {
+        "name": "Bar",
+        "corners": 278,
+        "maximumPositionError": 1.515969E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow",
+        "corners": 428,
+        "maximumPositionError": 1.0809763E-07,
+        "uvChecked": false
+      }
+    ]
+  },
+  {
+    "name": "ImperialIIIStarDestroyerIonTurret",
+    "maximumPositionError": 1.22084984E-07,
+    "meshes": [
+      {
+        "name": "Turret",
+        "corners": 16,
+        "maximumPositionError": 3.88931731E-08,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel",
+        "corners": 540,
+        "maximumPositionError": 1.22084984E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel_Lights",
+        "corners": 20,
+        "maximumPositionError": 1.02496273E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel_Shadow",
+        "corners": 537,
+        "maximumPositionError": 1.22084984E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Collision_Barrel",
+        "corners": 20,
+        "maximumPositionError": 1.01338856E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Turret_Shadow",
+        "corners": 16,
+        "maximumPositionError": 3.81728675E-08,
+        "uvChecked": false
+      },
+      {
+        "name": "Collision_Turret",
+        "corners": 20,
+        "maximumPositionError": 9.799709E-08,
+        "uvChecked": false
+      }
+    ]
+  },
+  {
+    "name": "ImperialIIIStarDestroyerCompositeTurret",
+    "maximumPositionError": 2.03465746E-07,
+    "meshes": [
+      {
+        "name": "Barrel",
+        "corners": 347,
+        "maximumPositionError": 1.51413687E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Barrel_long",
+        "corners": 323,
+        "maximumPositionError": 1.62920244E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Sphere01",
+        "corners": 197,
+        "maximumPositionError": 1.6358436E-07,
+        "uvChecked": true
+      },
+      {
+        "name": "Shadow",
+        "corners": 197,
+        "maximumPositionError": 2.03465746E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.001",
+        "corners": 323,
+        "maximumPositionError": 1.62920244E-07,
+        "uvChecked": false
+      },
+      {
+        "name": "Shadow.002",
+        "corners": 347,
+        "maximumPositionError": 1.51413687E-07,
+        "uvChecked": false
+      }
+    ]
+  }
+]

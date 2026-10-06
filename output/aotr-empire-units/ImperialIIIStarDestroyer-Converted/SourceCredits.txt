@@ -1,0 +1,3 @@
+AOTR Workshop item 1397421866. Source unit E_Imperial_Star_Destroyer_3; model EV_ISD3.ALO.
+Original model/texture paths and SHA-256 fingerprints are recorded in SourceAudit.json.
+Converted assets retain the source artwork; no claim of original authorship is made.

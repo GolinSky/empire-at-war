@@ -208,6 +208,21 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 0.98, g: 0, b: 0.19, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 43
+    displayName: Heavy Dual Turbolaser
+    damageType: 3
+    damage: 100
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 10.91
+    range: 500
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 40
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 3
     displayName: Dual Heavy Turbolaser
     damageType: 3
@@ -268,6 +283,21 @@ MonoBehaviour:
     projectileSpeed: 55
     color: {r: 0.55, g: 1, b: 1, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 45
+    displayName: Composite Beam
+    damageType: 12
+    damage: 1000
+    shotsPerSalvo: 1
+    shotInterval: 0
+    reload: 45
+    range: 375
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+      type: 3}
+    projectileSpeed: 0
+    color: {r: 1, g: 0.4, b: 0.05, a: 1}
+    size: {x: 1.5, y: 1.5, z: 1.5}
   - weaponType: 12
     displayName: Laser Beam
     damageType: 7
@@ -521,6 +551,21 @@ MonoBehaviour:
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
     projectileSpeed: 55
+    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 44
+    displayName: Heavy Long-Range 2-Burst Turbo-Ion Cannon
+    damageType: 4
+    damage: 210
+    shotsPerSalvo: 2
+    shotInterval: 6
+    reload: 12.25
+    range: 500
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 40
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 31
