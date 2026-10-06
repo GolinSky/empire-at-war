@@ -32,6 +32,7 @@ MonoBehaviour:
   <ShieldRegenerateDelay>k__BackingField: 1
   <HullRepairPerSecond>k__BackingField: 1
   <Abilities>k__BackingField: 09000000
-  <Range>k__BackingField: 70
+  <Range>k__BackingField: 175
   <Delay>k__BackingField: 0.25
+  <WeaponRange>k__BackingField: 70
   <VisionRange>k__BackingField: 175

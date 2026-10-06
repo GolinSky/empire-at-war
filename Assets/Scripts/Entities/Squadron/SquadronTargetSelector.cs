@@ -54,7 +54,10 @@ namespace EmpireAtWar.Entities.Squadrons
             return best;
         }
 
-        public IEntity SelectAnywhere(Vector3 origin)
+        public IEntity SelectAnywhere(Vector3 origin) => SelectSeen(origin, float.PositiveInfinity);
+
+        /// <summary>Best enemy within <paramref name="radius"/> that the squadron's team can see, not only its own radar.</summary>
+        public IEntity SelectSeen(Vector3 center, float radius)
         {
             IEntity best = null;
             float bestScore = float.PositiveInfinity;
@@ -62,9 +65,11 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 if (!IsValidEnemy(candidate)) continue;
                 Vector3 position = candidate.GetFacade<IEntityTransformFacade>().Transform.position;
+                float distance = (position - center).sqrMagnitude;
+                if (distance > radius * radius) continue;
                 if (_respectsFog &&
                     !_visionService.IsVisible(_side, position)) continue;
-                float score = Score(candidate, (position - origin).sqrMagnitude);
+                float score = Score(candidate, distance);
                 if (score >= bestScore) continue;
                 best = candidate;
                 bestScore = score;

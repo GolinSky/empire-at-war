@@ -63,6 +63,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private float _huntRetargetTimer;
         private float _pendingAbilityRange;
+        private float _guardedRadius;
 
         private bool _isReleased;
 
@@ -246,10 +247,15 @@ namespace EmpireAtWar.Entities.Squadrons
                     break;
                 case UnitOrderType.Guard:
                     if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
-                    else DefendArea(_orders.Target.GetFacade<IEntityTransformFacade>().Transform.position);
+                    // Fighters orbit one side of the guarded unit, so the whole guard area is
+                    // searched in what the team sees rather than in the squadron's own radar.
+                    else if (!IsEngaging) DefendArea(_targetSelector.SelectSeen(
+                        _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
+                        _guardedRadius + Data.GuardRadius));
                     break;
                 case UnitOrderType.AttackMove:
-                    DefendArea(_flight.Centroid);
+                    if (!IsEngaging)
+                        DefendArea(_targetSelector.SelectNear(_radar.Enemies, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();
                     break;
                 case UnitOrderType.Move:
@@ -262,7 +268,8 @@ namespace EmpireAtWar.Entities.Squadrons
                     else _orders.Clear();
                     break;
                 default:
-                    DefendArea(_pilot.LoiterCenter);
+                    if (!IsEngaging)
+                        DefendArea(_targetSelector.SelectNear(_radar.Enemies, _pilot.LoiterCenter, Data.GuardRadius));
                     break;
             }
         }
@@ -293,11 +300,11 @@ namespace EmpireAtWar.Entities.Squadrons
             else if (_engaged != null) Stop();
         }
 
-        /// <summary>Engages radar contacts near <paramref name="center"/> and resumes the order once they are gone.</summary>
-        private void DefendArea(Vector3 center)
+        private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
+
+        /// <summary>Engages <paramref name="enemy"/> if any and resumes the order once enemies are gone.</summary>
+        private void DefendArea(IEntity enemy)
         {
-            if (SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked()) return;
-            IEntity enemy = _targetSelector.SelectNear(_radar.Enemies, center, Data.GuardRadius);
             if (enemy != null)
             {
                 Engage(enemy);
@@ -328,7 +335,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private void EscortGuarded()
         {
             IEntity friendly = _orders.Target;
-            _pilot.Escort(friendly.GetFacade<IEntityTransformFacade>().Transform, SquadronPilot.GetRadius(friendly));
+            // Fighters orbit outside the guarded hull, so the guard area grows with its size.
+            _guardedRadius = SquadronPilot.GetRadius(friendly);
+            _pilot.Escort(friendly.GetFacade<IEntityTransformFacade>().Transform, _guardedRadius);
         }
 
         private void Engage(IEntity target)

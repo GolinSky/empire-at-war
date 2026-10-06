@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;
@@ -11,7 +12,8 @@ using Utilities.ScriptUtils.Math;
 namespace EmpireAtWar.Entities.BaseEntity
 {
     [Serializable]
-    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData, ISpawnBlockerData
+    public sealed class EntityComponentData : IHealthData, IRadarData, IFogVisionData, ISpawnBlockerData,
+        IWeaponRangeData
     {
         [Header("Destruction Settings")]
         [Tooltip("Seconds the dead unit stays under its explosion before it is removed.")]
@@ -28,8 +30,13 @@ namespace EmpireAtWar.Entities.BaseEntity
         public IReadOnlyList<HardPointHealth> HardPointHealth => hardPointHealth;
 
         [Header("Radar Settings")]
+        [Tooltip("Radius in which the structure detects enemies. Matches VisionRange.")]
         [field: SerializeField] public float Range { get; private set; }
         [field: SerializeField] public float Delay { get; private set; }
+
+        [Header("Weapon Settings")]
+        [Tooltip("How far the structure's hardpoints can fire.")]
+        [field: SerializeField, Min(0f)] public float WeaponRange { get; private set; }
 
         [Header("Vision Settings")]
         [Tooltip("Fog of war radius this structure reveals for its team.")]
