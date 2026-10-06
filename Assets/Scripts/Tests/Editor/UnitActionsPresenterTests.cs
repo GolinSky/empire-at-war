@@ -84,9 +84,12 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_view.Available[UnitActionId.Move], Is.False);
             Assert.That(_view.Available[UnitActionId.Retreat], Is.False);
 
+            // The HUD keeps the panel visible; a selection without commands only disables every button.
             FakeEntity facility = Entity(3, Array.Empty<Type>());
             _selection.Select(facility);
-            Assert.That(_view.Visible, Is.False);
+            Assert.That(_view.Visible, Is.True);
+            foreach (UnitActionId action in Enum.GetValues(typeof(UnitActionId)))
+                Assert.That(_view.Available[action], Is.False, action.ToString());
         }
 
         [Test]
