@@ -36,7 +36,8 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster roster = TestPlayers.CreateDuel();
             ShipAIBrain brain = new ShipAIBrain(healthModel: null, radar: null, movement: movement, decisionModel: null, orders: model, owner: TestPlayers.Human, playerRoster: roster);
             ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, brain: brain, movement: movement, weapon: weapon,
-                cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null, fleeState: null, owner: TestPlayers.Human, playerRoster: roster);
+                cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null, fleeState: null,
+                abilityApproachState: null, abilities: null, abilityCaster: null, owner: TestPlayers.Human, playerRoster: roster);
 
             runner.Stop();
 

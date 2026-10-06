@@ -100,13 +100,25 @@ namespace EmpireAtWar.Services.ShipAbilities
         public void SubmitTarget(IEntity target)
         {
             if (!IsWaitingForTarget) return;
-            bool activated = false;
+            bool accepted = false;
             for (int i = 0; i < _pendingCasters.Count; i++)
             {
-                if (_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command))
-                    activated |= TryActivate(command, PendingAbilityId, target);
+                if (!_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command)) continue;
+                if (TryActivate(command, PendingAbilityId, target))
+                {
+                    accepted = true;
+                    continue;
+                }
+
+                // Out-of-range casters fly to the target and use the ability on arrival.
+                if (TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
+                    _pendingCasters[i].TryGetFacade(out IShipAbilityCastFacade cast))
+                {
+                    cast.CastAbility(PendingAbilityId, target, slot.Definition.Range);
+                    accepted = true;
+                }
             }
-            if (activated) CancelTargeting();
+            if (accepted) CancelTargeting();
         }
 
         public void CancelTargeting()
@@ -120,14 +132,10 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
-            if (caster.Modifiers.IsCloaked && id != ShipAbilityId.Cloak) return false;
-            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || !slot.CanActivate)
-                return false;
+            if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
             ShipAbilityDefinition definition = slot.Definition;
             if (definition.RequiresEnemyTarget &&
-                (target == null || target.HealthModel.IsDestroyed || target.IsCloaked() ||
-                 !_relations.IsHostile(caster.Entity.Owner, target.Owner) ||
-                 PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range))
+                PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range)
                 return false;
 
             IShipAbility ability = _shipAbilityFactory.Create(definition);
@@ -191,6 +199,17 @@ namespace EmpireAtWar.Services.ShipAbilities
             IShipAbility ability = slot.RunningAbility;
             slot.Recover();
             ability.Stop();
+        }
+
+        private bool TryFindUsableSlot(IShipAbilityFacade caster, ShipAbilityId id, IEntity target,
+            out ShipAbilitySlot slot)
+        {
+            slot = null;
+            if (caster.Modifiers.IsCloaked && id != ShipAbilityId.Cloak) return false;
+            if (!TryFindSlot(caster, id, out slot) || !slot.CanActivate) return false;
+            return !slot.Definition.RequiresEnemyTarget ||
+                   (target != null && !target.HealthModel.IsDestroyed && !target.IsCloaked() &&
+                    _relations.IsHostile(caster.Entity.Owner, target.Owner));
         }
 
         private static bool TryFindSlot(IShipAbilityFacade caster, ShipAbilityId id, out ShipAbilitySlot slot)

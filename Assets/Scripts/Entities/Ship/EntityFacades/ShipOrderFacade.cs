@@ -3,14 +3,17 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Orders;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.EntityFacades
 {
     public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
-        IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade, IAbilityFacingFacade
+        IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade, IAbilityFacingFacade,
+        IShipAbilityCastFacade
     {
         private readonly IShipMovement _movement;
 
@@ -53,5 +56,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void Hunt() => _orders.Hunt();
 
         public void Retreat(Vector3 destination) => _orders.Retreat(destination);
+
+        public void CastAbility(ShipAbilityId id, IEntity target, float range) =>
+            _orders.CastAbility(id, target, range);
     }
 }
