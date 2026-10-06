@@ -49,7 +49,7 @@ namespace EmpireAtWar.Tests.Editor
             RectTransform button = menuPanel.Find(buttonName) as RectTransform;
 
             Assert.That(button, Is.Not.Null);
-            Assert.That(button.sizeDelta, Is.EqualTo(new Vector2(340f, 68f)));
+            Assert.That(button.sizeDelta, Is.EqualTo(new Vector2(400f, 62f)));
             Assert.That(button.GetComponent<MPImage>(), Is.Not.Null);
         }
     }
