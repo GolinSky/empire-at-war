@@ -387,9 +387,9 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 
 ## ArquitensImperialCruiser - 2026-10-06
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `GameDesign/Arquitens Advanced Import`.
+- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `GameDesign/ArquitensImperialCruiser Import`.
 - Isolated Blender 3.6.23 MCP port 9882; identity Root restored from binary audit. Hull: 10 meshes / 13,861 triangles / 78 bones. Quad turret: 6 / 680 / 8; dual turret: 4 / 436 / 7; eight mounted instances from two byte-identical families.
 - Source/FBX vertex and UV checks passed; Unity mesh/triangle counts and all bone parents/positions verified. Vertex welding disabled to retain eight tiny triangles. Centered length 40 units, bow +Z/up +Y.
 - Empire ship 204: hull/shields/speed 1,300/1,200/30, zero targetable systems, four two-shot light long-range turbolasers and four two-shot laser cannons, no fighters. Dedicated weapon/audio profiles 39/40; Boost Weapon Power 23 with activation/execution/recovery audio.
 - Own fitted shield, all 51 team renderer bindings, fog/hull-only health, opaque placement, shader-breaking wreck, actual-model icons, roster/data/view Addressables/UI mappings saved. Eight live/wreck palettes and placement/icon renders inspected.
-- All 21 original source hashes unchanged; saved references/imports/compilation verified. Editable blends/FBXs/textures/credits/evidence: `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`. No Unity tests or Play Mode run by this import; runtime/provisional balance acceptance: `TODOs/Features/ArquitensImperialCruiser_Import.md`.
+- All 21 original source hashes unchanged; saved references/imports/compilation verified. Editable blends/FBXs/textures/credits/evidence: `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`. No Unity tests or Play Mode run by this import; runtime/provisional balance acceptance: `TODOs/Features/ArquitensAdvanced_Import.md`.
