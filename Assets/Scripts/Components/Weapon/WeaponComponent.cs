@@ -5,6 +5,8 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
@@ -27,6 +29,8 @@ namespace EmpireAtWar.Components.Weapon
 
         private IRadarModelObserver _radarModel;
         private ISelectionModelObserver _selection;
+        private ILocalPlayer _localPlayer;
+        private PlayerId _owner;
         private ITimer _attackTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
@@ -55,6 +59,8 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool _isReleased;
         private bool _isInitialized;
+        // The local team never fires at what its fog of war hides, so no shot flies into the dark.
+        private bool _respectsLocalFog;
 
         public event Action<WeaponProfile, Transform> ShotEmitted;
 
@@ -63,8 +69,11 @@ namespace EmpireAtWar.Components.Weapon
         [Inject]
         private void Construct(IRadarModelObserver radarModel, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
-            DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles)
+            DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
+            ILocalPlayer localPlayer, PlayerId owner)
         {
+            _localPlayer = localPlayer;
+            _owner = owner;
             _missiles = missiles;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
@@ -78,6 +87,7 @@ namespace EmpireAtWar.Components.Weapon
         public void Initialize()
         {
             _isInitialized = true;
+            _respectsLocalFog = _localPlayer.IsFriendly(_owner);
             _attackCoordinator.Register(this);
             Model.SetAttackRange(_radarModel.Range);
 
@@ -174,6 +184,9 @@ namespace EmpireAtWar.Components.Weapon
             }
         }
 
+        private bool CanAcquire(AttackData group) =>
+            group.CanAcquireTarget && !(_respectsLocalFog && group.TargetEntity.IsHiddenByFog());
+
         public bool HasEnoughRange(float distance)
         {
             return distance <= Model.OptimalAttackRange * ENGAGE_RANGE_FACTOR;
@@ -242,7 +255,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
-                if (!candidate.Group.CanAcquireTarget) continue;
+                if (!CanAcquire(candidate.Group)) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
@@ -287,7 +300,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < _orderedCandidates.Count; i++)
             {
                 TargetCandidate candidate = _orderedCandidates[i];
-                if (!candidate.Group.CanAcquireTarget) continue;
+                if (!CanAcquire(candidate.Group)) continue;
                 if (!candidate.Group.CanTarget(candidate.Unit))
                 {
                     _orderedCandidates.RemoveAt(i--);
@@ -328,7 +341,7 @@ namespace EmpireAtWar.Components.Weapon
             if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
 
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!selectedCandidate.Group.CanAcquireTarget || !IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
+                (!CanAcquire(selectedCandidate.Group) || !IsTargetValid(selectedCandidate.Group, selectedCandidate.Unit) ||
                  selectedCandidate.Unit.Generation != selectedCandidate.Generation))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback();

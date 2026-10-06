@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using Zenject;
@@ -14,7 +15,8 @@ namespace EmpireAtWar.Components.FogOfWar
     /// Hardpoint explosion VFX and the ion stun effect spawned at runtime are hidden with the unit. Bound only for opponent entities.
     /// Static buildings such as space stations stay drawn once discovered.
     /// </summary>
-    public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable
+    public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ILateTickable, ILateDisposable,
+        IFogVisibilityFacade
     {
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
@@ -31,6 +33,8 @@ namespace EmpireAtWar.Components.FogOfWar
 
         private bool _isHidden;
         private bool _isReleased;
+
+        public bool IsHiddenByFog => _isHidden;
 
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
@@ -55,7 +59,7 @@ namespace EmpireAtWar.Components.FogOfWar
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
 
-            _isHidden = IsHiddenByFog();
+            _isHidden = IsCoveredByFog();
             ApplyVisibility();
         }
 
@@ -85,7 +89,7 @@ namespace EmpireAtWar.Components.FogOfWar
                 return;
             }
 
-            bool isHidden = IsHiddenByFog();
+            bool isHidden = IsCoveredByFog();
             if (isHidden == _isHidden)
             {
                 return;
@@ -95,7 +99,7 @@ namespace EmpireAtWar.Components.FogOfWar
             ApplyVisibility();
         }
 
-        private bool IsHiddenByFog() =>
+        private bool IsCoveredByFog() =>
             _modifiers.IsCloaked || !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
 
         private void TrackExplosion(ExplosionVfx explosion)

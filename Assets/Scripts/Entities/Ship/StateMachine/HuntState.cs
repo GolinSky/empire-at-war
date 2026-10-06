@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
-using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
@@ -17,7 +16,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weapon;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
-        private readonly IVisionService _visionService;
         private readonly IPlayerRelations _relations;
         private IEntity _target;
 
@@ -34,7 +32,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
-            IVisionService visionService, IPlayerRelations relations, ILocalPlayer localPlayer,
+            IPlayerRelations relations, ILocalPlayer localPlayer,
             UnitOrderSettings settings, PlayerId side)
         {
             _relations = relations;
@@ -44,7 +42,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weapon = weapon;
             _attackDataFactory = attackDataFactory;
             _locator = locator;
-            _visionService = visionService;
             _settings = settings;
             _side = side;
         }
@@ -89,10 +86,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             foreach (IEntity entity in _locator.Entities)
             {
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
-                    !entity.HealthModel.HasUnits || entity.IsCloaked()) continue;
+                    !entity.HealthModel.HasUnits || entity.IsCloaked() ||
+                    _respectsFog && entity.IsHiddenByFog()) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_respectsFog && !_visionService.IsVisible(_side, position))
-                    continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
                 if (distance >= nearest) continue;
                 nearest = distance;

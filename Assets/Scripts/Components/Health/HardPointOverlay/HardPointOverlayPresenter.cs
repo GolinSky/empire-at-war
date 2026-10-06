@@ -10,7 +10,6 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
-using EmpireAtWar.Services.Vision;
 using Zenject;
 
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
@@ -32,7 +31,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly ICameraService _cameraService;
         private readonly IUnitOrderService _unitOrderService;
         private readonly ICinematicCameraModelObserver _cinematicCamera;
-        private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly HardPointOverlayModel _model;
@@ -48,7 +46,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             ICameraService cameraService,
             IUnitOrderService unitOrderService,
             ICinematicCameraModelObserver cinematicCamera,
-            IVisionService visionService,
             ILocalPlayer localPlayer,
             HardPointOverlayModel model,
             HardPointOverlayData data)
@@ -61,7 +58,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _cameraService = cameraService;
             _unitOrderService = unitOrderService;
             _cinematicCamera = cinematicCamera;
-            _visionService = visionService;
             _localPlayer = localPlayer;
         }
 
@@ -265,8 +261,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private bool IsVisible(IEntity ship)
         {
             return !ship.HealthModel.IsDestroyed &&
-                   (_localPlayer.IsFriendly(ship.Owner) ||
-                    _visionService.IsEntityVisible(_localPlayer.Id, ship));
+                   !ship.IsHiddenByFog();
         }
 
         private bool TryGetScreenPosition(IHardPointModel hardPoint, out Vector2 screenPosition)
