@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 using NUnit.Framework;
@@ -29,6 +31,12 @@ namespace EmpireAtWar.Tests.Editor
             {
                 DiContainer parent = new DiContainer();
                 parent.Bind<FactionType>().WithId(TestPlayers.Human).FromInstance(factionType);
+                PlayerRoster roster = new PlayerRoster(new[]
+                {
+                    new PlayerSlot(TestPlayers.Human, new TeamId(0), factionType, PlayerController.Human,
+                        EnemyAiDifficulty.Medium, 0)
+                });
+                parent.Bind<ILocalPlayer>().FromInstance(TestPlayers.CreateLocalPlayer(roster));
                 const string sharedPath = "Assets/Settings/Data/Factions/Shared/";
                 parent.Bind<FactionCatalog>().FromInstance(
                     AssetDatabase.LoadAssetAtPath<FactionCatalog>(sharedPath + "FactionCatalog.asset"));
