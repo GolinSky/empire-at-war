@@ -13,13 +13,14 @@ status: in-progress
 ## Decision
 
 - Separate `ArquitensImperialCruiser = 204`; existing Republic Arquitens remains unchanged.
-- Hull/shields/speed `1,300/1,200/30`; eight non-targetable weapons; no targetable systems or fighter complement.
-- Installed XML specifies two shots for all eight weapons; raw speed `3.0`. User speed `30` takes precedence.
+- Current hull/shields/speed `2,600/1,400/48`; eight non-targetable weapons; no targetable systems or fighter complement.
+- Installed XML specifies two shots for all eight weapons; raw speed `3.0`. Original import speed `30` was superseded by the `2026-10-06` Republic-aligned balance revision.
 - Import uses static checks only; no automated Unity tests or Play Mode requested/run by this task.
 
 ## Implementation
 
 - `2026-10-06`: hull and two byte-identical turret families converted; visual/gameplay/shield/placement/wreck/icons created and Empire registrations saved.
+- `2026-10-06`: core stats/production tuned toward Republic Arquitens: hull/shields/speed `2,600/1,400/48`, shield regeneration `14 per 1 s`; cost/build/population/tech/cap `3,500/30 s/2/3/20`. Range `562.5`, weapons, ability, targeting and model retained. Tooltip updated; both assets imported/re-serialized/saved; live readback passed with zero console errors. No tests or Play Mode run.
 - Renamed ship identity, roster/tooltip title and asset family to `ArquitensImperialCruiser`; numeric ID `204` and all `57` asset/folder GUIDs retained. Saved geometry/reference checks passed after the rename.
 - Weapons `39/40`, source-specific Boost Weapon Power `23`, weapon/ability audio, ship data/view Addressables and faction/HUD/tooltip/placement mappings registered.
 - All `51` mesh renderers are explicitly bound to TeamColorView; source collision/shadow visibility remains disabled. Saved coverage check matches the existing asset-test contract.
@@ -41,4 +42,5 @@ status: in-progress
 - [x] Register Empire roster, abilities, weapon/audio profiles, ship data, Addressables and UI/placement mappings.
 - [x] Verify saved geometry/references, team palettes and Unity import/compilation; retain credits/evidence and record source differences.
 - [ ] Clean-skirmish acceptance: deployment, hull-only targeting/damage, weapon arcs/bursts, ability/shields, visibility/team colors and destruction.
-- [ ] Review provisional balance and documented source-to-project differences.
+- [x] Tune core stats and production toward Republic Arquitens; verify loaded and saved values.
+- [ ] Review remaining provisional balance, gameplay results and documented source-to-project differences.

@@ -7,7 +7,8 @@
 
 ## Decision
 
-- Supplied hull/shields/speed: `1,300/1,200/30`; source raw speed `3.0`. User speed takes precedence.
+- Original import hull/shields/speed: `1,300/1,200/30`; source raw speed `3.0`. Superseded by the user's `2026-10-06` core-stat/production tuning below.
+- Chosen: close to Republic durability, mobility and production, with slightly lower hull/speed for Imperial range and protected subsystems. Weapons, ability, hardpoints and model retained.
 - Eight weapons are non-targetable and non-destroyable; hull-only targeting, no independent shield/engine/hangar targets or fighter complement.
 - All eight source hardpoints have `Fire_Pulse_Count = 2`; the explanatory wiki prose's four-shot turbolaser claim does not match installed XML.
 - Separate Empire identity; preserve existing Republic `Arquitens` and other weapon/ability definitions.
@@ -30,8 +31,10 @@
 - Laser profile `BurstLaserCannon = 40`: damage `7.5/shot`, `2` shots, pulse spacing `0.5 s`, reload `1.25 s`, range `200` units.
 - Range conversion `1/8`: source `4,500/1,600`; reload midpoint of source `9.5–10/1–1.5 s`. Projectile speed `133` project units/s, green bolts.
 - `ArquitensBoostWeaponPower = 23`: active `20 s`, recovery `60 s`, fire delay ×`0.5`, speed ×`0.25`, shield regeneration ×`0`, incoming damage ×`1.5`; own settings instance.
-- Shield regeneration `4/s`, delay `1 s`; bank ±`15°`, navigation radius `27`, banked hull range `−11.43013..+11.43013` units.
-- Provisional economy: cost `3,250`, build `65 s`, tech `1`, population `3`, maximum `10`.
+- Current hull/shields/speed `2,600/1,400/48`; Republic baseline `2,900/1,400/54`.
+- Shield regeneration `14 per 1 s` (`14/s`, matching Republic `42 per 3 s`); bank ±`15°`, navigation radius `27`, banked hull range `−11.43013..+11.43013` units.
+- Current economy: cost `3,500`, build `30 s`, tech `3`, population `2`, maximum `20`; Republic build `28 s`.
+- `2026-10-06` tuning verified through Unity live readback and disk diff: only four ship-data fields and six roster lines changed; assets saved/imported, zero console errors. No tests or Play Mode run.
 - Provisional movement: yaw `45°/s`, turn acceleration `45`, height tier `5`, hyperspace `0.6 s`; inherited Republic Arquitens movement/matchups.
 - Main Colorize texture alpha is zero → neutral hull. Turret alpha team-mask coverage `5.593%`; normal green channel flipped. Metallic/smoothness `0.15/0.25` are provisional.
 
