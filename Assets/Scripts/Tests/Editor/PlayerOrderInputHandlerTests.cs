@@ -226,6 +226,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsWaitingForTarget { get; set; }
             public IEntity Submitted { get; private set; }
 
+            public bool IsValidTarget(IEntity target) => true;
+
             public void SubmitTarget(IEntity target) { Submitted = target; IsWaitingForTarget = false; }
 
             public void CancelTargeting() { IsWaitingForTarget = false; }

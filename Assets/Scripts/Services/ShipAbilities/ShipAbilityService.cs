@@ -97,6 +97,20 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
         }
 
+        public bool IsValidTarget(IEntity target)
+        {
+            if (!IsWaitingForTarget) return false;
+            for (int i = 0; i < _pendingCasters.Count; i++)
+            {
+                // Out-of-range casters still count: SubmitTarget sends them to the target.
+                if (_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command) &&
+                    TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
+                    CanStart(command, slot.Definition, target))
+                    return true;
+            }
+            return false;
+        }
+
         public void SubmitTarget(IEntity target)
         {
             if (!IsWaitingForTarget) return;

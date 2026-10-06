@@ -1,9 +1,13 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -19,6 +23,10 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly IUnitOrderService _unitOrderService;
+        private readonly IShipAbilityTargeting _abilityTargeting;
+        private readonly ISelectionQuery _selectionQuery;
+        private readonly IHardPointHoverObserver _hardPointHover;
+        private readonly IPointerInput _pointerInput;
         private IUnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
 
@@ -32,13 +40,19 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             IUiCancelRouter cancelRouter,
             ICameraService cameraService, IEntityLocator entityLocator,
             IUnitOrderService unitOrderService, ILocalPlayer localPlayer,
-            UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
+            UnitActionTargetingModel targeting, IShipAbilityTargeting abilityTargeting,
+            ISelectionQuery selectionQuery, IHardPointHoverObserver hardPointHover,
+            IPointerInput pointerInput) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
             _unitOrderService = unitOrderService;
             _targeting = targeting;
+            _abilityTargeting = abilityTargeting;
+            _selectionQuery = selectionQuery;
+            _hardPointHover = hardPointHover;
+            _pointerInput = pointerInput;
         }
 
         public void Initialize()
@@ -64,6 +78,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         public void LateTick()
         {
+            UpdateInvalidTarget();
+
             if (_movementPoint.HasValue)
                 _ui.SetMovementPosition(_cameraService.WorldToScreenPoint(_movementPoint.Value));
 
@@ -80,6 +96,23 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         public void AttackFeedbackCompleted() => _attackTarget = null;
 
         public void MovementFeedbackCompleted() => _movementPoint = null;
+
+        // Clicking an ineligible enemy keeps ability targeting armed, so the cursor marks it as invalid.
+        private void UpdateInvalidTarget()
+        {
+            Vector2 cursor = _pointerInput.Position;
+            IEntity hovered = _abilityTargeting.IsWaitingForTarget ? FindHovered(cursor) : null;
+            if (hovered != null && _localPlayer.IsHostile(hovered.Owner) && !_abilityTargeting.IsValidTarget(hovered))
+                _ui.ShowInvalidTarget(cursor);
+            else _ui.HideInvalidTarget();
+        }
+
+        // Same lookup as PlayerOrderInputHandler: a hardpoint marker wins over the hull under it.
+        private IEntity FindHovered(Vector2 cursor)
+        {
+            if (_hardPointHover.TryGetHovered(out IEntity ship, out int _)) return ship;
+            return _selectionQuery.TryFindAt(cursor, out SelectionEntry hit) ? hit.Entity : null;
+        }
 
         private void HandleOrder(UnitOrder order)
         {

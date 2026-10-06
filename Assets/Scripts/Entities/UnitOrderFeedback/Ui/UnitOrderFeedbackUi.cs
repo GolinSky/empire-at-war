@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private RectTransform screenRect;
         [SerializeField] private RectTransform attackAnchor;
         [SerializeField] private RectTransform movementAnchor;
+        [SerializeField] private RectTransform invalidTargetAnchor;
         [SerializeField] private Image attackImage;
         [SerializeField] private Image attackRing;
         [SerializeField] private Image attackPulse;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         {
             attackAnchor.gameObject.SetActive(false);
             movementAnchor.gameObject.SetActive(false);
+            invalidTargetAnchor.gameObject.SetActive(false);
         }
 
         public void Dispose()
@@ -116,6 +118,14 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             }
             attackAnchor.gameObject.SetActive(false);
         }
+
+        public void ShowInvalidTarget(Vector2 screenPosition)
+        {
+            SetPosition(invalidTargetAnchor, screenPosition);
+            invalidTargetAnchor.gameObject.SetActive(true);
+        }
+
+        public void HideInvalidTarget() => invalidTargetAnchor.gameObject.SetActive(false);
 
         private void OnDestroy() => Dispose();
 

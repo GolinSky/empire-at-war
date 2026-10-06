@@ -50,8 +50,8 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Fire Composite Beam
         description: Fire the composite beam for 6 seconds at an enemy ship larger
-          than a corvette. Deals 1,000 damage before armor/shield modifiers, with
-          only 10% damage against shields. Recovers in 45 seconds.
+          than a corvette or a space station. Deals 1,000 damage before armor/shield
+          modifiers, with only 10% damage against shields. Recovers in 45 seconds.
         duration: 6
         recoveryDelay: 45
         canCancel: 0

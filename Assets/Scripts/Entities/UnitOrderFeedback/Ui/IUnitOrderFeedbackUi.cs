@@ -19,5 +19,9 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         void SetMovementPosition(Vector2 screenPosition);
 
         void StopAttack();
+
+        void ShowInvalidTarget(Vector2 screenPosition);
+
+        void HideInvalidTarget();
     }
 }
