@@ -16,7 +16,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
     }
     SubShader
     {
-        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-100" "DisableBatching"="True" }
+        // Draw the background before transparent gameplay visuals, including relay zones (2900).
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-400" "DisableBatching"="True" }
         Pass
         {
             Name "CloudScattering"
@@ -24,7 +25,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             // Exit faces cover the volume both outside and inside the box.
             Cull Front
             ZWrite Off
-            ZTest LEqual
+            // Clip the ray march against scene depth, not the box's exit face.
+            ZTest Always
             Blend One OneMinusSrcAlpha
 
             HLSLPROGRAM
@@ -35,6 +37,7 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
             #pragma instancing_options procedural:ParticleInstancingSetup
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ParticlesInstancing.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
             TEXTURE3D(_CloudField);
             SAMPLER(sampler_CloudField);
@@ -53,6 +56,7 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 float4 screen : SV_POSITION;
                 float3 eyeOS : TEXCOORD0;
                 float3 rayOS : TEXCOORD1;
+                float rayEyeDepth : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -70,9 +74,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 // Resolve particle transforms per vertex instead of per fragment.
                 volume.eyeOS = TransformWorldToObject(eyeWS);
                 volume.rayOS = TransformWorldToObjectDir(rayWS, false);
+                volume.rayEyeDepth = dot(rayWS, GetViewForwardDir());
                 volume.screen = TransformWorldToHClip(surface);
-                // Background clouds sit behind all scene geometry, even when volumes overlap it.
-                volume.screen.z = UNITY_RAW_FAR_CLIP_VALUE * volume.screen.w;
                 return volume;
             }
 
@@ -96,6 +99,11 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
                 float3 nearBounds = min(a, b), farBounds = max(a, b);
                 float first = max(0.0, max(nearBounds.x, max(nearBounds.y, nearBounds.z)));
                 float last = min(farBounds.x, min(farBounds.y, farBounds.z));
+                // Accumulate only the cloud between the camera and the visible opaque surface.
+                float depth = SampleSceneDepth(GetNormalizedScreenSpaceUV(volume.screen));
+                float sceneEyeDepth = unity_OrthoParams.w > 0.5
+                    ? LinearDepthToEyeDepth(depth) : LinearEyeDepth(depth, _ZBufferParams);
+                last = min(last, sceneEyeDepth * localRayLength / volume.rayEyeDepth);
                 if (first >= last) discard;
 
                 int count = clamp((int)_Samples, 32, 128);
