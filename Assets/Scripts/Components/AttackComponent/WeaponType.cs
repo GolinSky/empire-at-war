@@ -38,6 +38,8 @@
         HeavyArtilleryRocket = 34,
         BarrageRocket = 35,
         LightDualTurbolaser = 36,
+        LightRapidDualTurbolaser = 41,
+        MediumLongRangeTurboIon = 42,
         MediumDualTurboIon = 37,
         MediumBurstTurbolaser = 38,
         LightLongRangeTurbolaser = 39,

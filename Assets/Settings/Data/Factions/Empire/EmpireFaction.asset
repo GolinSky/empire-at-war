@@ -96,6 +96,28 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: e54026c071416a845b2d23e814c1e8d5,
           type: 3}
+    - key: 205
+      value:
+        matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
+        description: '21,000 hull; 18,000 shields; speed 25. Targetable: eight light
+          long-range 4-rapid-burst dual turbolasers, two medium long-range 2-burst
+          turbo-ion cannons, two shield generators, three engines, tractor beam and
+          hangar. Additional weapons: three medium 3-burst turbolasers, six light
+          turbolasers and four heavy laser cannons. Power to Main Batteries boosts
+          main-battery firing rate, disables other weapons, halts shield regeneration
+          and reduces speed. Tractor Beam restricts enemy movement. Launches TIE
+          Interceptors, TIE Brutes and TIE Punishers.'
+        role: Capital ship / Ship of the line
+        iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
+        isHero: 0
+        <Name>k__BackingField: Imperial II Star Destroyer
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 25000
+        <BuildTime>k__BackingField: 500
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

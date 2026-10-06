@@ -18,6 +18,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private readonly ITimer _reloadTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private FloatRange yAxisRange;
+        [SerializeField] private bool mainBattery;
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
         private ShotEffectPool _effectPool;
         private WeaponProfile _profile;
@@ -42,7 +43,8 @@ namespace EmpireAtWar.ViewComponents.Health
         public float MaxYaw => yAxisRange.Max;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal float DelayBetweenShots =>
-            _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable);
+            _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
+            _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
 
         internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
 
@@ -96,18 +98,20 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
-            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked)
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
             {
                 generation = _sequence.Generation;
                 return false;
             }
             if (!_sequence.TryStart(out generation)) return false;
             _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier *
-                _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable)).StartTimer();
+                _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
+                _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery)).StartTimer();
             return true;
         }
 
-        internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && !_modifiers.IsCloaked && _sequence.IsEmitting(generation);
+        internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && !_modifiers.IsCloaked &&
+            _modifiers.CanFireWeapon(mainBattery) && _sequence.IsEmitting(generation);
 
         internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
 

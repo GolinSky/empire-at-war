@@ -994,3 +994,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ImperialIIShipView
+      value:
+        m_AssetGUID: f24f9301127af634ab504e1c96f3d728
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ImperialIIShipData
+      value:
+        m_AssetGUID: 9864bdd7b03aa4d4d812b8f34e008399
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

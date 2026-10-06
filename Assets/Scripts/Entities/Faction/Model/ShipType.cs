@@ -31,6 +31,7 @@ namespace EmpireAtWar.Models.Factions
         //empire
         Victory = 200,
         ImperialIAdvanced = 201,
+        ImperialII = 205,
         VictoryIAdvanced = 202,
         VictoryIIAdvanced = 203,
         ArquitensImperialCruiser = 204,

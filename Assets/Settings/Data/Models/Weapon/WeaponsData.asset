@@ -568,3 +568,33 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 41
+    displayName: Light Long-Range 4-Rapid-Burst Dual Turbolaser
+    damageType: 2
+    damage: 135
+    shotsPerSalvo: 4
+    shotInterval: 0.317
+    reload: 17.1705
+    range: 450
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 42
+    displayName: Medium Long-Range 2-Burst Turbo-Ion Cannon
+    damageType: 4
+    damage: 225
+    shotsPerSalvo: 2
+    shotInterval: 9.5
+    reload: 19.25
+    range: 525
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
+    size: {x: 1, y: 1, z: 1}
