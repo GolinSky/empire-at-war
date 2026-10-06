@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify BTL-A4 Y-Wing Bomber integration acceptance**
+  - **Plan**: [[TODOs/Features/YWingBomber_Import|BTL-A4 Y-Wing Bomber Import]]
+  - **Reference**: [[GameDesign/Y-Wing Bomber Import]]
+  - **Status**: 2026-10-06 imported as Rebellion-only squadron `301`; six craft, 24 weapons, hull/shields/speed `30/30/30` per bomber, slow-charging anti-laser shields and existing Ion Shot. Own art/placement/icon/team colors, source hashes, geometry/UV/bones, saved references and import/compile checks passed. Republic BTL-B preserved; no automated tests or combat Play Mode started by this task.
+  - **Remaining**: clean-skirmish acceptance; provisional economy/weapon/flight balance and source-difference review. Passive AOTR ion-stunner slowdown is not ported.
+
 - [ ] **Verify Victory II Advanced integration acceptance**
   - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
   - **Reference**: [[GameDesign/Victory II Advanced Import]]

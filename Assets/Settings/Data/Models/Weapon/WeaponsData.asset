@@ -643,3 +643,48 @@ MonoBehaviour:
     projectileSpeed: 55
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 46
+    displayName: Light Dual Laser
+    damageType: 0
+    damage: 5
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 0.785
+    range: 50
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 140
+    color: {r: 1, g: 0.2, b: 0.1, a: 1}
+    size: {x: 0.45, y: 0.45, z: 0.6}
+  - weaponType: 47
+    displayName: Heavy Dual Ion Stunner
+    damageType: 4
+    damage: 4
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 4.91
+    range: 70
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 48
+    displayName: Medium Proton-Torpedo Launcher
+    damageType: 6
+    damage: 90
+    shotsPerSalvo: 1
+    shotInterval: 0
+    reload: 20
+    range: 70
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    projectileSpeed: 25
+    color: {r: 0.3, g: 0.6, b: 1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}

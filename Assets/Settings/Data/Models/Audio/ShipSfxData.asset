@@ -489,6 +489,36 @@ MonoBehaviour:
       maxInstances: 4
       loop: 1
     weaponType: 42
+  - sfx:
+      clip: {fileID: 8300000, guid: ec55a5f9d6d4a36409ec27940a1d23f3, type: 3}
+      clips:
+        array: []
+      volume: 0.45
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 46
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.65
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    weaponType: 47
+  - sfx:
+      clip: {fileID: 8300000, guid: 8a3b1f08bca1ab249afd5167d5aa6b5a, type: 3}
+      clips:
+        array: []
+      volume: 0.85
+      priority: 60
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 48
   abilities:
   - start:
       clip: {fileID: 8300000, guid: 80dd32d6735abb544a18326002bb3411, type: 3}

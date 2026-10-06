@@ -9,5 +9,6 @@ namespace EmpireAtWar.Components.Squadrons.Health
         float MemberShields { get; }
         float ShieldRegenerateValue { get; }
         float ShieldRegenerateDelay { get; }
+        float LaserShieldDamageMultiplier { get; }
     }
 }

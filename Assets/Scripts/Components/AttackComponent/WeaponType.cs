@@ -47,5 +47,8 @@
         MediumBurstTurbolaser = 38,
         LightLongRangeTurbolaser = 39,
         BurstLaserCannon = 40,
+        LightDualLaser = 46,
+        HeavyDualIonStunner = 47,
+        MediumProtonTorpedo = 48,
     }
 }
