@@ -363,6 +363,22 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466921437888599
+    - key: 24
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Power to Main Batteries
+        description: Main-battery shot and reload delays are reduced to 33%. All
+          other weapons are disabled, shield regeneration stops and movement speed
+          is reduced to 25% for 20 s. 60 s recharge.
+        duration: 20
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        settings:
+          rid: 6801466921437888601
   references:
     version: 2
     RefIds:
@@ -602,3 +618,14 @@ MonoBehaviour:
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1.5
+    - rid: 6801466921437888601
+      type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        fireDelayMultiplier: 0.33
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.25
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1

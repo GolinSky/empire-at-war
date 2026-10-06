@@ -14,6 +14,8 @@ namespace EmpireAtWar.Components.Combat
         private float _focusDamageMultiplier = 1f;
         private float _projectileFireDelayMultiplier = 1f;
         private float _otherFireDelayMultiplier = 1f;
+        private bool _mainBatteriesActive;
+        private float _mainBatteryFireDelayMultiplier = 1f;
 
         public event Action Changed;
 
@@ -39,6 +41,18 @@ namespace EmpireAtWar.Components.Combat
 
         public float GetFullSalvoFireDelayMultiplier(bool interceptable) =>
             interceptable ? _projectileFireDelayMultiplier : _otherFireDelayMultiplier;
+
+        public bool CanFireWeapon(bool mainBattery) => !_mainBatteriesActive || mainBattery;
+
+        public float GetMainBatteryFireDelayMultiplier(bool mainBattery) =>
+            mainBattery ? _mainBatteryFireDelayMultiplier : 1f;
+
+        public void SetMainBatteries(bool active, float fireDelayMultiplier)
+        {
+            _mainBatteriesActive = active;
+            _mainBatteryFireDelayMultiplier = fireDelayMultiplier;
+            if (Changed != null) Changed.Invoke();
+        }
 
         public void SetFullSalvo(float projectileFireDelayMultiplier, float otherFireDelayMultiplier)
         {

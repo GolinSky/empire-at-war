@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         TIEAvengerPowerToWeapons = 20,
         ImperialBoostEnginePower = 21,
         TractorBeam = 22,
+        PowerToMainBatteries = 24,
         ArquitensBoostWeaponPower = 23,
     }
 }
