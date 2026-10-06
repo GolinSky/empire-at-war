@@ -24,6 +24,8 @@ updated: 2026-10-06
 
 ## Important Values
 
+- 2026-10-06 team-color fix: replaced all-white hull masks with four mirrored stripes; hull/turret rim strength `0`; turret mask strength `0`, including wreck materials. Red/blue isolated Unity renders checked; existing GUIDs and linear imports retained; no new import/serialization errors. No tests or Play Mode run by this fix.
+
 - Static integration verified `2026-10-06`; no automated tests or Play Mode run.
 - Saved checks: 10 targetable hardpoints; 16 weapons; 4-shot artillery / 6-shot barrage; no missing scripts or broken references.
 - Visible bounds `67.5321 × 38.1539 × 110`; navigation radius `70`.

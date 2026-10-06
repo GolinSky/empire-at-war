@@ -24,6 +24,8 @@ updated: 2026-10-06
 
 ## Important Values
 
+- 2026-10-06 team-color fix: replaced all-white hull masks with four mirrored stripes; hull/turret rim strength `0`; turret mask strength `0`, including wreck materials. Red/blue isolated Unity renders checked; existing GUIDs and linear imports retained; no new import/serialization errors. No tests or Play Mode run by this fix.
+
 - Static integration verified `2026-10-06`; no automated Unity tests or Play Mode run.
 - Source hull: 40 meshes / 24,024 triangles / 180 bones; two turret variants: each 4 / 1,447 / 6.
 - Saved bindings: 10 health targets, 18 weapons, 23 fog hardpoints; no missing scripts or broken references.

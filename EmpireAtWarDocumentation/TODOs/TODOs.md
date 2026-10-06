@@ -8,6 +8,7 @@
   - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
   - **Reference**: [[GameDesign/Victory II Advanced Import]]
   - **Status**: 2026-10-06 AOTR Victory II Advanced imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
+  - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
   - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
 
 - [ ] **Verify ArquitensImperialCruiser integration acceptance**
@@ -20,6 +21,7 @@
   - **Plan**: [[TODOs/Features/VictoryIAdvanced_Import|Victory I Advanced Import]]
   - **Reference**: [[GameDesign/Victory I Advanced Import]]
   - **Status**: 2026-10-06 AOTR Victory I Advanced imported as Empire ship `202`; `12,000/8,000/175`, 10 targets/16 weapons, 4/6-shot rocket salvos, Full Salvo, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, geometry/UVs/source hashes, saved bindings and import/compile/render checks verified. No automated tests or Play Mode run.
+  - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
   - **Remaining**: clean-skirmish acceptance and provisional scale/movement/weapon/system/ability/economy/launch balance review.
 
 - [ ] **Verify MC75 Profundity integration acceptance**

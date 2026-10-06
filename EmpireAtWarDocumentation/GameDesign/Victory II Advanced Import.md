@@ -41,7 +41,8 @@ tags:
 - Reuse shared TIE-Interceptor assets: eight craft, hull 15 each, no shields. No fighter substitution.
 - Blender 3.6.23 MCP, protocol 13, safe mode enabled, telemetry disabled; dedicated process on port `9880`. The importer scans global objects and fails across existing conversion scenes; isolated import preserves the other Blender session.
 - Restore identity `Root` only after binary audit: hull 179 imported → 180 source bones; each turret 5 → 6. Living model imported statically; source death-clone companion `EV_VSD_II_DC.ALO` and animation `EV_VSD_II_DC_DIE_00.ala` exist but are not converted.
-- DDS → PNG pixel equality verified. Ship Lit opaque surfaces; separate additive effects; source-alpha-derived team masks, linear normal maps with green flip. Helpers stay disabled.
+- DDS → PNG albedo pixel equality verified. Ship Lit opaque surfaces; separate additive effects; linear normal maps with green flip. Helpers stay disabled. Source Colorize alpha produced all-white hull/turret masks.
+- 2026-10-06: authored hull mask → four mirrored team stripes; neutral turrets; `_TeamRimStrength = 0` on hull/turrets and corresponding wrecks. `_TeamMaskStrength = 0` on turret materials; original albedo preserved. Red/blue top/angled Unity renders: team-colored surface `100% → 7.6%`; GUIDs/linear imports retained; no new import/serialization errors.
 - Dedicated profiles `MediumDualTurboIon = 37` and `MediumBurstTurbolaser = 38`; existing `MediumTurboIon = 32`, `HeavyLaser = 28` reused. Dual shots use one emitter with a 0.08 s interval; six turbolasers fire three shots per salvo.
 - Own gameplay, opaque-hull hologram placement, wreck, transparent 512-pixel icon/silhouette, matchups, Empire roster, data/view Addressables, HUD/tooltip and reinforcement registrations saved.
 
