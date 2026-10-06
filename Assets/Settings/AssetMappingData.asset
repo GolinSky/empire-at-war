@@ -882,3 +882,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: TIEAvengerSquadronView
+      value:
+        m_AssetGUID: 010561448aafee74bb1d92d47bb33f3b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEAvengerSquadronData
+      value:
+        m_AssetGUID: 6fe145e29f7c63b48891be7c7b366040
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

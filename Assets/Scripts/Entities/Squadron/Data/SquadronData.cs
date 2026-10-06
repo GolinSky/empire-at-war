@@ -50,6 +50,11 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Header("Abilities")]
         [field: SerializeField] public ShipAbilityId[] Abilities { get; private set; } = System.Array.Empty<ShipAbilityId>();
 
+        [Header("Seeker Warhead Countermeasure")]
+        [field: SerializeField] public float SeekerWarheadRange { get; private set; }
+        [field: SerializeField] public float SeekerWarheadRecharge { get; private set; } = 10f;
+        [field: SerializeField] public float SeekerWarheadMinimumTravel { get; private set; } = 10f;
+
         [Header("Radar")]
         [Tooltip("Radius in which the squadron detects enemies. Matches VisionRange.")]
         [field: SerializeField] public float Range { get; private set; } = 175f;

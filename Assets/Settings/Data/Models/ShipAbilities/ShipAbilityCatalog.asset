@@ -302,6 +302,21 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466921437888590
+    - key: 20
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Power to Weapons
+        description: Double fire rate for 10 s. Speed is reduced by 25% and damage
+          taken increases by 50%. 60 s recovery.
+        duration: 10
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801466921437888588
   references:
     version: 2
     RefIds:
@@ -489,3 +504,13 @@ MonoBehaviour:
           damageTakenMultiplier: 1
         commandRadius: 400
         targetDamageMultiplier: 1
+    - rid: 6801466921437888588
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 0.75
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1.5

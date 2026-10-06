@@ -388,3 +388,33 @@ MonoBehaviour:
     projectileSpeed: 140
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 0.45, y: 0.45, z: 0.6}
+  - weaponType: 29
+    displayName: Light Repeating Laser
+    damageType: 0
+    damage: 5
+    shotsPerSalvo: 8
+    shotInterval: 0.1
+    reload: 4.25
+    range: 70
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 140
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 0.45, y: 0.45, z: 0.6}
+  - weaponType: 30
+    displayName: Fighter Concussion-Missile Launcher
+    damageType: 5
+    damage: 40
+    shotsPerSalvo: 1
+    shotInterval: 0.5
+    reload: 15
+    range: 70
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 35
+    color: {r: 1, g: 0.55, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}

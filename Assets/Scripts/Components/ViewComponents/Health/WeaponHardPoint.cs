@@ -130,7 +130,7 @@ namespace EmpireAtWar.ViewComponents.Health
                 IncomingMissile missile = null;
                 if (_profile.Interceptable)
                 {
-                    missile = _missiles.Launch(attackData.TargetHealth, hardPointModel, transform.position, duration);
+                    missile = _missiles.Launch(attackData.TargetHealth, hardPointModel, transform.position, duration, _profile.DamageType);
                     effect.TrackInterception(missile);
                 }
 
