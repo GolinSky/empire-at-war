@@ -245,6 +245,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d350016d0347cd346baf0a1fce39145c
+    m_Address: VictoryIIAdvancedShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d67ee971a66b0ae4b9242ecb0497df01
     m_Address: ThrantaShipView
     m_ReadOnly: 0
