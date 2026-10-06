@@ -6,27 +6,6 @@ using UnityEngine;
 
 namespace EmpireAtWar.Views.Cheats
 {
-    public interface ICheatView
-    {
-        event Action<string> AddMoneyRequested;
-
-        event Action<ShipType> AddReinforcementRequested;
-
-        event Action<ShipType> SpawnForceRequested;
-
-        event Action<SuperWeaponType> GrantSuperWeaponRequested;
-
-        event Action GrantAllSuperWeaponsRequested;
-
-        event Action<bool> RangeDebugToggled;
-
-        event Action DestroyOwnShipsRequested;
-
-        void SetShips(IReadOnlyList<ShipType> ships);
-
-        void SetStatus(string status);
-    }
-
     public sealed class CheatView : MonoBehaviour, ICheatView
     {
         private const int WINDOW_ID = 90421;
@@ -42,6 +21,8 @@ namespace EmpireAtWar.Views.Cheats
         private static readonly string[] TAB_NAMES = { "Economy", "Ships", "Superweapons", "Debug" };
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
+        private FactionType[] _factions = Array.Empty<FactionType>();
+        private string[] _factionNames = Array.Empty<string>();
         private ShipType[] _ships = Array.Empty<ShipType>();
         private string[] _shipNames = Array.Empty<string>();
 
@@ -57,12 +38,15 @@ namespace EmpireAtWar.Views.Cheats
         private float _windowVisibility;
 
         private int _selectedTab;
+        private int _selectedFaction;
         private int _selectedShip;
 
         private bool _isExpanded;
         private bool _showRanges;
 
         public event Action<string> AddMoneyRequested;
+
+        public event Action<FactionType> FactionSelected;
 
         public event Action<ShipType> AddReinforcementRequested;
 
@@ -75,6 +59,19 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<bool> RangeDebugToggled;
 
         public event Action DestroyOwnShipsRequested;
+
+        public void SetFactions(IReadOnlyList<FactionType> factions)
+        {
+            _factions = new FactionType[factions.Count];
+            _factionNames = new string[factions.Count];
+            for (int index = 0; index < factions.Count; index++)
+            {
+                _factions[index] = factions[index];
+                _factionNames[index] = factions[index].ToString();
+            }
+
+            _selectedFaction = 0;
+        }
 
         public void SetShips(IReadOnlyList<ShipType> ships)
         {
@@ -230,6 +227,19 @@ namespace EmpireAtWar.Views.Cheats
             {
                 DestroyOwnShipsRequested?.Invoke();
             }
+
+            GUILayout.Label("Select faction");
+            GUILayout.BeginHorizontal();
+            for (int index = 0; index < _factions.Length; index++)
+            {
+                bool isSelected = index == _selectedFaction;
+                if (GUILayout.Toggle(isSelected, _factionNames[index], GUI.skin.button) && !isSelected)
+                {
+                    _selectedFaction = index;
+                    FactionSelected?.Invoke(_factions[index]);
+                }
+            }
+            GUILayout.EndHorizontal();
 
             if (_ships.Length == 0)
             {

@@ -30,8 +30,18 @@ namespace EmpireAtWar.Presenters.Cheats
 
         public void Initialize()
         {
-            List<ShipType> ships = BuildShipCatalog();
-            _view.SetShips(ships);
+            List<FactionType> factions = BuildShipCatalog();
+            _view.SetFactions(factions);
+            if (factions.Count > 0)
+            {
+                SelectFaction(factions[0]);
+            }
+            else
+            {
+                _view.SetShips(Array.Empty<ShipType>());
+            }
+
+            _view.FactionSelected += SelectFaction;
             _view.AddMoneyRequested += AddMoney;
             _view.AddReinforcementRequested += AddReinforcement;
             _view.SpawnForceRequested += SpawnForce;
@@ -43,6 +53,7 @@ namespace EmpireAtWar.Presenters.Cheats
 
         public void LateDispose()
         {
+            _view.FactionSelected -= SelectFaction;
             _view.AddMoneyRequested -= AddMoney;
             _view.AddReinforcementRequested -= AddReinforcement;
             _view.SpawnForceRequested -= SpawnForce;
@@ -52,11 +63,13 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.DestroyOwnShipsRequested -= DestroyOwnShips;
         }
 
-        private List<ShipType> BuildShipCatalog()
+        private List<FactionType> BuildShipCatalog()
         {
             _shipData.Clear();
+            List<FactionType> factions = new List<FactionType>();
             foreach (FactionDefinition faction in _factionCatalog.Factions)
             {
+                factions.Add(faction.FactionType);
                 foreach (KeyValuePair<ShipType, FactionData> ship in faction.Ships)
                 {
                     if (_shipData.ContainsKey(ship.Key))
@@ -69,9 +82,14 @@ namespace EmpireAtWar.Presenters.Cheats
                 }
             }
 
-            List<ShipType> ships = new List<ShipType>(_shipData.Keys);
+            return factions;
+        }
+
+        private void SelectFaction(FactionType factionType)
+        {
+            List<ShipType> ships = new List<ShipType>(_factionCatalog.Get(factionType).Ships.Keys);
             ships.Sort((left, right) => ((int)left).CompareTo((int)right));
-            return ships;
+            _view.SetShips(ships);
         }
 
         private void AddMoney(string value)
