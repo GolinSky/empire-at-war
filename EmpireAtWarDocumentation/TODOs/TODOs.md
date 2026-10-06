@@ -27,6 +27,7 @@
   - **Plan**: [[TODOs/Features/StealthCorvette_Import|Stealth Corvette Import]]
   - **Reference**: [[GameDesign/Stealth Corvette Import]]
   - **Status**: 2026-10-05 import and Republic ship `11` registered; hull/shields/regen `850/900/15`, two missiles/two lasers, cloak `80 s`/recharge `10 s`. Own placement/wreck/icons/team colors, saved references, source hashes, geometry and Unity import/compile checks complete. No automated tests or Play Mode run.
+  - **Cloak follow-up**: 2026-10-06 friendly translucent hull/shield suppression and active countdown display added; existing `80 s` active / `10 s` recovery retained. Compilation, shader/import, saved bindings and mesh previews verified; no automated tests or Play Mode run.
   - **Remaining**: clean-skirmish cloak/combat/placement/destruction acceptance and provisional scale/movement/weapon/armor/audio balance review.
 
 - [ ] **Finish V-19 Torrent integration acceptance**
