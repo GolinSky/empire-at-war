@@ -35,8 +35,9 @@ MonoBehaviour:
     - hardPointType: 4
       health: 300
       hullDamageMultiplier: 1
-    <Range>k__BackingField: 218.75
+    <Range>k__BackingField: 500
     <Delay>k__BackingField: 0.25
+    <WeaponRange>k__BackingField: 218.75
     <VisionRange>k__BackingField: 500
     <SpawnBlockRadius>k__BackingField: 500
   <Wreck>k__BackingField: {fileID: 11400000, guid: 953585d562dca5641b102597d8184078,

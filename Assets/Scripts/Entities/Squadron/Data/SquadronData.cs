@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
@@ -11,12 +12,12 @@ namespace EmpireAtWar.Entities.Squadrons.Data
 {
     [CreateAssetMenu(fileName = "SquadronData", menuName = "Data/SquadronData")]
     public class SquadronData : Mvc.Data, IFighterFlightData,
-        ISquadronHealthData, IRadarData, IFogVisionData
+        ISquadronHealthData, IRadarData, IFogVisionData, IWeaponRangeData
     {
         [Header("Orders")]
         [Tooltip("Radius used when compacting group move orders.")]
         [field: SerializeField] public float NavigationRadius { get; private set; } = 6f;
-        [Tooltip("Enemies closer than this to the guarded unit or loiter point are engaged automatically.")]
+        [Tooltip("Enemies closer than this to the guarded unit's hull or the loiter point are engaged automatically.")]
         [field: SerializeField] public float GuardRadius { get; private set; } = 70f;
 
         [Header("Flight")]
@@ -50,11 +51,16 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [field: SerializeField] public ShipAbilityId[] Abilities { get; private set; } = System.Array.Empty<ShipAbilityId>();
 
         [Header("Radar")]
-        [field: SerializeField] public float Range { get; private set; } = 80f;
+        [Tooltip("Radius in which the squadron detects enemies. Matches VisionRange.")]
+        [field: SerializeField] public float Range { get; private set; } = 175f;
         [field: SerializeField] public float Delay { get; private set; } = 0.25f;
 
+        [Header("Weapons")]
+        [Tooltip("How far the fighters' hardpoints can fire.")]
+        [field: SerializeField, Min(0f)] public float WeaponRange { get; private set; } = 70f;
+
         [Header("Vision")]
-        [Tooltip("Fog of war radius the squadron reveals for its team. Independent of radar, which also sets weapon range.")]
+        [Tooltip("Fog of war radius the squadron reveals for its team.")]
         [field: SerializeField, Min(0f)] public float VisionRange { get; private set; } = 175f;
     }
 }

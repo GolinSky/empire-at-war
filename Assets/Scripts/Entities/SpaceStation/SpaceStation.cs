@@ -71,7 +71,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             ApplyLevel(_factionLevel.CurrentLevel);
             gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
-            _visionService.Register(_owner, transform, 900f);
+            _visionService.Register(_owner, transform, Data.ComponentData.VisionRange);
             _spawnBlockerService.Register(_owner, transform, Data.ComponentData.SpawnBlockRadius);
         }
 

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
@@ -27,7 +26,7 @@ namespace EmpireAtWar.Components.Weapon
         // Continuous weapons such as beams land their damage in ticks this far apart.
         private const float DAMAGE_TICK_INTERVAL = 0.1f;
 
-        private IRadarModelObserver _radarModel;
+        private IWeaponRangeData _rangeData;
         private ISelectionModelObserver _selection;
         private ILocalPlayer _localPlayer;
         private PlayerId _owner;
@@ -67,7 +66,7 @@ namespace EmpireAtWar.Components.Weapon
         public float AttackDistance => Model.OptimalAttackRange;
 
         [Inject]
-        private void Construct(IRadarModelObserver radarModel, ISelectionModelObserver selection,
+        private void Construct(IWeaponRangeData rangeData, ISelectionModelObserver selection,
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
             ILocalPlayer localPlayer, PlayerId owner)
@@ -79,7 +78,7 @@ namespace EmpireAtWar.Components.Weapon
             _modifiers = modifiers;
             _weaponsData = weaponsData;
             _damageMatrix = damageMatrix;
-            _radarModel = radarModel;
+            _rangeData = rangeData;
             _rangeCircleFactory = rangeCircleFactory;
             _selection = selection;
         }
@@ -89,7 +88,7 @@ namespace EmpireAtWar.Components.Weapon
             _isInitialized = true;
             _respectsLocalFog = _localPlayer.IsFriendly(_owner);
             _attackCoordinator.Register(this);
-            Model.SetAttackRange(_radarModel.Range);
+            Model.SetAttackRange(_rangeData.WeaponRange * _modifiers.VisionMultiplier);
 
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
