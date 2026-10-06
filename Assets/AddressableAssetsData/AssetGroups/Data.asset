@@ -220,6 +220,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0fe1152d97de994f8491771788e65e7
+    m_Address: MC75ProfundityShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f5fb2ca4ac1d3a848a445314158b9a6e
     m_Address: TooltipIconData
     m_ReadOnly: 0

@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         MonCalCruiserPowerToShields = 15,
         HomeOneConcentrateFire = 16,
         HomeOnePowerToShields = 17,
-        LockSFoils = 18
+        LockSFoils = 18,
+        FullSalvo = 19,
     }
 }

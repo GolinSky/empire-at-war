@@ -28,6 +28,21 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 28
+    displayName: Heavy Laser Cannon
+    damageType: 0
+    damage: 17.5
+    shotsPerSalvo: 1
+    shotInterval: 1
+    reload: 2.25
+    range: 200
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 8
     displayName: Laser Cannon
     damageType: 0
@@ -88,6 +103,21 @@ MonoBehaviour:
     projectileSpeed: 90
     color: {r: 0.85, g: 0.9, b: 1, a: 1}
     size: {x: 0.6, y: 0.6, z: 1}
+  - weaponType: 27
+    displayName: Light Close-Range Turbolaser
+    damageType: 2
+    damage: 18
+    shotsPerSalvo: 3
+    shotInterval: 0.2
+    reload: 3.75
+    range: 150
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 1
     displayName: Turbolaser
     damageType: 2
@@ -267,6 +297,36 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 25
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 25
+    displayName: Med Lrg Proton TRP
+    damageType: 6
+    damage: 80
+    shotsPerSalvo: 1
+    shotInterval: 3.75
+    reload: 7.5
+    range: 150
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    projectileSpeed: 25
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 26
+    displayName: Medium Ion Torpedo
+    damageType: 4
+    damage: 80
+    shotsPerSalvo: 1
+    shotInterval: 7.5
+    reload: 15
+    range: 150
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+      type: 3}
+    projectileSpeed: 25
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 6
     displayName: Proton Torpedo Launcher

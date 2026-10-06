@@ -41,7 +41,8 @@ namespace EmpireAtWar.ViewComponents.Health
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
-        internal float DelayBetweenShots => _profile.ShotInterval;
+        internal float DelayBetweenShots =>
+            _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable);
 
         internal bool CanEngage(ShipClass targetClass) => !_profile.StrikecraftOnly || targetClass.IsStrikecraft();
 
@@ -101,7 +102,8 @@ namespace EmpireAtWar.ViewComponents.Health
                 return false;
             }
             if (!_sequence.TryStart(out generation)) return false;
-            _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier).StartTimer();
+            _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier *
+                _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable)).StartTimer();
             return true;
         }
 
