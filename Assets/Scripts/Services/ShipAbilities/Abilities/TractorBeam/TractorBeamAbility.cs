@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool IsComplete => _hardPoint.IsDestroyed || _target.HealthModel.IsDestroyed || _targetTransform == null ||
             _caster.Modifiers.IsIonDisabled ||
-            Vector3.Distance(_caster.WorldPosition, _targetTransform.position) > _range;
+            PlanarGeometry.Distance(_caster.WorldPosition, _targetTransform.position) > _range;
         public bool SurvivesCasterDeath => false;
 
         public TractorBeamAbility(TractorBeamSettings settings)
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         }
 
         public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
+            _settings.CanTarget(target.HealthModel.ShipClass) &&
             target.TryGetFacade(out ICombatModifiersFacade _) &&
             caster.Health.GetShipUnits(HardPointType.TractorBeam).Any(point => !point.IsDestroyed);
 

@@ -321,8 +321,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Tractor Beam
-        description: Restrict a targeted enemy to 40% speed for up to 20 s within
-          150 units. Ends when the beam hardpoint, caster or target is destroyed,
+        description: Restrict a targeted enemy corvette or frigate to 25% speed for
+          up to 20 s within 150 units. Ends when the beam hardpoint, caster or target is destroyed,
           the caster is ion-disabled, or the target leaves range. 25 s recovery.
         duration: 20
         recoveryDelay: 25
@@ -549,7 +549,8 @@ MonoBehaviour:
       type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        speedMultiplier: 0.4
+        speedMultiplier: 0.25
+        targetClasses: 0200000003000000
         beam:
           weaponType: 12
           displayName: Laser Beam

@@ -112,6 +112,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
                 // Out-of-range casters fly to the target and use the ability on arrival.
                 if (TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
+                    CanStart(command, slot.Definition, target) &&
                     _pendingCasters[i].TryGetFacade(out IShipAbilityCastFacade cast))
                 {
                     cast.CastAbility(PendingAbilityId, target, slot.Definition.Range);
@@ -193,6 +194,10 @@ namespace EmpireAtWar.Services.ShipAbilities
                 _running.RemoveAt(i);
             }
         }
+
+        // Ineligible targets are rejected outright instead of sending the caster to them.
+        private bool CanStart(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) =>
+            !(_shipAbilityFactory.Create(definition) is IPhasedShipAbility phased) || phased.CanStart(caster, target);
 
         private void Stop(ShipAbilitySlot slot)
         {
