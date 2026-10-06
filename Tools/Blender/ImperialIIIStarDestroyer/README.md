@@ -1,6 +1,6 @@
 # Imperial III Star Destroyer
 
-- Empire `ShipType.ImperialIIIStarDestroyer = 206`; hull 28,000, shields 18,000, speed 250.
+- Empire `ShipType.ImperialIIIStarDestroyer = 206`; hull 28,000, shields 18,000, speed 25.
 - AOTR source `E_Imperial_Star_Destroyer_3`, model `EV_ISD3.ALO`, Workshop `1397421866`.
 - Read vault `ALO_MODEL_IMPORT_GUIDE`, `PROJECT_ORGANIZATION`, `UI_UX_GUIDELINES`, and `UI_CODE_BUILD_GUIDE` before rebuilding.
 - Editable art, previews, source hashes, and verification: `output/aotr-empire-units/ImperialIIIStarDestroyer-Converted/`.
@@ -24,7 +24,8 @@
 - Blender's FBX reimport retriangulates hidden collision polygons to 17,709 triangles from 17,725. Source corner positions and UVs match; Unity retains all 17,725 triangles. Unity geometry validation checks UV correspondence on visible surfaces and positions on hidden collision/shadow surfaces.
 - Raw Unity import scale 0.02; gameplay root scale 1; bow +Z, up +Y. Mounted bounds 115.89669 × 64.00111 × 192.90494; navigation radius 118; bank ±8°; banked vertical range -35.03626..32.75116.
 - Source `Hangar.tga` is resolved explicitly because the ALO importer labels it `Hangar.dds`.
-- Source alpha remains in albedo PNGs; inverse alpha supplies team masks. Normals are linear with green-channel inversion. Opaque source meshes use `EmpireAtWar/Ship Lit`; authored glows use additive materials. Hidden collision/shadow meshes remain disabled.
+- Source alpha remains in albedo PNGs. `HullStripeMask.png` supplies two narrow team-color stripes; other opaque surfaces stay neutral and team rim tint is disabled, matching Victory's material setup. Source inverse-alpha masks remain available but are disabled outside the main hull. Normals are linear with green-channel inversion. Opaque source meshes use `EmpireAtWar/Ship Lit`; authored glows use additive materials. Hidden collision/shadow meshes remain disabled.
+- Stripe mask: built-in ImageGen, prompt in `HullStripeMask.prompt.txt`; applied to `ISDII_diff`. Atlas coverage `1.59%`. Blue/red live and wreck renders checked; Unity asset readback passed at speed `25` with no Console errors.
 - Own placement hologram, wreck materials, transparent 512×512 icon/silhouette, and eight live/wreck team previews are saved.
 
 ## Gameplay

@@ -1,4 +1,4 @@
-"""Stage converted art, retaining exact DDS pixels and authored alpha team masks."""
+"""Stage converted art, retaining source pixels and the authored hull stripe mask."""
 import json
 import shutil
 from pathlib import Path
@@ -28,6 +28,8 @@ for report in reports:
             material[key + 'Map'] = path.as_posix()
             if key == 'base' and 'Colorize' in material['shader']:
                 mask = ImageOps.invert(image.getchannel('A'))
+                if name == 'ImperialIIIStarDestroyer' and Path(filename).stem == 'ISDII_diff':
+                    mask = Image.open(Path(__file__).with_name('HullStripeMask.png')).convert('L')
                 path = folders['Textures'] / f'{name}_{Path(filename).stem}_TeamMask.png'
                 mask.save(path)
                 material['maskMap'] = path.as_posix()
