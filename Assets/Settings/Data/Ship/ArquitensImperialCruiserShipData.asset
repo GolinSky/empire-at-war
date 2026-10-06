@@ -31,7 +31,10 @@ MonoBehaviour:
   <Shields>k__BackingField: 1400
   <ShieldRegenerateValue>k__BackingField: 14
   <ShieldRegenerateDelay>k__BackingField: 1
-  hardPointHealth: []
+  hardPointHealth:
+  - hardPointType: 0
+    health: 250
+    hullDamageMultiplier: 1
   <Range>k__BackingField: 562.5
   <Delay>k__BackingField: 0.25
   abilities: 17000000

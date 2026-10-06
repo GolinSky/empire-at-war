@@ -114,7 +114,8 @@ bpy.ops.import_scene.fbx(
 3. Map each weapon/system to actual attachment positions. Preserve reference weapon counts even when ALO bone names differ; document the mapping.
 4. Place hardpoints under the banking body pivot. Calculate muzzle/world positions correctly; imported bone rotation is not automatically Unity yaw.
 5. Assign unique hardpoint IDs, health ordering, weapon profiles/arcs, fog references and hangar dependencies. A twin barrel pair need not represent two separate gameplay weapons.
-6. Use available fighter types only with an approved substitution. Fit the launch point outside the hull and record reserves, simultaneous capacity and launch delays.
+6. **Hardpoints must be visible/targetable.** Add every weapon hardpoint to `HealthComponent.ShipUnits` and give each used `HardPointType` a `ShipData.hardPointHealth` entry — even when the source XML says `Is_Targetable=No` / `Is_Destroyable=No` (common in AOTR). Hull-only targeting needs explicit user approval.
+7. Use available fighter types only with an approved substitution. Fit the launch point outside the hull and record reserves, simultaneous capacity and launch delays.
 
 | Component | Explicit bindings to rebuild |
 | --- | --- |
@@ -196,6 +197,7 @@ bpy.ops.import_scene.fbx(
 | Reliance on automatic paint detection | Sparse red trim was missed; yellow hangar markings could be selected | Inspect source texture regions and explicitly choose livery materials/hue. |
 | Helper/LOD names taken at face value | Hidden helpers could enter icons/wrecks; real engine geometry could be removed | Inspect geometry and honor saved renderer state. |
 | Full gameplay prefab used for an isolated render | Uninjected component cleanup produced a `WeaponComponent.Release` error | Render a geometry-only clone with appropriate layers/camera/lights; do not add production null guards to accommodate a preview. |
+| Source `Is_Targetable=No` copied as hull-only targeting (Imperial Arquitens, 2026-10-06) | Empty `ShipUnits` + empty `hardPointHealth` → no hardpoints shown or targetable in battle | Always bind weapon hardpoints to `ShipUnits` with matching `hardPointHealth`; the build/verify scripts must assert `ShipUnits` count > 0. Ignore source targetability flags. |
 | A working conversion script mistaken for a generic importer | Hardcoded Rothana names/counts/root repair would fail or corrupt another model | Audit each source and adapt the script; keep model-specific repairs explicit. |
 
 ### Verification limits and work still requiring validation

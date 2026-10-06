@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: DevGroup
   m_EditorClassIdentifier: 
   m_GroupName: DevGroup
-  m_Data:
-    m_SerializedData: []
   m_GUID: 5ae4c999412c9384bad7ae32198fba68
   m_SerializeEntries:
   - m_GUID: 23702bc0e5303b740b61f1b451630b85

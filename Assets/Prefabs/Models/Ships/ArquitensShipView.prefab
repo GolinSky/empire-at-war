@@ -11299,7 +11299,7 @@ MonoBehaviour:
     <Min>k__BackingField: -150
     <Max>k__BackingField: 150
   prewarmEffects: 0
-  <WeaponType>k__BackingField: 12
+  <WeaponType>k__BackingField: 6
 --- !u!1 &4458211970139031957
 GameObject:
   m_ObjectHideFlags: 0
