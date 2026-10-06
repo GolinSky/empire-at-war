@@ -910,20 +910,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: TIEInterceptorSquadronView
-      value:
-        m_AssetGUID: 2c220f025d702824bb0ded6ab9bec89d
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: TIEInterceptorSquadronData
-      value:
-        m_AssetGUID: e7ef3854238c3b94fbc301ccdac48bc7
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: ImperialIAdvancedShipView
       value:
         m_AssetGUID: c5a735dafc563ad45b16c92aeabb3b3f
@@ -934,6 +920,20 @@ MonoBehaviour:
     - key: ImperialIAdvancedShipData
       value:
         m_AssetGUID: 0c379a49e2b12644b963e47657c852bf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEInterceptorSquadronView
+      value:
+        m_AssetGUID: 2c220f025d702824bb0ded6ab9bec89d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEInterceptorSquadronData
+      value:
+        m_AssetGUID: e7ef3854238c3b94fbc301ccdac48bc7
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

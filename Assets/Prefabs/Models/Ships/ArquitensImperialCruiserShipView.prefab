@@ -51,6 +51,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -50
     <Max>k__BackingField: 50
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 39
 --- !u!1 &650572403202896558
@@ -189,6 +190,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -40
     <Max>k__BackingField: 40
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
 --- !u!1 &1762934955629605546
@@ -242,6 +244,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -50
     <Max>k__BackingField: 50
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 39
 --- !u!1 &3799632698582763316
@@ -295,6 +298,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -50
     <Max>k__BackingField: 50
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 39
 --- !u!1 &4043774101225216996
@@ -348,6 +352,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -50
     <Max>k__BackingField: 50
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 39
 --- !u!1 &4589936472972889740
@@ -476,6 +481,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -40
     <Max>k__BackingField: 40
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
 --- !u!1 &5297953862614196520
@@ -529,6 +535,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -40
     <Max>k__BackingField: 40
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
 --- !u!1 &6353911283944597393
@@ -582,6 +589,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -40
     <Max>k__BackingField: 40
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 40
 --- !u!1 &6672146617763140784
@@ -701,6 +709,7 @@ MonoBehaviour:
   - {fileID: 4042117698216612762}
   - {fileID: 8055584973516621562}
   - {fileID: 334204217613937539}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2523818220999685703
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -891,7 +900,15 @@ MonoBehaviour:
   ionFieldBounds:
     m_Center: {x: 0, y: -0.00000047683716, z: 0}
     m_Extent: {x: 14.789577, y: 11.43013, z: 20}
-  <ShipUnits>k__BackingField: []
+  <ShipUnits>k__BackingField:
+  - {fileID: 2783443811713176429}
+  - {fileID: 7194578521420985120}
+  - {fileID: 1935549572148181831}
+  - {fileID: 1309351159191166759}
+  - {fileID: 2210682044465441629}
+  - {fileID: 3406233814493811603}
+  - {fileID: 3304444583058273618}
+  - {fileID: 7946665847653583100}
 --- !u!114 &4150898646505647277
 MonoBehaviour:
   m_ObjectHideFlags: 0

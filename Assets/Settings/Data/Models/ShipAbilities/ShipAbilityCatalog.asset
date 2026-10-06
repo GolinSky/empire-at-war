@@ -181,6 +181,21 @@ MonoBehaviour:
         aiUse: 1
         settings:
           rid: 6801466898397790291
+    - key: 21
+      value:
+        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
+        displayName: Boost Engine Power
+        description: Double speed, quadruple weapon delays and pause shield regeneration
+          for 20 s; 50 s recovery.
+        duration: 20
+        recoveryDelay: 50
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        settings:
+          rid: 6801466921437888596
     - key: 4
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
@@ -210,6 +225,37 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466898397790285
+    - key: 23
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Boost Weapon Power
+        description: Double fire rate for 20 s. Shield regeneration stops, speed
+          falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
+        duration: 20
+        recoveryDelay: 60
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        settings:
+          rid: 6801466921437888599
+    - key: 24
+      value:
+        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
+        displayName: Power to Main Batteries
+        description: Main-battery shot and reload delays are reduced to 33%. All
+          other weapons are disabled, shield regeneration stops and movement speed
+          is reduced to 25% for 20 s. 60 s recharge.
+        duration: 20
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 1
+        settings:
+          rid: 6801466921437888601
     - key: 5
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
@@ -338,8 +384,9 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Tractor Beam
         description: Restrict a targeted enemy corvette or frigate to 25% speed for
-          up to 20 s within 150 units. Ends when the beam hardpoint, caster or target is destroyed,
-          the caster is ion-disabled, or the target leaves range. 25 s recovery.
+          up to 20 s within 150 units. Ends when the beam hardpoint, caster or target
+          is destroyed, the caster is ion-disabled, or the target leaves range. 25
+          s recovery.
         duration: 20
         recoveryDelay: 25
         canCancel: 1
@@ -349,52 +396,6 @@ MonoBehaviour:
         aiUse: 2
         settings:
           rid: 6801466921437888597
-    - key: 21
-      value:
-        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        displayName: Boost Engine Power
-        description: Double speed, quadruple weapon delays and pause shield regeneration
-          for 20 s; 50 s recovery.
-        duration: 20
-        recoveryDelay: 50
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 1
-        settings:
-          rid: 6801466921437888596
-    - key: 23
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Boost Weapon Power
-        description: Double fire rate for 20 s. Shield regeneration stops, speed
-          falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        settings:
-          rid: 6801466921437888599
-    - key: 24
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Power to Main Batteries
-        description: Main-battery shot and reload delays are reduced to 33%. All
-          other weapons are disabled, shield regeneration stops and movement speed
-          is reduced to 25% for 20 s. 60 s recharge.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 1
-        settings:
-          rid: 6801466921437888601
   references:
     version: 2
     RefIds:
@@ -418,6 +419,7 @@ MonoBehaviour:
       data:
         projectile:
           weaponType: 6
+          displayName: 
           damageType: 4
           damage: 0
           shotsPerSalvo: 1
@@ -508,12 +510,80 @@ MonoBehaviour:
           speedMultiplier: 1.3
           shieldRegenMultiplier: 3
           damageTakenMultiplier: 1
+    - rid: 6801466921437888588
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 0.75
+          shieldRegenMultiplier: 1
+          damageTakenMultiplier: 1.5
     - rid: 6801466921437888590
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         projectileFireDelayMultiplier: 0.33
         otherFireDelayMultiplier: 3
+    - rid: 6801466921437888596
+      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 4
+          speedMultiplier: 2
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1
+    - rid: 6801466921437888597
+      type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        speedMultiplier: 0.25
+        targetClasses: 0200000003000000
+        beam:
+          weaponType: 12
+          displayName: Laser Beam
+          damageType: 7
+          damage: 150
+          shotsPerSalvo: 1
+          shotInterval: 0
+          reload: 15
+          range: 75
+          strikecraftOnly: 0
+          interceptable: 0
+          shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+            type: 3}
+          projectileSpeed: 0
+          color: {r: 0.2, g: 0.7, b: 1, a: 1}
+          size: {x: 0.4, y: 0.4, z: 1}
+    - rid: 6801466921437888599
+      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 0.5
+          speedMultiplier: 0.25
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1.5
+    - rid: 6801466921437888600
+      type: {class: CompositeBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        damage: 1000
+    - rid: 6801466921437888601
+      type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        fireDelayMultiplier: 0.33
+        statModifier:
+          damageMultiplier: 1
+          fireDelayMultiplier: 1
+          speedMultiplier: 0.25
+          shieldRegenMultiplier: 0
+          damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -582,71 +652,3 @@ MonoBehaviour:
           damageTakenMultiplier: 1
         commandRadius: 400
         targetDamageMultiplier: 1
-    - rid: 6801466921437888588
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.5
-          speedMultiplier: 0.75
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1.5
-    - rid: 6801466921437888597
-      type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        speedMultiplier: 0.25
-        targetClasses: 0200000003000000
-        beam:
-          weaponType: 12
-          displayName: Laser Beam
-          damageType: 7
-          damage: 150
-          shotsPerSalvo: 1
-          shotInterval: 0
-          reload: 15
-          range: 75
-          strikecraftOnly: 0
-          interceptable: 0
-          shotPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
-            type: 3}
-          projectileSpeed: 0
-          color: {r: 0.2, g: 0.7, b: 1, a: 1}
-          size: {x: 0.4, y: 0.4, z: 1}
-    - rid: 6801466921437888596
-      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 4
-          speedMultiplier: 2
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
-    - rid: 6801466921437888599
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.5
-          speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1.5
-    - rid: 6801466921437888601
-      type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        fireDelayMultiplier: 0.33
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 1
-          speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
-    - rid: 6801466921437888600
-      type: {class: CompositeBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        damage: 1000

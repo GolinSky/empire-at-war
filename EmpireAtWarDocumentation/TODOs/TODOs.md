@@ -10,18 +10,19 @@
   - **Status**: 2026-10-06 imported as Rebellion-only squadron `301`; six craft, 24 weapons, hull/shields/speed `30/30/30` per bomber, slow-charging anti-laser shields and existing Ion Shot. Own art/placement/icon/team colors, source hashes, geometry/UV/bones, saved references and import/compile checks passed. Republic BTL-B preserved; no automated tests or combat Play Mode started by this task.
   - **Remaining**: clean-skirmish acceptance; provisional economy/weapon/flight balance and source-difference review. Passive AOTR ion-stunner slowdown is not ported.
 
-- [ ] **Verify Victory II Advanced integration acceptance**
-  - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
-  - **Reference**: [[GameDesign/Victory II Advanced Import]]
-  - **Status**: 2026-10-06 AOTR Victory II Advanced imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
-  - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
-  - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
 
 - [ ] **Verify ArquitensImperialCruiser integration acceptance**
   - **Plan**: [[TODOs/Features/ArquitensAdvanced_Import|ArquitensImperialCruiser Import]]
   - **Reference**: [[GameDesign/ArquitensImperialCruiser Import]]
   - **Status**: 2026-10-06 AOTR Arquitens imported as Empire ship `204`; Republic-aligned hull/shields/speed `2,600/1,400/48`, regeneration `14/s`, cost/build/population/tech/cap `3,500/30 s/2/3/20`. Zero targets/eight weapons, four two-shot light long-range turbolasers + four two-shot laser cannons, Boost Weapon Power, no fighters. Saved tuning/tooltip/live readback passed; zero console errors. Own fitted shield/placement/wreck/icons/team colors, source hashes, geometry/UVs and prior import/compile/render checks verified. No automated Unity tests or Play Mode run by these tasks.
   - **Remaining**: clean-skirmish acceptance and remaining provisional balance/source-difference review.
+
+- [ ] **Verify Victory II Advanced integration acceptance**
+  - **Plan**: [[TODOs/Features/VictoryIIAdvanced_Import|Victory II Advanced Import]]
+  - **Reference**: [[GameDesign/Victory II Advanced Import]]
+  - **Status**: 2026-10-06 AOTR Victory II Advanced imported as Empire ship `203`; `12,000/10,000/20`, 10 targets/18 weapons, medium dual/single turbo-ions, six 3-burst turbolasers, six heavy lasers, Boost Weapon Power, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, saved bindings, source hashes, geometry/UVs and import/compile/render checks verified. No automated Unity tests or Play Mode run.
+  - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
+  - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
 
 - [ ] **Verify Victory I Advanced integration acceptance**
   - **Plan**: [[TODOs/Features/VictoryIAdvanced_Import|Victory I Advanced Import]]
