@@ -21,7 +21,8 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             _inputLockService.Dispose();
-            _provider.Dispose();
+            // GameInputActions.Dispose uses Object.Destroy, which Unity rejects in Edit Mode.
+            UnityEngine.Object.DestroyImmediate(_provider.Actions.asset);
         }
 
         [Test]
