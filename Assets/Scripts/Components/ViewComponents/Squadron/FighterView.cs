@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         public Transform Transform => transform;
         public bool IsDestroyed => _healthPercentage <= 0f;
         public WeaponHardPoint Gun => gun;
+
+        public bool TryGetWeaponType(out WeaponType weaponType) => gun.TryGetWeaponType(out weaponType);
 
         private void Awake()
         {

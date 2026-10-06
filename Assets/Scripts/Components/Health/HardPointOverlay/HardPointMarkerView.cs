@@ -54,7 +54,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         public void Show(Vector2 localPosition, HardPointMarkerData data)
         {
             _root.anchoredPosition = localPosition;
-            _root.localScale = Vector3.one * (data.IsHovered && !data.IsDestroyed ? HOVER_SCALE : 1f);
+            _root.localScale = Vector3.one * (data.Scale * (data.IsHovered && !data.IsDestroyed ? HOVER_SCALE : 1f));
 
             _halo.enabled = data.IsTargeted;
             _background.color = data.IsDestroyed ? DESTROYED_BACKGROUND_COLOR : BACKGROUND_COLOR;
