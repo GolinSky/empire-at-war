@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SceneInstaller_HasUnitOrderSettingsAssigned()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Prefabs/Installers/SceneContext.prefab");
+                "Assets/Prefabs/View/ZenjectContext/SceneContext.prefab");
             SkirmishMainInstaller installer =
                 prefab.GetComponentInChildren<SkirmishMainInstaller>(true);
             SerializedObject data = new SerializedObject(installer);
