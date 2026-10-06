@@ -251,6 +251,11 @@
 
 ### Features
 
+- [x] **Add Imperial II Star Destroyer**
+  - **Plan**: [[Done/Features/ImperialII_Import|Imperial II Import]]
+  - **Completed**: 2026-10-06; Empire ship `205`, exact requested stats/loadout, Power to Main Batteries, Tractor Beam, three fighter types, own art/shield/placement/wreck/icons. Commit `f17fcd22`.
+  - **Verification**: all 11 ship/ability tests passed; saved-ship checks 8/8 after naming fixes. Full EditMode 1,066/1,067; remaining failure is existing Victory II renderer bindings. Fixed Imperial II broadside arcs and all 99 team bindings; GUID dependencies and renders verified. No manual skirmish/Play Mode run.
+
 - [x] **Spawn blockers and relays (replace reinforcement-zone spawning)**
   - **Plan**: [[Done/Features/Spawn_Blockers_And_Relays|Spawn Blockers and Relays]]
   - **Completed**: 2026-10-05; vision service, spawn blockers, unified spawn rule (ships/squadrons/structures, player + AI), zones → capturable relays, spawn overlay, unified structure clearance, relay model.
