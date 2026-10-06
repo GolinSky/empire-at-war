@@ -400,10 +400,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Republic, ShipType.Arquitens, ShipType.Venator);
 
             try
             {
-                EnemyFactionModel factionModel = CreateFactionModel(FactionType.Republic);
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
                 SetBackingField(
                     reinforcementData,
                     nameof(ReinforcementData.MaxUnitCapacity),
@@ -463,6 +466,7 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
             }
         }
 
@@ -475,10 +479,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
 
             try
             {
-                EnemyFactionModel factionModel = CreateFactionModel(FactionType.Separatist);
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
                 factionModel.CurrentLevel = 5;
                 SetBackingField(
                     reinforcementData,
@@ -547,6 +553,7 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
             }
         }
 
@@ -595,11 +602,30 @@ namespace EmpireAtWar.Tests.Editor
             return UnitLimitKey.For<TRequest>(requestId);
         }
 
-        private static EnemyFactionModel CreateFactionModel(FactionType factionType)
+        /// <summary>
+        /// Copies the faction so tests may edit its data, keeping only the given ships so new
+        /// units or rebalanced stats in the live catalog do not change which ship wins.
+        /// </summary>
+        private static FactionDefinition CopyDefinition(FactionType factionType, params ShipType[] ships)
         {
-            FactionCatalog catalog = LoadSharedData<FactionCatalog>();
+            FactionDefinition definition =
+                UnityEngine.Object.Instantiate(LoadSharedData<FactionCatalog>().Get(factionType));
+            foreach (ShipType shipType in new List<ShipType>(definition.Ships.Keys))
+            {
+                if (Array.IndexOf(ships, shipType) < 0)
+                {
+                    definition.Ships.Remove(shipType);
+                }
+            }
+
+            Assert.That(definition.Ships.Count, Is.EqualTo(ships.Length));
+            return definition;
+        }
+
+        private static EnemyFactionModel CreateFactionModel(FactionDefinition definition)
+        {
             FactionRoster roster = new FactionRoster(
-                catalog.Get(factionType),
+                definition,
                 LoadSharedData<MiningFacilityCatalog>(),
                 LoadSharedData<DefendPlatformCatalog>(),
                 LoadSharedData<SuperWeaponCatalog>());
