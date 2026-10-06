@@ -23,6 +23,8 @@ created: 2026-10-05
 - Four meshes, `15184` triangles, fifteen bones; binary-verified identity Root restored. Source hashes unchanged; lossless texture conversion.
 - Own art/gameplay/wreck/placement/icons, source alpha team mask, four weapon/fog bindings and all registrations saved.
 - Cloak rejects enemy presentation/acquisition/cached pursuit and queued firing; friendly movement/vision retained. Already-fired impacts remain valid.
+- 2026-10-06 fix: friendly hull uses a translucent cloak material with shield surface suppressed; ending cloak restores normal rendering. Cancelable active abilities now show their countdown. Catalog remains `80 s` active / `10 s` recovery after decloaking.
+- Follow-up verification: Unity C# compilation, shader import, saved prefab bindings and visible/cloaked mesh previews pass. No automated tests or Play Mode run; runtime acceptance remains open.
 - Geometry/UV/hierarchy, saved references, ability catalog/audio, six matchup icons, dimensions, eight living/wreck palettes and current Unity compilation/import inspected.
 - Reports, packed blend/FBX/PNGs/scripts/previews/XML and full credits saved in sibling `ReV_Stealthship-Converted/`; Warbnull mesh/textures/rigging.
 - Provisional scale/movement/shared weapon profiles/generic Corvette armor/audio. Separate starbase-level gate and source shader effects unsupported; missing cloak scanline textures recorded.

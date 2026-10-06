@@ -64,7 +64,7 @@ namespace EmpireAtWar.Views
             activeHighlight.SetActive(active);
             targetingHighlight.SetActive(_waiting);
             button.interactable = interactable;
-            cooldownText.text = _waiting ? "TARGET" : !interactable && remaining > 0f
+            cooldownText.text = _waiting ? "TARGET" : (active || !interactable) && remaining > 0f
                 ? $"{Mathf.CeilToInt(remaining)}s" : "";
         }
 

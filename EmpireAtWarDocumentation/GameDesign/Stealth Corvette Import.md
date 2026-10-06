@@ -1,6 +1,6 @@
 ---
 type: reference
-updated: 2026-10-05
+updated: 2026-10-06
 tags:
   - alo
   - unity
@@ -31,7 +31,9 @@ tags:
 - `CombatModifiers.IsCloaked` owns state; `CloakAbility` starts/stops it through existing ability slots.
 - Enemy rendering/minimap/radar/selection/tooltips/hardpoint overlays/cinematic selection and audio reject cloaked entities.
 - Attack acquisition, queued shots, targeted abilities and cached attack/hunt/guard/attack-move pursuit reject cloaked targets.
-- Cloaked caster cannot emit weapons or start other abilities. Friendly rendering/selection, movement and vision remain active.
+- Cloaked caster cannot emit weapons or start other abilities. Friendly selection, movement and vision remain active.
+- Friendly `CloakView` swaps the hull to `ShipCloak.mat` while cloaked and suppresses its shield surface; cancellation/expiry restores the original hull material and shield rendering. Enemy cloak remains fully hidden by `FogVisibilityComponent`.
+- Ability button shows the active `80 s` countdown even though manual cancellation is available; decloaking starts the existing `10 s` recovery countdown and blocks reactivation.
 - Existing reinforcement vision, clearance and enemy spawn-blocker rules still apply. Cloak grants no blocker bypass or new deployment zone.
 - Already-fired projectiles/impacts remain valid; cloaking grants no invulnerability.
 - Uses existing Invulnerability on/off/loop audio as provisional shared sounds.
@@ -57,6 +59,7 @@ tags:
 - Hull alpha supplies linear team mask: `3.6116%` coverage. Living/wreck ownership and material opt-in verified; eight palettes rendered, blue/green inspected.
 - Model icon/silhouette `512 × 512`, transparent and uncropped. Saved prefab references have no missing scripts, broken references or donor-model dependencies.
 - Unity compilation/import checks pass. No automated tests or Play Mode run by this task.
+- 2026-10-06 cloak follow-up: active countdown display fixed; friendly translucent hull/shield suppression saved. Visible/cloaked mesh previews inspected; saved renderer/material references valid; shader and Console error checks clean. Runtime timing/transition acceptance remains pending.
 
 ## Files
 - Source: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_Stealthship.ALO`; XML `Data/XML/Units_Space_republic_stealthship.xml`.
