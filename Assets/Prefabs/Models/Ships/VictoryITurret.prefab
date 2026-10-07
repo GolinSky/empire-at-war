@@ -111,7 +111,10 @@ PrefabInstance:
       value: VictoryITurret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -7070721803073816107, guid: e74d8ae4e86a8cf498eb34adc443c653, type: 3}
+    - {fileID: 6641897830917908947, guid: e74d8ae4e86a8cf498eb34adc443c653, type: 3}
+    - {fileID: 1175839497434103669, guid: e74d8ae4e86a8cf498eb34adc443c653, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e74d8ae4e86a8cf498eb34adc443c653, type: 3}

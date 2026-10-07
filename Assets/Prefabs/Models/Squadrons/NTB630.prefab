@@ -136,7 +136,9 @@ PrefabInstance:
       value: NTB630
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -7569546675151391590, guid: a6ff2dfb70e17b94a8404ea94cb0e3ed, type: 3}
+    - {fileID: 6392167520120548268, guid: a6ff2dfb70e17b94a8404ea94cb0e3ed, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6ff2dfb70e17b94a8404ea94cb0e3ed, type: 3}

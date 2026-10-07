@@ -136,6 +136,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: -2.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2939005897837515536
@@ -5025,6 +5026,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: -2.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &3361755508151852012
@@ -5078,6 +5080,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 2.5
     <Max>k__BackingField: 177.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &4120071555235252919
@@ -5179,6 +5182,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 2.5
     <Max>k__BackingField: 177.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &4302232262642655224
@@ -5232,6 +5236,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 2.5
     <Max>k__BackingField: 177.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &4589936472972889740
@@ -5360,6 +5365,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: -2.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &6672146617763140784
@@ -5463,6 +5469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionHullRenderers:
   - {fileID: 6961975464528918034}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2523818220999685703
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5708,15 +5715,12 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 6896194605718455207}
   - {fileID: 8489420875774247814}
-  - {fileID: 8490440193101117170}
   - {fileID: 7858560799687166347}
   - {fileID: 1265654274761765823}
   - {fileID: 1383374339963853408}
   - {fileID: 1410625127299055654}
   - {fileID: 8853300369248761131}
   - {fileID: 6961975464528918034}
-  - {fileID: 2581631281445042351}
-  - {fileID: 8532990121494742641}
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0
@@ -5821,6 +5825,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 2.5
     <Max>k__BackingField: 177.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &8327578505235340560
@@ -7006,6 +7011,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: -2.5
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1001 &4386425740354528142
@@ -7094,12 +7100,6 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 4386425740354528142}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &2581631281445042351 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 2237300556415064865, guid: 55c072a6eba7e2a4595ef4a6939090b3,
-    type: 3}
-  m_PrefabInstance: {fileID: 4386425740354528142}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2958367985234399263 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1572190552848266129, guid: 55c072a6eba7e2a4595ef4a6939090b3,
@@ -7121,18 +7121,6 @@ MeshRenderer:
 --- !u!23 &8489420875774247814 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5264652674044354568, guid: 55c072a6eba7e2a4595ef4a6939090b3,
-    type: 3}
-  m_PrefabInstance: {fileID: 4386425740354528142}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &8490440193101117170 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5263490424500884860, guid: 55c072a6eba7e2a4595ef4a6939090b3,
-    type: 3}
-  m_PrefabInstance: {fileID: 4386425740354528142}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &8532990121494742641 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5383195418444867071, guid: 55c072a6eba7e2a4595ef4a6939090b3,
     type: 3}
   m_PrefabInstance: {fileID: 4386425740354528142}
   m_PrefabAsset: {fileID: 0}

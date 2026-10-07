@@ -62,6 +62,7 @@ MonoBehaviour:
   - {fileID: 5525852652887145061}
   - {fileID: 3234723212335688575}
   - {fileID: 5291559786120542932}
+  hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
   height: 0
 --- !u!54 &5151764846392136191
 Rigidbody:

@@ -138,7 +138,9 @@ PrefabInstance:
       value: TIEPunisher
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2588053062356841038, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
+    - {fileID: -8162085893872336320, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a699ab9efeb005b46a94354e1480a4f1, type: 3}

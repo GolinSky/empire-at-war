@@ -211,6 +211,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!1 &6672146617763140784
@@ -305,6 +306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionHullRenderers:
   - {fileID: 1707460180331269520}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2523818220999685703
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -532,7 +534,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
   - {fileID: 6896194605718455207}
-  - {fileID: 7604089925579439124}
   - {fileID: 1707460180331269520}
   - {fileID: 4815652974689818244}
 --- !u!1 &7290964567724939097
@@ -1796,12 +1797,6 @@ MeshRenderer:
 --- !u!4 &6790743602256544616 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7686519492462423558, guid: 9387325551ed6eb41886e53f450aa9a5,
-    type: 3}
-  m_PrefabInstance: {fileID: 3787968822914624878}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &7604089925579439124 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 6707749823641899386, guid: 9387325551ed6eb41886e53f450aa9a5,
     type: 3}
   m_PrefabInstance: {fileID: 3787968822914624878}
   m_PrefabAsset: {fileID: 0}

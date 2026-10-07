@@ -56,6 +56,7 @@ MonoBehaviour:
   - {fileID: 2489603796698706821}
   - {fileID: 3615539329079063176}
   - {fileID: 3863992597655426660}
+  hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
   height: 0
 --- !u!54 &9156282196956066779
 Rigidbody:
@@ -249,7 +250,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6649045570922580077, guid: 0e74611199e818d48b0e7170ac995fd9, type: 3}
+    - {fileID: 6392167520120548268, guid: 0e74611199e818d48b0e7170ac995fd9, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e74611199e818d48b0e7170ac995fd9, type: 3}

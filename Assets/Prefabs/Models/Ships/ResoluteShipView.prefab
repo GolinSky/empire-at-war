@@ -51,6 +51,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &861098173625411546
@@ -152,6 +153,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 5
 --- !u!1 &1727326892831686910
@@ -205,6 +207,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2615521506764816764
@@ -258,6 +261,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 0
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &2619613754469115323
@@ -311,6 +315,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 6
 --- !u!1 &2656964153920443378
@@ -364,6 +369,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 0
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &2699037020741952242
@@ -417,6 +423,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &3120446593140378204
@@ -1655,6 +1662,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 0
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 5
 --- !u!1 &4574325545387188949
@@ -1720,6 +1728,7 @@ MonoBehaviour:
   - {fileID: 8829334998840657617}
   - {fileID: 3287055625790918696}
   - {fileID: 4219457308137797065}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2291986679457826982
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1988,7 +1997,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
-  - {fileID: 2479174145472056677}
   - {fileID: 894173144697017}
   - {fileID: 2560708185626128992}
   - {fileID: 4380011697211920117}
@@ -1996,7 +2004,6 @@ MonoBehaviour:
   - {fileID: 7876247786634021971}
   - {fileID: 791313797275286069}
   - {fileID: 7392429566789766490}
-  - {fileID: 2938905004246071225}
   - {fileID: 8829334998840657617}
   - {fileID: 3287055625790918696}
   - {fileID: 4412919632217837861}
@@ -2053,6 +2060,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &5536197219724220943
@@ -2106,6 +2114,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &5537828835441202537
@@ -2159,6 +2168,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 0
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &5690948249856127476
@@ -2372,6 +2382,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 0
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &6432432908502852350
@@ -2473,6 +2484,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &6895317729169143809
@@ -2574,6 +2586,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &8489216724495598379
@@ -2658,6 +2671,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 9
 --- !u!1 &8869782192770501499
@@ -2767,6 +2781,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
   launchPoint: {fileID: 3264688620931303041}
   hangarHardPoint: {fileID: 2892213579736504004}
+  bayHardPoints: []
+  bayLaunchPoints: []
+  isDestroyable: 1
 --- !u!1001 &1545718542174955107
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2942,21 +2959,9 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 4184318111951537268}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &2479174145472056677 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1762707248656353553, guid: 9104ccc6e5edbea468363d66825ba390,
-    type: 3}
-  m_PrefabInstance: {fileID: 4184318111951537268}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &2560708185626128992 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1844463330030581268, guid: 9104ccc6e5edbea468363d66825ba390,
-    type: 3}
-  m_PrefabInstance: {fileID: 4184318111951537268}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &2938905004246071225 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1358039386724152269, guid: 9104ccc6e5edbea468363d66825ba390,
     type: 3}
   m_PrefabInstance: {fileID: 4184318111951537268}
   m_PrefabAsset: {fileID: 0}

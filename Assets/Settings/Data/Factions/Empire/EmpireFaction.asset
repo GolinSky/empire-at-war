@@ -30,7 +30,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Victory I Star Destroyer \u2014 Advanced Loadout"
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 5000
+        <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9,
@@ -52,7 +52,7 @@ MonoBehaviour:
         <Name>k__BackingField: ISD I
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 8500
+        <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: b8f66d736a9c0a841b8957320119ca55,
@@ -72,7 +72,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Victory II Star Destroyer \u2014 Advanced Loadout"
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 13750
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 50
         <UnitCapacity>k__BackingField: 7
         <Icon>k__BackingField: {fileID: 21300000, guid: 73509b3f4bebe5542ba69d62230fff68,
@@ -112,8 +112,8 @@ MonoBehaviour:
         <Name>k__BackingField: ISD III
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 26000
-        <BuildTime>k__BackingField: 60
+        <Price>k__BackingField: 7000
+        <BuildTime>k__BackingField: 50
         <UnitCapacity>k__BackingField: 9
         <Icon>k__BackingField: {fileID: 21300000, guid: dcd7ea16edf5bfd4ca9c2f1c95c1fda4,
           type: 3}
@@ -134,8 +134,8 @@ MonoBehaviour:
         <Name>k__BackingField: ISD II
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 25000
-        <BuildTime>k__BackingField: 55
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
           type: 3}
@@ -155,8 +155,8 @@ MonoBehaviour:
         <Name>k__BackingField: Executor Star Dreadnought
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 125000
-        <BuildTime>k__BackingField: 2500
+        <Price>k__BackingField: 15000
+        <BuildTime>k__BackingField: 120
         <UnitCapacity>k__BackingField: 40
         <Icon>k__BackingField: {fileID: 21300000, guid: ebec4f97ee2c2454883747a62531d2c9,
           type: 3}
@@ -175,7 +175,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 2800
-        <BuildTime>k__BackingField: 56
+        <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 19c7fd1609d6359439e7fb94cbbc0065,
           type: 3}
@@ -194,8 +194,8 @@ MonoBehaviour:
         <Name>k__BackingField: AcclamatorAssault
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4300
-        <BuildTime>k__BackingField: 86
+        <Price>k__BackingField: 2500
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: f0344b89ac6897448a6494a4e3c4353e,
           type: 3}
@@ -215,8 +215,8 @@ MonoBehaviour:
         <Name>k__BackingField: Tector Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 25000
-        <BuildTime>k__BackingField: 500
+        <Price>k__BackingField: 8000
+        <BuildTime>k__BackingField: 70
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
           type: 3}

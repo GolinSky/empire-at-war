@@ -51,6 +51,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 20
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 10
 --- !u!1 &844635347370688786
@@ -161,6 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionHullRenderers:
   - {fileID: 3070764655531412209}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &4990550169039385743
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -376,7 +378,6 @@ MonoBehaviour:
   renderers:
   - {fileID: 6315336776095066647}
   - {fileID: 3070764655531412209}
-  - {fileID: 3468393307539088419}
   - {fileID: 6979462370778246112}
   - {fileID: 1065510478952695979}
   - {fileID: 6147472739154961277}
@@ -408,7 +409,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
   - {fileID: 3070764655531412209}
-  - {fileID: 3468393307539088419}
   - {fileID: 1055661806489196083}
 --- !u!1 &1758038123369621645
 GameObject:
@@ -5297,6 +5297,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 20
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2555742839084269029
@@ -5350,6 +5351,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: -20
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2658406548458037585
@@ -6631,6 +6633,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 20
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &4853151127803243110
@@ -6684,6 +6687,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 20
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 13
 --- !u!1 &4944346292934446087
@@ -11573,6 +11577,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: -20
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &5084208675793561418
@@ -16547,6 +16552,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: 20
     <Max>k__BackingField: 160
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 1
 --- !u!1 &6392916215814024927
@@ -16675,6 +16681,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -160
     <Max>k__BackingField: -20
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &7279719978521675581
@@ -21513,96 +21520,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
---- !u!1 &8950960910452186441
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5782763165946314092}
-  - component: {fileID: 4316940105562802822}
-  - component: {fileID: 3468393307539088419}
-  m_Layer: 0
-  m_Name: Shields
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5782763165946314092
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8950960910452186441}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7065482315311103787}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4316940105562802822
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8950960910452186441}
-  m_Mesh: {fileID: 4300000, guid: 7f7488fe8f2169a46a7cac6bb22d4740, type: 2}
---- !u!23 &3468393307539088419
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8950960910452186441}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: e8a89786737f96344932ad5bf02e90b2, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &5957920429368236824
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21769,10 +21686,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2095151056375631729}
-    - targetCorrespondingSourceObject: {fileID: -5718608718130224077, guid: bf7a8fa108400824bb3f02f05b94d38a,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5782763165946314092}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf7a8fa108400824bb3f02f05b94d38a, type: 3}
 --- !u!23 &3070764655531412209 stripped
@@ -21784,12 +21697,6 @@ MeshRenderer:
 --- !u!4 &6135152206211726579 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: bf7a8fa108400824bb3f02f05b94d38a,
-    type: 3}
-  m_PrefabInstance: {fileID: 5957920429368236824}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &7065482315311103787 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -5718608718130224077, guid: bf7a8fa108400824bb3f02f05b94d38a,
     type: 3}
   m_PrefabInstance: {fileID: 5957920429368236824}
   m_PrefabAsset: {fileID: 0}
