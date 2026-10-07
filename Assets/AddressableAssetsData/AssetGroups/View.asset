@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5abd78ead6c104d4193f2e5fe839d045
+    m_Address: EmpireSpaceStationView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5e8ee1d9c89afe243bbfdf230a0185c1
     m_Address: MandatorShipView
     m_ReadOnly: 0

@@ -7,6 +7,7 @@ tags:
   - alo
   - space-stations
   - rebellion
+  - empire
 ---
 # Space Station Model Import
 
@@ -145,6 +146,28 @@ tags:
 - Compilation passed. No station import/serialization errors were found after saving.
 - Broader `TeamColorViewPrefabTests` encountered an unrelated existing `AcclamatorAssaultShipView.prefab` renderer-list mismatch (31 expected, 29 bound); that ship was not changed by this task.
 - Tests invoke the station's real level handler, including initial levels 1/5, repeated upgrades, world-space attachments, faction mapping, health forwarding and shield impacts. No full battle playthrough was performed.
+
+### Imperial Stations — 2026-10-07
+
+- Empire only: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView` → `Assets/Prefabs/Models/Stations/EmpireSpaceStationView.prefab`; existing Addressables `View` group.
+- Level mapping: `StationLevelView.levelModels` on `EmpireSpaceStationView.prefab`; elements `0..4` map to levels `1..5`.
+- Distinct originals: `EB_STATION_01.ALO` → `EmpireSpaceStationLevel1.prefab`, through `EB_STATION_05.ALO` → `EmpireSpaceStationLevel5.prefab`. All prefabs: `Assets/Prefabs/Models/Stations/`.
+- FBXs: `Assets/Art/Models/SpaceStations/EmpireSpaceStation/LevelN/EmpireSpaceStationLevelN.fbx`; separate artwork in `Attachments/`.
+- Material/texture folders: `Assets/Art/{Materials,Textures}/Models/SpaceStations/EmpireSpaceStation/`. Actual references: `EB_Station`, `EB_Station_bump`, `EB_stationlights`, `W_blast00`; all four were present.
+- XML attachment mapping: **18 unique ALOs**, **5 / 8 / 11 / 14 / 18** pieces at levels 1–5. Reconstruct placements from original bone matrices.
+- Source bone counts: **63 / 87 / 110 / 134 / 162**. Base hull triangles: **2405 / 2901 / 3741 / 4679 / 8201**, plus lights, damage and attached artwork.
+- Chosen scale: FBX `0.02`, common nested scale `9.116956`, unit gameplay/visual roots. Level 5 base diameter `299.3029` units; attachment-inclusive diameter `302.8595` units.
+- Preserve source UVs; do not apply the Rebel dome repair. Hull: `EmpireAtWar/Ship Lit`, direct alpha team mask, green-flipped normal, existing additive light convention. Mask coverage **0.640869%**; `_TeamRimStrength=0` keeps gray panels unchanged and recolors authored stripes.
+- Team-color correction: the default rim strength `0.6` caused the broad tint; GPU mask red mean matched source alpha correctly. Isolated mask/rim renders confirmed the cause. All **40 owned renders** change only **0.468–4.200%** of visible pixels versus unowned references (channel delta >4/255); retain at least **95.8%** unchanged. Existing-import fix: `Tools/Blender/EmpireSpaceStation/FixEmpireStationTeamColors.cs`; builder preserves the setting.
+- Imperial gameplay anchors use `CM`; shield remains `HP01_SHG_Bone` at every level; level 5 retains `FP02_TBL_00`. Preserve the existing 17 hardpoint profiles/unlock levels. Launch exit: `8` units below each collider.
+- All **23 FBXs** pass original-binary geometry/UV/bone comparisons. Maximum raw Unity vertex/bone displacement: **0.000006174 / 0.000005185 units**; UV delta **0.000034060**, below **0.018 pixels** at 512px.
+- Four staged PNGs match decoded DDS pixels exactly; original ALO/DDS hashes unchanged. Six saved prefabs reload without missing scripts or broken references.
+- Mapping checks exercise levels `1/5/2/3/4/5/1`: distinct sources, one active model, collider/attachment updates, shield data, fog/team renderer bindings and Empire-only routing.
+- Shared combat/upgrade data and other faction prefab/routing references remain unchanged. Existing Empire wreck configuration remains unchanged.
+- All five levels rendered in eight palettes; inspected each level and contrasting blue/green ownership. No new import/serialization errors after saving. Unity tests and a full battle were not run.
+- Limitations: ALAMO simplifies shadow/collision helpers; retain them in source FBXs and exclude them from source-topology equality assertions. Static attachment artwork; no ALA, damaged/wreck models, animated destruction shaders/lights or proxy particles converted.
+- Rebuild: `Tools/Blender/EmpireSpaceStation/README.md`; adapter reuses the established Rebel binary reader/converter/builders with Imperial-specific inputs. Isolated Blender MCP port `9886`; safe mode enabled.
+- Reports, editable packed blends and previews: `Temp/EmpireStationImport/`; see `VerifiedSourceGeometry.json`, `VerifiedMapping.json` and `Previews/LevelNTeam0..7.png`.
 
 ## Important Values
 
