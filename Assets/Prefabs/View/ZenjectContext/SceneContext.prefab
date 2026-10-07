@@ -452,7 +452,6 @@ MonoBehaviour:
     type: 3}
   fieldVolumePrefab: {fileID: 5619553855839390232, guid: 5af77b7930af4364d87f6f5f18dfc96d,
     type: 3}
-  fieldVolumeHeight: 80
   largeRockPrefab: {fileID: 2467161084561664123, guid: ade65fec19a5ebe498e05e93e877a914,
     type: 3}
   mediumRockPrefab: {fileID: 6435219502882593906, guid: 00537eec4918f6d4f99ff1e8efb27a17,

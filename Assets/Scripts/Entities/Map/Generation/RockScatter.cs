@@ -36,8 +36,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 RockLayerSettings layer = _settings.GetRockLayer(size);
                 Vector3 position = grid.GetCenter(cells[random.Next(cells.Count)]) + new Vector3(
                     (Next(random) - 0.5f) * grid.CellSize,
-                    (Next(random) * 2f - 1f) * layer.HeightJitter,
+                    0f,
                     (Next(random) - 0.5f) * grid.CellSize);
+                // Depth rocks show the field's real height band; the rest keep to the battle plane.
+                position.y = Next(random) < layer.DepthShare
+                    ? Mathf.Lerp(_settings.FieldFloor, _settings.FieldCeiling, Next(random))
+                    : (Next(random) * 2f - 1f) * layer.HeightJitter;
                 Vector3 rotation = layer.IsTumbled
                     ? new Vector3(Next(random) * 360f, Next(random) * 360f, Next(random) * 360f)
                     : new Vector3((Next(random) * 2f - 1f) * UPRIGHT_TILT, Next(random) * 360f,
