@@ -1,3 +1,4 @@
+using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
@@ -16,15 +17,21 @@ namespace EmpireAtWar.Services.Player
 
         void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner);
 
+        void RegisterEconomy(PlayerId owner, IEconomyProvider economy);
+
         void UnregisterSiteBuilder(PlayerId owner);
 
         void UnregisterAiReinforcement(PlayerId owner);
 
         void UnregisterStationSpawner(PlayerId owner);
 
+        void UnregisterEconomy(PlayerId owner);
+
         ISiteFacilityBuilder GetSiteBuilder(PlayerId owner);
 
         IStationSpawner GetStationSpawner(PlayerId owner);
+
+        IEconomyProvider GetEconomy(PlayerId owner);
 
         /// <summary>Only AI players queue builds that still arrive after their station died; humans never do.</summary>
         bool HasPendingReinforcement(PlayerId owner);
