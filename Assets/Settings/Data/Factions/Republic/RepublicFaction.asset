@@ -124,7 +124,7 @@ MonoBehaviour:
         isHero: 1
         <Name>k__BackingField: "Resolute \u2014 Admiral Yularen"
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 6000
         <BuildTime>k__BackingField: 55
         <UnitCapacity>k__BackingField: 3
@@ -142,8 +142,8 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Pride of the Core
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 70000
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 110
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
@@ -161,7 +161,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Imperator-class Star Destroyer
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 8000
         <BuildTime>k__BackingField: 90
         <UnitCapacity>k__BackingField: 4
@@ -179,7 +179,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: IPV-2C Stealth Corvette
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2150
         <BuildTime>k__BackingField: 18
         <UnitCapacity>k__BackingField: 2
@@ -198,7 +198,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Victory-class Star Destroyer
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 3

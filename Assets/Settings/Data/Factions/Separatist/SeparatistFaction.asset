@@ -25,7 +25,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Providence
         <MaxCount>k__BackingField: 20
-        <AvailableLevel>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 6000
         <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 5
@@ -40,7 +40,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Recusant
         <MaxCount>k__BackingField: 30
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 29
         <UnitCapacity>k__BackingField: 4
@@ -56,7 +56,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Munificent
         <MaxCount>k__BackingField: 40
-        <AvailableLevel>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3200
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 3
@@ -71,7 +71,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Lucrehulk
         <MaxCount>k__BackingField: 40
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 8000
         <BuildTime>k__BackingField: 90
         <UnitCapacity>k__BackingField: 5
@@ -158,7 +158,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Dispatcher-class Frigate
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 3400
         <BuildTime>k__BackingField: 33
         <UnitCapacity>k__BackingField: 3

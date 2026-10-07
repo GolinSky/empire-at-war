@@ -67,7 +67,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
@@ -128,7 +128,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: MC80 Independence
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 7000
         <BuildTime>k__BackingField: 68
         <UnitCapacity>k__BackingField: 14
