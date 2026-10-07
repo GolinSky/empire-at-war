@@ -21,8 +21,6 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private CaptureSiteView battleSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
-        [SerializeField, Min(1f), Tooltip("Height of a field volume. Ships whose hull lies wholly below or above it pass the field.")]
-        private float fieldVolumeHeight = 80f;
         [SerializeField] private GameObject largeRockPrefab;
         [SerializeField] private GameObject mediumRockPrefab;
         [SerializeField] private GameObject[] debrisRockPrefabs;
@@ -79,11 +77,15 @@ namespace EmpireAtWar.Entities.Map
                 AsteroidField field = layout.Fields[i];
                 Transform root = new GameObject($"AsteroidField_{i}").transform;
                 root.SetParent(fieldRoot, false);
+                // Ships whose hull lies wholly below the field floor pass beneath it.
+                float volumeCenterY = (field.Floor + field.Ceiling) * 0.5f;
+                float volumeHeight = field.Ceiling - field.Floor;
                 foreach (FieldVolume volume in field.Volumes)
                 {
-                    MapObstacle obstacle = Instantiate(fieldVolumePrefab, volume.Center, Quaternion.identity, root);
+                    Vector3 center = new Vector3(volume.Center.x, volumeCenterY, volume.Center.z);
+                    MapObstacle obstacle = Instantiate(fieldVolumePrefab, center, Quaternion.identity, root);
                     obstacle.transform.localScale = new Vector3(volume.Radius * 2f,
-                        fieldVolumeHeight / FIELD_VOLUME_MESH_HEIGHT, volume.Radius * 2f);
+                        volumeHeight / FIELD_VOLUME_MESH_HEIGHT, volume.Radius * 2f);
                     _obstacles.Add(obstacle);
                 }
 

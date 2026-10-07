@@ -16,6 +16,11 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField, Tooltip("Visual rock layers; shares are relative weights of the rock count.")]
         private DictionaryWrapper<AsteroidSize, RockLayerSettings> rockLayers;
 
+        [field: SerializeField, Tooltip("World height of an asteroid field's underside. Sits above the hulls of the " +
+                                        "Deep and Lowest ship tiers, so only those pass beneath a field.")]
+        public float FieldFloor { get; private set; } = -150f;
+        [field: SerializeField, Tooltip("World height of an asteroid field's top. Sits above every ship hull.")]
+        public float FieldCeiling { get; private set; } = 110f;
         [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
         public float StationEdgeDistance { get; private set; } = 125f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;

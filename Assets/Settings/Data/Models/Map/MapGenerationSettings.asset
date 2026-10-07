@@ -113,6 +113,7 @@ MonoBehaviour:
           <Min>k__BackingField: 1.5
           <Max>k__BackingField: 3.5
         <HeightJitter>k__BackingField: 2
+        <DepthShare>k__BackingField: 0.25
         <IsTumbled>k__BackingField: 0
     - key: 1
       value:
@@ -121,6 +122,7 @@ MonoBehaviour:
           <Min>k__BackingField: 0.5
           <Max>k__BackingField: 1.2
         <HeightJitter>k__BackingField: 6
+        <DepthShare>k__BackingField: 0.4
         <IsTumbled>k__BackingField: 1
     - key: 2
       value:
@@ -129,7 +131,10 @@ MonoBehaviour:
           <Min>k__BackingField: 0.8
           <Max>k__BackingField: 2.5
         <HeightJitter>k__BackingField: 12
+        <DepthShare>k__BackingField: 0.4
         <IsTumbled>k__BackingField: 1
+  <FieldFloor>k__BackingField: -150
+  <FieldCeiling>k__BackingField: 110
   <StationEdgeDistance>k__BackingField: 150
   <StationHeight>k__BackingField: -40
   <ZoneClearance>k__BackingField: 20

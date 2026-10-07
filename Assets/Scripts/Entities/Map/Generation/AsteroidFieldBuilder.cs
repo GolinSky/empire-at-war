@@ -56,7 +56,9 @@ namespace EmpireAtWar.Entities.Map.Generation
 
                 fields.Add(new AsteroidField(
                     FieldVolumeCover.Cover(grid, cells, edgeDistances),
-                    _rockScatter.Scatter(grid, cells, size.RockDensity, random)));
+                    _rockScatter.Scatter(grid, cells, size.RockDensity, random),
+                    _settings.FieldFloor,
+                    _settings.FieldCeiling));
             }
 
             return fields;
