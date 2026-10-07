@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
         private ITooltipService _tooltipService;
+        private IUiService _uiService;
         private INotifier<BattleMap> _battleMap;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
@@ -58,11 +59,13 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             ITooltipService tooltipService,
+            IUiService uiService,
             INotifier<BattleMap> battleMap,
             CaptureSiteData data)
         {
             _battleMap = battleMap;
             _tooltipService = tooltipService;
+            _uiService = uiService;
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
@@ -81,7 +84,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             _canPlayerAfford = price => GetBuilder(_localPlayer.Id).CanAfford(price);
             _gestures.WorldPressed += HandleWorldPressed;
-            _gestures.WorldCommanded += HandleWorldCommanded;
+            _gestures.WorldCommanded += HandleWorldPressed;
             _battleMap.AddObserver(this);
         }
 
@@ -90,6 +93,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _siteViews = battleMap.SiteViews;
             foreach (CaptureSiteView view in _siteViews)
             {
+                view.InitializeBuildUi(_uiService.DynamicCanvasTransform);
                 CaptureSiteModel model = new CaptureSiteModel(
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster);
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
@@ -103,7 +107,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             _battleMap.RemoveObserver(this);
             _gestures.WorldPressed -= HandleWorldPressed;
-            _gestures.WorldCommanded -= HandleWorldCommanded;
+            _gestures.WorldCommanded -= HandleWorldPressed;
             _cancelRouter.Unfocus(this);
             foreach (CaptureSitePresenter site in _sites)
             {
@@ -260,22 +264,16 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        // A world left-click drops the selection; a right-click picks a site.
         private void HandleWorldPressed(Vector2 screenPosition)
         {
             ClearSelection();
-        }
-
-        private void HandleWorldCommanded(Vector2 screenPosition)
-        {
             foreach (CaptureSitePresenter site in _sites)
             {
                 if (site.CanPlayerBuild &&
                     site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
                 {
-                    ClearSelection();
                     _selectedSite = site;
-                    site.SetSelected(true);
+                    site.Select(screenPosition);
                     _cancelRouter.Focus(this);
                     return;
                 }
@@ -289,7 +287,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 return;
             }
 
-            _selectedSite.SetSelected(false);
+            _selectedSite.Deselect();
             _selectedSite = null;
             _cancelRouter.Unfocus(this);
         }

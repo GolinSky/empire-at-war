@@ -86,7 +86,7 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 1. Read the plan, its research companion, and its backlog entry before implementation. Verify recorded progress against live source; vault snapshots and checked boxes alone do not prove completion.
 2. When creating or touching a plan, categorize it and place it in the matching active or completed folder. Use frontmatter `category` matching the folder and `status`: `todo`, `in-progress`, `blocked`, or `done`; preserve unrelated metadata.
 3. During work, check off completed steps and record remaining work, blockers, and relevant verification evidence. Keep partially completed or unverified plans active; do not mark an entire plan done because one phase is finished.
-4. Mark a plan `done` only when all agreed scope is complete and applicable verification is satisfied. Record `completed` as `YYYY-MM-DD` using the user's local date, plus a concise outcome and verification result. Follow the existing prohibition on automated tests unless explicitly requested; never claim unrun tests passed.
+4. Mark a plan `done` only when all agreed scope is complete and applicable verification is satisfied. Record `completed` as `YYYY-MM-DD` using the user's local date, plus a concise outcome and verification result. Never claim unrun tests passed.
 5. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
 6. Search for links to moved paths and repair affected backlog, dashboard, and note links; do not assume a move rewrites links automatically. Read back the moved notes and index, confirm the old paths are absent, and verify affected links resolve.
 
@@ -204,11 +204,11 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 ## Unity Test Safety
 
-These rules apply only when the user explicitly requests automated test execution.
+These rules apply whenever agents run Unity tests.
 
 1. Run `unity command list_open_scenes --json` or `unity command assert_test_ready --json` before any Unity test command.
 2. Inspect every open scene. Continue only when all scenes have `isDirty=false`.
-3. If a dirty scene has a non-empty asset path, save it with `save_scene` without asking (a test-run request permits this), then inspect again.
+3. If a dirty scene has a non-empty asset path, save it with `save_scene` without asking (running tests permits this), then inspect again.
 4. If a dirty scene has an empty path or is untitled, stop with `BLOCKED_DIRTY_UNTITLED_SCENE`.
 5. Never call `run_tests`, `open_scene`, `save_all`, enter Play Mode, or close/reload scenes while scene state is unknown or dirty.
 6. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
@@ -244,7 +244,3 @@ After any Unity asset mutation, verify that Unity imported the change, the asset
 - For scene objects, use JSON such as `--target '{"hierarchyPath":"/Player/Visual"}'`.
 - Before using an unfamiliar Unity Pipeline command, inspect its registered schema with `unity command`. Do not guess parameter names or syntax.
 - If an error contains a malformed resolved path such as `Assets/controller=Assets/...`, stop and correct argument serialization. Do not search for another asset, rename it, reimport it, or modify the project.
-
-## Tooling & Execution Constraints
-
-- **No Automated Test Execution:** Do NOT run tests (unit tests, automated test runners, etc.) unless the user explicitly requests it.
