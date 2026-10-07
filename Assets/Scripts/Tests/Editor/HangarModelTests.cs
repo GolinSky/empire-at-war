@@ -68,6 +68,42 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.IsOperational, Is.False);
         }
 
+        [Test]
+        public void DisableBay_StopsOnlyItsLaunches()
+        {
+            var model = new HangarModel(new TestHangarData(
+                new HangarBay(SquadronType.XWing, 3, 1),
+                new HangarBay(SquadronType.YWing, 3, 1),
+                new HangarBay(SquadronType.AWing, 3, 1)));
+
+            model.DisableBay(0);
+            Assert.That(model.TryLaunch(INITIAL_DELAY, out int bay), Is.True);
+            Assert.That(bay, Is.EqualTo(1));
+            Assert.That(model.GetReserve(0), Is.EqualTo(3));
+            model.DisableBay(1);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out bay), Is.True);
+            Assert.That(bay, Is.EqualTo(2));
+            Assert.That(model.IsOperational, Is.True);
+        }
+
+        [Test]
+        public void DisableBay_AllDestroyedStopsLaunchingAndReplacement()
+        {
+            var model = new HangarModel(new TestHangarData(
+                new HangarBay(SquadronType.XWing, 3, 1),
+                new HangarBay(SquadronType.YWing, 3, 1)));
+            model.TryLaunch(INITIAL_DELAY, out _);
+
+            model.DisableBay(0);
+            model.DisableBay(1);
+            model.SquadronLost(0);
+
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
+            Assert.That(model.IsOperational, Is.False);
+            Assert.That(model.GetReserve(0), Is.EqualTo(2));
+            Assert.That(model.GetReserve(1), Is.EqualTo(3));
+        }
+
         private static HangarModel CreateModel(int reserve, int maxActive) =>
             new HangarModel(new TestHangarData(new HangarBay(SquadronType.Delta7, reserve, maxActive)));
 

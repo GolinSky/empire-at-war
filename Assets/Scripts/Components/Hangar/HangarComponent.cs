@@ -22,10 +22,13 @@ namespace EmpireAtWar.Components.Hangar
     {
         private IHangarData _data;
         private IHealthModelObserver _health;
-        private IHardPointModel _hangarUnit;
+        private readonly List<(IHardPointModel Unit, Action Handler)> _hangarUnits =
+            new List<(IHardPointModel Unit, Action Handler)>();
 
         [SerializeField] private Transform launchPoint;
         [SerializeField] private HardPoint hangarHardPoint;
+        [SerializeField] private HardPoint[] bayHardPoints = Array.Empty<HardPoint>();
+        [SerializeField] private Transform[] bayLaunchPoints = Array.Empty<Transform>();
         [SerializeField] private bool isDestroyable = true;
         private readonly List<(ISquadron Squadron, Action Handler)> _launched =
             new List<(ISquadron Squadron, Action Handler)>();
@@ -50,25 +53,36 @@ namespace EmpireAtWar.Components.Hangar
 
         public void Initialize()
         {
+            if (bayLaunchPoints.Length != 0 && bayLaunchPoints.Length != Model.BayCount)
+            {
+                throw new InvalidOperationException($"{name}: launch points must match the bay count.");
+            }
             if (!isDestroyable)
             {
                 return;
             }
-
-            foreach (IHardPointModel unit in _health.GetShipUnits(HardPointType.Any))
+            if (bayHardPoints.Length != 0 && bayHardPoints.Length != Model.BayCount)
             {
-                if (unit.Transform == hangarHardPoint.transform)
+                throw new InvalidOperationException($"{name}: hangar hardpoints must match the bay count.");
+            }
+
+            bool hasLaunchHangar = false;
+            foreach (IHardPointModel unit in _health.GetShipUnits(HardPointType.Hangar))
+            {
+                hasLaunchHangar |= unit.Transform == hangarHardPoint.transform;
+                int bay = Array.FindIndex(bayHardPoints, point => point.transform == unit.Transform);
+                if (bayHardPoints.Length != 0 && bay < 0)
                 {
-                    _hangarUnit = unit;
+                    continue;
                 }
+                Action handler = bayHardPoints.Length == 0 ? OnHangarDestroyed : () => Model.DisableBay(bay);
+                unit.OnDestroyed += handler;
+                _hangarUnits.Add((unit, handler));
             }
-
-            if (_hangarUnit == null)
+            if (!hasLaunchHangar || (bayHardPoints.Length != 0 && _hangarUnits.Count != Model.BayCount))
             {
-                throw new InvalidOperationException($"{name}: hangar hardpoint is not one of the health hardpoints.");
+                throw new InvalidOperationException($"{name}: hangar hardpoints must belong to the health hardpoints.");
             }
-
-            _hangarUnit.OnDestroyed += Model.Shutdown;
         }
 
         public void LateDispose() => Release();
@@ -96,7 +110,11 @@ namespace EmpireAtWar.Components.Hangar
             _isReleased = true;
             if (isDestroyable)
             {
-                _hangarUnit.OnDestroyed -= Model.Shutdown;
+                foreach ((IHardPointModel unit, Action handler) in _hangarUnits)
+                {
+                    unit.OnDestroyed -= handler;
+                }
+                _hangarUnits.Clear();
             }
             Model.Shutdown();
             foreach ((ISquadron squadron, Action handler) in _launched)
@@ -107,17 +125,32 @@ namespace EmpireAtWar.Components.Hangar
             _launched.Clear();
         }
 
-        public ISquadron Launch(SquadronType squadronType)
+        public ISquadron Launch(SquadronType squadronType) => Launch(squadronType, launchPoint);
+
+        private ISquadron Launch(SquadronType squadronType, Transform point)
         {
             ISquadron squadron = _squadronFactory.Create(_owner, squadronType,
-                launchPoint.position, launchPoint.rotation);
+                point.position, point.rotation);
             squadron.Guard(_carrier.Value, Vector3.zero);
             return squadron;
         }
 
+        private void OnHangarDestroyed()
+        {
+            foreach ((IHardPointModel unit, Action handler) in _hangarUnits)
+            {
+                if (!unit.IsDestroyed)
+                {
+                    return;
+                }
+            }
+            Model.Shutdown();
+        }
+
         private void LaunchFromBay(int bay)
         {
-            ISquadron squadron = Launch(_data.HangarBays[bay].SquadronType);
+            Transform point = bayLaunchPoints.Length == 0 ? launchPoint : bayLaunchPoints[bay];
+            ISquadron squadron = Launch(_data.HangarBays[bay].SquadronType, point);
             Action handler = null;
             handler = () =>
             {

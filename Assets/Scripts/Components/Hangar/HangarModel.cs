@@ -13,6 +13,7 @@ namespace EmpireAtWar.Components.Hangar
 
         private readonly int[] _reserve;
         private readonly int[] _active;
+        private readonly bool[] _disabled;
 
         private float _cooldown;
 
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Components.Hangar
             _data = data;
             _reserve = new int[data.HangarBays.Count];
             _active = new int[data.HangarBays.Count];
+            _disabled = new bool[data.HangarBays.Count];
             for (int i = 0; i < _reserve.Length; i++)
             {
                 _reserve[i] = data.HangarBays[i].Reserve;
@@ -52,7 +54,7 @@ namespace EmpireAtWar.Components.Hangar
 
             for (int i = 0; i < _reserve.Length; i++)
             {
-                if (_reserve[i] <= 0 || _active[i] >= _data.HangarBays[i].MaxActive)
+                if (_disabled[i] || _reserve[i] <= 0 || _active[i] >= _data.HangarBays[i].MaxActive)
                 {
                     continue;
                 }
@@ -71,6 +73,20 @@ namespace EmpireAtWar.Components.Hangar
         {
             _active[bay] = Math.Max(0, _active[bay] - 1);
             _cooldown = Math.Max(_cooldown, _data.HangarLaunchInterval);
+        }
+
+        public void DisableBay(int bay)
+        {
+            _disabled[bay] = true;
+            foreach (bool disabled in _disabled)
+            {
+                if (!disabled)
+                {
+                    return;
+                }
+            }
+
+            IsOperational = false;
         }
 
         public void Shutdown() => IsOperational = false;

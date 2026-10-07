@@ -31,6 +31,7 @@ namespace EmpireAtWar.Models.Factions
         ISDI = 201,
         ISDII = 205,
         ISDIII = 206,
+        Executor = 207,
         VictoryI = 202,
         VictoryII = 203,
         ArquitensImperialCruiser = 204,

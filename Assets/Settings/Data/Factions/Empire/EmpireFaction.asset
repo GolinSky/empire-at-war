@@ -139,6 +139,27 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
           type: 3}
+    - key: 207
+      value:
+        matchups: {fileID: 11400000, guid: e2411bc7a0dc73f439949739e8ae9a73, type: 2}
+        description: '200,000 hull; 200,000 shields; speed 15. Targetable: ten heavy
+          2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
+          heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
+          launchers, four shield generators, two engines and two hangars. Integrated:
+          69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
+          point-defense mounts. Laser Beam and Tractor Beam. TIE Fighter and TIE
+          Bomber complement.'
+        role: Dreadnought / Fleet Flagship
+        iconKey: ebec4f97ee2c2454883747a62531d2c9:21300000
+        isHero: 0
+        <Name>k__BackingField: Executor Star Dreadnought
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 125000
+        <BuildTime>k__BackingField: 2500
+        <UnitCapacity>k__BackingField: 40
+        <Icon>k__BackingField: {fileID: 21300000, guid: ebec4f97ee2c2454883747a62531d2c9,
+          type: 3}
     - key: 208
       value:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
