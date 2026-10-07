@@ -89,10 +89,23 @@ namespace EmpireAtWar.Editor.Rendering
         /// <summary>The renderers a wreck copies, in the order its prefab lists them.</summary>
         public static List<MeshRenderer> GetSourceRenderers(GameObject view)
         {
-            List<MeshRenderer> renderers = new List<MeshRenderer>();
-            foreach (MeshRenderer meshRenderer in view.GetComponentsInChildren<MeshRenderer>(true))
+            var levelView = view.GetComponent<EmpireAtWar.ViewComponents.Station.StationLevelView>();
+            Renderer[] sources;
+            if (levelView != null)
             {
-                if (meshRenderer.enabled && UsesOnlyShipLit(meshRenderer)) renderers.Add(meshRenderer);
+                var levels = new SerializedObject(levelView).FindProperty("levelModels");
+                var model = (EmpireAtWar.ViewComponents.Station.StationLevelModel)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue;
+                sources = model.HullRenderers;
+            }
+            else
+            {
+                sources = view.GetComponentsInChildren<MeshRenderer>(true);
+            }
+
+            List<MeshRenderer> renderers = new List<MeshRenderer>();
+            foreach (Renderer source in sources)
+            {
+                if (source is MeshRenderer meshRenderer && meshRenderer.enabled && UsesOnlyShipLit(meshRenderer)) renderers.Add(meshRenderer);
             }
 
             return renderers;

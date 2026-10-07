@@ -225,6 +225,8 @@ bpy.ops.import_scene.fbx(
 
 ## Files
 
+- [[Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]] — Republic at War CIS levels 1–5, Separatist-only routing, source normals, embedded hardpoints and station setup/rebuild.
+
 - [[Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE]] — five original Rebel station models, Rebellion-only level mapping, attachment/shield setup, rebuild commands and verification.
 - `Tools/Blender/README.md` — installed versions, exact Rothana hardpoint mapping, conversion decisions and verification evidence.
 - `Tools/Blender/Start-Blender.ps1`, `mcp_call.py`, `export_rothana.py` — launcher, MCP SDK fallback and model-specific exporter.

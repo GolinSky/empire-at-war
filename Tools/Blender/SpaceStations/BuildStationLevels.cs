@@ -26,9 +26,11 @@ public static class BuildStationLevels
         string viewPath = (string)config["view"];
         string[] levels = config["levels"].Select(l => (string)l).ToArray();
         string artPrefix = (string)config["artPrefix"];
+        string alignmentAnchor = (string)config["alignmentAnchor"];
         var viewAsset = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
         var hardPoints = viewAsset.GetComponentsInChildren<HardPoint>(true).ToDictionary(h => h.Id);
-        var mounts = config["mounts"].Select(m => (Id: (int)m["hardPoint"],
+        var mounts = config["mounts"].Select(m => (Id: (int)m["hardPoint"], EmbeddedArt: m["art"] != null && m["art"].Type == JTokenType.Null,
+            MissileSubstitution: (bool?)m["missileSubstitution"] ?? false,
             Anchors: ((JObject)m["anchors"]).Properties().ToDictionary(p => int.Parse(p.Name), p => (string)p.Value))).ToArray();
         if (!mounts.Select(m => m.Id).OrderBy(i => i).SequenceEqual(hardPoints.Keys.OrderBy(i => i)))
             throw new InvalidOperationException(faction + ": mount table must list every gameplay hardpoint exactly once.");
@@ -38,6 +40,7 @@ public static class BuildStationLevels
 
         var donorShield = viewAsset.GetComponentInChildren<Shield>(true);
         Vector3 pivot = Vector3.zero;
+        Vector3 alignedPosition = Vector3.zero;
         var anchorPositions = new Dictionary<string, Vector3>();
         var report = new JArray();
         for (int level = 1; level <= levels.Length; level++)
@@ -49,6 +52,13 @@ public static class BuildStationLevels
                 Transform source = root.transform.Find(root.name);
                 if (level == 1) pivot = source.localPosition;
                 source.localPosition = pivot;
+                if (alignmentAnchor != null)
+                {
+                    Transform anchor = source.GetComponentsInChildren<Transform>(true).Single(t => t.name == alignmentAnchor);
+                    Vector3 position = root.transform.InverseTransformPoint(anchor.position);
+                    if (level == 1) alignedPosition = position;
+                    source.localPosition += alignedPosition - position;
+                }
                 PrefabUtility.RecordPrefabInstancePropertyModifications(source);
 
                 var visible = root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled).ToArray();
@@ -59,15 +69,17 @@ public static class BuildStationLevels
                 {
                     string anchorName = mount.Anchors.Where(a => a.Key <= level).OrderBy(a => a.Key).Last().Value;
                     Transform point = transforms.Single(t => t.name == anchorName);
-                    RequireMatchingType(faction, hardPoints[mount.Id], anchorName);
+                    RequireMatchingType(faction, hardPoints[mount.Id], anchorName, mount.MissileSubstitution);
                     Vector3 position = root.transform.InverseTransformPoint(point.position);
                     if (anchorPositions.TryGetValue(anchorName, out Vector3 previous) && Vector3.Distance(previous, position) > PIVOT_TOLERANCE)
                         throw new InvalidOperationException($"{faction}: {anchorName} moves {Vector3.Distance(previous, position):F3} units at level {level}; levels do not share a pivot.");
                     anchorPositions[anchorName] = position;
-                    serializedMounts.Add((mount.Id, point, ArtOf(transforms, anchorName, artPrefix).gameObject));
+                    serializedMounts.Add((mount.Id, point, mount.EmbeddedArt ? null : ArtOf(transforms, anchorName, artPrefix).gameObject));
                 }
 
                 Transform launch = root.transform.Find("GameplayLaunchExit");
+                if (launch == null) launch = new GameObject("GameplayLaunchExit").transform;
+                launch.SetParent(root.transform, false);
                 Vector3 spawn = root.transform.InverseTransformPoint(transforms.Single(t => t.name == "Spawn_00").position);
                 launch.localPosition = new Vector3(spawn.x, bounds.min.y - LAUNCH_DROP, spawn.z);
 
@@ -149,11 +161,17 @@ public static class BuildStationLevels
         return parent.Cast<Transform>().Single(t => t.name.StartsWith(artPrefix, StringComparison.Ordinal));
     }
 
-    private static void RequireMatchingType(string faction, HardPoint hardPoint, string anchorName)
+    private static void RequireMatchingType(string faction, HardPoint hardPoint, string anchorName, bool missileSubstitution)
     {
         string token = anchorName.Split('_')[1].ToUpperInvariant();
         hardPoint.TryGetWeaponType(out WeaponType weapon);
         string name = weapon.ToString();
+        if (missileSubstitution)
+        {
+            if (token != "CCM" || weapon != WeaponType.ProtonTorpedo)
+                throw new InvalidOperationException($"{faction}: only proton torpedoes may use an explicit CCM mount substitution.");
+            return;
+        }
         bool matches = token switch
         {
             "SHG" => hardPoint.HardPointType == HardPointType.ShieldGenerator,
