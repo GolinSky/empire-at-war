@@ -51,9 +51,6 @@ MonoBehaviour:
   <Delay>k__BackingField: 0.25
   abilities: 05000000
   hangarBays:
-  - squadronType: 0
-    reserve: 24
-    maxActive: 4
   - squadronType: 2
     reserve: 18
     maxActive: 2
