@@ -30,6 +30,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IStationRegistry _stationRegistry;
 
         private readonly EnemyFactionModel _factionModel;
+        private readonly IFactionResearchModelObserver _research;
         private readonly PlayerSlot _owner;
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
@@ -58,6 +59,7 @@ namespace EmpireAtWar.Services.Enemy
             IEnemyStructurePlacementService enemyStructurePlacementService,
             IStationRegistry stationRegistry,
             EnemyFactionModel factionModel,
+            IFactionResearchModelObserver research,
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
@@ -73,6 +75,7 @@ namespace EmpireAtWar.Services.Enemy
             _profileCatalog = profileCatalog;
             _counterModel = counterModel;
             _factionModel = factionModel;
+            _research = research;
             _purchaseProcessor = purchaseProcessor;
             _requestFactory = requestFactory;
             _economyModel = economyModel;
@@ -148,6 +151,12 @@ namespace EmpireAtWar.Services.Enemy
             FactionData levelData = _factionModel.GetCurrentLevelFactionData();
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
+            bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,
+                                         out ResearchTierData incomeTier) &&
+                                     IsAffordable(incomeTier.FactionData);
+            bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
+                                         out ResearchTierData combatTier) &&
+                                     IsAffordable(combatTier.FactionData);
             int miningFacilityTarget = isUltraHard
                 ? profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount / 2
                 : profile.MinimumMiningFacilities;
@@ -173,7 +182,9 @@ namespace EmpireAtWar.Services.Enemy
                     hasDefenseOption,
                     canBuildDefense,
                     hasLevelUpOption,
-                    canLevelUp));
+                    canLevelUp,
+                    canResearchIncome,
+                    canResearchCombat));
 
             bool buildSquadron = !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
@@ -195,6 +206,10 @@ namespace EmpireAtWar.Services.Enemy
                     _requestFactory.ConstructUnitRequest(defense.Value, defense.Key),
                 EnemyProductionCategory.Level =>
                     _requestFactory.ConstructUnitRequest(levelData, _factionModel.CurrentLevel),
+                EnemyProductionCategory.Research when canResearchIncome =>
+                    CreateResearchRequest(incomeResearch, incomeTier),
+                EnemyProductionCategory.Research =>
+                    CreateResearchRequest(combatResearch, combatTier),
                 EnemyProductionCategory.None => null,
                 _ => throw new ArgumentOutOfRangeException(nameof(category))
             };
@@ -452,6 +467,58 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        /// <summary>
+        /// Picks the cheapest unlocked next tier, not already being researched, among the lines that raise income
+        /// (<paramref name="raisesIncome"/>) or among the combat lines.
+        /// </summary>
+        private bool TrySelectResearch(
+            bool raisesIncome,
+            out ResearchType selectedType,
+            out ResearchTierData selectedTier)
+        {
+            selectedType = default;
+            selectedTier = null;
+            foreach (ResearchType researchType in _research.ResearchTypes)
+            {
+                if (!_research.TryGetNextTier(researchType, out ResearchTierData tier) ||
+                    RaisesIncome(tier) != raisesIncome ||
+                    !IsAvailable(tier.FactionData) ||
+                    !CanReserve<ResearchUnitRequest>(researchType.ToString(), tier.FactionData))
+                {
+                    continue;
+                }
+
+                if (selectedTier == null || tier.FactionData.Price < selectedTier.FactionData.Price)
+                {
+                    selectedType = researchType;
+                    selectedTier = tier;
+                }
+            }
+
+            return selectedTier != null;
+        }
+
+        private static bool RaisesIncome(ResearchTierData tier)
+        {
+            foreach (ResearchEffect effect in tier.Effects)
+            {
+                if (effect.Stat == ResearchStat.Income)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private UnitRequest CreateResearchRequest(ResearchType researchType, ResearchTierData tier)
+        {
+            return _requestFactory.ConstructUnitRequest(
+                tier.FactionData,
+                researchType,
+                _research.GetCompletedTiers(researchType) + 1);
         }
 
         private bool CanReserve<TRequest>(string requestId, FactionData data)

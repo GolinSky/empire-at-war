@@ -8,13 +8,17 @@ using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Utilities.ScriptUtils.Time;
@@ -56,6 +60,7 @@ namespace EmpireAtWar.Tests.Editor
                     miningFacilityFactory: null,
                     defendPlatformFactory: null,
                     timerPoolService: timerPool,
+                    research: null,
                     economyProvider: economyProvider,
                     wallet: new TrackingWallet(),
                     shipSpawnPoints: null,
@@ -119,6 +124,7 @@ namespace EmpireAtWar.Tests.Editor
                     miningFacilityFactory: null,
                     defendPlatformFactory: null,
                     timerPoolService: timerPool,
+                    research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
                     shipSpawnPoints: null,
@@ -171,6 +177,60 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ResearchPurchase_CompletesTierOnBuildAndFreesTheLine()
+        {
+            FactionResearchModel research = new FactionResearchModel(new FactionRoster(
+                LoadSharedData<FactionCatalog>().Get(FactionType.Empire),
+                LoadSharedData<MiningFacilityCatalog>(),
+                LoadSharedData<DefendPlatformCatalog>(),
+                LoadSharedData<SuperWeaponCatalog>()));
+            Assert.That(research.TryGetNextTier(ResearchType.IncreasedProduction, out ResearchTierData tier), Is.True);
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+
+            try
+            {
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                TimerPoolService timerPool = new TimerPoolService();
+                EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
+                EnemyFactionController controller = new EnemyFactionController(
+                    model: new EnemyFactionModel(null, null),
+                    shipFactory: null,
+                    miningFacilityFactory: null,
+                    defendPlatformFactory: null,
+                    timerPoolService: timerPool,
+                    research: research,
+                    economyProvider: new TrackingEconomyProvider(),
+                    wallet: new TrackingWallet(),
+                    shipSpawnPoints: null,
+                    unitLimitModel: unitLimitModel,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    stationRegistry: new OperationalStationRegistry(),
+                    squadronLauncher: null,
+                    squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+                ResearchUnitRequest request =
+                    new ResearchUnitRequest(tier.FactionData, ResearchType.IncreasedProduction, 1);
+
+                controller.Purchase(request);
+
+                Assert.That(unitLimitModel.GetReservedCount(UnitLimitKey.From(request)), Is.EqualTo(1));
+                Assert.That(research.GetCompletedTiers(ResearchType.IncreasedProduction), Is.Zero);
+
+                GetOnlyActiveTimer(timerPool).Release(true);
+
+                Assert.That(research.GetCompletedTiers(ResearchType.IncreasedProduction), Is.EqualTo(1));
+                Assert.That(research.IncomeMultiplier, Is.GreaterThan(1f));
+                Assert.That(unitLimitModel.GetReservedCount(UnitLimitKey.From(request)), Is.Zero);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+            }
+        }
+
+        [Test]
         public void Initialize_ResetsStructurePlacementStateOncePerBattle()
         {
             EnemyFactionModel model =
@@ -184,6 +244,7 @@ namespace EmpireAtWar.Tests.Editor
                 miningFacilityFactory: null,
                 defendPlatformFactory: null,
                 timerPoolService: new TimerPoolService(),
+                research: null,
                 economyProvider: new TrackingEconomyProvider(),
                 wallet: null,
                 shipSpawnPoints: null,
@@ -202,6 +263,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(structurePlacement.ResetCount, Is.EqualTo(1));
 
             controller.LateDispose();
+        }
+
+        private static T LoadSharedData<T>() where T : ScriptableObject
+        {
+            T data = AssetDatabase.LoadAssetAtPath<T>(
+                "Assets/Settings/Data/Factions/Shared/" + typeof(T).Name + ".asset");
+            Assert.That(data, Is.Not.Null, typeof(T).Name);
+            return data;
         }
 
         private static void SetBackingField<T>(
