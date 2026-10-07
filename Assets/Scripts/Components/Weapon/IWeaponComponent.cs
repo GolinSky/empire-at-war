@@ -9,7 +9,7 @@ namespace EmpireAtWar.Components.Weapon
 
         void AddTarget(AttackData attackData, AttackType attackType);
 
-        bool HasEnoughRange(float distance);
+        bool HasEnoughRange(float distance, float contactDistance);
 
         void ResetTarget();
     }

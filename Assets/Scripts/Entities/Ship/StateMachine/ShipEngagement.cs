@@ -13,7 +13,20 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
                    weapon.HasEnoughRange(movement.GetRange(
-                       enemy.GetFacade<IEntityTransformFacade>().Transform.position));
+                       enemy.GetFacade<IEntityTransformFacade>().Transform.position),
+                       ContactDistance(movement, enemy));
+        }
+
+        /// <summary>
+        /// Closest centre distance navigation allows between the ship and the target.
+        /// Targets without a footprint (squadrons, platforms) do not block hulls.
+        /// </summary>
+        public static float ContactDistance(IShipMovement movement, IEntity target)
+        {
+            float targetRadius = target.TryGetFacade(out INavigationFootprintFacade footprint)
+                ? footprint.NavigationRadius
+                : 0f;
+            return movement.NavigationRadius + targetRadius;
         }
 
         /// <summary>
