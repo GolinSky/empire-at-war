@@ -7,8 +7,6 @@ namespace EmpireAtWar.Models.Factions
         Venator = 0,
         Acclamator = 1,
         Arquitens = 2,
-        StarDestroyer1 = 3,
-        StarDestroyer2 = 4,
         HeavyDreadnought = 5,
         Thranta = 6,
         Rothana = 7,
