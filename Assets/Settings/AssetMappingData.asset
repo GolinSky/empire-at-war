@@ -882,14 +882,14 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIAdvancedShipView
+    - key: ISDIShipView
       value:
         m_AssetGUID: c5a735dafc563ad45b16c92aeabb3b3f
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIAdvancedShipData
+    - key: ISDIShipData
       value:
         m_AssetGUID: 0c379a49e2b12644b963e47657c852bf
         m_SubObjectName: 
@@ -966,28 +966,28 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIIIStarDestroyerShipView
+    - key: ISDIIIShipView
       value:
         m_AssetGUID: 7f428c58ff383cf47b93c8ab3f55b2f5
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIIIStarDestroyerShipData
+    - key: ISDIIIShipData
       value:
         m_AssetGUID: a3858034bc188a740997a46830d4827e
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIIShipView
+    - key: ISDIIShipView
       value:
         m_AssetGUID: f24f9301127af634ab504e1c96f3d728
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ImperialIIShipData
+    - key: ISDIIShipData
       value:
         m_AssetGUID: 9864bdd7b03aa4d4d812b8f34e008399
         m_SubObjectName: 

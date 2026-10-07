@@ -261,11 +261,11 @@
 
 ### Features
 
-- [x] **Add Imperial II Star Destroyer**
-  - **Plan**: [[Done/Features/ImperialII_Import|Imperial II Import]]
+- [x] **Add ISD II**
+  - **Plan**: [[Done/Features/ISDII_Import|ISD II Import]]
   - **Completed**: 2026-10-06; Empire ship `205`, exact requested stats/loadout, Power to Main Batteries, Tractor Beam, three fighter types, own art/shield/placement/wreck/icons. Commit `f17fcd22`.
-  - **Team-color follow-up**: 2026-10-06 Imperial I Advanced and Imperial II now use four mirrored foredeck stripes per side with neutral hulls and matching wrecks. Saved ownership/fog/banking/explosion/wreck bindings and red/blue ship/wreck renders verified; no import/serialization errors. No combat or automated Unity test run for this fix.
-  - **Verification**: all 11 ship/ability tests passed; saved-ship checks 8/8 after naming fixes. Full EditMode 1,066/1,067; remaining failure is existing Victory II renderer bindings. Fixed Imperial II broadside arcs and all 99 team bindings; GUID dependencies and renders verified. No manual skirmish/Play Mode run.
+  - **Team-color follow-up**: 2026-10-06 ISD I and ISD II now use four mirrored foredeck stripes per side with neutral hulls and matching wrecks. Saved ownership/fog/banking/explosion/wreck bindings and red/blue ship/wreck renders verified; no import/serialization errors. No combat or automated Unity test run for this fix.
+  - **Verification**: all 11 ship/ability tests passed; saved-ship checks 8/8 after naming fixes. Full EditMode 1,066/1,067; remaining failure is existing Victory II renderer bindings. Fixed ISD II broadside arcs and all 99 team bindings; GUID dependencies and renders verified. No manual skirmish/Play Mode run.
 
 - [x] **Spawn blockers and relays (replace reinforcement-zone spawning)**
   - **Plan**: [[Done/Features/Spawn_Blockers_And_Relays|Spawn Blockers and Relays]]

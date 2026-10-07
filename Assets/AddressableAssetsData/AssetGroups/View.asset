@@ -156,7 +156,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7f428c58ff383cf47b93c8ab3f55b2f5
-    m_Address: ImperialIIIStarDestroyerShipView
+    m_Address: ISDIIIShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c5a735dafc563ad45b16c92aeabb3b3f
-    m_Address: ImperialIAdvancedShipView
+    m_Address: ISDIShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f24f9301127af634ab504e1c96f3d728
-    m_Address: ImperialIIShipView
+    m_Address: ISDIIShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
