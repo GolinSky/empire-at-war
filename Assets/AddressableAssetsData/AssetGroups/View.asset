@@ -125,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61da10ce71bd48e49a0d7f7e48117a91
+    m_Address: MC80IndependenceShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6d020e23c659ac141ab82d2f25751fa2
     m_Address: ProvidenceShipView
     m_ReadOnly: 0
@@ -180,6 +185,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97d22c97a3a205549808c07e00bc0ae5
+    m_Address: RaiderCorvetteShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 997565e14375a324d91a2e56614879d4
     m_Address: YWingBomberSquadronView
     m_ReadOnly: 0
@@ -197,6 +207,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d00a7db30c4cfd4fa25a15ab1d04197
     m_Address: ArquitensShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18a912eef2f13e4cb56ec916afc1e10
+    m_Address: AcclamatorAssaultShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -275,6 +290,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0e072e0469e12d47ab5ce6beb081473
+    m_Address: TectorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e5d34a50aa6564d49b82a6560699bee8
     m_Address: ExecutorShipView
     m_ReadOnly: 0
@@ -292,21 +312,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f24f9301127af634ab504e1c96f3d728
     m_Address: ISDIIShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 97d22c97a3a205549808c07e00bc0ae5
-    m_Address: RaiderCorvetteShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a18a912eef2f13e4cb56ec916afc1e10
-    m_Address: AcclamatorAssaultShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 61da10ce71bd48e49a0d7f7e48117a91
-    m_Address: MC80IndependenceShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

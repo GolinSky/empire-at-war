@@ -111,11 +111,14 @@ MonoBehaviour:
     - key: 208
       value: {fileID: 484096460124362054, guid: f2d6fc19fa4e3ba4cb9b44711e09dc60,
         type: 3}
+    - key: 305
+      value: {fileID: 484096460124362054, guid: 5fd52b6d50f8a7c4bbcdab52c3de99bf,
+        type: 3}
     - key: 209
       value: {fileID: 2658831815141062857, guid: a24b89bdbc2900d4a9c609c0dfbe29ed,
         type: 3}
-    - key: 305
-      value: {fileID: 484096460124362054, guid: 5fd52b6d50f8a7c4bbcdab52c3de99bf,
+    - key: 210
+      value: {fileID: 484096460124362054, guid: c97f32ff465f67a4dba5ba237bab67e3,
         type: 3}
   spawnSquadronWrapper:
     keyValue:

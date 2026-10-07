@@ -1036,6 +1036,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC80IndependenceShipView
+      value:
+        m_AssetGUID: 61da10ce71bd48e49a0d7f7e48117a91
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80IndependenceShipData
+      value:
+        m_AssetGUID: 768653c9f01f1524da8620594240df59
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: AcclamatorAssaultShipView
       value:
         m_AssetGUID: a18a912eef2f13e4cb56ec916afc1e10
@@ -1050,16 +1064,16 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MC80IndependenceShipView
+    - key: TectorShipView
       value:
-        m_AssetGUID: 61da10ce71bd48e49a0d7f7e48117a91
+        m_AssetGUID: e0e072e0469e12d47ab5ce6beb081473
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MC80IndependenceShipData
+    - key: TectorShipData
       value:
-        m_AssetGUID: 768653c9f01f1524da8620594240df59
+        m_AssetGUID: f45bbfb2673f42d4f9c3f8449804f9b6
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
