@@ -1,0 +1,236 @@
+{
+  "1": [
+    {
+      "model": "RB_Station_01_HP01_CCM",
+      "bone": "HP01_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_LC",
+      "bone": "HP01_LC_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_TBL",
+      "bone": "HP01_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_SHG",
+      "bone": "HP01_SHG_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_CA",
+      "bone": "HP01_CA_BONE"
+    }
+  ],
+  "2": [
+    {
+      "model": "RB_Station_01_HP01_CCM",
+      "bone": "HP01_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_LC",
+      "bone": "HP01_LC_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_TBL",
+      "bone": "HP01_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_SHG",
+      "bone": "HP01_SHG_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_LC",
+      "bone": "HP02_LC_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_PRT",
+      "bone": "HP02_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_TBL",
+      "bone": "HP02_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_CA",
+      "bone": "HP01_CA_BONE"
+    }
+  ],
+  "3": [
+    {
+      "model": "RB_Station_01_HP01_CCM",
+      "bone": "HP01_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_LC",
+      "bone": "HP01_LC_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_TBL",
+      "bone": "HP01_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_SHG",
+      "bone": "HP01_SHG_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_LC",
+      "bone": "HP02_LC_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_PRT",
+      "bone": "HP02_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_TBL",
+      "bone": "HP02_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_CCM",
+      "bone": "HP03_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_IC",
+      "bone": "HP03_IC_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_PRT",
+      "bone": "HP03_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_CA",
+      "bone": "HP01_CA_BONE"
+    }
+  ],
+  "4": [
+    {
+      "model": "RB_Station_01_HP01_CCM",
+      "bone": "HP01_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_LC",
+      "bone": "HP01_LC_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_TBL",
+      "bone": "HP01_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_SHG",
+      "bone": "HP04_SHG_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_LC",
+      "bone": "HP02_LC_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_PRT",
+      "bone": "HP02_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_TBL",
+      "bone": "HP02_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_CCM",
+      "bone": "HP03_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_IC",
+      "bone": "HP03_IC_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_PRT",
+      "bone": "HP03_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_IC",
+      "bone": "HP04_IC_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_LC",
+      "bone": "HP04_LC_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_TBL",
+      "bone": "HP04_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_CA",
+      "bone": "HP01_CA_BONE"
+    }
+  ],
+  "5": [
+    {
+      "model": "RB_Station_01_HP01_CCM",
+      "bone": "HP01_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_LC",
+      "bone": "HP01_LC_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_TBL",
+      "bone": "HP01_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_SHG",
+      "bone": "HP04_SHG_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_LC",
+      "bone": "HP02_LC_BONE"
+    },
+    {
+      "model": "RB_Station_02_HP02_PRT",
+      "bone": "HP02_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_CCM",
+      "bone": "HP03_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_IC",
+      "bone": "HP03_IC_BONE"
+    },
+    {
+      "model": "RB_Station_03_HP03_PRT",
+      "bone": "HP03_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_IC",
+      "bone": "HP04_IC_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_LC",
+      "bone": "HP04_LC_BONE"
+    },
+    {
+      "model": "RB_Station_04_HP04_TBL",
+      "bone": "HP04_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_05_HP05_CCM",
+      "bone": "HP05_CCM_BONE"
+    },
+    {
+      "model": "RB_Station_05_HP05_IC",
+      "bone": "HP05_IC_BONE"
+    },
+    {
+      "model": "RB_Station_05_HP05_PRT",
+      "bone": "HP05_PRT_BONE"
+    },
+    {
+      "model": "RB_Station_05_HP05_TBL",
+      "bone": "HP05_TBL_BONE"
+    },
+    {
+      "model": "RB_Station_05_HP05_TBL2",
+      "bone": "HP05_TBL2_BONE"
+    },
+    {
+      "model": "RB_Station_01_HP01_CA",
+      "bone": "HP01_CA_BONE"
+    }
+  ]
+}

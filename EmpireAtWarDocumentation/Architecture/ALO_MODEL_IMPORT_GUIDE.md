@@ -53,6 +53,8 @@ uvx --from mcp-for-blender==2.1.3 python Tools/Blender/mcp_call.py request.json
 4. Inspect the model and original binary ALO material assignments. Resolve every referenced texture; identify albedo, normal, emissive and effect textures explicitly. Verify each imported mesh's material-slot count, per-slot triangle count, shader and textures against the binary; a Blender→FBX comparison alone can preserve an importer mistake.
 5. ALAMO `create_material` clears prior object material slots and uses one fixed `Material1` suffix for differing shaders sharing a texture. MC80 Independence exposed both bugs: four-slot `Hull` retained only texture 4; opaque meshes `1`/`3` inherited additive light shaders. Repair material slots and separate definitions by source shader + parameters before exporting, preserving geometry/UVs. Reference: [[GameDesign/MC80 Independence Import]], tooling `Tools/Blender/MC80Independence/AuditMaterials.py` and `RepairSurfaces.py`.
 6. Inspect attachment and helper geometry. Names such as `LOD`, `Shield` or `Collision` are evidence to investigate, not sufficient grounds to remove a mesh.
+7. For stations, resolve `STARBASES.XML` → `HARDPOINTS.XML` → `Model_To_Attach` / `Attachment_Bone`. Base ALOs alone omit visible hardpoint pieces. Vanilla Rebel levels require 5 / 8 / 11 / 14 / 18 attachments; see [[Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE]].
+8. Diagnose surface seams against original triangle UVs and atlas pixels. Source-equal import can retain an authored UV discontinuity. If a visual correction is requested, preserve source FBXs and document any derived-mesh UV changes; do not claim repaired display UVs are source-identical.
 
 - Rothana source: `C:/Users/golin/Downloads/Rothana.2/Models/Rothana_Stardestroyer_Full_Armed.ALO`.
 - Its importer produced 99 bones from a verified 100-bone source because it removed identity `Root`. Restore a missing root only after checking the actual source; do not add one to every model.
@@ -223,6 +225,7 @@ bpy.ops.import_scene.fbx(
 
 ## Files
 
+- [[Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE]] — five original Rebel station models, Rebellion-only level mapping, attachment/shield setup, rebuild commands and verification.
 - `Tools/Blender/README.md` — installed versions, exact Rothana hardpoint mapping, conversion decisions and verification evidence.
 - `Tools/Blender/Start-Blender.ps1`, `mcp_call.py`, `export_rothana.py` — launcher, MCP SDK fallback and model-specific exporter.
 - `Assets/Prefabs/Models/Ships/RothanaShipView.prefab` and `Assets/Prefabs/Ui/Reinforcement/RothanaReinforcementView.prefab` — gameplay and placement examples.
