@@ -16,8 +16,8 @@ Shader "EmpireAtWar/Vfx/Nebula Billow Volume"
     }
     SubShader
     {
-        // Draw the background before transparent gameplay visuals, including relay zones (2900).
-        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-400" "DisableBatching"="True" }
+        // Draw after stars (2550), before planet clouds (2570) and atmosphere (2580).
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent-440" "DisableBatching"="True" }
         Pass
         {
             Name "CloudScattering"
