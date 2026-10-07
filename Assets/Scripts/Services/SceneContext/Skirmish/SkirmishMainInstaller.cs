@@ -201,6 +201,9 @@ public class SkirmishMainInstaller : MonoInstaller
         Container.BindInterfacesTo<TeamColorService>().AsSingle();
         Container.Bind<IPlayerColors>().To<PlayerColors>().AsSingle();
 
+        // Allied AIs share what their team has seen of hostile units.
+        Container.Bind<TeamIntelRegistry>().AsSingle();
+
         // The human context is placed in the scene; every AI gets its own sub-container on a new GameObject.
         foreach (PlayerSlot slot in roster.Players)
         {

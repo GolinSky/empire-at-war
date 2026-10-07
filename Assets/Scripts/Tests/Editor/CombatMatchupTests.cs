@@ -109,7 +109,7 @@ namespace EmpireAtWar.Tests.Editor
                 new ProductionCandidate(corvette, 1500)
             };
 
-            bool selected = new EnemyCounterProductionModel().TrySelect(own, hostile, candidates, out int index);
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(own, hostile, candidates, out int index);
 
             Assert.That(selected, Is.True);
             Assert.That(index, Is.EqualTo(1));
@@ -128,7 +128,7 @@ namespace EmpireAtWar.Tests.Editor
                 new ProductionCandidate(corvette, 1500)
             };
 
-            bool selected = new EnemyCounterProductionModel().TrySelect(
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
                 Force(capital), Force(capital, capital), candidates, out int index);
 
             Assert.That(selected, Is.True);
@@ -136,11 +136,74 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CounterProduction_RepeatedTypeLosesToFreshType()
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            UnitCombatProfile cruiser = Profile(ShipClass.Cruiser, 5000f, 2500f, (ShipClass.Capital, 30f));
+            List<ProductionCandidate> candidates = new List<ProductionCandidate>
+            {
+                new ProductionCandidate(capital, 4000, ownedCount: 4),
+                new ProductionCandidate(cruiser, 3000, ownedCount: 0)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CounterProduction_MatchupKnowledgeShiftsThePick()
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            UnitCombatProfile cruiser = Profile(ShipClass.Cruiser, 5000f, 2500f, (ShipClass.Capital, 30f));
+            List<ProductionCandidate> candidates = new List<ProductionCandidate>
+            {
+                new ProductionCandidate(capital, 4000),
+                new ProductionCandidate(cruiser, 4000)
+            };
+
+            new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int neutralPick);
+            new EnemyCounterProductionModel(new FavorClass(ShipClass.Cruiser)).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int favoredPick);
+
+            Assert.That(neutralPick, Is.EqualTo(0));
+            Assert.That(favoredPick, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void CounterProduction_CarrierWithoutSquadronRoomIsValuedWithoutHangar()
+        {
+            UnitCombatProfile interceptors = Profile(ShipClass.Interceptor, 400f, 100f, (ShipClass.Capital, 400f));
+            UnitCombatProfile carrier = new UnitCombatProfile(ShipClass.Capital, 6000f, 3000f,
+                Rates((ShipClass.Capital, 10f)), Rates((ShipClass.Capital, 10f)), Rates(),
+                new[] { interceptors, interceptors, interceptors });
+            UnitCombatProfile gunship = Profile(ShipClass.Capital, 6000f, 3000f, (ShipClass.Capital, 60f));
+
+            int Pick(bool includeHangar)
+            {
+                new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                    Force(gunship), Force(gunship, gunship),
+                    new[]
+                    {
+                        new ProductionCandidate(carrier, 4000, includeHangar: includeHangar),
+                        new ProductionCandidate(gunship, 4000, includeHangar: includeHangar)
+                    }, out int index);
+                return index;
+            }
+
+            Assert.That(Pick(true), Is.EqualTo(0));
+            Assert.That(Pick(false), Is.EqualTo(1));
+        }
+
+        [Test]
         public void CounterProduction_FallsBackWithoutHostiles()
         {
             UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
 
-            bool selected = new EnemyCounterProductionModel().TrySelect(Force(capital), new ForceComposition(),
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(Force(capital), new ForceComposition(),
                 new[] { new ProductionCandidate(capital, 4000) }, out int index);
 
             Assert.That(selected, Is.False);
@@ -160,6 +223,16 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(force.UnitCount, Is.EqualTo(3));
             Assert.That(force.HullDps(ShipClass.Bomber), Is.EqualTo(60f));
+        }
+
+        private sealed class FavorClass : IShipClassMatchups
+        {
+            private readonly ShipClass _favored;
+
+            public FavorClass(ShipClass favored) => _favored = favored;
+
+            public float GetPreference(ShipClass candidate, ForceComposition hostile) =>
+                candidate == _favored ? 3f : 1f;
         }
 
         private static ForceComposition Force(params UnitCombatProfile[] units)

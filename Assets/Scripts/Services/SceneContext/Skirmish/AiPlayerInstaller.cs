@@ -1,6 +1,7 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
+using EmpireAtWar.Entities.EnemyFaction.Data;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -38,6 +39,8 @@ namespace EmpireAtWar.SceneContext
             Container.Bind<EnemyCounterProductionModel>().AsSingle();
             Container.Bind<UnitCombatProfileCatalog>().AsSingle();
             Container.Bind<ForceCompositionBuilder>().AsSingle();
+            Container.BindScriptableObject<ShipClassMatchupData>(AssetService);
+            Container.BindInterfacesExt<HostileIntelGatherer>();
             Container.Bind<EnemyStrategicContextBuilder>().AsSingle();
             Container.Bind<EnemyTaskForceExecutor>().AsSingle();
             Container.Bind<EnemyProductionStrategy>().AsSingle();

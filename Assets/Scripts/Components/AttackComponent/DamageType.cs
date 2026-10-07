@@ -15,5 +15,7 @@ namespace EmpireAtWar.Components.AttackComponent
         PlasmaCannon = 10,
         MassDriver = 11,
         CompositeBeam = 12,
+        /// <summary>Strikecraft guns: strong against fighters, bombers and interceptors, weak against every ship.</summary>
+        FighterLaser = 13,
     }
 }

@@ -6,6 +6,7 @@ using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly UnitCombatProfileCatalog _profileCatalog;
         private readonly EnemyCounterProductionModel _counterModel;
+        private readonly HostileIntelModel _intel;
 
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _hostileForce = new ForceComposition();
@@ -67,6 +69,7 @@ namespace EmpireAtWar.Services.Enemy
             ForceCompositionBuilder forceBuilder,
             UnitCombatProfileCatalog profileCatalog,
             EnemyCounterProductionModel counterModel,
+            TeamIntelRegistry intelRegistry,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -74,6 +77,7 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder = forceBuilder;
             _profileCatalog = profileCatalog;
             _counterModel = counterModel;
+            _intel = intelRegistry.Get(owner.Team);
             _factionModel = factionModel;
             _research = research;
             _purchaseProcessor = purchaseProcessor;
@@ -144,8 +148,10 @@ namespace EmpireAtWar.Services.Enemy
             // and station upgrades.
             // With no ship type unlocked (Empire at level 1) squadrons are the only units, so the cap is lifted.
             bool canOrderShips = CanOrderAnyShip();
+            bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool hasCounter = TrySelectCounterUnit(
-                canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !HasSquadronRoom(shipCount)),
+                canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
+                hasSquadronRoom,
                 out UnitTypeId counterId,
                 out FactionData counterData);
             bool hasShip = !hasCounter && TrySelectShip(shipCount, out ship);
@@ -315,13 +321,15 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private bool TrySelectCounterUnit(
             bool shipsOnly,
+            bool hasSquadronRoom,
             out UnitTypeId selectedId,
             out FactionData selectedData)
         {
             selectedId = default;
             selectedData = null;
             PlayerId self = _owner.Id;
-            _forceBuilder.Build(_hostileForce, entity => _playerRoster.IsHostile(self, entity.Owner));
+            // Counters answer what the team has seen of the enemy, not the whole hidden map.
+            _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
             if (_hostileForce.IsEmpty)
             {
                 return false;
@@ -334,13 +342,13 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
                 AddCounterOption<ShipUnitRequest>(UnitTypeId.Ship(option.Key), option.Key.ToString(), option.Value,
-                    true);
+                    true, hasSquadronRoom);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
                 AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
-                    option.Value, !shipsOnly);
+                    option.Value, !shipsOnly, hasSquadronRoom);
             }
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index))
@@ -353,15 +361,21 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        /// <summary>Counts pending units of this type into the own force; adds it as a candidate when <paramref name="isSelectable"/>.</summary>
+        /// <summary>
+        /// Counts pending units of this type into the own force; adds it as a candidate when
+        /// <paramref name="isSelectable"/>. A carrier's hangar is valued only while squadrons have room, because
+        /// hangar squadrons share the squadron cap.
+        /// </summary>
         private void AddCounterOption<TRequest>(
             UnitTypeId unitTypeId,
             string requestId,
             FactionData data,
-            bool isSelectable)
+            bool isSelectable,
+            bool hasSquadronRoom)
         {
             _liveUnitCounts.TryGetValue(unitTypeId, out int liveCount);
-            int pendingCount = _unitLimitModel.GetReservedCount<TRequest>(requestId) - liveCount;
+            int reservedCount = _unitLimitModel.GetReservedCount<TRequest>(requestId);
+            int pendingCount = reservedCount - liveCount;
             for (int i = 0; i < pendingCount; i++)
             {
                 _ownForce.AddNew(_profileCatalog.Get(unitTypeId), true);
@@ -372,7 +386,8 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
-            _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price));
+            _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price,
+                Math.Max(reservedCount, liveCount), hasSquadronRoom));
             _candidateIds.Add(unitTypeId);
             _candidateData.Add(data);
         }
@@ -418,8 +433,28 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
-        private bool HasSquadronRoom(int shipCount) =>
-            CountReservedSquadrons() < shipCount / SHIPS_PER_SQUADRON;
+        /// <remarks>Carrier hangars count toward the cap so carriers are no way around it.</remarks>
+        private bool HasSquadronRoom(int shipCount)
+        {
+            int cap = shipCount / SHIPS_PER_SQUADRON;
+            return cap > 0 && CountReservedSquadrons() + CountHangarSquadrons() < cap;
+        }
+
+        /// <summary>Squadrons the AI's bought ships field at once from their hangars.</summary>
+        private int CountHangarSquadrons()
+        {
+            int count = 0;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                int reserved = _unitLimitModel.GetReservedCount<ShipUnitRequest>(option.Key.ToString());
+                if (reserved > 0)
+                {
+                    count += reserved * _profileCatalog.Get(UnitTypeId.Ship(option.Key)).Hangar.Count;
+                }
+            }
+
+            return count;
+        }
 
         private int CountReservedSquadrons()
         {
