@@ -15,6 +15,7 @@ tags:
 
 - Import each station level from its own ALO; preserve source geometry, UVs, hierarchy and attachment names.
 - Bind levels 1–5 to the existing faction-level system. Rebel models belong to **Rebellion only**.
+- Republic at War CIS models: [[Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]] — five originals, Separatist-only mapping, embedded hardpoints, source normals and exact rebuild commands.
 
 ## Rules
 
@@ -125,7 +126,7 @@ tags:
 - `StationLevelView.ApplyLevel` activates exactly one mapped model and updates collider, selection marker, hardpoints (by id from `StationLevelModel.Mounts`), hangar launch point, and shield center/surface (`Shield.SetHull`).
 - The entity updates explosion hull renderers and the ion field (`IIonFieldShape.SetIonFieldBounds`) before the existing health upgrade.
 - One gameplay entity persists across upgrades; no replacement of health, weapons, hangar, ownership or subscriptions.
-- Other factions have no `StationLevelView` and keep their existing visual behavior.
+- Each faction routes to its own gameplay prefab; CIS now has its own five-level `StationLevelView`. See [[Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]] for CIS-specific source and setup.
 
 ### 6. Verification and rebuild commands
 
@@ -171,13 +172,13 @@ tags:
 
 ### Level progression — 2026-10-07
 
-- Final step for every leveled station: `unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["<Faction>"]' --json`. Config: `Tools/Blender/SpaceStations/{Rebellion,Empire}.json`; README beside it.
+- Final step for every leveled station: `unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["<Faction>"]' --json`. Config: `Tools/Blender/SpaceStations/{Rebellion,Empire,Separatist}.json`; README beside it. CIS-specific conversion and mapping: [[Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]].
 - **Shared pivot.** Per-level centering made stations jump on upgrade: Rebel ≤35 units, Empire ~100 units in X/Z. All levels now use level 1's source offset; builder fails if a shared anchor moves > `0.01` units.
 - Hull centers after fix — Rebel L1–5: `(0,0,0)`, `(15.0,0,13.4)`, `(15.0,0,27.0)`, `(4.4,34.4,6.1)`, `(11.8,34.4,25.5)`. Empire: `(0,0,0)`, `(1.7,-4.5,105.0)`, `(79.0,-14.0,105.0)`, `(91.0,-15.6,105.0)`, `(92.2,-17.0,105.0)`.
 - Farthest XZ hull corner from root: Empire `≈341`, Rebel `≈238`; both inside station radius `396`.
 - **Typed mounts.** `StationLevelModel.Mounts` = `{HardPointId, Point, Art}`; replaces index-paired `AttachmentPoints`/`attachmentTargets`. Builder rejects missing ids, first anchor ≠ `unlockLevel`, or anchor type ≠ weapon type.
 - **Per-level data.** `LaunchExit`, `ShieldCenter`, ion field bounds (`HealthComponent.SetIonFieldBounds`) and fog reveal radius (max over levels) follow the active model.
-- `SpaceStation.levelView` stays optional only because Republic/Separatist have no level models yet; make it required when they do.
+- `SpaceStation.levelView` remains an optional runtime binding. The Separatist gameplay prefab now assigns it and all five CIS models; the earlier lack of CIS level models is resolved.
 - Verification: `--filter Station` **57/57 passed**; `Health` 17/17, `Shield` 10/10. Unrelated pre-existing failure: `ShipEngineHardpointTests.TwoEngines_*` NRE in `ShipMoveComponent.ApplyMoveCoefficient`.
 
 ## Important Values

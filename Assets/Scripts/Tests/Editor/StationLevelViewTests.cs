@@ -24,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
         private static string ViewPath(string faction) => PREFABS + faction + "SpaceStationView.prefab";
 
         private static string LevelPath(string faction, int level) =>
-            PREFABS + (faction == "Rebellion" ? "Rebel" : faction) + "SpaceStationLevel" + level + ".prefab";
+            PREFABS + (faction == "Rebellion" ? "Rebel" : faction == "Separatist" ? "Cis" : faction) + "SpaceStationLevel" + level + ".prefab";
 
         private static StationLevelModel LoadModel(string faction, int level) =>
             AssetDatabase.LoadAssetAtPath<GameObject>(LevelPath(faction, level)).GetComponent<StationLevelModel>();
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EachLevel_HasCompleteVisualAndGameplayData([Values("Rebellion", "Empire")] string faction,
+        public void EachLevel_HasCompleteVisualAndGameplayData([Values("Rebellion", "Empire", "Separatist")] string faction,
             [NUnit.Framework.Range(1, LEVELS)] int level)
         {
             var model = LoadModel(faction, level);
@@ -71,6 +71,7 @@ namespace EmpireAtWar.Tests.Editor
         // EaW swaps station levels in place; the original models share one origin, so shared anchors never move.
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Separatist")]
         public void Levels_ShareOnePivot(string faction)
         {
             Vector3? pivot = null;
@@ -79,6 +80,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var model = LoadModel(faction, level);
                 Vector3 source = model.transform.Find(model.name).localPosition;
+                if (faction == "Separatist")
+                    source = model.transform.InverseTransformPoint(model.Mounts.Single(m => m.HardPointId == 0).Point.position);
                 if (pivot.HasValue) Assert.That(Vector3.Distance(source, pivot.Value), Is.LessThan(PIVOT_TOLERANCE), "Level " + level);
                 pivot = source;
                 foreach (var point in model.Mounts.Select(m => m.Point))
@@ -93,6 +96,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Separatist")]
         public void Mounts_MatchUnlockedHardPointTypesAndArt(string faction)
         {
             var hardPoints = AssetDatabase.LoadAssetAtPath<GameObject>(ViewPath(faction))
@@ -105,16 +109,23 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (var mount in model.Mounts)
                 {
                     Assert.That(mount.Point.IsChildOf(model.transform), Is.True);
-                    Assert.That(mount.Art.transform.IsChildOf(model.transform), Is.True);
-                    Assert.That(mount.Art.GetComponentsInChildren<MeshRenderer>(true), Is.Not.Empty);
-                    Assert.That(MountTypeMatches(mount.Point.name, hardPoints[mount.HardPointId]), Is.True,
+                    if (faction == "Separatist") Assert.That(mount.Art, Is.Null, "RaW embeds weapon art in the hull.");
+                    else
+                    {
+                        Assert.That(mount.Art.transform.IsChildOf(model.transform), Is.True);
+                        Assert.That(mount.Art.GetComponentsInChildren<MeshRenderer>(true), Is.Not.Empty);
+                    }
+                    bool missileSubstitution = faction == "Separatist" && new[] {8, 10, 15}.Contains(mount.HardPointId);
+                    hardPoints[mount.HardPointId].TryGetWeaponType(out WeaponType weapon);
+                    Assert.That(missileSubstitution ? mount.Point.name.Contains("_CCM_") && weapon == WeaponType.ProtonTorpedo
+                        : MountTypeMatches(mount.Point.name, hardPoints[mount.HardPointId]), Is.True,
                         mount.Point.name + " mounts " + hardPoints[mount.HardPointId].name);
                 }
             }
         }
 
         [Test]
-        public void EntityLevelHandler_SwapsModelsWithoutReplacingGameplay([Values("Rebellion", "Empire")] string faction,
+        public void EntityLevelHandler_SwapsModelsWithoutReplacingGameplay([Values("Rebellion", "Empire", "Separatist")] string faction,
             [Values(1, 5)] int initialLevel)
         {
             GameObject root = PrefabUtility.LoadPrefabContents(ViewPath(faction));
@@ -194,7 +205,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void FactionMapping_UsesLevelModelsOnlyForRebellionAndEmpire()
+        public void FactionMapping_UsesOwnModelsForEachLeveledFaction()
         {
             var mapping = new SerializedObject(AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/AssetMappingData.asset"));
             var rows = mapping.FindProperty("assetMappings.keyValue");
@@ -205,7 +216,7 @@ namespace EmpireAtWar.Tests.Editor
                 string path = AssetDatabase.GUIDToAssetPath(row.FindPropertyRelative("value.m_AssetGUID").stringValue);
                 Assert.That(path, Is.EqualTo(ViewPath(faction.ToString())));
                 var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                bool leveled = faction == FactionType.Rebellion || faction == FactionType.Empire;
+                bool leveled = faction == FactionType.Rebellion || faction == FactionType.Empire || faction == FactionType.Separatist;
                 Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(leveled));
                 if (!leveled) continue;
                 Assert.That(new SerializedObject(root.GetComponent<StationLevelView>()).FindProperty("levelModels").arraySize, Is.EqualTo(levels.MaxLevel));
@@ -215,6 +226,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase("Rebellion")]
         [TestCase("Empire")]
+        [TestCase("Separatist")]
         public void ShieldSwap_UsesNewSurfaceForImpacts(string faction)
         {
             GameObject root = PrefabUtility.LoadPrefabContents(ViewPath(faction));

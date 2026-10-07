@@ -1,0 +1,31 @@
+{
+  "view": "Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab",
+  "levels": [
+    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel5.prefab"
+  ],
+  "alignmentAnchor": "HP01_SHG",
+  "targetDiameter": 380.5378,
+  "mounts": [
+    { "hardPoint": 0, "art": null, "anchors": { "1": "HP01_SHG" } },
+    { "hardPoint": 1, "art": null, "anchors": { "1": "HP01_TBL_00_FB00" } },
+    { "hardPoint": 2, "art": null, "anchors": { "2": "HP02_TBL_00_FB00" } },
+    { "hardPoint": 3, "art": null, "anchors": { "4": "HP04_TBL_00_FB00" } },
+    { "hardPoint": 4, "art": null, "anchors": { "5": "HP05_TBL_00_FB00" } },
+    { "hardPoint": 5, "art": null, "anchors": { "1": "HP01_LC_00" } },
+    { "hardPoint": 6, "art": null, "anchors": { "1": "HP01_CCM_00_FB00" } },
+    { "hardPoint": 7, "art": null, "anchors": { "2": "HP01_LC_01" } },
+    { "hardPoint": 8, "art": null, "missileSubstitution": true, "anchors": { "2": "HP01_CCM_01_FB00" } },
+    { "hardPoint": 9, "art": null, "anchors": { "3": "HP03_CCM_00_FB00" } },
+    { "hardPoint": 10, "art": null, "missileSubstitution": true, "anchors": { "3": "HP03_CCM_01_FB00" } },
+    { "hardPoint": 11, "art": null, "anchors": { "3": "HP01_IC_00" } },
+    { "hardPoint": 12, "art": null, "anchors": { "4": "HP03_LC_00_FB00" } },
+    { "hardPoint": 13, "art": null, "anchors": { "4": "HP01_IC_01" } },
+    { "hardPoint": 14, "art": null, "anchors": { "5": "HP01_CCM_01_FB00" } },
+    { "hardPoint": 15, "art": null, "missileSubstitution": true, "anchors": { "5": "HP03_CCM_01_FB00" } },
+    { "hardPoint": 16, "art": null, "anchors": { "5": "HP01_IC_00" } }
+  ]
+}

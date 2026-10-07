@@ -53,7 +53,7 @@ namespace EmpireAtWar.ViewComponents.Station
             {
                 HardPoint hardPoint = GetHardPoint(mount.HardPointId);
                 hardPoint.transform.position = mount.Point.position;
-                mount.Art.SetActive(!hardPoint.IsDestroyed);
+                if (mount.Art != null) mount.Art.SetActive(!hardPoint.IsDestroyed);
             }
 
             launchPoint.position = next.LaunchExit.position;
@@ -68,7 +68,7 @@ namespace EmpireAtWar.ViewComponents.Station
             if (CurrentModel == null) return;
             foreach (StationMount mount in CurrentModel.Mounts)
             {
-                if (mount.HardPointId == hardPointId) mount.Art.SetActive(healthPercentage > 0f);
+                if (mount.HardPointId == hardPointId && mount.Art != null) mount.Art.SetActive(healthPercentage > 0f);
             }
         }
 

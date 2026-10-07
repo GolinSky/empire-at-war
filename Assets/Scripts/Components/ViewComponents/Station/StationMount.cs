@@ -9,7 +9,7 @@ namespace EmpireAtWar.ViewComponents.Station
     {
         [field: SerializeField] public int HardPointId { get; private set; }
         [field: SerializeField] public Transform Point { get; private set; }
-        [Tooltip("Attached source artwork, hidden while the hardpoint is destroyed.")]
+        [Tooltip("Separate artwork, hidden while the hardpoint is destroyed. Leave empty when artwork is embedded in the hull.")]
         [field: SerializeField] public GameObject Art { get; private set; }
     }
 }
