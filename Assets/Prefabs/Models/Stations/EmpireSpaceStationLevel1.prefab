@@ -56,27 +56,23 @@ MonoBehaviour:
   <HullBounds>k__BackingField:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 40.569687, y: 71.83266, z: 46.410828}
-  <AttachmentPoints>k__BackingField:
-  - {fileID: 5469881283172891009}
-  - {fileID: 2981046685641424587}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 3566315072528157128}
-  - {fileID: 3126130031355098972}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 550909618205141313}
-  - {fileID: 3675331058738339860}
+  <Mounts>k__BackingField:
+  - <HardPointId>k__BackingField: 0
+    <Point>k__BackingField: {fileID: 5469881283172891009}
+    <Art>k__BackingField: {fileID: 4893889542953869265}
+  - <HardPointId>k__BackingField: 1
+    <Point>k__BackingField: {fileID: 2981046685641424587}
+    <Art>k__BackingField: {fileID: 3323487290213186566}
+  - <HardPointId>k__BackingField: 5
+    <Point>k__BackingField: {fileID: 3566315072528157128}
+    <Art>k__BackingField: {fileID: 7224363400118185315}
+  - <HardPointId>k__BackingField: 6
+    <Point>k__BackingField: {fileID: 3126130031355098972}
+    <Art>k__BackingField: {fileID: 7652185321029323470}
+  <LaunchExit>k__BackingField: {fileID: 3675331058738339860}
   <ShieldMesh>k__BackingField: {fileID: 4300000, guid: 45a654e628f37a345b12a1f2aae62864,
     type: 2}
+  <ShieldCenter>k__BackingField: {x: -0.0000038146973, y: 0, z: 0}
   <ShieldPlanes>k__BackingField:
   - {x: 0.044183385, y: 0.99902344, z: 0, w: 73.96071}
   - {x: -0.05640169, y: 0.9970703, z: 0.051668577, w: 73.63701}

@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2205453081907878906}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0000038146973, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1518,8 +1518,6 @@ MonoBehaviour:
   - {fileID: 1277104757743198503}
   - {fileID: 6955803878608606640}
   levelView: {fileID: 2855771388290269514}
-  levelShield: {fileID: 7442863198398755758}
-  levelShieldMesh: {fileID: 3439370593060855890}
 --- !u!65 &4944068100476870398
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1585,7 +1583,7 @@ MonoBehaviour:
     type: 3}
   ionFieldBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 132.72583, y: 88.859665, z: 151.42976}
+    m_Extent: {x: 40.569687, y: 71.83266, z: 46.410828}
   <ShipUnits>k__BackingField:
   - {fileID: 2124114673325768231}
   - {fileID: 8177678813357081521}
@@ -1961,7 +1959,7 @@ MonoBehaviour:
   - {fileID: 8576188791618883331}
   - {fileID: 337064068512335514}
   - {fileID: 7178114026213147903}
-  revealRadius: 201.36316
+  revealRadius: 341.08334
   staysRevealedOnceSeen: 1
 --- !u!114 &2855771388290269514
 MonoBehaviour:
@@ -1982,26 +1980,28 @@ MonoBehaviour:
   - {fileID: 568330041330629609}
   - {fileID: 9100824100904682142}
   hullCollider: {fileID: 4944068100476870398}
-  attachmentTargets:
-  - {fileID: 3342516571945035308}
-  - {fileID: 6308216416118733197}
-  - {fileID: 622140377184503710}
-  - {fileID: 5849176798557940861}
-  - {fileID: 7642648584420455236}
-  - {fileID: 8521711031767419702}
-  - {fileID: 5239428032061832331}
-  - {fileID: 5760920016575126031}
-  - {fileID: 7580862733121976065}
-  - {fileID: 5014395858658716065}
-  - {fileID: 8560063996355735303}
-  - {fileID: 4158505014942405061}
-  - {fileID: 4713300383095020987}
-  - {fileID: 3191267575679068895}
-  - {fileID: 5905068629158343999}
-  - {fileID: 2475509858775973030}
-  - {fileID: 5001935995043020483}
-  - {fileID: 4029083725751294024}
+  hardPoints:
+  - {fileID: 2124114673325768231}
+  - {fileID: 8177678813357081521}
+  - {fileID: 3338842454457253282}
+  - {fileID: 8636718447074006593}
+  - {fileID: 5541572143087454584}
+  - {fileID: 5815424670973702410}
+  - {fileID: 7944783967518754487}
+  - {fileID: 7567556860422496307}
+  - {fileID: 5747464592025652541}
+  - {fileID: 7161018705896444829}
+  - {fileID: 5781722779553142075}
+  - {fileID: 2252433830453111801}
+  - {fileID: 7466611236617004935}
+  - {fileID: 774076073732919523}
+  - {fileID: 8576188791618883331}
+  - {fileID: 337064068512335514}
+  - {fileID: 7178114026213147903}
+  launchPoint: {fileID: 4029083725751294024}
   selectionMarker: {fileID: 8000202830491400828}
+  shield: {fileID: 7442863198398755758}
+  shieldMesh: {fileID: 3439370593060855890}
 --- !u!1001 &649375580908182035
 PrefabInstance:
   m_ObjectHideFlags: 0

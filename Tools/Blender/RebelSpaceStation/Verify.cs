@@ -57,7 +57,7 @@ public static class VerifyRebelStations
             var importer = (ModelImporter)AssetImporter.GetAtPath(modelPath);
             if (importer.optimizeGameObjects || importer.weldVertices || importer.meshCompression != ModelImporterMeshCompression.Off)
                 throw new InvalidOperationException("Unexpected model import settings: " + name);
-            if (model.AttachmentPoints.Any(t => t == null) || model.ShieldMesh == null) throw new InvalidOperationException("Incomplete station bindings: " + name);
+            if (model.Mounts.Any(m => m.Point == null || m.Art == null) || model.LaunchExit == null || model.ShieldMesh == null) throw new InvalidOperationException("Incomplete station bindings: " + name);
             results.Add(new JObject { ["level"] = level, ["bones"] = boneReport, ["meshes"] = meshReport });
         }
         foreach (string path in Enumerable.Range(1, 5).Select(i => PREFABS + "RebelSpaceStationLevel" + i + ".prefab").Append(PREFABS + "RebellionSpaceStationView.prefab"))
