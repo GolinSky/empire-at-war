@@ -28,6 +28,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         PowerToMainBatteries = 24,
         CompositeBeam = 25,
         ArquitensBoostWeaponPower = 23,
+        MC80IndependencePowerToShields = 26,
         Pursuit = 30,
         AcclamatorBoostWeaponPower = 31,
     }

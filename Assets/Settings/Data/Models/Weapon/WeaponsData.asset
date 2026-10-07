@@ -838,3 +838,48 @@ MonoBehaviour:
     projectileSpeed: 35
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 55
+    displayName: Medium Dual Turbolaser
+    damageType: 2
+    damage: 70
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 8.91
+    range: 325
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 56
+    displayName: Medium Dual Turbo-Ion Cannon
+    damageType: 4
+    damage: 75
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 10.25
+    range: 325
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 57
+    displayName: Light Turbo-Ion Cannon
+    damageType: 4
+    damage: 50
+    shotsPerSalvo: 1
+    shotInterval: 3
+    reload: 6.25
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}

@@ -1,6 +1,6 @@
 ---
 type: reference
-updated: 2026-10-03
+updated: 2026-10-07
 tags:
   - blender
   - unity
@@ -50,8 +50,9 @@ uvx --from mcp-for-blender==2.1.3 python Tools/Blender/mcp_call.py request.json
 1. Inventory ALO variants, separate turrets, DDS textures and any ALA animations. Choose the complete variant intentionally; do not combine a Full Armed model with duplicate separate turrets.
 2. Import with `bpy.ops.import_mesh.alo(filepath=SOURCE_PATH, importAnimations=False)` for a static ship.
 3. Record mesh/triangle counts, bone names and parents, attachment positions, UVs, materials, loaded image sizes, hidden flags and visible bounds.
-4. Inspect the model and source material assignments. Resolve every referenced texture; identify albedo, normal, emissive and effect textures explicitly.
-5. Inspect attachment and helper geometry. Names such as `LOD`, `Shield` or `Collision` are evidence to investigate, not sufficient grounds to remove a mesh.
+4. Inspect the model and original binary ALO material assignments. Resolve every referenced texture; identify albedo, normal, emissive and effect textures explicitly. Verify each imported mesh's material-slot count, per-slot triangle count, shader and textures against the binary; a Blender→FBX comparison alone can preserve an importer mistake.
+5. ALAMO `create_material` clears prior object material slots and uses one fixed `Material1` suffix for differing shaders sharing a texture. MC80 Independence exposed both bugs: four-slot `Hull` retained only texture 4; opaque meshes `1`/`3` inherited additive light shaders. Repair material slots and separate definitions by source shader + parameters before exporting, preserving geometry/UVs. Reference: [[GameDesign/MC80 Independence Import]], tooling `Tools/Blender/MC80Independence/AuditMaterials.py` and `RepairSurfaces.py`.
+6. Inspect attachment and helper geometry. Names such as `LOD`, `Shield` or `Collision` are evidence to investigate, not sufficient grounds to remove a mesh.
 
 - Rothana source: `C:/Users/golin/Downloads/Rothana.2/Models/Rothana_Stardestroyer_Full_Armed.ALO`.
 - Its importer produced 99 bones from a verified 100-bone source because it removed identity `Root`. Restore a missing root only after checking the actual source; do not add one to every model.
