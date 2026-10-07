@@ -113,7 +113,11 @@ public static class BuildMC80IndependenceGameplay
             so.ApplyModifiedPropertiesWithoutUndo();
             Assign(hangar,"bayHardPoints",hangarTargets);
             Assign(hangar,"bayLaunchPoints",launches);
-            foreach (var image in root.GetComponentsInChildren<RectTransform>(true).Where(t=>t.name=="SelectedImage")) image.sizeDelta=Vector2.one*240;
+            foreach (var image in root.GetComponentsInChildren<RectTransform>(true).Where(t=>t.name=="SelectedImage"))
+            {
+                image.parent.localScale=Vector3.one;
+                image.sizeDelta=Vector2.one*240;
+            }
             var points = visual.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).SelectMany(r=>r.GetComponent<MeshFilter>().sharedMesh.vertices.Select(v=>root.transform.InverseTransformPoint(r.transform.TransformPoint(v)))).ToArray();
             bottom=points.Min(p=>Mathf.Min(p.y,Mathf.Min((Quaternion.Euler(0,0,-5)*p).y,(Quaternion.Euler(0,0,5)*p).y)));
             top=points.Max(p=>Mathf.Max(p.y,Mathf.Max((Quaternion.Euler(0,0,-5)*p).y,(Quaternion.Euler(0,0,5)*p).y)));

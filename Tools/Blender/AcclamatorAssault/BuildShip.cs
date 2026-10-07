@@ -102,7 +102,11 @@ public static class BuildAcclamatorAssaultShip
             shield.transform.SetParent(body,true); ShieldHullBaker.Bake(root.transform,shield);
             healthConfig.Update(); healthConfig.FindProperty("ionFieldBounds").boundsValue=new Bounds(new Vector3(0,(bottom+top)*.5f,0),new Vector3(bounds.size.x,top-bottom,bounds.size.z)); healthConfig.ApplyModifiedPropertiesWithoutUndo();
             foreach(var collider in root.GetComponents<BoxCollider>()){collider.center=bounds.center;collider.size=bounds.size;}
-            foreach(var rect in root.GetComponentsInChildren<RectTransform>(true).Where(t=>t.name=="SelectedImage"))rect.sizeDelta=Vector2.one*radius*2;
+            foreach(var rect in root.GetComponentsInChildren<RectTransform>(true).Where(t=>t.name=="SelectedImage"))
+            {
+                rect.parent.localScale=Vector3.one;
+                rect.sizeDelta=Vector2.one*radius*2;
+            }
             var visible=visual.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
             Assign(Component(root,"Ship"),"explosionHullRenderers",visible.Where(r=>r.sharedMaterials.All(m=>m.shader.name=="EmpireAtWar/Ship Lit")).ToArray());
             var shieldRenderer=shield.GetComponents<MeshRenderer>().Single();
