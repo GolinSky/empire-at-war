@@ -56,6 +56,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private ReinforcementZoneData _data;
         private IReadOnlyList<ReinforcementZoneView> _zoneViews;
         private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
+        private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
         private CaptureStrengthBuilder _captureStrengthBuilder;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
@@ -100,15 +101,24 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void LateDispose()
         {
             _battleMap.RemoveObserver(this);
+            UnregisterHomeVision();
         }
 
         public void UpdateState(BattleMap battleMap)
         {
             _zoneViews = battleMap.ZoneViews;
             _homes.Clear();
+            UnregisterHomeVision();
             foreach (ZoneSpot spot in battleMap.Layout.Zones)
             {
-                if (!spot.IsCapturable) _homes.Add(spot);
+                if (spot.IsCapturable) continue;
+                _homes.Add(spot);
+                // A home lights its whole spawn area so reinforcements can always land there.
+                Transform anchor = new GameObject($"{spot.Owner}_HomeVision").transform;
+                anchor.SetParent(transform, false);
+                anchor.position = new Vector3(spot.Center.x, 0f, spot.Center.z);
+                _visionService.Register(spot.Owner, anchor, _data.HomeAreaRadius);
+                _homeVisionAnchors.Add(anchor);
             }
 
             _zones.Clear();
@@ -270,6 +280,16 @@ namespace EmpireAtWar.Services.ReinforcementZones
             position = closestZone.Center;
             position.y = 0f;
             return true;
+        }
+
+        private void UnregisterHomeVision()
+        {
+            foreach (Transform anchor in _homeVisionAnchors)
+            {
+                _visionService.Unregister(anchor);
+            }
+
+            _homeVisionAnchors.Clear();
         }
     }
 }

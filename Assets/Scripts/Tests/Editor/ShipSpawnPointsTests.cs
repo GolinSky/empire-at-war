@@ -11,6 +11,7 @@ using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _root;
         private ReinforcementZoneData _data;
         private PlayerRoster _roster;
+        private VisionService _vision;
 
         [SetUp]
         public void SetUp()
@@ -34,6 +36,7 @@ namespace EmpireAtWar.Tests.Editor
             _root = new GameObject(nameof(ShipSpawnPointsTests));
             _data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             _roster = TestPlayers.CreateTeamGame();
+            _vision = new VisionService(_roster);
         }
 
         [TearDown]
@@ -92,6 +95,19 @@ namespace EmpireAtWar.Tests.Editor
                 TestPlayers.SecondEnemy, ShipType.Arquitens, out _), Is.False);
         }
 
+        [Test]
+        public void Home_LightsItsWholeSpawnAreaForTheOwnerTeamOnly()
+        {
+            CreateSpawnPoints(TestPlayers.Human, new OpenEverywhere());
+            Vector3 edge = HOME + Vector3.forward * _data.HomeAreaRadius;
+
+            Assert.That(_vision.IsVisible(TestPlayers.Human, edge), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Ally, edge), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Enemy, edge), Is.False);
+            Assert.That(_vision.IsVisible(TestPlayers.Human,
+                HOME + Vector3.forward * (_data.HomeAreaRadius + 1f)), Is.False);
+        }
+
         private ShipSpawnPoints CreateSpawnPoints(PlayerId relayOwner, IReinforcementSpawnRule rule)
         {
             ReinforcementZoneView relay = CreateRelay(relayOwner, RELAY);
@@ -100,6 +116,7 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_playerRoster", _roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(_roster));
             SetField(system, "_spawnBlockerService", new SpawnBlockerService(_roster));
+            SetField(system, "_visionService", _vision);
             system.UpdateState(new BattleMap(
                 layout: CreateLayout(new ZoneSpot(HOME, TestPlayers.Human, false),
                     new ZoneSpot(RELAY, relayOwner, true)),
