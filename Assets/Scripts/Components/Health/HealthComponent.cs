@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Ship.Health
 
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
-        IHealthUpgrade
+        IHealthUpgrade, IIonFieldShape
     {
         private ITimer _refreshShieldsTimer;
         private IIonStunView _ionStunView;
@@ -243,6 +243,14 @@ namespace EmpireAtWar.Components.Ship.Health
         {
             Model.Upgrade(level, hullScale, shieldsScale, shieldRegenerateScale);
             SyncInstalledHardPoints();
+        }
+
+        public void SetIonFieldBounds(Bounds bounds)
+        {
+            ionFieldBounds = bounds;
+            if (_ionStunView == null) return;
+            _ionStunView.Configure(bounds);
+            _ionStunView.SetActive(_modifiers.IsIonDisabled);
         }
 
         private void SyncInstalledHardPoints()

@@ -60,9 +60,9 @@ public static class VerifyEmpireStationMapping
             var view = root.GetComponent<StationLevelView>();
             var serialized = new SerializedObject(view);
             var levels = serialized.FindProperty("levelModels");
-            var targets = serialized.FindProperty("attachmentTargets");
+            var hardPointList = serialized.FindProperty("hardPoints");
             var collider = (BoxCollider)serialized.FindProperty("hullCollider").objectReferenceValue;
-            if (levels.arraySize != 5 || targets.arraySize != 18) throw new InvalidOperationException("Incorrect model/attachment mapping size.");
+            if (levels.arraySize != 5 || hardPointList.arraySize != 17) throw new InvalidOperationException("Incorrect model/hardpoint mapping size.");
             var hardpoints = root.GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).ToArray();
             var donor = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + "RepublicSpaceStationView.prefab").GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).ToArray();
             if (hardpoints.Length != donor.Length) throw new InvalidOperationException("Gameplay hardpoint count changed.");
@@ -70,7 +70,7 @@ public static class VerifyEmpireStationMapping
             {
                 if (hardpoints[i].Id != donor[i].Id || hardpoints[i].UnlockLevel != donor[i].UnlockLevel)
                     throw new InvalidOperationException("Gameplay hardpoint profile changed.");
-                if (targets.GetArrayElementAtIndex(i).objectReferenceValue != hardpoints[i].transform)
+                if (hardPointList.GetArrayElementAtIndex(i).objectReferenceValue != hardpoints[i])
                     throw new InvalidOperationException("Hardpoint order changed.");
             }
             var art = JObject.Parse(File.ReadAllText(TASK + "Attachments.json"));
@@ -88,8 +88,8 @@ public static class VerifyEmpireStationMapping
                     throw new InvalidOperationException("Collider does not follow level.");
                 if (model.ShieldMesh == null || model.ShieldPlanes.Length != 1024 || model.HullRenderers.Any(r => r == null || !r.enabled))
                     throw new InvalidOperationException("Missing hull or shield surface.");
-                for (int i = 0; i < targets.arraySize; i++)
-                    if (Vector3.Distance(((Transform)targets.GetArrayElementAtIndex(i).objectReferenceValue).position, model.AttachmentPoints[i].position) > .001f)
+                foreach (var mount in model.Mounts)
+                    if (Vector3.Distance(hardpoints.Single(h => h.Id == mount.HardPointId).transform.position, mount.Point.position) > .001f)
                         throw new InvalidOperationException("Attachment does not follow level.");
                 foreach (var piece in art[level.ToString()])
                 {

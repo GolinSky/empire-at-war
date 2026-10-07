@@ -1,0 +1,117 @@
+{
+  "view": "Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab",
+  "levels": [
+    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel5.prefab"
+  ],
+  "artPrefix": "RB_Station_",
+  "mounts": [
+    {
+      "hardPoint": 0,
+      "anchors": {
+        "1": "HP01_SHG_Bone",
+        "4": "HP04_SHG_Bone"
+      }
+    },
+    {
+      "hardPoint": 1,
+      "anchors": {
+        "1": "FP01_TBL_00"
+      }
+    },
+    {
+      "hardPoint": 2,
+      "anchors": {
+        "2": "FP02_TBL_00",
+        "5": "FP05_TBL2_00"
+      }
+    },
+    {
+      "hardPoint": 3,
+      "anchors": {
+        "4": "FP04_TBL_00"
+      }
+    },
+    {
+      "hardPoint": 4,
+      "anchors": {
+        "5": "FP05_TBL_00"
+      }
+    },
+    {
+      "hardPoint": 5,
+      "anchors": {
+        "1": "FP01_LC_00"
+      }
+    },
+    {
+      "hardPoint": 6,
+      "anchors": {
+        "1": "FP01_CCM_00"
+      }
+    },
+    {
+      "hardPoint": 7,
+      "anchors": {
+        "2": "FP02_LC_00"
+      }
+    },
+    {
+      "hardPoint": 8,
+      "anchors": {
+        "2": "FP02_PRT_00"
+      }
+    },
+    {
+      "hardPoint": 9,
+      "anchors": {
+        "3": "FP03_CCM_00"
+      }
+    },
+    {
+      "hardPoint": 10,
+      "anchors": {
+        "3": "FP03_PRT_00"
+      }
+    },
+    {
+      "hardPoint": 11,
+      "anchors": {
+        "3": "FP03_IC_00"
+      }
+    },
+    {
+      "hardPoint": 12,
+      "anchors": {
+        "4": "FP04_LC_00"
+      }
+    },
+    {
+      "hardPoint": 13,
+      "anchors": {
+        "4": "FP04_IC_00"
+      }
+    },
+    {
+      "hardPoint": 14,
+      "anchors": {
+        "5": "FP05_CCM_00"
+      }
+    },
+    {
+      "hardPoint": 15,
+      "anchors": {
+        "5": "FP05_PRT_00"
+      }
+    },
+    {
+      "hardPoint": 16,
+      "anchors": {
+        "5": "FP05_IC_00"
+      }
+    }
+  ]
+}

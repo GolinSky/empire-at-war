@@ -103,9 +103,6 @@ def Main():
             text = text.replace('Tools/Blender/EmpireSpaceStation/Attachments.json', 'Temp/EmpireStationImport/Attachments.json')
             text = text.replace('shader == "MeshAdditive.fx" ? "02" : "03"', 'shader == "MeshAdditive.fx" ? "02" : "00"')
         if filename == 'BuildView.cs':
-            text = text.replace('FP01_CCM_00', 'FP01_CM_00').replace('FP03_CCM_00', 'FP03_CM_00').replace('FP05_CCM_00', 'FP05_CM_00')
-            text = text.replace('                    if (i == 0 && level >= 4) name = "HP04_SHG_Bone";\n', '')
-            text = text.replace('                    if (i == 2 && level == 5) name = "FP05_TBL2_00";\n', '')
             start = text.index('        // No damaged Rebel ALO was supplied.')
             end = text.index('        AssetDatabase.SaveAssets();', start)
             text = text[:start] + text[end:]

@@ -9,7 +9,6 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Station;
-using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
 
@@ -21,6 +20,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private ISpawnBlockerService _spawnBlockerService;
         private IHealthComponent _healthComponent;
         private IHealthUpgrade _healthUpgrade;
+        private IIonFieldShape _ionField;
         private IFactionLevelObserver _factionLevel;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
@@ -28,8 +28,6 @@ namespace EmpireAtWar.Entities.SpaceStation
         [SerializeField] private Renderer[] explosionHullRenderers;
         [Tooltip("Optional for factions that use a distinct model at each station level.")]
         [SerializeField] private StationLevelView levelView;
-        [SerializeField] private Shield levelShield;
-        [SerializeField] private MeshFilter levelShieldMesh;
         private EntityComponentLifecycle _componentLifecycle;
         private GameObjectContext _context;
 
@@ -47,6 +45,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             ISpawnBlockerService spawnBlockerService,
             IHealthComponent healthComponent,
             IHealthUpgrade healthUpgrade,
+            IIonFieldShape ionField,
             IFactionLevelObserver factionLevel,
             IUnitWreckService unitWreckService,
             IUnitExplosionService unitExplosionService,
@@ -61,6 +60,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             _owner = owner;
             _healthComponent = healthComponent;
             _healthUpgrade = healthUpgrade;
+            _ionField = ionField;
             _factionLevel = factionLevel;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents);
@@ -95,8 +95,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             {
                 levelView.ApplyLevel(level);
                 explosionHullRenderers = levelView.CurrentModel.HullRenderers;
-                levelShield.SetHull(levelShieldMesh, levelView.CurrentModel.ShieldMesh,
-                    levelView.CurrentModel.ShieldPlanes);
+                _ionField.SetIonFieldBounds(levelView.CurrentModel.HullBounds);
             }
             StationLevelStats stats = Data.GetLevelStats(level);
             _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier);

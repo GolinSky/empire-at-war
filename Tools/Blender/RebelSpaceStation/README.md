@@ -58,13 +58,14 @@ Get-ChildItem -LiteralPath Temp/RebelStationImport/Attachments -Filter RB_Statio
 python -B Tools/Blender/RebelSpaceStation/StageAttachments.py
 ```
 
-5. In Unity Edit Mode, execute each command and inspect its nested `result.success` before continuing. Always run **all four builders in this order**: recreate base art, attach missing source pieces, repair the dome UV strip, then restore gameplay bindings and fit shields to the complete geometry.
+5. In Unity Edit Mode, execute each command and inspect its nested `result.success` before continuing. Always run **all five builders in this order**: recreate base art, attach missing source pieces, repair the dome UV strip, rebuild the gameplay view, then apply the shared level pivot, hardpoint mounts and fitted shields.
 
 ```powershell
 unity command run_script --file Tools/Blender/RebelSpaceStation/BuildArt.cs --json
 unity command run_script --file Tools/Blender/RebelSpaceStation/BuildAttachments.cs --json
 unity command run_script --file Tools/Blender/RebelSpaceStation/RepairDomeUv.cs --json
 unity command run_script --file Tools/Blender/RebelSpaceStation/BuildView.cs --json
+unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Rebellion"]' --json
 unity command run_script --file Tools/Blender/RebelSpaceStation/Verify.cs --json
 uv run --with pillow python Tools/Blender/RebelSpaceStation/VerifyGeometry.py
 unity command run_script --file Tools/Blender/RebelSpaceStation/Render.cs --json
@@ -89,7 +90,7 @@ unity command test_status --json
 - ALAMO welds shadow-volume doubles and removes degenerate triangles. Visible hull/light/damage geometry is checked directly against the original ALO; shadow topology is excluded from equality assertions.
 - FBX import scale `0.02`; common nested scale approximately `12.3978834`; unit-scale gameplay root. Level 5's XZ diameter matches the previous station's `299.302856` units. The other levels retain their own source dimensions.
 - Hull material: `EmpireAtWar/Ship Lit`, direct source-alpha team mask, normal-map green flip. Additive lights use the existing project light-material convention. The alpha mask is **not inverted**.
-- Existing 17 gameplay hardpoints and combat/unlock profiles are retained. `BuildView.cs` records their exact source attachment mapping; locked mounts have no active geometry until their unlock level. `GameplayLaunchExit` preserves source `Spawn_00` X/Z and sits 8 units below the current collider.
+- Existing 17 gameplay hardpoints and combat/unlock profiles are retained. `Tools/Blender/SpaceStations/Rebellion.json` records their exact source attachment mapping; locked hardpoints have no mount until their unlock level. `GameplayLaunchExit` preserves source `Spawn_00` X/Z and sits 8 units below the current collider.
 - Only `AssetMappingData`'s `RebellionSpaceStationView` entry changes faction routing. The existing Addressables `View` group is reused. No new level/economy configuration is introduced.
 - No Rebel damaged/wreck ALO or ALA animation was supplied. The obsolete Republic wreck fallback is removed for Rebellion; explosion behavior remains. EaW destruction shaders, animated lights and proxy particles are not recreated.
 

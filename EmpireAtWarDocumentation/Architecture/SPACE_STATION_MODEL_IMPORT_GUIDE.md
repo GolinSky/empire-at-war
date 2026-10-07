@@ -103,15 +103,15 @@ tags:
 
 ### 4. Scale, collision and attachments
 
-- Gameplay and visual prefab roots use unit scale; imported geometry is centered from actual visible mesh vertices.
+- Gameplay and visual prefab roots use unit scale. **All levels share level 1's source pivot** (see Level progression); only level 1's hull is centered at the root.
 - FBX scale `0.02`; shared nested scale approximately `12.3978834`; source effective scale approximately `0.247957668`.
 - Chosen size: level 5's maximum XZ diameter `299.302856` units matches the existing station envelope. Why: retain project scale while preserving growth between distinct models.
 - Artwork placement uses the XML bone's original matrix conjugated by the source-to-Unity basis; FBX bone-axis rotations are not attachment rotations. Retain source rigs/helpers in FBXs and copy only visible meshes under existing named anchors in prefabs.
 - Keep Unity up `+Y`; standard FBX axes are forward `-Z`, up `Y`. Verified raw source → Unity position mapping: `(-x, z, -y) × 0.02`.
 - Bake a separate shield shell for every level with existing `ShieldHullBaker`; each stores mesh plus `1024` clipping planes.
-- Bind 17 existing gameplay hardpoints, ordered by ID, to explicit source anchors in `BuildView.cs`; weapon types, arcs and unlock levels remain unchanged.
+- Bind 17 existing gameplay hardpoints by ID to explicit source anchors in `Tools/Blender/SpaceStations/<Faction>.json`; weapon types, arcs and unlock levels remain unchanged.
 - Shield anchor: `HP01_SHG_Bone` at levels 1–3 → `HP04_SHG_Bone` at levels 4–5. Level 5 replaces `FP02_TBL_00` with `FP05_TBL2_00`.
-- Locked mounts use the model origin until their source level exists. Only already-unlocked hardpoints are active.
+- Locked hardpoints have no mount until their unlock level; they stay inactive.
 - Preserve original `Spawn_00`. Generated `GameplayLaunchExit` keeps its X/Z and sits `8` units below the level's collider minimum Y.
 - Existing Rebellion map-generation radius `396` already covers the largest hull. Shared station spawn-block settings remain unchanged.
 
@@ -122,8 +122,8 @@ tags:
 - `Assets/Settings/Data/Factions/Shared/StationLevelData.asset`: existing maximum level `5`, costs and upgrade timing.
 - `Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset`: existing per-level health/shield multipliers, weapon health and hangar configuration.
 - `SpaceStation` applies current faction level during initialization and listens to the existing `OnLevelUpgraded` event.
-- `StationLevelView.ApplyLevel` activates exactly one mapped model and updates collider, selection marker and existing attachment-target positions.
-- The entity updates explosion hull renderers and calls `Shield.SetHull` before the existing health upgrade. The shield clears obsolete impact positions and updates its surface/bounds.
+- `StationLevelView.ApplyLevel` activates exactly one mapped model and updates collider, selection marker, hardpoints (by id from `StationLevelModel.Mounts`), hangar launch point, and shield center/surface (`Shield.SetHull`).
+- The entity updates explosion hull renderers and the ion field (`IIonFieldShape.SetIonFieldBounds`) before the existing health upgrade.
 - One gameplay entity persists across upgrades; no replacement of health, weapons, hangar, ownership or subscriptions.
 - Other factions have no `StationLevelView` and keep their existing visual behavior.
 
@@ -169,6 +169,17 @@ tags:
 - Rebuild: `Tools/Blender/EmpireSpaceStation/README.md`; adapter reuses the established Rebel binary reader/converter/builders with Imperial-specific inputs. Isolated Blender MCP port `9886`; safe mode enabled.
 - Reports, editable packed blends and previews: `Temp/EmpireStationImport/`; see `VerifiedSourceGeometry.json`, `VerifiedMapping.json` and `Previews/LevelNTeam0..7.png`.
 
+### Level progression — 2026-10-07
+
+- Final step for every leveled station: `unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["<Faction>"]' --json`. Config: `Tools/Blender/SpaceStations/{Rebellion,Empire}.json`; README beside it.
+- **Shared pivot.** Per-level centering made stations jump on upgrade: Rebel ≤35 units, Empire ~100 units in X/Z. All levels now use level 1's source offset; builder fails if a shared anchor moves > `0.01` units.
+- Hull centers after fix — Rebel L1–5: `(0,0,0)`, `(15.0,0,13.4)`, `(15.0,0,27.0)`, `(4.4,34.4,6.1)`, `(11.8,34.4,25.5)`. Empire: `(0,0,0)`, `(1.7,-4.5,105.0)`, `(79.0,-14.0,105.0)`, `(91.0,-15.6,105.0)`, `(92.2,-17.0,105.0)`.
+- Farthest XZ hull corner from root: Empire `≈341`, Rebel `≈238`; both inside station radius `396`.
+- **Typed mounts.** `StationLevelModel.Mounts` = `{HardPointId, Point, Art}`; replaces index-paired `AttachmentPoints`/`attachmentTargets`. Builder rejects missing ids, first anchor ≠ `unlockLevel`, or anchor type ≠ weapon type.
+- **Per-level data.** `LaunchExit`, `ShieldCenter`, ion field bounds (`HealthComponent.SetIonFieldBounds`) and fog reveal radius (max over levels) follow the active model.
+- `SpaceStation.levelView` stays optional only because Republic/Separatist have no level models yet; make it required when they do.
+- Verification: `--filter Station` **57/57 passed**; `Health` 17/17, `Shield` 10/10. Unrelated pre-existing failure: `ShipEngineHardpointTests.TwoEngines_*` NRE in `ShipMoveComponent.ApplyMoveCoefficient`.
+
 ## Important Values
 
 | Level | Base source bones | Base hull triangles | Attached pieces | Complete visible bounds X × Y × Z, project units |
@@ -192,7 +203,8 @@ tags:
 - A Blender material suffix such as `.001` is a transport name; the builder remaps it to the same stable four project materials.
 - Five nested model instances keep fog/team references stable; only one level is active. All five geometries remain dependencies of the gameplay prefab.
 - Rebuilding base art without the attachment, UV repair and view builders removes the surface fix and leaves attachment/shield metadata incomplete.
-- Attached hardpoint art is static. EaW hardpoint destruction/animation behavior is not recreated; existing project combat profiles remain unchanged.
+- Attached hardpoint art hides while its hardpoint is destroyed and returns when an upgrade restores it. EaW destruction animation is not recreated; existing project combat profiles remain unchanged.
+- `HP01_CA` (both factions) is decorative: no gameplay hardpoint, never hidden.
 - A full battle playthrough and source animation conversion are outside the recorded verification.
 
 ## Files
