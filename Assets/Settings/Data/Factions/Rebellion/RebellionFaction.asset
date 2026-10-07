@@ -129,8 +129,8 @@ MonoBehaviour:
         <Name>k__BackingField: MC80 Independence
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 34000
-        <BuildTime>k__BackingField: 680
+        <Price>k__BackingField: 7000
+        <BuildTime>k__BackingField: 68
         <UnitCapacity>k__BackingField: 14
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
           type: 3}

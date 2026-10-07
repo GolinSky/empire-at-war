@@ -223,7 +223,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53526d91b334c8781d9114e878ca360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 10
   meshRenderers:
   - {fileID: 3202076831617211672}
   - {fileID: 8748331338379382954}
@@ -232,6 +231,8 @@ MonoBehaviour:
   - {fileID: 1710984576613865808}
   - {fileID: 243218186785512078}
   - {fileID: 328331105445121323}
+  hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
+  height: 10
 --- !u!1 &3314434794099038016
 GameObject:
   m_ObjectHideFlags: 0

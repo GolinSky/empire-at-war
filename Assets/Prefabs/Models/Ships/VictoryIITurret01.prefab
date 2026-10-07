@@ -106,7 +106,9 @@ PrefabInstance:
       value: VictoryIITurret01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6052531537159815898, guid: 8927fa7d8505eb64d80443c2badf989f, type: 3}
+    - {fileID: 4166478272511049166, guid: 8927fa7d8505eb64d80443c2badf989f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8927fa7d8505eb64d80443c2badf989f, type: 3}

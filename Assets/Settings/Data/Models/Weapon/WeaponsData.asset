@@ -88,6 +88,36 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 1, g: 0.68, b: 0, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 54
+    displayName: Repeating Point-Defense Mount
+    damageType: 1
+    damage: 4
+    shotsPerSalvo: 6
+    shotInterval: 0.1
+    reload: 3.998
+    range: 125
+    strikecraftOnly: 1
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 80
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 62
+    displayName: Dual Repeating Point Defense
+    damageType: 1
+    damage: 8
+    shotsPerSalvo: 6
+    shotInterval: 0.2
+    reload: 5.58
+    range: 175
+    strikecraftOnly: 1
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 14
     displayName: Point Defense Laser
     damageType: 1
@@ -252,6 +282,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 55
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 55
+    displayName: Medium Dual Turbolaser
+    damageType: 2
+    damage: 70
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 8.91
+    range: 325
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 1, g: 0.15, b: 0.05, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 5
     displayName: Dual Medium Turbolaser
@@ -433,6 +478,36 @@ MonoBehaviour:
     projectileSpeed: 55
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 56
+    displayName: Medium Dual Turbo-Ion Cannon
+    damageType: 4
+    damage: 75
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 10.25
+    range: 325
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 57
+    displayName: Light Turbo-Ion Cannon
+    damageType: 4
+    damage: 50
+    shotsPerSalvo: 1
+    shotInterval: 3
+    reload: 6.25
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.3, g: 0.7, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 10
     displayName: Ion Cannon
     damageType: 4
@@ -492,6 +567,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 55
     color: {r: 0.55, g: 1, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 60
+    displayName: Heavy 2-Burst Ion Blaster
+    damageType: 4
+    damage: 8
+    shotsPerSalvo: 2
+    shotInterval: 1.5
+    reload: 3.25
+    range: 125
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 133
+    color: {r: 1, g: 1, b: 1, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 11
     displayName: Heavy Ion Cannon
@@ -597,6 +687,36 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 90
     color: {r: 1, g: 0.25, b: 0.65, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 61
+    displayName: Heavy 5-Burst Concussion Missile
+    damageType: 5
+    damage: 20
+    shotsPerSalvo: 5
+    shotInterval: 0.75
+    reload: 15
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 80
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 63
+    displayName: 4-Burst Assault-Missile Launcher
+    damageType: 5
+    damage: 30
+    shotsPerSalvo: 4
+    shotInterval: 1
+    reload: 15
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 35
+    color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 13
     displayName: Concussion Missile Launcher
@@ -763,123 +883,3 @@ MonoBehaviour:
     projectileSpeed: 140
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 0.45, y: 0.45, z: 0.6}
-  - weaponType: 54
-    displayName: Repeating Point-Defense Mount
-    damageType: 1
-    damage: 4
-    shotsPerSalvo: 6
-    shotInterval: 0.1
-    reload: 3.998
-    range: 125
-    strikecraftOnly: 1
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 80
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 62
-    displayName: Dual Repeating Point Defense
-    damageType: 1
-    damage: 8
-    shotsPerSalvo: 6
-    shotInterval: 0.2
-    reload: 5.58
-    range: 175
-    strikecraftOnly: 1
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 60
-    displayName: Heavy 2-Burst Ion Blaster
-    damageType: 4
-    damage: 8
-    shotsPerSalvo: 2
-    shotInterval: 1.5
-    reload: 3.25
-    range: 125
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 1, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 61
-    displayName: Heavy 5-Burst Concussion Missile
-    damageType: 5
-    damage: 20
-    shotsPerSalvo: 5
-    shotInterval: 0.75
-    reload: 15
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 80
-    color: {r: 0.2, g: 1, b: 0.25, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 63
-    displayName: 4-Burst Assault-Missile Launcher
-    damageType: 5
-    damage: 30
-    shotsPerSalvo: 4
-    shotInterval: 1
-    reload: 15
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 1
-    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
-      type: 3}
-    projectileSpeed: 35
-    color: {r: 1, g: 0.55, b: 0.1, a: 1}
-    size: {x: 1.2, y: 1.2, z: 1.2}
-  - weaponType: 55
-    displayName: Medium Dual Turbolaser
-    damageType: 2
-    damage: 70
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 8.91
-    range: 325
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    projectileSpeed: 133
-    color: {r: 1, g: 0.15, b: 0.05, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 56
-    displayName: Medium Dual Turbo-Ion Cannon
-    damageType: 4
-    damage: 75
-    shotsPerSalvo: 2
-    shotInterval: 0.08
-    reload: 10.25
-    range: 325
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}
-  - weaponType: 57
-    displayName: Light Turbo-Ion Cannon
-    damageType: 4
-    damage: 50
-    shotsPerSalvo: 1
-    shotInterval: 3
-    reload: 6.25
-    range: 250
-    strikecraftOnly: 0
-    interceptable: 0
-    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
-      type: 3}
-    projectileSpeed: 55
-    color: {r: 0.3, g: 0.7, b: 1, a: 1}
-    size: {x: 1, y: 1, z: 1}

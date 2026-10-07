@@ -136,6 +136,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &3449269914852903935
@@ -189,6 +190,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -45
     <Max>k__BackingField: 45
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 13
 --- !u!1 &4589936472972889740
@@ -317,6 +319,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &6672146617763140784
@@ -415,6 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionHullRenderers:
   - {fileID: 4588241525439216885}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2523818220999685703
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -648,8 +652,6 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 6896194605718455207}
   - {fileID: 4588241525439216885}
-  - {fileID: 6052961241283220313}
-  - {fileID: 7669271270196024139}
   - {fileID: 793576509471705433}
 --- !u!114 &676046630702335276
 MonoBehaviour:
@@ -1898,6 +1900,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -45
     <Max>k__BackingField: 45
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 13
 --- !u!1001 &6762401666091766545
@@ -1980,21 +1983,9 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 6762401666091766545}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &6052961241283220313 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 709475620455448648, guid: de4e9288143a4c9418e5875906b6a4b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6762401666091766545}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6903934994137905139 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 150681681468237026, guid: de4e9288143a4c9418e5875906b6a4b9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6762401666091766545}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &7669271270196024139 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4014494982588874842, guid: de4e9288143a4c9418e5875906b6a4b9,
     type: 3}
   m_PrefabInstance: {fileID: 6762401666091766545}
   m_PrefabAsset: {fileID: 0}

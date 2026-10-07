@@ -51,6 +51,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 28
 --- !u!1 &158374674451494894
@@ -104,6 +105,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &321631230474605416
@@ -157,6 +159,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &369242026260106553
@@ -210,6 +213,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &410115847436128902
@@ -311,6 +315,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &1255683152654615538
@@ -443,6 +448,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &1340184386171453422
@@ -496,6 +502,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &1820740903206302579
@@ -549,6 +556,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &1896054734205113201
@@ -602,6 +610,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &2431316912562693538
@@ -655,6 +664,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 28
 --- !u!1 &2665207067152199225
@@ -756,6 +766,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &3120446593140378204
@@ -843,6 +854,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &3623717812178450207
@@ -2028,6 +2040,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &4396996360677828814
@@ -2081,6 +2094,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &4401583360475927392
@@ -2134,6 +2148,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &4574325545387188949
@@ -2198,6 +2213,7 @@ MonoBehaviour:
   explosionHullRenderers:
   - {fileID: 7259548067414351723}
   - {fileID: 1455833794287622403}
+  compositeBeamMuzzle: {fileID: 0}
 --- !u!65 &2291986679457826982
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2488,13 +2504,6 @@ MonoBehaviour:
   - {fileID: 1455833794287622403}
   - {fileID: 3979138582023782418}
   - {fileID: 3722578251753459242}
-  - {fileID: 6459381667979558821}
-  - {fileID: 2607194465085312600}
-  - {fileID: 3235836202944660018}
-  - {fileID: 5845540105817772309}
-  - {fileID: 4390185990851314264}
-  - {fileID: 2508591487100544991}
-  - {fileID: 1009595349770229033}
   - {fileID: 676955951209049671}
 --- !u!1 &4614726552864320220
 GameObject:
@@ -2547,6 +2556,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 26
 --- !u!1 &4881311844538528576
@@ -2600,6 +2610,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &5425463041207047226
@@ -2653,6 +2664,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 28
 --- !u!1 &5504113859469114673
@@ -2706,6 +2718,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &5557517378090194361
@@ -2909,6 +2922,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 28
 --- !u!1 &5930329482853468499
@@ -2962,6 +2976,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &5961346259954321485
@@ -3063,6 +3078,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &6019226325323295850
@@ -3191,6 +3207,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &6785272700891803138
@@ -3244,6 +3261,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &7600812698983210418
@@ -3297,6 +3315,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &7797859683344390138
@@ -3350,6 +3369,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 25
 --- !u!1 &8149229279080695246
@@ -3403,6 +3423,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &8869782192770501499
@@ -3531,6 +3552,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &9130461819773229114
@@ -3579,6 +3601,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Hangar.HangarComponent
   launchPoint: {fileID: 3146950717794161874}
   hangarHardPoint: {fileID: 5945653925879705193}
+  bayHardPoints: []
+  bayLaunchPoints: []
   isDestroyable: 1
 --- !u!1 &9151852679333265622
 GameObject:
@@ -3631,6 +3655,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 27
 --- !u!1 &9184800631885070607
@@ -3684,6 +3709,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -85
     <Max>k__BackingField: 85
+  mainBattery: 0
   prewarmEffects: 0
   <WeaponType>k__BackingField: 26
 --- !u!1001 &1545718542174955107
@@ -3843,12 +3869,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56, type: 3}
---- !u!23 &1009595349770229033 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1723492391453884762, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &1017756144316155602 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1726591146134459041, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
@@ -3867,24 +3887,6 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 1867268358492279923}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &2508591487100544991 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4267600483049288620, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &2607194465085312600 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4451600564207491627, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &3235836202944660018 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3823029744717256257, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &3722578251753459242 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3044608856037415513, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
@@ -3894,12 +3896,6 @@ MeshRenderer:
 --- !u!23 &3979138582023782418 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3373587379365745761, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &4390185990851314264 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 2667481505207719467, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
     type: 3}
   m_PrefabInstance: {fileID: 1867268358492279923}
   m_PrefabAsset: {fileID: 0}
@@ -3915,21 +3911,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1867268358492279923}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &5845540105817772309 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5257487938074379622, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &6323229716927304976 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5632104557487522147, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
-    type: 3}
-  m_PrefabInstance: {fileID: 1867268358492279923}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &6459381667979558821 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4633513293830761430, guid: 9fb2f6e87ad8bdf4da79bfbb8e772d56,
     type: 3}
   m_PrefabInstance: {fileID: 1867268358492279923}
   m_PrefabAsset: {fileID: 0}

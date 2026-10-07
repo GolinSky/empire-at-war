@@ -106,7 +106,9 @@ PrefabInstance:
       value: ArquitensImperialCruiserQuadTurret
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6863896127988507313, guid: 3ac890b7b434f064ca7d8257576b84c7, type: 3}
+    - {fileID: -3542356969387044624, guid: 3ac890b7b434f064ca7d8257576b84c7, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ac890b7b434f064ca7d8257576b84c7, type: 3}

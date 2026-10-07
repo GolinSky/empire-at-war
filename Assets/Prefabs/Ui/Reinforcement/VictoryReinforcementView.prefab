@@ -50,6 +50,7 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 1832455267022552267}
   - {fileID: 6273226288672033100}
+  hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
   height: 0
 --- !u!54 &5151764846392136191
 Rigidbody:
