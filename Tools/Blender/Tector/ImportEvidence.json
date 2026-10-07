@@ -1,0 +1,2535 @@
+{
+  "date": "2026-10-07",
+  "source_unit": "E_Tector_Star_Destroyer",
+  "ship_type": 210,
+  "weapon_boost_id": 32,
+  "source_hashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD.ALO": "2e7537437ef1c86a5b3116f370c96ab52f343319e4cbe626cdbd1d6bfae6922a",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hangar_Imp_1k.dds": "8693b3b8f23db2258d5cddd810c24fcf5c60cb9a5b2e179faabf069456578a7d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Armor_B.dds": "2bd44154de7f51262cae852eef823a4c31ad85e12d8fb2cdf36748608abaa3fe",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Armor_Thick.dds": "3ef6a582a29eb066822a8fabd0c82b58a8bfc598123ed6f2c3a04adbdfbafb92",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD.dds": "92ddc4a77335bfabd687e7107916174d0d76f03cebceddaffda527c8648dabb3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_B.dds": "678eec9f6056e0f1205e7e9e630eb4dd602754dc0490a2253d6c251659728f8d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Kitbash_Pieces_ISD_Lights.dds": "6b6fe104c7e1227fdbe662f3de45a2efaa7cf45a81f5db2b1598254dac62fe74",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Lights_Grid.dds": "099112ab4920b4b55fc1ba69c98750bb3dc1269d50c4f6424dc70ace58b24564",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base.dds": "6d7753b511f9f67d1270e2396925b0218897354f5bfd86ee5acc12af0a7d1026",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hull_Superstructure_Base_B.dds": "dd61f882f7eda6db3015fcae8b825911b49bd34a1b0d00fbdb060871f5c3e5e1",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_ISD_diffuse.dds": "1c9313e8d6673edec8a741fe458fad54675aeb1cc3cd4d26a5e98a0e4346ed3b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Hullplates_normal_specular.dds": "1678f960166c8362d03c67d7946131f65b36a7d879c6e315a7a2b6f781e4d448",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\P_ISD_ENG.dds": "f5428cc1c8cd48221410265af6bbfb7a89b7bebbfaa8d8aadc92ec2ea621f4a4",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_01.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_02.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_03.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_04.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_05.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_06.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_07.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1_TLD_08.ALO": "faeddec7174136714d846f6ed6d8280993658cad093693916e102d8c53ae88d9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_01.ALO": "7733f4beb6989af1a9b7882e6ee8c15cbafeb260c1a8c0ee9842435866932d64",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Imperial_Star_Destroyer_Armor.dds": "22e41cf8269724bdf35156487b6a618e964e6f8f4dd388c8f0b1214653ef8ea0",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Imperial_Star_Destroyer_Armor_B.dds": "86ddc16343419c883d7628f6e46d7dcee7465bd795f292e4093e316cb7863e5f",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_02.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_03.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_04.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_05.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_06.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_Star_Destroyer_Triple_Turbolaser_07.ALO": "2bf7aa4517169144b678d7bb4466e218edd13833f53e568a3884d628841848f3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_01.ALO": "1ff463525c52de4fdfe7a7a1664572a9b1cd4582872ac4cf50d6626ee93935dc",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull.dds": "3c0108663f3220ba21070de01e124469120364304506d44e53f0d1b473c15df3",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Neutral_Republic_Venator_Star_Destroyer_Hull_B.dds": "9a95e14baeaf0e568c870e0ec56a9a16bdb7ca2f17998c27c499b7bb37deb366",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Neutral_Republic_Venator_Star_Destroyer_MTL_02.ALO": "7b5cdb8b04a55455f5b10354ee43529569430a8b23ef70be203f2f74d8e466a8",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_ISD_Tector_Armor.alo": "c42c5981eab6bdf6116adf333d971dc5924e353018b7e71c9545ccb6a9d3da5b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Imperial_SD_1.alo": "46c5931300d210ce848e5c23eb753088d00fcbf6529ed2e634ef24fa7c10d3fa",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_ISD_12T_SS.ALO": "a4e390e9ccfce154f1a61619952f10ed9d2e726c4c1d12e42898190bab9503a5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\SPACEUNITSCAPITAL.XML": "8f2d1707a891b21e01bb089c8161e63a75f1451b1d55577c7af28b29d274d174",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\Hardpoints_Empire_Space.xml": "91118d49236097fe98ab21ba04f18e3b2b80f60c5a8e91837adae7b9ec94b2ae",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\HardPoints_dummy.xml": "79eacdb944b14a48c2e2f98e1a1ea878d3b2ba573b693658d3b28c8be31d4574",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\PROJECTILES_SPACE.XML": "866f0dd85ed1fed21d1d3c6842213da268c953c5a4106ace8449addf8bd20939"
+  },
+  "shared_models": {
+    "Tector": "ISDI",
+    "TectorTurret19": "ISDIParts",
+    "TectorTurret01": "ISDITLD01",
+    "TectorTurret02": "ISDITLD02",
+    "TectorTurret03": "ISDITLD03",
+    "TectorTurret04": "ISDITLD04",
+    "TectorTurret05": "ISDITLD05",
+    "TectorTurret06": "ISDITLD06",
+    "TectorTurret09": "ISDITLT01",
+    "TectorTurret10": "ISDITLT02",
+    "TectorTurret11": "ISDITLT03"
+  },
+  "conversion": [
+    {
+      "variant": "TectorTurret07",
+      "before": {
+        "meshes": {
+          "Turret.001": {
+            "vertices": 993,
+            "triangles": 339,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Barrel.001": {
+            "vertices": 328,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Barrel_Shadow.001": {
+            "vertices": 102,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Turret_Shadow.001": {
+            "vertices": 201,
+            "triangles": 386,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Collision.001": {
+            "vertices": 12,
+            "triangles": 20,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              0.0007928548729978502,
+              -2.145189046859741,
+              7.232693672180176
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.3768411564524285e-06,
+              -20.486913681030273,
+              7.307697772979736
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              -1.2255374193191528,
+              -20.486913681030273,
+              7.307697772979736
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              1.2260948419570923,
+              -20.486913681030273,
+              7.307700157165527
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              0.0007927094120532274,
+              -2.145188808441162,
+              7.232694625854492
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Collision": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -12.695436477661133,
+          -20.326650619506836,
+          -1.1962801218032837
+        ],
+        "bounds_max": [
+          12.695722579956055,
+          15.965622901916504,
+          12.638873100280762
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.001": {
+            "vertices": 993,
+            "triangles": 339,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.001"
+            ]
+          },
+          "Barrel.001": {
+            "vertices": 328,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.001"
+            ]
+          },
+          "Barrel_Shadow.001": {
+            "vertices": 102,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.001"
+            ]
+          },
+          "Turret_Shadow.001": {
+            "vertices": 201,
+            "triangles": 386,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.001"
+            ]
+          },
+          "Collision.001": {
+            "vertices": 12,
+            "triangles": 20,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION.001"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              0.0007927499245852232,
+              -2.1451876163482666,
+              7.232694149017334
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -7.271631602634443e-06,
+              -20.48691177368164,
+              7.307701110839844
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              -1.2255383729934692,
+              -20.48691177368164,
+              7.307701110839844
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              1.2260938882827759,
+              -20.48691177368164,
+              7.307703495025635
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              0.0007926307152956724,
+              -2.1451876163482666,
+              7.23269510269165
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              -1.0120249078907231e-28,
+              -6.211762388297133e-22,
+              8.470330482284962e-22
+            ]
+          },
+          "Collision": {
+            "parent": "Turret",
+            "head": [
+              -1.0120249078907231e-28,
+              -6.211762388297133e-22,
+              8.470330482284962e-22
+            ]
+          }
+        },
+        "bounds_min": [
+          -12.695435523986816,
+          -20.326648712158203,
+          -1.1962814331054688
+        ],
+        "bounds_max": [
+          12.695724487304688,
+          15.96562385559082,
+          12.638874053955078
+        ]
+      },
+      "materials": [
+        {
+          "name": "Hull_Kitbash_Pieces_ISD Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Kitbash_Pieces_ISD",
+          "normal": "Tector_Hull_Kitbash_Pieces_ISD_B"
+        },
+        {
+          "name": "COLLISION",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        }
+      ],
+      "bone_error": 3.960906917056119e-06,
+      "geometry_error": 4.945389869854818e-06
+    },
+    {
+      "variant": "TectorTurret08",
+      "before": {
+        "meshes": {
+          "Turret.003": {
+            "vertices": 993,
+            "triangles": 339,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Barrel.003": {
+            "vertices": 328,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Barrel_Shadow.003": {
+            "vertices": 102,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Turret_Shadow.003": {
+            "vertices": 201,
+            "triangles": 386,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Collision.003": {
+            "vertices": 12,
+            "triangles": 20,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              0.0007928548729978502,
+              -2.145189046859741,
+              7.232693672180176
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.3768411564524285e-06,
+              -20.486913681030273,
+              7.307697772979736
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              -1.2255374193191528,
+              -20.486913681030273,
+              7.307697772979736
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              1.2260948419570923,
+              -20.486913681030273,
+              7.307700157165527
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              0.0007927094120532274,
+              -2.145188808441162,
+              7.232694625854492
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Collision": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -12.695436477661133,
+          -20.326650619506836,
+          -1.1962801218032837
+        ],
+        "bounds_max": [
+          12.695722579956055,
+          15.965622901916504,
+          12.638873100280762
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.003": {
+            "vertices": 993,
+            "triangles": 339,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.002"
+            ]
+          },
+          "Barrel.003": {
+            "vertices": 328,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.002"
+            ]
+          },
+          "Barrel_Shadow.003": {
+            "vertices": 102,
+            "triangles": 196,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.002"
+            ]
+          },
+          "Turret_Shadow.003": {
+            "vertices": 201,
+            "triangles": 386,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.002"
+            ]
+          },
+          "Collision.003": {
+            "vertices": 12,
+            "triangles": 20,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION.002"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              0.0007927499245852232,
+              -2.1451876163482666,
+              7.232694149017334
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -7.271631602634443e-06,
+              -20.48691177368164,
+              7.307701110839844
+            ]
+          },
+          "FP_02": {
+            "parent": "Barrel",
+            "head": [
+              -1.2255383729934692,
+              -20.48691177368164,
+              7.307701110839844
+            ]
+          },
+          "FP_03": {
+            "parent": "Barrel",
+            "head": [
+              1.2260938882827759,
+              -20.48691177368164,
+              7.307703495025635
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              0.0007926307152956724,
+              -2.1451876163482666,
+              7.23269510269165
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              -1.0120249078907231e-28,
+              -6.211762388297133e-22,
+              8.470330482284962e-22
+            ]
+          },
+          "Collision": {
+            "parent": "Turret",
+            "head": [
+              -1.0120249078907231e-28,
+              -6.211762388297133e-22,
+              8.470330482284962e-22
+            ]
+          }
+        },
+        "bounds_min": [
+          -12.695435523986816,
+          -20.326648712158203,
+          -1.1962814331054688
+        ],
+        "bounds_max": [
+          12.695724487304688,
+          15.96562385559082,
+          12.638874053955078
+        ]
+      },
+      "materials": [
+        {
+          "name": "Hull_Kitbash_Pieces_ISD Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Kitbash_Pieces_ISD",
+          "normal": "Tector_Hull_Kitbash_Pieces_ISD_B"
+        },
+        {
+          "name": "COLLISION",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        }
+      ],
+      "bone_error": 3.960906917056119e-06,
+      "geometry_error": 4.945389869854818e-06
+    },
+    {
+      "variant": "TectorTurret12",
+      "before": {
+        "meshes": {
+          "Turret.005": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Barrel.005": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Bshadow": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Tshadow": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.64988362789154e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -4.948597620568762e-07,
+              -3.0374202728271484,
+              1.2976301908493042
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.709517492708983e-07,
+              -7.065934181213379,
+              1.281183123588562
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -4.948598189002951e-07,
+              -3.0374205112457275,
+              1.2976300716400146
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              1.4004616693749639e-12,
+              7.64988362789154e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708232402801514,
+          -6.77593994140625,
+          -0.0027561187744140625
+        ],
+        "bounds_max": [
+          3.2989895343780518,
+          3.8838233947753906,
+          3.4167356491088867
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.005": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.001"
+            ]
+          },
+          "Barrel.005": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.001"
+            ]
+          },
+          "Bshadow": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.003"
+            ]
+          },
+          "Tshadow": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.003"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -6.736737532264669e-07,
+              -3.0374202728271484,
+              1.2976306676864624
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.655759640736505e-07,
+              -7.065934181213379,
+              1.2811843156814575
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -6.140691652944952e-07,
+              -3.0374205112457275,
+              1.2976305484771729
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708230018615723,
+          -6.775938987731934,
+          -0.002756596775725484
+        ],
+        "bounds_max": [
+          3.2989892959594727,
+          3.8838233947753906,
+          3.4167351722717285
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Empire_Imperial_Star_Destroyer_Armor Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Empire_Imperial_Star_Destroyer_Armor",
+          "normal": "Tector_Empire_Imperial_Star_Destroyer_Armor_B"
+        }
+      ],
+      "bone_error": 1.227961277783242e-06,
+      "geometry_error": 1.4551348228137138e-06
+    },
+    {
+      "variant": "TectorTurret13",
+      "before": {
+        "meshes": {
+          "Turret.007": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Barrel.007": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Bshadow.002": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Tshadow.002": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.64988362789154e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -4.948597620568762e-07,
+              -3.0374202728271484,
+              1.2976301908493042
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.709517492708983e-07,
+              -7.065934181213379,
+              1.281183123588562
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -4.948598189002951e-07,
+              -3.0374205112457275,
+              1.2976300716400146
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              1.4004616693749639e-12,
+              7.64988362789154e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708232402801514,
+          -6.77593994140625,
+          -0.0027561187744140625
+        ],
+        "bounds_max": [
+          3.2989895343780518,
+          3.8838233947753906,
+          3.4167356491088867
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.007": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.002"
+            ]
+          },
+          "Barrel.007": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.002"
+            ]
+          },
+          "Bshadow.002": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.004"
+            ]
+          },
+          "Tshadow.002": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.004"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -6.736737532264669e-07,
+              -3.0374202728271484,
+              1.2976306676864624
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.655759640736505e-07,
+              -7.065934181213379,
+              1.2811843156814575
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -6.140691652944952e-07,
+              -3.0374205112457275,
+              1.2976305484771729
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708230018615723,
+          -6.775938987731934,
+          -0.002756596775725484
+        ],
+        "bounds_max": [
+          3.2989892959594727,
+          3.8838233947753906,
+          3.4167351722717285
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Empire_Imperial_Star_Destroyer_Armor Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Empire_Imperial_Star_Destroyer_Armor",
+          "normal": "Tector_Empire_Imperial_Star_Destroyer_Armor_B"
+        }
+      ],
+      "bone_error": 1.227961277783242e-06,
+      "geometry_error": 1.4551348228137138e-06
+    },
+    {
+      "variant": "TectorTurret14",
+      "before": {
+        "meshes": {
+          "Turret.009": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Barrel.009": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Bshadow.004": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Tshadow.004": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.64988362789154e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -4.948597620568762e-07,
+              -3.0374202728271484,
+              1.2976301908493042
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.709517492708983e-07,
+              -7.065934181213379,
+              1.281183123588562
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -4.948598189002951e-07,
+              -3.0374205112457275,
+              1.2976300716400146
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              1.4004616693749639e-12,
+              7.64988362789154e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708232402801514,
+          -6.77593994140625,
+          -0.0027561187744140625
+        ],
+        "bounds_max": [
+          3.2989895343780518,
+          3.8838233947753906,
+          3.4167356491088867
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.009": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.003"
+            ]
+          },
+          "Barrel.009": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.003"
+            ]
+          },
+          "Bshadow.004": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.005"
+            ]
+          },
+          "Tshadow.004": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.005"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -6.736737532264669e-07,
+              -3.0374202728271484,
+              1.2976306676864624
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.655759640736505e-07,
+              -7.065934181213379,
+              1.2811843156814575
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -6.140691652944952e-07,
+              -3.0374205112457275,
+              1.2976305484771729
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708230018615723,
+          -6.775938987731934,
+          -0.002756596775725484
+        ],
+        "bounds_max": [
+          3.2989892959594727,
+          3.8838233947753906,
+          3.4167351722717285
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Empire_Imperial_Star_Destroyer_Armor Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Empire_Imperial_Star_Destroyer_Armor",
+          "normal": "Tector_Empire_Imperial_Star_Destroyer_Armor_B"
+        }
+      ],
+      "bone_error": 1.227961277783242e-06,
+      "geometry_error": 1.4551348228137138e-06
+    },
+    {
+      "variant": "TectorTurret15",
+      "before": {
+        "meshes": {
+          "Turret.011": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Barrel.011": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material"
+            ]
+          },
+          "Bshadow.006": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Tshadow.006": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.64988362789154e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -4.948597620568762e-07,
+              -3.0374202728271484,
+              1.2976301908493042
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -6.709517492708983e-07,
+              -7.065934181213379,
+              1.281183123588562
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -4.948598189002951e-07,
+              -3.0374205112457275,
+              1.2976300716400146
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              1.4004616693749639e-12,
+              7.64988362789154e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708232402801514,
+          -6.77593994140625,
+          -0.0027561187744140625
+        ],
+        "bounds_max": [
+          3.2989895343780518,
+          3.8838233947753906,
+          3.4167356491088867
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.011": {
+            "vertices": 974,
+            "triangles": 438,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.004"
+            ]
+          },
+          "Barrel.011": {
+            "vertices": 360,
+            "triangles": 198,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Empire_Imperial_Star_Destroyer_Armor Material.004"
+            ]
+          },
+          "Bshadow.006": {
+            "vertices": 144,
+            "triangles": 252,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.006"
+            ]
+          },
+          "Tshadow.006": {
+            "vertices": 342,
+            "triangles": 559,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.006"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -6.736737532264669e-07,
+              -3.0374202728271484,
+              1.2976306676864624
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.655759640736505e-07,
+              -7.065934181213379,
+              1.2811843156814575
+            ]
+          },
+          "Bshadow": {
+            "parent": "Barrel",
+            "head": [
+              -6.140691652944952e-07,
+              -3.0374205112457275,
+              1.2976305484771729
+            ]
+          },
+          "Tshadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              7.62939453125e-06,
+              -1.2429860743110033e-12
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.2708230018615723,
+          -6.775938987731934,
+          -0.002756596775725484
+        ],
+        "bounds_max": [
+          3.2989892959594727,
+          3.8838233947753906,
+          3.4167351722717285
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Empire_Imperial_Star_Destroyer_Armor Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Empire_Imperial_Star_Destroyer_Armor",
+          "normal": "Tector_Empire_Imperial_Star_Destroyer_Armor_B"
+        }
+      ],
+      "bone_error": 1.227961277783242e-06,
+      "geometry_error": 1.4551348228137138e-06
+    },
+    {
+      "variant": "TectorTurret16",
+      "before": {
+        "meshes": {
+          "Turret.013": {
+            "vertices": 142,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material"
+            ]
+          },
+          "Barrel.013": {
+            "vertices": 913,
+            "triangles": 420,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material"
+            ]
+          },
+          "Barrel_Shadow.005": {
+            "vertices": 232,
+            "triangles": 437,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Turret_Shadow.005": {
+            "vertices": 42,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.036654566632933e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -1.1694386614635732e-07,
+              -1.4494988918304443,
+              -1.2671914362272219e-07
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -5.571538963522471e-07,
+              -10.005099296569824,
+              -1.2671914362272219e-07
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              -1.1694386614635732e-07,
+              -1.4494988918304443,
+              -1.2671914362272219e-07
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              -1.1368683094535245e-13,
+              -1.036654566632933e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.642373561859131,
+          -9.676554679870605,
+          -1.614767074584961
+        ],
+        "bounds_max": [
+          3.6955864429473877,
+          4.364434719085693,
+          1.9952243566513062
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.013": {
+            "vertices": 142,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material.001"
+            ]
+          },
+          "Barrel.013": {
+            "vertices": 913,
+            "triangles": 420,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material.001"
+            ]
+          },
+          "Barrel_Shadow.005": {
+            "vertices": 232,
+            "triangles": 437,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.007"
+            ]
+          },
+          "Turret_Shadow.005": {
+            "vertices": 42,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.007"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.0728836059570312e-06,
+              1.7479491161778715e-13
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -1.1694389456806675e-07,
+              -1.4494988918304443,
+              1.0943418260467297e-07
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.74386239249725e-07,
+              -10.005099296569824,
+              1.5033183444757015e-06
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              -1.7654853934345738e-07,
+              -1.4494988918304443,
+              1.0943418260467297e-07
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              -1.0728836059570312e-06,
+              1.7479491161778715e-13
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.6423728466033936,
+          -9.676553726196289,
+          -1.6147665977478027
+        ],
+        "bounds_max": [
+          3.6955862045288086,
+          4.364434242248535,
+          1.9952244758605957
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Neutral_Republic_Venator_Star_Destroyer_Hull Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Neutral_Republic_Venator_Star_Destroyer_Hull",
+          "normal": "Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_B"
+        }
+      ],
+      "bone_error": 1.6825887811529808e-06,
+      "geometry_error": 2.547183416228485e-06
+    },
+    {
+      "variant": "TectorTurret17",
+      "before": {
+        "meshes": {
+          "Turret.015": {
+            "vertices": 142,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material"
+            ]
+          },
+          "Barrel.015": {
+            "vertices": 913,
+            "triangles": 420,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material"
+            ]
+          },
+          "Barrel_Shadow.007": {
+            "vertices": 232,
+            "triangles": 437,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Turret_Shadow.007": {
+            "vertices": 42,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.036654566632933e-06,
+              0.0
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -1.1694386614635732e-07,
+              -1.4494988918304443,
+              -1.2671914362272219e-07
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -5.571538963522471e-07,
+              -10.005099296569824,
+              -1.2671914362272219e-07
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              -1.1694386614635732e-07,
+              -1.4494988918304443,
+              -1.2671914362272219e-07
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              -1.1368683094535245e-13,
+              -1.036654566632933e-06,
+              0.0
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.642373561859131,
+          -9.676554679870605,
+          -1.614767074584961
+        ],
+        "bounds_max": [
+          3.6955864429473877,
+          4.364434719085693,
+          1.9952243566513062
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Turret.015": {
+            "vertices": 142,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material.002"
+            ]
+          },
+          "Barrel.015": {
+            "vertices": 913,
+            "triangles": 420,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Neutral_Republic_Venator_Star_Destroyer_Hull Material.002"
+            ]
+          },
+          "Barrel_Shadow.007": {
+            "vertices": 232,
+            "triangles": 437,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.008"
+            ]
+          },
+          "Turret_Shadow.007": {
+            "vertices": 42,
+            "triangles": 72,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.008"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Turret": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.0728836059570312e-06,
+              1.7479491161778715e-13
+            ]
+          },
+          "Barrel": {
+            "parent": "Turret",
+            "head": [
+              -1.1694389456806675e-07,
+              -1.4494988918304443,
+              1.0943418260467297e-07
+            ]
+          },
+          "FP_01": {
+            "parent": "Barrel",
+            "head": [
+              -9.74386239249725e-07,
+              -10.005099296569824,
+              1.5033183444757015e-06
+            ]
+          },
+          "Barrel_Shadow": {
+            "parent": "Barrel",
+            "head": [
+              -1.7654853934345738e-07,
+              -1.4494988918304443,
+              1.0943418260467297e-07
+            ]
+          },
+          "Turret_Shadow": {
+            "parent": "Turret",
+            "head": [
+              0.0,
+              -1.0728836059570312e-06,
+              1.7479491161778715e-13
+            ]
+          }
+        },
+        "bounds_min": [
+          -3.6423728466033936,
+          -9.676553726196289,
+          -1.6147665977478027
+        ],
+        "bounds_max": [
+          3.6955862045288086,
+          4.364434242248535,
+          1.9952244758605957
+        ]
+      },
+      "materials": [
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Neutral_Republic_Venator_Star_Destroyer_Hull Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Neutral_Republic_Venator_Star_Destroyer_Hull",
+          "normal": "Tector_Neutral_Republic_Venator_Star_Destroyer_Hull_B"
+        }
+      ],
+      "bone_error": 1.6825887811529808e-06,
+      "geometry_error": 2.547183416228485e-06
+    },
+    {
+      "variant": "TectorTurret18",
+      "before": {
+        "meshes": {
+          "Tector_Armor": {
+            "vertices": 302,
+            "triangles": 200,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Armor_Thick Material"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Tector_Armor": {
+            "parent": "Root",
+            "head": [
+              9.1552734375e-05,
+              -55.370391845703125,
+              -10.520853996276855
+            ]
+          }
+        },
+        "bounds_min": [
+          -159.11764526367188,
+          -448.29595947265625,
+          -42.84354782104492
+        ],
+        "bounds_max": [
+          159.11737060546875,
+          162.35366821289062,
+          -4.0674285888671875
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Tector_Armor": {
+            "vertices": 302,
+            "triangles": 200,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Armor_Thick Material.001"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Tector_Armor": {
+            "parent": "Root",
+            "head": [
+              9.1552734375e-05,
+              -55.370391845703125,
+              -10.520845413208008
+            ]
+          }
+        },
+        "bounds_min": [
+          -159.11764526367188,
+          -448.29595947265625,
+          -42.843544006347656
+        ],
+        "bounds_max": [
+          159.11737060546875,
+          162.35366821289062,
+          -4.067355155944824
+        ]
+      },
+      "materials": [
+        {
+          "name": "Hull_Armor_Thick Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Armor_Thick",
+          "normal": "Tector_Hull_Armor_B"
+        }
+      ],
+      "bone_error": 8.58306884765625e-06,
+      "geometry_error": 7.343292236328125e-05
+    },
+    {
+      "variant": "TectorTurret20",
+      "before": {
+        "meshes": {
+          "Hull_SS.002": {
+            "vertices": 2437,
+            "triangles": 1476,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "TectorTurret20_Hull_SS_Slot00",
+              "TectorTurret20_Hull_SS_Slot01",
+              "TectorTurret20_Hull_SS_Slot02",
+              "TectorTurret20_Hull_SS_Slot03"
+            ]
+          },
+          "Kitbash_SS_01.002": {
+            "vertices": 18799,
+            "triangles": 10905,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Collision_SS.002": {
+            "vertices": 198,
+            "triangles": 364,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION"
+            ]
+          },
+          "Kitbash_SS_02.002": {
+            "vertices": 20283,
+            "triangles": 11962,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Kitbash_SS_03.002": {
+            "vertices": 954,
+            "triangles": 671,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material"
+            ]
+          },
+          "Kitbash_SS_Lights.002": {
+            "vertices": 3416,
+            "triangles": 2526,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD_Lights Material"
+            ]
+          },
+          "Shadow_SS_01.002": {
+            "vertices": 823,
+            "triangles": 1506,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          },
+          "Shadow_SS_02.002": {
+            "vertices": 523,
+            "triangles": 1042,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Collision": {
+            "parent": "Root",
+            "head": [
+              -0.00035757655859924853,
+              9.327124644187279e-06,
+              0.0
+            ]
+          },
+          "PI_DAMAGE_ELEC_CAP00": {
+            "parent": "Collision",
+            "head": [
+              -0.00035757655859924853,
+              415.2521057128906,
+              -3.713557089213282e-05
+            ]
+          },
+          "P_BLINK_WHITE": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              90.17362976074219,
+              77.0300064086914
+            ]
+          },
+          "P_BLINK_WHITE.001": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              109.702880859375,
+              88.00523376464844
+            ]
+          },
+          "P_BLINK_WHITE.002": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.200286865234375,
+              55.12163543701172
+            ]
+          },
+          "PPTW_PTWSA": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              90.17362976074219,
+              77.0300064086914
+            ]
+          },
+          "PPTW_PTWSA.001": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              109.702880859375,
+              88.00523376464844
+            ]
+          },
+          "PPTW_PTWSA.002": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.200286865234375,
+              55.12163543701172
+            ]
+          }
+        },
+        "bounds_min": [
+          -152.4495391845703,
+          -48.05351638793945,
+          21.302221298217773
+        ],
+        "bounds_max": [
+          152.4488983154297,
+          433.1261901855469,
+          116.35376739501953
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Collision_SS.002": {
+            "vertices": 198,
+            "triangles": 364,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "COLLISION.004"
+            ]
+          },
+          "Hull_SS.002": {
+            "vertices": 2437,
+            "triangles": 1476,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "TectorTurret20_Hull_SS_Slot00.001",
+              "TectorTurret20_Hull_SS_Slot01.001",
+              "TectorTurret20_Hull_SS_Slot02.001",
+              "TectorTurret20_Hull_SS_Slot03.001"
+            ]
+          },
+          "Kitbash_SS_01.002": {
+            "vertices": 18799,
+            "triangles": 10905,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.004"
+            ]
+          },
+          "Kitbash_SS_02.002": {
+            "vertices": 20283,
+            "triangles": 11962,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.004"
+            ]
+          },
+          "Kitbash_SS_03.002": {
+            "vertices": 954,
+            "triangles": 671,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD Material.004"
+            ]
+          },
+          "Kitbash_SS_Lights.002": {
+            "vertices": 3416,
+            "triangles": 2526,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Hull_Kitbash_Pieces_ISD_Lights Material.002"
+            ]
+          },
+          "Shadow_SS_01.002": {
+            "vertices": 823,
+            "triangles": 1506,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.010"
+            ]
+          },
+          "Shadow_SS_02.002": {
+            "vertices": 523,
+            "triangles": 1042,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "SHADOW.010"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "Collision": {
+            "parent": "Root",
+            "head": [
+              -0.00035757655859924853,
+              9.298324584960938e-06,
+              -1.514889234020822e-12
+            ]
+          },
+          "PI_DAMAGE_ELEC_CAP00": {
+            "parent": "Collision",
+            "head": [
+              -0.00035757655859924853,
+              415.2521057128906,
+              -0.0001229085319209844
+            ]
+          },
+          "P_BLINK_WHITE": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              90.17364501953125,
+              77.02999114990234
+            ]
+          },
+          "P_BLINK_WHITE.001": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              109.70289611816406,
+              88.00521850585938
+            ]
+          },
+          "P_BLINK_WHITE.002": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.2002779245376587,
+              55.12163543701172
+            ]
+          },
+          "PPTW_PTWSA": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              90.17364501953125,
+              77.02999114990234
+            ]
+          },
+          "PPTW_PTWSA.001": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              109.70289611816406,
+              88.00521850585938
+            ]
+          },
+          "PPTW_PTWSA.002": {
+            "parent": "Root",
+            "head": [
+              0.0,
+              -1.2002779245376587,
+              55.12163543701172
+            ]
+          }
+        },
+        "bounds_min": [
+          -152.4495391845703,
+          -48.05351257324219,
+          21.30219841003418
+        ],
+        "bounds_max": [
+          152.4488983154297,
+          433.126220703125,
+          116.35369873046875
+        ]
+      },
+      "materials": [
+        {
+          "name": "Hull_Kitbash_Pieces_ISD Material",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Kitbash_Pieces_ISD",
+          "normal": "Tector_Hull_Kitbash_Pieces_ISD_B"
+        },
+        {
+          "name": "TectorTurret20_Hull_SS_Slot00",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Armor_Thick",
+          "normal": "Tector_Hull_Armor_B"
+        },
+        {
+          "name": "TectorTurret20_Hull_SS_Slot01",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Armor_Thick",
+          "normal": "Tector_Hull_Armor_B"
+        },
+        {
+          "name": "TectorTurret20_Hull_SS_Slot03",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hull_Superstructure_Base",
+          "normal": "Tector_Hull_Superstructure_Base_B"
+        },
+        {
+          "name": "Hull_Kitbash_Pieces_ISD_Lights Material",
+          "shader": "MeshAdditive.fx",
+          "base": "Tector_Hull_Kitbash_Pieces_ISD_Lights",
+          "normal": null
+        },
+        {
+          "name": "TectorTurret20_Hull_SS_Slot02",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Tector_Hullplates_ISD_diffuse",
+          "normal": "Tector_Hullplates_normal_specular"
+        },
+        {
+          "name": "COLLISION",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "SHADOW",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        }
+      ],
+      "bone_error": 8.577296069482849e-05,
+      "geometry_error": 0.0001220703125
+    }
+  ],
+  "unity_geometry": [
+    {
+      "name": "TectorTurret07",
+      "meshes": 5,
+      "triangles": 1137,
+      "maximumBoneError": 6.365779e-08
+    },
+    {
+      "name": "TectorTurret08",
+      "meshes": 5,
+      "triangles": 1137,
+      "maximumBoneError": 6.365779e-08
+    },
+    {
+      "name": "TectorTurret12",
+      "meshes": 4,
+      "triangles": 1447,
+      "maximumBoneError": 4.672759e-08
+    },
+    {
+      "name": "TectorTurret13",
+      "meshes": 4,
+      "triangles": 1447,
+      "maximumBoneError": 4.672759e-08
+    },
+    {
+      "name": "TectorTurret14",
+      "meshes": 4,
+      "triangles": 1447,
+      "maximumBoneError": 4.672759e-08
+    },
+    {
+      "name": "TectorTurret15",
+      "meshes": 4,
+      "triangles": 1447,
+      "maximumBoneError": 4.672759e-08
+    },
+    {
+      "name": "TectorTurret16",
+      "meshes": 4,
+      "triangles": 1001,
+      "maximumBoneError": 3.122607e-08
+    },
+    {
+      "name": "TectorTurret17",
+      "meshes": 4,
+      "triangles": 1001,
+      "maximumBoneError": 3.122607e-08
+    },
+    {
+      "name": "TectorTurret18",
+      "meshes": 1,
+      "triangles": 200,
+      "maximumBoneError": 7.4505806e-08
+    },
+    {
+      "name": "TectorTurret20",
+      "meshes": 8,
+      "triangles": 30452,
+      "maximumBoneError": 1.98529187e-06
+    }
+  ],
+  "saved_assets": {
+    "checks": 2646,
+    "targetable": 16,
+    "weapons": 25,
+    "hull": 22000,
+    "shields": 16000,
+    "speed": 22,
+    "hangarBays": 0,
+    "maximumMountError": 0.0,
+    "automatedTestsRun": false,
+    "playModeRun": false
+  },
+  "bounds": {
+    "size": [
+      102.612175,
+      68.55859,
+      180.000031
+    ],
+    "bottom": -38.6204758,
+    "top": 34.57871,
+    "radius": 109.0
+  },
+  "binary_material_repair": {
+    "mesh": "Hull_SS",
+    "slot_triangle_counts": [
+      712,
+      116,
+      330,
+      318
+    ],
+    "geometry_and_uvs_unchanged": true
+  },
+  "verification_limits": [
+    "No automated Unity test suite",
+    "No Play Mode combat/deployment/destruction run",
+    "Source ALA animation and shader/proxy effects not recreated"
+  ]
+}

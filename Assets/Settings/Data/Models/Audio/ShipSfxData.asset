@@ -214,6 +214,18 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    weaponType: 55
+  - sfx:
+      clip: {fileID: 0}
+      clips:
+        array:
+        - {fileID: 8300000, guid: 6997a1803138dce4db12729c7c541109, type: 3}
+        - {fileID: 8300000, guid: da6fab0506d44c240bc938330dd76339, type: 3}
+      volume: 0.7
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     weaponType: 5
   - sfx:
       clip: {fileID: 8300000, guid: 8a3b1f08bca1ab249afd5167d5aa6b5a, type: 3}
@@ -391,6 +403,26 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 1
+    weaponType: 56
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.65
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    weaponType: 57
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.65
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
     weaponType: 10
   - sfx:
       clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
@@ -422,6 +454,16 @@ MonoBehaviour:
       maxInstances: 4
       loop: 1
     weaponType: 31
+  - sfx:
+      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
+      clips:
+        array: []
+      volume: 0.72
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    weaponType: 60
   - sfx:
       clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
       clips:
@@ -501,7 +543,53 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    weaponType: 61
+  - sfx:
+      clip: {fileID: 8300000, guid: 6aef03de058165c4c8c2f9825cc47adc, type: 3}
+      clips:
+        array: []
+      volume: 0.75
+      priority: 60
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 63
+  - sfx:
+      clip: {fileID: 8300000, guid: 6aef03de058165c4c8c2f9825cc47adc, type: 3}
+      clips:
+        array: []
+      volume: 0.75
+      priority: 60
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     weaponType: 13
+  - sfx:
+      clip: {fileID: 0}
+      clips:
+        array:
+        - {fileID: 8300000, guid: 1bf9a5f29b852904fb6474ec8038cee7, type: 3}
+        - {fileID: 8300000, guid: 935f08e11b516054aa440519f4c484b4, type: 3}
+        - {fileID: 8300000, guid: d840f49e60e6b414598dc8d581888fcb, type: 3}
+      volume: 0.45
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 54
+  - sfx:
+      clip: {fileID: 0}
+      clips:
+        array:
+        - {fileID: 8300000, guid: 1bf9a5f29b852904fb6474ec8038cee7, type: 3}
+        - {fileID: 8300000, guid: 935f08e11b516054aa440519f4c484b4, type: 3}
+        - {fileID: 8300000, guid: d840f49e60e6b414598dc8d581888fcb, type: 3}
+      volume: 0.45
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    weaponType: 62
   - sfx:
       clip: {fileID: 0}
       clips:
@@ -575,94 +663,6 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     weaponType: 17
-  - sfx:
-      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
-      clips:
-        array: []
-      volume: 0.72
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    weaponType: 60
-  - sfx:
-      clip: {fileID: 8300000, guid: 6aef03de058165c4c8c2f9825cc47adc, type: 3}
-      clips:
-        array: []
-      volume: 0.75
-      priority: 60
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    weaponType: 61
-  - sfx:
-      clip: {fileID: 0}
-      clips:
-        array:
-        - {fileID: 8300000, guid: 1bf9a5f29b852904fb6474ec8038cee7, type: 3}
-        - {fileID: 8300000, guid: 935f08e11b516054aa440519f4c484b4, type: 3}
-        - {fileID: 8300000, guid: d840f49e60e6b414598dc8d581888fcb, type: 3}
-      volume: 0.45
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    weaponType: 54
-  - sfx:
-      clip: {fileID: 0}
-      clips:
-        array:
-        - {fileID: 8300000, guid: 1bf9a5f29b852904fb6474ec8038cee7, type: 3}
-        - {fileID: 8300000, guid: 935f08e11b516054aa440519f4c484b4, type: 3}
-        - {fileID: 8300000, guid: d840f49e60e6b414598dc8d581888fcb, type: 3}
-      volume: 0.45
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    weaponType: 62
-  - sfx:
-      clip: {fileID: 8300000, guid: 6aef03de058165c4c8c2f9825cc47adc, type: 3}
-      clips:
-        array: []
-      volume: 0.75
-      priority: 60
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    weaponType: 63
-  - sfx:
-      clip: {fileID: 0}
-      clips:
-        array:
-        - {fileID: 8300000, guid: 6997a1803138dce4db12729c7c541109, type: 3}
-        - {fileID: 8300000, guid: da6fab0506d44c240bc938330dd76339, type: 3}
-      volume: 0.7
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    weaponType: 55
-  - sfx:
-      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
-      clips:
-        array: []
-      volume: 0.65
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    weaponType: 56
-  - sfx:
-      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
-      clips:
-        array: []
-      volume: 0.65
-      priority: 30
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    weaponType: 57
   abilities:
   - start:
       clip: {fileID: 8300000, guid: 80dd32d6735abb544a18326002bb3411, type: 3}
@@ -1033,6 +1033,43 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    abilityId: 26
+  - start:
+      clip: {fileID: 8300000, guid: 515190c14e0a5b24495c279533e9d587, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 66938b94a78349b4da738c050731ebc1, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: b1dea434baaa2f9498363391b806d141, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 7ae9af26cc105b54283de7a49d8a5c65, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     abilityId: 17
   - start:
       clip: {fileID: 8300000, guid: 515190c14e0a5b24495c279533e9d587, type: 3}
@@ -1366,6 +1403,43 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    abilityId: 31
+  - start:
+      clip: {fileID: 8300000, guid: c35172a0e81b36348a8eb4e08eb7eedf, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 8955e6c914c8a2b489c0aece5c5eec5c, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: c8d1e26bcd6b7d14ca9d45310eee0be3, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 0f6eed9990cf2554a9a3ec87a72e0077, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     abilityId: 23
   - start:
       clip: {fileID: 8300000, guid: c35172a0e81b36348a8eb4e08eb7eedf, type: 3}
@@ -1440,7 +1514,81 @@ MonoBehaviour:
       cooldown: 0
       maxInstances: 4
       loop: 0
+    abilityId: 32
+  - start:
+      clip: {fileID: 8300000, guid: c35172a0e81b36348a8eb4e08eb7eedf, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 8955e6c914c8a2b489c0aece5c5eec5c, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: c8d1e26bcd6b7d14ca9d45310eee0be3, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 0f6eed9990cf2554a9a3ec87a72e0077, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
     abilityId: 5
+  - start:
+      clip: {fileID: 8300000, guid: 24004510269604545be3d77c7335af21, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    execution:
+      clip: {fileID: 8300000, guid: 73faa6cea54d2954c9c6b375414f80b3, type: 3}
+      clips:
+        array: []
+      volume: 0.09
+      priority: 40
+      cooldown: 0
+      maxInstances: 4
+      loop: 1
+    end:
+      clip: {fileID: 8300000, guid: 89d97f7d08d68a64d9cc710aebf7f00b, type: 3}
+      clips:
+        array: []
+      volume: 0.5
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    restore:
+      clip: {fileID: 8300000, guid: 3f1260d2129453846a86c2d037d6e796, type: 3}
+      clips:
+        array: []
+      volume: 0.35
+      priority: 70
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+    abilityId: 30
   - start:
       clip: {fileID: 8300000, guid: 24004510269604545be3d77c7335af21, type: 3}
       clips:
@@ -1552,117 +1700,6 @@ MonoBehaviour:
       maxInstances: 4
       loop: 0
     abilityId: 7
-  - start:
-      clip: {fileID: 8300000, guid: 24004510269604545be3d77c7335af21, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    execution:
-      clip: {fileID: 8300000, guid: 73faa6cea54d2954c9c6b375414f80b3, type: 3}
-      clips:
-        array: []
-      volume: 0.09
-      priority: 40
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    end:
-      clip: {fileID: 8300000, guid: 89d97f7d08d68a64d9cc710aebf7f00b, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    restore:
-      clip: {fileID: 8300000, guid: 3f1260d2129453846a86c2d037d6e796, type: 3}
-      clips:
-        array: []
-      volume: 0.35
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    abilityId: 30
-  - start:
-      clip: {fileID: 8300000, guid: c35172a0e81b36348a8eb4e08eb7eedf, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    execution:
-      clip: {fileID: 8300000, guid: 8955e6c914c8a2b489c0aece5c5eec5c, type: 3}
-      clips:
-        array: []
-      volume: 0.09
-      priority: 40
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    end:
-      clip: {fileID: 8300000, guid: c8d1e26bcd6b7d14ca9d45310eee0be3, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    restore:
-      clip: {fileID: 8300000, guid: 0f6eed9990cf2554a9a3ec87a72e0077, type: 3}
-      clips:
-        array: []
-      volume: 0.35
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    abilityId: 31
-  - start:
-      clip: {fileID: 8300000, guid: 515190c14e0a5b24495c279533e9d587, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    execution:
-      clip: {fileID: 8300000, guid: 66938b94a78349b4da738c050731ebc1, type: 3}
-      clips:
-        array: []
-      volume: 0.09
-      priority: 40
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-    end:
-      clip: {fileID: 8300000, guid: b1dea434baaa2f9498363391b806d141, type: 3}
-      clips:
-        array: []
-      volume: 0.5
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    restore:
-      clip: {fileID: 8300000, guid: 7ae9af26cc105b54283de7a49d8a5c65, type: 3}
-      clips:
-        array: []
-      volume: 0.35
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-    abilityId: 26
   engine:
     clip: {fileID: 8300000, guid: aa5595974c8463346852c657c3f27e31, type: 3}
     clips:

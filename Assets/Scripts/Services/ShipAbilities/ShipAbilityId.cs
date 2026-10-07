@@ -31,5 +31,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         MC80IndependencePowerToShields = 26,
         Pursuit = 30,
         AcclamatorBoostWeaponPower = 31,
+        TectorBoostWeaponPower = 32,
     }
 }

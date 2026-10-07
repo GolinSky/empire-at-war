@@ -199,6 +199,27 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: f0344b89ac6897448a6494a4e3c4353e,
           type: 3}
+    - key: 210
+      value:
+        matchups: {fileID: 11400000, guid: 5c515caf8c0852b458b6d5a383fd1fa5, type: 2}
+        description: 22,000 hull; 16,000 shields; speed 22. Eight targetable heavy
+          2-burst turbolasers, two medium long-range dual turbolasers, two shield
+          generators, three engines and tractor beam. Seven medium 3-burst turbolasers,
+          four light turbolasers and four heavy laser cannons are not separately
+          targetable. Boost Weapon Power increases firepower at the expense of defense
+          and speed. Tractor Beam restricts enemy movement. No hangars or fighter
+          complement.
+        role: Ship of the Line / Capital Ship
+        iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
+        isHero: 0
+        <Name>k__BackingField: Tector Star Destroyer
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 25000
+        <BuildTime>k__BackingField: 500
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

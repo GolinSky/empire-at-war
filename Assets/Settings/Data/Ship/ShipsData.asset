@@ -245,6 +245,13 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 305
+      value:
+        m_AssetGUID: 768653c9f01f1524da8620594240df59
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: 209
       value:
         m_AssetGUID: 74f1e78fb2fd1ca4483e4636119c5d8a
@@ -252,9 +259,9 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: 305
+    - key: 210
       value:
-        m_AssetGUID: 768653c9f01f1524da8620594240df59
+        m_AssetGUID: f45bbfb2673f42d4f9c3f8449804f9b6
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
