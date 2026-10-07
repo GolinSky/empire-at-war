@@ -238,6 +238,21 @@ MonoBehaviour:
     projectileSpeed: 133
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 53
+    displayName: Medium Long-Range 2-Burst Dual Turbolaser
+    damageType: 2
+    damage: 210
+    shotsPerSalvo: 2
+    shotInterval: 8.16
+    reload: 21.719
+    range: 393.75
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 55
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 5
     displayName: Dual Medium Turbolaser
     damageType: 2
@@ -252,6 +267,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 133
     color: {r: 1, g: 0, b: 0.05, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 49
+    displayName: Heavy Long-Range 2-Burst Turbolaser
+    damageType: 3
+    damage: 150
+    shotsPerSalvo: 2
+    shotInterval: 7.5
+    reload: 15
+    range: 450
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 45
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 2
     displayName: Heavy Turbolaser
@@ -282,6 +312,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 133
     color: {r: 0.98, g: 0, b: 0.19, a: 1}
+    size: {x: 1, y: 1, z: 1}
+  - weaponType: 50
+    displayName: Heavy 2-Burst Dual Turbolaser
+    damageType: 3
+    damage: 300
+    shotsPerSalvo: 2
+    shotInterval: 7.5
+    reload: 20
+    range: 450
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    projectileSpeed: 45
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1, y: 1, z: 1}
   - weaponType: 43
     displayName: Heavy Dual Turbolaser
@@ -403,6 +448,21 @@ MonoBehaviour:
     projectileSpeed: 55
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 1, y: 1, z: 1}
+  - weaponType: 51
+    displayName: Heavy Long-Range 2-Burst Dual Turbo-Ion
+    damageType: 4
+    damage: 315
+    shotsPerSalvo: 2
+    shotInterval: 11.33
+    reload: 22.66
+    range: 450
+    strikecraftOnly: 0
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 45
+    color: {r: 0.2, g: 0.6, b: 1, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 44
     displayName: Heavy Long-Range 2-Burst Turbo-Ion Cannon
     damageType: 4
@@ -492,6 +552,21 @@ MonoBehaviour:
       type: 3}
     projectileSpeed: 35
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 52
+    displayName: Heavy 8-Burst Artillery-Rocket Launcher
+    damageType: 11
+    damage: 20
+    shotsPerSalvo: 8
+    shotInterval: 3
+    reload: 15
+    range: 500
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 75
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - weaponType: 34
     displayName: Heavy Artillery-Rocket Launcher
@@ -688,6 +763,21 @@ MonoBehaviour:
     projectileSpeed: 140
     color: {r: 1, g: 0.25, b: 0.1, a: 1}
     size: {x: 0.45, y: 0.45, z: 0.6}
+  - weaponType: 54
+    displayName: Repeating Point-Defense Mount
+    damageType: 1
+    damage: 4
+    shotsPerSalvo: 6
+    shotInterval: 0.1
+    reload: 3.998
+    range: 125
+    strikecraftOnly: 1
+    interceptable: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    projectileSpeed: 80
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+    size: {x: 1, y: 1, z: 1}
   - weaponType: 62
     displayName: Dual Repeating Point Defense
     damageType: 1

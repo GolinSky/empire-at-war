@@ -1,0 +1,421 @@
+{
+  "date": "2026-10-07",
+  "sourceUnit": "E_Executor_Star_Destroyer",
+  "sourceModel": "Empire_Executor_Super_Star_Destroyer.ALO",
+  "sourceHashes": {
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer.ALO": "8825e66e6771421ac1b385dba8a8f4e5d273457f9796c8a7dce47b92b3a7ba40",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Death_Star_Hull.dds": "7a1f7149922022765b20e80899c11e0163f1152b17eed97f3b36964fc30d033b",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Death_Star_Hull_B.dds": "eaf0875a07bccaa7e7912bca854357fc5f020c2311954687ef472cc779aebb35",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Executor_SSD_Ambient.tga": "9b6c0c1762ccf634c3c9703b98a78c6b7b5127358e06af77789cbfa118f1a678",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Engine_Exhaust.dds": "90f3c6deaaa426b40f127b749df5bb9e2a099e1b97d6c01ada01f68418b5ad19",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Engine_Exhaust_B.dds": "1284f64e5e418b8199092624cef533991c1dd620f8a3f3abb9a681cec54135c2",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_dist.tga": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Engine_Glow_Blue_wave.tga": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Engine_Glow_Fancy_White.tga": "c985b69fed5c007c76a9ea9f8f95cc8073a4ee15e6ebe223c3dacf40529de3f5",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Lights_Grid_Orange_Desaturated_Normal.dds": "8fc7b407520ec71390aa1bc51fe16e2b075be054d2a1a908b2af7090aa5a24f7",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\W_XX_9.dds": "8b76769fbeedced159ae6446b1a5cf0d949e0aa4915a1cc5cbcba51a0027b8a9",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\W_XX_9_B.dds": "86b8763890b5a925f33524bf88dad0e2c135c54280464d6b55e3738e0fc5464d",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_01.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Annihilator_Bismarck.dds": "9df99a7d337aff82cf03698cf596a3c57be794206968454942d603193e34c229",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\Empire_Annihilator_Bismarck_B.dds": "2a99b4fea7a4435484c88ecbeeb9ba6624f1e359d71cac9ad9cc2f339113fe2a",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_02.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_03.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_04.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_05.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_06.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_07.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_08.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_09.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_10.ALO": "516d3577a6193de54c69797eae7d8bd204c8338bc0e909612a8681c1d8e7d632",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\SPACEUNITSSUPERS.XML": "8a09a9e02adb26d094f7776a948c1cf1b7e8f1fb17e2233bd22af35e59921fa7",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\Hardpoints_Supers.xml": "44d97a744c19285c47503955160ed7f856705f1a6892707c66e41befd7ed3fbe",
+    "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\XML\\PROJECTILES_SPACE.XML": "866f0dd85ed1fed21d1d3c6842213da268c953c5a4106ace8449addf8bd20939"
+  },
+  "sourceHashesUnchanged": true,
+  "models": [
+    {
+      "name": "Executor",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer.ALO",
+      "meshes": 307,
+      "bones": 499,
+      "triangles": 441717,
+      "blenderMaximumBoneError": 0.0010331070721007415,
+      "blenderMaximumBoundsError": 0.000274658203125,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret01",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_01.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret02",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_02.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret03",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_03.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret04",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_04.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret05",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_05.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret06",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_06.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret07",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_07.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret08",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_08.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret09",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_09.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    },
+    {
+      "name": "ExecutorTurret10",
+      "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\MODELS\\Empire_Executor_Super_Star_Destroyer_HTL_10.ALO",
+      "meshes": 7,
+      "bones": 8,
+      "triangles": 914,
+      "blenderMaximumBoneError": 1.1920928955078125e-05,
+      "blenderMaximumBoundsError": 3.814697265625e-06,
+      "parentsMatch": true
+    }
+  ],
+  "unity": {
+    "geometry": [
+      {
+        "name": "Executor",
+        "meshes": 307,
+        "triangles": 441717,
+        "bones": 499,
+        "maximumBoneError": 2.28645786e-05
+      },
+      {
+        "name": "ExecutorTurret01",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret02",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret03",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret04",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret05",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret06",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret07",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret08",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret09",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      },
+      {
+        "name": "ExecutorTurret10",
+        "meshes": 7,
+        "triangles": 914,
+        "bones": 8,
+        "maximumBoneError": 2.73954527e-07
+      }
+    ],
+    "visibleSize": [
+      646.229858,
+      140.861969,
+      1900.0
+    ],
+    "brokenReferences": 0,
+    "previewMatches": true
+  },
+  "gameplayBounds": {
+    "size": [
+      646.229858,
+      140.861969,
+      1900.0
+    ],
+    "bottom": -71.31126,
+    "top": 70.53901,
+    "radius": 1009.0
+  },
+  "helperRemoval": {
+    "objects": 39,
+    "triangles": 207113,
+    "sourceFbxUnchanged": true
+  },
+  "tests": {
+    "initialEditor": {
+      "total": 1090,
+      "passed": 1086,
+      "failed": 4,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "finalProjectEditor": {
+      "total": 567,
+      "passed": 565,
+      "failed": 2,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "related": [
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedHangars_HaveSeparateSystemsExitsAndIndependentReserves",
+        "Status": "Passed",
+        "Duration": 0.0303775,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Ships/Executor.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0215394,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Ships/ExecutorShipView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0041051,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Models/Wrecks/ExecutorWreckView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0044976,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedPrefab_HasBoundVisibleGeometryAndPreservesDisabledHelpers(\"Assets/Prefabs/Ui/Reinforcement/ExecutorReinforcementView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0111943,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedRegistrations_ResolveOwnAssetsAndIcons",
+        "Status": "Passed",
+        "Duration": 0.1085773,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedShip_MatchesRequestedStatsAndTargetability",
+        "Status": "Passed",
+        "Duration": 0.0028248,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedWeaponProfiles_HaveRequiredBurstsAndDoNotChangeOtherShips",
+        "Status": "Passed",
+        "Duration": 0.0044977,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.DisableBay_AllDestroyedStopsLaunchingAndReplacement",
+        "Status": "Passed",
+        "Duration": 0.0005807,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.DisableBay_StopsOnlyItsLaunches",
+        "Status": "Passed",
+        "Duration": 0.0001821,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.Shutdown_StopsLaunching",
+        "Status": "Passed",
+        "Duration": 0.0001493,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.SquadronLost_ReplacesFromReserveAfterInterval",
+        "Status": "Passed",
+        "Duration": 0.0001221,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_EmptyReserveLaunchesNothing",
+        "Status": "Passed",
+        "Duration": 8.53e-05,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_StopsAtMaxActive",
+        "Status": "Passed",
+        "Duration": 0.0001251,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_WaitsForInitialDelay",
+        "Status": "Passed",
+        "Duration": 0.0001013,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(0)",
+        "Status": "Passed",
+        "Duration": 0.0018021,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(1)",
+        "Status": "Passed",
+        "Duration": 0.0002094,
+        "Message": null,
+        "StackTrace": null
+      }
+    ],
+    "remainingProjectFailures": [
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
+        "Status": "Failed",
+        "Duration": 0.0079162,
+        "Message": "  Assets/Prefabs/Models/Ships/AcclamatorAssaultShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 31\r\n  But was:  29\r\n",
+        "StackTrace": "at EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries () [0x000b5] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TeamColorViewPrefabTests.cs:46\r\n"
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.UnitHelperMeshTests.UnitPrefabs_ContainNoStrippableHelperMeshes",
+        "Status": "Failed",
+        "Duration": 1.293547,
+        "Message": "  [HelperMeshes] 2 strippable (9374 triangles), 0 blocked\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab :: AcclamatorAssault#0/Collision#7/Collision.003#0 (7630 tris)\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab :: AcclamatorAssault#0/Hull_Shadow#13/Hull_Shadow.001#0 (1744 tris)\r\n\r\n  Expected: <empty>\r\n  But was:  < <EmpireAtWar.Editor.Rendering.UnitHelperMeshStripper+Helper>, <EmpireAtWar.Editor.Rendering.UnitHelperMeshStripper+Helper> >\r\n",
+        "StackTrace": "at EmpireAtWar.Tests.Editor.UnitHelperMeshTests.UnitPrefabs_ContainNoStrippableHelperMeshes () [0x0003b] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\UnitHelperMeshTests.cs:22\r\n"
+      }
+    ],
+    "playMode": {
+      "summary": {
+        "total": 264,
+        "passed": 263,
+        "failed": 1,
+        "skipped": 0,
+        "inconclusive": 0
+      },
+      "failures": [
+        {
+          "FullName": "Zenject.Tests.TestSceneContextEvents.TestScene",
+          "Status": "Failed",
+          "Duration": 0.0070741,
+          "Message": "Zenject.ZenjectException : Assert hit! Cannot load scene 'TestSceneContextEvents' for test 'TestSceneContextEvents'.  The scenes used by SceneTestFixture derived classes must be added to the build settings for the test to work",
+          "StackTrace": "  at ModestTree.Assert.That (System.Boolean condition, System.String message, System.Object p1, System.Object p2) [0x0000a] in F:\\Private\\empire-at-war\\Assets\\Plugins\\Zenject\\Source\\Internal\\Assert.cs:358 \r\n  at Zenject.SceneTestFixture+<LoadScenes>d__8.MoveNext () [0x00085] in F:\\Private\\empire-at-war\\Assets\\Plugins\\Zenject\\OptionalExtras\\TestFramework\\SceneTestFixture.cs:52 \r\n  at UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0004e] in .\\Library\\PackageCache\\com.unity.test-framework@76560ee600cb\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44 "
+        }
+      ]
+    }
+  }
+}

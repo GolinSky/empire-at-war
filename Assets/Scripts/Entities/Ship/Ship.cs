@@ -61,7 +61,7 @@ namespace EmpireAtWar.Ship
         [SerializeField] private Transform compositeBeamMuzzle;
 
         public Transform CompositeBeamMuzzle => compositeBeamMuzzle;
-        private HardPointModel _enginesUnitModel;
+        private readonly List<HardPointModel> _engineUnits = new List<HardPointModel>();
         private ShipOrderRunner _orders;
         private LazyInject<IEntity> _entity;
         private EntityComponentLifecycle _componentLifecycle;
@@ -134,9 +134,8 @@ namespace EmpireAtWar.Ship
             {
                 if (hardPointModel.HardPointType == HardPointType.Engines)
                 {
-                    _enginesUnitModel = hardPointModel;
-                    _enginesUnitModel.OnHardPointHealthChanged += HandleEnginesData;
-                    break;
+                    _engineUnits.Add(hardPointModel);
+                    hardPointModel.OnHardPointHealthChanged += HandleEnginesData;
                 }
             }
 
@@ -219,9 +218,9 @@ namespace EmpireAtWar.Ship
             _weaponFireEvents.ShotEmitted -= _audioShipComponent.PlayWeaponShot;
             foreach (ShipAbilitySlot ability in _audioAbilities)
                 ability.Changed -= _audioShipComponent.HandleAbilityChanged;
-            if (_enginesUnitModel != null)
+            foreach (HardPointModel engine in _engineUnits)
             {
-                _enginesUnitModel.OnHardPointHealthChanged -= HandleEnginesData;
+                engine.OnHardPointHealthChanged -= HandleEnginesData;
             }
 
             _radarComponent.Enemies.ItemAdded -= HandleEnemyAdded;
@@ -262,10 +261,17 @@ namespace EmpireAtWar.Ship
 
         private void HandleEnginesData()
         {
-            if (_enginesUnitModel.IsDestroyed)
+            int destroyed = 0;
+            foreach (HardPointModel engine in _engineUnits)
             {
-                _shipMoveComponent.ApplyMoveCoefficient(Data.MinMoveCoefficient);
+                if (engine.IsDestroyed)
+                {
+                    destroyed++;
+                }
             }
+
+            _shipMoveComponent.ApplyMoveCoefficient(
+                Mathf.Lerp(1f, Data.MinMoveCoefficient, (float)destroyed / _engineUnits.Count));
         }
     }
 }

@@ -275,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5d34a50aa6564d49b82a6560699bee8
+    m_Address: ExecutorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e729efb8cb5397d4897846837479da6e
     m_Address: HeavyDreadnoughtShipView
     m_ReadOnly: 0

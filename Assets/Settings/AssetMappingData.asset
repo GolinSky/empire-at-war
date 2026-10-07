@@ -1008,6 +1008,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ExecutorShipView
+      value:
+        m_AssetGUID: e5d34a50aa6564d49b82a6560699bee8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ExecutorShipData
+      value:
+        m_AssetGUID: 0a0612c1ba13ed045b5aec4e9b1d0c52
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: RaiderCorvetteShipView
       value:
         m_AssetGUID: 97d22c97a3a205549808c07e00bc0ae5
