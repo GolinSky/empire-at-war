@@ -1,0 +1,220 @@
+{
+  "raider": {
+    "status": "completed",
+    "duration": 0.7,
+    "summary": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "results": [
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.Pursuit_ActivatesWithoutTargetAndRestoresOtherModifiersOnStop",
+        "Status": "Passed",
+        "Duration": 0.172675,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedArcs_CoverBowAndAuthoredPortStarboardDirections",
+        "Status": "Passed",
+        "Duration": 0.003386,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Ships/RaiderCorvette.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0011396,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Ships/RaiderCorvetteShipView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0038697,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Models/Wrecks/RaiderCorvetteWreckView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0007131,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedPrefabs_HaveCompleteScriptsGeometryAndReferences(\"Assets/Prefabs/Ui/Reinforcement/RaiderCorvetteReinforcementView.prefab\")",
+        "Status": "Passed",
+        "Duration": 0.0010753,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedRegistrations_ResolveOwnDataIconsPlacementAndWreck",
+        "Status": "Passed",
+        "Duration": 0.1847308,
+        "Message": null,
+        "StackTrace": null
+      },
+      {
+        "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedUnit_HasRequestedStatsNonTargetableLoadoutAndNoHangar",
+        "Status": "Passed",
+        "Duration": 0.0049372,
+        "Message": null,
+        "StackTrace": null
+      }
+    ]
+  },
+  "abilityTests": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.EnemyShipAbilityControllerTests.LowShieldsAndNearbyPlayer_ActivatesDefensiveAbility",
+      "Status": "Passed",
+      "Duration": 0.0001845,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityCatalogTests.Catalog_ContainsEveryAbilityWithAnIconAndTargetRange",
+      "Status": "Passed",
+      "Duration": 0.0046181,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityCatalogTests.ConfiguredShips_UseCatalogIdsWithoutDuplicates",
+      "Status": "Passed",
+      "Duration": 0.0759764,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityFactoryTests.EverySettingsType_CreatesANewAbilityEachTime",
+      "Status": "Passed",
+      "Duration": 0.0031078,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.Activation_ProgressesThroughDurationAndRecovery",
+      "Status": "Passed",
+      "Duration": 0.0001169,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.Cancel_StopsOnceAndEntersFullRecovery_OnlyWhenAllowed",
+      "Status": "Passed",
+      "Duration": 0.0001085,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.CasterDeath_StopsActiveAbilityOnce",
+      "Status": "Passed",
+      "Duration": 8.16e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.GroupPress_ActivatesOnlyReadySlots",
+      "Status": "Passed",
+      "Duration": 4.78e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.Targeting_RejectsOutOfRangeAndActivatesInRange",
+      "Status": "Passed",
+      "Duration": 0.0001427,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.UnknownAbilityId_TryActivateReturnsFalse",
+      "Status": "Passed",
+      "Duration": 5.06e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilityServiceTests.ZeroRecovery_ReactivatedAbility_ElapsesOncePerAdvance",
+      "Status": "Passed",
+      "Duration": 4.08e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.ConcentrateFire_StartThenStop_RestoresAllAffectedAllies",
+      "Status": "Passed",
+      "Duration": 0.0001066,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(Invulnerability)",
+      "Status": "Passed",
+      "Duration": 8.64e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(BoostShieldPower)",
+      "Status": "Passed",
+      "Duration": 0.0001133,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(BoostEnginePower)",
+      "Status": "Passed",
+      "Duration": 6.05e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(BoostWeaponPower)",
+      "Status": "Passed",
+      "Duration": 5.03e-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipAbilitySymmetryTests.StatAbility_StartThenStop_RestoresCasterModifiers(Assault)",
+      "Status": "Passed",
+      "Duration": 6.41e-05,
+      "Message": null,
+      "StackTrace": null
+    }
+  ],
+  "observedBroadSuite": {
+    "summary": {
+      "total": 1090,
+      "passed": 1086,
+      "failed": 4,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "unrelatedFailures": [
+      {
+        "name": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
+        "message": "  Assets/Prefabs/Models/Ships/AcclamatorAssaultShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 31\r\n  But was:  29\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.UnitHelperMeshTests.UnitPrefabs_ContainNoStrippableHelperMeshes",
+        "message": "  [HelperMeshes] 62 strippable (394147 triangles), 0 blocked\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab :: AcclamatorAssault#0/Collision#7/Collision.003#0 (7630 tris)\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab\")",
+        "message": "  Renderer count differs.\r\n  Expected: 6\r\n  But was:  47\r\n"
+      },
+      {
+        "name": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab\")",
+        "message": "  Renderer count differs; rebuild the wreck.\r\n  Expected: 6\r\n  But was:  47\r\n"
+      }
+    ]
+  },
+  "manualCombatPlayMode": false
+}

@@ -1,0 +1,7 @@
+Source: Awakening of the Rebellion 2.11.9, Steam Workshop item 1397421866.
+Installed source unit: E_Raider_Corvette; Raider_Corvette.ALO.
+Original model/texture rights and attribution remain with their creators.
+Full supplied credits: Credits_and_Permissions.pdf, retained unchanged.
+No model-specific attribution has been verified; consult the supplied credits.
+SourceAudit.json records original file paths and SHA-256 hashes.
+No original source file was modified.

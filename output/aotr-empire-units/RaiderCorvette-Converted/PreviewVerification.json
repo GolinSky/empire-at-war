@@ -1,0 +1,170 @@
+{
+  "Team0": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 0
+  },
+  "Team1": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22840
+  },
+  "Team2": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22748
+  },
+  "Team3": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22839
+  },
+  "Team4": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22642
+  },
+  "Team5": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 21763
+  },
+  "Team6": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22816
+  },
+  "Team7": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 22804
+  },
+  "WreckTeam0": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 0
+  },
+  "WreckTeam1": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2152
+  },
+  "WreckTeam2": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2147
+  },
+  "WreckTeam3": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2150
+  },
+  "WreckTeam4": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2121
+  },
+  "WreckTeam5": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2115
+  },
+  "WreckTeam6": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2137
+  },
+  "WreckTeam7": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ],
+    "changed_pixels_from_blue": 2141
+  },
+  "Icon": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ]
+  },
+  "Silhouette": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ]
+  },
+  "Placement": {
+    "alpha_bounds": [
+      88,
+      143,
+      379,
+      354
+    ]
+  }
+}

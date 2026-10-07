@@ -139,6 +139,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
           type: 3}
+    - key: 208
+      value:
+        matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
+        description: 600 hull; 800 shields; speed 35. Four 2-burst laser cannons,
+          two dual repeating point-defense mounts, two heavy 2-burst ion blasters
+          and two heavy 5-burst concussion-missile launchers. No targetable hardpoints,
+          hangar or fighter complement. Pursuit boosts speed, damage and fire rate
+          for 15 s while stopping shield regeneration; recovers in 60 s.
+        role: Screener / Corvette
+        iconKey: 19c7fd1609d6359439e7fb94cbbc0065:21300000
+        isHero: 0
+        <Name>k__BackingField: Raider Corvette
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 2800
+        <BuildTime>k__BackingField: 56
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 19c7fd1609d6359439e7fb94cbbc0065,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

@@ -1,0 +1,11 @@
+{
+  "meshes": 4,
+  "triangles": 10301,
+  "bones": 31,
+  "unityMaximumBoneError": 1.24484941E-07,
+  "visibleLength": 24.0,
+  "teamRendererBindings": 3,
+  "weaponCount": 10,
+  "targetableHardpoints": 0,
+  "savedBindings": true
+}

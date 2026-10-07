@@ -1,0 +1,132 @@
+[
+  {
+    "attachment": "MuzzleA_00",
+    "id": 0,
+    "weaponType": 40,
+    "position": [
+      -0.8422702,
+      0.321807563,
+      6.463663
+    ],
+    "yaw": 6.83019E-06,
+    "muzzle": "MuzzleA_00",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleA_01",
+    "id": 1,
+    "weaponType": 40,
+    "position": [
+      0.855069041,
+      0.321849525,
+      6.463663
+    ],
+    "yaw": 6.83019E-06,
+    "muzzle": "MuzzleA_01",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleA_02",
+    "id": 2,
+    "weaponType": 62,
+    "position": [
+      -2.34283781,
+      0.405694544,
+      -2.41275024
+    ],
+    "yaw": 0.0,
+    "muzzle": "MuzzleA_02",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleA_04",
+    "id": 3,
+    "weaponType": 62,
+    "position": [
+      2.34243,
+      0.405694544,
+      -2.41275024
+    ],
+    "yaw": 2.732076E-05,
+    "muzzle": "MuzzleA_04",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleA_03",
+    "id": 4,
+    "weaponType": 40,
+    "position": [
+      -1.39513755,
+      0.4825918,
+      1.38552213
+    ],
+    "yaw": 0.0,
+    "muzzle": "MuzzleA_03",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleA_05",
+    "id": 5,
+    "weaponType": 40,
+    "position": [
+      1.38324034,
+      0.482650936,
+      1.38552213
+    ],
+    "yaw": 2.732076E-05,
+    "muzzle": "MuzzleA_05",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleB_02",
+    "id": 6,
+    "weaponType": 60,
+    "position": [
+      -0.790996969,
+      -0.194439232,
+      8.189964
+    ],
+    "yaw": 315.0,
+    "muzzle": "MuzzleB_02",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleB_03",
+    "id": 7,
+    "weaponType": 60,
+    "position": [
+      0.7890193,
+      -0.194439232,
+      8.189964
+    ],
+    "yaw": 45.0,
+    "muzzle": "MuzzleB_03",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleB_00",
+    "id": 8,
+    "weaponType": 61,
+    "position": [
+      -2.459767,
+      -0.19443959,
+      -0.683745861
+    ],
+    "yaw": 315.0,
+    "muzzle": "MuzzleB_00",
+    "targetable": false
+  },
+  {
+    "attachment": "MuzzleB_01",
+    "id": 9,
+    "weaponType": 61,
+    "position": [
+      2.457772,
+      -0.19443959,
+      -0.683745861
+    ],
+    "yaw": 45.0,
+    "muzzle": "MuzzleB_01",
+    "targetable": false
+  }
+]

@@ -262,6 +262,12 @@
 
 ### Features
 
+- [x] **Add Raider Corvette to Empire**
+  - **Plan**: [[Done/Features/RaiderCorvette_Import|Raider Corvette Import]]
+  - **Reference**: [[GameDesign/Raider Corvette Import]]
+  - **Completed**: 2026-10-07; Empire ship `208`, hull/shields/speed `600/800/35`, ten non-targetable mounts, no fighters, self-activated Pursuit; dedicated art/shield/wreck/placement/icons and all registrations committed.
+  - **Verification**: Raider `8/8` and ship-ability `17/17` tests passed; related ion/missile firing-cone bug fixed. Geometry/UV/bones, seven source hashes, saved references and eight live/wreck palettes verified. Broader observed suite `1,086/1,090`, with four unrelated failures; no combat Play Mode run.
+
 - [x] **Add ISD II**
   - **Plan**: [[Done/Features/ISDII_Import|ISD II Import]]
   - **Completed**: 2026-10-06; Empire ship `205`, exact requested stats/loadout, Power to Main Batteries, Tractor Beam, three fighter types, own art/shield/placement/wreck/icons. Commit `f17fcd22`.
