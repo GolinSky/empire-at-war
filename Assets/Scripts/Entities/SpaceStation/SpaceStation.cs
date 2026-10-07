@@ -8,6 +8,8 @@ using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.ViewComponents.Station;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using Zenject;
 
@@ -24,6 +26,10 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IUnitWreckService _unitWreckService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
+        [Tooltip("Optional for factions that use a distinct model at each station level.")]
+        [SerializeField] private StationLevelView levelView;
+        [SerializeField] private Shield levelShield;
+        [SerializeField] private MeshFilter levelShieldMesh;
         private EntityComponentLifecycle _componentLifecycle;
         private GameObjectContext _context;
 
@@ -85,6 +91,13 @@ namespace EmpireAtWar.Entities.SpaceStation
         // Each level toughens the station, installs that level's hardpoints and restores destroyed ones.
         private void ApplyLevel(int level)
         {
+            if (levelView != null)
+            {
+                levelView.ApplyLevel(level);
+                explosionHullRenderers = levelView.CurrentModel.HullRenderers;
+                levelShield.SetHull(levelShieldMesh, levelView.CurrentModel.ShieldMesh,
+                    levelView.CurrentModel.ShieldPlanes);
+            }
             StationLevelStats stats = Data.GetLevelStats(level);
             _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier);
         }

@@ -49,6 +49,16 @@ namespace EmpireAtWar.ViewComponents.Health
             }
         }
 
+        public void SetHull(MeshFilter meshFilter, Mesh mesh, Vector4[] planes)
+        {
+            meshFilter.sharedMesh = mesh;
+            hullPlanes = planes;
+            _meshBounds = mesh.bounds;
+            shieldRenderer.localBounds = _meshBounds;
+            _impactCount = 0;
+            shieldRenderer.enabled = false;
+        }
+
         public Vector3 GetSurfacePosition(Vector3 origin, Vector3 target)
         {
             // Clips the shot segment against every shell plane; the segment enters the shell at the latest entry.

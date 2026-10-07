@@ -39,8 +39,6 @@ MonoBehaviour:
     <SpawnBlockRadius>k__BackingField: 1200
   wrecks:
     keyValue:
-    - key: 2
-      value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
     - key: 3
       value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
     - key: 0
