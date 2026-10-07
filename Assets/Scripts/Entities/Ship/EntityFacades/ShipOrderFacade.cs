@@ -13,7 +13,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
     public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
         IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade, IAbilityFacingFacade,
-        IShipAbilityCastFacade
+        IShipAbilityCastFacade, INavigationFootprintFacade
     {
         private readonly IShipMovement _movement;
 

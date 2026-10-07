@@ -23,6 +23,8 @@ namespace EmpireAtWar.Components.Weapon
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
+        // A hull too large for its range stops near hull contact, give or take navigation slack.
+        private const float CONTACT_ENGAGE_FACTOR = 1.15f;
         // Continuous weapons such as beams land their damage in ticks this far apart.
         private const float DAMAGE_TICK_INTERVAL = 0.1f;
 
@@ -186,9 +188,10 @@ namespace EmpireAtWar.Components.Weapon
         private bool CanAcquire(AttackData group) =>
             group.CanAcquireTarget && !(_respectsLocalFog && group.TargetEntity.IsHiddenByFog());
 
-        public bool HasEnoughRange(float distance)
+        public bool HasEnoughRange(float distance, float contactDistance)
         {
-            return distance <= Model.OptimalAttackRange * ENGAGE_RANGE_FACTOR;
+            return distance <= Mathf.Max(Model.OptimalAttackRange * ENGAGE_RANGE_FACTOR,
+                contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
         public float GetFiringTurnAngle(Vector3 targetPosition)

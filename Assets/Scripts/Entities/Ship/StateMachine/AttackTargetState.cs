@@ -44,10 +44,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 Vector3 fromTarget = _shipMoveComponent.CurrentPosition - TargetPosition;
                 fromTarget.y = 0f;
-                return TargetPosition + fromTarget.normalized *
-                    (_weaponComponent.AttackDistance * STANDOFF_RANGE_FACTOR);
+                // Hulls larger than the weapon range close to contact instead of an unreachable point.
+                return TargetPosition + fromTarget.normalized * Mathf.Max(
+                    _weaponComponent.AttackDistance * STANDOFF_RANGE_FACTOR, ContactDistance);
             }
         }
+        private float ContactDistance => ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             _weaponComponent.AttackDistance * 0.1f);
@@ -152,7 +154,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private void UpdateFormationMove()
         {
             bool inRange = _weaponComponent.HasEnoughRange(
-                _shipMoveComponent.GetRange(TargetPosition));
+                _shipMoveComponent.GetRange(TargetPosition), ContactDistance);
             if (_isClosingRange && inRange && !_shipMoveComponent.IsMoving)
             {
                 _shipMoveComponent.LookAtTarget(TargetPosition);
@@ -203,7 +205,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             _wasMoving = _shipMoveComponent.IsMoving;
             float range = _shipMoveComponent.GetRange(TargetPosition);
-            if (!_shipMoveComponent.IsMoving && _weaponComponent.HasEnoughRange(range))
+            if (!_shipMoveComponent.IsMoving && _weaponComponent.HasEnoughRange(range, ContactDistance))
             {
                 _shipMoveComponent.LookAtTarget(TargetPosition);
                 _hasPursuitDestination = false;
