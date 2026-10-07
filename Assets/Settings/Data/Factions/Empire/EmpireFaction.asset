@@ -179,6 +179,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 19c7fd1609d6359439e7fb94cbbc0065,
           type: 3}
+    - key: 209
+      value:
+        matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
+        description: 5,000 hull; 2,500 shields; speed 40. Two targetable 4-burst
+          assault-missile launchers, shield generator and engine. Four non-targetable
+          heavy lasers and six non-targetable missile-defense mounts. TIE-Fighters
+          and TIE-Bombers; no hangar hardpoint. Boost Weapon Power doubles fire rate
+          for 20 s, stops shield regeneration, reduces speed to 25% and increases
+          incoming damage by 50%.
+        role: Battle Carrier / Cruiser
+        iconKey: f0344b89ac6897448a6494a4e3c4353e:21300000
+        isHero: 0
+        <Name>k__BackingField: AcclamatorAssault
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 4300
+        <BuildTime>k__BackingField: 86
+        <UnitCapacity>k__BackingField: 4
+        <Icon>k__BackingField: {fileID: 21300000, guid: f0344b89ac6897448a6494a4e3c4353e,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

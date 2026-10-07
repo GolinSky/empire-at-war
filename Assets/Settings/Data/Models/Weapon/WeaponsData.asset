@@ -823,3 +823,18 @@ MonoBehaviour:
     projectileSpeed: 80
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
+  - weaponType: 63
+    displayName: 4-Burst Assault-Missile Launcher
+    damageType: 5
+    damage: 30
+    shotsPerSalvo: 4
+    shotInterval: 1
+    reload: 15
+    range: 250
+    strikecraftOnly: 0
+    interceptable: 1
+    shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
+      type: 3}
+    projectileSpeed: 35
+    color: {r: 1, g: 0.55, b: 0.1, a: 1}
+    size: {x: 1.2, y: 1.2, z: 1.2}

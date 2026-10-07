@@ -1036,3 +1036,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AcclamatorAssaultShipView
+      value:
+        m_AssetGUID: a18a912eef2f13e4cb56ec916afc1e10
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AcclamatorAssaultShipData
+      value:
+        m_AssetGUID: 74f1e78fb2fd1ca4483e4636119c5d8a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

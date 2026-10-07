@@ -36,6 +36,7 @@ namespace EmpireAtWar.Models.Factions
         VictoryII = 203,
         ArquitensImperialCruiser = 204,
         RaiderCorvette = 208,
+        AcclamatorAssault = 209,
 
         //rebellion
         NebulonB = 300,
