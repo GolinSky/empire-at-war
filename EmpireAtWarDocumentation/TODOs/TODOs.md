@@ -25,11 +25,12 @@
   - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
   - **Remaining**: clean-skirmish acceptance; review provisional balance and documented engine-effect precision/source differences.
 
-- [ ] **Verify Victory I Advanced integration acceptance**
-  - **Plan**: [[TODOs/Features/VictoryIAdvanced_Import|Victory I Advanced Import]]
-  - **Reference**: [[GameDesign/Victory I Advanced Import]]
-  - **Status**: 2026-10-06 AOTR Victory I Advanced imported as Empire ship `202`; `12,000/8,000/175`, 10 targets/16 weapons, 4/6-shot rocket salvos, Full Salvo, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, geometry/UVs/source hashes, saved bindings and import/compile/render checks verified. No automated tests or Play Mode run.
+- [ ] **Verify Victory I integration acceptance**
+  - **Plan**: [[TODOs/Features/VictoryI_Import|Victory I Import]]
+  - **Reference**: [[GameDesign/Victory I Import]]
+  - **Status**: 2026-10-06 AOTR Victory I imported as Empire ship `202`; `12,000/8,000/175`, 10 targets/16 weapons, 4/6-shot rocket salvos, Full Salvo, Tractor Beam and TIE-Interceptors. Own placement/wreck/icons/team colors, geometry/UVs/source hashes, saved bindings and import/compile/render checks verified. No automated tests or Play Mode run.
   - **Team-color fix**: 2026-10-06 all-white masks replaced with four mirrored hull stripes; neutral turrets and matching wreck settings. Red/blue Unity renders, saved assets and imports verified; no new errors. Runtime acceptance remains pending.
+  - **Rename**: 2026-10-07 Advanced suffix removed across assets/code/tools/docs; ID `202` and current `5,500/2,200/24` balance preserved. All 38 moved GUIDs retained; saved bindings and tooling compilation passed; reinforcement prefab test `1/1` passed.
   - **Remaining**: clean-skirmish acceptance and provisional scale/movement/weapon/system/ability/economy/launch balance review.
 
 - [ ] **Verify MC75 Profundity integration acceptance**

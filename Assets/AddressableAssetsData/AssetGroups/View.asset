@@ -216,7 +216,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a796cdb49bcc72145a58a9e9c820cd57
-    m_Address: VictoryIAdvancedShipView
+    m_Address: VictoryIShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

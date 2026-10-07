@@ -90,7 +90,7 @@ public static class VerifyArquitensImperialCruiser
             }
         }
         var dependencies = AssetDatabase.GetDependencies(VIEW, true);
-        Check(!dependencies.Any(p => p.Contains("C9979") || p.Contains("VictoryIAdvanced") || p.Contains("RepublicShips/Arquitens")), "No donor art dependencies");
+        Check(!dependencies.Any(p => p.Contains("C9979") || p.Contains("VictoryI") || p.Contains("RepublicShips/Arquitens")), "No donor art dependencies");
         var geometry = new System.Collections.Generic.List<object>();
         foreach (var conversion in JArray.Parse(File.ReadAllText("Temp/ArquitensImperialCruiserImport/ConversionReport.json")))
         {
