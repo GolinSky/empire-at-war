@@ -27,8 +27,8 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: e9c7e9f2daa76e5498e72e291dba0cee,
     type: 2}
   <ShipClass>k__BackingField: 2
-  <Hull>k__BackingField: 300
-  <Shields>k__BackingField: 20
+  <Hull>k__BackingField: 500
+  <Shields>k__BackingField: 600
   <ShieldRegenerateValue>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 1
   hardPointHealth:
@@ -43,4 +43,4 @@ MonoBehaviour:
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
   - weaponType: 23
-    count: 1
+    count: 4
