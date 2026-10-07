@@ -1,0 +1,315 @@
+{
+  "meshCount": 47,
+  "visibleMeshes": 38,
+  "uvRangeError": 0.0,
+  "originalMaterialAssignmentsMatch": true,
+  "visibleMeshRecords": [
+    {
+      "mesh": "Lightmesh",
+      "slots": 1,
+      "triangles": 749,
+      "materials": [
+        "MC80Independence_Lightmesh_Windows_For_Big_Stuff"
+      ]
+    },
+    {
+      "mesh": "Ambient",
+      "slots": 1,
+      "triangles": 12125,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_Ambient"
+      ]
+    },
+    {
+      "mesh": "Engine_Exhaust_Glow",
+      "slots": 1,
+      "triangles": 130,
+      "materials": [
+        "MC80Independence_Engine_Exhaust"
+      ]
+    },
+    {
+      "mesh": "4_new",
+      "slots": 1,
+      "triangles": 5089,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_1"
+      ]
+    },
+    {
+      "mesh": "Engine_Exhaust",
+      "slots": 1,
+      "triangles": 130,
+      "materials": [
+        "MC80Independence_Engine_Exhaust1"
+      ]
+    },
+    {
+      "mesh": "Hull",
+      "slots": 4,
+      "triangles": 7575,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_1",
+        "MC80Independence_Rebel_Mon_Cal_Home_One_2_SpecGlow",
+        "MC80Independence_Rebel_Mon_Cal_Home_One_3_SpecGlow",
+        "MC80Independence_Rebel_Mon_Cal_Home_One_4"
+      ]
+    },
+    {
+      "mesh": "4",
+      "slots": 1,
+      "triangles": 1447,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_41"
+      ]
+    },
+    {
+      "mesh": "1",
+      "slots": 1,
+      "triangles": 9023,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_11"
+      ]
+    },
+    {
+      "mesh": "2",
+      "slots": 1,
+      "triangles": 11119,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_21"
+      ]
+    },
+    {
+      "mesh": "3",
+      "slots": 1,
+      "triangles": 6757,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_31"
+      ]
+    },
+    {
+      "mesh": "5",
+      "slots": 1,
+      "triangles": 11002,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_1"
+      ]
+    },
+    {
+      "mesh": "Plane01",
+      "slots": 1,
+      "triangles": 32,
+      "materials": [
+        "MC80Independence_glow_blue"
+      ]
+    },
+    {
+      "mesh": "Plane02",
+      "slots": 1,
+      "triangles": 32,
+      "materials": [
+        "MC80Independence_glow_blue"
+      ]
+    },
+    {
+      "mesh": "Plane03",
+      "slots": 1,
+      "triangles": 32,
+      "materials": [
+        "MC80Independence_glow_blue"
+      ]
+    },
+    {
+      "mesh": "Plane04",
+      "slots": 1,
+      "triangles": 32,
+      "materials": [
+        "MC80Independence_glow_blue"
+      ]
+    },
+    {
+      "mesh": "Lightmesh_Hangar",
+      "slots": 1,
+      "triangles": 2377,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_1_Additive"
+      ]
+    },
+    {
+      "mesh": "Object01",
+      "slots": 1,
+      "triangles": 98,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_1_Additive"
+      ]
+    },
+    {
+      "mesh": "Object02",
+      "slots": 1,
+      "triangles": 1749,
+      "materials": [
+        "MC80Independence_Rebel_Mon_Cal_Home_One_3_Additive"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big01",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big02",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big03",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big04",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big05",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big06",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Big07",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small08",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small09",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small10",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small11",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small01",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small06",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small07",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small02",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small03",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small04",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    },
+    {
+      "mesh": "LensEffect_Small05",
+      "slots": 1,
+      "triangles": 8,
+      "materials": [
+        "MC80Independence_P_ISD_ENG_Variant19"
+      ]
+    }
+  ]
+}

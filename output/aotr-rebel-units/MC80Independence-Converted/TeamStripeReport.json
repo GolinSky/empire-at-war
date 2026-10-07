@@ -1,0 +1,38 @@
+{
+  "design": "Paired tapered longitudinal stripes, aft transverse band and bow accent; geometry projected into original UVs.",
+  "resolution": 2048,
+  "materials": [
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_11.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_21.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_31.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_41.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_1.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_2_SpecGlow.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_3_SpecGlow.mat",
+    "Assets/Art/Materials/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_4.mat"
+  ],
+  "masks": [
+    {
+      "mask": "Assets/Art/Textures/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_1_TeamMask.png",
+      "paintedPixels": 380095,
+      "coverage": 0.09062171
+    },
+    {
+      "mask": "Assets/Art/Textures/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_2_TeamMask.png",
+      "paintedPixels": 548958,
+      "coverage": 0.130881786
+    },
+    {
+      "mask": "Assets/Art/Textures/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_3_TeamMask.png",
+      "paintedPixels": 266326,
+      "coverage": 0.06349707
+    },
+    {
+      "mask": "Assets/Art/Textures/Models/RebellionShips/MC80Independence/MC80Independence_Rebel_Mon_Cal_Home_One_4_TeamMask.png",
+      "paintedPixels": 442095,
+      "coverage": 0.105403662
+    }
+  ],
+  "savedLiveAndWreckAssignmentsVerified": true,
+  "ownershipRenderers": 8
+}

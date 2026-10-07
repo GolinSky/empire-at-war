@@ -1,0 +1,274 @@
+[
+  {
+    "id": 0,
+    "name": "HP_MC80_Independence_MTIC_01",
+    "bone": "HP_01",
+    "muzzle": "HP_01_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 1,
+    "name": "HP_MC80_Independence_MTIC_02",
+    "bone": "HP_02",
+    "muzzle": "HP_02_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 2,
+    "name": "HP_MC80_Independence_MTIC_03",
+    "bone": "HP_06",
+    "muzzle": "HP_06_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 3,
+    "name": "HP_MC80_Independence_MTIC_04",
+    "bone": "HP_08",
+    "muzzle": "HP_08_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 4,
+    "name": "HP_MC80_Independence_MTIC_05",
+    "bone": "HP_07",
+    "muzzle": "HP_07_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 5,
+    "name": "HP_MC80_Independence_MTIC_06",
+    "bone": "HP_09",
+    "muzzle": "HP_09_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 6,
+    "name": "HP_MC80_Independence_MTL_01",
+    "bone": "HP_05",
+    "muzzle": "HP_05_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 7,
+    "name": "HP_MC80_Independence_MTL_02",
+    "bone": "HP_03",
+    "muzzle": "HP_03_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 8,
+    "name": "HP_MC80_Independence_MTL_03",
+    "bone": "HP_04",
+    "muzzle": "HP_04_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 9,
+    "name": "HP_MC80_Independence_MTL_04",
+    "bone": "HP_11",
+    "muzzle": "HP_11_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 10,
+    "name": "HP_MC80_Independence_MTL_05",
+    "bone": "HP_12",
+    "muzzle": "HP_12_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 11,
+    "name": "HP_MC80_Independence_MTL_06",
+    "bone": "HP_13",
+    "muzzle": "HP_13_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 12,
+    "name": "HP_MC80_Independence_MTL_07",
+    "bone": "HP_14",
+    "muzzle": "HP_14_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 13,
+    "name": "HP_MC80_Independence_MTL_08",
+    "bone": "HP_15",
+    "muzzle": "HP_15_FP_01",
+    "targetable": true
+  },
+  {
+    "id": 14,
+    "name": "HP_MC80_Independence_Hangar_01",
+    "bone": "HP_HANGAR_01",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 15,
+    "name": "HP_MC80_Independence_Hangar_02",
+    "bone": "HP_HANGAR_02",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 16,
+    "name": "HP_MC80_Independence_Hangar_03",
+    "bone": "HP_HANGAR_03",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 17,
+    "name": "HP_MC80_Independence_Engines_01",
+    "bone": "HP_Engines_M",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 18,
+    "name": "HP_MC80_Independence_Engines_02",
+    "bone": "HP_Engines_L",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 19,
+    "name": "HP_MC80_Independence_Engines_03",
+    "bone": "HP_Engines_R",
+    "muzzle": null,
+    "targetable": true
+  },
+  {
+    "id": 20,
+    "name": "HP_MC80_Independence_LTIC_01",
+    "muzzle": "HP_01_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 21,
+    "name": "HP_MC80_Independence_LTIC_02",
+    "muzzle": "HP_02_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 22,
+    "name": "HP_MC80_Independence_LTIC_03",
+    "muzzle": "HP_06_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 23,
+    "name": "HP_MC80_Independence_LTIC_04",
+    "muzzle": "HP_08_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 24,
+    "name": "HP_MC80_Independence_LTIC_05",
+    "muzzle": "HP_07_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 25,
+    "name": "HP_MC80_Independence_LTIC_06",
+    "muzzle": "HP_09_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 26,
+    "name": "HP_MC80_Independence_LTL_01",
+    "muzzle": "HP_05_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 27,
+    "name": "HP_MC80_Independence_LTL_02",
+    "muzzle": "HP_03_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 28,
+    "name": "HP_MC80_Independence_LTL_03",
+    "muzzle": "HP_04_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 29,
+    "name": "HP_MC80_Independence_LTL_04",
+    "muzzle": "HP_11_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 30,
+    "name": "HP_MC80_Independence_LTL_05",
+    "muzzle": "HP_12_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 31,
+    "name": "HP_MC80_Independence_LTL_06",
+    "muzzle": "HP_13_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 32,
+    "name": "HP_MC80_Independence_LTL_07",
+    "muzzle": "HP_14_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 33,
+    "name": "HP_MC80_Independence_LTL_08",
+    "muzzle": "HP_15_FP_02",
+    "targetable": false
+  },
+  {
+    "id": 34,
+    "name": "HP_MC80_Independence_HLC_01",
+    "muzzle": "HP_04_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 35,
+    "name": "HP_MC80_Independence_HLC_02",
+    "muzzle": "HP_03_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 36,
+    "name": "HP_MC80_Independence_HLC_03",
+    "muzzle": "HP_06_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 37,
+    "name": "HP_MC80_Independence_HLC_04",
+    "muzzle": "HP_08_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 38,
+    "name": "HP_MC80_Independence_HLC_05",
+    "muzzle": "HP_10_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 39,
+    "name": "HP_MC80_Independence_HLC_06",
+    "muzzle": "HP_12_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 40,
+    "name": "HP_MC80_Independence_HLC_07",
+    "muzzle": "HP_14_FP_01",
+    "targetable": false
+  },
+  {
+    "id": 41,
+    "name": "HP_MC80_Independence_HLC_08",
+    "muzzle": "HP_15_FP_01",
+    "targetable": false
+  }
+]

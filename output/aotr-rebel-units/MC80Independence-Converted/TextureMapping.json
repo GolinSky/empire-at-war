@@ -1,0 +1,86 @@
+{
+  "ENGINE_EXHAUST.DDS": [
+    "MC80Independence_Engine_Exhaust",
+    false
+  ],
+  "ENGINE_EXHAUST_B.DDS": [
+    "MC80Independence_Engine_Exhaust_B",
+    true
+  ],
+  "LIGHTMESH_WINDOWS_FOR_BIG_STUFF.DDS": [
+    "MC80Independence_Lightmesh_Windows_For_Big_Stuff",
+    false
+  ],
+  "NB_SHIELDBASE_2.DDS": [
+    "MC80Independence_NB_SHIELDBASE_2",
+    false
+  ],
+  "NB_SHIELDRIPPLE_2.DDS": [
+    "MC80Independence_NB_SHIELDRIPPLE_2",
+    false
+  ],
+  "NB_SHIELDWAVE_2.DDS": [
+    "MC80Independence_NB_SHIELDWAVE_2",
+    false
+  ],
+  "P_ISD_ENG.DDS": [
+    "MC80Independence_P_ISD_ENG",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_1.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_1",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_1_B.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_1_B",
+    true
+  ],
+  "REBEL_MON_CAL_HOME_ONE_1_S.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_1_S",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_2.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_2",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_2_B.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_2_B",
+    true
+  ],
+  "REBEL_MON_CAL_HOME_ONE_2_S.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_2_S",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_3.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_3",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_3_B.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_3_B",
+    true
+  ],
+  "REBEL_MON_CAL_HOME_ONE_3_S.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_3_S",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_4.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_4",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_4_B.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_4_B",
+    true
+  ],
+  "REBEL_MON_CAL_HOME_ONE_4_S.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_4_S",
+    false
+  ],
+  "REBEL_MON_CAL_HOME_ONE_AMBIENT.DDS": [
+    "MC80Independence_Rebel_Mon_Cal_Home_One_Ambient",
+    false
+  ],
+  "GLOW_BLUE.DDS": [
+    "MC80Independence_glow_blue",
+    false
+  ]
+}

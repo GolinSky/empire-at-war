@@ -4,6 +4,12 @@
 
 ### Features
 
+- [ ] **Verify MC80 Independence integration acceptance**
+  - **Plan**: [[TODOs/Features/MC80Independence_Import|MC80 Independence Import]]
+  - **Reference**: [[GameDesign/MC80 Independence Import]]
+  - **Status**: 2026-10-07 Rebellion ship `305` integrated with requested `30,000/40,000/17`, 20 targets/22 non-targetable weapons, Power to Shields and approved X-Wing/Y-Wing/A-Wing bays. Model/geometry/render/registration and final saved-reference checks passed. Nine authored helpers removed from game prefabs; wreck uses eight matching hull renderers. Surface fix restored four original Hull texture slots and opaque meshes 1/3; original per-submesh materials, unchanged UVs, source variants and engine/no-glow renders verified. Requested team stripes added through four 2048px linear masks; eight live/wreck material pairs and ownership bindings, blue/red/green top views and eight palettes verified. Before the surface fix, coordinated Executor Editor regression passed all 11 relevant hangar/engine/MC80 wreck checks (project 565/567; two Acclamator failures); no automated tests rerun for the surface fix. No tests or combat Play Mode started by this import.
+  - **Remaining**: clean-skirmish acceptance and provisional balance/source-difference review.
+
 - [ ] **Verify BTL-A4 Y-Wing Bomber integration acceptance**
   - **Plan**: [[TODOs/Features/YWingBomber_Import|BTL-A4 Y-Wing Bomber Import]]
   - **Reference**: [[GameDesign/Y-Wing Bomber Import]]

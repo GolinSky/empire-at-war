@@ -114,6 +114,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a,
           type: 3}
+    - key: 305
+      value:
+        matchups: {fileID: 11400000, guid: 41d0193e2f230fa4d9f62ec405cfd0c4, type: 2}
+        description: MC80 Independence dreadnought with eight medium dual turbolasers
+          and six medium dual turbo-ion cannons. Three engines and three hangars
+          are targetable. Eight light turbolasers, six light turbo-ions and eight
+          heavy lasers remain operational until hull destruction. Power to Shields
+          accelerates regeneration while reducing movement and firing rate. Carries
+          X-Wing, Y-Wing and A-Wing squadrons.
+        role: Dreadnought / Fleet anchor
+        iconKey: d1df96d57bfbbb049952971439112bf5:21300000
+        isHero: 0
+        <Name>k__BackingField: MC80 Independence
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 34000
+        <BuildTime>k__BackingField: 680
+        <UnitCapacity>k__BackingField: 14
+        <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

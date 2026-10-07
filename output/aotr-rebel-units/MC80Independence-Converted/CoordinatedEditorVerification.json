@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-07",
+  "initiatedBy": "Coordinated Executor chat",
+  "sourceReport": "Temp/ExecutorImport/FinalEditorTests.json",
+  "sourceReportSha256": "5EC091331653B2E1951E4832B0157D31056CADC255591EACB7B9BB9046A2BBD0",
+  "projectSummary": {
+    "total": 567,
+    "passed": 565,
+    "failed": 2,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "relevantTests": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.DisableBay_AllDestroyedStopsLaunchingAndReplacement",
+      "Status": "Passed",
+      "Duration": 0.0005807,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.DisableBay_StopsOnlyItsLaunches",
+      "Status": "Passed",
+      "Duration": 0.0001821,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.Shutdown_StopsLaunching",
+      "Status": "Passed",
+      "Duration": 0.0001493,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.SquadronLost_ReplacesFromReserveAfterInterval",
+      "Status": "Passed",
+      "Duration": 0.0001221,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_EmptyReserveLaunchesNothing",
+      "Status": "Passed",
+      "Duration": 8.53E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_StopsAtMaxActive",
+      "Status": "Passed",
+      "Duration": 0.0001251,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HangarModelTests.TryLaunch_WaitsForInitialDelay",
+      "Status": "Passed",
+      "Duration": 0.0001013,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(0)",
+      "Status": "Passed",
+      "Duration": 0.0018021,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(1)",
+      "Status": "Passed",
+      "Duration": 0.0002094,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0066324,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0246549,
+      "Message": null,
+      "StackTrace": null
+    }
+  ],
+  "remainingProjectFailures": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.TeamColorViewPrefabTests.TeamColorViews_ListEveryMeshRendererWithoutMissingEntries",
+      "Message": "  Assets/Prefabs/Models/Ships/AcclamatorAssaultShipView.prefab: the team color view does not list every mesh renderer.\r\n  Expected: 31\r\n  But was:  29\r\n"
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.UnitHelperMeshTests.UnitPrefabs_ContainNoStrippableHelperMeshes",
+      "Message": "  [HelperMeshes] 2 strippable (9374 triangles), 0 blocked\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab :: AcclamatorAssault#0/Collision#7/Collision.003#0 (7630 tris)\r\n  strip Assets/Prefabs/Models/Ships/AcclamatorAssault.prefab :: AcclamatorAssault#0/Hull_Shadow#13/Hull_Shadow.001#0 (1744 tris)\r\n\r\n  Expected: <empty>\r\n  But was:  < <EmpireAtWar.Editor.Rendering.UnitHelperMeshStripper+Helper>, <EmpireAtWar.Editor.Rendering.UnitHelperMeshStripper+Helper> >\r\n"
+    }
+  ]
+}

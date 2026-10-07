@@ -1050,3 +1050,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC80IndependenceShipView
+      value:
+        m_AssetGUID: 61da10ce71bd48e49a0d7f7e48117a91
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80IndependenceShipData
+      value:
+        m_AssetGUID: 768653c9f01f1524da8620594240df59
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

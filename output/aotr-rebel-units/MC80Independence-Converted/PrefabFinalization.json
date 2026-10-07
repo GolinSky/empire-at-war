@@ -1,0 +1,12 @@
+{
+  "helpersBefore": 1,
+  "helperTrianglesBefore": 12288,
+  "collisionMeshesRemoved": 0,
+  "stripping": "[HelperMeshes] removed 0 helpers and 0 renderer-list entries\r\n[HelperMeshes] 0 strippable (0 triangles), 1 blocked\r\n  KEEP  Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab :: ShieldSurface#6 (12288 tris) — has Shield\r\n",
+  "strippableHelpersAfter": 0,
+  "sourceOpaqueRenderers": 8,
+  "wreckRenderers": 8,
+  "authoredHelperMeshesAfter": 0,
+  "wreckGeometryAndMaterialsMatch": true,
+  "wreckDataReference": "Assets/Prefabs/Models/Wrecks/MC80IndependenceWreckView.prefab"
+}

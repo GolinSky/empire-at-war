@@ -44,6 +44,7 @@ namespace EmpireAtWar.Models.Factions
         MonCalCruiser = 302,
         HomeOne = 303,
         MC75Profundity = 304,
+        MC80Independence = 305,
 
     }
 }

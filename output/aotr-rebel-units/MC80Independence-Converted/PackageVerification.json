@@ -1,0 +1,33 @@
+{
+  "source_hash_count": 22,
+  "icon_bounds": [
+    55,
+    145,
+    442,
+    346
+  ],
+  "team_color_changed_pixels": {
+    "Team": 22324,
+    "WreckTeam": 21994
+  },
+  "registrations": {
+    "shipData": true,
+    "factionIcon": true,
+    "hudIcon": true,
+    "tooltipIcon": true,
+    "placement": true,
+    "ability": true,
+    "stats": true,
+    "MC80IndependenceShipView": true,
+    "MC80IndependenceShipData": true,
+    "weaponProfilesAndAudio": true,
+    "abilityAudio": true
+  },
+  "automated_tests_initiated_by_this_import": false,
+  "combat_play_mode_run": false,
+  "coordinated_relevant_editor_tests_passed_before_surface_repair": 11,
+  "original_surface_assignments_verified": true,
+  "uv_range_error": 0.0,
+  "team_stripe_masks": 4,
+  "live_and_wreck_stripe_material_pairs": 8
+}

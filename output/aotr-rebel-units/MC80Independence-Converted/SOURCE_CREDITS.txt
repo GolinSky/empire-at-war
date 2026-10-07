@@ -1,0 +1,5 @@
+Source: installed Awakening of the Rebellion, Workshop 1397421866.
+Unit: R_MC80_Independence; model: RV_MC80_Independence.ALO.
+The complete supplied Credits_and_Permissions.pdf is retained.
+Individual model/texture authors have not been independently identified.
+Original ALO and DDS files were not modified; SHA-256 evidence is in SourceAudit.json.

@@ -1,0 +1,773 @@
+{
+  "boneCount": 214,
+  "boneErrorUnits": 2.94971483E-06,
+  "boneParentMismatches": [],
+  "meshes": [
+    {
+      "name": "1",
+      "vertices": 16619,
+      "triangles": 9023,
+      "sourceTriangles": 9023,
+      "uvCount": 16619
+    },
+    {
+      "name": "2",
+      "vertices": 19863,
+      "triangles": 11119,
+      "sourceTriangles": 11119,
+      "uvCount": 19863
+    },
+    {
+      "name": "3",
+      "vertices": 13975,
+      "triangles": 6757,
+      "sourceTriangles": 6757,
+      "uvCount": 13975
+    },
+    {
+      "name": "4",
+      "vertices": 2465,
+      "triangles": 1447,
+      "sourceTriangles": 1447,
+      "uvCount": 2465
+    },
+    {
+      "name": "4_new",
+      "vertices": 13053,
+      "triangles": 5089,
+      "sourceTriangles": 5089,
+      "uvCount": 13053
+    },
+    {
+      "name": "5",
+      "vertices": 21865,
+      "triangles": 11002,
+      "sourceTriangles": 11002,
+      "uvCount": 21865
+    },
+    {
+      "name": "Ambient",
+      "vertices": 22237,
+      "triangles": 12125,
+      "sourceTriangles": 12125,
+      "uvCount": 22237
+    },
+    {
+      "name": "Coll_01",
+      "vertices": 6211,
+      "triangles": 8290,
+      "sourceTriangles": 8290,
+      "uvCount": 6211
+    },
+    {
+      "name": "Coll_02",
+      "vertices": 192,
+      "triangles": 152,
+      "sourceTriangles": 152,
+      "uvCount": 192
+    },
+    {
+      "name": "Engine_Exhaust",
+      "vertices": 390,
+      "triangles": 130,
+      "sourceTriangles": 130,
+      "uvCount": 390
+    },
+    {
+      "name": "Engine_Exhaust_Glow",
+      "vertices": 390,
+      "triangles": 130,
+      "sourceTriangles": 130,
+      "uvCount": 390
+    },
+    {
+      "name": "LensEffect_Small",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small01",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small06",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small07",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big01",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big02",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big03",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big04",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big05",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big06",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Big07",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small08",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small09",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small10",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small11",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small02",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small03",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small04",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "LensEffect_Small05",
+      "vertices": 9,
+      "triangles": 8,
+      "sourceTriangles": 8,
+      "uvCount": 9
+    },
+    {
+      "name": "Hull",
+      "vertices": 8061,
+      "triangles": 7575,
+      "sourceTriangles": 7575,
+      "uvCount": 8061
+    },
+    {
+      "name": "Lightmesh",
+      "vertices": 2247,
+      "triangles": 749,
+      "sourceTriangles": 749,
+      "uvCount": 2247
+    },
+    {
+      "name": "Lightmesh_Hangar",
+      "vertices": 6209,
+      "triangles": 2377,
+      "sourceTriangles": 2377,
+      "uvCount": 6209
+    },
+    {
+      "name": "Object01",
+      "vertices": 256,
+      "triangles": 98,
+      "sourceTriangles": 98,
+      "uvCount": 256
+    },
+    {
+      "name": "Object02",
+      "vertices": 4686,
+      "triangles": 1749,
+      "sourceTriangles": 1749,
+      "uvCount": 4686
+    },
+    {
+      "name": "Plane01",
+      "vertices": 25,
+      "triangles": 32,
+      "sourceTriangles": 32,
+      "uvCount": 25
+    },
+    {
+      "name": "Plane02",
+      "vertices": 25,
+      "triangles": 32,
+      "sourceTriangles": 32,
+      "uvCount": 25
+    },
+    {
+      "name": "Plane03",
+      "vertices": 25,
+      "triangles": 32,
+      "sourceTriangles": 32,
+      "uvCount": 25
+    },
+    {
+      "name": "Plane04",
+      "vertices": 25,
+      "triangles": 32,
+      "sourceTriangles": 32,
+      "uvCount": 25
+    },
+    {
+      "name": "Shadow_01",
+      "vertices": 16370,
+      "triangles": 13837,
+      "sourceTriangles": 13837,
+      "uvCount": 16370
+    },
+    {
+      "name": "Shadow_02",
+      "vertices": 6217,
+      "triangles": 8290,
+      "sourceTriangles": 8290,
+      "uvCount": 6217
+    },
+    {
+      "name": "Shadow_03",
+      "vertices": 12287,
+      "triangles": 11272,
+      "sourceTriangles": 11272,
+      "uvCount": 12287
+    },
+    {
+      "name": "Shadow_04",
+      "vertices": 11708,
+      "triangles": 10144,
+      "sourceTriangles": 10144,
+      "uvCount": 11708
+    },
+    {
+      "name": "Shadow_05",
+      "vertices": 9799,
+      "triangles": 8918,
+      "sourceTriangles": 8918,
+      "uvCount": 9799
+    },
+    {
+      "name": "Shadow_06",
+      "vertices": 6506,
+      "triangles": 5799,
+      "sourceTriangles": 5799,
+      "uvCount": 6506
+    },
+    {
+      "name": "Shield",
+      "vertices": 559,
+      "triangles": 960,
+      "sourceTriangles": 960,
+      "uvCount": 559
+    }
+  ],
+  "prefabs": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC80Independence.prefab",
+      "missingScripts": 0,
+      "brokenReferences": [],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "boundsSize": [
+        53.8071136,
+        31.6088619,
+        220.0
+      ],
+      "visibleMeshes": 38
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab",
+      "missingScripts": 0,
+      "brokenReferences": [],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "boundsSize": [
+        53.8071136,
+        31.6088619,
+        220.0
+      ],
+      "visibleMeshes": 38
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/MC80IndependenceReinforcementView.prefab",
+      "missingScripts": 0,
+      "brokenReferences": [],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "boundsSize": [
+        51.67306,
+        31.6088619,
+        219.932556
+      ],
+      "visibleMeshes": 8
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/MC80IndependenceWreckView.prefab",
+      "missingScripts": 0,
+      "brokenReferences": [],
+      "rootScale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "boundsSize": [
+        51.6730652,
+        31.60886,
+        219.932541
+      ],
+      "visibleMeshes": 8
+    }
+  ],
+  "hardpoints": [
+    {
+      "id": 0,
+      "name": "HP_MC80_Independence_MTIC_01",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 1,
+      "name": "HP_MC80_Independence_MTIC_02",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 2,
+      "name": "HP_MC80_Independence_MTIC_03",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 3,
+      "name": "HP_MC80_Independence_MTIC_04",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 4,
+      "name": "HP_MC80_Independence_MTIC_05",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 5,
+      "name": "HP_MC80_Independence_MTIC_06",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 6,
+      "name": "HP_MC80_Independence_MTL_01",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 7,
+      "name": "HP_MC80_Independence_MTL_02",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 8,
+      "name": "HP_MC80_Independence_MTL_03",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 9,
+      "name": "HP_MC80_Independence_MTL_04",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 10,
+      "name": "HP_MC80_Independence_MTL_05",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 11,
+      "name": "HP_MC80_Independence_MTL_06",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 12,
+      "name": "HP_MC80_Independence_MTL_07",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 13,
+      "name": "HP_MC80_Independence_MTL_08",
+      "type": "Weapon",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 14,
+      "name": "HP_MC80_Independence_Hangar_01",
+      "type": "Hangar",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 15,
+      "name": "HP_MC80_Independence_Hangar_02",
+      "type": "Hangar",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 16,
+      "name": "HP_MC80_Independence_Hangar_03",
+      "type": "Hangar",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 17,
+      "name": "HP_MC80_Independence_Engines_01",
+      "type": "Engines",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 18,
+      "name": "HP_MC80_Independence_Engines_02",
+      "type": "Engines",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 19,
+      "name": "HP_MC80_Independence_Engines_03",
+      "type": "Engines",
+      "targetable": true,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 20,
+      "name": "HP_MC80_Independence_LTIC_01",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 21,
+      "name": "HP_MC80_Independence_LTIC_02",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 22,
+      "name": "HP_MC80_Independence_LTIC_03",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 23,
+      "name": "HP_MC80_Independence_LTIC_04",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 24,
+      "name": "HP_MC80_Independence_LTIC_05",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 25,
+      "name": "HP_MC80_Independence_LTIC_06",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 26,
+      "name": "HP_MC80_Independence_LTL_01",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 27,
+      "name": "HP_MC80_Independence_LTL_02",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 28,
+      "name": "HP_MC80_Independence_LTL_03",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 29,
+      "name": "HP_MC80_Independence_LTL_04",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 30,
+      "name": "HP_MC80_Independence_LTL_05",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 31,
+      "name": "HP_MC80_Independence_LTL_06",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 32,
+      "name": "HP_MC80_Independence_LTL_07",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 33,
+      "name": "HP_MC80_Independence_LTL_08",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 34,
+      "name": "HP_MC80_Independence_HLC_01",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 35,
+      "name": "HP_MC80_Independence_HLC_02",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 36,
+      "name": "HP_MC80_Independence_HLC_03",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 37,
+      "name": "HP_MC80_Independence_HLC_04",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 38,
+      "name": "HP_MC80_Independence_HLC_05",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 39,
+      "name": "HP_MC80_Independence_HLC_06",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 40,
+      "name": "HP_MC80_Independence_HLC_07",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    },
+    {
+      "id": 41,
+      "name": "HP_MC80_Independence_HLC_08",
+      "type": "Weapon",
+      "targetable": false,
+      "muzzleError": 0.0
+    }
+  ],
+  "targetableCount": 20,
+  "weaponCounts": {
+    "MC80MediumDualTurboIon": 6,
+    "MC80MediumDualTurbolaser": 8,
+    "LightTurboIon": 6,
+    "LightTurbolaser": 8,
+    "HeavyLaser": 8
+  },
+  "healthIds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "fogCount": 42,
+  "teamRendererCount": 8,
+  "launchLocalPosition": [
+    25.135191,
+    -23.8044319,
+    -17.7712364
+  ],
+  "launchColliderClearance": 8.000001,
+  "bayIds": [
+    14,
+    15,
+    16
+  ],
+  "bayClearances": [
+    8.000001,
+    8.000001,
+    8.000001
+  ],
+  "hull": 30000.0,
+  "shields": 40000.0,
+  "speed": 17.0,
+  "addressables": {
+    "Assets/Prefabs/Models/Ships/MC80IndependenceShipView.prefab": {
+      "address": "MC80IndependenceShipView",
+      "group": "View"
+    },
+    "Assets/Settings/Data/Ship/MC80IndependenceShipData.asset": {
+      "address": "MC80IndependenceShipData",
+      "group": "Data"
+    }
+  },
+  "dependencies": [],
+  "registrations": {
+    "shipData": true,
+    "factionIcon": true,
+    "hudIcon": true,
+    "tooltipIcon": true,
+    "placement": true,
+    "ability": true,
+    "stats": true,
+    "MC80IndependenceShipView": true,
+    "MC80IndependenceShipData": true,
+    "weaponProfilesAndAudio": true,
+    "abilityAudio": true
+  }
+}
